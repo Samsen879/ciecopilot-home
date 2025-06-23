@@ -1,14 +1,242 @@
 [
   {
-    "title": "Quadratic Equations",
-    "description": "掌握二次方程的判别式、因式分解、配方法、求根公式。常考：解法对比、应用题。"
+    "subject": "9709",
+    "paper": "p1",
+    "name": "Pure Mathematics 1",
+    "description": "Foundational pure mathematics covering algebraic and basic calculus concepts essential for A Level mathematics.",
+    "topics": [
+      {
+        "id": "quadratics",
+        "name": "Quadratics",
+        "description": "Master quadratic functions, equations, and their applications in coordinate geometry and real-world problem solving.",
+        "syllabusPoints": [
+          "Use the discriminant of a quadratic function to determine the nature of the roots",
+          "Solve quadratic equations by factorisation, completing the square and using the quadratic formula",
+          "Use the relationship between the roots and coefficients of a quadratic equation",
+          "Solve simultaneous equations where one equation is linear and the other is quadratic",
+          "Recognise and solve equations in x that are quadratic in some function of x",
+          "Use the conditions for a quadratic function to be positive definite or negative definite",
+          "Sketch quadratic functions and use transformations to sketch related functions"
+        ],
+        "keyPoints": [
+          "Understanding discriminant: b² - 4ac determines root nature",
+          "Three solving methods: factorisation, completing square, quadratic formula",
+          "Sum of roots = -b/a, Product of roots = c/a",
+          "Graphical interpretation and transformations"
+        ]
+      },
+      {
+        "id": "functions",
+        "name": "Functions",
+        "description": "Explore function notation, domain and range, composite functions, and inverse functions with practical applications.",
+        "syllabusPoints": [
+          "Understand the terms function, domain, range and one-one function",
+          "Use function notation, e.g. f(x) = 3x - 5, f: x ↦ 3x - 5",
+          "Find the range of a function",
+          "Find and use composite functions",
+          "Find and use inverse functions",
+          "Use the fact that if y = f(x), then x = f⁻¹(y)",
+          "Form composite functions and find their domain",
+          "Understand that the graph of y = f⁻¹(x) is the reflection of the graph of y = f(x) in the line y = x"
+        ],
+        "keyPoints": [
+          "Function notation and mapping concepts",
+          "Domain: input values, Range: output values",
+          "Composite functions: (f ∘ g)(x) = f(g(x))",
+          "Inverse functions exist only for one-to-one functions",
+          "Graphical relationship between function and inverse"
+        ]
+      },
+      {
+        "id": "coordinate-geometry",
+        "name": "Coordinate Geometry",
+        "description": "Apply coordinate geometry to solve problems involving straight lines, circles, and geometric relationships.",
+        "syllabusPoints": [
+          "Find the equation of a straight line in the forms y - y₁ = m(x - x₁), y = mx + c, ax + by + c = 0",
+          "Find the gradient of a straight line",
+          "Understand that lines with gradients m₁ and m₂ are perpendicular when m₁m₂ = -1",
+          "Find the equation of a line parallel or perpendicular to a given line",
+          "Find the perpendicular distance from a point to a line",
+          "Find the equation of a circle with given centre and radius",
+          "Find the centre and radius of a circle given its equation in the form x² + y² + 2gx + 2fy + c = 0",
+          "Use the condition for a line to be a tangent to a circle"
+        ],
+        "keyPoints": [
+          "Multiple forms of line equations",
+          "Gradient relationships: parallel (equal), perpendicular (product = -1)",
+          "Circle equations: (x-a)² + (y-b)² = r² and general form",
+          "Tangent conditions and geometric applications"
+        ]
+      },
+      {
+        "id": "circular-measure",
+        "name": "Circular Measure",
+        "description": "Master radian measure, arc length, sector area, and applications in circular motion and periodic phenomena.",
+        "syllabusPoints": [
+          "Understand the definition of a radian",
+          "Use the relationship between radians and degrees",
+          "Use the formulae s = rθ, A = ½r²θ for arc length and sector area",
+          "Solve simple trigonometric equations in a given interval",
+          "Use radians in the solution of trigonometric equations",
+          "Find the exact values of sin, cos and tan for multiples of π/6, π/4 and π/3",
+          "Use the relationship between the area of a triangle and the sine of an included angle"
+        ],
+        "keyPoints": [
+          "1 radian = 180°/π ≈ 57.3°",
+          "Arc length: s = rθ (θ in radians)",
+          "Sector area: A = ½r²θ = ½rs",
+          "Exact trigonometric values for special angles"
+        ]
+      },
+      {
+        "id": "trigonometry",
+        "name": "Trigonometry",
+        "description": "Develop proficiency in trigonometric functions, identities, and equation solving techniques.",
+        "syllabusPoints": [
+          "Sketch the graphs of y = sin x, y = cos x and y = tan x",
+          "Use the exact values of sin, cos and tan for 0°, 30°, 45°, 60°, 90° and related angles",
+          "Use the notations sin⁻¹x, cos⁻¹x, tan⁻¹x to denote the principal values of the inverse trigonometric relations",
+          "Use the identities sin²θ + cos²θ ≡ 1, sec²θ ≡ 1 + tan²θ, cosec²θ ≡ 1 + cot²θ",
+          "Find all the solutions of simple trigonometric equations in a given interval",
+          "Prove simple trigonometric identities",
+          "Use the sine and cosine rules to solve triangle problems"
+        ],
+        "keyPoints": [
+          "Basic trigonometric graphs and transformations",
+          "Exact values for special angles (0°, 30°, 45°, 60°, 90°)",
+          "Fundamental trigonometric identities",
+          "Sine rule: a/sin A = b/sin B = c/sin C",
+          "Cosine rule: a² = b² + c² - 2bc cos A"
+        ]
+      },
+      {
+        "id": "series",
+        "name": "Series",
+        "description": "Explore arithmetic and geometric progressions, sigma notation, and series applications in mathematical modeling.",
+        "syllabusPoints": [
+          "Use the formula for the nth term and for the sum of the first n terms of an arithmetic progression",
+          "Use the formula for the nth term and for the sum of the first n terms of a geometric progression",
+          "Use the condition for the convergence of a geometric series and the formula for the sum to infinity",
+          "Use arithmetic and geometric progressions to model and solve practical problems",
+          "Use sigma notation for sums of series",
+          "Find the sum of finite arithmetic and geometric series using sigma notation"
+        ],
+        "keyPoints": [
+          "Arithmetic: aₙ = a + (n-1)d, Sₙ = n/2[2a + (n-1)d]",
+          "Geometric: aₙ = ar^(n-1), Sₙ = a(r^n - 1)/(r - 1)",
+          "Sum to infinity: S∞ = a/(1-r) when |r| < 1",
+          "Sigma notation: Σ notation for series representation"
+        ]
+      },
+      {
+        "id": "differentiation",
+        "name": "Differentiation",
+        "description": "Learn the fundamental principles of differentiation and applications to gradients, rates of change, and optimization.",
+        "syllabusPoints": [
+          "Understand the concept of a derived function",
+          "Use the notation f'(x), dy/dx",
+          "Use the derivative of xⁿ (for any rational n), together with constant multiples, sums and differences",
+          "Apply differentiation to find gradients, tangents and normals",
+          "Use differentiation to find the rate of change of one variable with respect to another",
+          "Find and identify maximum and minimum values",
+          "Distinguish between maximum and minimum values and stationary points which are neither maxima nor minima",
+          "Use differentiation to solve practical maximum and minimum problems"
+        ],
+        "keyPoints": [
+          "Power rule: d/dx(xⁿ) = nxⁿ⁻¹",
+          "Gradient of tangent = f'(x), gradient of normal = -1/f'(x)",
+          "Stationary points where f'(x) = 0",
+          "Second derivative test for maximum/minimum classification",
+          "Applications to optimization problems"
+        ]
+      },
+      {
+        "id": "integration",
+        "name": "Integration",
+        "description": "Master basic integration techniques and applications to area calculation and reverse differentiation.",
+        "syllabusPoints": [
+          "Understand integration as the reverse process of differentiation",
+          "Integrate (ax + b)ⁿ (for any rational n except -1), together with constant multiples, sums and differences",
+          "Solve problems involving the evaluation of a constant of integration",
+          "Evaluate definite integrals",
+          "Use definite integration to find the area under a curve",
+          "Use definite integration to find the area between a curve and the x-axis",
+          "Use definite integration to find the area between two curves"
+        ],
+        "keyPoints": [
+          "Indefinite integral: ∫xⁿ dx = x^(n+1)/(n+1) + c (n ≠ -1)",
+          "Integration of (ax + b)ⁿ",
+          "Definite integrals and area calculations",
+          "Area between curves using integration",
+          "Constant of integration in indefinite integrals"
+        ]
+      }
+    ]
   },
   {
-    "title": "Circular Motion",
-    "description": "理解圆周运动的向心力、角速度与周期的关系，考查向心加速度和牛顿第二定律结合。"
+    "subject": "9709",
+    "paper": "p3",
+    "name": "Pure Maths 3",
+    "description": "Advanced pure mathematics building on P1 concepts with more complex algebraic and calculus topics.",
+    "topics": [
+      { "id": "logarithms", "name": "Logarithms and Exponentials", "description": "Properties of logarithms, exponential functions, and solving exponential equations" },
+      { "id": "trigonometry-advanced", "name": "Advanced Trigonometry", "description": "Addition formulae, double angle formulae, and solving complex trigonometric equations" },
+      { "id": "differentiation-advanced", "name": "Advanced Differentiation", "description": "Chain rule, product rule, quotient rule, and implicit differentiation" },
+      { "id": "integration-advanced", "name": "Advanced Integration", "description": "Integration by substitution, integration by parts, and partial fractions" },
+      { "id": "numerical-methods", "name": "Numerical Methods", "description": "Iterative methods, trapezium rule, and numerical solutions to equations" },
+      { "id": "vectors", "name": "Vectors", "description": "Vector operations, position vectors, and vector geometry" }
+    ]
   },
   {
-    "title": "Probability",
-    "description": "基本概率计算、条件概率、概率树与贝叶斯定理，题型以分步和综合应用为主。"
+    "subject": "9709",
+    "paper": "p4",
+    "name": "Mechanics",
+    "description": "Applied mathematics focusing on forces, motion, and mechanical systems.",
+    "topics": [
+      { "id": "kinematics", "name": "Kinematics", "description": "Motion in one and two dimensions, velocity-time graphs, and equations of motion" },
+      { "id": "forces", "name": "Forces and Newton's Laws", "description": "Force diagrams, equilibrium, and Newton's three laws of motion" },
+      { "id": "projectiles", "name": "Projectile Motion", "description": "Motion under gravity, trajectory equations, and projectile applications" },
+      { "id": "work-energy", "name": "Work, Energy and Power", "description": "Work done by forces, kinetic and potential energy, and power calculations" },
+      { "id": "collisions", "name": "Momentum and Collisions", "description": "Conservation of momentum, elastic and inelastic collisions" }
+    ]
+  },
+  {
+    "subject": "9709",
+    "paper": "p5",
+    "name": "Statistics 1",
+    "description": "Introduction to statistical methods, probability, and data analysis.",
+    "topics": [
+      { "id": "data-presentation", "name": "Data Presentation", "description": "Histograms, box plots, and measures of central tendency and spread" },
+      { "id": "probability", "name": "Probability", "description": "Basic probability, conditional probability, and probability distributions" },
+      { "id": "discrete-distributions", "name": "Discrete Probability Distributions", "description": "Binomial and geometric distributions and their applications" },
+      { "id": "normal-distribution", "name": "Normal Distribution", "description": "Properties of normal distribution and standardization" },
+      { "id": "correlation", "name": "Correlation and Regression", "description": "Product moment correlation coefficient and linear regression" }
+    ]
+  },
+  {
+    "subject": "9702",
+    "paper": "p1",
+    "name": "Multiple Choice",
+    "description": "Comprehensive multiple choice questions covering AS-level physics concepts.",
+    "topics": [
+      { "id": "measurements", "name": "Physical Quantities and Units", "description": "SI units, significant figures, and measurement techniques" },
+      { "id": "mechanics-basics", "name": "Mechanics Fundamentals", "description": "Motion, forces, and basic mechanical principles" },
+      { "id": "waves-basics", "name": "Wave Properties", "description": "Wave characteristics, interference, and diffraction" },
+      { "id": "electricity-basics", "name": "Basic Electricity", "description": "Current, voltage, resistance, and simple circuits" }
+    ]
+  },
+  {
+    "subject": "9702",
+    "paper": "p2",
+    "name": "AS Structured Questions",
+    "description": "Structured questions covering AS-level physics topics in detail.",
+    "topics": [
+      { "id": "kinematics-physics", "name": "Kinematics", "description": "Motion graphs, equations of motion, and projectile motion" },
+      { "id": "dynamics", "name": "Dynamics", "description": "Newton's laws, momentum, and force analysis" },
+      { "id": "work-energy-physics", "name": "Work, Energy and Power", "description": "Energy conservation, efficiency, and power calculations" },
+      { "id": "materials", "name": "Deformation of Solids", "description": "Stress, strain, and elastic properties of materials" },
+      { "id": "waves", "name": "Waves", "description": "Wave motion, superposition, and standing waves" },
+      { "id": "electricity", "name": "Electricity", "description": "Circuit analysis, electrical power, and resistance" }
+    ]
   }
 ]

@@ -1,46 +1,46 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight, BookOpen, Calculator, Zap, BarChart3, Grid, List } from "lucide-react";
+import { ChevronDown, ChevronRight, BookOpen, Calculator, Zap, BarChart3, Brain, Grid, List } from "lucide-react";
 
-// Import all paper data
-import paper3Data from "../data/9709paper3.json";
-import paper4Data from "../data/9709paper4.json";
-import paper5Data from "../data/9709paper5.json";
-import paperFMData from "../data/9231FM.json";
+// Import all Further Mathematics paper data
+import fp1Data from "../data/9231FP1.json";
+import fp2Data from "../data/9231FP2.json";
+import fmData from "../data/9231FM.json";
+import fsData from "../data/9231FS.json";
 
-const Topics = () => {
+const FurtherMathTopics = () => {
   const [expandedTopics, setExpandedTopics] = useState(new Set());
   const [selectedPaper, setSelectedPaper] = useState('all');
 
-  // Paper data mapping
+  // Paper data mapping for Further Mathematics (9231)
   const paperData = {
-    'p3': {
-      name: 'Pure Mathematics 3',
-      data: paper3Data["9709_Paper_3_Pure_Mathematics_3"],
+    'fp1': {
+      name: 'Further Pure Mathematics 1',
+      data: fp1Data["9231_Paper_1_Further_Pure_Mathematics_1"],
       icon: Calculator,
-      color: 'from-blue-500 to-indigo-600',
-      bgColor: 'from-blue-50 to-indigo-50'
-    },
-    'p4': {
-      name: 'Mechanics',
-      data: paper4Data["9709_Paper_4_Mechanics"],
-      icon: Zap,
-      color: 'from-purple-500 to-violet-600',
-      bgColor: 'from-purple-50 to-violet-50'
-    },
-    'p5': {
-      name: 'Probability and Statistics 1',
-      data: paper5Data["9709_Paper_5_Probability_and_Statistics_1"],
-      icon: BarChart3,
       color: 'from-emerald-500 to-teal-600',
       bgColor: 'from-emerald-50 to-teal-50'
     },
+    'fp2': {
+      name: 'Further Pure Mathematics 2',
+      data: fp2Data["9231_Paper_2_Further_Pure_Mathematics_2"],
+      icon: Brain,
+      color: 'from-purple-500 to-violet-600',
+      bgColor: 'from-purple-50 to-violet-50'
+    },
     'fm': {
       name: 'Further Mechanics',
-      data: paperFMData["9231_Paper_3_Further_Mechanics"],  // 使用9231试卷数据
-      icon: Calculator,  // 可根据需要调整图标
-      color: 'from-rose-500 to-pink-600',  // 使用新的配色方案
-      bgColor: 'from-rose-50 to-pink-50'
+      data: fmData["9231_Paper_3_Further_Mechanics"],
+      icon: Zap,
+      color: 'from-orange-500 to-red-600',
+      bgColor: 'from-orange-50 to-red-50'
+    },
+    'fs': {
+      name: 'Further Probability and Statistics',
+      data: fsData["9231_Paper_4_Further_Probability_and_Statistics"],
+      icon: BarChart3,
+      color: 'from-blue-500 to-indigo-600',
+      bgColor: 'from-blue-50 to-indigo-50'
     }
   };
 
@@ -114,7 +114,7 @@ const Topics = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-teal-50/20 pt-20">
       <div className="max-w-7xl mx-auto px-6 py-12">
         
         {/* Header Section */}
@@ -125,28 +125,28 @@ const Topics = () => {
           className="text-center mb-16"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
-            Mathematics Topics
+            Further Mathematics Topics
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Explore comprehensive topic coverage for CIE A Level Mathematics Papers 3, 4, and 5
+            Explore advanced mathematical concepts for CIE A Level Further Mathematics (9231) across all four papers
           </p>
           
           {/* Paper Filter Tabs */}
           <div className="inline-flex bg-white/70 backdrop-blur-sm rounded-2xl p-2 border border-white/20 shadow-sm">
             {[
               { id: 'all', label: 'All Papers' },
-              { id: 'p3', label: 'Pure Math 3' },
-              { id: 'p4', label: 'Mechanics' },
-              { id: 'p5', label: 'Statistics' },
-              { id: 'fm', label: 'Further Mechanics' }  // 新增9231试卷筛选选项
+              { id: 'fp1', label: 'Further Pure 1' },
+              { id: 'fp2', label: 'Further Pure 2' },
+              { id: 'fm', label: 'Further Mechanics' },
+              { id: 'fs', label: 'Further Statistics' }
             ].map(({ id, label }) => (
               <button
                 key={id}
                 onClick={() => setSelectedPaper(id)}
                 className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
                   selectedPaper === id
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50'
                 }`}
               >
                 {label}
@@ -179,7 +179,7 @@ const Topics = () => {
                     </div>
                     <div>
                       <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                        Paper {paperId.toUpperCase()}: {paper.name}
+                        {paper.name}
                       </h2>
                       <div className="flex items-center space-x-6 text-gray-600">
                         <div className="flex items-center space-x-2">
@@ -210,7 +210,7 @@ const Topics = () => {
                       {/* Topic Header */}
                       <button
                         onClick={() => toggleTopic(paperId, topicIndex)}
-                        className="w-full p-6 text-left hover:bg-gray-50/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                        className="w-full p-6 text-left hover:bg-gray-50/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-inset"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
@@ -235,7 +235,7 @@ const Topics = () => {
                         </div>
                       </button>
 
-                      {/* Expandable Content */}
+                      {/* Expandable Content - Cards and Details */}
                       <AnimatePresence>
                         {isTopicExpanded(paperId, topicIndex) && (
                           <motion.div
@@ -270,8 +270,8 @@ const Topics = () => {
                                         key={detailIndex}
                                         className="flex items-start space-x-3 text-sm"
                                       >
-                                        <div className="flex items-center justify-center w-5 h-5 bg-blue-100 rounded-full mt-0.5 flex-shrink-0">
-                                          <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                                        <div className="flex items-center justify-center w-5 h-5 bg-emerald-100 rounded-full mt-0.5 flex-shrink-0">
+                                          <div className="w-2 h-2 bg-emerald-500 rounded-full" />
                                         </div>
                                         <p className="text-gray-700 leading-relaxed">
                                           {detail}
@@ -305,16 +305,16 @@ const Topics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-center text-white shadow-lg"
+          className="mt-16 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-center text-white shadow-lg"
         >
           <h3 className="text-2xl font-bold mb-4">
-            Complete A Level Mathematics Coverage
+            Complete Further Mathematics Coverage
           </h3>
-          <p className="text-blue-100 mb-6 leading-relaxed max-w-2xl mx-auto">
-            Comprehensive topic breakdown covering advanced pure mathematics, mechanics, and statistics. 
-            Each learning objective is carefully structured to match the CIE syllabus requirements.
+          <p className="text-emerald-100 mb-6 leading-relaxed max-w-2xl mx-auto">
+            Advanced mathematical concepts covering sophisticated pure mathematics, complex mechanics, and advanced statistics. 
+            Each topic is structured to challenge and extend beyond standard A Level mathematics.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             {Object.entries(paperData).map(([id, paper]) => {
               const totalObjectives = paper.data.reduce((total, topic) => 
                 total + topic.cards.reduce((cardTotal, card) => cardTotal + card.details.length, 0), 0
@@ -325,8 +325,8 @@ const Topics = () => {
                   <div className="text-3xl font-bold text-white mb-2">
                     {totalObjectives}
                   </div>
-                  <div className="text-blue-100 text-sm">
-                    {paper.name} Objectives
+                  <div className="text-emerald-100 text-sm">
+                    {paper.name.replace('Further ', '')} Objectives
                   </div>
                 </div>
               );
@@ -338,4 +338,4 @@ const Topics = () => {
   );
 };
 
-export default Topics;
+export default FurtherMathTopics; 

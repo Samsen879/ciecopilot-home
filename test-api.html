@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #result { margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>OpenAI API 测试</h1>
+    <p>点击按钮测试你的 API 是否正常工作</p>
+    
+    <button onclick="testAPI()">测试 API</button>
+    
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>测试中...</p>';
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: "user",
+                                content: "Hello, can you help me with mathematics?"
+                            }
+                        ]
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ API 工作正常！</h3>
+                            <p><strong>AI 回复:</strong></p>
+                            <p>${data.choices[0]?.message?.content || '无回复内容'}</p>
+                            <hr>
+                            <p><strong>完整响应:</strong></p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ API 错误</h3>
+                            <p><strong>状态码:</strong> ${response.status}</p>
+                            <p><strong>错误信息:</strong> ${data.message || data.error}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ 网络错误</h3>
+                        <p><strong>错误:</strong> ${error.message}</p>
+                        <p>可能原因：</p>
+                        <ul>
+                            <li>API endpoint 不存在 (需要使用 Vercel CLI 启动)</li>
+                            <li>网络连接问题</li>
+                            <li>CORS 问题</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

@@ -35,32 +35,43 @@ const ChatWidget = () => {
     }
   }, [isOpen]);
 
-  // Demo AI responses for different question types
-  const getAIResponse = (userMessage) => {
-    const message = userMessage.toLowerCase();
-    
-    if (message.includes('math') || message.includes('calculus') || message.includes('algebra')) {
-      return "I can help you with mathematics! Whether it's calculus, algebra, or statistics, I can explain concepts, solve problems step-by-step, and provide practice questions. What specific math topic would you like to explore?";
+  // Call OpenAI API through our backend endpoint
+  const getAIResponse = async (userMessage) => {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: "You are a specialized AI tutor for CIE (Cambridge International Education) students. You help with Mathematics, Physics, and Economics at A-Level standard. Provide clear, step-by-step explanations that follow CIE curriculum guidelines. Always identify key concepts and mark scheme points when relevant."
+            },
+            ...messages.slice(-5).map(msg => ({ // Include last 5 messages for context
+              role: msg.type === 'user' ? 'user' : 'assistant',
+              content: msg.content
+            })),
+            {
+              role: "user",
+              content: userMessage
+            }
+          ]
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to get AI response');
+      }
+
+      const data = await response.json();
+      return data.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response. Please try again.";
+    } catch (error) {
+      console.error('Error calling AI API:', error);
+      return "I'm experiencing some technical difficulties. Please try again in a moment.";
     }
-    
-    if (message.includes('physics')) {
-      return "Physics is fascinating! I can help with mechanics, thermodynamics, electricity & magnetism, and more. I'll provide clear explanations with real-world examples and help you understand the underlying principles. What physics concept interests you?";
-    }
-    
-    if (message.includes('economics')) {
-      return "Economics can be complex, but I'm here to help! From microeconomics to macroeconomics, I can explain theories, analyze graphs, and help you understand market behaviors. What economic concept would you like to discuss?";
-    }
-    
-    if (message.includes('exam') || message.includes('test') || message.includes('preparation')) {
-      return "Exam preparation is crucial for success! I can help you create study schedules, practice past papers, identify key topics, and develop effective revision strategies tailored to CIE requirements. How can I assist with your exam prep?";
-    }
-    
-    if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-      return "Hello there! Great to see you're ready to learn. I'm specialized in CIE curriculum and can help with Math, Physics, and Economics. What subject would you like to focus on today?";
-    }
-    
-    // Default response
-    return "That's an interesting question! I'm here to help with your CIE studies in Mathematics, Physics, and Economics. Could you provide more details about what specific topic or concept you'd like to explore?";
   };
 
   // Handle sending message
@@ -78,18 +89,29 @@ const ChatWidget = () => {
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI thinking time
-    setTimeout(() => {
+    // Get AI response from OpenAI API
+    try {
+      const aiContent = await getAIResponse(inputValue);
       const aiResponse = {
         id: Date.now() + 1,
         type: 'ai',
-        content: getAIResponse(inputValue),
+        content: aiContent,
         timestamp: new Date().toLocaleTimeString()
       };
       
       setMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      const errorResponse = {
+        id: Date.now() + 1,
+        type: 'ai',
+        content: "I'm sorry, I'm experiencing technical difficulties. Please try again.",
+        timestamp: new Date().toLocaleTimeString()
+      };
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
       setIsTyping(false);
-    }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
+    }
   };
 
   // Handle Enter key press

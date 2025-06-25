@@ -112,6 +112,9 @@ export default function Navbar() {
 
   const smartFunctionItems = [
     { name: "AI Q&A", path: "/tools/ai-qa" },
+    { name: "Image Problem Solving", path: "/tools/image-solver" },
+    { name: "Progress Tracking", path: "/tools/progress-tracking" },
+    { name: "Smart Recommendations", path: "/tools/smart-recommendations" },
     { name: "Study Suggestions", path: "/tools/study-suggestions" }
   ];
 
@@ -299,7 +302,7 @@ export default function Navbar() {
                       exit="exit"
                       variants={dropdownVariants}
                       onMouseLeave={() => setActiveDropdown(null)}
-                      className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg 
+                      className="absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg 
                                 border border-gray-100 py-2 z-50"
                     >
                       {smartFunctionItems.map((item, index) => (

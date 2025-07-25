@@ -23,6 +23,7 @@ import fp1Data from '../data/9231FP1.json';
 import fp2Data from '../data/9231FP2.json';
 import fmData from '../data/9231FM.json';
 import fsData from '../data/9231FS.json';
+import normalizeTopicId from '../utils/normalizeTopicId';
 
 const TopicDetail = () => {
   const { subject, paper, topicId } = useParams();
@@ -80,7 +81,7 @@ const TopicDetail = () => {
         "Sector area: A = ½r²θ = ½rs",
         "Convert: degrees × π/180 = radians"
       ],
-      'Trigonometry': [
+      'Basic Trigonometry': [
         "SOHCAHTOA: sin = opp/hyp, cos = adj/hyp, tan = opp/adj",
         "Special angles: 30°, 45°, 60° - know exact values",
         "Fundamental identity: sin²θ + cos²θ = 1",
@@ -118,7 +119,7 @@ const TopicDetail = () => {
         "Exponential growth/decay: N = N₀e^(kt)",
         "Natural logarithm: ln(e^x) = x, e^(ln x) = x"
       ],
-      'Trigonometry': [
+      'Advanced Trigonometry': [
         "Six trig functions: sin, cos, tan, sec, cosec, cot",
         "Addition formulae: sin(A ± B) = sin A cos B ± cos A sin B",
         "Double angle: sin 2A = 2 sin A cos A, cos 2A = cos²A - sin²A",
@@ -244,7 +245,7 @@ const TopicDetail = () => {
         "Area in polar: A = ½∫r² dθ",
         "Common curves: r = a (circle), r = a cos θ (circle through origin)"
       ],
-      'Vectors': [
+      'Vectors (FM)': [
         "Vector product: a × b = |a||b|sin θ n̂",
         "Scalar triple product: a·(b × c) gives volume of parallelepiped",
         "Plane equation: r·n = d where n is normal vector",
@@ -268,13 +269,13 @@ const TopicDetail = () => {
         "Eigenvectors are non-zero solutions to (A - λI)v = 0",
         "Diagonalization: A = PDP⁻¹ where D contains eigenvalues"
       ],
-      'Differential Equations': [
+      'Differential Equations (FM)': [
         "First order linear: dy/dx + P(x)y = Q(x)",
         "Integrating factor: μ(x) = e^∫P(x)dx",
         "Second order: ay'' + by' + cy = f(x)",
         "Characteristic equation: am² + bm + c = 0 gives complementary function"
       ],
-      'Complex Numbers': [
+      'Complex Numbers (FM)': [
         "De Moivre's theorem: (cos θ + i sin θ)ⁿ = cos nθ + i sin nθ",
         "nth roots of unity: e^(2πik/n) for k = 0, 1, ..., n-1",
         "Sum of nth roots of unity = 0 (except for n = 1)",
@@ -387,10 +388,7 @@ const TopicDetail = () => {
         
         if (topicsArray) {
           // Convert topic name to match URL format (lowercase, replace spaces with hyphens)
-          const topicToFind = topicsArray.find(t => {
-            const normalizedTopicName = t.topic.toLowerCase().replace(/\s+/g, '-');
-            return normalizedTopicName === topicId;
-          });
+          const topicToFind = topicsArray.find(t => normalizeTopicId(t.topic) === topicId);
           
           if (topicToFind) {
             setTopicData({
@@ -432,10 +430,7 @@ const TopicDetail = () => {
         
         if (topicsArray) {
           // Convert topic name to match URL format (lowercase, replace spaces with hyphens)
-          const topicToFind = topicsArray.find(t => {
-            const normalizedTopicName = t.topic.toLowerCase().replace(/\s+/g, '-');
-            return normalizedTopicName === topicId;
-          });
+          const topicToFind = topicsArray.find(t => normalizeTopicId(t.topic) === topicId);
           
           if (topicToFind) {
             setTopicData({

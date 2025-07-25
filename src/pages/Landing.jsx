@@ -113,9 +113,14 @@ const Landing = () => {
               variants={fadeInUp}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8"
             >
-              {/* Primary button - blue gradient, white text, shadow */}
-              <button className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
-                Start Learning
+              {/* Primary button - blue gradient, white text, shadow - 直接跳转到topics页面 */}
+              <button 
+                onClick={() => {
+                  window.location.href = '/topics';
+                }}
+                className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Explore Subjects
               </button>
               
               {/* Secondary button - white background blue border, scroll to features */}
@@ -498,8 +503,13 @@ const Landing = () => {
 
             {/* Main CTA button */}
             <motion.div variants={fadeInUp}>
-              <button className="inline-flex items-center px-12 py-5 text-xl font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-3xl">
-                Start Learning Now
+              <button 
+                onClick={() => {
+                  window.location.href = '/ask-ai';
+                }}
+                className="inline-flex items-center px-12 py-5 text-xl font-bold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-3xl"
+              >
+                Try AI Assistant Now
                 <svg className="ml-3 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>

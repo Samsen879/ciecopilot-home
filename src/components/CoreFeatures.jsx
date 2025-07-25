@@ -50,7 +50,7 @@ const CoreFeatures = () => {
     }
   };
 
-  // SIMPLIFIED 5-FEATURE LIST - 核心功能，易于理解
+  // SIMPLIFIED 4-FEATURE LIST - 核心功能，易于理解
   const features = [
     {
       id: 1,
@@ -64,27 +64,20 @@ const CoreFeatures = () => {
       title: "AI-Powered Q&A",
       description: "Ask any CIE question and get detailed, step-by-step answers with official marking points."
     },
+    
     {
       id: 3,
-      icon: Camera,
-      title: "Image Problem Solving",
-      description: "Upload photos of any problem—handwritten or typed. AI reads and solves them instantly."
-    },
-    {
-      id: 4,
       icon: TrendingUp,
       title: "Progress Tracking",
       description: "Track your mistakes, monitor improvement, and get personalized weekly reports."
     },
     {
-      id: 5,
+      id: 4,
       icon: Brain,
       title: "Smart Recommendations",
       description: "AI suggests exactly what to study next based on your performance and weak areas."
     }
-    // REMOVED for simplification:
-    // - "Knowledge Cards & Exam-Type Summaries" - merged into Navigation
-    // - "Personalized Feedback & Weekly Reports" - merged into Progress Tracking
+    
   ];
 
   return (
@@ -112,13 +105,13 @@ const CoreFeatures = () => {
           <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full" />
         </motion.div>
 
-        {/* Features Grid - Clean 5-card layout */}
+        {/* Features Grid - Optimized for 4 features */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-5xl mx-auto"
         >
           {features.map((feature) => {
             const IconComponent = feature.icon;
@@ -130,22 +123,22 @@ const CoreFeatures = () => {
                 whileHover={hoverVariants}
                 className="group cursor-pointer"
               >
-                <div className="bg-white rounded-xl p-6 h-full shadow-sm hover:shadow-lg border border-gray-100 transition-all duration-300 hover:border-blue-200 text-center">
+                <div className="bg-white rounded-xl p-8 h-full shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 hover:border-blue-200 text-center">
                   {/* Icon Container */}
-                  <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl mb-4 mx-auto group-hover:scale-110 transition-transform duration-300">
+                  <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
                     <IconComponent 
-                      size={24} 
+                      size={28} 
                       className="text-blue-600 group-hover:text-purple-600 transition-colors duration-300" 
                     />
                   </div>
 
                   {/* Feature Title */}
-                  <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors duration-300">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-700 transition-colors duration-300">
                     {feature.title}
                   </h3>
 
                   {/* Feature Description - Short and clear */}
-                  <p className="text-gray-600 text-sm leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                  <p className="text-gray-600 text-base leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
                     {feature.description}
                   </p>
                 </div>

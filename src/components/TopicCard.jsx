@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, Grid, List } from 'lucide-react';
+import normalizeTopicId from '../utils/normalizeTopicId';
 
 const TopicCard = ({ topic, index }) => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const TopicCard = ({ topic, index }) => {
 
   const handleStartLearning = () => {
     // Navigate to topic detail page
-    navigate(`/topic/${subject}/${paper}/${topic.id}`);
+    navigate(`/topic/${subject}/${paper}/${normalizeTopicId(topic.name)}`);
   };
 
   return (

@@ -11,6 +11,7 @@ import fp1Data from '../data/9231FP1.json';
 import fp2Data from '../data/9231FP2.json';
 import fmData from '../data/9231FM.json';
 import fsData from '../data/9231FS.json';
+import normalizeTopicId from '../utils/normalizeTopicId';
 
 const PaperPage = () => {
   const { subject, paper } = useParams();
@@ -96,7 +97,7 @@ const PaperPage = () => {
         if (topicsArray) {
           // Transform the data to match our component structure
           const transformedTopics = topicsArray.map(topicData => ({
-            id: topicData.topic.toLowerCase().replace(/\s+/g, '-'), // Convert to URL-friendly format
+            id: normalizeTopicId(topicData.topic), // 统一 id 生成
             name: topicData.topic,
             description: `Master ${topicData.topic} through ${topicData.cards?.length || 0} concept cards with detailed syllabus coverage.`,
             cardCount: topicData.cards?.length || 0,
@@ -143,7 +144,7 @@ const PaperPage = () => {
         if (topicsArray) {
           // Transform the data to match our component structure
           const transformedTopics = topicsArray.map(topicData => ({
-            id: topicData.topic.toLowerCase().replace(/\s+/g, '-'), // Convert to URL-friendly format
+            id: normalizeTopicId(topicData.topic), // 统一 id 生成
             name: topicData.topic,
             description: `Master ${topicData.topic} through ${topicData.cards?.length || 0} concept cards with detailed syllabus coverage.`,
             cardCount: topicData.cards?.length || 0,

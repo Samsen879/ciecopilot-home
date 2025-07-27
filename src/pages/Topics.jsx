@@ -6,7 +6,7 @@ import { ChevronDown, ChevronRight, BookOpen, Calculator, Zap, BarChart3, Grid, 
 import paper3Data from "../data/9709paper3.json";
 import paper4Data from "../data/9709paper4.json";
 import paper5Data from "../data/9709paper5.json";
-import paperFMData from "../data/9231FM.json";
+import paperFMData from "../data/9231FM-syllabus.json";
 
 const Topics = () => {
   const [expandedTopics, setExpandedTopics] = useState(new Set());
@@ -19,28 +19,28 @@ const Topics = () => {
       data: paper3Data["9709_Paper_3_Pure_Mathematics_3"],
       icon: Calculator,
       color: 'from-blue-500 to-indigo-600',
-      bgColor: 'from-blue-50 to-indigo-50'
+      bgColor: 'from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30'
     },
     'p4': {
       name: 'Mechanics',
       data: paper4Data["9709_Paper_4_Mechanics"],
       icon: Zap,
       color: 'from-purple-500 to-violet-600',
-      bgColor: 'from-purple-50 to-violet-50'
+      bgColor: 'from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30'
     },
     'p5': {
       name: 'Probability and Statistics 1',
       data: paper5Data["9709_Paper_5_Probability_and_Statistics_1"],
       icon: BarChart3,
       color: 'from-emerald-500 to-teal-600',
-      bgColor: 'from-emerald-50 to-teal-50'
+      bgColor: 'from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30'
     },
     'fm': {
       name: 'Further Mechanics',
       data: paperFMData["9231_Paper_3_Further_Mechanics"],  // 使用9231试卷数据
       icon: Calculator,  // 可根据需要调整图标
       color: 'from-rose-500 to-pink-600',  // 使用新的配色方案
-      bgColor: 'from-rose-50 to-pink-50'
+      bgColor: 'from-rose-50 to-pink-50 dark:from-rose-900/30 dark:to-pink-900/30'
     }
   };
 
@@ -114,7 +114,7 @@ const Topics = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-700/20 pt-20 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-6 py-12">
         
         {/* Header Section */}
@@ -124,15 +124,15 @@ const Topics = () => {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4 tracking-tight transition-colors duration-200">
             Mathematics Topics
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed transition-colors duration-200">
             Explore comprehensive topic coverage for CIE A Level Mathematics Papers 3, 4, and 5
           </p>
           
           {/* Paper Filter Tabs */}
-          <div className="inline-flex bg-white/70 backdrop-blur-sm rounded-2xl p-2 border border-white/20 shadow-sm">
+          <div className="inline-flex bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-2 border border-white/20 dark:border-gray-700/50 shadow-sm transition-colors duration-200">
             {[
               { id: 'all', label: 'All Papers' },
               { id: 'p3', label: 'Pure Math 3' },
@@ -146,7 +146,7 @@ const Topics = () => {
                 className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
                   selectedPaper === id
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
                 }`}
               >
                 {label}
@@ -172,16 +172,16 @@ const Topics = () => {
                 className="space-y-6"
               >
                 {/* Paper Header */}
-                <div className={`bg-gradient-to-r ${paper.bgColor} rounded-2xl p-8 border border-white/20 shadow-sm`}>
+                <div className={`bg-gradient-to-r ${paper.bgColor} rounded-2xl p-8 border border-white/20 dark:border-gray-700/50 shadow-sm transition-colors duration-200`}>
                   <div className="flex items-center space-x-4">
                     <div className={`flex items-center justify-center w-16 h-16 bg-gradient-to-br ${paper.color} rounded-2xl shadow-lg`}>
                       <PaperIcon size={32} className="text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 transition-colors duration-200">
                         Paper {paperId.toUpperCase()}: {paper.name}
                       </h2>
-                      <div className="flex items-center space-x-6 text-gray-600">
+                      <div className="flex items-center space-x-6 text-gray-600 dark:text-gray-300 transition-colors duration-200">
                         <div className="flex items-center space-x-2">
                           <Grid size={18} />
                           <span>{paper.data.length} topics</span>
@@ -205,23 +205,23 @@ const Topics = () => {
                     <motion.div
                       key={topicIndex}
                       variants={cardVariants}
-                      className="bg-white/70 backdrop-blur-sm rounded-2xl border border-white/20 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                      className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/50 shadow-sm hover:shadow-lg dark:hover:shadow-2xl transition-all duration-300 overflow-hidden"
                     >
                       {/* Topic Header */}
                       <button
                         onClick={() => toggleTopic(paperId, topicIndex)}
-                        className="w-full p-6 text-left hover:bg-gray-50/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+                        className="w-full p-6 text-left hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4">
-                            <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl">
-                              <BookOpen size={24} className="text-gray-600" />
+                            <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-600 dark:to-gray-700 rounded-xl transition-colors duration-200">
+                              <BookOpen size={24} className="text-gray-600 dark:text-gray-300" />
                             </div>
                             <div>
-                              <h3 className="text-xl font-bold text-gray-900 mb-1">
+                              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1 transition-colors duration-200">
                                 {topic.topic}
                               </h3>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-200">
                                 {topic.cards.length} concept {topic.cards.length === 1 ? 'card' : 'cards'}
                               </p>
                             </div>
@@ -230,7 +230,7 @@ const Topics = () => {
                             animate={{ rotate: isTopicExpanded(paperId, topicIndex) ? 90 : 0 }}
                             transition={{ duration: 0.2, ease: "easeInOut" }}
                           >
-                            <ChevronRight size={20} className="text-gray-400" />
+                            <ChevronRight size={20} className="text-gray-400 dark:text-gray-500" />
                           </motion.div>
                         </div>
                       </button>
@@ -256,10 +256,10 @@ const Topics = () => {
                                     delay: cardIndex * 0.05,
                                     ease: [0.16, 1, 0.3, 1]
                                   }}
-                                  className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-5 border border-gray-100/50 shadow-sm"
+                                  className="bg-gradient-to-r from-gray-50 to-white dark:from-gray-700 dark:to-gray-600 rounded-xl p-5 border border-gray-100/50 dark:border-gray-600/50 shadow-sm transition-colors duration-200"
                                 >
                                   {/* Card Title */}
-                                  <h4 className="font-semibold text-gray-900 mb-3 text-base">
+                                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 text-base transition-colors duration-200">
                                     {card.title}
                                   </h4>
                                   
@@ -270,10 +270,10 @@ const Topics = () => {
                                         key={detailIndex}
                                         className="flex items-start space-x-3 text-sm"
                                       >
-                                        <div className="flex items-center justify-center w-5 h-5 bg-blue-100 rounded-full mt-0.5 flex-shrink-0">
-                                          <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                                        <div className="flex items-center justify-center w-5 h-5 bg-blue-100 dark:bg-blue-800 rounded-full mt-0.5 flex-shrink-0 transition-colors duration-200">
+                                          <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full" />
                                         </div>
-                                        <p className="text-gray-700 leading-relaxed">
+                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed transition-colors duration-200">
                                           {detail}
                                         </p>
                                       </div>
@@ -281,8 +281,8 @@ const Topics = () => {
                                   </div>
                                   
                                   {/* Card Footer */}
-                                  <div className="mt-4 pt-3 border-t border-gray-100">
-                                    <span className="text-xs text-gray-500 font-medium">
+                                  <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-600 transition-colors duration-200">
+                                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium transition-colors duration-200">
                                       {card.details.length} learning objective{card.details.length !== 1 ? 's' : ''}
                                     </span>
                                   </div>
@@ -305,12 +305,12 @@ const Topics = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-center text-white shadow-lg"
+          className="mt-16 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 rounded-2xl p-8 text-center text-white shadow-lg transition-colors duration-200"
         >
           <h3 className="text-2xl font-bold mb-4">
             Complete A Level Mathematics Coverage
           </h3>
-          <p className="text-blue-100 mb-6 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-blue-100 dark:text-blue-200 mb-6 leading-relaxed max-w-2xl mx-auto transition-colors duration-200">
             Comprehensive topic breakdown covering advanced pure mathematics, mechanics, and statistics. 
             Each learning objective is carefully structured to match the CIE syllabus requirements.
           </p>
@@ -325,7 +325,7 @@ const Topics = () => {
                   <div className="text-3xl font-bold text-white mb-2">
                     {totalObjectives}
                   </div>
-                  <div className="text-blue-100 text-sm">
+                  <div className="text-blue-100 dark:text-blue-200 text-sm transition-colors duration-200">
                     {paper.name} Objectives
                   </div>
                 </div>

@@ -4,10 +4,10 @@ import { ChevronDown, ChevronRight, BookOpen, Target, Zap, BarChart3, Grid, List
 import { Link } from "react-router-dom";
 
 // Import further mathematics paper data
-import fp1Data from "../data/9231FP1.json";
-import fp2Data from "../data/9231FP2.json";
-import fmData from "../data/9231FM.json";
-import fsData from "../data/9231FS.json";
+import fp1Data from "../data/9231FP1-syllabus.json";
+import fp2Data from "../data/9231FP2-syllabus.json";
+import fmData from "../data/9231FM-syllabus.json";
+import fsData from "../data/9231FS-syllabus.json";
 
 const FurtherMathematicsTopics = () => {
   const [expandedTopics, setExpandedTopics] = useState(new Set());

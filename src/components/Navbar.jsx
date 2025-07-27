@@ -1,12 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../contexts/ThemeContext";
+import SearchBox from "./SearchBox";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   // State management for dropdowns and mobile menu
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+  
+  // Use theme context
+  const { colors, text } = useTheme();
 
   // Animation variants for smooth dropdown transitions
   const dropdownVariants = {
@@ -145,8 +151,8 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Main Navigation Bar - SaveMyExams style */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-100">
+      {/* Main Navigation Bar - Theme aware */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             
@@ -155,39 +161,15 @@ export default function Navbar() {
               <img src="/nav-icon.png" alt="CIE Copilot" className="h-8 w-8 object-contain" />
               <Link 
                 to="/" 
-                className="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                className="text-xl font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200"
               >
                 CIE Copilot
               </Link>
             </div>
 
-            {/* Center Section: Search Bar - SaveMyExams style */}
+            {/* Center Section: Search Bar - Enhanced with SearchBox component */}
             <div className="hidden md:flex flex-1 justify-center max-w-lg mx-8">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search topics, subjects..."
-                  className="w-full h-10 pl-4 pr-10 text-sm text-gray-700 placeholder-gray-400 
-                            bg-gray-50 border border-gray-200 rounded-lg 
-                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                            transition-all duration-200"
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <svg 
-                    className="h-4 w-4 text-gray-400" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
-                    />
-                  </svg>
-                </div>
-              </div>
+              <SearchBox className="w-full" />
             </div>
 
             {/* Right Section: Navigation Links - SaveMyExams layout */}
@@ -340,151 +322,213 @@ export default function Navbar() {
                   Login
                 </Link>
                 
+                {/* CTA Button */}
                 <Link 
                   to="/signup" 
-                  className="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 
-                            rounded-md transition-all duration-200 shadow-sm hover:shadow-md"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   Start for Free
                 </Link>
+                
+                {/* Theme Toggle */}
+                <ThemeToggle />
               </div>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 
-                        rounded-md transition-all duration-200"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
+            {/* Mobile menu button - Enhanced for better touch interaction */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="relative p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 
+                          rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 
+                          focus:ring-blue-500 focus:ring-offset-2 active:scale-95 select-none"
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isMobileMenuOpen}
+              >
+                <div className="w-5 h-5 relative">
+                  {/* Animated hamburger icon */}
+                  <motion.span
+                    className="absolute top-0 left-0 w-full h-0.5 bg-current rounded-full"
+                    animate={{
+                      rotate: isMobileMenuOpen ? 45 : 0,
+                      y: isMobileMenuOpen ? 8 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  />
+                  <motion.span
+                    className="absolute top-2 left-0 w-full h-0.5 bg-current rounded-full"
+                    animate={{
+                      opacity: isMobileMenuOpen ? 0 : 1,
+                      x: isMobileMenuOpen ? 20 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  />
+                  <motion.span
+                    className="absolute top-4 left-0 w-full h-0.5 bg-current rounded-full"
+                    animate={{
+                      rotate: isMobileMenuOpen ? -45 : 0,
+                      y: isMobileMenuOpen ? -8 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu - Enhanced Design and Interactions */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <div className="fixed inset-0 z-40 md:hidden">
-            {/* Backdrop */}
-            <motion.div 
+          <motion.div
+            variants={mobileMenuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="fixed inset-x-0 top-16 z-40 bg-white border-b border-gray-200 shadow-lg 
+                      max-h-[calc(100vh-4rem)] overflow-y-auto"
+          >
+            {/* Backdrop overlay for better focus */}
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/20" 
-              onClick={() => setIsMobileMenuOpen(false)} 
+              className="fixed inset-0 bg-black/10 -z-10"
+              onClick={() => setIsMobileMenuOpen(false)}
             />
-            
-            {/* Mobile Menu Panel */}
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={mobileMenuVariants}
-              className="fixed top-16 left-0 right-0 bg-white shadow-lg border-b border-gray-100 py-4"
-            >
+
+            <div className="max-w-md mx-auto">
               {/* Mobile Search Bar */}
-              <div className="px-4 mb-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Search topics, subjects..."
-                    className="w-full h-10 pl-4 pr-10 text-sm text-gray-700 placeholder-gray-400 
-                              bg-gray-50 border border-gray-200 rounded-lg 
-                              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                </div>
+              <div className="px-4 py-4 border-b border-gray-100">
+                <SearchBox className="w-full" placeholder="Search topics, subjects..." />
               </div>
 
-              {/* Mobile Navigation Links */}
-              <div className="px-4 space-y-4">
+              {/* Mobile Navigation Links - Improved spacing and touch targets */}
+              <div className="px-4 py-4 space-y-6">
                 
-                                 {/* Start Learning Section */}
-                 <div className="border-b border-gray-100 pb-4 mb-4">
-                   <div className="text-sm font-semibold text-gray-800 mb-3 px-2">Start Learning</div>
-                   {startLearningItems.map((item, index) => (
-                     <div key={index} className="ml-2 mb-4">
-                       <div className="text-sm font-bold text-gray-900 mb-3 px-2">{item.subject}</div>
-                       <div className="space-y-1 ml-2">
-                         {item.papers.map((paper, paperIndex) => (
-                           <Link
-                             key={paperIndex}
-                             to={paper.path}
-                             className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 
-                                       hover:bg-blue-50 rounded-lg transition-all duration-200
-                                       border-l-2 border-transparent hover:border-blue-300"
-                             onClick={handleMobileLinkClick}
-                           >
-                             {paper.name}
-                           </Link>
-                         ))}
-                       </div>
-                     </div>
-                   ))}
-                 </div>
+                {/* Start Learning Section */}
+                <div className="space-y-4">
+                  <div className="text-sm font-bold text-gray-900 uppercase tracking-wide px-2">
+                    Start Learning
+                  </div>
+                  {startLearningItems.map((item, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1, duration: 0.3 }}
+                      className="space-y-3"
+                    >
+                      <div className="text-base font-semibold text-gray-800 px-3 py-2 
+                                    bg-gray-50 rounded-lg border-l-4 border-blue-500">
+                        {item.subject}
+                      </div>
+                      <div className="space-y-1 ml-4">
+                        {(item.papers || item.levels || []).map((paper, paperIndex) => (
+                          <Link
+                            key={paperIndex}
+                            to={paper.path}
+                            className="flex items-center px-4 py-3 text-sm text-gray-600 
+                                      hover:text-blue-600 hover:bg-blue-50 rounded-lg 
+                                      transition-all duration-200 active:scale-98 
+                                      border-l-2 border-transparent hover:border-blue-300"
+                            onClick={handleMobileLinkClick}
+                          >
+                            <span className="w-2 h-2 bg-gray-300 rounded-full mr-3 
+                                          group-hover:bg-blue-400 transition-colors" />
+                            {paper.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
 
-                {/* Smart Function Section */}
-                <div className="border-t border-gray-100 pt-4">
-                  <div className="text-sm font-semibold text-gray-900 mb-3">Smart Function</div>
-                  <div className="space-y-1 ml-4">
+                {/* Smart Functions Section - Improved layout */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                  className="space-y-4 border-t border-gray-100 pt-6"
+                >
+                  <div className="text-sm font-bold text-gray-900 uppercase tracking-wide px-2">
+                    Smart Functions
+                  </div>
+                  <div className="grid grid-cols-1 gap-2">
                     {smartFunctionItems.map((item, index) => (
                       <Link
                         key={index}
                         to={item.path}
-                        className="block py-2 text-sm text-gray-700 hover:text-blue-600 transition-colors"
+                        className="flex items-center px-4 py-3 text-sm text-gray-600 
+                                  hover:text-blue-600 hover:bg-blue-50 rounded-lg 
+                                  transition-all duration-200 active:scale-98"
                         onClick={handleMobileLinkClick}
                       >
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 
+                                      rounded-lg flex items-center justify-center mr-3">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                        </div>
                         {item.name}
                       </Link>
                     ))}
                   </div>
-                </div>
+                </motion.div>
 
-                {/* Other Links */}
-                <div className="border-t border-gray-100 pt-4 space-y-2">
+                {/* Additional Links - Enhanced touch targets */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.3 }}
+                  className="space-y-3 border-t border-gray-100 pt-6"
+                >
                   <Link 
                     to="/pricing" 
-                    className="block py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                    className="flex items-center px-4 py-3 text-base font-medium text-gray-700 
+                              hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-200 
+                              active:scale-98"
                     onClick={handleMobileLinkClick}
                   >
+                    <div className="w-8 h-8 bg-gradient-to-br from-green-100 to-green-200 
+                                  rounded-lg flex items-center justify-center mr-3">
+                      💰
+                    </div>
                     Pricing
                   </Link>
                   
                   <Link 
                     to="/login" 
-                    className="block py-2 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+                    className="flex items-center px-4 py-3 text-base font-medium text-gray-700 
+                              hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-200 
+                              active:scale-98"
                     onClick={handleMobileLinkClick}
                   >
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-100 to-purple-200 
+                                  rounded-lg flex items-center justify-center mr-3">
+                      👤
+                    </div>
                     Login
                   </Link>
 
-                  {/* Mobile CTA Button */}
-                  <div className="pt-2">
+                  {/* Enhanced Mobile CTA Button */}
+                  <div className="pt-4 pb-2">
                     <Link 
                       to="/signup" 
-                      className="block w-full text-center py-3 text-sm font-semibold text-white 
-                                bg-blue-600 hover:bg-blue-700 rounded-md transition-all duration-200"
+                      className="flex items-center justify-center w-full py-4 text-base font-bold text-white 
+                                bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 
+                                rounded-xl transition-all duration-200 active:scale-98 shadow-lg 
+                                hover:shadow-xl"
                       onClick={handleMobileLinkClick}
                     >
+                      <span className="mr-2">🚀</span>
                       Start for Free
                     </Link>
                   </div>
-                </div>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>

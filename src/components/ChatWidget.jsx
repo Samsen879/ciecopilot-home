@@ -1,117 +1,41 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Bot } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, BookmarkPlus } from 'lucide-react';
+import { useChat } from '../hooks/useChat';
+import ErrorBookButton from './ErrorBookButton';
 
-const ChatWidget = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: 'ai',
-      content: "Hello! I'm your AI learning assistant. How can I help you with your CIE studies today?",
-      timestamp: new Date().toLocaleTimeString()
-    }
-  ]);
+const ChatWidget = ({ embedded = false }) => {
+  const [isOpen, setIsOpen] = useState(embedded); // 如果是嵌入模式，默认打开
   const [inputValue, setInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-
-  // Auto scroll to bottom when new message is added
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  
+  // Use the custom chat hook
+  const {
+    messages,
+    isTyping,
+    error,
+    messagesEndRef,
+    sendMessage,
+    clearMessages,
+    retryLastMessage
+  } = useChat();
 
   // Focus input when chat opens
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if ((isOpen || embedded) && inputRef.current) {
       setTimeout(() => {
         inputRef.current.focus();
       }, 300);
     }
-  }, [isOpen]);
-
-  // Call OpenAI API through our backend endpoint
-  const getAIResponse = async (userMessage) => {
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: "You are a specialized AI tutor for CIE (Cambridge International Education) students. You help with Mathematics, Physics, and Economics at A-Level standard. Provide clear, step-by-step explanations that follow CIE curriculum guidelines. Always identify key concepts and mark scheme points when relevant."
-            },
-            ...messages.slice(-5).map(msg => ({ // Include last 5 messages for context
-              role: msg.type === 'user' ? 'user' : 'assistant',
-              content: msg.content
-            })),
-            {
-              role: "user",
-              content: userMessage
-            }
-          ]
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to get AI response');
-      }
-
-      const data = await response.json();
-      return data.choices[0]?.message?.content || "I'm sorry, I couldn't generate a response. Please try again.";
-    } catch (error) {
-      console.error('Error calling AI API:', error);
-      return "I'm experiencing some technical difficulties. Please try again in a moment.";
-    }
-  };
+  }, [isOpen, embedded]);
 
   // Handle sending message
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 
-    const userMessage = {
-      id: Date.now(),
-      type: 'user',
-      content: inputValue,
-      timestamp: new Date().toLocaleTimeString()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    const message = inputValue;
     setInputValue('');
-    setIsTyping(true);
-
-    // Get AI response from OpenAI API
-    try {
-      const aiContent = await getAIResponse(inputValue);
-      const aiResponse = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: aiContent,
-        timestamp: new Date().toLocaleTimeString()
-      };
-      
-      setMessages(prev => [...prev, aiResponse]);
-    } catch (error) {
-      console.error('Error getting AI response:', error);
-      const errorResponse = {
-        id: Date.now() + 1,
-        type: 'ai',
-        content: "I'm sorry, I'm experiencing technical difficulties. Please try again.",
-        timestamp: new Date().toLocaleTimeString()
-      };
-      setMessages(prev => [...prev, errorResponse]);
-    } finally {
-      setIsTyping(false);
-    }
+    await sendMessage(message);
   };
 
   // Handle Enter key press
@@ -174,8 +98,130 @@ const ChatWidget = () => {
     }
   };
 
+  // Render message content with error handling
+  const renderMessage = (message) => (
+    <div
+      key={message.id}
+      className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+    >
+      <div
+        className={`max-w-[75%] rounded-2xl px-4 py-2 ${
+          message.type === 'user'
+            ? 'bg-blue-500 text-white'
+            : message.isError
+            ? 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-400 border border-red-200 dark:border-red-700'
+            : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-sm border border-gray-200 dark:border-gray-600'
+        }`}
+      >
+        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        
+        {/* Error Book Button for AI messages */}
+        {message.type === 'ai' && !message.isError && message.content.length > 50 && (
+          <div className="mt-3 flex justify-start">
+            <ErrorBookButton
+              question={messages.find((m, idx) => m.type === 'user' && idx < messages.indexOf(message))?.content || 'No question found'}
+              userAnswer="User answer not provided"
+              correctAnswer={message.content}
+              topicId="current-chat"
+              errorType="chat-interaction"
+              className="text-xs"
+            />
+          </div>
+        )}
+        
+        <div className="flex items-center justify-between mt-2">
+          <p className={`text-xs ${
+            message.type === 'user' ? 'text-blue-100' : message.isError ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'
+          }`}>
+            {message.timestamp}
+          </p>
+          {message.isError && (
+            <button
+              onClick={retryLastMessage}
+              className="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 underline ml-2"
+            >
+              Retry
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  // 如果是嵌入模式，直接返回聊天界面
+  if (embedded) {
+    return (
+      <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map(renderMessage)}
+          
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="flex justify-start">
+              <div className="bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 shadow-sm border border-gray-200 dark:border-gray-600 rounded-2xl px-4 py-2">
+                <div className="flex items-center space-x-1">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  </div>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">AI is thinking...</span>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input Area */}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors duration-200">
+          <div className="flex items-center gap-3">
+            <textarea
+              ref={inputRef}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="输入您的问题..."
+              className="flex-1 resize-none border border-gray-200 dark:border-gray-600 rounded-2xl px-4 py-3 
+                       bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                       transition-colors duration-200"
+              rows={1}
+              style={{ minHeight: '44px', maxHeight: '120px' }}
+            />
+            <button
+              onClick={handleSendMessage}
+              disabled={!inputValue.trim() || isTyping}
+              className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 dark:disabled:bg-gray-600
+                       text-white p-3 rounded-2xl transition-colors flex-shrink-0
+                       disabled:cursor-not-allowed"
+            >
+              <Send size={18} />
+            </button>
+          </div>
+          
+          {/* Clear chat button */}
+          {messages.length > 1 && (
+            <div className="mt-2 text-center">
+              <button
+                onClick={clearMessages}
+                className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+              >
+                Clear chat
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // 原有的浮动窗口模式
   return (
     <div className="fixed bottom-6 right-6 z-50">
+      {/* Chat Toggle Button */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
@@ -186,13 +232,15 @@ const ChatWidget = () => {
             whileHover="hover"
             whileTap="tap"
             onClick={() => setIsOpen(true)}
-            className="w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center group"
+            className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-full shadow-lg transition-colors"
+            aria-label="Open chat"
           >
-            <MessageCircle size={24} className="group-hover:scale-110 transition-transform duration-200" />
+            <MessageCircle size={24} />
           </motion.button>
         )}
       </AnimatePresence>
 
+      {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -200,45 +248,26 @@ const ChatWidget = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="w-80 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col"
+            className="w-80 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col transition-colors duration-200"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <Bot size={20} />
-                <span className="font-semibold">Ask AI</span>
+                <span className="font-semibold">AI Learning Assistant</span>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="hover:bg-white/20 rounded-full p-1 transition-colors duration-200"
+                className="hover:bg-white/20 p-1 rounded-lg transition-colors"
+                aria-label="Close chat"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[75%] rounded-2xl px-4 py-2 ${
-                      message.type === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-white text-gray-800 shadow-sm border border-gray-200'
-                    }`}
-                  >
-                    <p className="text-sm leading-relaxed">{message.content}</p>
-                    <p className={`text-xs mt-1 ${
-                      message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
-                      {message.timestamp}
-                    </p>
-                  </div>
-                </div>
-              ))}
+              {messages.map(renderMessage)}
               
               {/* Typing Indicator */}
               {isTyping && (
@@ -260,25 +289,25 @@ const ChatWidget = () => {
             </div>
 
             {/* Input Area */}
-            <div className="p-4 border-t border-gray-200 bg-white">
-              <div className="flex space-x-2">
-                <textarea
+            <div className="p-3 border-t border-gray-200 bg-white">
+              <div className="flex items-center gap-2">
+                <input
                   ref={inputRef}
+                  type="text"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask about Math, Physics, or Economics..."
-                  className="flex-1 resize-none border border-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent max-h-20"
-                  rows="1"
-                  style={{
-                    minHeight: '36px',
-                    height: Math.min(20 + inputValue.split('\n').length * 20, 80) + 'px'
-                  }}
+                  placeholder="Type your question..."
+                  className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm 
+                           bg-white text-gray-900
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                           transition-colors duration-200"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isTyping}
-                  className="bg-blue-500 text-white rounded-xl px-3 py-2 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center min-w-[40px]"
+                  className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 
+                           text-white p-2 rounded-xl transition-colors disabled:cursor-not-allowed"
                 >
                   <Send size={16} />
                 </button>

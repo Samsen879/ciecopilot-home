@@ -2,14 +2,107 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=7" />
-    <link rel="shortcut icon" href="/favicon.ico?v=7" />
+    <!-- Favicon with strong cache busting -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?t=20250126195940" />
+    <link rel="icon" type="image/png" href="/nav-icon.png?t=20250126195940" />
+    <link rel="shortcut icon" href="/favicon.ico?t=20250126195940" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CIE Copilot</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="AI-powered learning platform for Cambridge International A-Level students" />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CIE Copilot" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    
+    <!-- Apple Touch Icons with strong cache busting -->
+    <link rel="apple-touch-icon" href="/nav-icon.png?t=20250126195940" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/nav-icon.png?t=20250126195940" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/nav-icon.png?t=20250126195940" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/nav-icon.png?t=20250126195940" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <title>CIE Copilot - AI Learning Assistant</title>
   </head>
-  
   <body>
     <div id="root"></div>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      // Register Service Worker for PWA functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+          try {
+            const registration = await navigator.serviceWorker.register('/sw.js', {
+              scope: '/'
+            });
+            
+            console.log('SW registered successfully:', registration.scope);
+            
+            // Listen for updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed') {
+                  if (navigator.serviceWorker.controller) {
+                    // Show update available notification
+                    console.log('New version available! Please refresh.');
+                    
+                    // Optional: Show user-friendly update prompt
+                    if (confirm('应用有新版本可用，是否立即更新？')) {
+                      window.location.reload();
+                    }
+                  } else {
+                    console.log('Content is cached for offline use.');
+                  }
+                }
+              });
+            });
+            
+          } catch (error) {
+            console.error('SW registration failed:', error);
+          }
+        });
+      }
+      
+      // PWA Install Prompt
+      let deferredPrompt;
+      
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+        
+        // Show your own install prompt (optional)
+        console.log('PWA install prompt available');
+        
+        // Optionally, send analytics event
+        // analytics.track('PWA Install Prompt Shown');
+      });
+      
+      // Function to trigger PWA install (can be called from UI)
+      window.installPWA = async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`User response to install prompt: ${outcome}`);
+          deferredPrompt = null;
+        }
+      };
+      
+      // Track PWA usage
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('PWA was installed successfully');
+        // analytics.track('PWA Installed');
+      });
+    </script>
+    
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

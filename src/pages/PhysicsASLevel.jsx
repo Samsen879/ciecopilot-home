@@ -148,7 +148,10 @@ const PhysicsASLevel = () => {
                 <TopicCard
                   key={topic.id}
                   topic={topic}
-                  index={index}
+                  subject="9702"
+                  paper="as"
+                  difficulty="Medium"
+                  estimatedTime="30 min"
                 />
               ))}
             </motion.div>

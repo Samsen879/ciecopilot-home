@@ -7,10 +7,10 @@ import paper1Data from '../data/9709paper1.json';
 import paper3Data from '../data/9709paper3.json';
 import paper4Data from '../data/9709paper4.json';
 import paper5Data from '../data/9709paper5.json';
-import fp1Data from '../data/9231FP1.json';
-import fp2Data from '../data/9231FP2.json';
-import fmData from '../data/9231FM.json';
-import fsData from '../data/9231FS.json';
+import fp1Data from '../data/9231FP1-syllabus.json';
+import fp2Data from '../data/9231FP2-syllabus.json';
+import fmData from '../data/9231FM-syllabus.json';
+import fsData from '../data/9231FS-syllabus.json';
 import normalizeTopicId from '../utils/normalizeTopicId';
 
 const PaperPage = () => {
@@ -326,7 +326,10 @@ const PaperPage = () => {
                 <TopicCard
                   key={topic.id}
                   topic={topic}
-                  index={index}
+                  subject={subject}
+                  paper={paper}
+                  difficulty="Medium"
+                  estimatedTime="30 min"
                 />
               ))}
             </motion.div>

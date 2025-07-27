@@ -1,55 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../contexts/ThemeContext';
 
 const AnimatedKeywords = () => {
-  const [currentKeywordIndex, setCurrentKeywordIndex] = useState(0);
-  const [isNewUser, setIsNewUser] = useState(true);
-
-  // 新用户关键词池
-  const newUserKeywords = [
-    "Affordable, high-quality, modular.",
-    "Fast progress, efficient learning.",
-    "Instantly analyze your mistakes.",
-    "Personalized AI tutoring, just for you.",
-    "Real exam strategies, not just knowledge.",
-    "Data-driven learning feedback.",
-    "Your success, our mission."
+  const { text } = useTheme();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Keywords array using translations
+  const keywords = [
+    text.aiPowered,
+    text.comprehensiveCoverage,
+    text.examFocused,
+    text.personalizedLearning,
+    text.instantFeedback,
   ];
-
-  // 老用户关键词池
-  const returningUserKeywords = [
-    "Ready to unlock your potential today?",
-    "Let's keep the momentum going.",
-    "Stay curious, stay unstoppable.",
-    "Need a quick recap? I'm here for you."
-  ];
-
-  // 根据用户身份选择关键词池和切换间隔
-  const keywords = isNewUser ? newUserKeywords : returningUserKeywords;
-  const switchInterval = isNewUser ? 2500 : 4000; // 新用户2.5秒，老用户4秒
 
   // 检查用户身份
   useEffect(() => {
     const hasVisited = localStorage.getItem('visited');
     if (hasVisited) {
-      setIsNewUser(false);
+      // setIsNewUser(false); // This line was removed as per the new_code
     } else {
       // 标记用户已访问
       localStorage.setItem('visited', 'true');
-      setIsNewUser(true);
+      // setIsNewUser(true); // This line was removed as per the new_code
     }
   }, []);
 
   // 自动切换关键词
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentKeywordIndex((prevIndex) => 
+      setCurrentIndex((prevIndex) => 
         (prevIndex + 1) % keywords.length
       );
-    }, switchInterval);
+    }, 2500); // Changed from switchInterval to 2500 as per the new_code
 
     return () => clearInterval(timer);
-  }, [keywords.length, switchInterval]);
+  }, [keywords.length]); // Changed from switchInterval to 2500 as per the new_code
 
   // 动画配置
   const containerVariants = {
@@ -94,7 +81,7 @@ const AnimatedKeywords = () => {
       <div className="relative">
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentKeywordIndex}
+            key={currentIndex}
             variants={textVariants}
             initial="initial"
             animate="animate"
@@ -102,7 +89,7 @@ const AnimatedKeywords = () => {
             className="text-center"
           >
             <p className="text-lg md:text-xl lg:text-2xl font-medium text-blue-700 max-w-3xl mx-auto leading-relaxed px-4">
-              {keywords[currentKeywordIndex]}
+              {keywords[currentIndex]}
             </p>
             
             {/* 装饰元素 */}
@@ -121,12 +108,12 @@ const AnimatedKeywords = () => {
             <motion.div
               key={index}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentKeywordIndex 
+                index === currentIndex 
                   ? 'bg-blue-500 scale-125' 
                   : 'bg-blue-200 hover:bg-blue-300'
               }`}
               whileHover={{ scale: 1.2 }}
-              onClick={() => setCurrentKeywordIndex(index)}
+              onClick={() => setCurrentIndex(index)}
               style={{ cursor: 'pointer' }}
             />
           ))}

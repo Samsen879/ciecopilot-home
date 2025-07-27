@@ -19,10 +19,10 @@ import paper1Data from '../data/9709paper1.json';
 import paper3Data from '../data/9709paper3.json';
 import paper4Data from '../data/9709paper4.json';
 import paper5Data from '../data/9709paper5.json';
-import fp1Data from '../data/9231FP1.json';
-import fp2Data from '../data/9231FP2.json';
-import fmData from '../data/9231FM.json';
-import fsData from '../data/9231FS.json';
+import fp1Data from '../data/9231FP1-syllabus.json';
+import fp2Data from '../data/9231FP2-syllabus.json';
+import fmData from '../data/9231FM-syllabus.json';
+import fsData from '../data/9231FS-syllabus.json';
 import normalizeTopicId from '../utils/normalizeTopicId';
 
 const TopicDetail = () => {
@@ -510,19 +510,19 @@ const TopicDetail = () => {
   // Loading skeleton
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
-        <div className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 border-b border-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-700/20 transition-colors duration-200">
+        <div className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 transition-colors duration-200">
           <div className="max-w-5xl mx-auto px-6 py-4">
-            <div className="h-6 bg-gray-200 rounded-lg w-32 animate-pulse"></div>
+            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-lg w-32 animate-pulse"></div>
           </div>
         </div>
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <div className="space-y-8">
-            <div className="h-16 bg-gray-200 rounded-2xl animate-pulse"></div>
-            <div className="h-24 bg-gray-200 rounded-2xl animate-pulse"></div>
+                      <div className="space-y-8">
+            <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse"></div>
+            <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-40 bg-gray-200 rounded-xl animate-pulse"></div>
+                <div key={i} className="h-40 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse"></div>
               ))}
             </div>
           </div>
@@ -538,14 +538,14 @@ const TopicDetail = () => {
         animate="animate"
         exit="exit"
         variants={pageVariants}
-        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 flex items-center justify-center"
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-700/20 flex items-center justify-center transition-colors duration-200"
       >
         <div className="text-center">
-          <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6 mx-auto">
-            <BookOpen size={40} className="text-red-500" />
+          <div className="w-20 h-20 bg-red-50 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-6 mx-auto transition-colors duration-200">
+            <BookOpen size={40} className="text-red-500 dark:text-red-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Topic Not Found</h1>
-          <p className="text-gray-600 mb-8">The requested topic could not be found.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 transition-colors duration-200">Topic Not Found</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 transition-colors duration-200">The requested topic could not be found.</p>
           <button
             onClick={handleBack}
             className="inline-flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-300"
@@ -565,12 +565,12 @@ const TopicDetail = () => {
         animate="animate"
         exit="exit"
         variants={pageVariants}
-        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20"
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-700/20 transition-colors duration-200"
       >
         {/* Sticky Header */}
         <motion.div 
           variants={itemVariants}
-          className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 border-b border-gray-100/50"
+          className="sticky top-0 z-40 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border-b border-gray-100/50 dark:border-gray-800/50 transition-colors duration-200"
         >
           <div className="max-w-5xl mx-auto px-6 py-4">
             <button
@@ -595,25 +595,25 @@ const TopicDetail = () => {
                   <BookOpen size={32} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2 tracking-tight">
+                  <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-2 tracking-tight transition-colors duration-200">
                     {topicData.name}
                   </h1>
-                  <p className="text-lg text-blue-600 font-medium">
+                  <p className="text-lg text-blue-600 dark:text-blue-400 font-medium transition-colors duration-200">
                     {topicData.subjectName} ({topicData.subjectCode}) · {topicData.paperName}
                   </p>
                 </div>
               </div>
 
               {/* Topic Description */}
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-white/20 shadow-sm">
-                <p className="text-lg text-gray-700 leading-relaxed">
+              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-8 border border-white/20 dark:border-gray-700/50 shadow-sm transition-colors duration-200">
+                <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed transition-colors duration-200">
                   {topicData.description}
                 </p>
               </div>
             </motion.div>
 
             {/* Navigation Tabs */}
-            <motion.div variants={itemVariants} className="bg-white/70 backdrop-blur-sm rounded-2xl p-2 border border-white/20">
+            <motion.div variants={itemVariants} className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-2 border border-white/20 dark:border-gray-700/50 transition-colors duration-200">
               <div className="flex space-x-1">
                 {[
                   { id: 'cards', label: 'Concept Cards', icon: Grid },
@@ -626,7 +626,7 @@ const TopicDetail = () => {
                     className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
                       activeSection === id
                         ? 'bg-blue-600 text-white shadow-md'
-                        : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
                     }`}
                   >
                     <Icon size={18} />
@@ -648,7 +648,7 @@ const TopicDetail = () => {
                   variants={staggerVariants}
                   className="space-y-6"
                 >
-                  <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 mb-6">
+                  <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 transition-colors duration-200">
                     Concept Cards ({topicData.cards?.length || 0} cards)
                   </motion.h2>
                   
@@ -657,7 +657,7 @@ const TopicDetail = () => {
                       <motion.div
                         key={cardIndex}
                         variants={itemVariants}
-                        className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:shadow-lg transition-all duration-300 group"
+                        className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 border border-white/20 dark:border-gray-700/50 hover:shadow-lg dark:hover:shadow-2xl transition-all duration-300 group"
                       >
                         {/* Card Header */}
                         <div className="flex items-start space-x-4 mb-4">
@@ -665,7 +665,7 @@ const TopicDetail = () => {
                             <List size={20} className="text-white" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-indigo-700 transition-colors duration-200">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors duration-200">
                               {card.title}
                             </h3>
                           </div>
@@ -678,7 +678,7 @@ const TopicDetail = () => {
                               <div className="flex items-center justify-center w-6 h-6 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg shadow-sm mt-0.5 flex-shrink-0">
                                 <CheckCircle size={14} className="text-white" />
                               </div>
-                              <p className="text-gray-700 leading-relaxed text-sm">
+                              <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm transition-colors duration-200">
                                 {detail}
                               </p>
                             </div>
@@ -686,8 +686,8 @@ const TopicDetail = () => {
                         </div>
 
                         {/* Card Footer */}
-                        <div className="mt-4 pt-4 border-t border-gray-200/50">
-                          <span className="text-xs text-gray-500 font-medium">
+                        <div className="mt-4 pt-4 border-t border-gray-200/50 dark:border-gray-600/50 transition-colors duration-200">
+                          <span className="text-xs text-gray-500 dark:text-gray-400 font-medium transition-colors duration-200">
                             {card.details?.length || 0} syllabus points
                           </span>
                         </div>

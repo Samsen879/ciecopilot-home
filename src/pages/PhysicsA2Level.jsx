@@ -148,7 +148,10 @@ const PhysicsA2Level = () => {
                 <TopicCard
                   key={topic.id}
                   topic={topic}
-                  index={index}
+                  subject="9702"
+                  paper="a2"
+                  difficulty="Medium"
+                  estimatedTime="30 min"
                 />
               ))}
             </motion.div>

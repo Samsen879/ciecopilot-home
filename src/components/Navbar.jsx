@@ -2,17 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
+import { useAuth } from "../contexts/AuthContext";
 import SearchBox from "./SearchBox";
 import ThemeToggle from "./ThemeToggle";
+import AuthModal from "./Auth/AuthModal";
 
 export default function Navbar() {
   // State management for dropdowns and mobile menu
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  
-  // Use theme context
-  const { colors, text } = useTheme();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { theme } = useTheme();
+  const { user, signOut } = useAuth();
+  const navRef = useRef(null);
 
   // Animation variants for smooth dropdown transitions
   const dropdownVariants = {
@@ -76,7 +78,7 @@ export default function Navbar() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (navRef.current && !navRef.current.contains(event.target)) {
         setActiveDropdown(null);
       }
     };
@@ -135,6 +137,27 @@ export default function Navbar() {
     setActiveDropdown(null);
   };
 
+  // Handle auth modal
+  const openAuthModal = () => {
+    setIsAuthModalOpen(true);
+    setIsMobileMenuOpen(false);
+    setActiveDropdown(null);
+  };
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+  };
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      setActiveDropdown(null);
+    } catch (error) {
+      console.error('登出失败:', error);
+    }
+  };
+
   return (
     <>
       {/* Dropdown Overlay - subtle background when dropdowns are open */}
@@ -173,7 +196,7 @@ export default function Navbar() {
             </div>
 
             {/* Right Section: Navigation Links - SaveMyExams layout */}
-            <div className="hidden md:flex items-center space-x-1" ref={dropdownRef}>
+            <div className="hidden md:flex items-center space-x-1" ref={navRef}>
               
               {/* Start Learning Dropdown */}
               <div className="relative">
@@ -314,21 +337,63 @@ export default function Navbar() {
 
               {/* Authentication Links */}
               <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-gray-200">
-                <Link 
-                  to="/login" 
-                  className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 
-                            hover:bg-gray-50 rounded-md transition-all duration-200"
-                >
-                  Login
-                </Link>
-                
-                {/* CTA Button */}
-                <Link 
-                  to="/signup" 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
-                >
-                  Start for Free
-                </Link>
+                {user ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => toggleDropdown('userMenu')}
+                      className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-200"
+                    >
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                        {user.email?.charAt(0).toUpperCase()}
+                      </div>
+                      <span>{user.email}</span>
+                      <svg className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === 'userMenu' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    <AnimatePresence>
+                      {activeDropdown === 'userMenu' && (
+                        <motion.div
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          variants={dropdownVariants}
+                          className="absolute top-full right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
+                        >
+                          <Link
+                            to="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            个人资料
+                          </Link>
+                          <Link
+                            to="/settings"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            设置
+                          </Link>
+                          <hr className="my-1 border-gray-100" />
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 transition-all duration-200"
+                          >
+                            登出
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={openAuthModal}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    登录 / 注册
+                  </button>
+                )}
                 
                 {/* Theme Toggle */}
                 <ThemeToggle />
@@ -497,33 +562,55 @@ export default function Navbar() {
                     Pricing
                   </Link>
                   
-                  <Link 
-                    to="/login" 
-                    className="flex items-center px-4 py-3 text-base font-medium text-gray-700 
-                              hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-200 
-                              active:scale-98"
-                    onClick={handleMobileLinkClick}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-100 to-purple-200 
-                                  rounded-lg flex items-center justify-center mr-3">
-                      👤
-                    </div>
-                    Login
-                  </Link>
-
-                  {/* Enhanced Mobile CTA Button */}
+                  {/* Combined Mobile Login/Signup Button */}
                   <div className="pt-4 pb-2">
-                    <Link 
-                      to="/signup" 
-                      className="flex items-center justify-center w-full py-4 text-base font-bold text-white 
-                                bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 
-                                rounded-xl transition-all duration-200 active:scale-98 shadow-lg 
-                                hover:shadow-xl"
-                      onClick={handleMobileLinkClick}
-                    >
-                      <span className="mr-2">🚀</span>
-                      Start for Free
-                    </Link>
+                    {user ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center px-4 py-3 bg-blue-50 rounded-lg">
+                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold mr-3">
+                            {user.email?.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{user.email}</div>
+                            <div className="text-xs text-gray-500">已登录</div>
+                          </div>
+                        </div>
+                        <Link
+                          to="/profile"
+                          className="flex items-center px-4 py-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                          onClick={handleMobileLinkClick}
+                        >
+                          个人资料
+                        </Link>
+                        <Link
+                          to="/settings"
+                          className="flex items-center px-4 py-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                          onClick={handleMobileLinkClick}
+                        >
+                          设置
+                        </Link>
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            handleMobileLinkClick();
+                          }}
+                          className="flex items-center justify-center w-full py-3 text-base font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                        >
+                          登出
+                        </button>
+                      </div>
+                    ) : (
+                      <button 
+                        onClick={openAuthModal}
+                        className="flex items-center justify-center w-full py-4 text-base font-bold text-white 
+                                  bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 
+                                  rounded-xl transition-all duration-200 active:scale-98 shadow-lg 
+                                  hover:shadow-xl"
+                      >
+                        <span className="mr-2">👤</span>
+                        登录 / 注册
+                      </button>
+                    )}
                   </div>
                 </motion.div>
               </div>
@@ -531,6 +618,12 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={closeAuthModal} 
+      />
     </>
   );
 }

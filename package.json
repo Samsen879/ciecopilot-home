@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "migrate": "node scripts/migrate-data.js",
+    "db:setup": "echo 'Please follow SUPABASE_SETUP.md for database setup'"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.53.0",
     "framer-motion": "^12.18.1",
     "lucide-react": "^0.516.0",
     "react": "^18.2.0",

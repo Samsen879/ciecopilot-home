@@ -91,13 +91,13 @@ const Topics = () => {
   const toggleTopic = (paperId, topicIndex) => {
     const topicKey = `${paperId}-${topicIndex}`;
     const newExpanded = new Set(expandedTopics);
-    
+
     if (newExpanded.has(topicKey)) {
       newExpanded.delete(topicKey);
     } else {
       newExpanded.add(topicKey);
     }
-    
+
     setExpandedTopics(newExpanded);
   };
 
@@ -116,7 +116,7 @@ const Topics = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-700/20 pt-20 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        
+
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -130,7 +130,7 @@ const Topics = () => {
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed transition-colors duration-200">
             Explore comprehensive topic coverage for CIE A Level Mathematics Papers 3, 4, and 5
           </p>
-          
+
           {/* Paper Filter Tabs */}
           <div className="inline-flex bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl p-2 border border-white/20 dark:border-gray-700/50 shadow-sm transition-colors duration-200">
             {[
@@ -143,11 +143,10 @@ const Topics = () => {
               <button
                 key={id}
                 onClick={() => setSelectedPaper(id)}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
-                  selectedPaper === id
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
-                }`}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${selectedPaper === id
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
+                  }`}
               >
                 {label}
               </button>
@@ -164,7 +163,7 @@ const Topics = () => {
         >
           {getFilteredPapers().map(([paperId, paper]) => {
             const PaperIcon = paper.icon;
-            
+
             return (
               <motion.div
                 key={paperId}
@@ -189,7 +188,7 @@ const Topics = () => {
                         <div className="flex items-center space-x-2">
                           <List size={18} />
                           <span>
-                            {paper.data.reduce((total, topic) => 
+                            {paper.data.reduce((total, topic) =>
                               total + topic.cards.reduce((cardTotal, card) => cardTotal + card.details.length, 0), 0
                             )} learning objectives
                           </span>
@@ -251,8 +250,8 @@ const Topics = () => {
                                   key={cardIndex}
                                   initial={{ opacity: 0, x: -20 }}
                                   animate={{ opacity: 1, x: 0 }}
-                                  transition={{ 
-                                    duration: 0.3, 
+                                  transition={{
+                                    duration: 0.3,
                                     delay: cardIndex * 0.05,
                                     ease: [0.16, 1, 0.3, 1]
                                   }}
@@ -262,11 +261,11 @@ const Topics = () => {
                                   <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 text-base transition-colors duration-200">
                                     {card.title}
                                   </h4>
-                                  
+
                                   {/* Card Details */}
                                   <div className="space-y-2">
                                     {card.details.map((detail, detailIndex) => (
-                                      <div 
+                                      <div
                                         key={detailIndex}
                                         className="flex items-start space-x-3 text-sm"
                                       >
@@ -279,7 +278,7 @@ const Topics = () => {
                                       </div>
                                     ))}
                                   </div>
-                                  
+
                                   {/* Card Footer */}
                                   <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-600 transition-colors duration-200">
                                     <span className="text-xs text-gray-500 dark:text-gray-400 font-medium transition-colors duration-200">
@@ -311,15 +310,15 @@ const Topics = () => {
             Complete A Level Mathematics Coverage
           </h3>
           <p className="text-blue-100 dark:text-blue-200 mb-6 leading-relaxed max-w-2xl mx-auto transition-colors duration-200">
-            Comprehensive topic breakdown covering advanced pure mathematics, mechanics, and statistics. 
+            Comprehensive topic breakdown covering advanced pure mathematics, mechanics, and statistics.
             Each learning objective is carefully structured to match the CIE syllabus requirements.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
             {Object.entries(paperData).map(([id, paper]) => {
-              const totalObjectives = paper.data.reduce((total, topic) => 
+              const totalObjectives = paper.data.reduce((total, topic) =>
                 total + topic.cards.reduce((cardTotal, card) => cardTotal + card.details.length, 0), 0
               );
-              
+
               return (
                 <div key={id} className="text-center">
                   <div className="text-3xl font-bold text-white mb-2">

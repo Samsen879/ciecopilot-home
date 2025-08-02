@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Landing from "./pages/Landing";
@@ -39,55 +40,57 @@ const LoadingSpinner = () => (
 function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
-          <Navbar />
-          <div className="flex-1">
-            <Suspense fallback={<LoadingSpinner />}>
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                
-                {/* Subject Selection Page */}
-                <Route path="/topics" element={<SubjectSelection />} />
-                
-                {/* Paper Selection Pages */}
-                <Route path="/mathematics-papers" element={<MathematicsPapers />} />
-                <Route path="/further-mathematics-papers" element={<FurtherMathematicsPapers />} />
-                <Route path="/physics-papers" element={<PhysicsPapers />} />
-                
-                {/* Subject-specific Topic Pages */}
-                <Route path="/mathematics-topics" element={<MathematicsTopics />} />
-                <Route path="/topics/mathematics" element={<MathematicsTopics />} />
-                <Route path="/topics/further-mathematics" element={<FurtherMathematicsTopics />} />
-                <Route path="/topics/physics" element={<PhysicsTopics />} />
-                
-                {/* Legacy Physics routes for backward compatibility */}
-                <Route path="/physics/as-level" element={<PhysicsASLevel />} />
-                <Route path="/physics/a2-level" element={<PhysicsA2Level />} />
-                
-                {/* AI Chat Page */}
-                <Route path="/ask-ai" element={
-                  <div className="container mx-auto p-4">
-                    <AskAI />
-                  </div>
-                } />
-                
-                {/* Dynamic Pages */}
-                <Route path="/paper/:subject/:paper" element={<PaperPage />} />
-                <Route path="/topic/:subject/:paper/:topicId" element={<TopicDetail />} />
-                
-                {/* 404 Page */}
-                <Route path="*" element={
-                  <div className="container mx-auto p-4">
-                    <NotFound />
-                  </div>
-                } />
-              </Routes>
-            </Suspense>
+      <AuthProvider>
+        <BrowserRouter>
+          <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
+            <Navbar />
+            <div className="flex-1">
+              <Suspense fallback={<LoadingSpinner />}>
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  
+                  {/* Subject Selection Page */}
+                  <Route path="/topics" element={<SubjectSelection />} />
+                  
+                  {/* Paper Selection Pages */}
+                  <Route path="/mathematics-papers" element={<MathematicsPapers />} />
+                  <Route path="/further-mathematics-papers" element={<FurtherMathematicsPapers />} />
+                  <Route path="/physics-papers" element={<PhysicsPapers />} />
+                  
+                  {/* Subject-specific Topic Pages */}
+                  <Route path="/mathematics-topics" element={<MathematicsTopics />} />
+                  <Route path="/topics/mathematics" element={<MathematicsTopics />} />
+                  <Route path="/topics/further-mathematics" element={<FurtherMathematicsTopics />} />
+                  <Route path="/topics/physics" element={<PhysicsTopics />} />
+                  
+                  {/* Legacy Physics routes for backward compatibility */}
+                  <Route path="/physics/as-level" element={<PhysicsASLevel />} />
+                  <Route path="/physics/a2-level" element={<PhysicsA2Level />} />
+                  
+                  {/* AI Chat Page */}
+                  <Route path="/ask-ai" element={
+                    <div className="container mx-auto p-4">
+                      <AskAI />
+                    </div>
+                  } />
+                  
+                  {/* Dynamic Pages */}
+                  <Route path="/paper/:subject/:paper" element={<PaperPage />} />
+                  <Route path="/topic/:subject/:paper/:topicId" element={<TopicDetail />} />
+                  
+                  {/* 404 Page */}
+                  <Route path="*" element={
+                    <div className="container mx-auto p-4">
+                      <NotFound />
+                    </div>
+                  } />
+                </Routes>
+              </Suspense>
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
-      </BrowserRouter>
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, BookOpen, FileText, Zap, Calculator, BarChart3, Clock } from 'lucide-react';
@@ -27,186 +27,204 @@ const SearchBox = ({ className = '', placeholder = "Search topics, subjects..." 
   // Search history hook
   const { addToHistory } = useSearchHistory();
 
-  // Memoized search index for performance
+  // 安全的数据获取函数
+  const safeGetData = useCallback((dataObj, key) => {
+    try {
+      return dataObj && typeof dataObj === 'object' ? (dataObj[key] || []) : [];
+    } catch (e) {
+      console.warn('Error accessing data:', e);
+      return [];
+    }
+  }, []);
+
+  // 创建搜索索引 - 修复依赖问题
   const searchIndex = useMemo(() => {
     const index = [];
     
-    // Mathematics 9709 Papers
-    const mathPapers = [
-      { code: 'p1', name: 'Pure Mathematics 1', data: paper1Data['9709_Paper_1_Pure_Mathematics_1'] || [] },
-      { code: 'p3', name: 'Pure Mathematics 3', data: paper3Data['9709_Paper_3_Pure_Mathematics_3'] || [] },
-      { code: 'p4', name: 'Mechanics', data: paper4Data['9709_Paper_4_Mechanics'] || [] },
-      { code: 'p5', name: 'Statistics 1', data: paper5Data['9709_Paper_5_Probability_and_Statistics_1'] || [] }
-    ];
+    try {
+      // Mathematics 9709 Papers
+      const mathPapers = [
+        { code: 'p1', name: 'Pure Mathematics 1', data: safeGetData(paper1Data, '9709_Paper_1_Pure_Mathematics_1') },
+        { code: 'p3', name: 'Pure Mathematics 3', data: safeGetData(paper3Data, '9709_Paper_3_Pure_Mathematics_3') },
+        { code: 'p4', name: 'Mechanics', data: safeGetData(paper4Data, '9709_Paper_4_Mechanics') },
+        { code: 'p5', name: 'Statistics 1', data: safeGetData(paper5Data, '9709_Paper_5_Probability_and_Statistics_1') }
+      ];
 
-    mathPapers.forEach(paper => {
-      if (Array.isArray(paper.data)) {
-        paper.data.forEach(topic => {
-          index.push({
-            id: `math-${paper.code}-${topic.topic?.toLowerCase().replace(/\s+/g, '-')}`,
-            title: topic.topic || 'Unknown Topic',
-            description: topic.cards?.[0]?.details?.[0] || 'Mathematics topic',
-            subject: 'Mathematics',
-            subjectCode: '9709',
-            paper: paper.name,
-            paperCode: paper.code,
-            path: `/topic/9709/${paper.code}/${topic.topic?.toLowerCase().replace(/\s+/g, '-')}`,
-            type: 'topic',
-            icon: Calculator,
-            searchableText: `${topic.topic} ${paper.name} mathematics ${topic.cards?.map(card => card.details?.join(' ')).join(' ')}`.toLowerCase()
+      mathPapers.forEach(paper => {
+        if (Array.isArray(paper.data)) {
+          paper.data.forEach(topic => {
+            if (topic && topic.topic) {
+              index.push({
+                id: `math-${paper.code}-${topic.topic.toLowerCase().replace(/\s+/g, '-')}`,
+                title: topic.topic,
+                description: topic.cards?.[0]?.details?.[0] || 'Mathematics topic',
+                subject: 'Mathematics',
+                subjectCode: '9709',
+                paper: paper.name,
+                path: `/topic/mathematics/${paper.code}/${topic.topic.toLowerCase().replace(/\s+/g, '-')}`,
+                type: 'topic',
+                icon: Calculator,
+                searchableText: `${topic.topic} ${paper.name} mathematics 9709`.toLowerCase()
+              });
+            }
           });
-        });
-      }
-    });
-
-    // Further Mathematics 9231 Papers
-    const furtherMathPapers = [
-      { code: 'fp1', name: 'Further Pure 1', data: fp1Data['9231_Paper_1_Further_Pure_Mathematics_1'] || [] },
-      { code: 'fp2', name: 'Further Pure 2', data: fp2Data['9231_Paper_2_Further_Pure_Mathematics_2'] || [] },
-      { code: 'fm', name: 'Further Mechanics', data: fmData['9231_Paper_3_Further_Mechanics'] || [] },
-      { code: 'fs', name: 'Further Statistics', data: fsData['9231_Paper_4_Further_Statistics'] || [] }
-    ];
-
-    furtherMathPapers.forEach(paper => {
-      if (Array.isArray(paper.data)) {
-        paper.data.forEach(topic => {
-          index.push({
-            id: `fmath-${paper.code}-${topic.topic?.toLowerCase().replace(/\s+/g, '-')}`,
-            title: topic.topic || 'Unknown Topic',
-            description: topic.cards?.[0]?.details?.[0] || 'Further Mathematics topic',
-            subject: 'Further Mathematics',
-            subjectCode: '9231',
-            paper: paper.name,
-            paperCode: paper.code,
-            path: `/topic/9231/${paper.code}/${topic.topic?.toLowerCase().replace(/\s+/g, '-')}`,
-            type: 'topic',
-            icon: Zap,
-            searchableText: `${topic.topic} ${paper.name} further mathematics ${topic.cards?.map(card => card.details?.join(' ')).join(' ')}`.toLowerCase()
-          });
-        });
-      }
-    });
-
-    // Physics 9702
-    if (physicsData.Physics_9702) {
-      const { AS_Level = [], A2_Level = [] } = physicsData.Physics_9702;
-      
-      [...AS_Level, ...A2_Level].forEach((topic, idx) => {
-        const level = AS_Level.includes(topic) ? 'AS' : 'A2';
-        index.push({
-          id: `physics-${level.toLowerCase()}-${topic.toLowerCase().replace(/\s+/g, '-')}`,
-          title: topic,
-          description: `Physics ${level} Level topic`,
-          subject: 'Physics',
-          subjectCode: '9702',
-          paper: `${level} Level`,
-          paperCode: level.toLowerCase(),
-          path: `/physics/${level.toLowerCase()}-level`,
-          type: 'topic',
-          icon: BookOpen,
-          searchableText: `${topic} physics ${level} level`.toLowerCase()
-        });
+        }
       });
-    }
 
-    // Add quick access items
-    const quickAccess = [
-      {
-        id: 'ask-ai',
-        title: 'Ask AI Assistant',
-        description: 'Get instant help with any CIE question',
-        subject: 'AI Tools',
-        paper: 'Chat',
-        path: '/ask-ai',
-        type: 'tool',
-        icon: Zap,
-        searchableText: 'ai assistant chat help question answer tutor'.toLowerCase()
-      },
-      {
-        id: 'math-papers',
-        title: 'Mathematics Papers',
-        description: 'Browse all Mathematics 9709 papers',
-        subject: 'Mathematics',
-        paper: 'All Papers',
-        path: '/mathematics-papers',
-        type: 'subject',
-        icon: Calculator,
-        searchableText: 'mathematics papers 9709 pure mechanics statistics'.toLowerCase()
-      },
-      {
-        id: 'fmath-papers',
-        title: 'Further Mathematics Papers',
-        description: 'Browse all Further Mathematics 9231 papers',
-        subject: 'Further Mathematics', 
-        paper: 'All Papers',
-        path: '/further-mathematics-papers',
-        type: 'subject',
-        icon: BarChart3,
-        searchableText: 'further mathematics papers 9231 pure mechanics statistics'.toLowerCase()
-      },
-      {
-        id: 'physics-papers',
-        title: 'Physics Papers',
-        description: 'Browse all Physics 9702 papers',
-        subject: 'Physics',
-        paper: 'All Papers', 
-        path: '/physics-papers',
-        type: 'subject',
-        icon: BookOpen,
-        searchableText: 'physics papers 9702 as a2 level'.toLowerCase()
+      // Further Mathematics 9231 Papers
+      const fmPapers = [
+        { code: 'fp1', name: 'Further Pure 1', data: safeGetData(fp1Data, 'Further_Pure_Mathematics_1') },
+        { code: 'fp2', name: 'Further Pure 2', data: safeGetData(fp2Data, 'Further_Pure_Mathematics_2') },
+        { code: 'fm', name: 'Further Mechanics', data: safeGetData(fmData, 'Further_Mechanics') },
+        { code: 'fs', name: 'Further Statistics', data: safeGetData(fsData, 'Further_Statistics') }
+      ];
+
+      fmPapers.forEach(paper => {
+        if (Array.isArray(paper.data)) {
+          paper.data.forEach(topic => {
+            if (topic && topic.topic) {
+              index.push({
+                id: `fm-${paper.code}-${topic.topic.toLowerCase().replace(/\s+/g, '-')}`,
+                title: topic.topic,
+                description: topic.cards?.[0]?.details?.[0] || 'Further Mathematics topic',
+                subject: 'Further Mathematics',
+                subjectCode: '9231',
+                paper: paper.name,
+                path: `/topic/further-mathematics/${paper.code}/${topic.topic.toLowerCase().replace(/\s+/g, '-')}`,
+                type: 'topic',
+                icon: BarChart3,
+                searchableText: `${topic.topic} ${paper.name} further mathematics 9231`.toLowerCase()
+              });
+            }
+          });
+        }
+      });
+
+      // Physics 9702
+      const physicsTopics = safeGetData(physicsData, 'Physics_AS_A2');
+      if (Array.isArray(physicsTopics)) {
+        physicsTopics.forEach(topic => {
+          if (topic && topic.topic) {
+            index.push({
+              id: `physics-${topic.topic.toLowerCase().replace(/\s+/g, '-')}`,
+              title: topic.topic,
+              description: topic.cards?.[0]?.details?.[0] || 'Physics topic',
+              subject: 'Physics',
+              subjectCode: '9702',
+              paper: 'AS & A2 Level',
+              path: `/topic/physics/all/${topic.topic.toLowerCase().replace(/\s+/g, '-')}`,
+              type: 'topic',
+              icon: Zap,
+              searchableText: `${topic.topic} physics 9702 as a2 level`.toLowerCase()
+            });
+          }
+        });
       }
-    ];
 
-    return [...index, ...quickAccess];
-  }, []);
+      // Quick access items
+      const quickAccess = [
+        {
+          id: 'math-papers',
+          title: 'Mathematics Papers',
+          description: 'Browse all A Level Mathematics papers',
+          subject: 'Mathematics',
+          paper: 'All Papers',
+          path: '/mathematics-papers',
+          type: 'subject',
+          icon: BookOpen,
+          searchableText: 'mathematics papers 9709 pure mechanics statistics'.toLowerCase()
+        },
+        {
+          id: 'fm-papers',
+          title: 'Further Mathematics Papers',
+          description: 'Browse all Further Mathematics papers',
+          subject: 'Further Mathematics',
+          paper: 'All Papers',
+          path: '/further-mathematics-papers',
+          type: 'subject',
+          icon: FileText,
+          searchableText: 'further mathematics papers 9231 fp1 fp2 mechanics statistics'.toLowerCase()
+        },
+        {
+          id: 'physics-papers',
+          title: 'Physics Papers',
+          description: 'Browse all Physics papers',
+          subject: 'Physics',
+          paper: 'All Papers',
+          path: '/physics-papers',
+          type: 'subject',
+          icon: BookOpen,
+          searchableText: 'physics papers 9702 as a2 level'.toLowerCase()
+        }
+      ];
 
-  // Search function with debouncing
-  useEffect(() => {
-    if (!query.trim()) {
+      return [...index, ...quickAccess];
+    } catch (error) {
+      console.error('Error building search index:', error);
+      return [];
+    }
+  }, [safeGetData]); // 只依赖于safeGetData函数
+
+  // 搜索函数 - 移除searchIndex依赖，避免循环
+  const performSearch = useCallback((searchQuery) => {
+    if (!searchQuery.trim()) {
       setResults([]);
       return;
     }
 
     setIsLoading(true);
-    const timer = setTimeout(() => {
-      const searchQuery = query.toLowerCase().trim();
-      
-      // Add search query to history when user types (debounced)
-      if (searchQuery.length >= 2) {
-        addToHistory(searchQuery);
-      }
-      
-      const filteredResults = searchIndex.filter(item => 
-        item.searchableText.includes(searchQuery) ||
-        item.title.toLowerCase().includes(searchQuery) ||
-        item.description.toLowerCase().includes(searchQuery)
-      );
+    const lowerQuery = searchQuery.toLowerCase();
 
-      // Sort results by relevance
-      const sortedResults = filteredResults.sort((a, b) => {
-        const aTitle = a.title.toLowerCase();
-        const bTitle = b.title.toLowerCase();
-        
-        // Exact title match gets highest priority
-        if (aTitle === searchQuery) return -1;
-        if (bTitle === searchQuery) return 1;
-        
-        // Title starts with query gets second priority
-        if (aTitle.startsWith(searchQuery) && !bTitle.startsWith(searchQuery)) return -1;
-        if (bTitle.startsWith(searchQuery) && !aTitle.startsWith(searchQuery)) return 1;
-        
-        // Otherwise sort alphabetically
-        return aTitle.localeCompare(bTitle);
+    try {
+      const searchResults = searchIndex.filter(item => {
+        try {
+          return item.searchableText?.includes(lowerQuery) ||
+                 item.title?.toLowerCase().includes(lowerQuery) ||
+                 item.description?.toLowerCase().includes(lowerQuery);
+        } catch (e) {
+          return false;
+        }
       });
 
-      setResults(sortedResults.slice(0, 8)); // Limit to 8 results
+      setResults(searchResults.slice(0, 10));
+    } catch (error) {
+      console.error('Search error:', error);
+      setResults([]);
+    } finally {
       setIsLoading(false);
-    }, 200); // 200ms debounce
+    }
+  }, [searchIndex]);
+
+  // 防抖搜索
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      performSearch(query);
+    }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, searchIndex, addToHistory]);
+  }, [query, performSearch]);
 
-  // Click outside to close
+  // Handle result click
+  const handleResultClick = (result) => {
+    addToHistory(query);
+    setIsOpen(false);
+    setQuery('');
+    navigate(result.path);
+  };
+
+  // Handle input change
+  const handleInputChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  // Clear search
+  const clearSearch = () => {
+    setQuery('');
+    setResults([]);
+    setIsOpen(false);
+  };
+
+  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -218,77 +236,43 @@ const SearchBox = ({ className = '', placeholder = "Search topics, subjects..." 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle keyboard navigation
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      setIsOpen(false);
-      inputRef.current?.blur();
-    }
-  };
-
-  const handleResultClick = (result) => {
-    // Add to search history
-    addToHistory(result.title);
-    setQuery('');
-    setIsOpen(false);
-    navigate(result.path);
-  };
-
-  const clearSearch = () => {
-    setQuery('');
-    setResults([]);
-    inputRef.current?.focus();
-  };
-
   return (
-    <div ref={searchRef} className={`relative ${className}`}>
-      {/* Search Input */}
+    <div className={`relative ${className}`} ref={searchRef}>
       <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
         <input
           ref={inputRef}
           type="text"
           placeholder={placeholder}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
-          onKeyDown={handleKeyDown}
-          className="w-full h-10 pl-10 pr-10 text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500
-                    bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg 
-                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                    transition-all duration-200"
+          className="w-full pl-10 pr-10 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
         />
-        
-        {/* Search Icon */}
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <Search className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-        </div>
-        
-        {/* Clear Button */}
         {query && (
           <button
             onClick={clearSearch}
-            className="absolute inset-y-0 right-0 flex items-center pr-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-r-lg transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
           >
-            <X className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      {/* Search Results Dropdown */}
+      {/* Search Results */}
       <AnimatePresence>
-        {isOpen && (query.trim() || results.length > 0) && (
+        {isOpen && (query || results.length > 0) && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600
-                     rounded-xl shadow-lg dark:shadow-2xl z-50 max-h-96 overflow-y-auto transition-colors duration-200"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-full mt-2 w-full bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto z-50"
           >
             {isLoading ? (
               <div className="p-4 text-center">
-                <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200">Searching...</p>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">搜索中...</p>
               </div>
             ) : results.length > 0 ? (
               <div className="py-2">
@@ -298,43 +282,33 @@ const SearchBox = ({ className = '', placeholder = "Search topics, subjects..." 
                     <button
                       key={result.id}
                       onClick={() => handleResultClick(result)}
-                      className="w-full px-4 py-3 text-left hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors border-b border-gray-50 dark:border-gray-700 last:border-b-0"
+                      className="w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 border-b border-gray-100 dark:border-gray-700 last:border-b-0 transition-colors"
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-800 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors duration-200">
-                          <IconComponent className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </div>
+                      <div className="flex items-start space-x-3">
+                        <IconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-gray-900 dark:text-gray-100 truncate transition-colors duration-200">
+                          <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
                             {result.title}
-                          </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400 truncate transition-colors duration-200">
+                          </h4>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {result.subject} • {result.paper}
-                          </div>
-                          <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 line-clamp-2 transition-colors duration-200">
+                          </p>
+                          <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">
                             {result.description}
-                          </div>
-                        </div>
-                        <div className="text-xs text-gray-400 dark:text-gray-500 flex items-center gap-1 flex-shrink-0 transition-colors duration-200">
-                          <Clock className="w-3 h-3" />
-                          {result.type}
+                          </p>
                         </div>
                       </div>
                     </button>
                   );
                 })}
               </div>
-            ) : query.trim() ? (
-              <div className="p-4 text-center text-gray-500 dark:text-gray-400 transition-colors duration-200">
-                <Search className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2 transition-colors duration-200" />
-                <p className="text-sm">No results found for "{query}"</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 transition-colors duration-200">Try searching for topics, subjects, or keywords</p>
+            ) : query ? (
+              <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>未找到 "{query}" 的相关结果</p>
+                <p className="text-xs mt-1">试试其他关键词</p>
               </div>
-            ) : (
-              <div className="p-4 text-center text-gray-500 dark:text-gray-400 transition-colors duration-200">
-                <div className="text-sm">Start typing to search topics and subjects</div>
-              </div>
-            )}
+            ) : null}
           </motion.div>
         )}
       </AnimatePresence>
@@ -342,4 +316,4 @@ const SearchBox = ({ className = '', placeholder = "Search topics, subjects..." 
   );
 };
 
-export default SearchBox; 
+export default SearchBox;

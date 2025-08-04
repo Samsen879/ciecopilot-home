@@ -2,17 +2,18 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
-import { TwentyFirstToolbar } from "@21st-extension/toolbar-react";
-import { ReactPlugin } from "@21st-extension/react";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // Lazy loaded components for better performance
 const Home = React.lazy(() => import("./pages/Home"));
 const Topics = React.lazy(() => import("./pages/Topics"));
 const AskAI = React.lazy(() => import("./pages/AskAI"));
+const AuroraDemo = React.lazy(() => import("./pages/AuroraDemo"));
 const PaperPage = React.lazy(() => import("./pages/PaperPage"));
 const TopicDetail = React.lazy(() => import("./pages/TopicDetail"));
 const PhysicsASLevel = React.lazy(() => import("./pages/PhysicsASLevel"));
@@ -47,8 +48,9 @@ function App() {
           <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200">
             <Navbar />
             <div className="flex-1">
-              <Suspense fallback={<LoadingSpinner />}>
-                <Routes>
+              <ErrorBoundary>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <Routes>
                   <Route path="/" element={<Landing />} />
                   
                   {/* Subject Selection Page */}
@@ -76,6 +78,9 @@ function App() {
                     </div>
                   } />
                   
+                  {/* Aurora Background Demo */}
+                  <Route path="/aurora-demo" element={<AuroraDemo />} />
+                  
                   {/* Dynamic Pages */}
                   <Route path="/paper/:subject/:paper" element={<PaperPage />} />
                   <Route path="/topic/:subject/:paper/:topicId" element={<TopicDetail />} />
@@ -86,16 +91,13 @@ function App() {
                       <NotFound />
                     </div>
                   } />
-                </Routes>
-              </Suspense>
+                  </Routes>
+                </Suspense>
+              </ErrorBoundary>
             </div>
             <Footer />
           </div>
-          <TwentyFirstToolbar 
-            config={{
-              plugins: [ReactPlugin]
-            }}
-          />
+
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>

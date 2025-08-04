@@ -8,6 +8,8 @@ import CoreFeatures from '../components/CoreFeatures';
 import PWAInstallButton from '../components/PWAInstallButton';
 import RecommendedTopics from '../components/RecommendedTopics';
 import ProgressDemo from '../components/ProgressDemo';
+import SuccessStories from '../components/SuccessStories';
+import { AuroraBackground } from '../components/ui/aurora-background';
 
 const Landing = () => {
   // Use theme context for language support
@@ -84,80 +86,84 @@ const Landing = () => {
 
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 transition-colors duration-200">
-      {/* Hero Section */}
-      <section className="relative min-h-screen bg-gradient-to-b from-[#e0f2ff] to-white dark:from-gray-800 dark:to-gray-900 flex items-center justify-center transition-colors duration-200">
-        <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-            className="space-y-8"
-          >
-            {/* Main title - large, bold, dark */}
-            <motion.h1
-              variants={fadeInUp}
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 dark:text-gray-100 leading-tight transition-colors duration-200"
+    <AuroraBackground>
+      <div className="min-h-screen relative z-10">
+        {/* Hero Section */}
+        <section className="relative min-h-screen flex items-center justify-center">
+          <div className="max-w-5xl mx-auto px-6 py-20 text-center">
+            <motion.div
+              initial="initial"
+              animate="animate"
+              variants={staggerContainer}
+              className="space-y-8"
             >
-              {text.heroTitle}
-            </motion.h1>
-
-            {/* Subtitle - describing website highlights */}
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg md:text-xl lg:text-2xl text-gray-700 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed px-4 transition-colors duration-200"
-            >
-              {text.heroSubtitle}
-            </motion.p>
-
-            {/* 动态关键词区域 */}
-            <motion.div variants={fadeInUp}>
-              <AnimatedKeywords />
-            </motion.div>
-
-            {/* 按钮组 */}
-            <motion.div 
-              variants={fadeInUp}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8"
-            >
-              {/* Primary button - blue gradient, white text, shadow - 直接跳转到topics页面 */}
-              <button 
-                onClick={() => {
-                  window.location.href = '/topics';
-                }}
-                className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              {/* Main title - large, bold, dark */}
+              <motion.h1
+                variants={fadeInUp}
+                className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 dark:text-white leading-tight transition-colors duration-200"
               >
-                {text.exploreSubjects}
-              </button>
-              
-              {/* Secondary button - white background blue border, scroll to features */}
-              <button 
-                onClick={() => {
-                  document.querySelector('#features')?.scrollIntoView({ 
-                    behavior: 'smooth' 
-                  });
-                }}
-                className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800 border-2 border-blue-500 dark:border-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-600 dark:hover:border-blue-300 transform hover:scale-105 transition-all duration-300"
+                {text.heroTitle}
+              </motion.h1>
+
+              {/* Subtitle - describing website highlights */}
+              <motion.p
+                variants={fadeInUp}
+                className="text-lg md:text-xl lg:text-2xl text-gray-700 dark:text-neutral-200 max-w-4xl mx-auto leading-relaxed px-4 transition-colors duration-200"
               >
-                {text.viewAllFeatures}
-              </button>
+                {text.heroSubtitle}
+              </motion.p>
+
+              {/* 动态关键词区域 */}
+              <motion.div variants={fadeInUp}>
+                <AnimatedKeywords />
+              </motion.div>
+
+              {/* 按钮组 */}
+              <motion.div 
+                variants={fadeInUp}
+                className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8"
+              >
+                {/* Primary button - blue gradient, white text, shadow - 直接跳转到topics页面 */}
+                <button 
+                  onClick={() => {
+                    window.location.href = '/topics';
+                  }}
+                  className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  {text.exploreSubjects}
+                </button>
+                
+                {/* Secondary button - white background blue border, scroll to features */}
+                <button 
+                  onClick={() => {
+                    document.querySelector('#features')?.scrollIntoView({ 
+                      behavior: 'smooth' 
+                    });
+                  }}
+                  className="w-full sm:w-auto px-8 py-4 text-lg font-semibold text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800 border-2 border-blue-500 dark:border-blue-400 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-600 dark:hover:border-blue-300 transform hover:scale-105 transition-all duration-300"
+                >
+                  {text.viewAllFeatures}
+                </button>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* Core Features Component */}
       <CoreFeatures />
 
+      {/* Success Stories Section */}
+      <SuccessStories />
+
       {/* Recommended Topics Section */}
-      <section className="py-16 lg:py-24 bg-slate-50 dark:bg-gray-900 transition-colors duration-200">
+      <section className="py-16 lg:py-24 transition-colors duration-200">
         <div className="max-w-4xl mx-auto px-6">
           <RecommendedTopics />
         </div>
       </section>
 
       {/* Progress Demo Section */}
-      <section className="py-16 lg:py-24 bg-white dark:bg-gray-800 transition-colors duration-200">
+      <section className="py-16 lg:py-24 transition-colors duration-200">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
@@ -171,8 +177,8 @@ const Landing = () => {
         </div>
       </section>
 
-             {/* AI Smart Demo & Competitive Advantages */}
-       <section className="py-20 lg:py-32 bg-gradient-to-b from-slate-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-200">
+                          {/* AI Smart Demo & Competitive Advantages */}
+<section className="py-20 lg:py-32 transition-colors duration-200">
          <div className="max-w-6xl mx-auto px-6">
           {/* Section title */}
           <motion.div
@@ -274,7 +280,7 @@ const Landing = () => {
           {/* Bottom banner */}
           <motion.div
             variants={fadeInUp}
-            className="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/30 dark:to-sky-900/30 rounded-2xl p-8 text-center border border-blue-100 dark:border-blue-700 transition-colors duration-200"
+            className="bg-white/10 dark:bg-gray-800/20 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 dark:border-gray-700/50 transition-colors duration-200"
           >
             <p className="text-lg md:text-xl font-semibold text-blue-800 dark:text-blue-300 leading-relaxed transition-colors duration-200">
               All answers strictly follow official Mark Schemes, not generic processing, targeted for score improvement
@@ -284,7 +290,7 @@ const Landing = () => {
       </section>
 
       {/* Why Exclusively Designed for CIE */}
-      <section className="py-20 lg:py-32 bg-white dark:bg-gray-800 transition-colors duration-200">
+      <section className="py-20 lg:py-32 transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-6">
           {/* Section title */}
           <motion.div
@@ -386,7 +392,7 @@ const Landing = () => {
       </section>
 
       {/* User Feedback & Common Questions */}
-      <section className="py-20 lg:py-32 bg-gradient-to-b from-white to-slate-50 dark:from-gray-800 dark:to-gray-900 transition-colors duration-200">
+      <section className="py-20 lg:py-32 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-6">
           {/* Top title */}
           <motion.div
@@ -505,14 +511,14 @@ const Landing = () => {
       </section>
 
       {/* Strong CTA Block */}
-      <section className="py-20 lg:py-32 bg-white dark:bg-gray-800 transition-colors duration-200">
+      <section className="py-20 lg:py-32 transition-colors duration-200">
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
             initial="initial"
             whileInView="animate"
             viewport={{ once: true }}
             variants={staggerContainer}
-            className="bg-gradient-to-r from-[#e0f2ff] to-[#f7fbff] dark:from-gray-700 dark:to-gray-600 rounded-3xl p-12 lg:p-16 text-center shadow-xl transition-colors duration-200"
+            className="bg-white/10 dark:bg-gray-800/20 backdrop-blur-sm rounded-3xl p-12 lg:p-16 text-center shadow-xl transition-colors duration-200 border border-white/20 dark:border-gray-700/50"
           >
             {/* Main title */}
             <motion.h2
@@ -568,7 +574,7 @@ const Landing = () => {
       </section>
 
       {/* Clean footer */}
-      <footer className="py-12 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 transition-colors duration-200">
+      <footer className="py-12 border-t border-gray-200 dark:border-gray-700 transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-gray-600 dark:text-gray-400 mb-4 transition-colors duration-200">
             {isZh 
@@ -586,10 +592,11 @@ const Landing = () => {
         </div>
       </footer>
 
-      {/* AI Chat Widget */}
-      <ChatWidget />
-      <PWAInstallButton />
-    </div>
+        {/* AI Chat Widget */}
+        <ChatWidget />
+        <PWAInstallButton />
+      </div>
+    </AuroraBackground>
   );
 };
 

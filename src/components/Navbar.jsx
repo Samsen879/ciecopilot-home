@@ -119,7 +119,8 @@ export default function Navbar() {
   ];
 
   const smartFunctionItems = [
-    { name: "AI Q&A", path: "/tools/ai-qa" },
+    { name: "AI Q&A", path: "/ask-ai" },
+    { name: "Aurora Background Demo", path: "/aurora-demo" },
     { name: "Image Problem Solving", path: "/tools/image-solver" },
     { name: "Progress Tracking", path: "/tools/progress-tracking" },
     { name: "Smart Recommendations", path: "/tools/smart-recommendations" },

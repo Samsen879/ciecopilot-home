@@ -2,6 +2,8 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { TwentyFirstToolbar } from "@21st-extension/toolbar-react";
+import { ReactPlugin } from "@21st-extension/react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Landing from "./pages/Landing";
@@ -79,7 +81,7 @@ function App() {
                   <Route path="/topic/:subject/:paper/:topicId" element={<TopicDetail />} />
                   
                   {/* 404 Page */}
-                  <Route path="*" element={
+                  <Route path="/404" element={
                     <div className="container mx-auto p-4">
                       <NotFound />
                     </div>
@@ -89,6 +91,11 @@ function App() {
             </div>
             <Footer />
           </div>
+          <TwentyFirstToolbar 
+            config={{
+              plugins: [ReactPlugin]
+            }}
+          />
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>

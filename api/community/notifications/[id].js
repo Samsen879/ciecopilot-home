@@ -6,14 +6,14 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req, res) {
 	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+	res.setHeader('Access-Control-Allow-Methods', 'DELETE, OPTIONS');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
 	if (req.method === 'OPTIONS') {
 		return res.status(200).end();
 	}
 
-	if (req.method !== 'POST') {
+	if (req.method !== 'DELETE') {
 		return res.status(405).json({ error: 'Method not allowed' });
 	}
 
@@ -28,11 +28,12 @@ export default async function handler(req, res) {
 			return res.status(401).json({ error: 'Invalid token' });
 		}
 
+		const id = req.query?.id || req.url.split('/').pop();
 		const { error } = await supabase
 			.from('community_notifications')
-			.update({ is_read: true, read_at: new Date().toISOString() })
-			.eq('user_id', user.id)
-			.eq('is_read', false);
+			.delete()
+			.eq('id', id)
+			.eq('user_id', user.id);
 
 		if (error) {
 			throw error;
@@ -40,7 +41,7 @@ export default async function handler(req, res) {
 
 		return res.status(200).json({ success: true });
 	} catch (error) {
-		console.error('Mark all as read error:', error);
+		console.error('Delete notification error:', error);
 		return res.status(500).json({ error: 'Internal server error', message: error.message });
 	}
 }

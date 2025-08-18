@@ -1,17 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Bell, Award, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 import SearchBox from "./SearchBox";
 import ThemeToggle from "./ThemeToggle";
 import AuthModal from "./Auth/AuthModal";
+import communityApi from "../api/communityApi";
 
 export default function Navbar() {
   // State management for dropdowns and mobile menu
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [userReputation, setUserReputation] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const { theme } = useTheme();
   const { user, signOut } = useAuth();
   const navRef = useRef(null);
@@ -86,6 +91,31 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Fetch user reputation and notifications when user is logged in
+  useEffect(() => {
+    if (user?.id) {
+      // Fetch user reputation
+      communityApi.reputation.getUserReputation(user.id)
+        .then(data => {
+          setUserReputation(data.total_reputation || 0);
+        })
+        .catch(error => {
+          console.error('Failed to fetch user reputation:', error);
+        });
+
+      // Fetch user notifications
+      communityApi.notifications.getNotifications()
+        .then(data => {
+          setNotifications(data || []);
+          const unread = data?.filter(n => !n.is_read).length || 0;
+          setUnreadCount(unread);
+        })
+        .catch(error => {
+          console.error('Failed to fetch notifications:', error);
+        });
+    }
+  }, [user]);
+
   // Navigation data structure - 恢复原有的科目和paper结构
   const startLearningItems = [
     {
@@ -120,7 +150,26 @@ export default function Navbar() {
 
   const smartFunctionItems = [
     { name: "AI Q&A", path: "/ask-ai" },
+    { name: "Agent B Demo", path: "/agent-b-demo" },
     { name: "Aurora Background Demo", path: "/aurora-demo" },
+    { 
+      name: "Learning Paths", 
+      submenu: [
+        { name: "Mathematics (9709)", path: "/learning-path/9709" },
+        { name: "Physics (9702)", path: "/learning-path/9702" },
+        { name: "Chemistry (9701)", path: "/learning-path/9701" },
+        { name: "Biology (9700)", path: "/learning-path/9700" }
+      ]
+    },
+    { 
+      name: "Community & Recommendations", 
+      submenu: [
+        { name: "Mathematics Community", path: "/community/9709" },
+        { name: "Physics Community", path: "/community/9702" },
+        { name: "Chemistry Community", path: "/community/9701" },
+        { name: "Biology Community", path: "/community/9700" }
+      ]
+    },
     { name: "Image Problem Solving", path: "/tools/image-solver" },
     { name: "Progress Tracking", path: "/tools/progress-tracking" },
     { name: "Smart Recommendations", path: "/tools/smart-recommendations" },
@@ -156,6 +205,31 @@ export default function Navbar() {
       setActiveDropdown(null);
     } catch (error) {
       console.error('登出失败:', error);
+    }
+  };
+
+  // Handle notification click
+  const handleNotificationClick = async (notificationId) => {
+    try {
+      await communityApi.notifications.markAsRead(notificationId);
+      // Update local state
+      setNotifications(prev => 
+        prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
+  };
+
+  // Mark all notifications as read
+  const handleMarkAllAsRead = async () => {
+    try {
+      await communityApi.notifications.markAllAsRead();
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error);
     }
   };
 
@@ -312,15 +386,36 @@ export default function Navbar() {
                                 border border-gray-100 py-2 z-50"
                     >
                       {smartFunctionItems.map((item, index) => (
-                        <Link
-                          key={index}
-                          to={item.path}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 
-                                    hover:bg-blue-50 transition-all duration-200"
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          {item.name}
-                        </Link>
+                        item.submenu ? (
+                          <div key={index} className="group relative">
+                            <div className="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100">
+                              {item.name}
+                            </div>
+                            <div className="pl-6">
+                              {item.submenu.map((subItem, subIndex) => (
+                                <Link
+                                  key={subIndex}
+                                  to={subItem.path}
+                                  className="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 
+                                            hover:bg-blue-50 transition-all duration-200"
+                                  onClick={() => setActiveDropdown(null)}
+                                >
+                                  {subItem.name}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          <Link
+                            key={index}
+                            to={item.path}
+                            className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 
+                                      hover:bg-blue-50 transition-all duration-200"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            {item.name}
+                          </Link>
+                        )
                       ))}
                     </motion.div>
                   )}
@@ -337,21 +432,90 @@ export default function Navbar() {
               </Link>
 
               {/* Authentication Links */}
-              <div className="flex items-center space-x-2 ml-4 pl-4 border-l border-gray-200">
+              <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
                 {user ? (
-                  <div className="relative">
-                    <button
-                      onClick={() => toggleDropdown('userMenu')}
-                      className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-200"
-                    >
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
-                        {user.email?.charAt(0).toUpperCase()}
-                      </div>
-                      <span>{user.email}</span>
-                      <svg className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === 'userMenu' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
+                  <>
+                    {/* Notifications */}
+                    <div className="relative">
+                      <button
+                        onClick={() => toggleDropdown('notifications')}
+                        className="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-200"
+                      >
+                        <Bell className="w-5 h-5" />
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                            {unreadCount > 9 ? '9+' : unreadCount}
+                          </span>
+                        )}
+                      </button>
+                      
+                      <AnimatePresence>
+                        {activeDropdown === 'notifications' && (
+                          <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            variants={dropdownVariants}
+                            className="absolute top-full right-0 mt-1 w-80 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 max-h-96 overflow-y-auto"
+                          >
+                            <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                               <h3 className="font-semibold text-gray-900">通知</h3>
+                               {unreadCount > 0 && (
+                                 <button
+                                   onClick={handleMarkAllAsRead}
+                                   className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                                 >
+                                   全部已读
+                                 </button>
+                               )}
+                             </div>
+                             {notifications.length > 0 ? (
+                               notifications.slice(0, 10).map((notification, index) => (
+                                 <div
+                                   key={notification.id || index}
+                                   onClick={() => handleNotificationClick(notification.id)}
+                                   className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-all duration-200 ${
+                                     !notification.is_read ? 'bg-blue-50 border-l-4 border-blue-500' : ''
+                                   }`}
+                                 >
+                                   <p className="text-sm text-gray-900">{notification.title}</p>
+                                   <p className="text-xs text-gray-500 mt-1">{notification.message}</p>
+                                   <p className="text-xs text-gray-400 mt-1">
+                                     {new Date(notification.created_at).toLocaleDateString()}
+                                   </p>
+                                 </div>
+                               ))
+                            ) : (
+                              <div className="px-4 py-6 text-center text-gray-500">
+                                <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                                <p className="text-sm">暂无通知</p>
+                              </div>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* User Menu */}
+                    <div className="relative">
+                      <button
+                        onClick={() => toggleDropdown('userMenu')}
+                        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-200"
+                      >
+                        <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                          {user.email?.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex flex-col items-start">
+                          <span className="text-sm">{user.email}</span>
+                          <div className="flex items-center space-x-1 text-xs text-amber-600">
+                            <Star className="w-3 h-3 fill-current" />
+                            <span>{userReputation}</span>
+                          </div>
+                        </div>
+                        <svg className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === 'userMenu' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
                     
                     <AnimatePresence>
                       {activeDropdown === 'userMenu' && (
@@ -370,11 +534,33 @@ export default function Navbar() {
                             个人资料
                           </Link>
                           <Link
+                            to="/community/reputation"
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            <Award className="w-4 h-4 mr-2" />
+                            声誉与徽章
+                          </Link>
+                          <Link
                             to="/settings"
                             className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
                             onClick={() => setActiveDropdown(null)}
                           >
                             设置
+                          </Link>
+                          <Link
+                            to="/analytics/dashboard"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            学习分析
+                          </Link>
+                          <Link
+                            to="/admin/recommendations"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                            onClick={() => setActiveDropdown(null)}
+                          >
+                            推荐管理
                           </Link>
                           <hr className="my-1 border-gray-100" />
                           <button
@@ -386,7 +572,8 @@ export default function Navbar() {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                    </div>
+                  </>
                 ) : (
                   <button 
                     onClick={openAuthModal}
@@ -524,20 +711,46 @@ export default function Navbar() {
                   </div>
                   <div className="grid grid-cols-1 gap-2">
                     {smartFunctionItems.map((item, index) => (
-                      <Link
-                        key={index}
-                        to={item.path}
-                        className="flex items-center px-4 py-3 text-sm text-gray-600 
-                                  hover:text-blue-600 hover:bg-blue-50 rounded-lg 
-                                  transition-all duration-200 active:scale-98"
-                        onClick={handleMobileLinkClick}
-                      >
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 
-                                      rounded-lg flex items-center justify-center mr-3">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                      item.submenu ? (
+                        <div key={index} className="space-y-2">
+                          <div className="flex items-center px-4 py-3 text-sm font-medium text-gray-700">
+                            <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 
+                                          rounded-lg flex items-center justify-center mr-3">
+                              <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                            </div>
+                            {item.name}
+                          </div>
+                          <div className="ml-6 space-y-1">
+                            {item.submenu.map((subItem, subIndex) => (
+                              <Link
+                                key={subIndex}
+                                to={subItem.path}
+                                className="block px-4 py-2 text-sm text-gray-600 
+                                          hover:text-blue-600 hover:bg-blue-50 rounded-lg 
+                                          transition-all duration-200"
+                                onClick={handleMobileLinkClick}
+                              >
+                                {subItem.name}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                        {item.name}
-                      </Link>
+                      ) : (
+                        <Link
+                          key={index}
+                          to={item.path}
+                          className="flex items-center px-4 py-3 text-sm text-gray-600 
+                                    hover:text-blue-600 hover:bg-blue-50 rounded-lg 
+                                    transition-all duration-200 active:scale-98"
+                          onClick={handleMobileLinkClick}
+                        >
+                          <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 
+                                        rounded-lg flex items-center justify-center mr-3">
+                            <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                          </div>
+                          {item.name}
+                        </Link>
+                      )
                     ))}
                   </div>
                 </motion.div>
@@ -571,9 +784,17 @@ export default function Navbar() {
                           <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-lg font-bold mr-3">
                             {user.email?.charAt(0).toUpperCase()}
                           </div>
-                          <div>
+                          <div className="flex-1">
                             <div className="text-sm font-medium text-gray-900">{user.email}</div>
-                            <div className="text-xs text-gray-500">已登录</div>
+                            <div className="flex items-center space-x-2">
+                              <div className="text-xs text-gray-500">已登录</div>
+                              {userReputation !== null && (
+                                <div className="flex items-center text-xs text-amber-600">
+                                  <Star className="w-3 h-3 mr-1" />
+                                  {userReputation}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                         <Link
@@ -589,6 +810,14 @@ export default function Navbar() {
                           onClick={handleMobileLinkClick}
                         >
                           设置
+                        </Link>
+                        <Link
+                          to="/reputation"
+                          className="flex items-center px-4 py-3 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                          onClick={handleMobileLinkClick}
+                        >
+                          <Award className="w-4 h-4 mr-2" />
+                          声誉与徽章
                         </Link>
                         <button
                           onClick={() => {

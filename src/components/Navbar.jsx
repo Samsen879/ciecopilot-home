@@ -97,7 +97,8 @@ export default function Navbar() {
       // Fetch user reputation
       communityApi.reputation.getUserReputation(user.id)
         .then(data => {
-          setUserReputation(data.total_reputation || 0);
+          const total = data?.data?.current_reputation ?? data?.total_reputation ?? 0;
+          setUserReputation(total);
         })
         .catch(error => {
           console.error('Failed to fetch user reputation:', error);

@@ -249,7 +249,8 @@ export const badgesApi = {
 export const reputationApi = {
   // 获取用户声誉
   getUserReputation: async (userId) => {
-    return apiRequest(`/api/community/reputation/${userId}`);
+    const query = userId ? `?user_id=${encodeURIComponent(userId)}` : '';
+    return apiRequest(`/api/community/reputation${query}`);
   },
 
   // 获取声誉历史

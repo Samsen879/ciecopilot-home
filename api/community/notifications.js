@@ -8,7 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export default async function handler(req, res) {
 	// CORS headers
 	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
 	if (req.method === 'OPTIONS') {
@@ -16,10 +16,6 @@ export default async function handler(req, res) {
 	}
 
 	try {
-		if (req.method !== 'GET') {
-			return res.status(405).json({ error: 'Method not allowed' });
-		}
-
 		// Auth
 		const authHeader = req.headers.authorization;
 		if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -31,31 +27,55 @@ export default async function handler(req, res) {
 			return res.status(401).json({ error: 'Invalid token' });
 		}
 
-		const { page = 1, limit = 20, only_unread } = req.query;
-		const pageNum = Math.max(1, parseInt(page));
-		const limitNum = Math.max(1, Math.min(100, parseInt(limit)));
-		const from = (pageNum - 1) * limitNum;
-		const to = from + limitNum - 1;
+		if (req.method === 'GET') {
+			const { page = 1, limit = 20, only_unread } = req.query;
+			const pageNum = Math.max(1, parseInt(page));
+			const limitNum = Math.max(1, Math.min(100, parseInt(limit)));
+			const from = (pageNum - 1) * limitNum;
+			const to = from + limitNum - 1;
 
-		let query = supabase
-			.from('community_notifications')
-			.select('id, notification_type, title, message, link_url, metadata, is_read, read_at, created_at')
-			.eq('user_id', user.id)
-			.order('created_at', { ascending: false })
-			.range(from, to);
+			let query = supabase
+				.from('community_notifications')
+				.select('id, notification_type, title, message, link_url, metadata, is_read, read_at, created_at')
+				.eq('user_id', user.id)
+				.order('created_at', { ascending: false })
+				.range(from, to);
 
-		if (only_unread === 'true') {
-			query = query.eq('is_read', false);
+			if (only_unread === 'true') {
+				query = query.eq('is_read', false);
+			}
+
+			const { data: notifications, error } = await query;
+			if (error) {
+				throw error;
+			}
+
+			return res.status(200).json(notifications || []);
 		}
 
-		const { data: notifications, error } = await query;
-		if (error) {
-			throw error;
+		if (req.method === 'POST') {
+			const { notification_type = 'general', title = '', message = '', link_url = null, metadata = {} } = req.body || {};
+			const { data, error } = await supabase
+				.from('community_notifications')
+				.insert({
+					user_id: user.id,
+					notification_type,
+					title,
+					message,
+					link_url,
+					metadata
+				})
+				.select('id')
+				.single();
+
+			if (error) {
+				throw error;
+			}
+
+			return res.status(201).json({ success: true, id: data.id });
 		}
 
-		return res.status(200).json(
-			notifications || []
-		);
+		return res.status(405).json({ error: 'Method not allowed' });
 	} catch (error) {
 		console.error('Notifications API error:', error);
 		return res.status(500).json({ error: 'Internal server error', message: error.message });

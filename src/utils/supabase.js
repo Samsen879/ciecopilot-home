@@ -1,40 +1,75 @@
-// Supabase客户端配置文件
-// 这个文件将在您设置好Supabase后使用
-
-// 当您准备好集成Supabase时，请取消注释以下代码：
-
+// Supabase 客户端配置文件（安全降级版）
 import { createClient } from '@supabase/supabase-js'
 
-// 从环境变量获取Supabase配置
+// 从环境变量获取 Supabase 配置
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-// 验证环境变量
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Missing Supabase environment variables. Please check your .env.local file.'
+// 提供一个在未配置时的“空实现”，避免因抛错导致页面白屏
+function createSupabaseStub() {
+  const notConfiguredError = new Error(
+    'Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local.'
   )
+
+  const noopPromise = (data = null, error = null) =>
+    Promise.resolve({ data, error })
+
+  const chainable = () => ({
+    select: () => chainable(),
+    eq: () => chainable(),
+    order: () => chainable(),
+    limit: () => chainable(),
+    upsert: () => noopPromise(null, notConfiguredError),
+    insert: () => noopPromise(null, notConfiguredError)
+  })
+
+  return {
+    auth: {
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+      getUser: () => noopPromise({ user: null }, null),
+      getSession: () => noopPromise({ session: null }, null),
+      signInWithPassword: () => noopPromise(null, notConfiguredError),
+      signUp: () => noopPromise(null, notConfiguredError),
+      signOut: () => noopPromise(null, notConfiguredError),
+      resetPasswordForEmail: () => noopPromise(null, notConfiguredError),
+      updateUser: () => noopPromise(null, notConfiguredError)
+    },
+    from: () => chainable(),
+    storage: {
+      from: () => ({
+        upload: () => noopPromise(null, notConfiguredError),
+        getPublicUrl: () => ({ data: { publicUrl: '' }, error: notConfiguredError }),
+        remove: () => noopPromise(null, notConfiguredError)
+      })
+    },
+    channel: () => ({
+      on: () => ({ subscribe: () => ({}) })
+    }),
+    removeChannel: () => {}
+  }
 }
 
-// 创建Supabase客户端
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    // 自动刷新token
-    autoRefreshToken: true,
-    // 持久化会话
-    persistSession: true,
-    // 检测会话变化
-    detectSessionInUrl: true,
-    // 存储选项
-    storage: window.localStorage
-  },
-  // 实时订阅配置
-  realtime: {
-    params: {
-      eventsPerSecond: 10
-    }
-  }
-})
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+
+// 创建 Supabase 客户端或空实现
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        storage: window.localStorage
+      },
+      realtime: {
+        params: { eventsPerSecond: 10 }
+      }
+    })
+  : (() => {
+      console.warn(
+        'Missing Supabase environment variables. Running with a no-op Supabase client. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local to enable Supabase.'
+      )
+      return createSupabaseStub()
+    })()
 
 // 数据库表名常量
 export const TABLES = {

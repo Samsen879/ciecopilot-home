@@ -14,13 +14,13 @@ const PhysicsTopics = () => {
   const physicsLevels = {
     'as': {
       name: 'AS Level Physics',
-      data: physicsData["AS_Level"] || [],
+      data: physicsData.Physics_9702?.AS_Level || [],
       color: 'from-emerald-500 to-teal-600',
       bgColor: 'from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30'
     },
     'a2': {
       name: 'A2 Level Physics',
-      data: physicsData["A2_Level"] || [],
+      data: physicsData.Physics_9702?.A2_Level || [],
       color: 'from-teal-500 to-cyan-600',
       bgColor: 'from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30'
     }
@@ -190,9 +190,7 @@ const PhysicsTopics = () => {
                         <div className="flex items-center space-x-2">
                           <List size={18} />
                           <span>
-                            {level.data.reduce((total, topic) => 
-                              total + (topic.cards ? topic.cards.reduce((cardTotal, card) => cardTotal + (card.details ? card.details.length : 0), 0) : 0), 0
-                            )} learning objectives
+                            {level.data.length} learning objectives
                           </span>
                         </div>
                       </div>
@@ -202,99 +200,54 @@ const PhysicsTopics = () => {
 
                 {/* Topics Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {level.data.map((topic, topicIndex) => (
-                    <motion.div
-                      key={topicIndex}
-                      variants={cardVariants}
-                      className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/50 shadow-sm hover:shadow-lg dark:hover:shadow-2xl transition-all duration-300 overflow-hidden"
-                    >
-                      {/* Topic Header */}
-                      <button
-                        onClick={() => toggleTopic(levelId, topicIndex)}
-                        className="w-full p-6 text-left hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-inset"
+                  {level.data.map((topicName, topicIndex) => {
+                    const topicId = topicName.toLowerCase().replace(/\s+/g, '-').replace(/[.,]/g, '');
+                    const topicPath = `/topic/physics/${levelId === 'as' ? 'as-level' : 'a2-level'}/${topicId}`;
+                    
+                    return (
+                      <motion.div
+                        key={topicIndex}
+                        variants={cardVariants}
+                        className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/50 shadow-sm hover:shadow-lg dark:hover:shadow-2xl transition-all duration-300 overflow-hidden"
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-600 dark:to-gray-700 rounded-xl transition-colors duration-200">
-                              <BookOpen size={24} className="text-gray-600 dark:text-gray-300" />
+                        {/* Topic Card */}
+                        <Link
+                          to={topicPath}
+                          className="block p-6 hover:bg-gray-50/50 dark:hover:bg-gray-700/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-inset"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-800 dark:to-teal-800 rounded-xl transition-colors duration-200">
+                                <BookOpen size={24} className="text-emerald-600 dark:text-emerald-400" />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1 transition-colors duration-200">
+                                  {topicName}
+                                </h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-200">
+                                  CIE 9702 {level.name} Topic
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1 transition-colors duration-200">
-                                {topic.topic}
-                              </h3>
-                              <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors duration-200">
-                                {topic.cards ? topic.cards.length : 0} concept {(topic.cards ? topic.cards.length : 0) === 1 ? 'card' : 'cards'}
-                              </p>
+                            <ChevronRight size={20} className="text-gray-400 dark:text-gray-500 group-hover:text-emerald-500 transition-colors duration-200" />
+                          </div>
+                          
+                          {/* Topic Preview */}
+                          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-600 transition-colors duration-200">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-gray-600 dark:text-gray-400">
+                                Click to explore topic details
+                              </span>
+                              <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
+                                <BookOpen size={16} />
+                                <span>Study Now</span>
+                              </div>
                             </div>
                           </div>
-                          <motion.div
-                            animate={{ rotate: isTopicExpanded(levelId, topicIndex) ? 90 : 0 }}
-                            transition={{ duration: 0.2, ease: "easeInOut" }}
-                          >
-                            <ChevronRight size={20} className="text-gray-400 dark:text-gray-500" />
-                          </motion.div>
-                        </div>
-                      </button>
-
-                      {/* Expandable Content */}
-                      <AnimatePresence>
-                        {isTopicExpanded(levelId, topicIndex) && (
-                          <motion.div
-                            variants={contentVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="hidden"
-                            className="overflow-hidden"
-                          >
-                            <div className="px-6 pb-6 space-y-4">
-                              {topic.cards && topic.cards.map((card, cardIndex) => (
-                                <motion.div
-                                  key={cardIndex}
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ 
-                                    duration: 0.3, 
-                                    delay: cardIndex * 0.05,
-                                    ease: [0.16, 1, 0.3, 1]
-                                  }}
-                                  className="bg-gradient-to-r from-gray-50 to-white dark:from-gray-700 dark:to-gray-600 rounded-xl p-5 border border-gray-100/50 dark:border-gray-600/50 shadow-sm transition-colors duration-200"
-                                >
-                                  {/* Card Title */}
-                                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 text-base transition-colors duration-200">
-                                    {card.title}
-                                  </h4>
-                                  
-                                  {/* Card Details */}
-                                  <div className="space-y-2">
-                                    {card.details && card.details.map((detail, detailIndex) => (
-                                      <div 
-                                        key={detailIndex}
-                                        className="flex items-start space-x-3 text-sm"
-                                      >
-                                        <div className="flex items-center justify-center w-5 h-5 bg-emerald-100 dark:bg-emerald-800 rounded-full mt-0.5 flex-shrink-0 transition-colors duration-200">
-                                          <div className="w-2 h-2 bg-emerald-500 dark:bg-emerald-400 rounded-full" />
-                                        </div>
-                                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed transition-colors duration-200">
-                                          {detail}
-                                        </p>
-                                      </div>
-                                    ))}
-                                  </div>
-                                  
-                                  {/* Card Footer */}
-                                  <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-600 transition-colors duration-200">
-                                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium transition-colors duration-200">
-                                      {card.details ? card.details.length : 0} learning objective{(card.details ? card.details.length : 0) !== 1 ? 's' : ''}
-                                    </span>
-                                  </div>
-                                </motion.div>
-                              ))}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-                  ))}
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </motion.div>
             );
@@ -317,17 +270,15 @@ const PhysicsTopics = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-lg mx-auto">
             {Object.entries(physicsLevels).map(([id, level]) => {
-              const totalObjectives = level.data.reduce((total, topic) => 
-                total + (topic.cards ? topic.cards.reduce((cardTotal, card) => cardTotal + (card.details ? card.details.length : 0), 0) : 0), 0
-              );
+              const totalTopics = level.data.length;
               
               return (
                 <div key={id} className="text-center">
                   <div className="text-3xl font-bold text-white mb-2">
-                    {totalObjectives}
+                    {totalTopics}
                   </div>
                   <div className="text-emerald-100 dark:text-emerald-200 text-sm transition-colors duration-200">
-                    {level.name} Objectives
+                    {level.name} Topics
                   </div>
                 </div>
               );

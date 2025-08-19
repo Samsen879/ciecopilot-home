@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { BookOpen, Bot, Camera, TrendingUp, Globe, Target, Award, Zap, Languages, ChevronDown, ChevronUp, Star, TrendingUp as Chart } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import AnimatedKeywords from '../components/AnimatedKeywords';
-import ChatWidget from '../components/ChatWidget';
 import CoreFeatures from '../components/CoreFeatures';
 import PWAInstallButton from '../components/PWAInstallButton';
 import RecommendedTopics from '../components/RecommendedTopics';
@@ -88,7 +87,7 @@ const Landing = () => {
   return (
     <AuroraBackground>
       <div className="min-h-screen relative z-10">
-        {/* Hero Section */}
+        {/* Hero Section - Aurora background version */}
         <section className="relative min-h-screen flex items-center justify-center">
           <div className="max-w-5xl mx-auto px-6 py-20 text-center">
             <motion.div
@@ -592,8 +591,6 @@ const Landing = () => {
         </div>
       </footer>
 
-        {/* AI Chat Widget */}
-        <ChatWidget />
         <PWAInstallButton />
       </div>
     </AuroraBackground>

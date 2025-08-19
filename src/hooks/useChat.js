@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { enhanceMessageWithRAG } from '../utils/ragSearch';
 
 export const useChat = (initialMessages = []) => {
   const [messages, setMessages] = useState(
@@ -24,9 +25,12 @@ export const useChat = (initialMessages = []) => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Call OpenAI API through our backend endpoint
+  // Call OpenAI API through our backend endpoint with RAG enhancement
   const getAIResponse = useCallback(async (userMessage) => {
     try {
+      // Enhance the message with RAG context if applicable
+      const enhancedMessage = await enhanceMessageWithRAG(userMessage);
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -36,7 +40,7 @@ export const useChat = (initialMessages = []) => {
           messages: [
             {
               role: "system",
-              content: "You are a specialized AI tutor for CIE (Cambridge International Education) students. You help with Mathematics, Physics, and Economics at A-Level standard. Provide clear, step-by-step explanations that follow CIE curriculum guidelines. Always identify key concepts and mark scheme points when relevant. When answering in Chinese, ensure mathematical terminology uses standard English terms in parentheses."
+              content: "You are a specialized AI tutor for CIE (Cambridge International Education) students. You help with Mathematics, Physics, and Economics at A-Level standard. Provide clear, step-by-step explanations that follow CIE curriculum guidelines. Always identify key concepts and mark scheme points when relevant. When answering in Chinese, ensure mathematical terminology uses standard English terms in parentheses. If reference materials are provided in the user message, use them to give more accurate and curriculum-specific answers."
             },
             ...messages.slice(-5).map(msg => ({ // Include last 5 messages for context
               role: msg.type === 'user' ? 'user' : 'assistant',
@@ -44,7 +48,7 @@ export const useChat = (initialMessages = []) => {
             })),
             {
               role: "user",
-              content: userMessage
+              content: enhancedMessage
             }
           ]
         }),

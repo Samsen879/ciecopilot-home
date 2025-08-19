@@ -24,6 +24,7 @@ import fp2Data from '../data/9231FP2-syllabus.json';
 import fmData from '../data/9231FM-syllabus.json';
 import fsData from '../data/9231FS-syllabus.json';
 import normalizeTopicId from '../utils/normalizeTopicId';
+import { db } from '../utils/supabase';
 
 const TopicDetail = () => {
   const { subject, paper, topicId } = useParams();
@@ -357,100 +358,159 @@ const TopicDetail = () => {
       setLoading(true);
       
       // Simulate loading delay for smooth animation
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 200));
       
-      // Handle different papers for 9709 Mathematics and 9231 Further Mathematics
-      if (subject === '9709') {
-        let topicsArray = null;
-        let dataSource = '';
-        
-        switch (paper) {
-          case 'p1':
-            topicsArray = paper1Data["9709_Paper_1_Pure_Mathematics_1"];
-            dataSource = 'Paper 1 Pure Mathematics 1';
-            break;
-          case 'p3':
-            topicsArray = paper3Data["9709_Paper_3_Pure_Mathematics_3"];
-            dataSource = 'Paper 3 Pure Mathematics 3';
-            break;
-          case 'p4':
-            topicsArray = paper4Data["9709_Paper_4_Mechanics"];
-            dataSource = 'Paper 4 Mechanics';
-            break;
-          case 'p5':
-            topicsArray = paper5Data["9709_Paper_5_Probability_and_Statistics_1"];
-            dataSource = 'Paper 5 Probability and Statistics 1';
-            break;
-          default:
-            setLoading(false);
-            return;
-        }
-        
-        if (topicsArray) {
-          // Convert topic name to match URL format (lowercase, replace spaces with hyphens)
-          const topicToFind = topicsArray.find(t => normalizeTopicId(t.topic) === topicId);
-          
-          if (topicToFind) {
-            setTopicData({
-              name: topicToFind.topic,
-              description: `Master the fundamentals of ${topicToFind.topic} with detailed concept cards and comprehensive syllabus coverage from CIE A Level ${dataSource}.`,
-              cards: topicToFind.cards, // 使用新的cards结构
-              keyPoints: generateKeyPoints(topicToFind.topic),
-              paperName: paperNames[paper] || `Paper ${paper.toUpperCase()}`,
-              subjectName: subjectNames[subject] || `Subject ${subject}`,
-              subjectCode: subject
-            });
-          }
-        }
-      } else if (subject === '9231') {
-        let topicsArray = null;
-        let dataSource = '';
-        
-        switch (paper) {
-          case 'p1':
-            topicsArray = fp1Data["9231_Paper_1_Further_Pure_Mathematics_1"];
-            dataSource = 'Paper 1 Further Pure Mathematics 1';
-            break;
-          case 'p2':
-            topicsArray = fp2Data["9231_Paper_2_Further_Pure_Mathematics_2"];
-            dataSource = 'Paper 2 Further Pure Mathematics 2';
-            break;
-          case 'p3':
-            topicsArray = fmData["9231_Paper_3_Further_Mechanics"];
-            dataSource = 'Paper 3 Further Mechanics';
-            break;
-          case 'p4':
-            topicsArray = fsData["9231_Paper_4_Further_Probability_and_Statistics"];
-            dataSource = 'Paper 4 Further Probability and Statistics';
-            break;
-          default:
-            setLoading(false);
-            return;
-        }
-        
-        if (topicsArray) {
-          // Convert topic name to match URL format (lowercase, replace spaces with hyphens)
-          const topicToFind = topicsArray.find(t => normalizeTopicId(t.topic) === topicId);
-          
-          if (topicToFind) {
-            setTopicData({
-              name: topicToFind.topic,
-              description: `Master the fundamentals of ${topicToFind.topic} with detailed concept cards and comprehensive syllabus coverage from CIE A Level ${dataSource}.`,
-              cards: topicToFind.cards, // 使用新的cards结构
-              keyPoints: generateKeyPoints(topicToFind.topic),
-              paperName: paperNames[paper] || `Paper ${paper.toUpperCase()}`,
-              subjectName: subjectNames[subject] || `Subject ${subject}`,
-              subjectCode: subject
-            });
-          }
-        }
+      // 先尝试从数据库获取内容
+      const dbResult = await loadFromDatabase();
+      if (dbResult?.success && dbResult.data) {
+        setTopicData(dbResult.data);
+        setLoading(false);
+        return;
       }
       
+      // 数据库无内容时，回退到 JSON
+      const jsonResult = loadFromJSON();
+      if (jsonResult?.success && jsonResult.data) {
+        setTopicData(jsonResult.data);
+      }
       setLoading(false);
     };
 
     loadTopicData();
   }, [subject, paper, topicId]);
+
+  // 从数据库加载单个主题详情
+  const loadFromDatabase = async () => {
+    try {
+      // 1. 定位学科
+      const { data: subjectRow, error: subjectError } = await db
+        .from('subjects')
+        .select('id, name, subject_code')
+        .eq('subject_code', subject)
+        .single();
+      if (subjectError || !subjectRow) throw new Error('Subject not found');
+
+      // 2. 定位试卷（优先 name，其次 code）
+      let paperRow = null;
+      {
+        const { data, error } = await db
+          .from('papers')
+          .select('id, name, description')
+          .eq('subject_id', subjectRow.id)
+          .eq('name', paper)
+          .single();
+        if (!error && data) paperRow = data;
+      }
+      if (!paperRow) {
+        const { data, error } = await db
+          .from('papers')
+          .select('id, name, description, code')
+          .eq('subject_id', subjectRow.id)
+          .eq('code', paper)
+          .single();
+        if (error || !data) throw new Error('Paper not found');
+        paperRow = data;
+      }
+
+      // 3. 获取所有 topics 并匹配指定 topicId
+      const { data: topics, error: topicsError } = await db
+        .from('topics')
+        .select('*')
+        .eq('paper_id', paperRow.id);
+      if (topicsError) throw new Error(topicsError.message);
+
+      const matched = (topics || []).find(t => normalizeTopicId(String(t.title || t.topic_id)) === topicId);
+      if (!matched) return { success: false };
+
+      const content = matched.content || {};
+      const keyPoints = Array.isArray(content.keyPoints) ? content.keyPoints : [];
+      const cards = Array.isArray(content.cards)
+        ? content.cards
+        : keyPoints.length > 0
+          ? [{ title: matched.title || matched.topic_id, details: keyPoints }]
+          : [];
+
+      return {
+        success: true,
+        data: {
+          name: String(matched.title || matched.topic_id),
+          description: content.description || `Master the fundamentals of ${matched.title || matched.topic_id} with comprehensive syllabus coverage.`,
+          cards,
+          keyPoints: generateKeyPoints(String(matched.title || matched.topic_id)),
+          paperName: paperNames[paper] || `Paper ${String(paper).toUpperCase()}`,
+          subjectName: subjectNames[subject] || `Subject ${subject}`,
+          subjectCode: subject
+        }
+      };
+    } catch (e) {
+      console.warn('TopicDetail DB load failed, falling back to JSON:', e.message);
+      return { success: false };
+    }
+  };
+
+  // 从本地 JSON 加载主题详情
+  const loadFromJSON = () => {
+    try {
+      let topicsArray = null;
+      let dataSource = '';
+
+      if (subject === '9709') {
+        switch (paper) {
+          case 'p1':
+          case 'paper1':
+            topicsArray = paper1Data["9709_Paper_1_Pure_Mathematics_1"]; dataSource = 'Paper 1 Pure Mathematics 1'; break;
+          case 'p3':
+          case 'paper3':
+            topicsArray = paper3Data["9709_Paper_3_Pure_Mathematics_3"]; dataSource = 'Paper 3 Pure Mathematics 3'; break;
+          case 'p4':
+          case 'paper4':
+            topicsArray = paper4Data["9709_Paper_4_Mechanics"]; dataSource = 'Paper 4 Mechanics'; break;
+          case 'p5':
+          case 'paper5':
+            topicsArray = paper5Data["9709_Paper_5_Probability_and_Statistics_1"]; dataSource = 'Paper 5 Probability and Statistics 1'; break;
+          default: return { success: false };
+        }
+      } else if (subject === '9231') {
+        switch (paper) {
+          case 'p1':
+          case 'paper1':
+            topicsArray = fp1Data["9231_Paper_1_Further_Pure_Mathematics_1"]; dataSource = 'Paper 1 Further Pure Mathematics 1'; break;
+          case 'p2':
+          case 'paper2':
+            topicsArray = fp2Data["9231_Paper_2_Further_Pure_Mathematics_2"]; dataSource = 'Paper 2 Further Pure Mathematics 2'; break;
+          case 'p3':
+          case 'paper3':
+            topicsArray = fmData["9231_Paper_3_Further_Mechanics"]; dataSource = 'Paper 3 Further Mechanics'; break;
+          case 'p4':
+          case 'paper4':
+            topicsArray = fsData["9231_Paper_4_Further_Probability_and_Statistics"]; dataSource = 'Paper 4 Further Probability and Statistics'; break;
+          default: return { success: false };
+        }
+      } else {
+        return { success: false };
+      }
+
+      if (!topicsArray) return { success: false };
+      const topicToFind = topicsArray.find(t => normalizeTopicId(t.topic) === topicId);
+      if (!topicToFind) return { success: false };
+
+      return {
+        success: true,
+        data: {
+          name: topicToFind.topic,
+          description: `Master the fundamentals of ${topicToFind.topic} with detailed concept cards and comprehensive syllabus coverage from CIE A Level ${dataSource}.`,
+          cards: topicToFind.cards,
+          keyPoints: generateKeyPoints(topicToFind.topic),
+          paperName: paperNames[paper] || `Paper ${String(paper).toUpperCase()}`,
+          subjectName: subjectNames[subject] || `Subject ${subject}`,
+          subjectCode: subject
+        }
+      };
+    } catch (e) {
+      console.error('JSON load failed:', e.message);
+      return { success: false };
+    }
+  };
 
   // Animation variants
   const pageVariants = {

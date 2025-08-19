@@ -15,11 +15,15 @@ import {
   Star,
   Clock
 } from 'lucide-react';
+import { supabase } from '../../utils/supabase';
+import { useAuth } from '../../contexts/AuthContext';
 
 // 错题本组件
-const ErrorBook = ({ userId }) => {
+const ErrorBook = () => {
+  const { user, isAuthenticated } = useAuth();
   const [errors, setErrors] = useState([]);
   const [filteredErrors, setFilteredErrors] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
@@ -29,69 +33,112 @@ const ErrorBook = ({ userId }) => {
   const [selectedError, setSelectedError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // TODO: 当Supabase配置完成后，替换为真实数据获取
+  // 从数据库加载用户错题数据
   useEffect(() => {
-    // 模拟错题数据
-    const mockErrors = [
-      {
-        id: 1,
-        subject: '9709',
-        paper: 'Paper 1',
-        topic: '函数与图像',
-        question: '求函数 f(x) = x² - 4x + 3 的最小值',
-        userAnswer: 'x = 2时，最小值为1',
-        correctAnswer: 'x = 2时，最小值为-1',
-        explanation: '完成平方：f(x) = (x-2)² - 1，所以最小值为-1',
-        errorType: '计算错误',
-        difficulty: 'medium',
-        tags: ['二次函数', '最值问题'],
-        status: 'unresolved', // unresolved, reviewing, resolved
-        createdAt: '2024-01-15',
-        reviewCount: 0,
-        isStarred: true,
-        notes: '需要注意完成平方的计算步骤'
-      },
-      {
-        id: 2,
-        subject: '9709',
-        paper: 'Paper 3',
-        topic: '微分',
-        question: '求 y = ln(x² + 1) 的导数',
-        userAnswer: 'dy/dx = 1/(x² + 1)',
-        correctAnswer: 'dy/dx = 2x/(x² + 1)',
-        explanation: '使用链式法则：d/dx[ln(u)] = (1/u) × du/dx，其中u = x² + 1',
-        errorType: '概念错误',
-        difficulty: 'hard',
-        tags: ['导数', '链式法则', '对数函数'],
-        status: 'reviewing',
-        createdAt: '2024-01-12',
-        reviewCount: 2,
-        isStarred: false,
-        notes: '复习链式法则的应用'
-      },
-      {
-        id: 3,
-        subject: '9702',
-        paper: 'Paper 2',
-        topic: '力学',
-        question: '质量为2kg的物体在5N的力作用下的加速度',
-        userAnswer: 'a = 10 m/s²',
-        correctAnswer: 'a = 2.5 m/s²',
-        explanation: '根据牛顿第二定律：F = ma，所以 a = F/m = 5/2 = 2.5 m/s²',
-        errorType: '计算错误',
-        difficulty: 'easy',
-        tags: ['牛顿定律', '力与运动'],
-        status: 'resolved',
-        createdAt: '2024-01-10',
-        reviewCount: 3,
-        isStarred: false,
-        notes: '已掌握'
+    if (!isAuthenticated || !user) {
+      // 未登录用户显示演示数据
+      const mockErrors = [
+        {
+          id: 1,
+          subject: '9709',
+          paper: 'Paper 1',
+          topic: '函数与图像',
+          question: '求函数 f(x) = x² - 4x + 3 的最小值',
+          userAnswer: 'x = 2时，最小值为1',
+          correctAnswer: 'x = 2时，最小值为-1',
+          explanation: '完成平方：f(x) = (x-2)² - 1，所以最小值为-1',
+          errorType: '计算错误',
+          difficulty: 'medium',
+          tags: ['二次函数', '最值问题'],
+          status: 'unresolved',
+          createdAt: '2024-01-15',
+          reviewCount: 0,
+          isStarred: true,
+          notes: '需要注意完成平方的计算步骤'
+        },
+        {
+          id: 2,
+          subject: '9709',
+          paper: 'Paper 3',
+          topic: '微分',
+          question: '求 y = ln(x² + 1) 的导数',
+          userAnswer: 'dy/dx = 1/(x² + 1)',
+          correctAnswer: 'dy/dx = 2x/(x² + 1)',
+          explanation: '使用链式法则：d/dx[ln(u)] = (1/u) × du/dx，其中u = x² + 1',
+          errorType: '概念错误',
+          difficulty: 'hard',
+          tags: ['导数', '链式法则', '对数函数'],
+          status: 'reviewing',
+          createdAt: '2024-01-12',
+          reviewCount: 2,
+          isStarred: false,
+          notes: '复习链式法则的应用'
+        }
+      ];
+      setErrors(mockErrors);
+      setFilteredErrors(mockErrors);
+      setLoading(false);
+      return;
+    }
+
+    loadUserErrors();
+  }, [user, isAuthenticated]);
+
+  const loadUserErrors = async () => {
+    try {
+      setLoading(true);
+      
+      // 从错题表获取用户的错题记录
+      const { data: errorRecords, error } = await supabase
+        .from('user_errors')
+        .select(`
+          *,
+          subjects:subject_code (name),
+          papers:paper_id (name)
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching user errors:', error);
+        // 使用演示数据作为备用
+        const fallbackErrors = [];
+        setErrors(fallbackErrors);
+        setFilteredErrors(fallbackErrors);
+        return;
       }
-    ];
-    
-    setErrors(mockErrors);
-    setFilteredErrors(mockErrors);
-  }, [userId]);
+
+      // 转换数据格式以匹配现有组件接口
+      const transformedErrors = (errorRecords || []).map(record => ({
+        id: record.id,
+        subject: record.subject_code,
+        paper: record.papers?.name || 'Unknown Paper',
+        topic: record.topic_name,
+        question: record.question,
+        userAnswer: record.user_answer,
+        correctAnswer: record.correct_answer,
+        explanation: record.explanation,
+        errorType: record.error_type || '未分类',
+        difficulty: record.difficulty_level || 'medium',
+        tags: record.tags || [],
+        status: record.status || 'unresolved',
+        createdAt: new Date(record.created_at).toISOString().split('T')[0],
+        reviewCount: record.review_count || 0,
+        isStarred: record.is_starred || false,
+        notes: record.notes || ''
+      }));
+
+      setErrors(transformedErrors);
+      setFilteredErrors(transformedErrors);
+
+    } catch (error) {
+      console.error('Error loading user errors:', error);
+      setErrors([]);
+      setFilteredErrors([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // 筛选和搜索
   useEffect(() => {
@@ -162,22 +209,106 @@ const ErrorBook = ({ userId }) => {
   };
 
   // 更新错题状态
-  const updateErrorStatus = (errorId, newStatus) => {
-    setErrors(prev => prev.map(error => 
-      error.id === errorId ? { ...error, status: newStatus } : error
-    ));
+  const updateErrorStatus = async (errorId, newStatus) => {
+    if (!isAuthenticated || !user) {
+      // 演示模式下只更新本地状态
+      setErrors(prev => prev.map(error => 
+        error.id === errorId ? { ...error, status: newStatus } : error
+      ));
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('user_errors')
+        .update({ 
+          status: newStatus,
+          review_count: supabase.sql`review_count + 1`,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', errorId)
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error updating error status:', error);
+        return;
+      }
+
+      // 更新本地状态
+      setErrors(prev => prev.map(error => 
+        error.id === errorId ? { 
+          ...error, 
+          status: newStatus,
+          reviewCount: error.reviewCount + 1
+        } : error
+      ));
+    } catch (error) {
+      console.error('Error updating error status:', error);
+    }
   };
 
   // 切换收藏状态
-  const toggleStar = (errorId) => {
-    setErrors(prev => prev.map(error => 
-      error.id === errorId ? { ...error, isStarred: !error.isStarred } : error
-    ));
+  const toggleStar = async (errorId) => {
+    if (!isAuthenticated || !user) {
+      // 演示模式下只更新本地状态
+      setErrors(prev => prev.map(error => 
+        error.id === errorId ? { ...error, isStarred: !error.isStarred } : error
+      ));
+      return;
+    }
+
+    const currentError = errors.find(e => e.id === errorId);
+    if (!currentError) return;
+
+    try {
+      const { error } = await supabase
+        .from('user_errors')
+        .update({ 
+          is_starred: !currentError.isStarred,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', errorId)
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error toggling star:', error);
+        return;
+      }
+
+      // 更新本地状态
+      setErrors(prev => prev.map(error => 
+        error.id === errorId ? { ...error, isStarred: !error.isStarred } : error
+      ));
+    } catch (error) {
+      console.error('Error toggling star:', error);
+    }
   };
 
   // 删除错题
-  const deleteError = (errorId) => {
-    setErrors(prev => prev.filter(error => error.id !== errorId));
+  const deleteError = async (errorId) => {
+    if (!isAuthenticated || !user) {
+      // 演示模式下只更新本地状态
+      setErrors(prev => prev.filter(error => error.id !== errorId));
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('user_errors')
+        .delete()
+        .eq('id', errorId)
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error deleting error:', error);
+        return;
+      }
+
+      // 更新本地状态
+      setErrors(prev => prev.filter(error => error.id !== errorId));
+    } catch (error) {
+      console.error('Error deleting error:', error);
+    }
   };
 
   // 动画变体

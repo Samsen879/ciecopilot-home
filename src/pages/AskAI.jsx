@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Bot, MessageSquare, Sparkles, Target } from "lucide-react";
 import ChatWidget from "../components/ChatWidget";
+import ChatPanel from "../components/ChatPanel";
 
 const AskAI = () => {
   const fadeInUp = {
@@ -71,9 +72,9 @@ const AskAI = () => {
               </p>
             </div>
             
-            {/* 直接嵌入完整的ChatWidget，移除浮动样式 */}
+            {/* 使用新的 ChatPanel 形成最小闭环 */}
             <div className="h-96">
-              <ChatWidget embedded={true} />
+              <ChatPanel />
             </div>
           </div>
         </motion.div>

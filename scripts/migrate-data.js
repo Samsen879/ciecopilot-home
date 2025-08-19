@@ -1,16 +1,25 @@
 // 数据迁移脚本
 // 将现有的JSON文件数据迁移到Supabase数据库
 
+import 'dotenv/config'; // 在所有代码之前加载环境变量
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 
 // 获取当前文件的目录
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 当您准备好使用Supabase时，取消注释以下导入
-// import { supabase } from '../src/utils/supabase.js';
+// 为Node.js环境创建Supabase客户端
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error("Supabase URL or Key not found. Make sure you have a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY");
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // 数据文件路径
 const DATA_DIR = path.join(__dirname, '../src/data');
@@ -44,8 +53,7 @@ async function migrateMathematicsData() {
     
     console.log(`处理 ${paper.name} 数据...`);
     
-    // TODO: 当Supabase配置完成后，取消注释以下代码
-    /*
+    // 启用Supabase集成的代码
     try {
       // 获取数学科目ID
       const { data: subject } = await supabase
@@ -72,22 +80,38 @@ async function migrateMathematicsData() {
         continue;
       }
       
-      // 迁移主题数据
-      if (data.topics && Array.isArray(data.topics)) {
-        for (const topic of data.topics) {
+      // 处理数学科目的特殊JSON格式
+      // 数学JSON格式: { "9709_Paper_X": [{ "topic": "主题名", "cards": [...] }] }
+      const paperKey = Object.keys(data)[0]; // 获取第一个键，如 "9709_Paper_1_Pure_Mathematics_1"
+      const topicsArray = data[paperKey];
+      
+      if (topicsArray && Array.isArray(topicsArray)) {
+        for (let i = 0; i < topicsArray.length; i++) {
+          const topicGroup = topicsArray[i];
+          const topicName = topicGroup.topic;
+          const cards = topicGroup.cards || [];
+          
+          // 生成唯一的topic_id
+          const topicId = `${paper.code}_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+          
+          // 将cards转换为内容描述
+          const description = cards.map(card => card.title).join('; ');
+          const keyPoints = cards.flatMap(card => card.details || []);
+          
           const topicData = {
             paper_id: paperRecord.id,
-            topic_id: topic.id,
-            title: topic.title,
+            topic_id: topicId,
+            title: topicName,
             content: {
-              description: topic.description,
-              keyPoints: topic.keyPoints,
-              examples: topic.examples,
-              exercises: topic.exercises
+              description: description,
+              keyPoints: keyPoints,
+              cards: cards, // 保留原始卡片数据
+              examples: [],
+              exercises: []
             },
-            difficulty_level: topic.difficulty || 1,
-            estimated_time: topic.estimatedTime || 30,
-            tags: topic.tags || []
+            difficulty_level: 1,
+            estimated_time: 30,
+            tags: [paper.code, 'mathematics']
           };
           
           const { error } = await supabase
@@ -95,21 +119,24 @@ async function migrateMathematicsData() {
             .upsert(topicData, { onConflict: 'paper_id,topic_id' });
           
           if (error) {
-            console.error(`插入主题 ${topic.title} 失败:`, error.message);
+            console.error(`插入主题 ${topicName} 失败:`, error.message);
           } else {
-            console.log(`✓ 主题 ${topic.title} 迁移成功`);
+            console.log(`✓ 主题 ${topicName} 迁移成功`);
           }
         }
+      } else {
+        console.log(`${paper.name}: 未找到有效的主题数据`);
       }
     } catch (error) {
       console.error(`迁移 ${paper.name} 数据失败:`, error.message);
     }
-    */
     
-    // 临时：只显示数据结构
-    console.log(`${paper.name} 包含 ${data.topics?.length || 0} 个主题`);
-    if (data.topics && data.topics.length > 0) {
-      console.log('主题示例:', data.topics[0].title);
+    // 显示数据结构信息
+    const paperKey = Object.keys(data)[0];
+    const topicsArray = data[paperKey];
+    console.log(`${paper.name} 包含 ${topicsArray?.length || 0} 个主题`);
+    if (topicsArray && topicsArray.length > 0) {
+      console.log('主题示例:', topicsArray[0].topic);
     }
   }
 }
@@ -131,8 +158,90 @@ async function migrateFurtherMathematicsData() {
     
     console.log(`处理 ${paper.name} 数据...`);
     
-    // TODO: 类似数学科目的迁移逻辑
-    console.log(`${paper.name} 包含 ${data.topics?.length || 0} 个主题`);
+    try {
+      // 获取进阶数学科目ID
+      const { data: subject } = await supabase
+        .from('subjects')
+        .select('id')
+        .eq('code', '9231')
+        .single();
+      
+      if (!subject) {
+        console.error('未找到进阶数学科目');
+        continue;
+      }
+      
+      // 获取试卷ID
+      const { data: paperRecord } = await supabase
+        .from('papers')
+        .select('id')
+        .eq('subject_id', subject.id)
+        .eq('code', paper.code)
+        .single();
+      
+      if (!paperRecord) {
+        console.error(`未找到试卷: ${paper.code}`);
+        continue;
+      }
+      
+      // 处理进阶数学科目的特殊JSON格式
+      // 进阶数学JSON格式: { "9231_Paper_X": [{ "topic": "主题名", "cards": [...] }] }
+      const paperKey = Object.keys(data)[0]; // 获取第一个键
+      const topicsArray = data[paperKey];
+      
+      if (topicsArray && Array.isArray(topicsArray)) {
+        for (let i = 0; i < topicsArray.length; i++) {
+          const topicGroup = topicsArray[i];
+          const topicName = topicGroup.topic;
+          const cards = topicGroup.cards || [];
+          
+          // 生成唯一的topic_id
+          const topicId = `${paper.code}_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+          
+          // 将cards转换为内容描述
+          const description = cards.map(card => card.title).join('; ');
+          const keyPoints = cards.flatMap(card => card.details || []);
+          
+          const topicData = {
+            paper_id: paperRecord.id,
+            topic_id: topicId,
+            title: topicName,
+            content: {
+              description: description,
+              keyPoints: keyPoints,
+              cards: cards, // 保留原始卡片数据
+              examples: [],
+              exercises: []
+            },
+            difficulty_level: 1,
+            estimated_time: 45,
+            tags: []
+          };
+          
+          const { error } = await supabase
+            .from('topics')
+            .upsert(topicData, { onConflict: 'paper_id,topic_id' });
+          
+          if (error) {
+            console.error(`插入主题 ${topicName} 失败:`, error.message);
+          } else {
+            console.log(`✓ 主题 ${topicName} 迁移成功`);
+          }
+        }
+      } else {
+        console.log(`${paper.name}: 未找到有效的主题数据`);
+      }
+    } catch (error) {
+      console.error(`迁移 ${paper.name} 数据失败:`, error.message);
+    }
+    
+    // 显示数据结构信息
+    const paperKey = Object.keys(data)[0];
+    const topicsArray = data[paperKey];
+    console.log(`${paper.name} 包含 ${topicsArray?.length || 0} 个主题`);
+    if (topicsArray && topicsArray.length > 0) {
+      console.log('主题示例:', topicsArray[0].topic);
+    }
   }
 }
 
@@ -145,8 +254,74 @@ async function migratePhysicsData() {
   
   console.log('处理物理数据...');
   
-  // TODO: 物理数据迁移逻辑
-  console.log(`物理数据结构:`, Object.keys(data));
+  try {
+    // 获取物理科目ID
+    const { data: subject } = await supabase
+      .from('subjects')
+      .select('id')
+      .eq('code', '9702')
+      .single();
+    
+    if (!subject) {
+      console.error('未找到物理科目');
+      return;
+    }
+    
+    // 处理AS和A2级别的数据
+    const levels = ['AS', 'A2'];
+    for (const level of levels) {
+      const levelData = data[level];
+      if (!levelData) continue;
+      
+      // 处理各个paper
+      for (const [paperCode, paperData] of Object.entries(levelData)) {
+        if (!paperData.topics) continue;
+        
+        // 获取试卷ID
+        const { data: paperRecord } = await supabase
+          .from('papers')
+          .select('id')
+          .eq('subject_id', subject.id)
+          .eq('code', paperCode.toLowerCase())
+          .single();
+        
+        if (!paperRecord) {
+          console.error(`未找到试卷: ${paperCode}`);
+          continue;
+        }
+        
+        // 迁移主题数据
+        for (const topic of paperData.topics) {
+          const topicData = {
+            paper_id: paperRecord.id,
+            topic_id: topic.id || topic.topicId,
+            title: topic.title || topic.name,
+            content: {
+              description: topic.description || topic.content,
+              keyPoints: topic.keyPoints || topic.key_points,
+              examples: topic.examples || [],
+              exercises: topic.exercises || []
+            },
+            difficulty_level: topic.difficulty || 1,
+            estimated_time: topic.estimatedTime || 45,
+            tags: topic.tags || []
+          };
+          
+          const { error } = await supabase
+            .from('topics')
+            .upsert(topicData, { onConflict: 'paper_id,topic_id' });
+          
+          if (error) {
+            console.error(`插入主题 ${topic.title || topic.name} 失败:`, error.message);
+          } else {
+            console.log(`✓ 主题 ${topic.title || topic.name} 迁移成功`);
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error('迁移物理数据失败:', error.message);
+  }
 }
 
 // 迁移通用主题数据
@@ -164,8 +339,7 @@ async function migrateGeneralTopics() {
 async function validateMigratedData() {
   console.log('\n验证迁移数据完整性...');
   
-  // TODO: 当Supabase配置完成后，添加数据验证逻辑
-  /*
+  // 数据验证逻辑
   try {
     // 检查科目数量
     const { count: subjectCount } = await supabase
@@ -188,12 +362,10 @@ async function validateMigratedData() {
     
     console.log(`✓ 主题数量: ${topicCount}`);
     
+    console.log('数据验证完成');
   } catch (error) {
     console.error('验证数据失败:', error.message);
   }
-  */
-  
-  console.log('数据验证完成（需要Supabase配置后才能执行实际验证）');
 }
 
 // 主迁移函数
@@ -202,15 +374,12 @@ async function migrateAllData() {
   
   try {
     // 检查Supabase配置
-    // TODO: 取消注释以下代码当Supabase配置完成后
-    /*
     if (!supabase) {
-      console.error('Supabase未配置，请先完成Supabase设置');
+      console.error('Supabase客户端初始化失败，请检查环境变量。');
       return;
     }
-    */
     
-    console.log('注意: 当前为演示模式，需要配置Supabase后才能执行实际迁移\n');
+    console.log('Supabase客户端已连接，开始执行实际迁移...\n');
     
     // 执行迁移
     await migrateMathematicsData();
@@ -230,9 +399,11 @@ async function migrateAllData() {
 }
 
 // 如果直接运行此脚本
-if (import.meta.url === `file://${process.argv[1]}`) {
+// (简单检查，确保在被导入时不会自动运行)
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   migrateAllData();
 }
+
 
 export {
   migrateMathematicsData,

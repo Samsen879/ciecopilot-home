@@ -217,6 +217,15 @@ const SearchBox = ({ className = '', placeholder = "Search topics, subjects..." 
     setQuery(e.target.value);
   };
 
+  // Submit to /search on Enter
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && query.trim()) {
+      addToHistory(query);
+      setIsOpen(false);
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
   // Clear search
   const clearSearch = () => {
     setQuery('');
@@ -247,6 +256,7 @@ const SearchBox = ({ className = '', placeholder = "Search topics, subjects..." 
           value={query}
           onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
+          onKeyDown={handleKeyDown}
           className="w-full pl-10 pr-10 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
         />
         {query && (

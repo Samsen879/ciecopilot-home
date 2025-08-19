@@ -1,11 +1,8 @@
 # 9231 FP1 Content Index
 
-## 📚 Educational Content Files (8 total)
+## 📚 Educational Content Files (7 total)
 
 ### 🔬 Further Pure Mathematics 1 Topics
-
-#### Matrices
-- `matrix_operations_and_transformations.md` - Matrix operations, transformations, composite transformations, singular matrices
 
 #### Polynomials
 - `polynomial_roots_and_transformations.md` - Vieta's formulas, root relationships, polynomial transformations

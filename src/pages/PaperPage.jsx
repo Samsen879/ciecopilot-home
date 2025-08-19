@@ -7,15 +7,7 @@ import { db } from '../utils/supabase';
 import normalizeTopicId from '../utils/normalizeTopicId';
 
 // JSON数据作为后备 - 当数据库为空时使用
-// 确保路径正确
-import paper1Data from '../data/9709paper1.json';
-import paper3Data from '../data/9709paper3.json';
-import paper4Data from '../data/9709paper4.json';
-import paper5Data from '../data/9709paper5.json';
-import fp1Data from '../data/9231FP1-syllabus.json';
-import fp2Data from '../data/9231FP2-syllabus.json';
-import fmData from '../data/9231FM-syllabus.json';
-import fsData from '../data/9231FS-syllabus.json';
+// 使用fetch从public目录加载JSON文件
 
 const PaperPage = () => {
   const { subject, paper } = useParams();
@@ -85,7 +77,7 @@ const PaperPage = () => {
         } else {
           // 回退到JSON数据
           console.log('Database empty or failed, falling back to JSON data...');
-          const jsonResult = loadFromJSON();
+          const jsonResult = await loadFromJSON();
           if (jsonResult.success) {
             setPaperData(jsonResult.data);
             setDataSource('json');
@@ -97,7 +89,7 @@ const PaperPage = () => {
       } catch (error) {
         console.error('Error loading paper data:', error);
         // 尝试JSON回退
-        const jsonResult = loadFromJSON();
+        const jsonResult = await loadFromJSON();
         if (jsonResult.success) {
           setPaperData(jsonResult.data);
           setDataSource('json');
@@ -196,7 +188,7 @@ const PaperPage = () => {
   };
 
   // 从JSON文件加载数据（原有逻辑）
-  const loadFromJSON = () => {
+  const loadFromJSON = async () => {
     try {
       // Handle different papers for 9709 Mathematics and 9231 Further Mathematics
       if (subject === '9709') {
@@ -206,22 +198,50 @@ const PaperPage = () => {
         switch (paper) {
           case 'p1':
           case 'paper1':
-            topicsArray = paper1Data["9709_Paper_1_Pure_Mathematics_1"];
+            try {
+              const response = await fetch('/data/9709paper1.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9709_Paper_1_Pure_Mathematics_1"];
+            } catch (error) {
+              console.error('Error loading paper1 JSON:', error);
+              return { success: false, error: 'Failed to load paper1 data' };
+            }
             description = 'Foundational pure mathematics covering algebraic and basic calculus concepts essential for A Level mathematics.';
             break;
           case 'p3':
           case 'paper3':
-            topicsArray = paper3Data["9709_Paper_3_Pure_Mathematics_3"];
+            try {
+              const response = await fetch('/data/9709paper3.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9709_Paper_3_Pure_Mathematics_3"];
+            } catch (error) {
+              console.error('Error loading paper3 JSON:', error);
+              return { success: false, error: 'Failed to load paper3 data' };
+            }
             description = 'Advanced pure mathematics including complex numbers, vectors, differential equations, and advanced calculus techniques.';
             break;
           case 'p4':
           case 'paper4':
-            topicsArray = paper4Data["9709_Paper_4_Mechanics"];
+            try {
+              const response = await fetch('/data/9709paper4.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9709_Paper_4_Mechanics"];
+            } catch (error) {
+              console.error('Error loading paper4 JSON:', error);
+              return { success: false, error: 'Failed to load paper4 data' };
+            }
             description = 'Applied mathematics focusing on forces, motion, energy, and mechanical systems in the physical world.';
             break;
           case 'p5':
           case 'paper5':
-            topicsArray = paper5Data["9709_Paper_5_Probability_and_Statistics_1"];
+            try {
+              const response = await fetch('/data/9709paper5.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9709_Paper_5_Probability_and_Statistics_1"];
+            } catch (error) {
+              console.error('Error loading paper5 JSON:', error);
+              return { success: false, error: 'Failed to load paper5 data' };
+            }
             description = 'Introduction to statistical methods, probability theory, and data analysis techniques.';
             break;
           default:
@@ -255,22 +275,50 @@ const PaperPage = () => {
         switch (paper) {
           case 'p1':
           case 'paper1':
-            topicsArray = fp1Data["9231_Paper_1_Further_Pure_Mathematics_1"];
+            try {
+              const response = await fetch('/data/9231FP1-syllabus.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9231_Paper_1_Further_Pure_Mathematics_1"];
+            } catch (error) {
+              console.error('Error loading FP1 JSON:', error);
+              return { success: false, error: 'Failed to load FP1 data' };
+            }
             description = 'Advanced pure mathematics building on A Level foundations with sophisticated algebraic and analytical techniques.';
             break;
           case 'p2':
           case 'paper2':
-            topicsArray = fp2Data["9231_Paper_2_Further_Pure_Mathematics_2"];
+            try {
+              const response = await fetch('/data/9231FP2-syllabus.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9231_Paper_2_Further_Pure_Mathematics_2"];
+            } catch (error) {
+              console.error('Error loading FP2 JSON:', error);
+              return { success: false, error: 'Failed to load FP2 data' };
+            }
             description = 'Complex mathematical concepts including hyperbolic functions, advanced matrices, and differential equations.';
             break;
           case 'p3':
           case 'paper3':
-            topicsArray = fmData["9231_Paper_3_Further_Mechanics"];
+            try {
+              const response = await fetch('/data/9231FM-syllabus.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9231_Paper_3_Further_Mechanics"];
+            } catch (error) {
+              console.error('Error loading FM JSON:', error);
+              return { success: false, error: 'Failed to load FM data' };
+            }
             description = 'Advanced mechanics covering projectile motion, rigid body equilibrium, and complex force systems.';
             break;
           case 'p4':
           case 'paper4':
-            topicsArray = fsData["9231_Paper_4_Further_Probability_and_Statistics"];
+            try {
+              const response = await fetch('/data/9231FS-syllabus.json');
+              const jsonData = await response.json();
+              topicsArray = jsonData["9231_Paper_4_Further_Probability_and_Statistics"];
+            } catch (error) {
+              console.error('Error loading FS JSON:', error);
+              return { success: false, error: 'Failed to load FS data' };
+            }
             description = 'Advanced statistical methods, hypothesis testing, and probability generating functions.';
             break;
           default:

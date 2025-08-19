@@ -4,7 +4,7 @@ import { ChevronDown, ChevronRight, BookOpen, Atom, Grid, List, ArrowLeft } from
 import { Link } from "react-router-dom";
 
 // Import physics data
-import physicsData from "../data/9702AS+A2.json";
+import physicsData from "../data/9702AS_A2.json";
 
 const PhysicsTopics = () => {
   const [expandedTopics, setExpandedTopics] = useState(new Set());

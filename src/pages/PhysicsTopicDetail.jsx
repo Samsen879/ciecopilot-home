@@ -22,7 +22,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { db } from '../utils/supabase';
 import { ragApi } from '../api/ragApi';
 import SearchResultCard from '../components/SearchResultCard';
-import physicsData from '../data/9702AS+A2.json';
+import physicsData from '../data/9702AS_A2.json';
 
 const PhysicsTopicDetail = () => {
   const { subject, paper, topicId } = useParams();

@@ -22,11 +22,11 @@ const SuccessStories = memo(() => {
     {
       id: 2,
       name: "Ahmed Hassan",
-      subject: "Chemistry & Biology",
+      subject: "Physics & Mathematics",
       improvement: "C → A",
       grade: "AAB",
       avatar: "👨‍🎓",
-      quote: "Photo recognition feature saved me hours. I could instantly get solutions for organic chemistry mechanisms during revision.",
+      quote: "Photo recognition feature saved me hours. I could instantly get solutions for complex physics problems during revision.",
       timeframe: "4 months",
       university: "Imperial College London"
     },
@@ -55,7 +55,7 @@ const SuccessStories = memo(() => {
     {
       id: 5,
       name: "Priya Patel",
-      subject: "Chemistry & Mathematics",
+      subject: "Physics & Mathematics",
       improvement: "D → A",
       grade: "AAA",
       avatar: "👩‍🔬",

@@ -155,18 +155,14 @@ export default function Navbar() {
       name: "Learning Paths", 
       submenu: [
         { name: "Mathematics (9709)", path: "/learning-path/9709" },
-        { name: "Physics (9702)", path: "/learning-path/9702" },
-        { name: "Chemistry (9701)", path: "/learning-path/9701" },
-        { name: "Biology (9700)", path: "/learning-path/9700" }
+        { name: "Physics (9702)", path: "/learning-path/9702" }
       ]
     },
     { 
       name: "Community & Recommendations", 
       submenu: [
         { name: "Mathematics Community", path: "/community/9709" },
-        { name: "Physics Community", path: "/community/9702" },
-        { name: "Chemistry Community", path: "/community/9701" },
-        { name: "Biology Community", path: "/community/9700" }
+        { name: "Physics Community", path: "/community/9702" }
       ]
     },
     { name: "Image Problem Solving", path: "/tools/image-solver" },

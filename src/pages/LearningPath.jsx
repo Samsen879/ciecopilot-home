@@ -97,18 +97,6 @@ const LearningPath = () => {
       fullName: 'CIE A-Level Physics',
       icon: '⚛️',
       color: 'purple'
-    },
-    '9701': {
-      name: 'Chemistry',
-      fullName: 'CIE A-Level Chemistry',
-      icon: '🧪',
-      color: 'green'
-    },
-    '9700': {
-      name: 'Biology',
-      fullName: 'CIE A-Level Biology',
-      icon: '🧬',
-      color: 'emerald'
     }
   };
 

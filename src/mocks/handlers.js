@@ -95,7 +95,7 @@ export const handlers = [
         lang: 'en',
         page_from: 1,
         page_to: 1,
-        path: '/src/data/9702AS+A2.json',
+        path: '/src/data/9702AS_A2.json',
         title: 'Electric Fields Notes',
         snippet: 'Definition of electric potential difference and relationship to field strength...'
       },

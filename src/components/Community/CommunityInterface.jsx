@@ -459,8 +459,6 @@ const CommunityInterface = ({
                       >
                         <option value="Mathematics">数学</option>
                         <option value="Physics">物理</option>
-                        <option value="Chemistry">化学</option>
-                        <option value="Biology">生物</option>
                       </select>
                     </div>
                     

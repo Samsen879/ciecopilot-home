@@ -29,8 +29,6 @@ const PaperPage = () => {
     '9709': 'Mathematics',
     '9231': 'Further Mathematics',
     '9702': 'Physics',
-    '9701': 'Chemistry',
-    '9700': 'Biology',
     '9698': 'Psychology',
     '9708': 'Economics'
   };

@@ -206,22 +206,6 @@ export const SUBJECT_CONFIGS = {
     practiceRatio: 0.5,
     theoryRatio: 0.5,
     specialFeatures: ['simulation', 'experiment_guide']
-  },
-  CHEMISTRY: {
-    name: '化学',
-    difficultyProgression: 'logarithmic',
-    prerequisiteWeight: 0.7,
-    practiceRatio: 0.4,
-    theoryRatio: 0.6,
-    specialFeatures: ['reaction_simulator', 'periodic_table']
-  },
-  BIOLOGY: {
-    name: '生物',
-    difficultyProgression: 'linear',
-    prerequisiteWeight: 0.6,
-    practiceRatio: 0.3,
-    theoryRatio: 0.7,
-    specialFeatures: ['diagram_analysis', 'case_studies']
   }
 };
 

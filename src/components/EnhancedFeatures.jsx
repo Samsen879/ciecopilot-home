@@ -27,7 +27,7 @@ const EnhancedFeatures = () => {
         {
           icon: Clock,
           title: "24/7 Availability", 
-          description: "Real-time Q&A with step-by-step explanations for challenging concepts (e.g., Vectors, Organic Chemistry mechanisms)."
+          description: "Real-time Q&A with step-by-step explanations for challenging concepts (e.g., Vectors, Mechanics problems)."
         },
         {
           icon: CheckCircle,

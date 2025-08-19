@@ -13,7 +13,7 @@ import fp1Data from '../data/9231FP1-syllabus.json';
 import fp2Data from '../data/9231FP2-syllabus.json';
 import fmData from '../data/9231FM-syllabus.json';
 import fsData from '../data/9231FS-syllabus.json';
-import physicsData from '../data/9702AS+A2.json';
+import physicsData from '../data/9702AS_A2.json';
 
 const SearchBox = ({ className = '', placeholder = "Search topics, subjects..." }) => {
   const [query, setQuery] = useState('');

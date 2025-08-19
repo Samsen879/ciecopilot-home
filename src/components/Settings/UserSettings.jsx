@@ -97,9 +97,7 @@ const UserSettings = () => {
     { code: '9709', name: 'Mathematics' },
     { code: '9231', name: 'Further Mathematics' },
     { code: '9702', name: 'Physics' },
-    { code: '9708', name: 'Economics' },
-    { code: '9700', name: 'Biology' },
-    { code: '9701', name: 'Chemistry' }
+    { code: '9708', name: 'Economics' }
   ];
 
   // 初始化数据

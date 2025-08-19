@@ -27,15 +27,15 @@ const StudentTestimonials = () => {
       id: 2,
       name: "James Wilson",
       school: "British School in Shanghai",
-      subjects: ["Chemistry", "Biology"],
+      subjects: ["Physics", "Mathematics"],
       beforeGrade: "D",
       afterGrade: "B",
       improvement: "+2 grades",
       timeframe: "6 months",
-      comment: "The CIE Question Bank with official mark schemes was game-changing. I could practice Organic Chemistry reactions with immediate feedback.",
+      comment: "The CIE Question Bank with official mark schemes was game-changing. I could practice complex physics problems with immediate feedback.",
       avatar: "👨‍🔬",
       university: "Imperial College",
-      courses: "Biochemistry",
+      courses: "Engineering Physics",
       features: ["Question Bank", "Instant Feedback", "Mark Schemes"]
     },
     {
@@ -72,16 +72,16 @@ const StudentTestimonials = () => {
       id: 5,
       name: "Lily Zhang",
       school: "Harrow International School",
-      subjects: ["Chemistry", "Mathematics"],
+      subjects: ["Physics", "Mathematics"],
       beforeGrade: "D",
       afterGrade: "A",
       improvement: "+3 grades",
       timeframe: "7 months",
-      comment: "Photo recognition made studying so much faster. I could snap pictures of chemical structures and get detailed mechanism explanations instantly.",
+      comment: "Photo recognition made studying so much faster. I could snap pictures of complex diagrams and get detailed explanations instantly.",
       avatar: "👩‍🔬",
       university: "UCL",
-      courses: "Chemical Engineering",
-      features: ["Photo Recognition", "OCR Technology", "Chemical Mechanisms"]
+      courses: "Engineering Physics",
+      features: ["Photo Recognition", "OCR Technology", "Physics Diagrams"]
     }
   ];
 

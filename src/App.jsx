@@ -18,7 +18,6 @@ const Home = React.lazy(() => import("./pages/Home"));
 const HomeOrRedirect = React.lazy(() => import("./pages/HomeOrRedirect"));
 const Topics = React.lazy(() => import("./pages/Topics"));
 const AskAI = React.lazy(() => import("./pages/AskAI"));
-const AuroraDemo = React.lazy(() => import("./pages/AuroraDemo"));
 const PaperPage = React.lazy(() => import("./pages/PaperPage"));
 const TopicDetail = React.lazy(() => import("./pages/TopicDetail"));
 const PhysicsASLevel = React.lazy(() => import("./pages/PhysicsASLevel"));
@@ -27,7 +26,6 @@ const StudyHub = React.lazy(() => import("./pages/StudyHub"));
 const AITutoring = React.lazy(() => import("./pages/AITutoring"));
 const SubjectPage = React.lazy(() => import('./pages/SubjectPage'));
 const Search = React.lazy(() => import('./pages/Search'));
-const AgentBDemo = React.lazy(() => import('./pages/AgentBDemo'));
 const LearningPath = React.lazy(() => import('./pages/LearningPath'));
 const CommunityAndRecommendations = React.lazy(() => import('./pages/CommunityAndRecommendations'));
 const QuestionDetail = React.lazy(() => import('./pages/QuestionDetail'));
@@ -49,6 +47,9 @@ const ToolsImageSolver = React.lazy(() => import('./pages/ToolsImageSolver'));
 const ToolsProgressTracking = React.lazy(() => import('./pages/ToolsProgressTracking'));
 const ToolsSmartRecommendations = React.lazy(() => import('./pages/ToolsSmartRecommendations'));
 const ToolsStudySuggestions = React.lazy(() => import('./pages/ToolsStudySuggestions'));
+
+// Pricing page - lazy loaded
+const Pricing = React.lazy(() => import('./pages/Pricing'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -98,15 +99,13 @@ function ContentWithChatShift() {
               <Route path="/ai-tutoring" element={<AITutoring />} />
               {/* Search Page */}
               <Route path="/search" element={<Search />} />
-              {/* Agent B Demo Page */}
-              <Route path="/agent-b-demo" element={<AgentBDemo />} />
-              {/* Aurora Background Demo */}
-              <Route path="/aurora-demo" element={<AuroraDemo />} />
               {/* Smart Tools */}
               <Route path="/tools/image-solver" element={<ToolsImageSolver />} />
               <Route path="/tools/progress-tracking" element={<ToolsProgressTracking />} />
               <Route path="/tools/smart-recommendations" element={<ToolsSmartRecommendations />} />
               <Route path="/tools/study-suggestions" element={<ToolsStudySuggestions />} />
+              {/* Pricing Page */}
+              <Route path="/pricing" element={<Pricing />} />
               {/* Dynamic Pages */}
               <Route path="/paper/:subject/:paper" element={<PaperPage />} />
               <Route path="/topic/:subject/:paper/:topicId" element={<TopicDetail />} />

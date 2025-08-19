@@ -1,6 +1,16 @@
-const {
-  default: flattenColorPalette,
-} = require("tailwindcss/lib/util/flattenColorPalette");
+// Import flattenColorPalette function - compatible with both v3 and v4
+let flattenColorPalette;
+try {
+  flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette").default;
+} catch (e) {
+  // Fallback for different Tailwind versions
+  try {
+    flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
+  } catch (e2) {
+    // Simple fallback function if import fails
+    flattenColorPalette = (colors) => colors;
+  }
+}
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

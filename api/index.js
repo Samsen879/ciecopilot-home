@@ -289,23 +289,27 @@ async function routeAI(req, res, subModule) {
   }));
 }
 
-// 创建HTTP服务器
-const server = http.createServer(handler);
+// 在本地开发或非无服务器环境下才启动独立 HTTP 服务器
+// Vercel 无服务器函数会直接调用导出的 handler，不应调用 listen
+const isServerlessEnvironment = Boolean(process.env.VERCEL || process.env.AWS_REGION || process.env.NOW_REGION);
 
-const PORT = process.env.PORT || 3001;
+if (!isServerlessEnvironment && process.env.NODE_ENV !== 'test') {
+  const server = http.createServer(handler);
+  const PORT = process.env.PORT || 3001;
 
-server.listen(PORT, () => {
-  console.log(`🚀 API Server running on http://localhost:${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api`);
-  console.log(`💚 Health Check: http://localhost:${PORT}/api/health`);
-});
-
-// 优雅关闭
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  server.close(() => {
-    console.log('Process terminated');
+  server.listen(PORT, () => {
+    console.log(`🚀 API Server running on http://localhost:${PORT}`);
+    console.log(`📚 API Documentation: http://localhost:${PORT}/api`);
+    console.log(`💚 Health Check: http://localhost:${PORT}/api/health`);
   });
-});
+
+  // 优雅关闭
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    server.close(() => {
+      console.log('Process terminated');
+    });
+  });
+}
 
 export default handler;

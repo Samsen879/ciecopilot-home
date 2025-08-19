@@ -1,0 +1,22 @@
+# Reduce Vercel CLI upload size by excluding large/local-only folders
+
+# VCS/IDE and Vercel metadata
+.git/
+.vscode/
+.vercel/
+
+# Dependencies and caches (installed during build on Vercel)
+node_modules/
+.cache/
+tmp/
+
+# Local datasets and tooling not required for runtime
+data/
+database/
+scripts/
+coverage/
+
+# Logs and temporary files
+*.log
+*.tmp
+

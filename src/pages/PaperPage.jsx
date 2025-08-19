@@ -7,6 +7,7 @@ import { db } from '../utils/supabase';
 import normalizeTopicId from '../utils/normalizeTopicId';
 
 // JSON数据作为后备 - 当数据库为空时使用
+// 确保路径正确
 import paper1Data from '../data/9709paper1.json';
 import paper3Data from '../data/9709paper3.json';
 import paper4Data from '../data/9709paper4.json';

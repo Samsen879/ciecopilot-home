@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Download, BookOpen, FileText, Grid, List, Waves } from 'lucide-react';
 import TopicCard from '../components/TopicCard';
-import physicsData from '../data/9702AS_A2.json';
+// import physicsData from '../data/9702AS_A2.json';
+const physicsData = {};
 
 const PhysicsA2Level = () => {
   const navigate = useNavigate();

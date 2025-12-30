@@ -36,11 +36,15 @@ jobs:
         run: npm ci
       
       - name: Run topic-path unit tests
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         run: |
           cd apps/api-node
           npx jest api/tests/topic-path.test.js --passWithNoTests
       
       - name: Run API contract unit tests
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         run: |
           cd apps/api-node
           npx jest api/tests/syllabus-boundary-api-contract.test.js --testPathIgnorePatterns="Integration" --passWithNoTests
@@ -115,6 +119,7 @@ jobs:
       
       - name: Run leakage tests
         env:
+          NODE_OPTIONS: --experimental-vm-modules
           TEST_DB_HOST: localhost
           TEST_DB_PORT: 54322
           TEST_DB_NAME: cie_copilot_test
@@ -126,6 +131,7 @@ jobs:
       
       - name: Run RPC tests
         env:
+          NODE_OPTIONS: --experimental-vm-modules
           TEST_DB_HOST: localhost
           TEST_DB_PORT: 54322
           TEST_DB_NAME: cie_copilot_test
@@ -155,6 +161,8 @@ jobs:
         run: npm ci
       
       - name: Run API contract tests
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         run: |
           cd apps/api-node
           npx jest api/tests/syllabus-boundary-api-contract.test.js --forceExit

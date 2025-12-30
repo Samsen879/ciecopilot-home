@@ -96,19 +96,25 @@ jobs:
           PGPASSWORD: postgres
           PGDATABASE: cie_copilot_test
         run: |
-          # Create roles
+          # Step 1: Create roles (required by Supabase RLS policies)
           psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN; END IF; END \$\$;"
           psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF; END \$\$;"
           psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN; END IF; END \$\$;"
           
-          # Apply shims (creates auth schema stubs)
-          psql -f test/fixtures/supabase-shims.sql
+          # Step 2: Apply baseline schema (simulates old production state)
+          # Creates chunks table WITHOUT syllabus boundary columns
+          psql -v ON_ERROR_STOP=1 -f test/fixtures/baseline-schema.sql
           
-          # Initialize test database with full schema
-          # (creates chunks, curriculum_nodes tables and hybrid_search_v2 RPC)
-          psql -v ON_ERROR_STOP=1 -f test/fixtures/init-test-db.sql
+          # Step 3: Apply Supabase shims (required before migration 3 for RLS)
+          psql -v ON_ERROR_STOP=1 -f test/fixtures/supabase-shims.sql
           
-          # Apply seed data
+          # Step 4: Replay migrations in order (CRITICAL - validates migration correctness)
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000100_enable_ltree.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000200_chunks_add_topic_path_fts.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000300_create_curriculum_nodes.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000400_rpc_hybrid_search_v2.sql
+          
+          # Step 5: Apply deterministic seed data
           psql -v ON_ERROR_STOP=1 -f test/fixtures/syllabus_boundary_seed.sql
       
       - name: Run leakage tests

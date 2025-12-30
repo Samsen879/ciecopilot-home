@@ -8,19 +8,44 @@ This directory contains test fixtures for the syllabus boundary system CI tests.
 
 | File | Purpose |
 |------|---------|
+| `baseline-schema.sql` | **CI ONLY**: Simulates old production state (chunks without syllabus columns) |
 | `supabase-shims.sql` | Stubs for Supabase auth functions (auth.role(), auth.uid(), auth.jwt()) |
 | `syllabus_boundary_seed.sql` | Full deterministic seed (123 chunks, 36 nodes, 15 unmapped) |
 | `syllabus_boundary_seed_minimal.sql` | Minimal seed for quick tests (20 chunks, 10 nodes) |
-| `init-test-db.sql` | Docker init script (creates final schema directly, NOT for replay) |
+| `init-test-db.sql` | **LOCAL ONLY**: Creates final schema directly for quick local dev |
+
+## Two Database Setup Paths
+
+### Path 1: CI Required Gate (Migrations Replay)
+
+**Used by**: `.github/workflows/syllabus-boundary-tests.yml` → `syllabus-boundary-leakage-gate` job
+
+```
+baseline-schema.sql → supabase-shims.sql → migrations(1..4) → seed → tests
+```
+
+**Why this matters**: This path validates that migrations can be replayed on a production-like baseline. If a migration has a bug (e.g., wrong column type, missing dependency), CI will catch it.
+
+### Path 2: Local Quick Start
+
+**Used by**: Local development, manual testing
+
+```
+init-test-db.sql → seed → tests
+```
+
+**Why this exists**: Faster setup for local development. Skips migration replay.
+
+⚠️ **WARNING**: `init-test-db.sql` MUST NOT be used in CI required gate because it bypasses migration validation.
 
 ## CI Database Setup Order (CRITICAL)
 
 The CI pipeline MUST execute steps in this exact order:
 
 ```
-1. Create Supabase roles (anon, authenticated)
-2. Reset to baseline (old schema without ltree/topic_path)
-3. Apply supabase-shims.sql (REQUIRED for RLS policies)
+1. Create Supabase roles (anon, authenticated, service_role)
+2. Apply baseline-schema.sql (old production state)
+3. Apply supabase-shims.sql (REQUIRED before migration 3 for RLS)
 4. Replay migrations in order:
    - 20251223000100_enable_ltree.sql
    - 20251223000200_chunks_add_topic_path_fts.sql

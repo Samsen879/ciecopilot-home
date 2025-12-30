@@ -38,16 +38,12 @@ jobs:
       - name: Run topic-path unit tests
         env:
           NODE_OPTIONS: --experimental-vm-modules
-        run: |
-          cd apps/api-node
-          npx jest api/tests/topic-path.test.js --passWithNoTests
+        run: npx jest apps/api-node/api/tests/topic-path.test.js --passWithNoTests
       
       - name: Run API contract unit tests
         env:
           NODE_OPTIONS: --experimental-vm-modules
-        run: |
-          cd apps/api-node
-          npx jest api/tests/syllabus-boundary-api-contract.test.js --testPathIgnorePatterns="Integration" --passWithNoTests
+        run: npx jest apps/api-node/api/tests/syllabus-boundary-api-contract.test.js --testPathIgnorePatterns="Integration" --passWithNoTests
 
   # ==========================================================================
   # Job 2: Leakage Gate (CI Required - MUST PASS)
@@ -125,9 +121,7 @@ jobs:
           TEST_DB_NAME: cie_copilot_test
           TEST_DB_USER: postgres
           TEST_DB_PASSWORD: postgres
-        run: |
-          cd apps/api-node
-          npx jest api/tests/syllabus-boundary-leakage.test.js --forceExit --detectOpenHandles
+        run: npx jest apps/api-node/api/tests/syllabus-boundary-leakage.test.js --forceExit --detectOpenHandles
       
       - name: Run RPC tests
         env:
@@ -137,9 +131,7 @@ jobs:
           TEST_DB_NAME: cie_copilot_test
           TEST_DB_USER: postgres
           TEST_DB_PASSWORD: postgres
-        run: |
-          cd apps/api-node
-          npx jest api/tests/syllabus-boundary-rpc.test.js --forceExit --detectOpenHandles
+        run: npx jest apps/api-node/api/tests/syllabus-boundary-rpc.test.js --forceExit --detectOpenHandles
 
   # ==========================================================================
   # Job 3: API Contract Tests
@@ -163,7 +155,5 @@ jobs:
       - name: Run API contract tests
         env:
           NODE_OPTIONS: --experimental-vm-modules
-        run: |
-          cd apps/api-node
-          npx jest api/tests/syllabus-boundary-api-contract.test.js --forceExit
+        run: npx jest apps/api-node/api/tests/syllabus-boundary-api-contract.test.js --forceExit
 

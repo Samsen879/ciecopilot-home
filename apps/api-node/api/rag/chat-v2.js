@@ -8,12 +8,9 @@
  * **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5, 5.6**
  */
 
-import { createClient } from '@supabase/supabase-js';
 import { createContextManager } from '../samsen/context/contextManager.js';
 import { buildSamsenSystemPrompt } from '../samsen/context/systemPrompt.js';
-import { getTokenizer } from '../samsen/utils/tokenizer.js';
 import { buildMessages } from '../samsen/utils/messages.js';
-import { recordTokens, recordCostUsd } from '../../middleware/metrics.js';
 import {
   hybridSearchV2,
   formatEvidence,

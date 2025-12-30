@@ -17,7 +17,7 @@ router.post('/chat', chatHandler);
 router.post('/chat-v2', chatV2Handler);
 router.post('/recall', recallHandler);
 
-router.get('/health', (req, res) => {
+router.get('/health', (_req, res) => {
   res.json({
     status: 'healthy',
     service: 'rag',

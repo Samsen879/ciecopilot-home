@@ -14,7 +14,6 @@
 import {
   validateTopicPath,
   verifyTopicPathExists,
-  hybridSearchV2,
   formatEvidence,
   SyllabusSearchError,
   SyllabusSearchErrorCode,

@@ -17,8 +17,8 @@ import {
   formatEvidence,
   SyllabusSearchError,
   SyllabusSearchErrorCode,
+  isDescendantOf,
 } from '../services/syllabusSearch.js';
-import { isDescendantOf } from '../../../../libs/topic-path/index.js';
 
 // ==========================================================================
 // Unit Tests (no DB required)

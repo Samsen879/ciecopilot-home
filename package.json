@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "imports": {
+    "#topic-path": "./libs/topic-path/index.js"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -102,9 +105,6 @@
       "**/__tests__/**/*.js",
       "**/?(*.)+(spec|test).js"
     ],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
     "transform": {}
   },
   "engines": {

@@ -11,9 +11,12 @@
 import { createClient } from '@supabase/supabase-js';
 import {
   canonicalize,
-  isDescendantOf,
+  isDescendantOf as _isDescendantOf,
   TopicPathError,
-} from '../../../../libs/topic-path/index.js';
+} from '#topic-path';
+
+// Re-export for tests that need it without deep relative paths
+export const isDescendantOf = _isDescendantOf;
 
 // ============================================================================
 // Error Codes (stable for API contract)

@@ -178,7 +178,7 @@ export default async function handler(req, res) {
 
     const ctxMgr = createContextManager({ namespace: 'samsen:rag:v2', ttl_sec: 86400 });
     const convId =
-      conversation_id || `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      conversation_id || `conv_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
     const history = await ctxMgr.loadHistory(convId);
     const trimmedHistory = ctxMgr.trimToBudget(history, `${highLevelSystem}\n${taskPrompt}`);
     const summary = ctxMgr.summarize(trimmedHistory, lang);

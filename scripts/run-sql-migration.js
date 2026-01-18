@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
 import { Client } from 'pg';
+import { execSync } from 'child_process';
 
 // 获取当前文件的目录
 const __filename = fileURLToPath(import.meta.url);
@@ -19,6 +20,29 @@ CREATE TABLE IF NOT EXISTS public.schema_migrations (
   executed_at timestamptz DEFAULT now()
 );
 `;
+
+function getGitInfo() {
+  try {
+    const root = execSync('git rev-parse --show-toplevel', {
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .toString()
+      .trim();
+    const short = execSync('git rev-parse --short HEAD', {
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .toString()
+      .trim();
+    return { root, short };
+  } catch {
+    return { root: 'unknown', short: 'unknown' };
+  }
+}
+
+const gitInfo = getGitInfo();
+console.log(
+  `[migration-runner] cwd=${process.cwd()} script=${__filename} migrations=${MIGRATIONS_DIR} git=${gitInfo.short} repo=${gitInfo.root}`
+);
 
 function parseArgs(argv) {
   const options = {

@@ -11,7 +11,7 @@
 1. 登录到 [Supabase Dashboard](https://supabase.com/dashboard)
 2. 选择你的项目
 3. 进入 "SQL Editor"
-4. 复制 `database/migrations/011_recommendation_system.sql` 文件的完整内容
+4. 复制 `supabase/migrations/011_recommendation_system.sql` 文件的完整内容
 5. 粘贴到SQL编辑器中并执行
 6. 确认所有表创建成功，无错误信息
 

@@ -47,7 +47,7 @@
 - `src/components/Admin/RecommendationManagement.jsx` - 推荐管理界面
 
 **数据库和工具文件**:
-- `database/migrations/011_recommendation_system.sql` - 推荐系统数据库迁移脚本
+- `supabase/migrations/011_recommendation_system.sql` - 推荐系统数据库迁移脚本
 - `scripts/run-sql-migration.js` - SQL迁移执行脚本
 - `FINAL_recommendation_system.md` - 项目总结报告
 - `TODO_recommendation_system.md` - 配置和待办事项指南

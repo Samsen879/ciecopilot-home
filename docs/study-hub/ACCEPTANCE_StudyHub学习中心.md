@@ -26,8 +26,8 @@
   - [x] RLS策略配置正确
   - [x] 数据库迁移脚本可重复执行
 - **交付物**:
-  - [x] `database/migrations/010_study_hub_extension.sql`
-  - [x] `database/migrations/011_recommendation_system.sql`
+  - [x] `supabase/migrations/010_study_hub_extension.sql`
+  - [x] `supabase/migrations/011_recommendation_system.sql`
 - **完成时间**: 2025年1月18日
 - **备注**: 数据库架构已通过现有迁移文件完成，包含所有Study Hub核心表和扩展功能
 

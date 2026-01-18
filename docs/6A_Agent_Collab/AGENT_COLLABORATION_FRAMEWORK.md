@@ -69,7 +69,7 @@
    - ✅ 实现高级推荐引擎 (`src/services/advancedRecommendationEngine.js`)
    - ✅ 实现用户行为分析服务 (`src/services/userBehaviorAnalytics.js`)
    - ✅ 创建推荐系统配置 (`src/config/recommendationConfig.js`)
-   - ✅ 设计数据库表结构 (`database/migrations/011_recommendation_system.sql`)
+   - ✅ 设计数据库表结构 (`supabase/migrations/011_recommendation_system.sql`)
    - ✅ 集成个性化推荐组件到Study Hub
    - ✅ 创建学习分析仪表板 (`src/components/Analysis/LearningAnalyticsDashboard.jsx`)
    - ✅ 创建推荐管理界面 (`src/components/Admin/RecommendationManagement.jsx`)
@@ -195,7 +195,7 @@
 - `src/components/Admin/RecommendationManagement.jsx` - 推荐管理界面
 
 #### 数据库和工具文件
-- `database/migrations/011_recommendation_system.sql` - 推荐系统数据库迁移
+- `supabase/migrations/011_recommendation_system.sql` - 推荐系统数据库迁移
 - `scripts/run-sql-migration.js` - SQL迁移执行脚本
 - `FINAL_recommendation_system.md` - 项目总结报告
 - `TODO_recommendation_system.md` - 配置和待办事项

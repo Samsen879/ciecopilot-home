@@ -102,6 +102,14 @@ PowerShell examples:
 $env:DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/postgres"
 node scripts/run-sql-migration.js --list
 node scripts/run-sql-migration.js --file 20260118093000_add_learning_records_errors_quiz_sessions.sql
+node scripts/run-sql-migration.js --all --dry-run
+```
+
+Supabase RPC backend (only if exec_sql exists):
+```powershell
+$env:SUPABASE_URL="https://<project>.supabase.co"
+$env:SUPABASE_SERVICE_ROLE_KEY="..."
+node scripts/run-sql-migration.js --url $env:SUPABASE_URL --service-key $env:SUPABASE_SERVICE_ROLE_KEY --file 20260118093000_add_learning_records_errors_quiz_sessions.sql
 ```
 
 ## Usage Examples

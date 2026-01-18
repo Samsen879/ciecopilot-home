@@ -2,27 +2,43 @@
 
 ## Overview
 
-This project integrates OpenAI's GPT-4 Turbo model through a secure Vercel serverless function. Your ChatWidget component and custom utility functions provide a seamless AI tutoring experience for CIE students.
+This project integrates AI chat + RAG through a canonical API surface under `apps/api-node/api`. The frontend uses `/api/*` routes, and legacy endpoints remain available but are deprecated.
+
+## Canonical API Surface (apps/api-node/api)
+
+**Primary entrypoint**: `POST /api/ask`  
+**Health check**: `GET /api/health`
+
+Legacy endpoints (deprecated; thin wrappers to `/api/ask`):
+- `POST /api/chat`
+- `POST /api/rag/chat`
+- `POST /api/rag/chat-v2`
+- `POST /api/ai/tutor/chat`
+
+**Root `/api/` directory** is legacy-only and forwards to `apps/api-node/api`. Do not add business logic there.
 
 ## Project Structure
 
-**Important Note**: This is a **Vite + React project** deployed on **Vercel**, not a Next.js project. The API endpoint uses Vercel's serverless functions format.
+**Important Note**: This is a **Vite + React project** running on **Aliyun ECS**. The API endpoint is served by the Node server in `apps/api-node/server.js`.
 
 ```
-/api/chat.js              # Vercel serverless function (OpenAI API proxy)
+/apps/api-node/api/ask.js      # Canonical AI entrypoint (routing facade)
+/apps/api-node/api/health.js   # Health check
+/api/*.js                       # Legacy wrappers (deprecated)
 /src/components/ChatWidget.jsx  # Chat UI component with live AI integration
 /src/utils/openai.js      # Utility functions for API calls
 ```
 
 ## API Endpoint
 
-**URL**: `/api/chat`  
+**URL**: `/api/ask`  
 **Method**: `POST`  
 **Content-Type**: `application/json`
 
 ### Request Format
 ```json
 {
+  "mode": "chat",
   "messages": [
     { "role": "system", "content": "You are a helpful assistant." },
     { "role": "user", "content": "Explain calculus differentiation." }
@@ -33,36 +49,59 @@ This project integrates OpenAI's GPT-4 Turbo model through a secure Vercel serve
 ### Response Format
 ```json
 {
-  "id": "chatcmpl-...",
-  "object": "chat.completion",
-  "choices": [
-    {
-      "message": {
-        "role": "assistant",
-        "content": "Calculus differentiation is..."
+  "deprecated": false,
+  "route": "ask",
+  "data": {
+    "id": "chatcmpl-...",
+    "object": "chat.completion",
+    "choices": [
+      {
+        "message": {
+          "role": "assistant",
+          "content": "Calculus differentiation is..."
+        }
       }
-    }
-  ]
+    ]
+  }
 }
 ```
 
 ## Environment Setup
 
-### 1. Vercel Environment Variables
+### 1. Server Environment Variables
 
 ⚠️ **Security Warning**: Never commit API keys to your repository!
 
-1. Go to your Vercel dashboard
-2. Navigate to your project settings
-3. Add environment variable:
-   - **Name**: `OPENAI_API_KEY`
-   - **Value**: Your OpenAI API key (starts with `sk-proj-...`)
+- **OPENAI_API_KEY**: OpenAI API key (starts with `sk-proj-...`)
+- **SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY**: Supabase credentials
 
 ### 2. Local Development
 
 Create a `.env.local` file in your project root:
 ```bash
 OPENAI_API_KEY=your_openai_api_key_here
+```
+
+### 3. Database Migrations
+
+Canonical migrations live in `supabase/migrations` (the `database/migrations` directory is deprecated). Use:
+
+```bash
+node scripts/run-sql-migration.js --list
+node scripts/run-sql-migration.js --file <migration_file.sql>
+node scripts/run-sql-migration.js --all
+```
+
+**P0 minimal (fixed order):**
+1) `20260118093000_add_learning_records_errors_quiz_sessions.sql`  
+2) `20260118093100_curriculum_nodes_topic_path.sql`  
+3) `20260118093200_recreate_hybrid_search_v2.sql`
+
+PowerShell examples:
+```powershell
+$env:DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/postgres"
+node scripts/run-sql-migration.js --list
+node scripts/run-sql-migration.js --file 20260118093000_add_learning_records_errors_quiz_sessions.sql
 ```
 
 ## Usage Examples
@@ -150,7 +189,7 @@ const callChatAPI = async (userMessage) => {
 ### 1. Test the API endpoint directly
 
 ```bash
-curl -X POST https://your-site.vercel.app/api/chat \
+curl -X POST https://your-site.vercel.app/api/ask \
   -H "Content-Type: application/json" \
   -d '{
     "messages": [

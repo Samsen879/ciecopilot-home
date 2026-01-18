@@ -6,24 +6,243 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+import { Client } from 'pg';
 
 // 获取当前文件的目录
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 为Node.js环境创建Supabase客户端
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const MIGRATIONS_DIR = path.join(__dirname, '../supabase/migrations');
+const MIGRATION_TABLE_SQL = `
+CREATE TABLE IF NOT EXISTS public.schema_migrations (
+  filename text PRIMARY KEY,
+  executed_at timestamptz DEFAULT now()
+);
+`;
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error("Supabase URL or Key not found. Make sure you have a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_SERVICE_ROLE_KEY");
+function parseArgs(argv) {
+  const options = {
+    list: false,
+    all: false,
+    dryRun: false,
+    file: null,
+    url: null,
+    serviceKey: null,
+    dbUrl: null,
+    extras: [],
+  };
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (!arg.startsWith('--')) {
+      options.extras.push(arg);
+      continue;
+    }
+
+    const [flag, value] = arg.split('=', 2);
+    if (flag === '--list') {
+      options.list = true;
+    } else if (flag === '--all') {
+      options.all = true;
+    } else if (flag === '--dry-run') {
+      options.dryRun = true;
+    } else if (flag === '--file') {
+      const next = value ?? argv[++i];
+      if (!next || next.startsWith('--')) {
+        throw new Error('Missing value for --file');
+      }
+      options.file = next;
+    } else if (flag === '--url') {
+      const next = value ?? argv[++i];
+      if (!next || next.startsWith('--')) {
+        throw new Error('Missing value for --url');
+      }
+      options.url = next;
+    } else if (flag === '--service-key') {
+      const next = value ?? argv[++i];
+      if (!next || next.startsWith('--')) {
+        throw new Error('Missing value for --service-key');
+      }
+      options.serviceKey = next;
+    } else if (flag === '--db-url') {
+      const next = value ?? argv[++i];
+      if (!next || next.startsWith('--')) {
+        throw new Error('Missing value for --db-url');
+      }
+      options.dbUrl = next;
+    }
+  }
+
+  return options;
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+function listMigrations() {
+  if (!fs.existsSync(MIGRATIONS_DIR)) {
+    throw new Error(`Migrations directory not found: ${MIGRATIONS_DIR}`);
+  }
+  const files = fs
+    .readdirSync(MIGRATIONS_DIR)
+    .filter((f) => f.endsWith('.sql'))
+    .sort();
+  console.log('Available migrations (sorted):');
+  files.forEach((file) => console.log(`- ${file}`));
+  return files;
+}
 
-// 获取命令行参数
-const args = process.argv.slice(2);
-const migrationFile = args[0] || '011_recommendation_system.sql';
+let options;
+try {
+  options = parseArgs(process.argv.slice(2));
+} catch (error) {
+  console.error(`❌ ${error.message}`);
+  process.exit(2);
+}
+if (options.list) {
+  listMigrations();
+  process.exit(0);
+}
+
+if (options.extras.length > 0) {
+  console.error(`❌ Unexpected argument(s): ${options.extras.join(' ')}`);
+  console.error('Use --file <migration.sql>, --all, or --list.');
+  process.exit(2);
+}
+
+if (options.all && options.file) {
+  console.error('❌ Do not combine --all with --file.');
+  process.exit(2);
+}
+
+if (!options.all && !options.file) {
+  console.error('❌ No migration specified. Use --file, --all, or --list.');
+  console.error('Usage: node scripts/run-sql-migration.js --file <migration.sql>');
+  process.exit(2);
+}
+
+const migrationsToRun = options.all ? listMigrations() : [options.file];
+
+if (options.dryRun) {
+  console.log('Dry run. Migrations to execute:');
+  migrationsToRun.forEach((file) => console.log(`- ${file}`));
+  process.exit(0);
+}
+
+const supabaseUrl =
+  options.url || process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseKey =
+  options.serviceKey ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.VITE_SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.VITE_SUPABASE_ANON_KEY;
+const databaseUrl = options.dbUrl || process.env.DATABASE_URL;
+
+const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
+
+function assertPureSql(sqlContent, filename) {
+  const metaMatch = sqlContent.match(/^\s*\\\w+/m);
+  if (metaMatch) {
+    throw new Error(
+      `Migration "${filename}" contains psql meta-commands (e.g. ${metaMatch[0]}). ` +
+        'Only pure SQL is supported.'
+    );
+  }
+}
+
+async function ensureExecSqlAvailable() {
+  if (!supabase) return false;
+  const { error } = await supabase.rpc('exec_sql', { sql_query: 'select 1;' });
+  if (!error) return true;
+  const message = error.message || '';
+  if (/function.+exec_sql|does not exist|schema cache/i.test(message)) {
+    console.error('❌ exec_sql RPC not available. Run migrations via Supabase SQL editor or provide a direct DATABASE_URL.');
+    console.error(`RPC error: ${message}`);
+    return false;
+  }
+  console.warn(`exec_sql probe warning: ${message}`);
+  return true;
+}
+
+async function ensureSchemaMigrationsTablePg(client) {
+  await client.query(MIGRATION_TABLE_SQL);
+}
+
+async function hasMigrationPg(client, filename) {
+  const { rows } = await client.query(
+    'select 1 from public.schema_migrations where filename = $1 limit 1',
+    [filename]
+  );
+  return rows.length > 0;
+}
+
+async function recordMigrationPg(client, filename) {
+  await client.query(
+    'insert into public.schema_migrations (filename) values ($1) on conflict (filename) do nothing',
+    [filename]
+  );
+}
+
+async function ensureSchemaMigrationsTableRpc() {
+  const { error } = await supabase.rpc('exec_sql', { sql_query: MIGRATION_TABLE_SQL });
+  if (error) {
+    throw new Error(`Failed to create schema_migrations table: ${error.message}`);
+  }
+}
+
+async function hasMigrationRpc(filename) {
+  const { data, error } = await supabase
+    .from('schema_migrations')
+    .select('filename')
+    .eq('filename', filename)
+    .limit(1);
+  if (error) {
+    throw new Error(`Failed to check schema_migrations: ${error.message}`);
+  }
+  return (data || []).length > 0;
+}
+
+async function recordMigrationRpc(filename) {
+  const { error } = await supabase
+    .from('schema_migrations')
+    .upsert({ filename }, { onConflict: 'filename' });
+  if (error) {
+    throw new Error(`Failed to record schema_migrations: ${error.message}`);
+  }
+}
+
+async function runSqlWithDatabaseUrl(filename) {
+  const migrationPath = path.isAbsolute(filename)
+    ? filename
+    : path.join(MIGRATIONS_DIR, filename);
+  if (!fs.existsSync(migrationPath)) {
+    throw new Error(`迁移文件不存在: ${migrationPath}`);
+  }
+
+  const sqlContent = fs.readFileSync(migrationPath, 'utf8');
+  assertPureSql(sqlContent, filename);
+
+  const sslMode = process.env.PGSSLMODE;
+  const ssl =
+    sslMode && sslMode.toLowerCase() === 'disable'
+      ? false
+      : { rejectUnauthorized: false };
+
+  const client = new Client({ connectionString: databaseUrl, ssl });
+  await client.connect();
+  try {
+    await ensureSchemaMigrationsTablePg(client);
+    const alreadyApplied = await hasMigrationPg(client, filename);
+    if (alreadyApplied) {
+      console.log(`⏭️  已跳过 (已执行): ${filename}`);
+      return;
+    }
+    console.log(`执行迁移 (DATABASE_URL): ${filename}`);
+    await client.query(sqlContent);
+    await recordMigrationPg(client, filename);
+    console.log('✅ SQL迁移执行完成');
+  } finally {
+    await client.end();
+  }
+}
 
 // 执行SQL迁移
 async function runSqlMigration(filename) {
@@ -31,14 +250,15 @@ async function runSqlMigration(filename) {
     console.log(`开始执行SQL迁移: ${filename}`);
     
     // 读取SQL文件
-    const migrationPath = path.join(__dirname, '../database/migrations', filename);
+    const migrationPath = path.join(MIGRATIONS_DIR, filename);
     
     if (!fs.existsSync(migrationPath)) {
       throw new Error(`迁移文件不存在: ${migrationPath}`);
     }
     
     const sqlContent = fs.readFileSync(migrationPath, 'utf8');
-    
+    assertPureSql(sqlContent, filename);
+
     // 分割SQL语句（按分号分割，但忽略函数内的分号）
     const statements = splitSqlStatements(sqlContent);
     
@@ -199,33 +419,46 @@ async function checkTablesExist() {
 
 // 主函数
 async function main() {
-  console.log('=== 推荐系统数据库迁移 ===');
-  
   try {
-    // 首先检查现有表
-    await checkTablesExist();
-    
-    console.log('\n注意: 由于Supabase的限制，某些DDL语句需要通过Supabase管理界面执行。');
-    console.log('请将以下SQL内容复制到Supabase SQL编辑器中执行:');
-    console.log('\n' + '='.repeat(50));
-    
-    // 读取并显示SQL内容
-    const migrationPath = path.join(__dirname, '../database/migrations', migrationFile);
-    const sqlContent = fs.readFileSync(migrationPath, 'utf8');
-    console.log(sqlContent);
-    console.log('='.repeat(50) + '\n');
-    
-    console.log('执行步骤:');
-    console.log('1. 登录到 Supabase Dashboard');
-    console.log('2. 进入 SQL Editor');
-    console.log('3. 复制上述SQL内容并执行');
-    console.log('4. 确认所有表和策略创建成功');
-    
+    if (databaseUrl) {
+      for (const file of migrationsToRun) {
+        await runSqlWithDatabaseUrl(file);
+      }
+      return;
+    }
+
+    if (!supabase) {
+      console.error('❌ Missing database connection. Provide DATABASE_URL or SUPABASE_URL + SERVICE_ROLE_KEY.');
+      console.error('Usage: node scripts/run-sql-migration.js --db-url <postgres-url> --file <migration.sql>');
+      process.exit(2);
+    }
+
+    const ok = await ensureExecSqlAvailable();
+    if (!ok) {
+      process.exit(2);
+    }
+    for (const file of migrationsToRun) {
+      await ensureSchemaMigrationsTableRpc();
+      const alreadyApplied = await hasMigrationRpc(file);
+      if (alreadyApplied) {
+        console.log(`⏭️  已跳过 (已执行): ${file}`);
+        continue;
+      }
+      await runSqlMigration(file);
+      await recordMigrationRpc(file);
+    }
   } catch (error) {
     console.error('❌ 迁移过程出错:', error.message);
+    console.log('\n注意: 如 exec_sql 不可用，请将以下SQL内容复制到 Supabase SQL 编辑器中执行:');
+    console.log('\n' + '='.repeat(50));
+    for (const file of migrationsToRun) {
+      const migrationPath = path.join(MIGRATIONS_DIR, file);
+      const sqlContent = fs.readFileSync(migrationPath, 'utf8');
+      console.log(sqlContent);
+    }
+    console.log('='.repeat(50) + '\n');
     process.exit(1);
   }
 }
 
-// 运行主函数
 main();

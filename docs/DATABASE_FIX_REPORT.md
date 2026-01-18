@@ -133,7 +133,7 @@ node scripts/validate-complete-database.js
 - `src/data/9231*.json` - 进阶数学数据（待处理）
 
 ### 数据库迁移
-- `database/migrations/001_initial_schema.sql` - 基础表结构
+- `supabase/migrations/001_initial_schema.sql` - 基础表结构
 - `scripts/migrate-data.js` - 原始迁移脚本（需要更新）
 
 ## 🎉 总结

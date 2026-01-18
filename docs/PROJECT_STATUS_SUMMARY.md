@@ -44,7 +44,7 @@
 ## 📁 关键文件
 
 ### 迁移文件
-- `database/migrations/010_study_hub_extension_safe.sql` - 主迁移文件（已执行）
+- `supabase/migrations/010_study_hub_extension_safe.sql` - 主迁移文件（已执行）
 
 ### 检查脚本
 - `scripts/check-study-hub-tables.cjs` - 验证扩展表

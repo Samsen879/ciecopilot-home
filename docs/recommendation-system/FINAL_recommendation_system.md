@@ -51,7 +51,7 @@
   - 缓存和性能优化配置
 
 ### 5. 数据库架构
-- **推荐系统表结构** (`database/migrations/011_recommendation_system.sql`)
+- **推荐系统表结构** (`supabase/migrations/011_recommendation_system.sql`)
   - `recommendation_history`: 推荐历史记录
   - `user_behavior_logs`: 用户行为日志
   - `user_learning_sessions`: 学习会话记录
@@ -149,7 +149,7 @@
 
 ### 配置和工具文件
 8. `src/config/recommendationConfig.js` - 推荐系统配置
-9. `database/migrations/011_recommendation_system.sql` - 数据库迁移脚本
+9. `supabase/migrations/011_recommendation_system.sql` - 数据库迁移脚本
 10. `scripts/run-sql-migration.js` - SQL迁移执行脚本
 
 ### 更新的文件

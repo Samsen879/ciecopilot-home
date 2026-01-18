@@ -176,7 +176,7 @@ CREATE INDEX IF NOT EXISTS idx_learning_analytics_recorded_at ON public.learning
 ## 7. 文件清单
 
 ### 7.1 创建的文件
-- `database/migrations/010_study_hub_extension_safe.sql` - 安全的迁移文件
+- `supabase/migrations/010_study_hub_extension_safe.sql` - 安全的迁移文件
 - `scripts/create-learning-analytics.cjs` - learning_analytics 表创建脚本
 - `scripts/check-study-hub-tables.cjs` - Study Hub 表检查脚本
 

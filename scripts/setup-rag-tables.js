@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE || process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error("Supabase URL or Key not found. Make sure you have a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_SERVICE_ROLE_KEY");
@@ -21,7 +21,10 @@ async function setupRAGTables() {
   
   try {
     // 读取SQL文件
-    const sqlPath = path.join(__dirname, '../database/migrations/004_rag_embeddings.sql');
+    const sqlPath = path.join(
+      __dirname,
+      '../supabase/migrations/20260118090400_004_rag_embeddings.sql'
+    );
     const sqlContent = fs.readFileSync(sqlPath, 'utf8');
     
     console.log('正在执行RAG数据库迁移脚本...');

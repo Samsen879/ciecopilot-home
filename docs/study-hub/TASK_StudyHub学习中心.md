@@ -53,9 +53,9 @@ graph TD
 **输出契约**:
 - 输出数据: 完整的数据库表结构和索引
 - 交付物: 
-  - `database/migrations/001_study_hub_tables.sql`
-  - `database/migrations/002_study_hub_indexes.sql`
-  - `database/migrations/003_study_hub_rls_policies.sql`
+  - `supabase/migrations/001_study_hub_tables.sql`
+  - `supabase/migrations/002_study_hub_indexes.sql`
+  - `supabase/migrations/003_study_hub_rls_policies.sql`
 - 验收标准:
   - [ ] 所有表创建成功
   - [ ] 索引创建完成
@@ -727,7 +727,7 @@ graph TD
 **输出契约**:
 - 输出数据: Study Mode专用题库数据
 - 交付物:
-  - `database/migrations/004_study_mode_questions.sql`
+  - `supabase/migrations/004_study_mode_questions.sql`
   - `src/data/studyModeQuestions.json`
   - `src/utils/questionQualityAssessment.js`
   - `docs/study-hub/STUDY_MODE_QUESTION_DESIGN.md`

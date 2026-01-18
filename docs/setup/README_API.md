@@ -97,6 +97,9 @@ node scripts/run-sql-migration.js --all
 2) `20260118093100_curriculum_nodes_topic_path.sql`  
 3) `20260118093200_recreate_hybrid_search_v2.sql`
 
+⚠️ **Warning**: Do NOT run `--all` on production unless you fully understand ordering.
+This repository contains both numbered migrations (e.g., `012_*`) and timestamped migrations.
+
 PowerShell examples:
 ```powershell
 $env:DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/postgres"

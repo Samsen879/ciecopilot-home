@@ -33,3 +33,16 @@ dist-ssr
 .env.production.local
 env.local
 *.env
+
+# Large artifacts/datasets (generated outputs)
+screenshots_v3/
+screenshots_archive/
+text_v1/
+past_papers_sorted_by_topic/
+outputs/
+output_files/
+archive/
+
+# Supabase CLI local state / profile artifacts, not source
+supabase/.temp/
+supabase/.branches/

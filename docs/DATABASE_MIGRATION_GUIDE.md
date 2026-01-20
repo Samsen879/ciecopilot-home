@@ -1,3 +1,5 @@
+> LEGACY / not authoritative; kept for reference only.
+
 # CIE Copilot 数据库迁移指南
 
 ## 🎯 目标

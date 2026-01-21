@@ -17,6 +17,14 @@
 - AI: RAG (Retrieval-Augmented Generation)
 - Deployment: Vercel
 
+## Architecture Guarantees
+
+This project enforces database-level reproducibility and syllabus-bound correctness.
+
+See:
+- [docs/architecture/DB_REPRODUCIBILITY.md](docs/architecture/DB_REPRODUCIBILITY.md)
+- [docs/architecture/DB_REPRODUCIBILITY.zh-CN.md](docs/architecture/DB_REPRODUCIBILITY.zh-CN.md)
+
 ## 最后更新
 
 - 修复了 Vercel 部署配置问题

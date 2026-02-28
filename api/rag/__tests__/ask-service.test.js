@@ -123,5 +123,88 @@ describe('ask service', () => {
     expect(result.evidence.length).toBeGreaterThan(0);
     expect(result.evidence[0].source_ref.asset_id).toBeDefined();
   });
-});
 
+  it('does not require chat key for title lookup benchmark path', async () => {
+    const fetchStub = createFetchStub();
+    const result = await executeAskAI(
+      {
+        query: 'What is the title of this node?',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-2', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: {
+          retrievalVersion: 'test',
+          retrieval: { k_key: 30, k_sem: 30, rrf_k: 60, fused_top_k: 8, w_key: 0.7, w_sem: 0.3 },
+          embedding: {
+            baseUrl: 'https://example.com/v1',
+            apiKey: 'k',
+            model: 'm',
+            dimensions: 3,
+            timeoutMs: 5000,
+          },
+          chat: {
+            baseUrl: 'https://example.com/v1',
+            apiKey: '',
+            model: 'm',
+            timeoutMs: 5000,
+          },
+          pricing: {
+            chat_prompt_per_1k: 0.001,
+            chat_completion_per_1k: 0.002,
+            embedding_per_1k: 0.0001,
+          },
+        },
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.answer).toBe('Pure Mathematics 1');
+    expect(fetchStub.calls.some((url) => String(url).includes('/chat/completions'))).toBe(false);
+  });
+
+  it('returns uncertain for non-title query when chat key is missing', async () => {
+    const fetchStub = createFetchStub();
+    const result = await executeAskAI(
+      {
+        query: 'Explain this syllabus node.',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-3', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: {
+          retrievalVersion: 'test',
+          retrieval: { k_key: 30, k_sem: 30, rrf_k: 60, fused_top_k: 8, w_key: 0.7, w_sem: 0.3 },
+          embedding: {
+            baseUrl: 'https://example.com/v1',
+            apiKey: 'k',
+            model: 'm',
+            dimensions: 3,
+            timeoutMs: 5000,
+          },
+          chat: {
+            baseUrl: 'https://example.com/v1',
+            apiKey: '',
+            model: 'm',
+            timeoutMs: 5000,
+          },
+          pricing: {
+            chat_prompt_per_1k: 0.001,
+            chat_completion_per_1k: 0.002,
+            embedding_per_1k: 0.0001,
+          },
+        },
+      },
+    );
+
+    expect(result.uncertain).toBe(true);
+    expect(result.uncertain_reason_code).toBe('RETRIEVER_ERROR');
+    expect(fetchStub.calls.some((url) => String(url).includes('/chat/completions'))).toBe(false);
+  });
+});

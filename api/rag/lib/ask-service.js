@@ -129,6 +129,12 @@ export async function executeAskAI(
   if (!retrievalError && evidence.length > 0 && !leakage.topic_leakage_flag) {
     if (/title|node title|节点标题/i.test(parsed.query)) {
       llmAnswer = boundary.title || evidence[0]?.snippet || '';
+    } else if (!effectiveConfig.chat?.apiKey) {
+      retrievalError = toRagError(null, {
+        status: 503,
+        code: 'RAG_CHAT_DISABLED',
+        message: 'chat generation is disabled because no chat API key is configured',
+      });
     } else {
       try {
         const llm = await generateGroundedAnswer(

@@ -1,0 +1,49 @@
+name: RAG S1 Contract Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-s1-contract:
+    name: S1 Contract Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run S1 preflight
+        run: node scripts/rag/run_s1_preflight.js
+
+      - name: Run S1 contract gate
+        run: node scripts/rag/run_s1_contract_gate.js
+
+      - name: Run Marking isolation summary
+        run: node scripts/rag/run_marking_isolation_summary.js
+
+      - name: Upload contract artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-s1-contract-artifacts
+          path: |
+            runs/backend/rag_s1_preflight.json
+            runs/backend/rag_boundary_contract_summary.json
+            runs/backend/rag_s1_contract_gate_summary.json
+            runs/backend/rag_marking_isolation_summary.json
+          if-no-files-found: ignore

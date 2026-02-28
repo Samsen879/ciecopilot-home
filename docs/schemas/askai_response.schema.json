@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AskAIResponse",
+  "type": "object",
+  "required": ["answer", "uncertain", "topic_leakage_flag", "evidence"],
+  "properties": {
+    "answer": { "type": "string" },
+    "uncertain": { "type": "boolean" },
+    "uncertain_reason_code": {
+      "type": ["string", "null"],
+      "enum": [
+        "INSUFFICIENT_EVIDENCE",
+        "CONFLICTING_EVIDENCE",
+        "TOPIC_LEAKAGE_BLOCKED",
+        "RETRIEVER_ERROR",
+        "QUERY_OUT_OF_SCOPE",
+        null
+      ]
+    },
+    "topic_leakage_flag": { "type": "boolean" },
+    "topic_leakage_reason": {
+      "type": ["string", "null"],
+      "enum": [
+        "CLIENT_INJECTED_PATH",
+        "RPC_BUG",
+        "APP_LAYER_BUG",
+        "DATA_BAD_TOPIC_PATH",
+        "ROUTER_BUG",
+        null
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "topic_path", "snippet", "score", "source_type", "source_ref"],
+        "properties": {
+          "id": { "type": "string" },
+          "topic_path": { "type": "string" },
+          "snippet": { "type": "string", "minLength": 1 },
+          "score": { "type": "number" },
+          "source_type": { "type": "string" },
+          "source_ref": {
+            "type": "object",
+            "required": ["asset_id"],
+            "properties": {
+              "asset_id": { "type": "string", "minLength": 1 },
+              "page_no": { "type": "integer", "minimum": 1 },
+              "question_id": { "type": "string", "minLength": 1 }
+            },
+            "anyOf": [{ "required": ["page_no"] }, { "required": ["question_id"] }],
+            "additionalProperties": true
+          },
+          "rank_key": { "type": "integer" },
+          "rank_sem": { "type": "integer" },
+          "fused_rank": { "type": "integer" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "uncertain": { "const": true } } },
+      "then": { "required": ["uncertain_reason_code"] }
+    },
+    {
+      "if": { "properties": { "topic_leakage_flag": { "const": true } } },
+      "then": { "required": ["topic_leakage_reason"] }
+    }
+  ],
+  "additionalProperties": true
+}
+

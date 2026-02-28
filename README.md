@@ -25,3 +25,5 @@
 
 ---
 *Last updated: 2025-01-19 17:30*
+
+[ci] acceptance trigger checks

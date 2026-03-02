@@ -76,7 +76,7 @@ export const TABLES = {
   USERS: 'users',
   TOPICS: 'topics',
   STUDY_RECORDS: 'study_records',
-  ERROR_BOOK: 'error_book',
+  ERROR_BOOK: 'user_errors',
   USER_PROGRESS: 'user_progress',
   CHAT_HISTORY: 'chat_history'
 }
@@ -144,7 +144,7 @@ export const db = {
       })
   },
   
-  // 获取错题本
+  // 获取错题本主记录
   getErrorBook: async (userId) => {
     return supabase
       .from(TABLES.ERROR_BOOK)
@@ -153,7 +153,7 @@ export const db = {
       .order('created_at', { ascending: false })
   },
   
-  // 添加错题
+  // 添加错题主记录
   addErrorQuestion: async (userId, questionData) => {
     return supabase
       .from(TABLES.ERROR_BOOK)

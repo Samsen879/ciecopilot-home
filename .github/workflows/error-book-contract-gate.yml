@@ -1,0 +1,48 @@
+name: Error Book Contract Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/error-book/**"
+      - "scripts/phase3/**"
+      - ".github/workflows/error-book-contract-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/error-book/**"
+      - "scripts/phase3/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  error-book-contract:
+    name: Error Book Contract Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Error Book contract gate
+        run: node scripts/phase3/run_error_book_contract_gate.js
+
+      - name: Upload Error Book artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: error-book-contract-artifacts
+          path: |
+            runs/backend/error_book_contract_jest.json
+            runs/backend/error_book_contract_summary.json
+            docs/reports/error_book_contract_report.md
+          if-no-files-found: ignore

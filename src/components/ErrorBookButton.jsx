@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BookmarkPlus, Check, AlertCircle } from 'lucide-react';
-import { useErrorBook } from '../hooks/useLocalStorage';
+import { useAuth } from '../contexts/AuthContext';
+import { createErrorBookItem } from '../services/errorBookService';
 
 const ErrorBookButton = ({ 
   question, 
@@ -11,16 +12,27 @@ const ErrorBookButton = ({
   errorType = 'unknown',
   className = ''
 }) => {
-  const { addToErrorBook } = useErrorBook();
+  const { isAuthenticated, openAuthModal } = useAuth();
   const [isAdded, setIsAdded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAddToErrorBook = async () => {
     if (isAdded || isLoading) return;
+    if (!isAuthenticated) {
+      openAuthModal?.();
+      return;
+    }
     
     setIsLoading(true);
     try {
-      await addToErrorBook(question, userAnswer, correctAnswer, topicId, errorType);
+      await createErrorBookItem({
+        question,
+        user_answer: userAnswer,
+        correct_answer: correctAnswer,
+        topic_id: topicId,
+        error_type: errorType,
+        source: 'manual',
+      });
       setIsAdded(true);
       
       // Reset after 3 seconds

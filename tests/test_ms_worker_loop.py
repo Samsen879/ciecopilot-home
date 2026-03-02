@@ -435,7 +435,8 @@ class TestMain:
     def test_missing_api_key_returns_1(self):
         """Missing API key returns exit code 1."""
         from scripts.ms.ms_batch_process import main
-        with patch.dict("os.environ", {}, clear=True):
+        with patch("scripts.ms.ms_batch_process._load_env", return_value=None), \
+             patch.dict("os.environ", {}, clear=True):
             # Remove any existing keys
             import os
             env_backup = {}

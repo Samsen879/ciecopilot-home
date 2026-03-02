@@ -1,4 +1,4 @@
--- test/fixtures/supabase-shims.sql
+-- tests/fixtures/supabase-shims.sql
 -- Purpose: make Supabase RLS policies parsable in vanilla Postgres during migration replay
 -- NOTE: test-only; do NOT copy into production migrations.
 

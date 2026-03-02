@@ -1,0 +1,49 @@
+name: RAG Decision Benchmark (Advisory)
+
+on:
+  pull_request:
+    paths:
+      - "scripts/phase2/rag_strategy_runner.py"
+      - "scripts/phase2/rag_metrics.py"
+      - "scripts/phase2/run_rag_decision_benchmark.py"
+      - "data/eval/rag_decision_set_v1.json"
+      - ".github/workflows/rag-decision-benchmark.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/phase2/rag_strategy_runner.py"
+      - "scripts/phase2/rag_metrics.py"
+      - "scripts/phase2/run_rag_decision_benchmark.py"
+      - "data/eval/rag_decision_set_v1.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-benchmark:
+    name: RAG 4-Strategy Benchmark (Advisory)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run benchmark (advisory)
+        continue-on-error: true
+        run: python scripts/phase2/run_rag_decision_benchmark.py
+
+      - name: Upload RAG benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-decision-benchmark-artifacts
+          path: |
+            runs/backend/rag_strategy_raw_results.json
+            runs/backend/rag_decision_benchmark.json
+            docs/reports/rag_decision_benchmark.md
+          if-no-files-found: ignore

@@ -1,0 +1,418 @@
+[
+  {
+    "case_id": "rag-001",
+    "subject_code": "9709",
+    "topic_path": "pure.algebra.polynomials",
+    "difficulty": "easy",
+    "question_type": "concept",
+    "question": "What is the remainder theorem for a polynomial P(x)?",
+    "reference_answer": "The remainder when P(x) is divided by (x-a) is P(a).",
+    "expected_answer_keywords": ["remainder", "P(a)", "(x-a)"],
+    "expected_evidence_ids": ["ev-9709-001"],
+    "syllabus_prompt": "9709 Pure Mathematics polynomial division and factor theorem.",
+    "documents": [
+      {
+        "evidence_id": "ev-9709-001",
+        "topic_path": "pure.algebra.polynomials",
+        "snippet": "Remainder theorem: dividing P(x) by (x-a) leaves remainder P(a).",
+        "keywords": ["remainder theorem", "P(a)", "divide", "x-a"]
+      },
+      {
+        "evidence_id": "ev-9709-aux-001",
+        "topic_path": "pure.calculus.differentiation",
+        "snippet": "Derivative definition and gradient of tangent.",
+        "keywords": ["derivative", "gradient", "tangent"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-002",
+    "subject_code": "9709",
+    "topic_path": "pure.algebra.sequences",
+    "difficulty": "easy",
+    "question_type": "concept",
+    "question": "Give the nth term form of an arithmetic sequence.",
+    "reference_answer": "The nth term is a + (n-1)d.",
+    "expected_answer_keywords": ["a + (n-1)d", "arithmetic sequence", "common difference"],
+    "expected_evidence_ids": ["ev-9709-002"],
+    "syllabus_prompt": "9709 arithmetic progression and general term.",
+    "documents": [
+      {
+        "evidence_id": "ev-9709-002",
+        "topic_path": "pure.algebra.sequences",
+        "snippet": "For arithmetic sequences, u_n = a + (n-1)d where d is common difference.",
+        "keywords": ["u_n", "a + (n-1)d", "common difference"]
+      },
+      {
+        "evidence_id": "ev-9709-aux-002",
+        "topic_path": "probability.distributions.binomial",
+        "snippet": "Binomial mean and variance formulas.",
+        "keywords": ["binomial", "mean", "variance"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-003",
+    "subject_code": "9709",
+    "topic_path": "pure.calculus.integration",
+    "difficulty": "medium",
+    "question_type": "procedural",
+    "question": "What is the integral of x^2 with respect to x?",
+    "reference_answer": "Integral of x^2 is x^3/3 + C.",
+    "expected_answer_keywords": ["x^3/3", "+ C", "integral"],
+    "expected_evidence_ids": ["ev-9709-003"],
+    "syllabus_prompt": "9709 standard integration formulas.",
+    "documents": [
+      {
+        "evidence_id": "ev-9709-003",
+        "topic_path": "pure.calculus.integration",
+        "snippet": "Power rule integration: integral x^n dx = x^(n+1)/(n+1) + C, n != -1.",
+        "keywords": ["power rule", "x^(n+1)/(n+1)", "constant of integration"]
+      },
+      {
+        "evidence_id": "ev-9709-aux-003",
+        "topic_path": "pure.calculus.differentiation",
+        "snippet": "Differentiation of x^n gives n*x^(n-1).",
+        "keywords": ["differentiate", "power rule", "gradient"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-004",
+    "subject_code": "9709",
+    "topic_path": "statistics.probability.conditional",
+    "difficulty": "hard",
+    "question_type": "reasoning",
+    "question": "State Bayes' theorem in terms of conditional probability.",
+    "reference_answer": "P(A|B)=P(B|A)P(A)/P(B), with P(B)>0.",
+    "expected_answer_keywords": ["P(A|B)", "P(B|A)P(A)/P(B)", "Bayes"],
+    "expected_evidence_ids": ["ev-9709-004"],
+    "syllabus_prompt": "9709 conditional probability and Bayes theorem.",
+    "documents": [
+      {
+        "evidence_id": "ev-9709-004",
+        "topic_path": "statistics.probability.conditional",
+        "snippet": "Bayes theorem links posterior and likelihood: P(A|B)=P(B|A)P(A)/P(B).",
+        "keywords": ["Bayes", "posterior", "likelihood", "P(A|B)"]
+      },
+      {
+        "evidence_id": "ev-9709-aux-004",
+        "topic_path": "mechanics.kinematics",
+        "snippet": "SUVAT equations for constant acceleration.",
+        "keywords": ["suvat", "velocity", "acceleration"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-005",
+    "subject_code": "9231",
+    "topic_path": "fp.complex.argand",
+    "difficulty": "medium",
+    "question_type": "concept",
+    "question": "What does multiplying a complex number by i do geometrically?",
+    "reference_answer": "It rotates the point/vector by 90 degrees anticlockwise about the origin.",
+    "expected_answer_keywords": ["rotate", "90", "anticlockwise", "origin"],
+    "expected_evidence_ids": ["ev-9231-001"],
+    "syllabus_prompt": "9231 complex numbers and Argand diagram geometry.",
+    "documents": [
+      {
+        "evidence_id": "ev-9231-001",
+        "topic_path": "fp.complex.argand",
+        "snippet": "Multiplication by i corresponds to a quarter-turn (90° anticlockwise).",
+        "keywords": ["multiply by i", "90", "rotation", "argand"]
+      },
+      {
+        "evidence_id": "ev-9231-aux-001",
+        "topic_path": "fp.hyperbolic.functions",
+        "snippet": "Definitions and identities of hyperbolic sine and cosine.",
+        "keywords": ["sinh", "cosh", "hyperbolic"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-006",
+    "subject_code": "9231",
+    "topic_path": "fp.matrices.transformations",
+    "difficulty": "hard",
+    "question_type": "reasoning",
+    "question": "How can determinant indicate whether a 2x2 matrix is invertible?",
+    "reference_answer": "A 2x2 matrix is invertible iff determinant is non-zero.",
+    "expected_answer_keywords": ["invertible", "determinant", "non-zero"],
+    "expected_evidence_ids": ["ev-9231-002"],
+    "syllabus_prompt": "9231 matrix inverse and determinant condition.",
+    "documents": [
+      {
+        "evidence_id": "ev-9231-002",
+        "topic_path": "fp.matrices.transformations",
+        "snippet": "Inverse exists only when det(A) != 0.",
+        "keywords": ["inverse", "det", "non-zero"]
+      },
+      {
+        "evidence_id": "ev-9231-aux-002",
+        "topic_path": "fp.complex.argand",
+        "snippet": "Modulus and argument of complex numbers.",
+        "keywords": ["modulus", "argument"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-007",
+    "subject_code": "9231",
+    "topic_path": "fp.series.maclaurin",
+    "difficulty": "medium",
+    "question_type": "procedural",
+    "question": "Give the first three non-zero terms of e^x Maclaurin expansion.",
+    "reference_answer": "1 + x + x^2/2 + ...",
+    "expected_answer_keywords": ["1 + x + x^2/2", "Maclaurin", "e^x"],
+    "expected_evidence_ids": ["ev-9231-003"],
+    "syllabus_prompt": "9231 standard Maclaurin expansions.",
+    "documents": [
+      {
+        "evidence_id": "ev-9231-003",
+        "topic_path": "fp.series.maclaurin",
+        "snippet": "e^x = 1 + x + x^2/2! + x^3/3! + ...",
+        "keywords": ["e^x", "Maclaurin", "series"]
+      },
+      {
+        "evidence_id": "ev-9231-aux-003",
+        "topic_path": "fp.matrices.transformations",
+        "snippet": "Composition of linear transformations.",
+        "keywords": ["matrix", "transformation"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-008",
+    "subject_code": "9702",
+    "topic_path": "physics.mechanics.newton-laws",
+    "difficulty": "easy",
+    "question_type": "concept",
+    "question": "State Newton's second law in words.",
+    "reference_answer": "Resultant force equals rate of change of momentum (or F=ma for constant mass).",
+    "expected_answer_keywords": ["resultant force", "rate of change of momentum", "F=ma"],
+    "expected_evidence_ids": ["ev-9702-001"],
+    "syllabus_prompt": "9702 mechanics, Newton laws.",
+    "documents": [
+      {
+        "evidence_id": "ev-9702-001",
+        "topic_path": "physics.mechanics.newton-laws",
+        "snippet": "Newton II: resultant force equals rate of change of momentum.",
+        "keywords": ["newton second law", "momentum", "F=ma"]
+      },
+      {
+        "evidence_id": "ev-9702-aux-001",
+        "topic_path": "physics.waves.interference",
+        "snippet": "Young double slit fringe spacing relation.",
+        "keywords": ["fringe", "interference"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-009",
+    "subject_code": "9702",
+    "topic_path": "physics.electricity.resistance",
+    "difficulty": "easy",
+    "question_type": "concept",
+    "question": "What is the definition of resistance?",
+    "reference_answer": "Resistance is the ratio of potential difference to current, R=V/I.",
+    "expected_answer_keywords": ["R=V/I", "potential difference", "current"],
+    "expected_evidence_ids": ["ev-9702-002"],
+    "syllabus_prompt": "9702 electricity basics: V, I, R relationships.",
+    "documents": [
+      {
+        "evidence_id": "ev-9702-002",
+        "topic_path": "physics.electricity.resistance",
+        "snippet": "Resistance R is defined by R = V/I.",
+        "keywords": ["resistance", "V/I", "ohm"]
+      },
+      {
+        "evidence_id": "ev-9702-aux-002",
+        "topic_path": "physics.nuclear.decay",
+        "snippet": "Radioactive decay law and half-life.",
+        "keywords": ["half-life", "decay"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-010",
+    "subject_code": "9702",
+    "topic_path": "physics.waves.stationary",
+    "difficulty": "hard",
+    "question_type": "reasoning",
+    "question": "What is one key difference between a progressive wave and a stationary wave?",
+    "reference_answer": "Progressive wave transfers energy, stationary wave does not show net energy transfer.",
+    "expected_answer_keywords": ["energy transfer", "progressive", "stationary"],
+    "expected_evidence_ids": ["ev-9702-003"],
+    "syllabus_prompt": "9702 wave properties and standing waves.",
+    "documents": [
+      {
+        "evidence_id": "ev-9702-003",
+        "topic_path": "physics.waves.stationary",
+        "snippet": "Progressive waves carry energy; standing waves have nodes/antinodes with no net transfer.",
+        "keywords": ["energy", "standing wave", "progressive wave", "node"]
+      },
+      {
+        "evidence_id": "ev-9702-aux-003",
+        "topic_path": "physics.electricity.resistance",
+        "snippet": "I-V graph for metallic conductor.",
+        "keywords": ["I-V", "resistance"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-011",
+    "subject_code": "9709",
+    "topic_path": "pure.algebra.functions",
+    "difficulty": "medium",
+    "question_type": "boundary",
+    "question": "Explain domain and range for a function in simple terms.",
+    "reference_answer": "Domain is allowed input values; range is resulting output values.",
+    "expected_answer_keywords": ["domain", "input", "range", "output"],
+    "expected_evidence_ids": ["ev-9709-005"],
+    "syllabus_prompt": "9709 function notation and mappings.",
+    "documents": [
+      {
+        "evidence_id": "ev-9709-005",
+        "topic_path": "pure.algebra.functions",
+        "snippet": "Domain: permitted x values; range: possible f(x) values.",
+        "keywords": ["domain", "range", "function"]
+      },
+      {
+        "evidence_id": "ev-9709-aux-005",
+        "topic_path": "statistics.probability.conditional",
+        "snippet": "Conditional probability notation.",
+        "keywords": ["conditional probability", "events"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-012",
+    "subject_code": "9231",
+    "topic_path": "fp.complex.modulus-argument",
+    "difficulty": "medium",
+    "question_type": "procedural",
+    "question": "How do you find the modulus of z = a + bi?",
+    "reference_answer": "Modulus is |z| = sqrt(a^2 + b^2).",
+    "expected_answer_keywords": ["sqrt(a^2 + b^2)", "modulus", "|z|"],
+    "expected_evidence_ids": ["ev-9231-004"],
+    "syllabus_prompt": "9231 complex modulus and argument fundamentals.",
+    "documents": [
+      {
+        "evidence_id": "ev-9231-004",
+        "topic_path": "fp.complex.modulus-argument",
+        "snippet": "For z=a+bi, modulus |z|=(a^2+b^2)^(1/2).",
+        "keywords": ["modulus", "sqrt(a^2+b^2)", "complex"]
+      },
+      {
+        "evidence_id": "ev-9231-aux-004",
+        "topic_path": "fp.series.maclaurin",
+        "snippet": "Series expansion approximations.",
+        "keywords": ["series", "expansion"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-013",
+    "subject_code": "9702",
+    "topic_path": "physics.thermal.ideal-gas",
+    "difficulty": "medium",
+    "question_type": "concept",
+    "question": "State the ideal gas equation.",
+    "reference_answer": "The ideal gas equation is pV = nRT.",
+    "expected_answer_keywords": ["pV = nRT", "ideal gas"],
+    "expected_evidence_ids": ["ev-9702-004"],
+    "syllabus_prompt": "9702 thermal physics and ideal gas behavior.",
+    "documents": [
+      {
+        "evidence_id": "ev-9702-004",
+        "topic_path": "physics.thermal.ideal-gas",
+        "snippet": "For an ideal gas, pV=nRT.",
+        "keywords": ["pV=nRT", "ideal gas", "temperature"]
+      },
+      {
+        "evidence_id": "ev-9702-aux-004",
+        "topic_path": "physics.mechanics.newton-laws",
+        "snippet": "Force and acceleration relation.",
+        "keywords": ["force", "acceleration"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-014",
+    "subject_code": "9709",
+    "topic_path": "statistics.distributions.normal",
+    "difficulty": "hard",
+    "question_type": "reasoning",
+    "question": "What does standardizing a normal variable mean?",
+    "reference_answer": "Convert X to Z = (X - mu)/sigma so it follows standard normal distribution.",
+    "expected_answer_keywords": ["Z = (X - mu)/sigma", "standard normal"],
+    "expected_evidence_ids": ["ev-9709-006"],
+    "syllabus_prompt": "9709 normal distribution standardization.",
+    "documents": [
+      {
+        "evidence_id": "ev-9709-006",
+        "topic_path": "statistics.distributions.normal",
+        "snippet": "Standardization: z=(x-mu)/sigma transforms N(mu,sigma^2) to N(0,1).",
+        "keywords": ["standardization", "N(0,1)", "z-score"]
+      },
+      {
+        "evidence_id": "ev-9709-aux-006",
+        "topic_path": "pure.algebra.functions",
+        "snippet": "Function mapping examples.",
+        "keywords": ["function", "mapping"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-015",
+    "subject_code": "9231",
+    "topic_path": "fp.differential-equations.first-order",
+    "difficulty": "hard",
+    "question_type": "procedural",
+    "question": "What does a first-order differential equation involve?",
+    "reference_answer": "It contains the first derivative dy/dx and no higher-order derivatives.",
+    "expected_answer_keywords": ["first derivative", "dy/dx", "no higher-order"],
+    "expected_evidence_ids": ["ev-9231-005"],
+    "syllabus_prompt": "9231 differential equations, order and degree basics.",
+    "documents": [
+      {
+        "evidence_id": "ev-9231-005",
+        "topic_path": "fp.differential-equations.first-order",
+        "snippet": "A first-order differential equation contains only first derivative terms.",
+        "keywords": ["first-order", "dy/dx", "derivative"]
+      },
+      {
+        "evidence_id": "ev-9231-aux-005",
+        "topic_path": "fp.complex.modulus-argument",
+        "snippet": "Argument principal value.",
+        "keywords": ["argument", "principal value"]
+      }
+    ]
+  },
+  {
+    "case_id": "rag-016",
+    "subject_code": "9702",
+    "topic_path": "physics.quantum.photoelectric",
+    "difficulty": "hard",
+    "question_type": "boundary",
+    "question": "What is the threshold frequency in the photoelectric effect?",
+    "reference_answer": "It is the minimum light frequency needed to eject electrons from a metal surface.",
+    "expected_answer_keywords": ["minimum frequency", "eject electrons", "photoelectric"],
+    "expected_evidence_ids": ["ev-9702-005"],
+    "syllabus_prompt": "9702 photoelectric effect and threshold frequency concept.",
+    "documents": [
+      {
+        "evidence_id": "ev-9702-005",
+        "topic_path": "physics.quantum.photoelectric",
+        "snippet": "Threshold frequency is the minimum frequency required for electron emission.",
+        "keywords": ["threshold frequency", "electron emission", "photoelectric"]
+      },
+      {
+        "evidence_id": "ev-9702-aux-005",
+        "topic_path": "physics.thermal.ideal-gas",
+        "snippet": "Kinetic theory and gas assumptions.",
+        "keywords": ["kinetic theory", "gas"]
+      }
+    ]
+  }
+]

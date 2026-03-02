@@ -1,0 +1,67 @@
+name: RAG S1 Metric Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/**"
+      - ".github/workflows/rag-s1-metric-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-s1-metrics:
+    name: S1 Metric Gate (Required)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      VECTOR_EMBEDDING_API_KEY: ${{ secrets.VECTOR_EMBEDDING_API_KEY }}
+      VECTOR_EMBEDDING_BASE_URL: ${{ secrets.VECTOR_EMBEDDING_BASE_URL }}
+      VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL }}
+      VECTOR_EMBEDDING_DIMENSIONS: ${{ secrets.VECTOR_EMBEDDING_DIMENSIONS }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+      CHAT_MODEL: ${{ secrets.CHAT_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run S1 metric gate (required)
+        run: node scripts/rag/run_s1_metric_gate.js
+
+      - name: Upload metric artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-s1-metric-artifacts
+          path: |
+            data/eval/rag_live_set_v1.json
+            data/eval/rag_live_set_v1_manifest.json
+            runs/backend/rag_live_benchmark_latest.json
+            runs/backend/rag_live_benchmark_round1.json
+            runs/backend/rag_live_benchmark_round2.json
+            runs/backend/rag_live_benchmark_stability.json
+            runs/backend/rag_s1_metric_gate_summary.json
+            docs/reports/rag_live_benchmark_latest.md
+            docs/reports/rag_live_benchmark_round1.md
+            docs/reports/rag_live_benchmark_round2.md
+          if-no-files-found: ignore

@@ -1,12 +1,12 @@
 // /api/ai/tutor/chat.js
 // AI辅导核心引擎 - 精细化辅导API
-import { createClient } from '@supabase/supabase-js'
+import { getServiceClient } from '../../lib/supabase/client.js';
 
 function getEnv() {
-  const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
+  const SUPABASE_URL = process.env.SUPABASE_URL
   let SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE
   if (!SUPABASE_KEY) {
-    SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
+    SUPABASE_KEY = process.env.SUPABASE_ANON_KEY
   }
 
   const EMBEDDING_BASE_URL =
@@ -277,7 +277,7 @@ export default async function handler(req, res) {
       learning_style: context.learning_style || 'visual'
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    const supabase = getServiceClient()
     const embeddingConfig = { EMBEDDING_BASE_URL, EMBEDDING_API_KEY, EMBEDDING_MODEL, EMBEDDING_DIMENSIONS }
 
     // 1. 搜索相关知识

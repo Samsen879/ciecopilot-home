@@ -1,5 +1,6 @@
 const RAG_API_BASE = import.meta.env.VITE_RAG_API_BASE || '/api/rag';
 const DEFAULT_TIMEOUT = Number(import.meta.env.VITE_RAG_API_TIMEOUT || 30000);
+export const DEFAULT_RAG_SUBJECT_CODE = import.meta.env.VITE_DEFAULT_SUBJECT_CODE || '9709';
 
 function sleep(ms) { return new Promise((res) => setTimeout(res, ms)); }
 
@@ -109,3 +110,96 @@ export function createRagApi() {
 }
 
 export const ragApi = createRagApi();
+
+export function normalizeRagItems(items = []) {
+  return items.map((item) => ({
+    ...item,
+    content: item.content || item.snippet || '',
+    source_type: item.source_type || 'note',
+    title: item.title || '',
+    subject_code: item.subject_code || null,
+    paper_code: item.paper_code || null
+  }));
+}
+
+export async function ragSearch(query, options = {}) {
+  const {
+    subject_code = DEFAULT_RAG_SUBJECT_CODE,
+    paper_code = null,
+    topic_id = null,
+    match_count = 8,
+    min_similarity = undefined,
+    signal
+  } = options;
+
+  if (!query || !query.trim()) {
+    return [];
+  }
+
+  try {
+    const response = await ragApi.search({
+      q: query,
+      subject_code,
+      paper_code,
+      topic_id,
+      page: 1,
+      page_size: match_count,
+      min_similarity
+    }, { signal });
+
+    return normalizeRagItems(response?.items || []);
+  } catch (error) {
+    // Keep UI behavior stable: search fallback returns empty list.
+    console.error('RAG search error:', error);
+    return [];
+  }
+}
+
+export function shouldUseRAG(query) {
+  const keywords = [
+    'mathematics', 'physics', 'chemistry', 'biology',
+    '数学', '物理', '化学', '生物',
+    'question', 'problem', 'example', 'solution',
+    '题目', '问题', '例题', '解答', '答案',
+    'definition', 'formula', 'theorem', 'proof',
+    '定义', '公式', '定理', '证明',
+    'how to', 'explain', 'calculate', 'solve',
+    '如何', '解释', '计算', '求解'
+  ];
+
+  const lowerQuery = String(query || '').toLowerCase();
+  return keywords.some((keyword) => lowerQuery.includes(keyword));
+}
+
+export function formatRAGContext(results) {
+  if (!results || results.length === 0) {
+    return '';
+  }
+
+  const contextParts = results.map((result, index) => {
+    const { content, source_type, title, subject_code, paper_code } = result;
+    const source = `${subject_code}${paper_code ? ` ${paper_code}` : ''} - ${title}`;
+    return `[参考资料 ${index + 1}] 来源: ${source} (${source_type})\n${content}`;
+  });
+
+  return `基于以下相关学习资料：\n\n${contextParts.join('\n\n')}\n\n`;
+}
+
+export async function enhanceMessageWithRAG(userMessage, options = {}) {
+  if (!shouldUseRAG(userMessage)) {
+    return userMessage;
+  }
+
+  try {
+    const ragResults = await ragSearch(userMessage, options);
+    if (ragResults.length === 0) {
+      return userMessage;
+    }
+
+    const context = formatRAGContext(ragResults);
+    return `${context}基于上述资料，请回答：${userMessage}`;
+  } catch (error) {
+    console.error('Error enhancing message with RAG:', error);
+    return userMessage;
+  }
+}

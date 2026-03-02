@@ -1,12 +1,12 @@
 // /api/ai/analysis/knowledge-gaps.js
 // 知识点缺陷分析API
-import { createClient } from '@supabase/supabase-js'
+import { getServiceClient } from '../../lib/supabase/client.js';
 
 function getEnv() {
-  const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
+  const SUPABASE_URL = process.env.SUPABASE_URL
   let SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE
   if (!SUPABASE_KEY) {
-    SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
+    SUPABASE_KEY = process.env.SUPABASE_ANON_KEY
   }
 
   const CHAT_BASE_URL = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
@@ -36,21 +36,29 @@ async function getUserLearningHistory(userId, subjectCode, supabase) {
       return []
     }
 
-    // 获取用户的错题记录
-    const { data: errorRecords, error: errorsError } = await supabase
-      .from('user_errors')
+    // 获取用户的错题记录 (from error_events — Evidence Ledger)
+    const { data: errorEvents, error: eventsError } = await supabase
+      .from('error_events')
       .select(`
-        *,
-        topics!inner(id, name, subject_code)
+        error_event_id, misconception_tag, severity, node_id, topic_path, created_at,
+        attempts!inner(syllabus_code, storage_key, q_number)
       `)
       .eq('user_id', userId)
-      .eq('topics.subject_code', subjectCode)
       .order('created_at', { ascending: false })
       .limit(50)
 
-    if (errorsError) {
-      console.error('Error fetching error records:', errorsError)
+    if (eventsError) {
+      console.error('Error fetching error_events:', eventsError)
     }
+
+    // Transform error_events to match the shape expected by analyzeTopicMastery
+    const errorRecords = (errorEvents || []).map(e => ({
+      id: e.error_event_id,
+      error_type: e.misconception_tag,
+      difficulty_level: e.severity === 'critical' ? 'hard' : e.severity === 'minor' ? 'easy' : 'medium',
+      created_at: e.created_at,
+      topics: { id: e.node_id, name: e.topic_path, subject_code: e.attempts?.syllabus_code },
+    })).filter(e => !subjectCode || e.topics?.subject_code === subjectCode)
 
     return {
       learningRecords: learningRecords || [],
@@ -324,7 +332,7 @@ export default async function handler(req, res) {
       })
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    const supabase = getServiceClient()
     
     // 1. 获取用户学习历史
     const { learningRecords, errorRecords } = await getUserLearningHistory(user_id, subject_code, supabase)

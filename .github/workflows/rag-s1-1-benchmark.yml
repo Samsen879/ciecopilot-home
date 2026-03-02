@@ -1,0 +1,68 @@
+name: RAG S1.1 Broader QA Benchmark
+
+on:
+  pull_request:
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/rag_s1_1_broader_qa_v1.json"
+      - "data/eval/rag_s1_1_broader_qa_v1_manifest.json"
+      - ".github/workflows/rag-s1-1-benchmark.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/rag_s1_1_broader_qa_v1.json"
+      - "data/eval/rag_s1_1_broader_qa_v1_manifest.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-s1-1-benchmark:
+    name: S1.1 Broader QA (Advisory)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      VECTOR_EMBEDDING_API_KEY: ${{ secrets.VECTOR_EMBEDDING_API_KEY }}
+      VECTOR_EMBEDDING_BASE_URL: ${{ secrets.VECTOR_EMBEDDING_BASE_URL }}
+      VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL }}
+      VECTOR_EMBEDDING_DIMENSIONS: ${{ secrets.VECTOR_EMBEDDING_DIMENSIONS }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+      CHAT_MODEL: ${{ secrets.CHAT_MODEL }}
+      RAG_S1_1_FAIL_ON_THRESHOLD: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static advisory dataset
+        run: node scripts/rag/build_s1_1_broader_qa_set.js
+
+      - name: Run advisory broader QA benchmark
+        continue-on-error: true
+        run: node scripts/rag/run_s1_1_benchmark.js
+
+      - name: Upload advisory artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-s1-1-benchmark-artifacts
+          path: |
+            data/eval/rag_s1_1_broader_qa_v1.json
+            data/eval/rag_s1_1_broader_qa_v1_manifest.json
+            runs/backend/rag_s1_1_benchmark_summary.json
+            docs/reports/rag_s1_1_benchmark.md
+          if-no-files-found: ignore

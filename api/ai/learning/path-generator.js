@@ -1,12 +1,12 @@
 // /api/ai/learning/path-generator.js
 // 学习路径生成器API - 基于时间和正确率的自适应学习路径
-import { createClient } from '@supabase/supabase-js'
+import { getServiceClient } from '../../lib/supabase/client.js';
 
 function getEnv() {
-  const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
+  const SUPABASE_URL = process.env.SUPABASE_URL
   let SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE
   if (!SUPABASE_KEY) {
-    SUPABASE_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
+    SUPABASE_KEY = process.env.SUPABASE_ANON_KEY
   }
 
   const CHAT_BASE_URL = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
@@ -409,8 +409,7 @@ function generateAdaptiveRules(preferences) {
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({
-      error: 'Method not allowed',
+    return res.status(405).json({ code: 'request_error', error: 'Method not allowed',
       message: 'Only POST requests are supported',
       userMessage: '请求方法不支持，请联系技术支持。'
     })
@@ -420,8 +419,7 @@ export default async function handler(req, res) {
     const { SUPABASE_URL, SUPABASE_KEY } = getEnv()
     
     if (!SUPABASE_URL || !SUPABASE_KEY) {
-      return res.status(500).json({
-        error: 'Server configuration error',
+      return res.status(500).json({ code: 'request_error', error: 'Server configuration error',
         message: 'Supabase credentials not configured',
         userMessage: '服务配置缺失，请联系技术支持。'
       })
@@ -435,29 +433,26 @@ export default async function handler(req, res) {
 
     // 验证必需参数
     if (!user_id) {
-      return res.status(400).json({
-        error: 'Invalid request',
+      return res.status(400).json({ code: 'request_error', error: 'Invalid request',
         message: 'User ID is required',
         userMessage: '用户身份验证失败，请重新登录。'
       })
     }
 
     if (!subject_code) {
-      return res.status(400).json({
-        error: 'Invalid request',
+      return res.status(400).json({ code: 'request_error', error: 'Invalid request',
         message: 'Subject code is required',
         userMessage: '请选择要生成学习路径的学科。'
       })
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    const supabase = getServiceClient()
     
     // 1. 获取学科主题
     const topics = await getSubjectTopics(subject_code, supabase)
     
     if (topics.length === 0) {
-      return res.status(404).json({
-        error: 'No topics found',
+      return res.status(404).json({ code: 'request_error', error: 'No topics found',
         message: `No topics found for subject ${subject_code}`,
         userMessage: '该学科暂无可用的学习内容。'
       })
@@ -512,8 +507,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Learning Path Generator Error:', error)
     
-    return res.status(500).json({
-      error: 'Internal server error',
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error',
       message: error.message,
       userMessage: '学习路径生成服务暂时不可用，请稍后重试。'
     })

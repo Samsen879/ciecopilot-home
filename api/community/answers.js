@@ -1,17 +1,22 @@
 // 社区回答系统API端点
 // 处理问题回答的增删改查和投票操作
 
-import { createClient } from '@supabase/supabase-js';
+import { getServiceClient } from '../lib/supabase/client.js';
+import { applyCors, sanitizePlainText, toPositiveInt } from './lib/security.js';
 
 // 创建Supabase客户端
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = getServiceClient();
 
 // 回答系统配置
 const ANSWER_CONFIG = {
@@ -32,13 +37,8 @@ const ANSWER_CONFIG = {
 
 // 主要的回答API处理函数
 export default async function handler(req, res) {
-  // 设置CORS头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (!applyCors(req, res, ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])) {
+    return;
   }
 
   try {
@@ -128,8 +128,8 @@ async function handleGetAnswers(req, res, user) {
     }
 
     // 验证分页参数
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(ANSWER_CONFIG.MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
+    const pageNum = toPositiveInt(page, 1, 1, Number.MAX_SAFE_INTEGER);
+    const limitNum = toPositiveInt(limit, ANSWER_CONFIG.DEFAULT_PAGE_SIZE, 1, ANSWER_CONFIG.MAX_PAGE_SIZE);
     const offset = (pageNum - 1) * limitNum;
 
     // 构建查询
@@ -244,9 +244,10 @@ async function handleGetAnswers(req, res, user) {
 async function handleCreateAnswer(req, res, user) {
   try {
     const { content, question_id } = req.body;
+    const sanitizedContent = sanitizePlainText(content, ANSWER_CONFIG.MAX_CONTENT_LENGTH);
 
     // 验证必需参数
-    if (!content || !question_id) {
+    if (!sanitizedContent || !question_id) {
       return res.status(400).json({
         error: 'content and question_id are required',
         code: 'MISSING_REQUIRED_FIELDS'
@@ -254,7 +255,7 @@ async function handleCreateAnswer(req, res, user) {
     }
 
     // 验证内容长度
-    if (content.length > ANSWER_CONFIG.MAX_CONTENT_LENGTH) {
+    if (sanitizedContent.length > ANSWER_CONFIG.MAX_CONTENT_LENGTH) {
       return res.status(400).json({
         error: `Content too long. Maximum ${ANSWER_CONFIG.MAX_CONTENT_LENGTH} characters allowed`,
         code: 'CONTENT_TOO_LONG'
@@ -313,7 +314,7 @@ async function handleCreateAnswer(req, res, user) {
 
     // 创建回答
     const answerData = {
-      content: content.trim(),
+      content: sanitizedContent,
       question_id,
       author_id: user.id,
       is_best_answer: false,
@@ -368,6 +369,9 @@ async function handleUpdateAnswer(req, res, user) {
   try {
     const { answer_id } = req.query;
     const { content, is_best_answer } = req.body;
+    const sanitizedContent = content === undefined
+      ? undefined
+      : sanitizePlainText(content, ANSWER_CONFIG.MAX_CONTENT_LENGTH);
 
     if (!answer_id) {
       return res.status(400).json({
@@ -407,7 +411,7 @@ async function handleUpdateAnswer(req, res, user) {
     };
 
     // 内容更新（只有作者或管理员可以修改）
-    if (content !== undefined) {
+    if (sanitizedContent !== undefined) {
       if (!isAuthor && !isAdmin) {
         return res.status(403).json({
           error: 'Permission denied to edit content',
@@ -415,13 +419,20 @@ async function handleUpdateAnswer(req, res, user) {
         });
       }
 
-      if (content.length > ANSWER_CONFIG.MAX_CONTENT_LENGTH) {
+      if (!sanitizedContent) {
+        return res.status(400).json({
+          error: 'Content is required',
+          code: 'INVALID_CONTENT'
+        });
+      }
+
+      if (sanitizedContent.length > ANSWER_CONFIG.MAX_CONTENT_LENGTH) {
         return res.status(400).json({
           error: `Content too long. Maximum ${ANSWER_CONFIG.MAX_CONTENT_LENGTH} characters allowed`,
           code: 'CONTENT_TOO_LONG'
         });
       }
-      updateData.content = content.trim();
+      updateData.content = sanitizedContent;
     }
 
     // 最佳答案标记（只有问题作者、管理员或有足够声誉的用户可以设置）

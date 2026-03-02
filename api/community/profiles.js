@@ -1,17 +1,22 @@
 // 社区用户档案API端点
 // 处理用户档案获取、更新、统计数据等功能
 
-import { createClient } from '@supabase/supabase-js';
+import { getServiceClient } from '../lib/supabase/client.js';
+import { applyCors, sanitizePlainText, sanitizeSafeUrl, sanitizeTagList } from './lib/security.js';
 
 // 创建Supabase客户端
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = getServiceClient();
 
 // 档案系统配置
 const PROFILE_CONFIG = {
@@ -54,13 +59,8 @@ const PROFILE_CONFIG = {
 
 // 主要的档案API处理函数
 export default async function handler(req, res) {
-  // 设置CORS头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (!applyCors(req, res, ['GET', 'PUT', 'POST', 'OPTIONS'])) {
+    return;
   }
 
   try {
@@ -234,7 +234,7 @@ async function handleGetProfile(req, res, user) {
 async function handleUpdateProfile(req, res, user) {
   try {
     const { user_id = user.id } = req.query;
-    const updates = req.body;
+    const updates = req.body || {};
 
     // 检查权限（只能更新自己的档案或管理员权限）
     if (user_id !== user.id) {
@@ -659,9 +659,33 @@ function validateProfileUpdates(updates) {
         continue;
       }
 
-      validatedData[key] = value;
+      if (key === 'website') {
+        const safeWebsite = sanitizeSafeUrl(value);
+        if (value && !safeWebsite) {
+          errors.push(`Invalid website URL: ${value}`);
+          continue;
+        }
+        validatedData[key] = safeWebsite;
+        continue;
+      }
+
+      if (['preferred_subjects', 'learning_goals', 'expertise_areas'].includes(key)) {
+        validatedData[key] = sanitizeTagList(Array.isArray(value) ? value : [], 20, 64);
+        continue;
+      }
+
+      validatedData[key] = typeof value === 'string' ? sanitizePlainText(value, 500) : value;
     } else if (profileFields.includes(key)) {
-      profileUpdates[key] = value;
+      if (key === 'avatar_url') {
+        const safeAvatarUrl = sanitizeSafeUrl(value);
+        if (value && !safeAvatarUrl) {
+          errors.push(`Invalid avatar URL: ${value}`);
+          continue;
+        }
+        profileUpdates[key] = safeAvatarUrl;
+      } else {
+        profileUpdates[key] = typeof value === 'string' ? sanitizePlainText(value, 500) : value;
+      }
     } else {
       errors.push(`Field not allowed for update: ${key}`);
     }
@@ -683,13 +707,35 @@ function validateProfileCreation(data) {
     level: 'NEWCOMER',
     visibility: 'public',
     email_notifications: true,
-    push_notifications: true,
-    ...data
+    push_notifications: true
   };
 
-  // 验证角色
-  if (!Object.values(PROFILE_CONFIG.ROLES).includes(validatedData.role)) {
-    errors.push(`Invalid role: ${validatedData.role}`);
+  const safeData = data || {};
+
+  const allowedCreationFields = [
+    'bio', 'location', 'website', 'preferred_subjects',
+    'learning_goals', 'expertise_areas', 'visibility',
+    'email_notifications', 'push_notifications'
+  ];
+
+  for (const [key, value] of Object.entries(safeData)) {
+    if (!allowedCreationFields.includes(key)) {
+      continue;
+    }
+    if (key === 'website') {
+      const safeWebsite = sanitizeSafeUrl(value);
+      if (value && !safeWebsite) {
+        errors.push(`Invalid website URL: ${value}`);
+        continue;
+      }
+      validatedData[key] = safeWebsite;
+      continue;
+    }
+    if (['preferred_subjects', 'learning_goals', 'expertise_areas'].includes(key)) {
+      validatedData[key] = sanitizeTagList(Array.isArray(value) ? value : [], 20, 64);
+      continue;
+    }
+    validatedData[key] = typeof value === 'string' ? sanitizePlainText(value, 500) : value;
   }
 
   // 验证可见性

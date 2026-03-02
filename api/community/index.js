@@ -1,7 +1,8 @@
 // 社区系统主路由
 import express from 'express';
 import cors from 'cors';
-import { authenticateToken } from '../middleware/auth.js';
+import { authenticateToken, requirePermission } from '../middleware/auth.js';
+import { getRequestId, sendApiError } from './lib/security.js';
 
 // 导入各个模块的处理函数
 import { handleGetQuestions, handleCreateQuestion, handleGetQuestionById, handleUpdateQuestion, handleDeleteQuestion } from './questions.js';
@@ -21,6 +22,12 @@ router.use(cors({
 
 // JSON解析中间件
 router.use(express.json());
+router.use((req, res, next) => {
+  const requestId = getRequestId(req);
+  req.requestId = requestId;
+  res.setHeader('X-Request-Id', requestId);
+  next();
+});
 
 // ==================== 问题相关路由 ====================
 
@@ -30,7 +37,7 @@ router.get('/questions', async (req, res) => {
     await handleGetQuestions(req, res);
   } catch (error) {
     console.error('Get questions error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -40,7 +47,7 @@ router.post('/questions', authenticateToken, async (req, res) => {
     await handleCreateQuestion(req, res);
   } catch (error) {
     console.error('Create question error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -50,7 +57,7 @@ router.get('/questions/:id', async (req, res) => {
     await handleGetQuestionById(req, res);
   } catch (error) {
     console.error('Get question by id error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -60,7 +67,7 @@ router.put('/questions/:id', authenticateToken, async (req, res) => {
     await handleUpdateQuestion(req, res);
   } catch (error) {
     console.error('Update question error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -70,7 +77,7 @@ router.delete('/questions/:id', authenticateToken, async (req, res) => {
     await handleDeleteQuestion(req, res);
   } catch (error) {
     console.error('Delete question error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -82,7 +89,7 @@ router.get('/answers', async (req, res) => {
     await handleGetAnswers(req, res);
   } catch (error) {
     console.error('Get answers error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -92,7 +99,7 @@ router.post('/answers', authenticateToken, async (req, res) => {
     await handleCreateAnswer(req, res);
   } catch (error) {
     console.error('Create answer error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -102,7 +109,7 @@ router.get('/answers/:id', async (req, res) => {
     await handleGetAnswerById(req, res);
   } catch (error) {
     console.error('Get answer by id error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -112,7 +119,7 @@ router.put('/answers/:id', authenticateToken, async (req, res) => {
     await handleUpdateAnswer(req, res);
   } catch (error) {
     console.error('Update answer error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -122,7 +129,7 @@ router.delete('/answers/:id', authenticateToken, async (req, res) => {
     await handleDeleteAnswer(req, res);
   } catch (error) {
     console.error('Delete answer error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -134,7 +141,7 @@ router.get('/interactions', authenticateToken, async (req, res) => {
     await handleGetInteractions(req, res);
   } catch (error) {
     console.error('Get interactions error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -144,7 +151,7 @@ router.post('/interactions', authenticateToken, async (req, res) => {
     await handleCreateInteraction(req, res);
   } catch (error) {
     console.error('Create interaction error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -154,7 +161,7 @@ router.delete('/interactions/:id', authenticateToken, async (req, res) => {
     await handleDeleteInteraction(req, res);
   } catch (error) {
     console.error('Delete interaction error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -167,7 +174,7 @@ router.post('/:type/:id/interact', authenticateToken, async (req, res) => {
     await handleCreateInteraction(req, res);
   } catch (error) {
     console.error('Interact error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -179,17 +186,17 @@ router.get('/badges/:userId?', async (req, res) => {
     await handleGetBadges(req, res);
   } catch (error) {
     console.error('Get badges error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
 // 颁发徽章（系统调用）
-router.post('/badges/award', authenticateToken, async (req, res) => {
+router.post('/badges/award', authenticateToken, requirePermission('manage_roles'), async (req, res) => {
   try {
     await handleAwardBadge(req, res);
   } catch (error) {
     console.error('Award badge error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -201,27 +208,27 @@ router.get('/reputation/:userId?', async (req, res) => {
     await handleGetReputation(req, res);
   } catch (error) {
     console.error('Get reputation error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
 // 更新用户声誉（系统调用）
-router.post('/reputation/update', authenticateToken, async (req, res) => {
+router.post('/reputation/update', authenticateToken, requirePermission('manage_roles'), async (req, res) => {
   try {
     await handleUpdateReputation(req, res);
   } catch (error) {
     console.error('Update reputation error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
 // 调整用户声誉（管理员功能）
-router.post('/reputation/adjust', authenticateToken, async (req, res) => {
+router.post('/reputation/adjust', authenticateToken, requirePermission('manage_roles'), async (req, res) => {
   try {
     await handleAdjustReputation(req, res);
   } catch (error) {
     console.error('Adjust reputation error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -233,7 +240,7 @@ router.get('/users/:userId/profile', async (req, res) => {
     await handleGetProfile(req, res);
   } catch (error) {
     console.error('Get profile error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -243,7 +250,7 @@ router.put('/users/:userId/profile', authenticateToken, async (req, res) => {
     await handleUpdateProfile(req, res);
   } catch (error) {
     console.error('Update profile error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -253,7 +260,7 @@ router.post('/users/:userId/profile', authenticateToken, async (req, res) => {
     await handleCreateProfile(req, res);
   } catch (error) {
     console.error('Create profile error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
   }
 });
 
@@ -272,34 +279,52 @@ router.get('/health', (req, res) => {
 
 // 404处理
 router.use('*', (req, res) => {
-  res.status(404).json({ 
-    error: 'Endpoint not found',
-    path: req.originalUrl,
-    method: req.method
+  sendApiError(res, {
+    status: 404,
+    error: 'not_found',
+    code: 'ENDPOINT_NOT_FOUND',
+    message: 'Endpoint not found',
+    requestId: req.requestId,
+    details: {
+      path: req.originalUrl,
+      method: req.method
+    }
   });
 });
 
 // 全局错误处理
 router.use((error, req, res, next) => {
-  console.error('Community API Error:', error);
+  console.error('Community API Error:', { request_id: req.requestId, error });
   
   if (error.name === 'ValidationError') {
-    return res.status(400).json({ 
-      error: 'Validation failed',
-      details: error.message 
+    return sendApiError(res, {
+      status: 400,
+      error: 'validation_failed',
+      code: 'VALIDATION_ERROR',
+      message: 'Validation failed',
+      requestId: req.requestId,
+      details: error.message
     });
   }
   
   if (error.name === 'UnauthorizedError') {
-    return res.status(401).json({ 
-      error: 'Unauthorized access' 
+    return sendApiError(res, {
+      status: 401,
+      error: 'unauthorized',
+      code: 'UNAUTHORIZED',
+      message: 'Unauthorized access',
+      requestId: req.requestId
     });
   }
   
-  res.status(500).json({ 
-    error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+  sendApiError(res, {
+    status: 500,
+    error: 'internal_server_error',
+    code: 'INTERNAL_SERVER_ERROR',
+    message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
+    requestId: req.requestId
   });
 });
 
 export default router;
+

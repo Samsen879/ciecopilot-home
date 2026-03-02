@@ -1,36 +1,59 @@
 // Community notifications API - Supabase backed
-import { createClient } from '@supabase/supabase-js';
+import { getServiceClient } from '../lib/supabase/client.js';
+import {
+	applyCors,
+	getRequestId,
+	isCommunityRoleAllowed,
+	sanitizePlainText,
+	sanitizeSafeUrl,
+	sendApiError,
+	toPositiveInt
+} from './lib/security.js';
 
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey =
+	process.env.SUPABASE_SERVICE_ROLE_KEY ||
+	process.env.SUPABASE_ANON_KEY ||
+	process.env.SUPABASE_SERVICE_ROLE_KEY ||
+	process.env.SUPABASE_ANON_KEY;
+const supabase = getServiceClient();
 
 export default async function handler(req, res) {
-	// CORS headers
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	const requestId = getRequestId(req);
+	res.setHeader('X-Request-Id', requestId);
 
-	if (req.method === 'OPTIONS') {
-		return res.status(200).end();
+	if (!applyCors(req, res, ['GET', 'POST', 'OPTIONS'])) {
+		return;
 	}
 
 	try {
 		// Auth
 		const authHeader = req.headers.authorization;
 		if (!authHeader || !authHeader.startsWith('Bearer ')) {
-			return res.status(401).json({ error: 'Unauthorized' });
+			return sendApiError(res, {
+				status: 401,
+				error: 'unauthorized',
+				code: 'UNAUTHORIZED',
+				message: 'Missing or invalid authorization header',
+				requestId
+			});
 		}
 		const token = authHeader.substring(7);
 		const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 		if (authError || !user) {
-			return res.status(401).json({ error: 'Invalid token' });
+			return sendApiError(res, {
+				status: 401,
+				error: 'invalid_token',
+				code: 'INVALID_TOKEN',
+				message: 'Invalid token',
+				requestId
+			});
 		}
 
 		if (req.method === 'GET') {
 			const { page = 1, limit = 20, only_unread } = req.query;
-			const pageNum = Math.max(1, parseInt(page));
-			const limitNum = Math.max(1, Math.min(100, parseInt(limit)));
+			const pageNum = toPositiveInt(page, 1, 1, Number.MAX_SAFE_INTEGER);
+			const limitNum = toPositiveInt(limit, 20, 1, 100);
 			const from = (pageNum - 1) * limitNum;
 			const to = from + limitNum - 1;
 
@@ -54,15 +77,39 @@ export default async function handler(req, res) {
 		}
 
 		if (req.method === 'POST') {
-			const { notification_type = 'general', title = '', message = '', link_url = null, metadata = {} } = req.body || {};
+			const canManageNotifications = await isCommunityRoleAllowed(supabase, user.id, ['admin', 'moderator']);
+			if (!canManageNotifications) {
+				return sendApiError(res, {
+					status: 403,
+					error: 'insufficient_permissions',
+					code: 'INSUFFICIENT_PERMISSIONS',
+					message: 'Insufficient permissions',
+					requestId
+				});
+			}
+
+			const {
+				user_id = user.id,
+				notification_type = 'general',
+				title = '',
+				message = '',
+				link_url = null,
+				metadata = {}
+			} = req.body || {};
+
+			const targetUserId = sanitizePlainText(user_id, 80);
+			const sanitizedType = sanitizePlainText(notification_type, 40).toLowerCase() || 'general';
+			const sanitizedTitle = sanitizePlainText(title, 200);
+			const sanitizedMessage = sanitizePlainText(message, 4000);
+			const sanitizedLink = sanitizeSafeUrl(link_url);
 			const { data, error } = await supabase
 				.from('community_notifications')
 				.insert({
-					user_id: user.id,
-					notification_type,
-					title,
-					message,
-					link_url,
+					user_id: targetUserId,
+					notification_type: sanitizedType,
+					title: sanitizedTitle,
+					message: sanitizedMessage,
+					link_url: sanitizedLink,
 					metadata
 				})
 				.select('id')
@@ -75,11 +122,21 @@ export default async function handler(req, res) {
 			return res.status(201).json({ success: true, id: data.id });
 		}
 
-		return res.status(405).json({ error: 'Method not allowed' });
+		return sendApiError(res, {
+			status: 405,
+			error: 'method_not_allowed',
+			code: 'METHOD_NOT_ALLOWED',
+			message: 'Method not allowed',
+			requestId
+		});
 	} catch (error) {
-		console.error('Notifications API error:', error);
-		return res.status(500).json({ error: 'Internal server error', message: error.message });
+		console.error('Notifications API error:', { request_id: requestId, error });
+		return sendApiError(res, {
+			status: 500,
+			error: 'internal_server_error',
+			code: 'INTERNAL_SERVER_ERROR',
+			message: error?.message || 'Internal server error',
+			requestId
+		});
 	}
 }
-
-

@@ -1,17 +1,22 @@
 // 社区徽章系统API端点
 // 处理徽章获取、颁发、进度跟踪等功能
 
-import { createClient } from '@supabase/supabase-js';
+import { getServiceClient } from '../lib/supabase/client.js';
+import { applyCors, isCommunityRoleAllowed, sanitizePlainText } from './lib/security.js';
 
 // 创建Supabase客户端
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = getServiceClient();
 
 // 徽章系统配置
 const BADGE_CONFIG = {
@@ -161,13 +166,8 @@ const BADGE_CONFIG = {
 
 // 主要的徽章API处理函数
 export default async function handler(req, res) {
-  // 设置CORS头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (!applyCors(req, res, ['GET', 'POST', 'OPTIONS'])) {
+    return;
   }
 
   try {
@@ -308,31 +308,31 @@ async function handleGetBadges(req, res, user) {
 async function handleAwardBadge(req, res, user) {
   try {
     const { user_id, badge_id, manual_award = false } = req.body;
+    const sanitizedUserId = sanitizePlainText(user_id, 80);
+    const sanitizedBadgeId = sanitizePlainText(badge_id, 80);
 
     // 验证必需参数
-    if (!user_id || !badge_id) {
+    if (!sanitizedUserId || !sanitizedBadgeId) {
       return res.status(400).json({
         error: 'user_id and badge_id are required',
         code: 'MISSING_REQUIRED_FIELDS'
       });
     }
 
-    // 检查权限（只有管理员可以手动颁发徽章）
-    if (manual_award) {
-      const userProfile = await getUserCommunityProfile(user.id);
-      if (!['admin', 'moderator'].includes(userProfile.role)) {
-        return res.status(403).json({
-          error: 'Insufficient permissions to manually award badges',
-          code: 'INSUFFICIENT_PERMISSIONS'
-        });
-      }
+    // Badge award endpoint is admin/system only.
+    const hasAwardPermission = await isCommunityRoleAllowed(supabase, user.id, ['admin', 'moderator']);
+    if (!hasAwardPermission) {
+      return res.status(403).json({
+        error: 'Insufficient permissions to award badges',
+        code: 'INSUFFICIENT_PERMISSIONS'
+      });
     }
 
     // 检查徽章是否存在
     const { data: badgeDefinition, error: badgeError } = await supabase
       .from('badge_definitions')
       .select('*')
-      .eq('id', badge_id)
+      .eq('id', sanitizedBadgeId)
       .single();
 
     if (badgeError || !badgeDefinition) {
@@ -346,8 +346,8 @@ async function handleAwardBadge(req, res, user) {
     const { data: existingBadge, error: existingError } = await supabase
       .from('user_badges')
       .select('id')
-      .eq('user_id', user_id)
-      .eq('badge_id', badge_id)
+      .eq('user_id', sanitizedUserId)
+      .eq('badge_id', sanitizedBadgeId)
       .single();
 
     if (existingBadge) {
@@ -359,7 +359,7 @@ async function handleAwardBadge(req, res, user) {
 
     // 如果不是手动颁发，检查是否满足条件
     if (!manual_award) {
-      const userStats = await getUserStats(user_id);
+      const userStats = await getUserStats(sanitizedUserId);
       const meetsRequirements = await checkBadgeRequirements(userStats, badgeDefinition);
       
       if (!meetsRequirements) {
@@ -374,8 +374,8 @@ async function handleAwardBadge(req, res, user) {
     const { data: newBadge, error: awardError } = await supabase
       .from('user_badges')
       .insert({
-        user_id,
-        badge_id,
+        user_id: sanitizedUserId,
+        badge_id: sanitizedBadgeId,
         earned_at: new Date().toISOString(),
         awarded_by: manual_award ? user.id : null
       })
@@ -392,7 +392,7 @@ async function handleAwardBadge(req, res, user) {
     }
 
     // 更新用户统计
-    await updateUserBadgeStats(user_id);
+    await updateUserBadgeStats(sanitizedUserId);
 
     return res.status(201).json({
       success: true,

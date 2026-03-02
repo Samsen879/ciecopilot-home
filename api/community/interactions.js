@@ -1,19 +1,24 @@
 // 社区互动系统API端点
 // 处理投票、收藏、举报等用户互动功能
 
-import { createClient } from '@supabase/supabase-js';
+import { getServiceClient } from '../lib/supabase/client.js';
 import { checkAndAwardBadges } from './badges.js';
 import { updateUserReputation, REPUTATION_CONFIG } from './reputation.js';
+import { applyCors, sanitizePlainText, toPositiveInt } from './lib/security.js';
 
 // 创建Supabase客户端
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = getServiceClient();
 
 // 互动系统配置
 const INTERACTION_CONFIG = {
@@ -42,13 +47,8 @@ const INTERACTION_CONFIG = {
 
 // 主要的互动API处理函数
 export default async function handler(req, res) {
-  // 设置CORS头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (!applyCors(req, res, ['GET', 'POST', 'DELETE', 'OPTIONS'])) {
+    return;
   }
 
   try {
@@ -117,8 +117,8 @@ async function handleGetInteractions(req, res, user) {
     } = req.query;
 
     // 验证分页参数
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+    const pageNum = toPositiveInt(page, 1, 1, Number.MAX_SAFE_INTEGER);
+    const limitNum = toPositiveInt(limit, 20, 1, 100);
     const offset = (pageNum - 1) * limitNum;
 
     // 构建查询
@@ -212,9 +212,17 @@ async function handleGetInteractions(req, res, user) {
 async function handleCreateInteraction(req, res, user) {
   try {
     const { content_type, content_id, interaction_type, metadata = {} } = req.body;
+    const normalizedContentType = sanitizePlainText(content_type, 32).toLowerCase();
+    const normalizedContentId = sanitizePlainText(content_id, 80);
+    const normalizedInteractionType = sanitizePlainText(interaction_type, 32).toLowerCase();
+    const normalizedMetadata = {
+      ...metadata,
+      reason: sanitizePlainText(metadata?.reason, 64).toLowerCase(),
+      description: sanitizePlainText(metadata?.description, 2000)
+    };
 
     // 验证必需参数
-    if (!content_type || !content_id || !interaction_type) {
+    if (!normalizedContentType || !normalizedContentId || !normalizedInteractionType) {
       return res.status(400).json({
         error: 'content_type, content_id, and interaction_type are required',
         code: 'MISSING_REQUIRED_FIELDS'
@@ -222,7 +230,7 @@ async function handleCreateInteraction(req, res, user) {
     }
 
     // 验证内容类型和互动类型
-    if (!INTERACTION_CONFIG.VALID_INTERACTIONS[content_type]) {
+    if (!INTERACTION_CONFIG.VALID_INTERACTIONS[normalizedContentType]) {
       return res.status(400).json({
         error: 'Invalid content_type',
         code: 'INVALID_CONTENT_TYPE',
@@ -230,16 +238,16 @@ async function handleCreateInteraction(req, res, user) {
       });
     }
 
-    if (!INTERACTION_CONFIG.VALID_INTERACTIONS[content_type].includes(interaction_type)) {
+    if (!INTERACTION_CONFIG.VALID_INTERACTIONS[normalizedContentType].includes(normalizedInteractionType)) {
       return res.status(400).json({
         error: 'Invalid interaction_type for this content_type',
         code: 'INVALID_INTERACTION_TYPE',
-        valid_types: INTERACTION_CONFIG.VALID_INTERACTIONS[content_type]
+        valid_types: INTERACTION_CONFIG.VALID_INTERACTIONS[normalizedContentType]
       });
     }
 
     // 检查内容是否存在
-    const contentExists = await checkContentExists(content_type, content_id);
+    const contentExists = await checkContentExists(normalizedContentType, normalizedContentId);
     if (!contentExists) {
       return res.status(404).json({
         error: 'Content not found',
@@ -250,7 +258,7 @@ async function handleCreateInteraction(req, res, user) {
     // 检查用户权限
     const userProfile = await getUserCommunityProfile(user.id);
     
-    if (['upvote', 'downvote'].includes(interaction_type)) {
+    if (['upvote', 'downvote'].includes(normalizedInteractionType)) {
       if (userProfile.reputation_score < INTERACTION_CONFIG.MIN_REPUTATION_TO_VOTE) {
         return res.status(403).json({
           error: 'Insufficient reputation to vote',
@@ -260,7 +268,7 @@ async function handleCreateInteraction(req, res, user) {
       }
 
       // 检查用户是否是内容作者（不能给自己的内容投票）
-      const isAuthor = await checkIfUserIsContentAuthor(user.id, content_type, content_id);
+      const isAuthor = await checkIfUserIsContentAuthor(user.id, normalizedContentType, normalizedContentId);
       if (isAuthor) {
         return res.status(400).json({
           error: 'Cannot vote on your own content',
@@ -269,7 +277,7 @@ async function handleCreateInteraction(req, res, user) {
       }
     }
 
-    if (interaction_type === 'report') {
+    if (normalizedInteractionType === 'report') {
       if (userProfile.reputation_score < INTERACTION_CONFIG.MIN_REPUTATION_TO_REPORT) {
         return res.status(403).json({
           error: 'Insufficient reputation to report',
@@ -279,7 +287,10 @@ async function handleCreateInteraction(req, res, user) {
       }
 
       // 验证举报原因
-      if (!metadata.reason || !INTERACTION_CONFIG.VALID_REPORT_REASONS.includes(metadata.reason)) {
+      if (
+        !normalizedMetadata.reason ||
+        !INTERACTION_CONFIG.VALID_REPORT_REASONS.includes(normalizedMetadata.reason)
+      ) {
         return res.status(400).json({
           error: 'Invalid or missing report reason',
           code: 'INVALID_REPORT_REASON',
@@ -299,17 +310,22 @@ async function handleCreateInteraction(req, res, user) {
     }
 
     // 检查是否已存在相同的互动
-    const existingInteraction = await getExistingInteraction(user.id, content_type, content_id, interaction_type);
+    const existingInteraction = await getExistingInteraction(
+      user.id,
+      normalizedContentType,
+      normalizedContentId,
+      normalizedInteractionType
+    );
     
     if (existingInteraction) {
       // 对于投票，如果已存在相同投票，则取消；如果是不同投票，则更新
-      if (['upvote', 'downvote'].includes(interaction_type)) {
-        if (existingInteraction.interaction_type === interaction_type) {
+      if (['upvote', 'downvote'].includes(normalizedInteractionType)) {
+        if (existingInteraction.interaction_type === normalizedInteractionType) {
           // 取消投票
           return await handleDeleteInteractionById(existingInteraction.id, user, res);
         } else {
           // 更新投票类型
-          return await updateInteractionType(existingInteraction.id, interaction_type, user, res);
+          return await updateInteractionType(existingInteraction.id, normalizedInteractionType, user, res);
         }
       } else {
         return res.status(400).json({
@@ -322,10 +338,10 @@ async function handleCreateInteraction(req, res, user) {
     // 创建新的互动
     const interactionData = {
       user_id: user.id,
-      content_type,
-      content_id,
-      interaction_type,
-      metadata,
+      content_type: normalizedContentType,
+      content_id: normalizedContentId,
+      interaction_type: normalizedInteractionType,
+      metadata: normalizedMetadata,
       created_at: new Date().toISOString()
     };
 
@@ -340,13 +356,13 @@ async function handleCreateInteraction(req, res, user) {
     }
 
     // 更新内容的投票分数
-    if (['upvote', 'downvote'].includes(interaction_type)) {
-      await updateContentVoteScore(content_type, content_id, interaction_type);
+    if (['upvote', 'downvote'].includes(normalizedInteractionType)) {
+      await updateContentVoteScore(normalizedContentType, normalizedContentId, normalizedInteractionType);
       
       // 更新内容作者的声誉
-      const contentAuthorId = await getContentAuthorId(content_type, content_id);
+      const contentAuthorId = await getContentAuthorId(normalizedContentType, normalizedContentId);
       if (contentAuthorId) {
-        const reputationChange = interaction_type === 'upvote' 
+        const reputationChange = normalizedInteractionType === 'upvote' 
           ? INTERACTION_CONFIG.REPUTATION_REWARDS.UPVOTE_RECEIVED
           : INTERACTION_CONFIG.REPUTATION_REWARDS.DOWNVOTE_RECEIVED;
         
@@ -362,7 +378,7 @@ async function handleCreateInteraction(req, res, user) {
       }
 
       // 更新投票者的声誉
-      const voterReputationChange = interaction_type === 'upvote'
+      const voterReputationChange = normalizedInteractionType === 'upvote'
         ? INTERACTION_CONFIG.REPUTATION_REWARDS.UPVOTE_GIVEN
         : INTERACTION_CONFIG.REPUTATION_REWARDS.DOWNVOTE_GIVEN;
       
@@ -378,13 +394,13 @@ async function handleCreateInteraction(req, res, user) {
     }
 
     // 如果是举报，创建举报记录
-    if (interaction_type === 'report') {
+    if (normalizedInteractionType === 'report') {
       await createReportRecord({
         reporter_id: user.id,
-        content_type,
-        content_id,
-        reason: metadata.reason,
-        description: metadata.description || '',
+        content_type: normalizedContentType,
+        content_id: normalizedContentId,
+        reason: normalizedMetadata.reason,
+        description: normalizedMetadata.description || '',
         status: 'pending'
       });
     }

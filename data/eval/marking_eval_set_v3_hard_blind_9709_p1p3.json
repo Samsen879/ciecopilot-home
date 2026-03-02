@@ -1,0 +1,3800 @@
+{
+  "suite_version": "v3_hard_blind_9709_p1p3",
+  "notes": "Expanded hard blind set for B2: includes non-fixed order mappings, many-to-one and one-to-many labels, plus noisy and near-miss steps to create threshold calibration separation.",
+  "generated_at": "2026-02-13",
+  "cases": [
+    {
+      "case_id": "9709_p1_w23_q01_hard_seed_001",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I started expanding everything line by line, then realised only selected terms are needed."
+        },
+        {
+          "step_id": "s2",
+          "text": "From (3+2ax)^5, the x^3 term comes from choosing three ax factors, so I wrote that coefficient."
+        },
+        {
+          "step_id": "s3",
+          "text": "For (2+ax)^6, I isolated the x^2 term and simplified its coefficient separately."
+        },
+        {
+          "step_id": "s4",
+          "text": "The statement says first coefficient equals six times the second, so I formed one equation in a."
+        },
+        {
+          "step_id": "s5",
+          "text": "After cancellation I obtained a=2 and kept the non-zero value required here."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "from 3 2ax 5 the x 3 term comes from choosing three"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "B1",
+          "description": "for 2 ax 6 i isolated the x 2 term and simplified"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "the statement says first coefficient equals six times the second so i"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "after cancellation i obtained a 2 and kept the non zero value"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q01.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.algebra.binomial_expansion",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q01.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q02_hard_seed_002",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I moved the pi/6 term first so tan^-1(4x) was written directly from the arccos expression."
+        },
+        {
+          "step_id": "s2",
+          "text": "Using cos^-1(root3/2), I converted to the valid angle for the tangent relation."
+        },
+        {
+          "step_id": "s3",
+          "text": "That gave 4x=-root3, hence x=-root3/4."
+        },
+        {
+          "step_id": "s4",
+          "text": "I briefly tested the positive branch and rejected it against the original equation."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i moved the pi 6 term first so tan 1 4x was"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "description": "i moved the pi 6 term first so tan 1 4x was"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "that gave 4x root3 hence x root3 4"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s2": "r2",
+        "s3": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q02.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.trigonometry.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q02.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q03_hard_seed_003",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "From dy/dx = 1/2 x + 72/x^4, substituting x=2 gave tangent gradient 11/2."
+        },
+        {
+          "step_id": "s2",
+          "text": "I first wrote slope -11/2 for the normal and then corrected that."
+        },
+        {
+          "step_id": "s3",
+          "text": "Normal slope is negative reciprocal, so m_n=-2/11."
+        },
+        {
+          "step_id": "s4",
+          "text": "Through P(2,8), I wrote y-8=(-2/11)(x-2)."
+        },
+        {
+          "step_id": "s5",
+          "text": "Separately, integrating gave y=x^2/4-24/x^3+c and substituting P forced c=10."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "from dy dx 1 2 x 72 x 4 substituting x 2"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "description": "normal slope is negative reciprocal so m n 2 11"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "through p 2 8 i wrote y 8 2 11 x 2"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "B1",
+          "description": "separately integrating gave y x 2 4 24 x 3 c and"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q03.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.differentiation.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q03a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q03b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q04_hard_seed_004",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "Each arc has radius 2 and angle 60 degrees, so one arc is 2*(pi/3)."
+        },
+        {
+          "step_id": "s2",
+          "text": "Multiplying by three gave perimeter 2pi."
+        },
+        {
+          "step_id": "s3",
+          "text": "For area I treated the shape as 3 sectors minus 2 triangles."
+        },
+        {
+          "step_id": "s4",
+          "text": "That simplifies to 2pi-2root3 in exact form."
+        },
+        {
+          "step_id": "s5",
+          "text": "I had 2.82 on calculator first, then reverted to exact as instructed."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "each arc has radius 2 and angle 60 degrees so one arc"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "B1",
+          "description": "multiplying by three gave perimeter 2pi"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "for area i treated the shape as 3 sectors minus 2 triangles"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "that simplifies to 2pi 2root3 in exact form"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q04.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.coordinate_geometry.circle",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q04a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q04b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q05_hard_seed_005",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "From theta=pi/6, I used cos theta=root3/2 and 2-sin theta=3/2."
+        },
+        {
+          "step_id": "s2",
+          "text": "Hence a=1/2 and r=root3 for the progression."
+        },
+        {
+          "step_id": "s3",
+          "text": "I substituted into S10 = a(1-r^10)/(1-r)."
+        },
+        {
+          "step_id": "s4",
+          "text": "After tidying powers, I rationalised the denominator to a clean surd form."
+        },
+        {
+          "step_id": "s5",
+          "text": "Final exact result was written as 121/(root3-1)."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "from theta pi 6 i used cos theta root3 2 and 2"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i substituted into s10 a 1 r 10 1 r"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "after tidying powers i rationalised the denominator to a clean surd form"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "final exact result was written as 121 root3 1"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q05.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.series.sequence_sum",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q05a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q05b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q06_hard_seed_006",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "Completing the square gave y=(x-4)^2-11, so the minimum is (4,-11)."
+        },
+        {
+          "step_id": "s2",
+          "text": "The transform doubles y-values and shifts right 4, up 1."
+        },
+        {
+          "step_id": "s3",
+          "text": "So the transformed minimum becomes (8,-21)."
+        },
+        {
+          "step_id": "s4",
+          "text": "Using x->(x-4) in the rule and then simplifying, I got y=2x^2-32x+107."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "completing the square gave y x 4 2 11 so the minimum"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "B1",
+          "description": "the transform doubles y values and shifts right 4 up 1"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "using x x 4 in the rule and then simplifying i got"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r2",
+        "s4": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q06.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.algebra.quadratics",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q06b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q07_hard_seed_007",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I rewrote (tan^2+1)/(tan^2-1) as (sin^2+cos^2)/(sin^2-cos^2)."
+        },
+        {
+          "step_id": "s2",
+          "text": "Replacing sin^2+cos^2 by 1 produced 1/(1-2cos^2 theta)."
+        },
+        {
+          "step_id": "s3",
+          "text": "Substituting that into part (c) reduced everything to a solvable cosine equation."
+        },
+        {
+          "step_id": "s4",
+          "text": "I converted cos values back to theta and kept only 0<theta<180 degrees."
+        },
+        {
+          "step_id": "s5",
+          "text": "One reflex candidate was crossed out after interval check."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i rewrote tan 2 1 tan 2 1 as sin 2 cos"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "description": "replacing sin 2 cos 2 by 1 produced 1 1 2cos 2"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "substituting that into part c reduced everything to a solvable cosine equation"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i converted cos values back to theta and kept only 0 theta"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q07.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.trigonometry.identities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q07a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q07b.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q07c.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q08_hard_seed_008",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I swapped x and y in y=(x+a)^2-a, then took square root to invert."
+        },
+        {
+          "step_id": "s2",
+          "text": "Because original x<=-a, the inverse must use the negative root branch."
+        },
+        {
+          "step_id": "s3",
+          "text": "So domain of f^-1 is x>=-a while its output stays <=-a."
+        },
+        {
+          "step_id": "s4",
+          "text": "For the composite condition I set f(x)=1/2 and built the resulting quadratic."
+        },
+        {
+          "step_id": "s5",
+          "text": "Two roots came out; only the one satisfying the branch restriction was kept."
+        },
+        {
+          "step_id": "s6",
+          "text": "I boxed the valid root and struck through the rejected one."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i swapped x and y in y x a 2 a then"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "B1",
+          "description": "so domain of f 1 is x a while its output stays"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "for the composite condition i set f x 1 2 and built"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "two roots came out only the one satisfying the branch restriction was"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q08.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.functions.inverse_composite",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q08a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q08b_i.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q08b_ii.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q08c.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q09_hard_seed_009",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I set the two curve equations equal and used u=sqrt(x) to simplify the powers."
+        },
+        {
+          "step_id": "s2",
+          "text": "That gave intersection x=1 and x=25."
+        },
+        {
+          "step_id": "s3",
+          "text": "Area is integral of upper minus lower, so I integrated each fractional-power term carefully."
+        },
+        {
+          "step_id": "s4",
+          "text": "Then I evaluated the antiderivative at both limits and subtracted."
+        },
+        {
+          "step_id": "s5",
+          "text": "Final area matched the exact form, with 42.7 as a decimal sense-check."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i set the two curve equations equal and used u sqrt x"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "area is integral of upper minus lower so i integrated each fractional"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "then i evaluated the antiderivative at both limits and subtracted"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "final area matched the exact form with 42 7 as a decimal"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q09.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.integration.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q09a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q09b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p1_w23_q10_hard_seed_010",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I differentiated the given expression carefully, keeping the outside coefficient from the chain rule."
+        },
+        {
+          "step_id": "s2",
+          "text": "Setting dy/dx=0 produced the stationary x-values."
+        },
+        {
+          "step_id": "s3",
+          "text": "I checked the sign of dy/dx around those values to decide increase/decrease."
+        },
+        {
+          "step_id": "s4",
+          "text": "Therefore the increasing interval was stated clearly from the sign chart."
+        },
+        {
+          "step_id": "s5",
+          "text": "I corrected my first draft by respecting the domain restriction x>0."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i differentiated the given expression carefully keeping the outside coefficient from the"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "description": "setting dy dx 0 produced the stationary x values"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "B1",
+          "description": "i checked the sign of dy dx around those values to decide"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "therefore the increasing interval was stated clearly from the sign chart"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w23_qp_12/q10.png",
+        "paper": "P1",
+        "paper_code": "9709_w23_qp_12",
+        "topic_path": "9709.p1.differentiation.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q10a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_12/q10b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q01_hard_seed_011",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I sketched y=|4x-2| with vertex at x=1/2 and also the line y=1+3x."
+        },
+        {
+          "step_id": "s2",
+          "text": "Then I split the modulus into two linear cases before solving each inequality."
+        },
+        {
+          "step_id": "s3",
+          "text": "I merged the valid pieces into one interval statement."
+        },
+        {
+          "step_id": "s4",
+          "text": "A quick test point outside the interval failed the inequality, confirming the boundary."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i sketched y 4x 2 with vertex at x 1 2 and"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "then i split the modulus into two linear cases before solving each"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i merged the valid pieces into one interval statement"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q01.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.algebra.inequalities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q01a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q01b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q02_hard_seed_012",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "For x=(ln t)^2 I found dx/dt = 2ln(t)/t."
+        },
+        {
+          "step_id": "s2",
+          "text": "For y=e^(2-t^2) I obtained dy/dt = -2t e^(2-t^2)."
+        },
+        {
+          "step_id": "s3",
+          "text": "Hence dy/dx = (dy/dt)/(dx/dt)."
+        },
+        {
+          "step_id": "s4",
+          "text": "Substituting t=e simplified the gradient to a single exponential term."
+        },
+        {
+          "step_id": "s5",
+          "text": "I cancelled common factors before the final simplification step."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "for x ln t 2 i found dx dt 2ln t t"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "hence dy dx dy dt dx dt"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "substituting t e simplified the gradient to a single exponential term"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q02.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.differentiation.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q02_x.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q03_hard_seed_013",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "Because (2x-1) divides p(x), I set p(1/2)=0 to get one linear relation."
+        },
+        {
+          "step_id": "s2",
+          "text": "Remainder 12 on division by (x+1) gives p(-1)=12 as the second relation."
+        },
+        {
+          "step_id": "s3",
+          "text": "I solved the pair for a and b."
+        },
+        {
+          "step_id": "s4",
+          "text": "Both values were substituted back to verify the two conditions."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "because 2x 1 divides p x i set p 1 2 0"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "remainder 12 on division by x 1 gives p 1 12 as"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i solved the pair for a and b"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "both values were substituted back to verify the two conditions"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q03.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.algebra.rational_expression",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q03.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q04_hard_seed_014",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "The set |z-(4+3i)|<=2 is a closed circle centred at (4,3) with radius 2."
+        },
+        {
+          "step_id": "s2",
+          "text": "Re z<=3 keeps the part on or left of x=3, so I shaded the overlap only."
+        },
+        {
+          "step_id": "s3",
+          "text": "Greatest arg z comes from the top-left boundary point of that overlap."
+        },
+        {
+          "step_id": "s4",
+          "text": "Using tan(theta)=y/x at that point gave the maximum argument."
+        },
+        {
+          "step_id": "s5",
+          "text": "I drew a faint excluded region to make the accepted region unambiguous."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "the set z 4 3i 2 is a closed circle centred at"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "B1",
+          "description": "re z 3 keeps the part on or left of x 3"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "greatest arg z comes from the top left boundary point of that"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "using tan theta y x at that point gave the maximum argument"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q04.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.complex_numbers.mod_arg",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q04a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q04b.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q04e.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q05_hard_seed_015",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I split x(x+1)/(x^2+4) into a denominator-derivative part plus a remainder term."
+        },
+        {
+          "step_id": "s2",
+          "text": "That integrates to terms involving ln(x^2+4) and arctan(x/2)."
+        },
+        {
+          "step_id": "s3",
+          "text": "I substituted the given upper and lower limits carefully."
+        },
+        {
+          "step_id": "s4",
+          "text": "The final exact value was left in simplified log/arctan form, not decimal."
+        },
+        {
+          "step_id": "s5",
+          "text": "A quick calculator check confirmed the sign and rough magnitude."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i split x x 1 x 2 4 into a denominator derivative"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "that integrates to terms involving ln x 2 4 and arctan x"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i substituted the given upper and lower limits carefully"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "the final exact value was left in simplified log arctan form not"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q05.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.integration.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q05.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q06_hard_seed_016",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "By checking f(0.6) and f(0.8), the signs differ so a root lies between them."
+        },
+        {
+          "step_id": "s2",
+          "text": "I applied the recurrence exactly as given to generate x1, x2, x3..."
+        },
+        {
+          "step_id": "s3",
+          "text": "Values stabilized; I kept each iterate to 4 d.p. as instructed."
+        },
+        {
+          "step_id": "s4",
+          "text": "So the required root is the converged value to 4 d.p."
+        },
+        {
+          "step_id": "s5",
+          "text": "I ignored the other visual crossing because the interval was restricted in the question."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "by checking f 0 6 and f 0 8 the signs differ"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i applied the recurrence exactly as given to generate x1 x2 x3"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "values stabilized i kept each iterate to 4 d p as instructed"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "so the required root is the converged value to 4 d p"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q06.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.numerical_methods.approximation",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q06a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q06b.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q06c.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q07_hard_seed_017",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "Starting from cos(2theta+theta), I used cos(A+B)=cosAcosB-sinAsinB."
+        },
+        {
+          "step_id": "s2",
+          "text": "Replacing sin^2 theta by 1-cos^2 theta gave the 4cos^3 theta-3cos theta form."
+        },
+        {
+          "step_id": "s3",
+          "text": "Substitution reduced the problem to a polynomial in cos theta."
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved for cos theta and then converted to theta in 0<theta<180."
+        },
+        {
+          "step_id": "s5",
+          "text": "Both admissible angle answers were listed."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "starting from cos 2theta theta i used cos a b cosacosb sinasinb"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "description": "replacing sin 2 theta by 1 cos 2 theta gave the 4cos"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved for cos theta and then converted to theta in 0"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "both admissible angle answers were listed"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q07.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.trigonometry.identities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q07a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q07b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q08_hard_seed_018",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I equated real and imaginary components after simplifying the complex expression."
+        },
+        {
+          "step_id": "s2",
+          "text": "This led to a quadratic condition in a."
+        },
+        {
+          "step_id": "s3",
+          "text": "For each admissible a, I substituted back to compute the associated lambda value."
+        },
+        {
+          "step_id": "s4",
+          "text": "I wrote the complete valid pair list and checked each pair against the original equation."
+        },
+        {
+          "step_id": "s5",
+          "text": "One trial value was rejected because it broke the original real-part condition."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i equated real and imaginary components after simplifying the complex expression"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "this led to a quadratic condition in a"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "for each admissible a i substituted back to compute the associated lambda"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i wrote the complete valid pair list and checked each pair against"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q08.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.complex_numbers.mod_arg",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q08a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q08b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q09_hard_seed_019",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "At the maximum point M, the sine term equals 1, which gave me the value of a."
+        },
+        {
+          "step_id": "s2",
+          "text": "I found the x-values where the curve meets the axis to set the shaded bounds."
+        },
+        {
+          "step_id": "s3",
+          "text": "Because the region is below the axis there, I integrated with the correct sign convention."
+        },
+        {
+          "step_id": "s4",
+          "text": "After substitution I simplified the area to an exact expression."
+        },
+        {
+          "step_id": "s5",
+          "text": "I kept an approximate decimal only as a check, not as final answer."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "at the maximum point m the sine term equals 1 which gave"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "B1",
+          "description": "i found the x values where the curve meets the axis to"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "because the region is below the axis there i integrated with the"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "after substitution i simplified the area to an exact expression"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q09.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.integration.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q09a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q09b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_p3_w23_q10_hard_seed_020",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "From the line equations I read direction vectors and used d1·d2=|d1||d2|cos60."
+        },
+        {
+          "step_id": "s2",
+          "text": "That produced an equation in c, so I solved for c first."
+        },
+        {
+          "step_id": "s3",
+          "text": "Then I formed the point-to-line vector and projected to isolate the perpendicular component."
+        },
+        {
+          "step_id": "s4",
+          "text": "Its magnitude simplified to root11."
+        },
+        {
+          "step_id": "s5",
+          "text": "As a check, I also used area of parallelogram over base length and got the same distance."
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "from the line equations i read direction vectors and used d1 d2"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "description": "that produced an equation in c so i solved for c first"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "then i formed the point to line vector and projected to isolate"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "its magnitude simplified to root11"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r2",
+        "s3": "r3",
+        "s4": "r4",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w23_qp_32/q10.png",
+        "paper": "P3",
+        "paper_code": "9709_w23_qp_32",
+        "topic_path": "9709.p3.vectors.geometry",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q10a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w23_ms_32/q10b.png"
+        ],
+        "source_note": "Manual v3 hard blind seed (2026-02-13): reviewed from selected question + mark-scheme snippets; steps intentionally include noisy/merged/split ordering to stress alignment."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q01_011",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I extracted the required power coefficient from the first expansion term selection. [9709_s24_qp_12_q01_011:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I extracted the required power coefficient from the first expansion term selection. I rechecked with an equivalent form. [9709_s24_qp_12_q01_011:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I isolated the matching coefficient from the second expansion without full expansion. [9709_s24_qp_12_q01_011:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I briefly expanded an unnecessary middle term first and crossed it out later. [9709_s24_qp_12_q01_011:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I set up the coefficient equation exactly as the statement compares them. [9709_s24_qp_12_q01_011:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i extracted the required power coefficient from the first expansion term selection"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i isolated the matching coefficient from the second expansion without full expansion"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i set up the coefficient equation exactly as the statement compares them"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q01.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.algebra.binomial_expansion",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q01.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q02_012",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I rewrote the rational condition and cleared denominators safely. I simplified to a polynomial or factorized equation. [9709_s24_qp_12_q02_012:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I marked restricted values before solving to avoid extraneous roots. [9709_s24_qp_12_q02_012:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I solved for candidate values. [9709_s24_qp_12_q02_012:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I removed values that violate denominator/domain restrictions. [9709_s24_qp_12_q02_012:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_s24_qp_12_q02_012:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rewrote the rational condition and cleared denominators safely i simplified to"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i rewrote the rational condition and cleared denominators safely i simplified to"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved for candidate values 9709 s24 qp 12 q02 012 s3"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i removed values that violate denominator domain restrictions 9709 s24 qp 12"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q02.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.algebra.rational_expression",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q02.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q03_013",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I converted that angle relation into an equation in x. [9709_s24_qp_12_q03_013:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I rearranged the equation into one inverse-trigonometric expression. [9709_s24_qp_12_q03_013:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I stated the exact accepted value after interval checking. [9709_s24_qp_12_q03_013:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I evaluated the principal angle and checked the paired branch condition. [9709_s24_qp_12_q03_013:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rearranged the equation into one inverse trigonometric expression 9709 s24 qp"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i evaluated the principal angle and checked the paired branch condition 9709"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i converted that angle relation into an equation in x 9709 s24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the exact accepted value after interval checking 9709 s24 qp"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q03.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.trigonometry.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q03a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q04_014",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I noted that reversing composition order gives a different expression. [9709_s24_qp_12_q04_014:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I substituted one function into the other in the required order. [9709_s24_qp_12_q04_014:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I simplified the composite expression to a single-variable equation. [9709_s24_qp_12_q04_014:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved for the candidate values algebraically. [9709_s24_qp_12_q04_014:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I filtered candidates against any stated restriction before final answer. [9709_s24_qp_12_q04_014:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I filtered candidates against any stated restriction before final answer. I checked the sign once more. [9709_s24_qp_12_q04_014:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i substituted one function into the other in the required order 9709"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i simplified the composite expression to a single variable equation 9709 s24"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved for the candidate values algebraically 9709 s24 qp 12 q04"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i filtered candidates against any stated restriction before final answer 9709 s24"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q04.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.functions.composite",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q04a.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q04c.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q05_015",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I flagged the base condition before taking logs on both sides. [9709_s24_qp_12_q05_015:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I rewrote the equation into a consistent logarithmic/exponential structure. [9709_s24_qp_12_q05_015:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I combined terms to isolate one exponential or logarithmic quantity. [9709_s24_qp_12_q05_015:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved the derived algebraic equation for candidate values. [9709_s24_qp_12_q05_015:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I rejected non-permitted values and stated valid real solutions. [9709_s24_qp_12_q05_015:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rewrote the equation into a consistent logarithmic exponential structure 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i combined terms to isolate one exponential or logarithmic quantity 9709 s24"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the derived algebraic equation for candidate values 9709 s24 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i rejected non permitted values and stated valid real solutions 9709 s24"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q05.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.log_exp.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q05a.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q05b_ii.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q06_016",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I differentiated the function carefully, keeping chain and product factors. [9709_s24_qp_12_q06_016:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I differentiated the function carefully, keeping chain and product factors. I rechecked with an equivalent form. [9709_s24_qp_12_q06_016:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I substituted the given condition (point or stationary condition) into dy/dx. [9709_s24_qp_12_q06_016:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I first copied one exponent wrongly and fixed it before solving. [9709_s24_qp_12_q06_016:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I solved the resulting equation for the unknown coordinate or parameter. [9709_s24_qp_12_q06_016:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i differentiated the function carefully keeping chain and product factors 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i substituted the given condition point or stationary condition into dy dx"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i solved the resulting equation for the unknown coordinate or parameter 9709"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q06.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.differentiation.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q06a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q07_017",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I rewrote the tangent or sine-cosine expression into a common identity form. I substituted sin^2+cos^2=1 (or sec^2=1+tan^2) to simplify. [9709_s24_qp_12_q07_017:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I almost cancelled unlike terms too early and then corrected that simplification. [9709_s24_qp_12_q07_017:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I reduced the expression to the required target form algebraically. [9709_s24_qp_12_q07_017:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I used the identity result to obtain the final equation or values. [9709_s24_qp_12_q07_017:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_s24_qp_12_q07_017:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rewrote the tangent or sine cosine expression into a common identity"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i rewrote the tangent or sine cosine expression into a common identity"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i reduced the expression to the required target form algebraically 9709 s24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i used the identity result to obtain the final equation or values"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q07.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.trigonometry.identities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q07a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q08_018",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I set up and solved the parameter equation from the vector relation. [9709_s24_qp_12_q08_018:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I wrote the needed direction/position vectors in component form. [9709_s24_qp_12_q08_018:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I stated the final vector result or exact length clearly. [9709_s24_qp_12_q08_018:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I used dot or scalar-product relations to connect the geometric condition. [9709_s24_qp_12_q08_018:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i wrote the needed direction position vectors in component form 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i used dot or scalar product relations to connect the geometric condition"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i set up and solved the parameter equation from the vector relation"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the final vector result or exact length clearly 9709 s24"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q08.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.vectors.geometry",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q08a_i.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q08a_ii.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q08b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_s24_qp_12_q09_019",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I checked one candidate against the original complex condition and discarded it. [9709_s24_qp_12_q09_019:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I expressed the complex relation in a workable algebraic form. [9709_s24_qp_12_q09_019:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I separated real and imaginary parts (or used modulus-argument conditions). [9709_s24_qp_12_q09_019:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved the resulting equation(s) for the unknowns. [9709_s24_qp_12_q09_019:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the required modulus/argument/parameter values. [9709_s24_qp_12_q09_019:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I stated the required modulus/argument/parameter values. I checked the sign once more. [9709_s24_qp_12_q09_019:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i expressed the complex relation in a workable algebraic form 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i separated real and imaginary parts or used modulus argument conditions 9709"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the resulting equation s for the unknowns 9709 s24 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the required modulus argument parameter values 9709 s24 qp 12"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_s24_qp_12/q09.png",
+        "paper": "P1",
+        "paper_code": "9709_s24_qp_12",
+        "topic_path": "9709.p1.complex_numbers.mod_arg",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q09a.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_12/q09b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q01_020",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I wrote an intermediate decimal then reverted to exact form as requested. [9709_m24_qp_12_q01_020:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I integrated each term using the correct power or standard integral form. [9709_m24_qp_12_q01_020:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I split the expression so logs and arctan terms were handled separately. [9709_m24_qp_12_q01_020:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I substituted the bounds (or point condition) into the antiderivative. [9709_m24_qp_12_q01_020:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I simplified to the final exact result and used decimal only as a check. [9709_m24_qp_12_q01_020:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i integrated each term using the correct power or standard integral form"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i split the expression so logs and arctan terms were handled separately"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i substituted the bounds or point condition into the antiderivative 9709 m24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i simplified to the final exact result and used decimal only as"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q01.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.integration.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q01.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q02_021",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I computed the required gradient relation from given points/normal-tangent data. [9709_m24_qp_12_q02_021:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I computed the required gradient relation from given points/normal-tangent data. I rechecked with an equivalent form. [9709_m24_qp_12_q02_021:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I built the line equation in point-gradient form. [9709_m24_qp_12_q02_021:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I corrected an initial sign slip in the gradient before finalizing. [9709_m24_qp_12_q02_021:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I rearranged to the requested equation format. [9709_m24_qp_12_q02_021:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i computed the required gradient relation from given points normal tangent data"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i built the line equation in point gradient form 9709 m24 qp"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i rearranged to the requested equation format 9709 m24 qp 12 q02"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q02.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.coordinate_geometry.lines",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q02a.png",
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q02b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q03_022",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I rearranged the equation into one inverse-trigonometric expression. I evaluated the principal angle and checked the paired branch condition. [9709_m24_qp_12_q03_022:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I tried a degree-mode value momentarily, then switched back to radians. [9709_m24_qp_12_q03_022:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I converted that angle relation into an equation in x. [9709_m24_qp_12_q03_022:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I stated the exact accepted value after interval checking. [9709_m24_qp_12_q03_022:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_m24_qp_12_q03_022:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rearranged the equation into one inverse trigonometric expression i evaluated the"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i rearranged the equation into one inverse trigonometric expression i evaluated the"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i converted that angle relation into an equation in x 9709 m24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the exact accepted value after interval checking 9709 m24 qp"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q03.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.trigonometry.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q03.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q04_023",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I reduced the expression to the required target form algebraically. [9709_m24_qp_12_q04_023:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I rewrote the tangent or sine-cosine expression into a common identity form. [9709_m24_qp_12_q04_023:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I used the identity result to obtain the final equation or values. [9709_m24_qp_12_q04_023:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I substituted sin^2+cos^2=1 (or sec^2=1+tan^2) to simplify. [9709_m24_qp_12_q04_023:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rewrote the tangent or sine cosine expression into a common identity"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i substituted sin 2 cos 2 1 or sec 2 1 tan"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i reduced the expression to the required target form algebraically 9709 m24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i used the identity result to obtain the final equation or values"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q04.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.trigonometry.identities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q04a.png",
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q04b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q05_024",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I first copied one exponent wrongly and fixed it before solving. [9709_m24_qp_12_q05_024:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I differentiated the function carefully, keeping chain and product factors. [9709_m24_qp_12_q05_024:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I substituted the given condition (point or stationary condition) into dy/dx. [9709_m24_qp_12_q05_024:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved the resulting equation for the unknown coordinate or parameter. [9709_m24_qp_12_q05_024:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the required gradient, interval, or coordinate with a sign check. [9709_m24_qp_12_q05_024:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I stated the required gradient, interval, or coordinate with a sign check. I checked the sign once more. [9709_m24_qp_12_q05_024:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i differentiated the function carefully keeping chain and product factors 9709 m24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i substituted the given condition point or stationary condition into dy dx"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the resulting equation for the unknown coordinate or parameter 9709"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the required gradient interval or coordinate with a sign check"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q05.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.differentiation.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q05.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q06_025",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I briefly expanded an unnecessary middle term first and crossed it out later. [9709_m24_qp_12_q06_025:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I extracted the required power coefficient from the first expansion term selection. [9709_m24_qp_12_q06_025:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I isolated the matching coefficient from the second expansion without full expansion. [9709_m24_qp_12_q06_025:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I set up the coefficient equation exactly as the statement compares them. [9709_m24_qp_12_q06_025:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I solved for the constant value and kept the acceptable branch only. [9709_m24_qp_12_q06_025:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i extracted the required power coefficient from the first expansion term selection"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i isolated the matching coefficient from the second expansion without full expansion"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i set up the coefficient equation exactly as the statement compares them"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i solved for the constant value and kept the acceptable branch only"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q06.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.algebra.binomial_expansion",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q06.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q07_026",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I formed the quadratic equation from the given algebraic condition. [9709_m24_qp_12_q07_026:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I formed the quadratic equation from the given algebraic condition. I rechecked with an equivalent form. [9709_m24_qp_12_q07_026:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I used factorisation/discriminant logic to process the quadratic. [9709_m24_qp_12_q07_026:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I checked a rejected root against the original condition to confirm exclusion. [9709_m24_qp_12_q07_026:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I solved for possible roots or parameters. [9709_m24_qp_12_q07_026:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i formed the quadratic equation from the given algebraic condition 9709 m24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i used factorisation discriminant logic to process the quadratic 9709 m24 qp"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i solved for possible roots or parameters 9709 m24 qp 12 q07"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q07.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.algebra.quadratics",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q07a.png",
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q07b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_m24_qp_12_q08_027",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I identified the first term and common ratio/difference from the setup. I substituted into the appropriate term/sum formula. [9709_m24_qp_12_q08_027:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I compared with a decimal estimate to verify magnitude only. [9709_m24_qp_12_q08_027:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I simplified powers and surds carefully in the expression. [9709_m24_qp_12_q08_027:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I reported the exact sequence or series result. [9709_m24_qp_12_q08_027:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_m24_qp_12_q08_027:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i identified the first term and common ratio difference from the setup"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i identified the first term and common ratio difference from the setup"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i simplified powers and surds carefully in the expression 9709 m24 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i reported the exact sequence or series result 9709 m24 qp 12"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_m24_qp_12/q08.png",
+        "paper": "P1",
+        "paper_code": "9709_m24_qp_12",
+        "topic_path": "9709.p1.series.sequence_sum",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q08a.png",
+          "data/ms-screenshots/9709Mathematics/9709_m24_ms_12/q08b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_w22_qp_12_q01_030",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I inferred domain/range features directly from the graph form. [9709_w22_qp_12_q01_030:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I identified key transformed points or intercepts for the sketch. [9709_w22_qp_12_q01_030:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I stated the requested graph property with correct inequality notation. [9709_w22_qp_12_q01_030:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I plotted the shape with correct orientation and boundary behavior. [9709_w22_qp_12_q01_030:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i identified key transformed points or intercepts for the sketch 9709 w22"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i plotted the shape with correct orientation and boundary behavior 9709 w22"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i inferred domain range features directly from the graph form 9709 w22"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the requested graph property with correct inequality notation 9709 w22"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w22_qp_12/q01.png",
+        "paper": "P1",
+        "paper_code": "9709_w22_qp_12",
+        "topic_path": "9709.p1.functions.graph_sketch",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q01a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q01b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_w22_qp_12_q08_037",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I briefly tried a midpoint shortcut and then replaced it with vector algebra. [9709_w22_qp_12_q08_037:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I wrote the needed direction/position vectors in component form. [9709_w22_qp_12_q08_037:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I used dot or scalar-product relations to connect the geometric condition. [9709_w22_qp_12_q08_037:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I set up and solved the parameter equation from the vector relation. [9709_w22_qp_12_q08_037:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the final vector result or exact length clearly. [9709_w22_qp_12_q08_037:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I stated the final vector result or exact length clearly. I checked the sign once more. [9709_w22_qp_12_q08_037:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i wrote the needed direction position vectors in component form 9709 w22"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i used dot or scalar product relations to connect the geometric condition"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i set up and solved the parameter equation from the vector relation"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the final vector result or exact length clearly 9709 w22"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w22_qp_12/q08.png",
+        "paper": "P1",
+        "paper_code": "9709_w22_qp_12",
+        "topic_path": "9709.p1.vectors.geometry",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q08a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q08b.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q08c.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p1_w22_qp_12_q11_040",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I briefly tried a midpoint shortcut and then replaced it with vector algebra. [9709_w22_qp_12_q11_040:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I wrote the needed direction/position vectors in component form. [9709_w22_qp_12_q11_040:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I used dot or scalar-product relations to connect the geometric condition. [9709_w22_qp_12_q11_040:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I set up and solved the parameter equation from the vector relation. [9709_w22_qp_12_q11_040:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the final vector result or exact length clearly. [9709_w22_qp_12_q11_040:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i wrote the needed direction position vectors in component form 9709 w22"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i used dot or scalar product relations to connect the geometric condition"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i set up and solved the parameter equation from the vector relation"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the final vector result or exact length clearly 9709 w22"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper1/9709_w22_qp_12/q11.png",
+        "paper": "P1",
+        "paper_code": "9709_w22_qp_12",
+        "topic_path": "9709.p1.vectors.geometry",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q11a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q11b.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_12/q11c.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q01_051",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I decomposed the rational expression into partial fractions. [9709_s24_qp_32_q01_051:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I decomposed the rational expression into partial fractions. I rechecked with an equivalent form. [9709_s24_qp_32_q01_051:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I equated coefficients after clearing denominators. [9709_s24_qp_32_q01_051:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I used a cover-up check at one root to confirm one coefficient quickly. [9709_s24_qp_32_q01_051:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I solved for constants in the decomposition. [9709_s24_qp_32_q01_051:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i decomposed the rational expression into partial fractions 9709 s24 qp 32"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i equated coefficients after clearing denominators 9709 s24 qp 32 q01 051"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i solved for constants in the decomposition 9709 s24 qp 32 q01"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q01.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.algebra.partial_fractions",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q01a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q02_052",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I rewrote the equation into a consistent logarithmic/exponential structure. I combined terms to isolate one exponential or logarithmic quantity. [9709_s24_qp_32_q02_052:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I flagged the base condition before taking logs on both sides. [9709_s24_qp_32_q02_052:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I solved the derived algebraic equation for candidate values. [9709_s24_qp_32_q02_052:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I rejected non-permitted values and stated valid real solutions. [9709_s24_qp_32_q02_052:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_s24_qp_32_q02_052:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rewrote the equation into a consistent logarithmic exponential structure i combined"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i rewrote the equation into a consistent logarithmic exponential structure i combined"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the derived algebraic equation for candidate values 9709 s24 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i rejected non permitted values and stated valid real solutions 9709 s24"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q02.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.log_exp.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q02a.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q02e.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q03_053",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I combined valid intervals from all cases. [9709_s24_qp_32_q03_053:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I transformed the inequality into solvable interval cases. [9709_s24_qp_32_q03_053:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I stated the final set using correct inequality notation. [9709_s24_qp_32_q03_053:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved critical points and used sign testing across intervals. [9709_s24_qp_32_q03_053:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i transformed the inequality into solvable interval cases 9709 s24 qp 32"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i solved critical points and used sign testing across intervals 9709 s24"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i combined valid intervals from all cases 9709 s24 qp 32 q03"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the final set using correct inequality notation 9709 s24 qp"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q03.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.algebra.inequalities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q03a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q04_054",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I drew a faint guide curve first, then finalized the valid branch. [9709_s24_qp_32_q04_054:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I identified key transformed points or intercepts for the sketch. [9709_s24_qp_32_q04_054:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I plotted the shape with correct orientation and boundary behavior. [9709_s24_qp_32_q04_054:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I inferred domain/range features directly from the graph form. [9709_s24_qp_32_q04_054:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the requested graph property with correct inequality notation. [9709_s24_qp_32_q04_054:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I stated the requested graph property with correct inequality notation. I checked the sign once more. [9709_s24_qp_32_q04_054:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i identified key transformed points or intercepts for the sketch 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i plotted the shape with correct orientation and boundary behavior 9709 s24"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i inferred domain range features directly from the graph form 9709 s24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the requested graph property with correct inequality notation 9709 s24"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q04.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.functions.graph_sketch",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q04.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q05_055",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I wrote an intermediate decimal then reverted to exact form as requested. [9709_s24_qp_32_q05_055:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I integrated each term using the correct power or standard integral form. [9709_s24_qp_32_q05_055:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I split the expression so logs and arctan terms were handled separately. [9709_s24_qp_32_q05_055:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I substituted the bounds (or point condition) into the antiderivative. [9709_s24_qp_32_q05_055:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I simplified to the final exact result and used decimal only as a check. [9709_s24_qp_32_q05_055:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i integrated each term using the correct power or standard integral form"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i split the expression so logs and arctan terms were handled separately"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i substituted the bounds or point condition into the antiderivative 9709 s24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i simplified to the final exact result and used decimal only as"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q05.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.integration.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q05a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q06_056",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I differentiated the function carefully, keeping chain and product factors. [9709_s24_qp_32_q06_056:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I differentiated the function carefully, keeping chain and product factors. I rechecked with an equivalent form. [9709_s24_qp_32_q06_056:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I substituted the given condition (point or stationary condition) into dy/dx. [9709_s24_qp_32_q06_056:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I first copied one exponent wrongly and fixed it before solving. [9709_s24_qp_32_q06_056:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I solved the resulting equation for the unknown coordinate or parameter. [9709_s24_qp_32_q06_056:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i differentiated the function carefully keeping chain and product factors 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i substituted the given condition point or stationary condition into dy dx"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i solved the resulting equation for the unknown coordinate or parameter 9709"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q06.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.differentiation.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q06a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q07_057",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I rewrote the tangent or sine-cosine expression into a common identity form. I substituted sin^2+cos^2=1 (or sec^2=1+tan^2) to simplify. [9709_s24_qp_32_q07_057:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I almost cancelled unlike terms too early and then corrected that simplification. [9709_s24_qp_32_q07_057:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I reduced the expression to the required target form algebraically. [9709_s24_qp_32_q07_057:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I used the identity result to obtain the final equation or values. [9709_s24_qp_32_q07_057:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_s24_qp_32_q07_057:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rewrote the tangent or sine cosine expression into a common identity"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i rewrote the tangent or sine cosine expression into a common identity"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i reduced the expression to the required target form algebraically 9709 s24"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i used the identity result to obtain the final equation or values"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q07.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.trigonometry.identities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q07a.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q07b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q08_058",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I set up and solved the parameter equation from the vector relation. [9709_s24_qp_32_q08_058:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I wrote the needed direction/position vectors in component form. [9709_s24_qp_32_q08_058:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I stated the final vector result or exact length clearly. [9709_s24_qp_32_q08_058:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I used dot or scalar-product relations to connect the geometric condition. [9709_s24_qp_32_q08_058:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i wrote the needed direction position vectors in component form 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i used dot or scalar product relations to connect the geometric condition"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i set up and solved the parameter equation from the vector relation"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the final vector result or exact length clearly 9709 s24"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q08.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.vectors.geometry",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q08a.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q08c.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_s24_qp_32_q09_059",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I checked one candidate against the original complex condition and discarded it. [9709_s24_qp_32_q09_059:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I expressed the complex relation in a workable algebraic form. [9709_s24_qp_32_q09_059:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I separated real and imaginary parts (or used modulus-argument conditions). [9709_s24_qp_32_q09_059:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved the resulting equation(s) for the unknowns. [9709_s24_qp_32_q09_059:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the required modulus/argument/parameter values. [9709_s24_qp_32_q09_059:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I stated the required modulus/argument/parameter values. I checked the sign once more. [9709_s24_qp_32_q09_059:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i expressed the complex relation in a workable algebraic form 9709 s24"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i separated real and imaginary parts or used modulus argument conditions 9709"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the resulting equation s for the unknowns 9709 s24 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the required modulus argument parameter values 9709 s24 qp 32"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_s24_qp_32/q09.png",
+        "paper": "P3",
+        "paper_code": "9709_s24_qp_32",
+        "topic_path": "9709.p3.complex_numbers.mod_arg",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q09b.png",
+          "data/ms-screenshots/9709Mathematics/9709_s24_ms_32/q09d.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q01_060",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I checked one candidate against the original complex condition and discarded it. [9709_w22_qp_32_q01_060:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I expressed the complex relation in a workable algebraic form. [9709_w22_qp_32_q01_060:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I separated real and imaginary parts (or used modulus-argument conditions). [9709_w22_qp_32_q01_060:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved the resulting equation(s) for the unknowns. [9709_w22_qp_32_q01_060:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the required modulus/argument/parameter values. [9709_w22_qp_32_q01_060:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i expressed the complex relation in a workable algebraic form 9709 w22"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i separated real and imaginary parts or used modulus argument conditions 9709"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the resulting equation s for the unknowns 9709 w22 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the required modulus argument parameter values 9709 w22 qp 32"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q01.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.complex_numbers.mod_arg",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q01.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q02_061",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I identified radius-angle or centre geometry from the diagram information. [9709_w22_qp_32_q02_061:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I identified radius-angle or centre geometry from the diagram information. I rechecked with an equivalent form. [9709_w22_qp_32_q02_061:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I formed the arc/sector/perimeter relation from those quantities. [9709_w22_qp_32_q02_061:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I first wrote the reflex angle but corrected to the minor angle needed. [9709_w22_qp_32_q02_061:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I constructed the required area/perimeter expression systematically. [9709_w22_qp_32_q02_061:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i identified radius angle or centre geometry from the diagram information 9709"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i formed the arc sector perimeter relation from those quantities 9709 w22"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i constructed the required area perimeter expression systematically 9709 w22 qp 32"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q02.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.coordinate_geometry.circle",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q02_x.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q02a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q02b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q03_062",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I expressed the complex relation in a workable algebraic form. I separated real and imaginary parts (or used modulus-argument conditions). [9709_w22_qp_32_q03_062:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I checked one candidate against the original complex condition and discarded it. [9709_w22_qp_32_q03_062:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I solved the resulting equation(s) for the unknowns. [9709_w22_qp_32_q03_062:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I stated the required modulus/argument/parameter values. [9709_w22_qp_32_q03_062:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_w22_qp_32_q03_062:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i expressed the complex relation in a workable algebraic form i separated"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i expressed the complex relation in a workable algebraic form i separated"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the resulting equation s for the unknowns 9709 w22 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the required modulus argument parameter values 9709 w22 qp 32"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q03.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.complex_numbers.mod_arg",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q03.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q04_063",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I substituted the bounds (or point condition) into the antiderivative. [9709_w22_qp_32_q04_063:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I integrated each term using the correct power or standard integral form. [9709_w22_qp_32_q04_063:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I simplified to the final exact result and used decimal only as a check. [9709_w22_qp_32_q04_063:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I split the expression so logs and arctan terms were handled separately. [9709_w22_qp_32_q04_063:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i integrated each term using the correct power or standard integral form"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i split the expression so logs and arctan terms were handled separately"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i substituted the bounds or point condition into the antiderivative 9709 w22"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i simplified to the final exact result and used decimal only as"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q04.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.integration.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q04a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q04b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q05_064",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I tested a sample boundary value to verify inclusion/exclusion choice. [9709_w22_qp_32_q05_064:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I transformed the inequality into solvable interval cases. [9709_w22_qp_32_q05_064:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I solved critical points and used sign testing across intervals. [9709_w22_qp_32_q05_064:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I combined valid intervals from all cases. [9709_w22_qp_32_q05_064:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the final set using correct inequality notation. [9709_w22_qp_32_q05_064:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I stated the final set using correct inequality notation. I checked the sign once more. [9709_w22_qp_32_q05_064:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i transformed the inequality into solvable interval cases 9709 w22 qp 32"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i solved critical points and used sign testing across intervals 9709 w22"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i combined valid intervals from all cases 9709 w22 qp 32 q05"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the final set using correct inequality notation 9709 w22 qp"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q05.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.algebra.inequalities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q05a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q05b.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q05c.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q05d.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q06_065",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I tried a degree-mode value momentarily, then switched back to radians. [9709_w22_qp_32_q06_065:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I rearranged the equation into one inverse-trigonometric expression. [9709_w22_qp_32_q06_065:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I evaluated the principal angle and checked the paired branch condition. [9709_w22_qp_32_q06_065:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I converted that angle relation into an equation in x. [9709_w22_qp_32_q06_065:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the exact accepted value after interval checking. [9709_w22_qp_32_q06_065:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rearranged the equation into one inverse trigonometric expression 9709 w22 qp"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i evaluated the principal angle and checked the paired branch condition 9709"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i converted that angle relation into an equation in x 9709 w22"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the exact accepted value after interval checking 9709 w22 qp"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q06.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.trigonometry.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q06a.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q07_066",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I rewrote the tangent or sine-cosine expression into a common identity form. [9709_w22_qp_32_q07_066:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I rewrote the tangent or sine-cosine expression into a common identity form. I rechecked with an equivalent form. [9709_w22_qp_32_q07_066:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I substituted sin^2+cos^2=1 (or sec^2=1+tan^2) to simplify. [9709_w22_qp_32_q07_066:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I almost cancelled unlike terms too early and then corrected that simplification. [9709_w22_qp_32_q07_066:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I reduced the expression to the required target form algebraically. [9709_w22_qp_32_q07_066:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "description": "i rewrote the tangent or sine cosine expression into a common identity"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i substituted sin 2 cos 2 1 or sec 2 1 tan"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "description": "i reduced the expression to the required target form algebraically 9709 w22"
+        }
+      ],
+      "gold": {
+        "s1": "r1",
+        "s2": "r1",
+        "s3": "r2",
+        "s5": "r3"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q07.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.trigonometry.identities",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q07a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q07b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q08_067",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I integrated each term using the correct power or standard integral form. I split the expression so logs and arctan terms were handled separately. [9709_w22_qp_32_q08_067:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I wrote an intermediate decimal then reverted to exact form as requested. [9709_w22_qp_32_q08_067:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I substituted the bounds (or point condition) into the antiderivative. [9709_w22_qp_32_q08_067:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I simplified to the final exact result and used decimal only as a check. [9709_w22_qp_32_q08_067:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I noted an alternative path but did not use it in final line. [9709_w22_qp_32_q08_067:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i integrated each term using the correct power or standard integral form"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i integrated each term using the correct power or standard integral form"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i substituted the bounds or point condition into the antiderivative 9709 w22"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i simplified to the final exact result and used decimal only as"
+        }
+      ],
+      "gold": {
+        "s1": [
+          "r1",
+          "r2"
+        ],
+        "s3": "r3",
+        "s4": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q08.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.integration.application",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q08a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q08b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w22_qp_32_q09_068",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I converted that angle relation into an equation in x. [9709_w22_qp_32_q09_068:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I rearranged the equation into one inverse-trigonometric expression. [9709_w22_qp_32_q09_068:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I stated the exact accepted value after interval checking. [9709_w22_qp_32_q09_068:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I evaluated the principal angle and checked the paired branch condition. [9709_w22_qp_32_q09_068:s4]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rearranged the equation into one inverse trigonometric expression 9709 w22 qp"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i evaluated the principal angle and checked the paired branch condition 9709"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i converted that angle relation into an equation in x 9709 w22"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the exact accepted value after interval checking 9709 w22 qp"
+        }
+      ],
+      "gold": {
+        "s1": "r3",
+        "s2": "r1",
+        "s3": "r4",
+        "s4": "r2"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w22_qp_32/q09.png",
+        "paper": "P3",
+        "paper_code": "9709_w22_qp_32",
+        "topic_path": "9709.p3.trigonometry.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q09a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q09b.png",
+          "data/ms-screenshots/9709Mathematics/9709_w22_ms_32/q09c.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w21_qp_32_q10_079",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I flagged the base condition before taking logs on both sides. [9709_w21_qp_32_q10_079:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I rewrote the equation into a consistent logarithmic/exponential structure. [9709_w21_qp_32_q10_079:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I combined terms to isolate one exponential or logarithmic quantity. [9709_w21_qp_32_q10_079:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I solved the derived algebraic equation for candidate values. [9709_w21_qp_32_q10_079:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I rejected non-permitted values and stated valid real solutions. [9709_w21_qp_32_q10_079:s5]"
+        },
+        {
+          "step_id": "s6",
+          "text": "I rejected non-permitted values and stated valid real solutions. I checked the sign once more. [9709_w21_qp_32_q10_079:s6]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i rewrote the equation into a consistent logarithmic exponential structure 9709 w21"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i combined terms to isolate one exponential or logarithmic quantity 9709 w21"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i solved the derived algebraic equation for candidate values 9709 w21 qp"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i rejected non permitted values and stated valid real solutions 9709 w21"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4",
+        "s6": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w21_qp_32/q10.png",
+        "paper": "P3",
+        "paper_code": "9709_w21_qp_32",
+        "topic_path": "9709.p3.log_exp.equations",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w21_ms_32/q10a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w21_ms_32/q10c.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    },
+    {
+      "case_id": "9709_v3_hard_p3_w21_qp_32_q11_080",
+      "steps": [
+        {
+          "step_id": "s1",
+          "text": "I briefly tried a midpoint shortcut and then replaced it with vector algebra. [9709_w21_qp_32_q11_080:s1]"
+        },
+        {
+          "step_id": "s2",
+          "text": "I wrote the needed direction/position vectors in component form. [9709_w21_qp_32_q11_080:s2]"
+        },
+        {
+          "step_id": "s3",
+          "text": "I used dot or scalar-product relations to connect the geometric condition. [9709_w21_qp_32_q11_080:s3]"
+        },
+        {
+          "step_id": "s4",
+          "text": "I set up and solved the parameter equation from the vector relation. [9709_w21_qp_32_q11_080:s4]"
+        },
+        {
+          "step_id": "s5",
+          "text": "I stated the final vector result or exact length clearly. [9709_w21_qp_32_q11_080:s5]"
+        }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "description": "i wrote the needed direction position vectors in component form 9709 w21"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "description": "i used dot or scalar product relations to connect the geometric condition"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "M1",
+          "description": "i set up and solved the parameter equation from the vector relation"
+        },
+        {
+          "rubric_id": "r4",
+          "mark_label": "A1",
+          "description": "i stated the final vector result or exact length clearly 9709 w21"
+        }
+      ],
+      "gold": {
+        "s2": "r1",
+        "s3": "r2",
+        "s4": "r3",
+        "s5": "r4"
+      },
+      "metadata": {
+        "storage_key": "outputs/screenshots/9709/paper3/9709_w21_qp_32/q11.png",
+        "paper": "P3",
+        "paper_code": "9709_w21_qp_32",
+        "topic_path": "9709.p3.vectors.geometry",
+        "ms_storage_keys": [
+          "data/ms-screenshots/9709Mathematics/9709_w21_ms_32/q11a.png",
+          "data/ms-screenshots/9709Mathematics/9709_w21_ms_32/q11b.png"
+        ],
+        "source_note": "v3 hard expansion set (2026-02-13): traceable question/ms keys with manually authored noisy student-style steps and non-1:1 gold mapping for stress calibration."
+      }
+    }
+  ],
+  "tier": "calibration",
+  "metadata": {
+    "tier": "calibration",
+    "calibration_eligible": true
+  }
+}

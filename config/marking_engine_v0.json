@@ -1,0 +1,32 @@
+{
+  "engine_id": "b2_smart_mark_engine_v0",
+  "frozen_at": "2026-02-13T00:00:00Z",
+  "alignment_thresholds": {
+    "min_confidence": 0.45,
+    "uncertain_margin": 0.05
+  },
+  "quality_gate": {
+    "step_f1_min": 0.85,
+    "rubric_coverage_f1_min": 0.8,
+    "uncertain_rate_max": 0.3,
+    "parse_fail_rate_max": 0.05,
+    "key_group_f1_min": 0.8,
+    "key_groups": [
+      "differentiation",
+      "integration",
+      "complex_numbers",
+      "vectors"
+    ]
+  },
+  "integrity_gate": {
+    "min_storage_key_hit_rate": 0.9,
+    "max_step_dup_rate": 0.3,
+    "max_fixed_order_gold_rate": 0.7
+  },
+  "ci_gate": {
+    "suite_path": "data/eval/marking_eval_set_v3_hard_blind_9709_p1p3_120.json",
+    "integrity_storage_check": "none",
+    "storage_key_base": ".",
+    "integrity_storage_check_reason": "CI runner has no local screenshot assets; skip storage_key existence check and enforce storage_key checks in offline/manual runs."
+  }
+}

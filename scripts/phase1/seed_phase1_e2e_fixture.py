@@ -40,30 +40,48 @@ def get_db_url() -> str:
     return "postgresql://postgres:postgres@localhost:5432/postgres"
 
 
+def try_seed_auth_user(cur) -> None:
+    """Best-effort seed for auth.users fixture.
+
+    Some local DB roles cannot CREATE in auth schema. In that case we continue,
+    because not every environment enforces the FK to auth.users in the same way.
+    """
+    cur.execute("SAVEPOINT sp_seed_auth_user;")
+    try:
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS auth.users (
+                id UUID PRIMARY KEY,
+                email TEXT
+            );
+            """
+        )
+        cur.execute(
+            """
+            INSERT INTO auth.users (id, email)
+            VALUES (%s, %s)
+            ON CONFLICT (id) DO NOTHING;
+            """,
+            (USER_ID, "phase1-e2e-fixture@example.com"),
+        )
+        cur.execute("RELEASE SAVEPOINT sp_seed_auth_user;")
+    except Exception as exc:  # pragma: no cover - env/permission dependent
+        cur.execute("ROLLBACK TO SAVEPOINT sp_seed_auth_user;")
+        cur.execute("RELEASE SAVEPOINT sp_seed_auth_user;")
+        print(
+            f"[seed_phase1_e2e] Warning: unable to seed auth.users fixture ({exc}). Continuing...",
+            file=sys.stderr,
+        )
+
+
 def seed_db(db_url: str) -> None:
     import psycopg2
 
     conn = psycopg2.connect(db_url)
     try:
         with conn.cursor() as cur:
-            # Ensure auth/users exists for FK targets in plain-Postgres CI.
-            cur.execute("CREATE SCHEMA IF NOT EXISTS auth;")
-            cur.execute(
-                """
-                CREATE TABLE IF NOT EXISTS auth.users (
-                    id UUID PRIMARY KEY,
-                    email TEXT
-                );
-                """
-            )
-            cur.execute(
-                """
-                INSERT INTO auth.users (id, email)
-                VALUES (%s, %s)
-                ON CONFLICT (id) DO NOTHING;
-                """,
-                (USER_ID, "phase1-e2e-fixture@example.com"),
-            )
+            # Ensure auth/users exists for FK targets when role permissions allow it.
+            try_seed_auth_user(cur)
 
             # question_descriptions_prod_v1 is used by A1 gate; create minimal table if absent.
             cur.execute(

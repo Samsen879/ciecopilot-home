@@ -1,0 +1,180 @@
+{
+  "results": [
+    {
+      "id": "simple_single_awarded",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        }
+      ]
+    },
+    {
+      "id": "simple_single_failed",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "below_threshold",
+          "awarded": false,
+          "awarded_marks": 0
+        }
+      ]
+    },
+    {
+      "id": "multi_rubric_all_awarded",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        }
+      ]
+    },
+    {
+      "id": "multi_rubric_all_failed",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "below_threshold",
+          "awarded": false,
+          "awarded_marks": 0
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "reason": "below_threshold",
+          "awarded": false,
+          "awarded_marks": 0
+        }
+      ]
+    },
+    {
+      "id": "dependency_chain_met",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        }
+      ]
+    },
+    {
+      "id": "dependency_chain_not_met",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "below_threshold",
+          "awarded": false,
+          "awarded_marks": 0
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "reason": "dependency_not_met",
+          "awarded": false,
+          "awarded_marks": 0
+        }
+      ]
+    },
+    {
+      "id": "mixed_awarded_failed",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "reason": "below_threshold",
+          "awarded": false,
+          "awarded_marks": 0
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "B1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        }
+      ]
+    },
+    {
+      "id": "empty_student_steps",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "below_threshold",
+          "awarded": false,
+          "awarded_marks": 0
+        }
+      ]
+    },
+    {
+      "id": "dependency_missing_ref",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "dependency_error",
+          "awarded": false,
+          "awarded_marks": 0
+        }
+      ]
+    },
+    {
+      "id": "three_point_chain",
+      "decisions": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 1
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "reason": "best_match",
+          "awarded": true,
+          "awarded_marks": 2
+        }
+      ]
+    }
+  ]
+}

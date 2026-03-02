@@ -1,0 +1,62 @@
+name: Marking Correctness Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/marking/**"
+      - "tests/marking/**"
+      - "tests/evidence-ledger/**"
+      - "scripts/phase2/run_marking_correctness_gate.py"
+      - ".github/workflows/marking-correctness-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/marking/**"
+      - "tests/marking/**"
+      - "tests/evidence-ledger/**"
+      - "scripts/phase2/run_marking_correctness_gate.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  marking-correctness:
+    name: Marking Correctness (Online + Ledger)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install pytest
+
+      - name: Run marking correctness gate
+        run: python scripts/phase2/run_marking_correctness_gate.py
+
+      - name: Upload marking correctness artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marking-correctness-artifacts
+          path: |
+            runs/backend/marking_correctness_summary.json
+          if-no-files-found: ignore
+

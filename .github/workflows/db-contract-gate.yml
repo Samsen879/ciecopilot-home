@@ -1,0 +1,57 @@
+name: DB Contract Gate
+
+on:
+  pull_request:
+    paths:
+      - "supabase/migrations/**"
+      - "scripts/phase2/check_db_contract.py"
+      - "scripts/phase2/run_migration_smoke.py"
+      - ".github/workflows/db-contract-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "supabase/migrations/**"
+      - "scripts/phase2/check_db_contract.py"
+      - "scripts/phase2/run_migration_smoke.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  db-contract:
+    name: DB Contract + Migration Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install psycopg[binary] || true
+          pip install psycopg2-binary || true
+
+      - name: Run DB contract checks
+        run: |
+          python scripts/phase2/check_db_contract.py
+          python scripts/phase2/run_migration_smoke.py
+
+      - name: Upload DB artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-contract-artifacts
+          path: |
+            runs/backend/db_contract_summary.json
+            runs/backend/migration_smoke_summary.json
+          if-no-files-found: ignore
+

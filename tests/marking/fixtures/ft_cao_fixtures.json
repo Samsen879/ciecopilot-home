@@ -1,0 +1,106 @@
+{
+  "fixtures": [
+    {
+      "id": "ft_dependency_propagation",
+      "student_steps": [
+        { "step_id": "s1", "text": "final answer is x equals 3" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r_m1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "ft_mode": "none",
+          "description": "apply substitution method correctly"
+        },
+        {
+          "rubric_id": "r_a1",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": ["r_m1"],
+          "ft_mode": "ft",
+          "description": "final answer is x equals 3"
+        }
+      ]
+    },
+    {
+      "id": "strictft_dependency_propagation",
+      "student_steps": [
+        { "step_id": "s1", "text": "some partly related step text" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r_m1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "ft_mode": "strictft",
+          "description": "complex method with several required transformations"
+        },
+        {
+          "rubric_id": "r_a1",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": ["r_m1"],
+          "ft_mode": "strictft",
+          "description": "exact final expression after all transformations"
+        }
+      ]
+    },
+    {
+      "id": "cao_all_or_nothing_group",
+      "student_steps": [
+        { "step_id": "s1", "text": "exact final answer y equals 12" },
+        { "step_id": "s2", "text": "unrelated sentence for second point" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r_cao_1",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": [],
+          "ft_mode": "none",
+          "is_cao": true,
+          "accuracy_policy": { "cao_group": "final_answer" },
+          "description": "exact final answer y equals 12"
+        },
+        {
+          "rubric_id": "r_cao_2",
+          "mark_label": "A2",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": [],
+          "ft_mode": "none",
+          "is_cao": true,
+          "accuracy_policy": { "cao_group": "final_answer" },
+          "description": "state unit and domain correctly"
+        }
+      ]
+    },
+    {
+      "id": "accuracy_policy_override_min_confidence",
+      "student_steps": [
+        { "step_id": "s1", "text": "partial overlap alpha beta" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r_policy",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "ft_mode": "none",
+          "accuracy_policy": { "min_confidence": 0.01, "uncertain_margin": 0 },
+          "description": "alpha beta gamma delta"
+        }
+      ]
+    }
+  ]
+}
+

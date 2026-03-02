@@ -1,0 +1,48 @@
+name: Shared Rate Limit Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/**"
+      - "scripts/phase3/**"
+      - ".github/workflows/shared-rate-limit-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "scripts/phase3/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shared-rate-limit:
+    name: Shared Rate Limit Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run shared rate limit gate
+        run: node scripts/phase3/run_shared_rate_limit_gate.js
+
+      - name: Upload shared rate limit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared-rate-limit-artifacts
+          path: |
+            runs/backend/shared_rate_limit_jest.json
+            runs/backend/shared_rate_limit_summary.json
+            docs/reports/shared_rate_limit_report.md
+          if-no-files-found: ignore

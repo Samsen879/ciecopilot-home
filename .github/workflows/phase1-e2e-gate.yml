@@ -1,0 +1,168 @@
+name: Phase1 E2E Gate (A1+B1+B2+B3)
+
+on:
+  pull_request:
+    paths:
+      - "api/marking/**"
+      - "api/error-book/**"
+      - "scripts/evaluation/**"
+      - "scripts/marking/**"
+      - "scripts/phase1/**"
+      - "scripts/ms/**"
+      - "supabase/migrations/**"
+      - ".github/workflows/phase1-e2e-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/marking/**"
+      - "api/error-book/**"
+      - "scripts/evaluation/**"
+      - "scripts/marking/**"
+      - "scripts/phase1/**"
+      - "scripts/ms/**"
+      - "supabase/migrations/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase1-e2e:
+    name: Phase1 E2E (A1→B1→B2→B3)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      SUPABASE_URL: http://localhost:5432
+      SUPABASE_SERVICE_ROLE_KEY: test-service-role-key
+      MARKING_V1_ENABLED: "true"
+      MARKING_AUTO_ERROR_WRITE_ENABLED: "true"
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install pytest hypothesis psycopg2-binary python-dotenv openai sympy
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Bootstrap auth schema for plain Postgres CI
+        run: |
+          PGPASSWORD=postgres psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d postgres <<'SQL'
+          CREATE SCHEMA IF NOT EXISTS auth;
+          CREATE TABLE IF NOT EXISTS auth.users (
+            id UUID PRIMARY KEY,
+            email TEXT
+          );
+          CREATE OR REPLACE FUNCTION auth.uid() RETURNS UUID
+          LANGUAGE sql STABLE AS $$ SELECT NULL::uuid; $$;
+          CREATE OR REPLACE FUNCTION auth.role() RETURNS TEXT
+          LANGUAGE sql STABLE AS $$ SELECT 'authenticated'::text; $$;
+          SQL
+
+      # Step 1: Replay migrations from empty DB
+      - name: Replay migrations
+        run: |
+          set -euo pipefail
+          for f in supabase/migrations/*.sql; do
+            echo "=== Applying: $f ==="
+            PGPASSWORD=postgres psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d postgres -f "$f"
+          done
+
+      # Step 2: Seed minimal fixture data
+      - name: Seed A1 gate fixture data
+        run: python scripts/evaluation/seed_a1_gate_fixture.py
+
+      - name: Seed E2E fixture data
+        run: python scripts/phase1/seed_phase1_e2e_fixture.py
+
+      # Step 3: A1 gate
+      - name: Run A1 quality gate
+        run: |
+          python scripts/evaluation/run_a1_quality_gate.py \
+            --input tests/fixtures/a1_gate_audit_sample.csv \
+            --allow-remote
+
+      # Step 4: B1 gate (contract + qc)
+      - name: Seed B1 fixture data
+        run: python scripts/ms/seed_b1_gate_fixture.py
+
+      - name: Run B1 gate checks
+        run: python scripts/ms/b1_ci_gate.py
+
+      # Step 5: B2 evaluate-v1 smoke (real endpoint call)
+      - name: Run evaluate-v1 smoke check
+        run: node scripts/phase1/run_evaluate_v1_smoke.js
+
+      # Step 6: B3 auto-write verification (DB read-back)
+      - name: Verify B3 auto-write results
+        run: python scripts/phase1/verify_auto_error_write.py
+
+      # Step 7: B2 JS/Python parity threshold
+      - name: Run B2 JS/Python parity tests
+        run: |
+          python -m pytest tests/marking/test_js_python_parity_v1.py -q --tb=short
+          mkdir -p runs/phase1
+          printf '{\n  "passed": true\n}\n' > runs/phase1/b2_parity_summary.json
+
+      # Step 8: Generate E2E summary
+      - name: Generate E2E gate summary
+        if: always()
+        run: python scripts/phase1/generate_e2e_summary.py
+
+      # Step 9: Upload artifacts
+      - name: Upload E2E gate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase1-e2e-artifacts
+          path: |
+            runs/phase1/phase1_e2e_gate_summary.json
+            runs/phase1/evaluate_v1_smoke_response.json
+            runs/phase1/b3_auto_write_summary.json
+            runs/phase1/b2_parity_summary.json
+            runs/a1/a1_gate_summary.json
+            runs/ms/b1_gate_summary.json
+            docs/reports/a1_topic_link_quality_gate_latest.md
+          if-no-files-found: ignore
+
+      - name: Print diagnostics on failure
+        if: failure()
+        run: |
+          echo "Phase1 E2E gate failed. Collecting debug context..."
+          python --version
+          node --version
+          npm --version
+          ls -la runs/phase1 || true
+          ls -la runs/ms || true

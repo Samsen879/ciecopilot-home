@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '../../utils/supabase';
 import { 
   AlertTriangle, 
   TrendingDown, 
@@ -57,11 +58,19 @@ export default function KnowledgeGapAnalysis({
     setError(null);
     
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      if (!accessToken) {
+        console.warn('[KnowledgeGapAnalysis] Missing session token, skipping authenticated API call.');
+        throw new Error('请先登录后再进行知识缺陷分析。');
+      }
+
       const response = await fetch('/api/ai/analyze/knowledge-gaps', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY || 'test-token'}`
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           user_id: userId,

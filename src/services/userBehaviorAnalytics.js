@@ -4,6 +4,11 @@
  */
 
 import { db } from '../utils/supabase';
+import {
+  calculateDaysSinceFirstStudySession,
+  calculateStudyConsistencyScore,
+  calculateStudyFrequencyPerWeek
+} from './utils/studyHabits';
 
 class UserBehaviorAnalytics {
   constructor() {
@@ -185,6 +190,7 @@ class UserBehaviorAnalytics {
   analyzeStudyHabits(behaviorData) {
     const studySessions = behaviorData.filter(item => item.action === 'study_session');
     const topicViews = behaviorData.filter(item => item.action === 'topic_view');
+    let daysSinceFirst = 0;
     
     const habits = {
       averageSessionDuration: 0,
@@ -214,8 +220,8 @@ class UserBehaviorAnalytics {
         .map(([hour, count]) => ({ hour: parseInt(hour), frequency: count }));
 
       // Calculate study frequency (sessions per week)
-      const daysSinceFirst = (Date.now() - new Date(studySessions[studySessions.length - 1].timestamp).getTime()) / (1000 * 60 * 60 * 24);
-      habits.studyFrequency = Math.round((studySessions.length / daysSinceFirst) * 7 * 10) / 10;
+      daysSinceFirst = calculateDaysSinceFirstStudySession(studySessions);
+      habits.studyFrequency = calculateStudyFrequencyPerWeek(studySessions.length, daysSinceFirst);
     }
 
     // Calculate topic switching rate
@@ -231,15 +237,7 @@ class UserBehaviorAnalytics {
 
     // Calculate consistency score (0-1)
     if (studySessions.length >= 7) {
-      const dailyStudy = {};
-      studySessions.forEach(session => {
-        const date = new Date(session.timestamp).toDateString();
-        dailyStudy[date] = true;
-      });
-      
-      const studyDays = Object.keys(dailyStudy).length;
-      const totalDays = Math.min(30, daysSinceFirst || 30);
-      habits.consistencyScore = Math.round((studyDays / totalDays) * 100) / 100;
+      habits.consistencyScore = calculateStudyConsistencyScore(studySessions, daysSinceFirst, 30);
     }
 
     return habits;

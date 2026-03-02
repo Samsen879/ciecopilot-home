@@ -3,8 +3,9 @@
  * Handles personalized content recommendations based on user behavior and learning patterns
  */
 
-import { db } from '../utils/supabase';
+import { db, supabase } from '../utils/supabase';
 import recommendationEngine from './recommendationEngine';
+import { requireSessionAccessToken } from './utils/sessionAccessToken';
 
 class ContentRecommendationService {
   /**
@@ -132,15 +133,12 @@ class ContentRecommendationService {
    */
   async suggestPracticeProblems(weakAreas) {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error('User not authenticated');
-      }
+      const accessToken = await requireSessionAccessToken(supabase);
 
       const response = await fetch('/api/recommendations/practice-problems', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -168,15 +166,12 @@ class ContentRecommendationService {
    */
   async recommendStudyMaterials(currentTopic) {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error('User not authenticated');
-      }
+      const accessToken = await requireSessionAccessToken(supabase);
 
       const response = await fetch('/api/recommendations/study-materials', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -205,15 +200,12 @@ class ContentRecommendationService {
    */
   async updateUserPreferences(userId, preferences) {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error('User not authenticated');
-      }
+      const accessToken = await requireSessionAccessToken(supabase);
 
       const response = await fetch('/api/recommendations/preferences', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

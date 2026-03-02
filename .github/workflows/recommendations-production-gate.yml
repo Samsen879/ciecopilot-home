@@ -1,0 +1,48 @@
+name: Recommendations Production Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/recommendations/**"
+      - "scripts/phase3/**"
+      - ".github/workflows/recommendations-production-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/recommendations/**"
+      - "scripts/phase3/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  recommendations-production:
+    name: Recommendations Production Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run recommendations production gate
+        run: node scripts/phase3/run_recommendations_production_gate.js
+
+      - name: Upload recommendations artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recommendations-production-artifacts
+          path: |
+            runs/backend/recommendations_production_jest.json
+            runs/backend/recommendations_production_summary.json
+            docs/reports/recommendations_production_report.md
+          if-no-files-found: ignore

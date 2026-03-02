@@ -22,6 +22,8 @@ from pathlib import Path
 from threading import Event, Lock, Thread
 from typing import Any
 
+from scripts.common.env import load_project_env
+
 logger = logging.getLogger(__name__)
 
 # Structured error logger – writes JSON lines for failed jobs
@@ -634,16 +636,8 @@ def ms_worker_loop(
 
 
 def _load_env() -> None:
-    """Load .env file from project root if it exists."""
-    env_path = Path(__file__).resolve().parents[2] / ".env"
-    if env_path.exists():
-        with open(env_path, encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line and not line.startswith("#") and "=" in line:
-                    key, val = line.split("=", 1)
-                    if key.strip() not in os.environ:
-                        os.environ[key.strip()] = val.strip()
+    load_project_env()
+
 
 
 # ---------------------------------------------------------------------------

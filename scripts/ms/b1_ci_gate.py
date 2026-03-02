@@ -2,7 +2,7 @@
 """B1 Rubric Extraction CI Gate.
 
 Runs four checks in sequence:
-1. All B1 tests pass (pytest test/test_ms_*.py)
+1. All B1 tests pass (pytest tests/test_ms_*.py)
 2. Migration SQL applies cleanly against a real database
 3. B2 contract validator passes
 4. QC thresholds pass (qc_sampler --enforce-thresholds)
@@ -40,7 +40,7 @@ def _db_url() -> str | None:
 def run_b1_tests() -> dict:
     """Run all B1 tests via pytest. Returns {passed, exit_code, output}."""
     try:
-        test_files = sorted(glob.glob(os.path.join(str(ROOT), "test", "test_ms_*.py")))
+        test_files = sorted(glob.glob(os.path.join(str(ROOT), "tests", "test_ms_*.py")))
         if not test_files:
             return {"passed": False, "exit_code": -1, "output": "No test_ms_*.py files found"}
         result = subprocess.run(

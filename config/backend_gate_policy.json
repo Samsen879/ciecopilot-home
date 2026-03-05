@@ -1,0 +1,236 @@
+{
+  "version": "2026-03-04.v1",
+  "status_model": {
+    "pass_values": ["pass", "ok", "success", "ready"],
+    "degraded_values": ["warn", "warning", "degraded", "missing", "unknown", "skipped", "in_progress"],
+    "blocked_values": ["fail", "failed", "error", "blocked"]
+  },
+  "strict_required": {
+    "block_on_non_pass": true,
+    "block_raw_statuses": ["skipped", "missing", "unknown", "missing_artifact"]
+  },
+  "gates": {
+    "api_route_integration": {
+      "level": "required",
+      "artifact": "runs/backend/api_route_integration_summary.json",
+      "status_path": "status"
+    },
+    "security_baseline": {
+      "level": "required",
+      "artifact": "runs/backend/security_baseline_report.json",
+      "status_path": "status"
+    },
+    "marking_correctness": {
+      "level": "required",
+      "artifact": "runs/backend/marking_correctness_summary.json",
+      "status_path": "status"
+    },
+    "db_contract": {
+      "level": "required",
+      "artifact": "runs/backend/db_contract_summary.json",
+      "status_path": "status"
+    },
+    "supabase_client_unification": {
+      "level": "advisory",
+      "artifact": "runs/backend/supabase_client_unification.json",
+      "status_path": "status"
+    },
+    "migration_smoke": {
+      "level": "advisory",
+      "artifact": "runs/backend/migration_smoke_summary.json",
+      "status_path": "status"
+    },
+    "backend_consistency": {
+      "level": "advisory",
+      "artifact": "runs/backend/backend_consistency_summary.json",
+      "status_path": "status",
+      "metric_checks": [
+        {
+          "name": "upgrade_required_ready",
+          "path": "upgrade_required_ready",
+          "op": "is_true",
+          "on_fail": "degraded"
+        }
+      ],
+      "metric_snapshot": [
+        {
+          "name": "upgrade_required_ready",
+          "path": "upgrade_required_ready"
+        }
+      ]
+    },
+    "a1_topic_link_quality": {
+      "level": "advisory",
+      "artifact": "runs/a1/a1_gate_summary.json",
+      "status_path": "gate_pass",
+      "metric_checks": [
+        {
+          "name": "topic_primary_precision",
+          "path": "topic_primary_precision",
+          "op": ">=",
+          "target": 0.85
+        },
+        {
+          "name": "non_fallback_precision",
+          "path": "non_fallback_precision",
+          "op": ">=",
+          "target": 0.9
+        },
+        {
+          "name": "unreadable_ratio",
+          "path": "unreadable_ratio",
+          "op": "<=",
+          "target": 0.05
+        }
+      ],
+      "metric_snapshot": [
+        {
+          "name": "topic_primary_precision",
+          "path": "topic_primary_precision"
+        },
+        {
+          "name": "non_fallback_precision",
+          "path": "non_fallback_precision"
+        },
+        {
+          "name": "unreadable_ratio",
+          "path": "unreadable_ratio"
+        }
+      ]
+    },
+    "b2_mark_engine_ci": {
+      "level": "advisory",
+      "artifact": "docs/reports/b2_mark_engine_eval_ci_gate.json",
+      "status_path": "pass",
+      "metric_checks": [
+        {
+          "name": "step_level_f1",
+          "path": "metrics.step_level_f1",
+          "op": ">=",
+          "target": 0.85
+        },
+        {
+          "name": "rubric_coverage_f1",
+          "path": "metrics.rubric_coverage_f1",
+          "op": ">=",
+          "target": 0.8
+        },
+        {
+          "name": "uncertain_rate",
+          "path": "metrics.uncertain_rate",
+          "op": "<=",
+          "target": 0.3
+        },
+        {
+          "name": "parse_fail_rate",
+          "path": "metrics.parse_fail_rate",
+          "op": "<=",
+          "target": 0.05
+        }
+      ],
+      "metric_snapshot": [
+        {
+          "name": "step_level_f1",
+          "path": "metrics.step_level_f1"
+        },
+        {
+          "name": "rubric_coverage_f1",
+          "path": "metrics.rubric_coverage_f1"
+        },
+        {
+          "name": "uncertain_rate",
+          "path": "metrics.uncertain_rate"
+        },
+        {
+          "name": "parse_fail_rate",
+          "path": "metrics.parse_fail_rate"
+        }
+      ]
+    },
+    "rag_decision_benchmark": {
+      "level": "advisory",
+      "artifact": "runs/backend/rag_decision_benchmark.json",
+      "status_path": "status",
+      "metric_snapshot": [
+        {
+          "name": "selected_strategy",
+          "path": "recommendation.selected_strategy"
+        },
+        {
+          "name": "correctness_threshold",
+          "path": "thresholds.correctness_rate"
+        },
+        {
+          "name": "traceability_threshold",
+          "path": "thresholds.evidence_traceability_rate"
+        },
+        {
+          "name": "leakage_threshold",
+          "path": "thresholds.topic_leakage_rate_max"
+        },
+        {
+          "name": "latency_threshold_ms",
+          "path": "thresholds.p95_latency_ms_max"
+        },
+        {
+          "name": "cost_threshold_usd",
+          "path": "thresholds.avg_cost_usd_max"
+        }
+      ]
+    },
+    "rag_s1_3_regression": {
+      "level": "advisory",
+      "artifact": "runs/backend/rag_s1_3_regression_gate_summary.json",
+      "status_path": "status",
+      "metric_checks": [
+        {
+          "name": "failed_checks_empty",
+          "path": "failed_checks",
+          "op": "==",
+          "target": [],
+          "on_fail": "degraded"
+        }
+      ],
+      "metric_snapshot": [
+        {
+          "name": "total_requests",
+          "path": "total_requests"
+        },
+        {
+          "name": "failed_checks",
+          "path": "failed_checks"
+        }
+      ]
+    }
+  },
+  "upgrade_rules": [
+    {
+      "gate": "a1_topic_link_quality",
+      "from": "advisory",
+      "to": "required",
+      "rule": "连续 5 次运行 gate_pass=true，且 topic_primary_precision>=0.85、non_fallback_precision>=0.90、unreadable_ratio<=0.05。",
+      "owner": "qa_gate"
+    },
+    {
+      "gate": "b2_mark_engine_ci",
+      "from": "advisory",
+      "to": "required",
+      "rule": "连续 5 次 calibration-tier 运行 pass=true，且 step_level_f1>=0.85、rubric_coverage_f1>=0.80、uncertain_rate<=0.30、parse_fail_rate<=0.05。",
+      "owner": "qa_gate"
+    },
+    {
+      "gate": "rag_decision_benchmark",
+      "from": "advisory",
+      "to": "required",
+      "rule": "连续 5 次运行 status=pass，且被选策略持续满足 correctness>=0.72、traceability>=0.70、leakage<=0.08、p95_latency_ms<=1500、avg_cost_usd<=0.02。",
+      "owner": "rag_qa"
+    },
+    {
+      "gate": "rag_s1_3_regression",
+      "from": "advisory",
+      "to": "required",
+      "rule": "连续 5 次运行 status=pass 且 failed_checks 为空，且不出现 retrieval_audit 契约漂移。",
+      "owner": "rag_qa"
+    }
+  ]
+}

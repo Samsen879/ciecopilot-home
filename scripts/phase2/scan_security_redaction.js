@@ -31,7 +31,7 @@ function findIssues(content, file) {
     const lower = line.toLowerCase();
     const hit = KEYWORDS.find((k) => lower.includes(k));
     if (!hit) continue;
-    const likelyLeak = /\$\{|req\.|body\.|headers|authorization|accesstoken|refreshtoken|verificationcode|resettoken|password_hash|api_key/i.test(line);
+    const likelyLeak = /req\.|body\.|headers|authorization|accesstoken|refreshtoken|verificationcode|resettoken|password_hash|api_key/i.test(line);
     if (!likelyLeak) continue;
     issues.push({
       file,

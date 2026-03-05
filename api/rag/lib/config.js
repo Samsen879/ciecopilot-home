@@ -12,19 +12,31 @@ function toNonNegativeNumber(raw, fallback) {
   return value;
 }
 
+function toBoolean(raw, fallback) {
+  if (raw === undefined || raw === null || raw === '') return fallback;
+  const value = String(raw).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'y', 'on'].includes(value)) return true;
+  if (['0', 'false', 'no', 'n', 'off'].includes(value)) return false;
+  return fallback;
+}
+
 export function getRagConfig() {
-  const embeddingBaseUrl =
-    process.env.VECTOR_EMBEDDING_BASE_URL ||
-    process.env.EMBEDDING_BASE_URL ||
-    process.env.OPENAI_BASE_URL ||
-    'https://api.openai.com/v1';
+  const allowOpenAiFallback = toBoolean(process.env.RAG_ALLOW_OPENAI_FALLBACK, false);
+
   const embeddingApiKey =
     process.env.VECTOR_EMBEDDING_API_KEY ||
     process.env.EMBEDDING_API_KEY ||
     process.env.DASHSCOPE_API_KEY ||
-    process.env.OPENAI_API_KEY ||
-    process.env.OPENAI_API_TOKEN ||
-    process.env.OPENAI_KEY;
+    (allowOpenAiFallback
+      ? process.env.OPENAI_API_KEY || process.env.OPENAI_API_TOKEN || process.env.OPENAI_KEY
+      : null);
+
+  const embeddingBaseUrl =
+    process.env.VECTOR_EMBEDDING_BASE_URL ||
+    process.env.EMBEDDING_BASE_URL ||
+    process.env.DASHSCOPE_BASE_URL ||
+    (allowOpenAiFallback ? process.env.OPENAI_BASE_URL : null) ||
+    (allowOpenAiFallback && embeddingApiKey ? 'https://api.openai.com/v1' : '');
   const embeddingModel =
     process.env.VECTOR_EMBEDDING_MODEL ||
     process.env.EMBEDDING_MODEL ||
@@ -34,9 +46,32 @@ export function getRagConfig() {
     1536,
   );
 
-  const chatBaseUrl = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
-  const chatApiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_API_TOKEN || process.env.OPENAI_KEY;
-  const chatModel = process.env.CHAT_MODEL || 'gpt-4o-mini';
+  const chatEnabled = toBoolean(process.env.RAG_CHAT_ENABLED, false);
+  const chatFailOpen = toBoolean(process.env.RAG_CHAT_FAIL_OPEN, true);
+  const chatBaseUrl =
+    process.env.RAG_CHAT_BASE_URL ||
+    process.env.CHAT_BASE_URL ||
+    process.env.VECTOR_CHAT_BASE_URL ||
+    process.env.DASHSCOPE_BASE_URL ||
+    (allowOpenAiFallback ? process.env.OPENAI_BASE_URL : null) ||
+    process.env.VECTOR_EMBEDDING_BASE_URL ||
+    '';
+  const chatApiKey =
+    process.env.RAG_CHAT_API_KEY ||
+    process.env.CHAT_API_KEY ||
+    process.env.VECTOR_CHAT_API_KEY ||
+    process.env.DASHSCOPE_API_KEY ||
+    (allowOpenAiFallback
+      ? process.env.OPENAI_API_KEY || process.env.OPENAI_API_TOKEN || process.env.OPENAI_KEY
+      : null) ||
+    null;
+  const chatModel =
+    process.env.RAG_CHAT_MODEL ||
+    process.env.CHAT_MODEL ||
+    process.env.VECTOR_CHAT_MODEL ||
+    process.env.QWEN_CHAT_MODEL ||
+    process.env.OPENAI_CHAT_MODEL ||
+    'qwen-plus';
 
   return {
     retrievalVersion: process.env.RAG_RETRIEVAL_VERSION || RETRIEVAL_VERSION,
@@ -56,7 +91,9 @@ export function getRagConfig() {
       timeoutMs: toPositiveNumber(process.env.RAG_EMBEDDING_TIMEOUT_MS, 12000),
     },
     chat: {
-      baseUrl: chatBaseUrl.replace(/\/$/, ''),
+      enabled: chatEnabled,
+      failOpen: chatFailOpen,
+      baseUrl: chatBaseUrl ? chatBaseUrl.replace(/\/$/, '') : '',
       apiKey: chatApiKey,
       model: chatModel,
       timeoutMs: toPositiveNumber(process.env.RAG_CHAT_TIMEOUT_MS, 18000),

@@ -1,4 +1,6 @@
 // /api/ai/tutor/chat.js
+// @deprecated Legacy tutor route. It depends on search_knowledge_chunks and is not part of the canonical RAG S1 path.
+// See docs/reports/rag_legacy_route_governance.md for current governance state.
 // AI辅导核心引擎 - 精细化辅导API
 import { getServiceClient } from '../../lib/supabase/client.js';
 

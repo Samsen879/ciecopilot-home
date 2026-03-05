@@ -43,7 +43,9 @@ function deriveQueryIntentPlan(query, boundary) {
   const description = normalizeWhitespace(boundary?.description);
 
   if (
-    /give a full worked example|including all intermediate steps|final answer/.test(normalizedQuery)
+    /give a full worked example|give a full worked solution|intermediate steps|final answer|final numeric answer/.test(
+      normalizedQuery,
+    )
   ) {
     return {
       type: 'guard',
@@ -85,6 +87,28 @@ function deriveQueryIntentPlan(query, boundary) {
     };
   }
 
+  if (/what definition, named idea, or core concept does this syllabus node introduce/.test(normalizedQuery)) {
+    const answer = joinAnswerParts(title, description);
+    if (answer) {
+      return {
+        type: 'grounded',
+        answer,
+        label: 'definition',
+      };
+    }
+  }
+
+  if (/explain the core mathematical concept of this syllabus node in one grounded sentence/.test(normalizedQuery)) {
+    const answer = joinAnswerParts(title, description);
+    if (answer) {
+      return {
+        type: 'grounded',
+        answer,
+        label: 'concept_explanation',
+      };
+    }
+  }
+
   if (/what mathematical focus does this syllabus node cover/.test(normalizedQuery)) {
     const answer = joinAnswerParts(title, description);
     if (answer) {
@@ -103,6 +127,43 @@ function deriveQueryIntentPlan(query, boundary) {
         type: 'grounded',
         answer,
         label: 'objective_summary',
+      };
+    }
+  }
+
+  if (
+    /a student says this syllabus node is mainly about/.test(normalizedQuery) &&
+    /within the current node only|current node only/.test(normalizedQuery)
+  ) {
+    return {
+      type: 'guard',
+      reasonCode: UNCERTAIN_REASON_CODES.QUERY_OUT_OF_SCOPE,
+      label: 'misconception_probe',
+    };
+  }
+
+  if (
+    /using noisy notation like .* which syllabus topic inside the current node does this refer to/.test(
+      normalizedQuery,
+    )
+  ) {
+    const answer = joinAnswerParts(title, description);
+    if (answer) {
+      return {
+        type: 'grounded',
+        answer,
+        label: 'formula_or_latex_noisy_query',
+      };
+    }
+  }
+
+  if (/请用简短中文说明/.test(normalizedQuery) && /this syllabus node is about what concept or skill/.test(normalizedQuery)) {
+    const answer = joinAnswerParts(title, description);
+    if (answer) {
+      return {
+        type: 'grounded',
+        answer,
+        label: 'bilingual_or_mixed_language_query',
       };
     }
   }
@@ -131,7 +192,57 @@ function createRetrievalAuditBase() {
     error_status: null,
     error_message: null,
     error_details: null,
+    chat_mode: 'not_attempted',
   };
+}
+
+function toNullableString(value) {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function toNonNegativeNumber(value, fallback = 0) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) return fallback;
+  return parsed;
+}
+
+function normalizeRetrievalAudit(rawAudit) {
+  const input = rawAudit && typeof rawAudit === 'object' ? rawAudit : {};
+  const merged = {
+    ...createRetrievalAuditBase(),
+    ...input,
+  };
+
+  return {
+    query_mode: toNullableString(merged.query_mode) || 'unknown',
+    short_circuit_label: toNullableString(merged.short_circuit_label),
+    rpc_call_count: toNonNegativeNumber(merged.rpc_call_count, 0),
+    hybrid_row_count: toNonNegativeNumber(merged.hybrid_row_count, 0),
+    dense_row_count: toNonNegativeNumber(merged.dense_row_count, 0),
+    lexical_row_count: toNonNegativeNumber(merged.lexical_row_count, 0),
+    error_stage: toNullableString(merged.error_stage),
+    error_code: toNullableString(merged.error_code),
+    error_status: Number.isFinite(Number(merged.error_status)) ? Number(merged.error_status) : null,
+    error_message: toNullableString(merged.error_message),
+    error_details: merged.error_details && typeof merged.error_details === 'object' ? merged.error_details : null,
+    chat_mode: toNullableString(merged.chat_mode) || 'not_attempted',
+  };
+}
+
+function buildFallbackGroundedAnswer({ boundary, evidence = [] }) {
+  const title = normalizeWhitespace(boundary?.title);
+  const description = normalizeWhitespace(boundary?.description);
+  const topSnippet = normalizeWhitespace(evidence?.[0]?.snippet || '');
+
+  if (title && description) return joinAnswerParts(title, description);
+  if (title && topSnippet) return joinAnswerParts(title, topSnippet);
+  if (title) return title;
+  if (description && topSnippet) return joinAnswerParts(description, topSnippet);
+  if (description) return description;
+  if (topSnippet) return topSnippet;
+  return '';
 }
 
 export async function executeAskAI(
@@ -170,11 +281,11 @@ export async function executeAskAI(
 
   const queryIntentPlan = deriveQueryIntentPlan(parsed.query, boundary);
   if (queryIntentPlan) {
-    const retrievalAudit = {
+    const retrievalAudit = normalizeRetrievalAudit({
       ...createRetrievalAuditBase(),
       query_mode: 'short_circuit',
       short_circuit_label: queryIntentPlan.label,
-    };
+    });
     const { evidence, traceability } = await assembleEvidence(
       {
         fusedRows: [],
@@ -319,26 +430,55 @@ export async function executeAskAI(
   if (!retrievalError && evidence.length > 0 && !leakage.topic_leakage_flag) {
     if (/title|node title|节点标题/i.test(parsed.query)) {
       llmAnswer = boundary.title || evidence[0]?.snippet || '';
+      retrievalAudit.chat_mode = 'short_circuit_title';
     } else {
-      try {
-        const llm = await generateGroundedAnswer(
-          {
-            query: parsed.query,
-            evidence,
-            language: parsed.language,
-            chatConfig: effectiveConfig.chat,
-          },
-          { fetchImpl },
-        );
-        llmAnswer = llm.answer;
-        chatUsage = llm.usage;
-      } catch (error) {
-        retrievalError = toRagError(error, {
-          status: 502,
-          code: 'RAG_CHAT_ERROR',
-          message: 'chat generation failed',
+      const chatEnabled = effectiveConfig.chat?.enabled === true;
+      const chatConfigured = Boolean(effectiveConfig.chat?.apiKey) && Boolean(effectiveConfig.chat?.baseUrl);
+      const chatFailOpen = effectiveConfig.chat?.failOpen !== false;
+
+      if (!chatEnabled || !chatConfigured) {
+        llmAnswer = buildFallbackGroundedAnswer({
+          boundary,
+          evidence,
         });
-        Object.assign(retrievalAudit, toRagErrorAudit(retrievalError, { stage: 'chat_generation' }));
+        retrievalAudit.chat_mode = !chatEnabled ? 'disabled_fallback' : 'missing_key_fallback';
+      } else {
+        try {
+          const llm = await generateGroundedAnswer(
+            {
+              query: parsed.query,
+              evidence,
+              language: parsed.language,
+              chatConfig: effectiveConfig.chat,
+            },
+            { fetchImpl },
+          );
+          llmAnswer = llm.answer;
+          chatUsage = llm.usage;
+          retrievalAudit.chat_mode = 'upstream_ok';
+        } catch (error) {
+          const chatError = toRagError(error, {
+            status: 502,
+            code: 'RAG_CHAT_ERROR',
+            message: 'chat generation failed',
+          });
+          if (chatFailOpen) {
+            llmAnswer = buildFallbackGroundedAnswer({
+              boundary,
+              evidence,
+            });
+            retrievalAudit.chat_mode = 'upstream_error_fallback';
+            retrievalAudit.error_details = {
+              ...(retrievalAudit.error_details || {}),
+              chat_fallback_used: true,
+              chat_fallback_reason: chatError.code,
+            };
+          } else {
+            retrievalError = chatError;
+            retrievalAudit.chat_mode = 'upstream_error_blocking';
+            Object.assign(retrievalAudit, toRagErrorAudit(retrievalError, { stage: 'chat_generation' }));
+          }
+        }
       }
     }
   }
@@ -380,11 +520,11 @@ export async function executeAskAI(
     topic_leakage_reason: policy.topic_leakage_reason,
     evidence,
     retrieval_version: effectiveConfig.retrievalVersion,
-      metrics: {
+    metrics: {
       evidence_traceability_rate: traceability.evidence_traceability_rate,
       cost_avg_usd_per_req: costAudit.request_cost_usd,
       cost_audit: costAudit,
-      retrieval_audit: retrievalAudit,
+      retrieval_audit: normalizeRetrievalAudit(retrievalAudit),
       latency_ms: Date.now() - started,
     },
     request_id: requestId,
@@ -393,24 +533,24 @@ export async function executeAskAI(
   assertAskResponseSchema(response);
 
   if (!policy.uncertain && parsed.internal_debug) {
-      response.debug = {
-        normalized_query: normalized,
-        retrieval: {
-          hybrid_row_count: hybridRows.length,
-          rpc_call_count: 1,
-          dense_count: retrievalAudit.dense_row_count,
-          lexical_count: retrievalAudit.lexical_row_count,
-          k_key: effectiveConfig.retrieval.k_key,
-          k_sem: effectiveConfig.retrieval.k_sem,
-          rrf_k: effectiveConfig.retrieval.rrf_k,
-          w_key: effectiveConfig.retrieval.w_key,
-          w_sem: effectiveConfig.retrieval.w_sem,
-          fused_top_k: effectiveConfig.retrieval.fused_top_k,
-          error_stage: retrievalAudit.error_stage,
-          error_code: retrievalAudit.error_code,
-        },
-      };
-    }
+    response.debug = {
+      normalized_query: normalized,
+      retrieval: {
+        hybrid_row_count: hybridRows.length,
+        rpc_call_count: 1,
+        dense_count: response.metrics.retrieval_audit.dense_row_count,
+        lexical_count: response.metrics.retrieval_audit.lexical_row_count,
+        k_key: effectiveConfig.retrieval.k_key,
+        k_sem: effectiveConfig.retrieval.k_sem,
+        rrf_k: effectiveConfig.retrieval.rrf_k,
+        w_key: effectiveConfig.retrieval.w_key,
+        w_sem: effectiveConfig.retrieval.w_sem,
+        fused_top_k: effectiveConfig.retrieval.fused_top_k,
+        error_stage: response.metrics.retrieval_audit.error_stage,
+        error_code: response.metrics.retrieval_audit.error_code,
+      },
+    };
+  }
 
   logger('info', 'rag_ask_completed', {
     request_id: requestId,

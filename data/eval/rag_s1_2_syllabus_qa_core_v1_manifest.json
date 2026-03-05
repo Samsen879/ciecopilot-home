@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-03-02T14:25:15.174Z",
+  "dataset": "data/eval/rag_s1_2_syllabus_qa_core_v1.json",
+  "benchmark_profile": "syllabus_qa_core_v1",
+  "benchmark_tier": "advisory",
+  "total_cases": 240,
+  "source_node_count": 30,
+  "gold_label_source": "mixed: curriculum_nodes.title/description (via rag_live_set_v1 seed) + curated benchmark labels",
+  "separation_from_s1_smoke": {
+    "smoke_benchmark_profile": "title_lookup_boundary_smoke_v1",
+    "smoke_dataset": "data/eval/rag_live_set_v1.json",
+    "current_benchmark_difference": [
+      "larger static dataset",
+      "realistic query family coverage",
+      "diagnostic and failure-class outputs",
+      "advisory workflow only"
+    ]
+  },
+  "strata": {
+    "difficulty": {
+      "easy": 80,
+      "medium": 80,
+      "hard": 80
+    },
+    "subject_code": {
+      "9231": 32,
+      "9700": 8,
+      "9702": 16,
+      "9709": 184
+    },
+    "query_family": {
+      "definition": 30,
+      "concept_explanation": 30,
+      "objective_summary": 30,
+      "boundary_constrained_lookup": 30,
+      "misconception_probe": 30,
+      "worked_solution_request": 30,
+      "formula_or_latex_noisy_query": 30,
+      "bilingual_or_mixed_language_query": 30
+    },
+    "risk_family": {
+      "in_scope_grounded": 90,
+      "boundary_edge": 30,
+      "out_of_scope_probe": 30,
+      "insufficient_evidence_probe": 30,
+      "formula_noise_grounded": 30,
+      "mixed_language_grounded": 30
+    },
+    "expected_behavior": {
+      "grounded_answer": 180,
+      "uncertain": 60
+    },
+    "topic_family": {
+      "unknown": 72,
+      "Matrices": 16,
+      "Dynamics": 16,
+      "Algebra": 8,
+      "CoordinateGeometry": 24,
+      "Momentum": 8,
+      "Complex_Numbers": 8,
+      "Logarithms_and_Exponentials": 8,
+      "Integration": 8,
+      "CircularMeasure": 16,
+      "Hyperbolic_Functions": 8,
+      "NormalDistribution": 8,
+      "The_Normal_Distribution": 8,
+      "Functions": 32
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "generated_at": "2026-03-04T14:53:17.363Z",
+  "dataset": "data/eval/rag_s1_3_forced_retrieval_v1.json",
+  "benchmark_profile": "s1_3_forced_retrieval_v1",
+  "benchmark_tier": "advisory",
+  "total_cases": 240,
+  "min_required_cases": 200,
+  "short_circuit_expected_ratio": 0.25,
+  "short_circuit_expected_ratio_limit": 0.3,
+  "retrieval_path_expected_ratio_floor": 0.7,
+  "source_dataset": "data/eval/rag_s1_2_syllabus_qa_core_v1.json",
+  "source_manifest": "data/eval/rag_s1_2_syllabus_qa_core_v1_manifest.json",
+  "source_manifest_snapshot": {
+    "benchmark_profile": "syllabus_qa_core_v1",
+    "total_cases": 240,
+    "source_node_count": 30
+  },
+  "expected_query_mode": {
+    "retrieval": 180,
+    "short_circuit": 60
+  },
+  "strata": {
+    "subject_code": {
+      "9231": 32,
+      "9700": 8,
+      "9702": 16,
+      "9709": 184
+    },
+    "query_family": {
+      "definition": 30,
+      "concept_explanation": 30,
+      "objective_summary": 30,
+      "boundary_constrained_lookup": 30,
+      "misconception_probe": 30,
+      "worked_solution_request": 30,
+      "formula_or_latex_noisy_query": 30,
+      "bilingual_or_mixed_language_query": 30
+    },
+    "expected_behavior": {
+      "grounded_answer": 180,
+      "uncertain": 60
+    },
+    "risk_family": {
+      "in_scope_grounded": 90,
+      "boundary_edge": 30,
+      "out_of_scope_probe": 30,
+      "insufficient_evidence_probe": 30,
+      "formula_noise_grounded": 30,
+      "mixed_language_grounded": 30
+    },
+    "query_mode_target": {
+      "retrieval": 180,
+      "short_circuit": 60
+    }
+  },
+  "corpus_reference": {
+    "source": "runs/backend/rag_corpus_source_coverage_summary.json",
+    "corpus_version_counts": {
+      "rag_corpus_unification_20260303": 37,
+      "rag_s1_3_pdf_probe_live": 35,
+      "rag_s1_3_pdf_probe_live_mark": 31,
+      "rag_s1_3_pdf_probe_live_past": 3
+    },
+    "source_type_counts": {
+      "note_md": 37,
+      "past_paper_pdf": 38,
+      "mark_scheme_pdf": 31
+    }
+  },
+  "notes": [
+    "S1.3 dataset rewrites S1.2 queries to reduce deterministic short-circuit phrase matches.",
+    "This benchmark remains advisory and must not override S1 required gates."
+  ]
+}

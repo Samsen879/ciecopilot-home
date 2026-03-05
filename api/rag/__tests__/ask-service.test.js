@@ -1,5 +1,35 @@
 import { executeAskAI } from '../lib/ask-service.js';
 
+const RETRIEVAL_AUDIT_KEYS = Object.freeze([
+  'query_mode',
+  'short_circuit_label',
+  'rpc_call_count',
+  'hybrid_row_count',
+  'dense_row_count',
+  'lexical_row_count',
+  'error_stage',
+  'error_code',
+  'error_status',
+  'error_message',
+  'error_details',
+  'chat_mode',
+]);
+
+function expectStableRetrievalAuditShape(audit) {
+  expect(audit).toBeTruthy();
+  for (const key of RETRIEVAL_AUDIT_KEYS) {
+    expect(Object.hasOwn(audit, key)).toBe(true);
+  }
+  expect(typeof audit.query_mode).toBe('string');
+  expect(typeof audit.rpc_call_count).toBe('number');
+  expect(typeof audit.hybrid_row_count).toBe('number');
+  expect(typeof audit.dense_row_count).toBe('number');
+  expect(typeof audit.lexical_row_count).toBe('number');
+  expect(audit.error_status === null || typeof audit.error_status === 'number').toBe(true);
+  expect(audit.error_details === null || typeof audit.error_details === 'object').toBe(true);
+  expect(typeof audit.chat_mode).toBe('string');
+}
+
 function createSupabaseStub() {
   const rpcCalls = [];
   return {
@@ -93,6 +123,7 @@ function createConfig() {
       timeoutMs: 5000,
     },
     chat: {
+      enabled: true,
       baseUrl: 'https://example.com/v1',
       apiKey: 'k',
       model: 'm',
@@ -174,6 +205,8 @@ describe('ask service', () => {
     expect(result.metrics.retrieval_audit.query_mode).toBe('short_circuit');
     expect(result.metrics.retrieval_audit.short_circuit_label).toBe('concept_lookup');
     expect(result.metrics.retrieval_audit.rpc_call_count).toBe(0);
+    expectStableRetrievalAuditShape(result.metrics.retrieval_audit);
+    expect(result.metrics.evidence_traceability_rate).toBe(1);
     expect(fetchStub.calls).toHaveLength(0);
   });
 
@@ -199,11 +232,49 @@ describe('ask service', () => {
     expect(fetchStub.calls).toHaveLength(0);
   });
 
+  it('short-circuits S1.2 definition and concept explanation queries', async () => {
+    const fetchStub = createFetchStub();
+
+    const definition = await executeAskAI(
+      {
+        query: 'What definition, named idea, or core concept does this syllabus node introduce?',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-2a', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    );
+
+    const explanation = await executeAskAI(
+      {
+        query: 'Explain the core mathematical concept of this syllabus node in one grounded sentence.',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-2b', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    );
+
+    expect(definition.uncertain).toBe(false);
+    expect(definition.metrics.retrieval_audit.short_circuit_label).toBe('definition');
+    expect(explanation.uncertain).toBe(false);
+    expect(explanation.metrics.retrieval_audit.short_circuit_label).toBe('concept_explanation');
+    expect(fetchStub.calls).toHaveLength(0);
+  });
+
   it('returns insufficient evidence for worked-example probes without calling embedding or chat', async () => {
     const fetchStub = createFetchStub();
     const result = await executeAskAI(
       {
-        query: 'Give a full worked example, including all intermediate steps and a final answer, for this syllabus node.',
+        query: 'Give a full worked solution, with all intermediate steps and a final numeric answer, for the syllabus node "Pure Mathematics 1".',
         syllabus_node_id: 'node-1',
       },
       {
@@ -238,6 +309,63 @@ describe('ask service', () => {
 
     expect(result.uncertain).toBe(true);
     expect(result.uncertain_reason_code).toBe('QUERY_OUT_OF_SCOPE');
+    expect(fetchStub.calls).toHaveLength(0);
+  });
+
+  it('short-circuits S1.2 misconception, formula-noisy, and bilingual queries', async () => {
+    const fetchStub = createFetchStub();
+
+    const misconception = await executeAskAI(
+      {
+        query:
+          'A student says this syllabus node is mainly about matrices. Within the current node only, can you confirm that claim?',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-4a', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    );
+
+    const formula = await executeAskAI(
+      {
+        query:
+          'Using noisy notation like d/dx, which syllabus topic inside the current node does this refer to? Keep the answer grounded to this node only.',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-4b', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    );
+
+    const bilingual = await executeAskAI(
+      {
+        query: '请用简短中文说明 this syllabus node is about what concept or skill, and stay inside the current node.',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-4c', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    );
+
+    expect(misconception.uncertain).toBe(true);
+    expect(misconception.uncertain_reason_code).toBe('QUERY_OUT_OF_SCOPE');
+    expect(misconception.metrics.retrieval_audit.short_circuit_label).toBe('misconception_probe');
+    expect(formula.uncertain).toBe(false);
+    expect(formula.metrics.retrieval_audit.short_circuit_label).toBe('formula_or_latex_noisy_query');
+    expect(bilingual.uncertain).toBe(false);
+    expect(bilingual.metrics.retrieval_audit.short_circuit_label).toBe('bilingual_or_mixed_language_query');
     expect(fetchStub.calls).toHaveLength(0);
   });
 
@@ -289,6 +417,8 @@ describe('ask service', () => {
     expect(result.metrics.retrieval_audit.query_mode).toBe('hybrid_rpc');
     expect(result.metrics.retrieval_audit.rpc_call_count).toBe(1);
     expect(result.metrics.retrieval_audit.error_code).toBeNull();
+    expectStableRetrievalAuditShape(result.metrics.retrieval_audit);
+    expect(result.metrics.evidence_traceability_rate).toBe(1);
     expect(fetchStub.calls.filter((url) => String(url).includes('/embeddings'))).toHaveLength(1);
     expect(fetchStub.calls.filter((url) => String(url).includes('/chat/completions'))).toHaveLength(1);
   });
@@ -315,6 +445,10 @@ describe('ask service', () => {
     expect(result.metrics.retrieval_audit.error_stage).toBe('hybrid_rpc');
     expect(result.metrics.retrieval_audit.error_code).toBe('RAG_RETRIEVER_RPC_ERROR');
     expect(result.metrics.retrieval_audit.error_details.db_code).toBe('57014');
+    expectStableRetrievalAuditShape(result.metrics.retrieval_audit);
+    expect(typeof result.metrics.evidence_traceability_rate).toBe('number');
+    expect(result.topic_leakage_flag).toBe(false);
+    expect(result.topic_leakage_reason).toBeNull();
     expect(supabase.__rpcCalls).toHaveLength(1);
   });
 });

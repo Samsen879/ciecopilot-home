@@ -1,0 +1,86 @@
+name: B1 Rubric Extraction Gate
+
+on:
+  pull_request:
+    paths:
+      - "scripts/ms/**"
+      - "tests/test_ms_*.py"
+      - "supabase/migrations/*b1_rubric*"
+      - ".github/workflows/b1-rubric-extraction-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/ms/**"
+      - "tests/test_ms_*.py"
+      - "supabase/migrations/*b1_rubric*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  b1-gate:
+    name: B1 Gate (tests + migration + contract + qc)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install pytest hypothesis openai psycopg2-binary python-dotenv sympy
+
+      - name: Run B1 unit + property + integration tests
+        run: python -m pytest tests/test_ms_*.py -q --tb=short
+
+      - name: Seed deterministic gate fixture data
+        run: python scripts/ms/seed_b1_gate_fixture.py
+
+      - name: Run B1 gate checks
+        run: python scripts/ms/b1_ci_gate.py
+
+      - name: Upload gate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b1-gate-artifacts
+          path: |
+            docs/reports/b1_rubric_qc_report.md
+            runs/ms/b1_contract_failures.json
+            runs/ms/b1_gate_summary.json
+          if-no-files-found: ignore
+
+      - name: Print diagnostics on failure
+        if: failure()
+        run: |
+          echo "B1 gate failed. Collecting debug context..."
+          python --version
+          pip --version
+          ls -la runs/ms || true
+          ls -la docs/reports || true

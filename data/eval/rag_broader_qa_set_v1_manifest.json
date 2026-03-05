@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-03-01T06:51:22.200Z",
+  "dataset": "data/eval/rag_s1_1_broader_qa_v1.json",
+  "benchmark_profile": "broader_qa_advisory_v1",
+  "benchmark_tier": "advisory",
+  "total_cases": 84,
+  "source_node_count": 12,
+  "gold_label_source": "curated curriculum_nodes title + description",
+  "separation_from_s1_smoke": {
+    "smoke_benchmark_profile": "title_lookup_boundary_smoke_v1",
+    "smoke_dataset": "data/eval/rag_live_set_v1.json",
+    "current_benchmark_difference": [
+      "static curated dataset",
+      "broader query styles (concept lookup, focus summary, objective summary)",
+      "non-blocking advisory workflow"
+    ]
+  },
+  "strata": {
+    "difficulty": {
+      "medium": 28,
+      "hard": 28,
+      "easy": 28
+    },
+    "query_style": {
+      "concept_lookup": 12,
+      "focus_summary": 12,
+      "objective_summary": 12,
+      "boundary_edge": 12,
+      "insufficient_evidence_probe": 12,
+      "conflict_probe": 12,
+      "out_of_scope_probe": 12
+    },
+    "scenario_type": {
+      "in_scope_grounded": 36,
+      "boundary_edge": 12,
+      "insufficient_evidence": 12,
+      "evidence_conflict": 12,
+      "out_of_scope": 12
+    },
+    "topic_family": {
+      "algebra": 7,
+      "coordinate_geometry": 7,
+      "circular_measure": 7,
+      "functions": 7,
+      "quadratics": 7,
+      "series": 14,
+      "trigonometry": 7,
+      "log_and_exp": 7,
+      "differentiation": 7,
+      "integration": 14
+    },
+    "subject_code": {
+      "9709": 84
+    }
+  }
+}

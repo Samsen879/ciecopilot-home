@@ -2,21 +2,33 @@
 // Usage:
 //   node scripts/rag_ingest.js --subject 9702 --papers AS,A2 --notes --pdf --limit 50 --dry
 // Env:
-//   VITE_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (or VITE_SUPABASE_SERVICE_ROLE_KEY), OPENAI_API_KEY
+//   VITE_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, VECTOR_EMBEDDING_API_KEY, VECTOR_EMBEDDING_BASE_URL
 
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import { createClient } from '@supabase/supabase-js';
+import {
+  buildCanonicalChunkRow,
+  buildSourceRef,
+  describeWriteModeTargets,
+  normalizeWriteMode,
+  resolveCorpusVersion,
+  upsertCanonicalChunk,
+} from './rag/lib/canonical-chunks.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
 
-// Load env vars from .env first, then .env.local to override if present
+// Load env vars from .env first, then let .env.local fill gaps only.
+// This repo keeps example placeholder values in .env.local, so real secrets in .env
+// must not be overwritten during ingestion/backfill runs.
 dotenv.config();
-dotenv.config({ path: path.resolve(__dirname, '../.env.local'), override: true });
+dotenv.config({ path: path.resolve(__dirname, '../.env.local'), override: false });
 
 // Robust CLI argument parser: supports --key value, --key=value, -k value, and positional args in _
 function parseCliArgs(args) {
@@ -50,6 +62,9 @@ function parseCliArgs(args) {
 
 // Replace previous naive parser
 const argv = parseCliArgs(process.argv.slice(2));
+const ALLOW_OPENAI_FALLBACK = ['1', 'true', 'yes', 'on'].includes(
+  String(process.env.RAG_ALLOW_OPENAI_FALLBACK || '').trim().toLowerCase(),
+);
 const SUPABASE_URL =
   process.env.VITE_SUPABASE_URL ||
   process.env.SUPABASE_URL;
@@ -64,15 +79,16 @@ const SUPABASE_KEY =
 const EMBEDDING_BASE_URL =
   process.env.VECTOR_EMBEDDING_BASE_URL ||
   process.env.EMBEDDING_BASE_URL ||
-  process.env.OPENAI_BASE_URL ||
-  'https://api.openai.com/v1';
+  process.env.DASHSCOPE_BASE_URL ||
+  (ALLOW_OPENAI_FALLBACK ? process.env.OPENAI_BASE_URL : null) ||
+  (ALLOW_OPENAI_FALLBACK ? 'https://api.openai.com/v1' : null);
 const EMBEDDING_API_KEY =
   process.env.VECTOR_EMBEDDING_API_KEY ||
   process.env.EMBEDDING_API_KEY ||
   process.env.DASHSCOPE_API_KEY ||
-  process.env.OPENAI_API_KEY ||
-  process.env.OPENAI_API_TOKEN ||
-  process.env.OPENAI_KEY;
+  (ALLOW_OPENAI_FALLBACK
+    ? process.env.OPENAI_API_KEY || process.env.OPENAI_API_TOKEN || process.env.OPENAI_KEY
+    : null);
 const EMBEDDING_MODEL =
   process.env.VECTOR_EMBEDDING_MODEL ||
   process.env.EMBEDDING_MODEL ||
@@ -89,7 +105,10 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
   );
 }
 if (!EMBEDDING_API_KEY) {
-  throw new Error('Missing embedding API key. Provide VECTOR_EMBEDDING_API_KEY (or EMBEDDING_API_KEY / DASHSCOPE_API_KEY / OPENAI_API_KEY).');
+  throw new Error('Missing embedding API key. Provide VECTOR_EMBEDDING_API_KEY (or EMBEDDING_API_KEY / DASHSCOPE_API_KEY).');
+}
+if (!EMBEDDING_BASE_URL) {
+  throw new Error('Missing embedding base URL. Provide VECTOR_EMBEDDING_BASE_URL (or EMBEDDING_BASE_URL / DASHSCOPE_BASE_URL).');
 }
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -99,9 +118,92 @@ const ROOT = path.join(__dirname, '..');
 const NOTES_DIR = path.join(ROOT, 'src', 'data', 'data-notes');
 const PAPERS_DIR = path.join(ROOT, 'data', 'past-papers');
 const MARK_SCHEMES_DIR = path.join(ROOT, 'data', 'mark-schemes');
+const RUN_STARTED_AT = new Date();
+const WRITE_MODE = normalizeWriteMode(argv['write-mode'] || process.env.RAG_INGEST_WRITE_MODE || 'canonical');
+const CORPUS_VERSION = resolveCorpusVersion({
+  cliValue: argv['corpus-version'],
+  envValue: process.env.RAG_CORPUS_VERSION,
+  runStartedAt: RUN_STARTED_AT,
+});
+const SUMMARY_OUT = path.resolve(
+  ROOT,
+  argv['summary-out'] || process.env.RAG_INGEST_SUMMARY_OUT || 'runs/backend/rag_ingest_latest_summary.json',
+);
 
 function hashString(s) {
   return crypto.createHash('sha1').update(s).digest('hex');
+}
+
+function toPosixRelative(filePath) {
+  return path.relative(ROOT, filePath).replace(/\\/g, '/');
+}
+
+function writeModeUsesLegacy(writeMode = WRITE_MODE) {
+  return describeWriteModeTargets(writeMode).writesLegacy;
+}
+
+function writeModeUsesCanonical(writeMode = WRITE_MODE) {
+  return describeWriteModeTargets(writeMode).writesCanonical;
+}
+
+function createRunSummary() {
+  return {
+    generated_at: new Date().toISOString(),
+    run_started_at: RUN_STARTED_AT.toISOString(),
+    write_mode: WRITE_MODE,
+    corpus_version: CORPUS_VERSION,
+    summary_out: path.relative(ROOT, SUMMARY_OUT).replace(/\\/g, '/'),
+    filters: {
+      subject: argv.subject || argv.s || null,
+      papers: (argv.papers || '').split(',').filter(Boolean),
+      notes: !!argv.notes,
+      pdf: !!argv.pdf,
+      limit: argv.limit ? parseInt(argv.limit, 10) : null,
+      dry_run: !!argv.dry,
+      skip_existing: argv['skip-existing'] !== false,
+      continue_on_error: argv['continue-on-error'] !== false,
+    },
+    counts: {
+      files_considered: 0,
+      files_processed: 0,
+      files_skipped: 0,
+      files_failed: 0,
+      chunks_planned: 0,
+      embeddings_generated: 0,
+      legacy_documents_upserted: 0,
+      legacy_chunks_upserted: 0,
+      legacy_embeddings_upserted: 0,
+      canonical_inserts: 0,
+      canonical_updates: 0,
+    },
+    sources: [],
+    errors: [],
+  };
+}
+
+const runSummary = createRunSummary();
+
+function pushRunSource(entry) {
+  runSummary.sources.push(entry);
+}
+
+function pushRunError(entry) {
+  runSummary.errors.push(entry);
+}
+
+function bumpCount(key, delta = 1) {
+  runSummary.counts[key] = (runSummary.counts[key] || 0) + delta;
+}
+
+function ensureParentDir(filePath) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+}
+
+function persistRunSummary(status = 'completed') {
+  runSummary.completed_at = new Date().toISOString();
+  runSummary.status = status;
+  ensureParentDir(SUMMARY_OUT);
+  fs.writeFileSync(SUMMARY_OUT, JSON.stringify(runSummary, null, 2));
 }
 
 function listFilesRecursive(baseDir, exts) {
@@ -207,8 +309,8 @@ function parseExamPaperMetadata(filePath) {
 }
 
 async function extractPdfText(filePath) {
-  // Lazily import pdf-parse so that running notes-only ingestion doesn't require PDF test assets
-  const pdf = (await import('pdf-parse')).default;
+  // Use CJS require through createRequire to avoid pdf-parse debug-mode side effects under ESM import.
+  const pdf = require('pdf-parse');
   const data = await pdf(fs.readFileSync(filePath));
   // Simple page split approximation; pdf-parse returns text merged, not per page.
   // As a minimal viable approach, split by form feed or by \n\n\n.
@@ -356,6 +458,63 @@ async function upsertEmbedding({ chunk_id, embedding }) {
   return data;
 }
 
+function buildCanonicalChunkArgs({
+  content,
+  embedding,
+  subject_code,
+  source_type,
+  source_path,
+  chunk_index,
+  page_no = null,
+  paper_id = null,
+  topic_path = 'unmapped',
+  node_id = null,
+  question_id = null,
+  section_id = null,
+}) {
+  const sourceRef = buildSourceRef({
+    assetId: source_path,
+    pageNo: page_no,
+    questionId: question_id,
+    sectionId: section_id,
+    chunkIndex: chunk_index,
+    paperId: paper_id,
+    sourcePath: source_path,
+  });
+
+  return buildCanonicalChunkRow({
+    content,
+    embedding,
+    syllabusCode: subject_code,
+    topicPath: topic_path,
+    nodeId: node_id,
+    sourceType: source_type,
+    sourceRef,
+    corpusVersion: CORPUS_VERSION,
+  });
+}
+
+async function writeCanonicalChunk(row) {
+  const result = await upsertCanonicalChunk({
+    supabase,
+    row,
+  });
+  if (result.operation === 'insert') {
+    bumpCount('canonical_inserts');
+  } else if (result.operation === 'update') {
+    bumpCount('canonical_updates');
+  }
+  return result;
+}
+
+function recordSourceSummary(source) {
+  pushRunSource(source);
+  bumpCount('files_considered');
+  bumpCount(source.status === 'processed' ? 'files_processed' : source.status === 'skipped' ? 'files_skipped' : 'files_failed');
+  bumpCount('chunks_planned', source.chunk_count || 0);
+  bumpCount('embeddings_generated', source.embeddings_generated || 0);
+}
+
 async function ingestMarkdownNotes({ subjectFilter, paperFilter, limit = Infinity, dryRun = false }) {
   const noteFiles = listFilesRecursive(NOTES_DIR, ['.md']).filter((p) => /9702|9709|9231/.test(p));
   console.log(`Found ${noteFiles.length} markdown files with subject pattern`);
@@ -379,40 +538,105 @@ async function ingestMarkdownNotes({ subjectFilter, paperFilter, limit = Infinit
 
     const title = path.basename(file, path.extname(file)).replace(/[_-]+/g, ' ');
     const source_type = 'note_md';
-    const source_path = path.relative(ROOT, file).replace(/\\/g, '/');
+    const source_path = toPosixRelative(file);
     const topic_id = `${subject_code}-${hashString(source_path).slice(0, 8)}`;
     const content = fs.readFileSync(file, 'utf8');
+    const sourceSummary = {
+      source_kind: 'note_md',
+      source_path,
+      subject_code,
+      paper_code,
+      title,
+      write_mode: WRITE_MODE,
+      corpus_version: CORPUS_VERSION,
+      legacy_enabled: writeModeUsesLegacy(),
+      canonical_enabled: writeModeUsesCanonical(),
+    };
 
     const chunks = chunkTextByTokens(content, 600, 100);
     if (chunks.length === 0) {
       console.log(`  Skipping: no content chunks generated`);
+      recordSourceSummary({
+        ...sourceSummary,
+        chunk_count: 0,
+        status: 'skipped',
+        reason: 'no_content_chunks',
+      });
       continue;
     }
 
     console.log(`[notes] ${file} -> ${chunks.length} chunks`);
-    if (dryRun) { count += 1; continue; }
+    if (dryRun) {
+      recordSourceSummary({
+        ...sourceSummary,
+        chunk_count: chunks.length,
+        status: 'skipped',
+        reason: 'dry_run',
+      });
+      count += 1;
+      continue;
+    }
 
     try {
-      console.log(`  Upserting document...`);
-      const doc = await upsertDocument({ subject_code, paper_code, topic_id, title, source_type, source_path, language: 'zh' });
-      console.log(`  Document upserted: ${doc.id}`);
-      
       console.log(`  Generating embeddings for ${chunks.length} chunks...`);
       const embeddings = await embedBatch(chunks);
       console.log(`  Embeddings generated: ${embeddings.length}`);
-      
+      let doc = null;
+
+      if (writeModeUsesLegacy()) {
+        console.log(`  Upserting legacy document...`);
+        doc = await upsertDocument({ subject_code, paper_code, topic_id, title, source_type, source_path, language: 'zh' });
+        bumpCount('legacy_documents_upserted');
+        console.log(`  Legacy document upserted: ${doc.id}`);
+      }
+
       for (let i = 0; i < chunks.length; i++) {
-        console.log(`  Upserting chunk ${i + 1}/${chunks.length}...`);
-        const chunk = await upsertChunk({ document_id: doc.id, chunk_index: i, content: chunks[i], token_count: null, extra: { kind: 'md' } });
-        console.log(`  Chunk upserted: ${chunk.id}`);
-        
-        console.log(`  Upserting embedding for chunk ${chunk.id}...`);
-        await upsertEmbedding({ chunk_id: chunk.id, embedding: embeddings[i] });
-        console.log(`  Embedding upserted for chunk ${chunk.id}`);
+        if (writeModeUsesLegacy()) {
+          console.log(`  Upserting legacy chunk ${i + 1}/${chunks.length}...`);
+          const chunk = await upsertChunk({ document_id: doc.id, chunk_index: i, content: chunks[i], token_count: null, extra: { kind: 'md' } });
+          bumpCount('legacy_chunks_upserted');
+          console.log(`  Legacy chunk upserted: ${chunk.id}`);
+          
+          console.log(`  Upserting legacy embedding for chunk ${chunk.id}...`);
+          await upsertEmbedding({ chunk_id: chunk.id, embedding: embeddings[i] });
+          bumpCount('legacy_embeddings_upserted');
+          console.log(`  Legacy embedding upserted for chunk ${chunk.id}`);
+        }
+
+        if (writeModeUsesCanonical()) {
+          console.log(`  Upserting canonical chunk ${i + 1}/${chunks.length}...`);
+          await writeCanonicalChunk(buildCanonicalChunkArgs({
+            content: chunks[i],
+            embedding: embeddings[i],
+            subject_code,
+            source_type,
+            source_path,
+            chunk_index: i,
+            section_id: topic_id,
+          }));
+        }
       }
       console.log(`  ✅ Successfully processed file: ${file}`);
+      recordSourceSummary({
+        ...sourceSummary,
+        chunk_count: chunks.length,
+        embeddings_generated: embeddings.length,
+        status: 'processed',
+        legacy_document_id: doc?.id || null,
+      });
     } catch (error) {
       console.error(`  ❌ Error processing file ${file}:`, error.message);
+      pushRunError({
+        source_kind: 'note_md',
+        source_path,
+        error_message: error.message,
+      });
+      recordSourceSummary({
+        ...sourceSummary,
+        chunk_count: chunks.length,
+        status: 'failed',
+        reason: error.message,
+      });
       throw error;
     }
     count += 1;
@@ -420,7 +644,7 @@ async function ingestMarkdownNotes({ subjectFilter, paperFilter, limit = Infinit
   console.log(`Processed ${count} files total`);
 }
 
-async function ingestPdfs({ subjectFilter, paperFilter, limit = 30, dryRun = false }) {
+async function ingestPdfs({ subjectFilter, paperFilter, pdfKindFilter = null, limit = 30, dryRun = false }) {
   const pdfDirs = [PAPERS_DIR, MARK_SCHEMES_DIR];
   let count = 0;
   let processed = 0;
@@ -451,6 +675,10 @@ async function ingestPdfs({ subjectFilter, paperFilter, limit = 30, dryRun = fal
           continue;
         }
         if (paperFilter && paper_code !== paperFilter) {
+          skipped++;
+          continue;
+        }
+        if (pdfKindFilter && source_type !== pdfKindFilter) {
           skipped++;
           continue;
         }
@@ -591,7 +819,15 @@ async function checkDocumentExists({ subject_code, paper_code, source_type, sour
 /**
  * 增强的PDF批量处理函数，支持断点续传和错误恢复
  */
-async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryRun = false, skipExisting = true, continueOnError = true }) {
+async function ingestPdfsEnhanced({
+  subjectFilter,
+  paperFilter,
+  pdfKindFilter = null,
+  limit = 30,
+  dryRun = false,
+  skipExisting = true,
+  continueOnError = true,
+}) {
   const pdfDirs = [PAPERS_DIR, MARK_SCHEMES_DIR];
   let count = 0;
   let processed = 0;
@@ -616,7 +852,7 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
   
   console.log(`📂 总共找到 ${allFiles.length} 个PDF文件`);
   
-  for (const { file, base } of allFiles) {
+  for (const { file } of allFiles) {
     if (count >= limit) {
       console.log(`\n⏹️  达到处理限制 (${limit})，停止处理`);
       break;
@@ -636,19 +872,38 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
         skipped++;
         continue;
       }
+      if (pdfKindFilter && source_type !== pdfKindFilter) {
+        skipped++;
+        continue;
+      }
 
       // 检查是否已存在（如果启用跳过已存在）
-      if (skipExisting && !dryRun) {
+      const source_path = toPosixRelative(file);
+
+      if (skipExisting && !dryRun && writeModeUsesLegacy()) {
         const exists = await checkDocumentExists({
            subject_code,
            paper_code,
            source_type,
-           source_path: path.relative(ROOT, file).replace(/\\/g, '/')
+           source_path
          });
         
         if (exists) {
           console.log(`\n⏭️  跳过已存在 [${count + 1}]: ${path.basename(file)}`);
           existingSkipped++;
+          recordSourceSummary({
+            source_kind: source_type,
+            source_path,
+            subject_code,
+            paper_code,
+            write_mode: WRITE_MODE,
+            corpus_version: CORPUS_VERSION,
+            chunk_count: 0,
+            legacy_enabled: writeModeUsesLegacy(),
+            canonical_enabled: writeModeUsesCanonical(),
+            status: 'skipped',
+            reason: 'legacy_document_exists',
+          });
           count++;
           continue;
         }
@@ -668,8 +923,18 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
         source_type
       ].filter(Boolean);
       
-      const source_path = path.relative(ROOT, file).replace(/\\/g, '/');
       const topic_id = null;
+      const sourceSummary = {
+        source_kind: source_type,
+        source_path,
+        subject_code,
+        paper_code,
+        title,
+        write_mode: WRITE_MODE,
+        corpus_version: CORPUS_VERSION,
+        legacy_enabled: writeModeUsesLegacy(),
+        canonical_enabled: writeModeUsesCanonical(),
+      };
 
       console.log(`\n📄 处理文件 [${count + 1}/${limit}]: ${path.basename(file)}`);
       console.log(`   📋 元数据: ${subject_code} | ${year || 'N/A'} ${session || 'N/A'} | Paper ${paper_number || 'N/A'} | ${paper_type || 'N/A'}`);
@@ -685,6 +950,12 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
       if (chunks.length === 0) {
         console.log(`   ⚠️  警告: 无法提取文本内容，跳过`);
         skipped++;
+        recordSourceSummary({
+          ...sourceSummary,
+          chunk_count: 0,
+          status: 'skipped',
+          reason: 'no_content_chunks',
+        });
         count++;
         continue;
       }
@@ -693,28 +964,37 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
       
       if (dryRun) { 
         console.log(`   ✅ DRY RUN: 模拟处理完成`);
+        recordSourceSummary({
+          ...sourceSummary,
+          chunk_count: chunks.length,
+          status: 'skipped',
+          reason: 'dry_run',
+        });
         count += 1; 
         continue; 
       }
 
-      // 创建文档记录，包含增强的元数据
-      const docData = {
-        subject_code,
-        paper_code,
-        topic_id,
-        title,
-        source_type,
-        source_path,
-        language: 'en',
-        tags
-      };
-      
-      const doc = await upsertDocument(docData);
-      console.log(`   💾 文档已保存: ID=${doc.id}`);
-      
       // 批量处理嵌入
       console.log(`   🔄 生成向量嵌入...`);
       const embeddings = await embedBatch(chunks.map((c) => c.txt));
+      let doc = null;
+
+      if (writeModeUsesLegacy()) {
+        const docData = {
+          subject_code,
+          paper_code,
+          topic_id,
+          title,
+          source_type,
+          source_path,
+          language: 'en',
+          tags
+        };
+        
+        doc = await upsertDocument(docData);
+        bumpCount('legacy_documents_upserted');
+        console.log(`   💾 Legacy 文档已保存: ID=${doc.id}`);
+      }
       
       console.log(`   📤 上传文本块和嵌入...`);
       for (let i = 0; i < chunks.length; i++) {
@@ -725,23 +1005,48 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
           session,
           paper_number,
           paper_type,
-          paper_id,
-          original_filename
-        };
-        const chunk = await upsertChunk({ 
-          document_id: doc.id, 
-          chunk_index: i, 
-          content: txt, 
-          page_from: page, 
-          page_to: page, 
-          extra: chunkExtra 
-        });
-        await upsertEmbedding({ chunk_id: chunk.id, embedding: embeddings[i] });
+             paper_id,
+             original_filename
+           };
+
+        if (writeModeUsesLegacy()) {
+          const chunk = await upsertChunk({ 
+            document_id: doc.id, 
+            chunk_index: i, 
+            content: txt, 
+            page_from: page, 
+            page_to: page, 
+            extra: chunkExtra 
+          });
+          bumpCount('legacy_chunks_upserted');
+          await upsertEmbedding({ chunk_id: chunk.id, embedding: embeddings[i] });
+          bumpCount('legacy_embeddings_upserted');
+        }
+
+        if (writeModeUsesCanonical()) {
+          await writeCanonicalChunk(buildCanonicalChunkArgs({
+            content: txt,
+            embedding: embeddings[i],
+            subject_code,
+            source_type,
+            source_path,
+            chunk_index: i,
+            page_no: page,
+            paper_id,
+          }));
+        }
       }
       
       processed++;
       count += 1;
       console.log(`   ✅ 处理完成: ${chunks.length} 个块已保存`);
+      recordSourceSummary({
+        ...sourceSummary,
+        chunk_count: chunks.length,
+        embeddings_generated: embeddings.length,
+        status: 'processed',
+        legacy_document_id: doc?.id || null,
+      });
       
     } catch (error) {
       console.error(`   ❌ 处理失败: ${error.message}`);
@@ -749,6 +1054,19 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
         console.error(`   📍 错误堆栈: ${error.stack.split('\n')[1]}`);
       }
       errors++;
+      pushRunError({
+        source_kind: 'pdf',
+        source_path: toPosixRelative(file),
+        error_message: error.message,
+      });
+      recordSourceSummary({
+        source_kind: 'pdf',
+        source_path: toPosixRelative(file),
+        status: 'failed',
+        reason: error.message,
+        write_mode: WRITE_MODE,
+        corpus_version: CORPUS_VERSION,
+      });
       count++;
       
       if (!continueOnError) {
@@ -788,6 +1106,13 @@ async function ingestPdfsEnhanced({ subjectFilter, paperFilter, limit = 30, dryR
 async function main() {
   const subject = argv.subject || argv.s;
   const papers = (argv.papers || '').split(',').filter(Boolean);
+  const pdfKindRaw = String(argv['pdf-kind'] || '').trim().toLowerCase();
+  const pdfKindFilter =
+    pdfKindRaw === 'mark' || pdfKindRaw === 'mark_scheme_pdf'
+      ? 'mark_scheme_pdf'
+      : pdfKindRaw === 'past' || pdfKindRaw === 'past_paper_pdf'
+        ? 'past_paper_pdf'
+        : null;
   const doNotes = argv.notes || false;
   const doPdf = argv.pdf || false;
   const limit = argv.limit ? parseInt(argv.limit, 10) : undefined;
@@ -804,10 +1129,19 @@ async function main() {
     console.log('  --dry                 干运行模式（仅预览）');
     console.log('  --skip-existing       跳过已存在的文档（默认启用）');
     console.log('  --continue-on-error   遇到错误时继续处理（默认启用）');
+    console.log('  --write-mode canonical|bridge|legacy');
+    console.log(`                       当前默认: ${WRITE_MODE}`);
+    console.log(`  --corpus-version v1   当前默认: ${CORPUS_VERSION}`);
+    console.log(`  --summary-out path    当前默认: ${path.relative(ROOT, SUMMARY_OUT).replace(/\\/g, '/')}`);
     console.log('  --notes               处理Markdown笔记');
     console.log('  --pdf                 处理PDF文件');
+    console.log('  --pdf-kind mark|past  限制PDF类型（mark_scheme_pdf / past_paper_pdf）');
     process.exit(0);
   }
+
+  console.log(`📦 Canonical write mode: ${WRITE_MODE}`);
+  console.log(`🧾 Corpus version: ${CORPUS_VERSION}`);
+  console.log(`📝 Summary out: ${path.relative(ROOT, SUMMARY_OUT).replace(/\\/g, '/')}`);
 
   if (doNotes) {
     console.log('🔄 开始处理Markdown笔记...');
@@ -819,6 +1153,7 @@ async function main() {
     const result = await ingestPdfsEnhanced({ 
       subjectFilter: subject, 
       paperFilter: papers[0], 
+      pdfKindFilter,
       limit: limit || 30, 
       dryRun: dry,
       skipExisting,
@@ -828,12 +1163,16 @@ async function main() {
     console.log(`\n📈 最终统计: 成功${result.processed}, 跳过${result.skipped + result.existingSkipped}, 失败${result.errors}`);
   }
 
+  persistRunSummary('completed');
   console.log('\n🎉 数据摄取完成！');
 }
 
 main().catch((err) => {
+  pushRunError({
+    source_kind: 'run',
+    error_message: err.message,
+  });
+  persistRunSummary('failed');
   console.error('Ingestion failed:', err);
   process.exit(1);
 });
-
-

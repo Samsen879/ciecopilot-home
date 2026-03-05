@@ -1,315 +1,244 @@
-// API 路由配置文件
-// 统一管理所有API端点
-import http from 'http';
-import url from 'url';
+import http from 'node:http';
+import { adaptRequestBasics, ensureParsedJsonBody } from './_runtime/request-adapter.js';
+import { adaptResponse } from './_runtime/response-adapter.js';
+import { loadHandler } from './_runtime/handler-loader.js';
+import { findRoute, listRoutes, LEGACY_EXCLUDED_ENDPOINTS } from './_runtime/route-registry.js';
+import { errorResponse } from './lib/http/respond.js';
+import { requireAuth } from './lib/security/auth-guard.js';
+import { buildSecurityFailure, sendSecurityFailure } from './lib/security/error-envelope.js';
+import { applyRateLimitGuard } from './lib/security/rate-limit-middleware.js';
+import { safeLog } from './lib/security/redaction.js';
 
-const handler = async (req, res) => {
-  // 设置 CORS 头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Content-Type', 'application/json');
-
-  if (req.method === 'OPTIONS') {
-    res.statusCode = 200;
-    return res.end();
-  }
-
-  // 解析请求路径
-  const { url: requestUrl } = req;
-  const path = requestUrl.split('?')[0]; // 移除查询参数
-  const pathSegments = path.split('/').filter(segment => segment !== '');
-
-  try {
-    // 路由到相应的处理器
-    if (pathSegments.length === 0 || pathSegments[0] !== 'api') {
-      return handleApiInfo(req, res);
-    }
-
-    const module = pathSegments[1];
-    const subModule = pathSegments[2];
-
-    switch (module) {
-      case 'auth':
-        return await routeAuth(req, res, subModule);
-      case 'users':
-        return await routeUsers(req, res, subModule);
-      case 'recommendations':
-        return await routeRecommendations(req, res, subModule);
-      case 'community':
-        return await routeCommunity(req, res, subModule);
-      case 'ai':
-        return await routeAI(req, res, subModule);
-      case 'health':
-        return handleHealthCheck(req, res);
-      case 'info':
-        return handleApiInfo(req, res);
-      case '':
-      case undefined:
-        return handleApiInfo(req, res);
-      default:
-        res.statusCode = 404;
-        return res.end(JSON.stringify({ 
-          error: 'API endpoint not found',
-          available_modules: ['auth', 'users', 'recommendations', 'community', 'ai', 'health', 'info']
-        }));
-    }
-  } catch (error) {
-    console.error('API Error:', error);
-    res.statusCode = 500;
-    return res.end(JSON.stringify({ 
-      error: 'Internal server error',
-      message: error.message 
-    }));
-  }
-};
-
-// API 信息
-function handleApiInfo(req, res) {
-  res.statusCode = 200;
-  return res.end(JSON.stringify({
-    name: 'CIE Copilot API',
-    version: '1.0.0',
-    description: 'AI-powered learning platform API',
-    endpoints: {
-      auth: {
-        base: '/api/auth',
-        description: 'Authentication and authorization',
-        endpoints: [
-          'POST /api/auth/register',
-          'POST /api/auth/login',
-          'POST /api/auth/refresh',
-          'POST /api/auth/logout',
-          'POST /api/auth/verify-email',
-          'POST /api/auth/forgot-password',
-          'POST /api/auth/reset-password'
-        ]
-      },
-      users: {
-        base: '/api/users',
-        description: 'User management',
-        endpoints: [
-          'GET /api/users',
-          'POST /api/users',
-          'PUT /api/users',
-          'DELETE /api/users',
-          'GET /api/users/profile',
-          'PUT /api/users/profile',
-          'GET /api/users/permissions',
-          'POST /api/users/permissions',
-          'PUT /api/users/permissions',
-          'DELETE /api/users/permissions'
-        ]
-      },
-      recommendations: {
-        base: '/api/recommendations',
-        description: 'AI-powered content recommendations',
-        endpoints: [
-          'GET /api/recommendations',
-          'POST /api/recommendations',
-          'PUT /api/recommendations',
-          'DELETE /api/recommendations',
-          'GET /api/recommendations/preferences',
-          'POST /api/recommendations/preferences',
-          'PUT /api/recommendations/preferences',
-          'DELETE /api/recommendations/preferences',
-          'GET /api/recommendations/learning-data',
-          'POST /api/recommendations/learning-data',
-          'PUT /api/recommendations/learning-data',
-          'DELETE /api/recommendations/learning-data',
-          'POST /api/recommendations/feedback'
-        ]
-      },
-      community: {
-        base: '/api/community',
-        description: 'Community Q&A system with reputation and badges',
-        endpoints: [
-          'GET /api/community/questions',
-          'POST /api/community/questions',
-          'PUT /api/community/questions/:id',
-          'DELETE /api/community/questions/:id',
-          'GET /api/community/answers',
-          'POST /api/community/answers',
-          'PUT /api/community/answers/:id',
-          'DELETE /api/community/answers/:id',
-          'GET /api/community/interactions',
-          'POST /api/community/interactions',
-          'DELETE /api/community/interactions/:id',
-          'POST /api/community/:type/:id/interact',
-          'GET /api/community/badges',
-          'POST /api/community/badges',
-          'GET /api/community/badges/:userId',
-          'GET /api/community/reputation/:userId',
-          'POST /api/community/reputation/update',
-          'GET /api/community/users/:userId/profile',
-          'PUT /api/community/users/:userId/profile'
-        ]
-      },
-      ai: {
-        base: '/api/ai',
-        description: 'AI services for learning and analysis',
-        endpoints: [
-          'POST /api/ai/learning/path-generator',
-          'POST /api/ai/analysis/knowledge-gaps'
-        ]
-      }
-    },
-    status: 'active',
-    timestamp: new Date().toISOString()
-  }));
+function parseAllowedOrigins() {
+  const raw = process.env.ALLOWED_ORIGINS || 'http://localhost:3000';
+  return raw
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean);
 }
 
-// 健康检查
-function handleHealthCheck(req, res) {
-  res.statusCode = 200;
-  return res.end(JSON.stringify({
+function applyCors(req, res) {
+  const allowedOrigins = parseAllowedOrigins();
+  const requestOrigin = req.headers.origin;
+
+  if (requestOrigin && !allowedOrigins.includes(requestOrigin)) {
+    errorResponse(res, {
+      status: 403,
+      code: 'cors_origin_denied',
+      message: 'Origin not allowed by CORS policy.',
+      request_id: req.request_id,
+    });
+    return false;
+  }
+
+  const resolvedOrigin = requestOrigin || allowedOrigins[0];
+  if (resolvedOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', resolvedOrigin);
+    res.setHeader('Vary', 'Origin');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Request-Id, X-Run-Id');
+
+  if (req.method === 'OPTIONS') {
+    res.status(204).end();
+    return false;
+  }
+  return true;
+}
+
+function apiInfo() {
+  return {
+    name: 'CIE Copilot API',
+    version: '2.0.0',
+    status: 'active',
+    timestamp: new Date().toISOString(),
+    routes: listRoutes(),
+  };
+}
+
+function healthInfo() {
+  return {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    memory: process.memoryUsage()
-  }));
+    memory: process.memoryUsage(),
+  };
 }
 
-// 认证模块路由
-async function routeAuth(req, res, subModule) {
-  // 临时返回，等待实际模块实现
-  res.statusCode = 200;
-  return res.end(JSON.stringify({ 
-    message: 'Auth module endpoint',
-    subModule,
-    status: 'under_development'
-  }));
-}
-
-// 用户模块路由
-async function routeUsers(req, res, subModule) {
-  // 临时返回，等待实际模块实现
-  res.statusCode = 200;
-  return res.end(JSON.stringify({ 
-    message: 'Users module endpoint',
-    subModule,
-    status: 'under_development'
-  }));
-}
-
-// 推荐系统模块路由
-async function routeRecommendations(req, res, subModule) {
-  // 临时返回，等待实际模块实现
-  res.statusCode = 200;
-  return res.end(JSON.stringify({ 
-    message: 'Recommendations module endpoint',
-    subModule,
-    status: 'under_development'
-  }));
-}
-
-// 社区模块路由
-async function routeCommunity(req, res, subModule) {
-  // 解析完整路径以支持嵌套路由
-  const { url: requestUrl } = req;
-  const path = requestUrl.split('?')[0];
-  const pathSegments = path.split('/').filter(segment => segment !== '');
-  
-  // 移除 'api' 和 'community' 前缀
-  const communityPath = pathSegments.slice(2);
-  const mainModule = communityPath[0];
-  
-  // 处理嵌套路由
-   if (communityPath.includes('users') && communityPath.includes('profile')) {
-     // 处理 /users/{userId}/profile 路由
-     res.statusCode = 200;
-     return res.end(JSON.stringify({ 
-       message: 'Community user profile endpoint',
-       path: communityPath,
-       status: 'under_development'
-     }));
+function handleInternalRoutes(req, res) {
+  if (req.path === '/' || req.path === '/api' || req.path === '/api/info') {
+    res.status(200).json(apiInfo());
+    return true;
   }
-  
-  if (communityPath.includes('interact')) {
-     // 处理 /:type/:id/interact 路由
-     res.statusCode = 200;
-     return res.end(JSON.stringify({ 
-       message: 'Community interaction endpoint',
-       path: communityPath,
-       status: 'under_development'
-     }));
+  if (req.path === '/api/health') {
+    res.status(200).json(healthInfo());
+    return true;
   }
-  
-  switch (mainModule) {
-     case 'questions':
-       res.statusCode = 200;
-       return res.end(JSON.stringify({ 
-         message: 'Community questions endpoint',
-         status: 'under_development'
-       }));
-     case 'answers':
-       res.statusCode = 200;
-       return res.end(JSON.stringify({ 
-         message: 'Community answers endpoint',
-         status: 'under_development'
-       }));
-     case 'interactions':
-       res.statusCode = 200;
-       return res.end(JSON.stringify({ 
-         message: 'Community interactions endpoint',
-         status: 'under_development'
-       }));
-     case 'badges':
-       res.statusCode = 200;
-       return res.end(JSON.stringify({ 
-         message: 'Community badges endpoint',
-         status: 'under_development'
-       }));
-     case 'reputation':
-       res.statusCode = 200;
-       return res.end(JSON.stringify({ 
-         message: 'Community reputation endpoint',
-         status: 'under_development'
-       }));
-     case 'users':
-       res.statusCode = 200;
-       return res.end(JSON.stringify({ 
-         message: 'Community users endpoint',
-         status: 'under_development'
-       }));
-     default:
-       res.statusCode = 404;
-       return res.end(JSON.stringify({ error: 'Community endpoint not found' }));
+  if (req.path === '/api/routes') {
+    res.status(200).json({
+      routes: listRoutes(),
+      legacy_excluded: LEGACY_EXCLUDED_ENDPOINTS,
+    });
+    return true;
   }
+  return false;
 }
 
-// AI模块路由
-async function routeAI(req, res, subModule) {
-  // 临时返回，等待实际模块实现
-  res.statusCode = 200;
-  return res.end(JSON.stringify({ 
-    message: 'AI module endpoint',
-    subModule,
-    status: 'under_development'
-  }));
-}
-
-// 在本地开发或非无服务器环境下才启动独立 HTTP 服务器
-// Vercel 无服务器函数会直接调用导出的 handler，不应调用 listen
-const isServerlessEnvironment = Boolean(process.env.VERCEL || process.env.AWS_REGION || process.env.NOW_REGION);
-
-if (!isServerlessEnvironment && process.env.NODE_ENV !== 'test') {
-  const server = http.createServer(handler);
-  const PORT = process.env.PORT || 3001;
-
-  server.listen(PORT, () => {
-    console.log(`🚀 API Server running on http://localhost:${PORT}`);
-    console.log(`📚 API Documentation: http://localhost:${PORT}/api`);
-    console.log(`💚 Health Check: http://localhost:${PORT}/api/health`);
+function handleLegacyExcluded(req, res) {
+  if (!LEGACY_EXCLUDED_ENDPOINTS.includes(req.path)) {
+    return false;
+  }
+  errorResponse(res, {
+    status: 404,
+    code: 'endpoint_not_found',
+    message: 'Endpoint not found.',
+    request_id: req.request_id,
+    hint: 'Use /api/rag/chat or /api/marking/evaluate-v1.',
   });
+  return true;
+}
 
-  // 优雅关闭
-  process.on('SIGTERM', () => {
-    console.log('SIGTERM received, shutting down gracefully');
-    server.close(() => {
-      console.log('Process terminated');
+async function applyAuthIfNeeded(req, res, route) {
+  if (route.auth !== 'jwt_required') return true;
+  const auth = await requireAuth(req);
+  if (auth.ok) return true;
+  sendSecurityFailure(
+    res,
+    req.request_id,
+    buildSecurityFailure({
+      status: auth.status,
+      code: auth.code,
+      message: auth.message,
+    }),
+  );
+  return false;
+}
+
+async function applyRateLimitIfNeeded(req, res, route) {
+  const evaluation = await applyRateLimitGuard(req, route);
+  if (!evaluation) return true;
+  const { result } = evaluation;
+  if (result.degraded) {
+    safeLog('warn', 'rate_limit_degraded', {
+      request_id: req.request_id,
+      route_module: route.module,
+      store: result.store,
+      degrade_reason: result.degrade_reason || null,
+    });
+  }
+  if (result.allowed) return true;
+  const retryAfterSec = Math.max(Math.ceil((result.retryAfterMs || 0) / 1000), 1);
+  res.setHeader('Retry-After', String(retryAfterSec));
+  errorResponse(res, {
+    status: 429,
+    code: 'rate_limited',
+    message: 'Too many requests.',
+    request_id: req.request_id,
+    details: {
+      retry_after_sec: retryAfterSec,
+    },
+  });
+  return false;
+}
+
+async function invokeExpressRouter(req, res, route, handler) {
+  const originalUrl = req.url;
+  const parsed = new URL(req.url || '/', 'http://localhost');
+  const subPath = req.path.slice(route.pathPrefix.length) || '/';
+  req.originalUrl = originalUrl;
+  req.url = `${subPath}${parsed.search}`;
+
+  await new Promise((resolve) => {
+    const done = () => resolve();
+    const maybe = handler(req, res, done);
+    if (maybe && typeof maybe.then === 'function') {
+      maybe.finally(resolve);
+    }
+  });
+}
+
+async function invokeRouteHandler(req, res, route, params = {}) {
+  if (params && typeof params === 'object') {
+    req.query = { ...(req.query || {}), ...params };
+  }
+
+  const loaded = await loadHandler(route.importPath);
+  if (loaded.kind === 'express_router' || route.runtime === 'express_router') {
+    await invokeExpressRouter(req, res, route, loaded.handler);
+    return;
+  }
+
+  await ensureParsedJsonBody(req, { limitBytes: 1 * 1024 * 1024 });
+  await loaded.handler(req, res);
+}
+
+export default async function handler(req, res) {
+  try {
+    adaptRequestBasics(req);
+    adaptResponse(res, req.request_id);
+
+    if (!applyCors(req, res)) return;
+
+    if (handleInternalRoutes(req, res)) return;
+    if (handleLegacyExcluded(req, res)) return;
+
+    const { route, allowed, params } = findRoute(req.path, req.method);
+    if (!route) {
+      errorResponse(res, {
+        status: 404,
+        code: 'endpoint_not_found',
+        message: 'Endpoint not found.',
+        request_id: req.request_id,
+      });
+      return;
+    }
+
+    if (!allowed) {
+      errorResponse(res, {
+        status: 405,
+        code: 'method_not_allowed',
+        message: 'Method not allowed.',
+        request_id: req.request_id,
+      });
+      return;
+    }
+
+    if (!(await applyAuthIfNeeded(req, res, route))) return;
+    if (!(await applyRateLimitIfNeeded(req, res, route))) return;
+
+    await invokeRouteHandler(req, res, route, params);
+  } catch (error) {
+    safeLog('error', 'api_gateway_unhandled_error', {
+      request_id: req?.request_id,
+      method: req?.method,
+      path: req?.path,
+      message: error?.message || String(error),
+      stack: error?.stack,
+    });
+    if (!res.writableEnded) {
+      errorResponse(res, {
+        status: error?.status || 500,
+        code: error?.code || 'internal_error',
+        message: error?.message || 'Internal server error.',
+        request_id: req?.request_id || null,
+      });
+    }
+  }
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  const server = http.createServer(handler);
+  const port = Number(process.env.PORT || 3001);
+  server.listen(port, () => {
+    safeLog('info', 'api_server_started', {
+      port,
+      base_url: `http://localhost:${port}`,
+      health_url: `http://localhost:${port}/api/health`,
     });
   });
-}
 
-export default handler;
+  process.on('SIGTERM', () => {
+    safeLog('warn', 'api_server_sigterm', {});
+    server.close(() => process.exit(0));
+  });
+}

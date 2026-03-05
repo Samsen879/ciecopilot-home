@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { enhanceMessageWithRAG } from '../utils/ragSearch';
+import { enhanceMessageWithRAG } from '../api/ragApi';
 
 export const useChat = (initialMessages = []) => {
   const [messages, setMessages] = useState(

@@ -49,7 +49,7 @@ const DatabaseManager = () => {
         supabase.from('papers').select('*', { count: 'exact', head: true }),
         supabase.from('topics').select('*', { count: 'exact', head: true }),
         supabase.from('study_records').select('*', { count: 'exact', head: true }),
-        supabase.from('error_book').select('*', { count: 'exact', head: true })
+        supabase.from('user_errors').select('*', { count: 'exact', head: true })
       ]);
       
       setStats({

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '../../utils/supabase';
 import { 
   Calendar, 
   Clock, 
@@ -53,11 +54,19 @@ export default function LearningPathVisualizer({
     setError(null);
     
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      if (!accessToken) {
+        console.warn('[LearningPathVisualizer] Missing session token, skipping authenticated API call.');
+        throw new Error('请先登录后再生成学习路径。');
+      }
+
       const response = await fetch('/api/learning/path/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.VITE_SUPABASE_ANON_KEY || 'test-token'}`
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
           user_id: userId,

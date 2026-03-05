@@ -1,12 +1,33 @@
-const { createClient } = require('@supabase/supabase-js');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { authenticateToken, requirePermission } = require('../middleware/auth');
+import { getServiceClient } from '../lib/supabase/client.js';
+import bcrypt from 'bcryptjs';
+import { applyApiCors } from '../lib/http/cors.js';
+import jwt from 'jsonwebtoken';
+import { authenticateToken, requirePermission } from '../middleware/auth.js';
 
-// 初始化 Supabase 客户端
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+let _supabase = null;
+
+function getSupabase() {
+  if (_supabase) return _supabase;
+  const url = process.env.SUPABASE_URL;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  _supabase = getServiceClient();
+  return _supabase;
+}
+
+const supabase = new Proxy(
+  {},
+  {
+    get(_target, prop) {
+      const client = getSupabase();
+      const value = client[prop];
+      return typeof value === 'function' ? value.bind(client) : value;
+    },
+  },
 );
 
 // 用户配置
@@ -25,19 +46,14 @@ const USER_CONFIG = {
   }
 };
 
-module.exports = async (req, res) => {
-  // 设置 CORS 头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+export default async function handler(req, res) {
+  if (!applyApiCors(req, res, ['GET', 'POST', 'PUT', 'DELETE'])) {
+    return;
   }
 
   // 验证请求方法
   if (!['GET', 'POST', 'PUT', 'DELETE'].includes(req.method)) {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ code: 'request_error', error: 'Method not allowed' });
   }
 
   try {
@@ -52,13 +68,13 @@ module.exports = async (req, res) => {
       case 'DELETE':
         return await handleDeleteUser(req, res);
       default:
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).json({ code: 'request_error', error: 'Method not allowed' });
     }
   } catch (error) {
     console.error('Users API error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
-};
+}
 
 // 获取用户列表
 async function handleGetUsers(req, res) {
@@ -66,12 +82,12 @@ async function handleGetUsers(req, res) {
     // 验证管理员权限
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const permissionResult = await requirePermission(authResult.user, 'admin');
     if (!permissionResult.success) {
-      return res.status(403).json({ error: permissionResult.error });
+      return res.status(403).json({ code: 'request_error', error: permissionResult.error });
     }
 
     const { page = 1, limit = USER_CONFIG.PAGINATION.DEFAULT_LIMIT, search, role, status } = req.query;
@@ -123,7 +139,7 @@ async function handleGetUsers(req, res) {
 
     if (error) {
       console.error('Error fetching users:', error);
-      return res.status(500).json({ error: 'Failed to fetch users' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to fetch users' });
     }
 
     return res.status(200).json({
@@ -137,7 +153,7 @@ async function handleGetUsers(req, res) {
     });
   } catch (error) {
     console.error('Error in handleGetUsers:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -147,24 +163,24 @@ async function handleCreateUser(req, res) {
     // 验证管理员权限
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const permissionResult = await requirePermission(authResult.user, 'admin');
     if (!permissionResult.success) {
-      return res.status(403).json({ error: permissionResult.error });
+      return res.status(403).json({ code: 'request_error', error: permissionResult.error });
     }
 
     const { email, password, username, full_name, role = USER_CONFIG.DEFAULT_ROLE } = req.body;
 
     // 验证必填字段
     if (!email || !password || !username) {
-      return res.status(400).json({ error: 'Email, password, and username are required' });
+      return res.status(400).json({ code: 'request_error', error: 'Email, password, and username are required' });
     }
 
     // 验证角色
     if (!USER_CONFIG.ROLES[role]) {
-      return res.status(400).json({ error: 'Invalid role' });
+      return res.status(400).json({ code: 'request_error', error: 'Invalid role' });
     }
 
     // 检查用户是否已存在
@@ -175,7 +191,7 @@ async function handleCreateUser(req, res) {
       .single();
 
     if (existingUser) {
-      return res.status(409).json({ error: 'User with this email or username already exists' });
+      return res.status(409).json({ code: 'request_error', error: 'User with this email or username already exists' });
     }
 
     // 加密密码
@@ -209,7 +225,7 @@ async function handleCreateUser(req, res) {
 
     if (error) {
       console.error('Error creating user:', error);
-      return res.status(500).json({ error: 'Failed to create user' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to create user' });
     }
 
     // 记录安全事件
@@ -224,7 +240,7 @@ async function handleCreateUser(req, res) {
     });
   } catch (error) {
     console.error('Error in handleCreateUser:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -233,14 +249,14 @@ async function handleUpdateUser(req, res) {
   try {
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const { userId } = req.query;
     const { username, full_name, role, status, email_verified } = req.body;
 
     if (!userId) {
-      return res.status(400).json({ error: 'User ID is required' });
+      return res.status(400).json({ code: 'request_error', error: 'User ID is required' });
     }
 
     // 检查权限：用户只能更新自己的信息，管理员可以更新任何用户
@@ -248,7 +264,7 @@ async function handleUpdateUser(req, res) {
     const isOwner = authResult.user.id === userId;
 
     if (!isAdmin.success && !isOwner) {
-      return res.status(403).json({ error: 'Permission denied' });
+      return res.status(403).json({ code: 'request_error', error: 'Permission denied' });
     }
 
     // 构建更新数据
@@ -261,7 +277,7 @@ async function handleUpdateUser(req, res) {
     if (isAdmin.success) {
       if (role !== undefined) {
         if (!USER_CONFIG.ROLES[role]) {
-          return res.status(400).json({ error: 'Invalid role' });
+          return res.status(400).json({ code: 'request_error', error: 'Invalid role' });
         }
         updateData.role = role;
       }
@@ -291,7 +307,7 @@ async function handleUpdateUser(req, res) {
 
     if (error) {
       console.error('Error updating user:', error);
-      return res.status(500).json({ error: 'Failed to update user' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to update user' });
     }
 
     // 记录角色变更
@@ -305,7 +321,7 @@ async function handleUpdateUser(req, res) {
     });
   } catch (error) {
     console.error('Error in handleUpdateUser:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -315,23 +331,23 @@ async function handleDeleteUser(req, res) {
     // 验证管理员权限
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const permissionResult = await requirePermission(authResult.user, 'admin');
     if (!permissionResult.success) {
-      return res.status(403).json({ error: permissionResult.error });
+      return res.status(403).json({ code: 'request_error', error: permissionResult.error });
     }
 
     const { userId } = req.query;
 
     if (!userId) {
-      return res.status(400).json({ error: 'User ID is required' });
+      return res.status(400).json({ code: 'request_error', error: 'User ID is required' });
     }
 
     // 防止删除自己
     if (authResult.user.id === userId) {
-      return res.status(400).json({ error: 'Cannot delete your own account' });
+      return res.status(400).json({ code: 'request_error', error: 'Cannot delete your own account' });
     }
 
     // 软删除用户（设置状态为 deleted）
@@ -347,7 +363,7 @@ async function handleDeleteUser(req, res) {
 
     if (error) {
       console.error('Error deleting user:', error);
-      return res.status(500).json({ error: 'Failed to delete user' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to delete user' });
     }
 
     // 记录安全事件
@@ -361,7 +377,7 @@ async function handleDeleteUser(req, res) {
     });
   } catch (error) {
     console.error('Error in handleDeleteUser:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 

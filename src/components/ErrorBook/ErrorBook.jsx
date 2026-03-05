@@ -15,8 +15,12 @@ import {
   Star,
   Clock
 } from 'lucide-react';
-import { supabase } from '../../utils/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import {
+  deleteErrorBookItem,
+  listErrorBookItems,
+  updateErrorBookItem,
+} from '../../services/errorBookService';
 
 // 错题本组件
 const ErrorBook = () => {
@@ -33,7 +37,7 @@ const ErrorBook = () => {
   const [selectedError, setSelectedError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // 从数据库加载用户错题数据
+  // 从统一 Error Book API 加载用户错题数据
   useEffect(() => {
     if (!isAuthenticated || !user) {
       // 未登录用户显示演示数据
@@ -87,49 +91,10 @@ const ErrorBook = () => {
   const loadUserErrors = async () => {
     try {
       setLoading(true);
-      
-      // 从错题表获取用户的错题记录
-      const { data: errorRecords, error } = await supabase
-        .from('user_errors')
-        .select(`
-          *,
-          subjects:subject_code (name),
-          papers:paper_id (name)
-        `)
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching user errors:', error);
-        // 使用演示数据作为备用
-        const fallbackErrors = [];
-        setErrors(fallbackErrors);
-        setFilteredErrors(fallbackErrors);
-        return;
-      }
-
-      // 转换数据格式以匹配现有组件接口
-      const transformedErrors = (errorRecords || []).map(record => ({
-        id: record.id,
-        subject: record.subject_code,
-        paper: record.papers?.name || 'Unknown Paper',
-        topic: record.topic_name,
-        question: record.question,
-        userAnswer: record.user_answer,
-        correctAnswer: record.correct_answer,
-        explanation: record.explanation,
-        errorType: record.error_type || '未分类',
-        difficulty: record.difficulty_level || 'medium',
-        tags: record.tags || [],
-        status: record.status || 'unresolved',
-        createdAt: new Date(record.created_at).toISOString().split('T')[0],
-        reviewCount: record.review_count || 0,
-        isStarred: record.is_starred || false,
-        notes: record.notes || ''
-      }));
-
-      setErrors(transformedErrors);
-      setFilteredErrors(transformedErrors);
+      const { items } = await listErrorBookItems();
+      setErrors(items);
+      setFilteredErrors(items);
 
     } catch (error) {
       console.error('Error loading user errors:', error);
@@ -142,7 +107,7 @@ const ErrorBook = () => {
 
   // 筛选和搜索
   useEffect(() => {
-    let filtered = errors;
+    let filtered = [...errors];
 
     // 搜索过滤
     if (searchTerm) {
@@ -208,40 +173,65 @@ const ErrorBook = () => {
     }
   };
 
+  const updateErrorLocally = (errorId, updater) => {
+    setErrors((prev) =>
+      prev.map((error) => (error.id === errorId ? updater(error) : error))
+    );
+    setSelectedError((prev) =>
+      prev?.id === errorId ? updater(prev) : prev
+    );
+  };
+
+  const replaceErrorLocally = (errorId, nextError) => {
+    updateErrorLocally(errorId, () => nextError);
+  };
+
+  const removeErrorLocally = (errorId) => {
+    const shouldCloseModal = selectedError?.id === errorId;
+    setErrors((prev) => prev.filter((error) => error.id !== errorId));
+    setSelectedError((prev) => (prev?.id === errorId ? null : prev));
+    if (shouldCloseModal) {
+      setShowModal(false);
+    }
+  };
+
+  const hasEnrichmentDetails = (error) => {
+    const attempt = error?.enrichment?.attempt;
+    const markDecision = error?.enrichment?.mark_decision;
+    const errorEvent = error?.enrichment?.error_event;
+
+    return Boolean(
+      attempt?.attempt_id ||
+      attempt?.topic_path ||
+      markDecision?.mark_label ||
+      markDecision?.reason ||
+      errorEvent?.misconception_tag ||
+      errorEvent?.severity ||
+      errorEvent?.topic_path
+    );
+  };
+
   // 更新错题状态
   const updateErrorStatus = async (errorId, newStatus) => {
     if (!isAuthenticated || !user) {
       // 演示模式下只更新本地状态
-      setErrors(prev => prev.map(error => 
-        error.id === errorId ? { ...error, status: newStatus } : error
-      ));
+      updateErrorLocally(errorId, (error) => ({
+        ...error,
+        status: newStatus
+      }));
       return;
     }
 
     try {
-      const { error } = await supabase
-        .from('user_errors')
-        .update({ 
-          status: newStatus,
-          review_count: supabase.sql`review_count + 1`,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', errorId)
-        .eq('user_id', user.id);
+      const currentError = errors.find(e => e.id === errorId);
+      if (!currentError) return;
 
-      if (error) {
-        console.error('Error updating error status:', error);
-        return;
-      }
+      const { item } = await updateErrorBookItem(errorId, {
+        status: newStatus,
+        review_count: (currentError.reviewCount || 0) + 1,
+      });
 
-      // 更新本地状态
-      setErrors(prev => prev.map(error => 
-        error.id === errorId ? { 
-          ...error, 
-          status: newStatus,
-          reviewCount: error.reviewCount + 1
-        } : error
-      ));
+      replaceErrorLocally(errorId, item);
     } catch (error) {
       console.error('Error updating error status:', error);
     }
@@ -251,9 +241,10 @@ const ErrorBook = () => {
   const toggleStar = async (errorId) => {
     if (!isAuthenticated || !user) {
       // 演示模式下只更新本地状态
-      setErrors(prev => prev.map(error => 
-        error.id === errorId ? { ...error, isStarred: !error.isStarred } : error
-      ));
+      updateErrorLocally(errorId, (error) => ({
+        ...error,
+        isStarred: !error.isStarred
+      }));
       return;
     }
 
@@ -261,24 +252,11 @@ const ErrorBook = () => {
     if (!currentError) return;
 
     try {
-      const { error } = await supabase
-        .from('user_errors')
-        .update({ 
-          is_starred: !currentError.isStarred,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', errorId)
-        .eq('user_id', user.id);
+      const { item } = await updateErrorBookItem(errorId, {
+        is_starred: !currentError.isStarred,
+      });
 
-      if (error) {
-        console.error('Error toggling star:', error);
-        return;
-      }
-
-      // 更新本地状态
-      setErrors(prev => prev.map(error => 
-        error.id === errorId ? { ...error, isStarred: !error.isStarred } : error
-      ));
+      replaceErrorLocally(errorId, item);
     } catch (error) {
       console.error('Error toggling star:', error);
     }
@@ -288,24 +266,13 @@ const ErrorBook = () => {
   const deleteError = async (errorId) => {
     if (!isAuthenticated || !user) {
       // 演示模式下只更新本地状态
-      setErrors(prev => prev.filter(error => error.id !== errorId));
+      removeErrorLocally(errorId);
       return;
     }
 
     try {
-      const { error } = await supabase
-        .from('user_errors')
-        .delete()
-        .eq('id', errorId)
-        .eq('user_id', user.id);
-
-      if (error) {
-        console.error('Error deleting error:', error);
-        return;
-      }
-
-      // 更新本地状态
-      setErrors(prev => prev.filter(error => error.id !== errorId));
+      await deleteErrorBookItem(errorId);
+      removeErrorLocally(errorId);
     } catch (error) {
       console.error('Error deleting error:', error);
     }
@@ -467,6 +434,16 @@ const ErrorBook = () => {
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(error.difficulty)}`}>
                       {error.difficulty === 'easy' ? '简单' : 
                        error.difficulty === 'medium' ? '中等' : '困难'}
+                    </span>
+                    <span
+                      data-testid="source-label"
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        error.source === 'mark_engine_auto'
+                          ? 'text-purple-600 bg-purple-100 dark:bg-purple-900/20'
+                          : 'text-gray-600 bg-gray-100 dark:bg-gray-900/20'
+                      }`}
+                    >
+                      {error.source === 'mark_engine_auto' ? '自动' : '手工'}
                     </span>
                     {error.tags.map(tag => (
                       <span key={tag} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-full text-xs">
@@ -645,6 +622,131 @@ const ErrorBook = () => {
                     {selectedError.explanation}
                   </p>
                 </div>
+
+                {/* 题目与知识点关联 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-gray-50 dark:bg-gray-900/30 p-3 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">题目键</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                      {selectedError.storageKey || '未绑定'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-900/30 p-3 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">知识点节点</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                      {selectedError.nodeId || selectedError.topicId || '未绑定'}
+                    </p>
+                  </div>
+                </div>
+
+                {hasEnrichmentDetails(selectedError) && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-2">
+                      判分上下文
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {selectedError.enrichment?.attempt?.attempt_id && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Attempt ID</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.enrichment.attempt.attempt_id}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.enrichment?.mark_decision?.mark_label && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">得分标签</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.enrichment.mark_decision.mark_label}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.enrichment?.error_event?.misconception_tag && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">误区标签</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.enrichment.error_event.misconception_tag}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.enrichment?.error_event?.severity && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">严重度</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.enrichment.error_event.severity}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.enrichment?.attempt?.topic_path && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg md:col-span-2">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">知识路径</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.enrichment.attempt.topic_path}
+                          </p>
+                        </div>
+                      )}
+                      {!selectedError.enrichment?.attempt?.topic_path && selectedError.enrichment?.error_event?.topic_path && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg md:col-span-2">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">知识路径</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.enrichment.error_event.topic_path}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.enrichment?.mark_decision?.reason && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg md:col-span-2">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">判分理由</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.enrichment.mark_decision.reason}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* 自动判分元数据（仅自动来源显示） */}
+                {selectedError.source === 'mark_engine_auto' && selectedError.metadata && Object.keys(selectedError.metadata).length > 0 && (
+                  <div data-testid="auto-metadata-section">
+                    <h3 className="text-lg font-semibold text-indigo-600 dark:text-indigo-400 mb-2">
+                      自动判分信息
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {selectedError.metadata.rubric_id && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Rubric ID</h4>
+                          <p data-testid="meta-rubric-id" className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.metadata.rubric_id}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.metadata.run_id && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Run ID</h4>
+                          <p data-testid="meta-run-id" className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.metadata.run_id}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.metadata.rubric_source_version && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">Rubric 版本</h4>
+                          <p data-testid="meta-rubric-version" className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.metadata.rubric_source_version}
+                          </p>
+                        </div>
+                      )}
+                      {selectedError.metadata.decision_reason && (
+                        <div className="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-1">判分原因</h4>
+                          <p data-testid="meta-decision-reason" className="text-xs text-gray-600 dark:text-gray-400 break-all">
+                            {selectedError.metadata.decision_reason}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
                 
                 {/* 笔记 */}
                 {selectedError.notes && (

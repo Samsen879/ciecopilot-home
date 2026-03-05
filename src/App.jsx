@@ -14,9 +14,6 @@ import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // Lazy loaded components for better performance
-const Home = React.lazy(() => import("./pages/Home"));
-const HomeOrRedirect = React.lazy(() => import("./pages/HomeOrRedirect"));
-const Topics = React.lazy(() => import("./pages/Topics"));
 const AskAI = React.lazy(() => import("./pages/AskAI"));
 const PaperPage = React.lazy(() => import("./pages/PaperPage"));
 const TopicDetail = React.lazy(() => import("./pages/TopicDetail"));

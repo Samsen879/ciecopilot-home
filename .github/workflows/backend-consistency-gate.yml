@@ -1,0 +1,42 @@
+name: Backend Consistency Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/**"
+      - "scripts/phase2/check_backend_consistency.py"
+      - ".github/workflows/backend-consistency-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "scripts/phase2/check_backend_consistency.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-consistency:
+    name: Backend Consistency
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run consistency scan
+        run: python scripts/phase2/check_backend_consistency.py
+
+      - name: Upload consistency artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-consistency-artifacts
+          path: |
+            runs/backend/backend_consistency_summary.json
+          if-no-files-found: ignore

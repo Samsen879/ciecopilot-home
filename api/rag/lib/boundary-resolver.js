@@ -1,6 +1,9 @@
 import { BOUNDARY_ERROR_CODES } from './constants.js';
 import { RagError } from './errors.js';
 
+const BOUNDARY_LOOKUP_MAX_ATTEMPTS = 3;
+const BOUNDARY_LOOKUP_RETRY_DELAYS_MS = [50, 150];
+
 function extractAllowedSubjects(authUser) {
   const candidates = [
     authUser?.app_metadata?.allowed_subject_codes,
@@ -21,6 +24,21 @@ function deriveSubjectCode(node) {
   if (node?.subject_code) return String(node.subject_code);
   const rawPath = node?.topic_path ? String(node.topic_path) : '';
   return rawPath.split('.')[0] || null;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetryableBoundaryLookupError(error) {
+  const message = String(error?.message || '').toLowerCase();
+  return (
+    message.includes('fetch failed') ||
+    message.includes('network') ||
+    message.includes('socket') ||
+    message.includes('timeout') ||
+    error?.name === 'AbortError'
+  );
 }
 
 export async function resolveBoundary(
@@ -51,11 +69,52 @@ export async function resolveBoundary(
   }
 
   const nodeId = String(syllabus_node_id).trim();
-  const { data, error } = await supabase
-    .from('curriculum_nodes')
-    .select('node_id, topic_path, syllabus_code, subject_code, title, description')
-    .eq('node_id', nodeId)
-    .maybeSingle();
+  let data = null;
+  let error = null;
+  let lastThrown = null;
+
+  for (let attempt = 1; attempt <= BOUNDARY_LOOKUP_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      const result = await supabase
+        .from('curriculum_nodes')
+        .select('node_id, topic_path, syllabus_code, subject_code, title, description')
+        .eq('node_id', nodeId)
+        .maybeSingle();
+      data = result?.data ?? null;
+      error = result?.error ?? null;
+      lastThrown = null;
+      break;
+    } catch (caught) {
+      lastThrown = caught;
+      if (!isRetryableBoundaryLookupError(caught) || attempt >= BOUNDARY_LOOKUP_MAX_ATTEMPTS) {
+        break;
+      }
+      logger('warn', 'rag_boundary_lookup_retry', {
+        syllabus_node_id: nodeId,
+        attempt,
+        next_attempt: attempt + 1,
+        message: caught?.message || String(caught),
+      });
+      await sleep(BOUNDARY_LOOKUP_RETRY_DELAYS_MS[attempt - 1] || 0);
+    }
+  }
+
+  if (lastThrown) {
+    logger('error', 'rag_boundary_lookup_failed', {
+      syllabus_node_id: nodeId,
+      message: lastThrown?.message || String(lastThrown),
+      code: lastThrown?.code || null,
+      retryable: isRetryableBoundaryLookupError(lastThrown),
+    });
+    throw new RagError({
+      status: 500,
+      code: 'RAG_BOUNDARY_LOOKUP_FAILED',
+      message: lastThrown?.message || 'Boundary lookup failed',
+      details: {
+        retryable: isRetryableBoundaryLookupError(lastThrown),
+      },
+    });
+  }
 
   if (error) {
     logger('error', 'rag_boundary_lookup_failed', {
@@ -67,6 +126,9 @@ export async function resolveBoundary(
       status: 500,
       code: 'RAG_BOUNDARY_LOOKUP_FAILED',
       message: error.message || 'Boundary lookup failed',
+      details: {
+        db_code: error.code || null,
+      },
     });
   }
 
@@ -106,4 +168,3 @@ export async function resolveBoundary(
     description: data.description || '',
   };
 }
-

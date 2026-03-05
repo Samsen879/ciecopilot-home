@@ -1,0 +1,83 @@
+name: A1 Topic Link Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - "scripts/evaluation/**"
+      - "tests/test_a1_*.py"
+      - ".github/workflows/a1-topic-link-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/evaluation/**"
+      - "tests/test_a1_*.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  a1-gate:
+    name: A1 Gate (topic-link quality)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install pytest hypothesis psycopg2-binary python-dotenv
+
+      - name: Seed A1 gate fixture data
+        run: python scripts/evaluation/seed_a1_gate_fixture.py
+
+      - name: Run A1 quality gate
+        run: |
+          python scripts/evaluation/run_a1_quality_gate.py \
+            --input tests/fixtures/a1_gate_audit_sample.csv \
+            --allow-remote
+
+      - name: Upload gate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a1-gate-artifacts
+          path: |
+            runs/a1/a1_gate_summary.json
+            docs/reports/a1_topic_link_quality_gate_latest.md
+          if-no-files-found: ignore
+
+      - name: Print diagnostics on failure
+        if: failure()
+        run: |
+          echo "A1 gate failed. Collecting debug context..."
+          python --version
+          pip --version
+          ls -la runs || true
+          ls -la docs/reports || true

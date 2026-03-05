@@ -1,0 +1,54 @@
+name: Security Depth Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/**"
+      - "scripts/phase3/**"
+      - ".github/workflows/security-depth-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "scripts/phase3/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-depth:
+    name: Security Depth Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security depth tests
+        run: node --experimental-vm-modules node_modules/jest/bin/jest.js api/__tests__/security-baseline.test.js api/__tests__/security-depth.test.js api/__tests__/api-route-integration.test.js --runInBand
+
+      - name: Generate security depth artifacts
+        run: |
+          node scripts/phase3/run_post_rag_s1_preflight.js
+          node scripts/phase3/run_security_depth_gate.js
+
+      - name: Upload security depth artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-depth-artifacts
+          path: |
+            runs/backend/post_rag_s1_preflight.json
+            runs/backend/security_depth_summary.json
+            runs/backend/security_authorization_matrix.json
+            docs/reports/security_authorization_matrix.md
+          if-no-files-found: ignore

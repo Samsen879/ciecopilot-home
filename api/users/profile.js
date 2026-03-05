@@ -1,11 +1,32 @@
-const { createClient } = require('@supabase/supabase-js');
-const bcrypt = require('bcryptjs');
-const { authenticateToken, requireOwnership } = require('../middleware/auth');
+import { getServiceClient } from '../lib/supabase/client.js';
+import bcrypt from 'bcryptjs';
+import { applyApiCors } from '../lib/http/cors.js';
+import { authenticateToken, requireOwnership } from '../middleware/auth.js';
 
-// 初始化 Supabase 客户端
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+let _supabase = null;
+
+function getSupabase() {
+  if (_supabase) return _supabase;
+  const url = process.env.SUPABASE_URL;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  _supabase = getServiceClient();
+  return _supabase;
+}
+
+const supabase = new Proxy(
+  {},
+  {
+    get(_target, prop) {
+      const client = getSupabase();
+      const value = client[prop];
+      return typeof value === 'function' ? value.bind(client) : value;
+    },
+  },
 );
 
 // 个人资料配置
@@ -18,19 +39,14 @@ const PROFILE_CONFIG = {
   PASSWORD_MIN_LENGTH: 8
 };
 
-module.exports = async (req, res) => {
-  // 设置 CORS 头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+export default async function handler(req, res) {
+  if (!applyApiCors(req, res, ['GET', 'PUT'])) {
+    return;
   }
 
   // 验证请求方法
   if (!['GET', 'PUT'].includes(req.method)) {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ code: 'request_error', error: 'Method not allowed' });
   }
 
   try {
@@ -41,13 +57,13 @@ module.exports = async (req, res) => {
       case 'PUT':
         return await handleUpdateProfile(req, res);
       default:
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).json({ code: 'request_error', error: 'Method not allowed' });
     }
   } catch (error) {
     console.error('Profile API error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
-};
+}
 
 // 获取用户个人资料
 async function handleGetProfile(req, res) {
@@ -58,7 +74,7 @@ async function handleGetProfile(req, res) {
     if (!userId) {
       const authResult = await authenticateToken(req);
       if (!authResult.success) {
-        return res.status(401).json({ error: authResult.error });
+        return res.status(401).json({ code: 'request_error', error: authResult.error });
       }
       return await getUserProfile(authResult.user.id, res, true);
     }
@@ -67,7 +83,7 @@ async function handleGetProfile(req, res) {
     return await getUserProfile(userId, res, false);
   } catch (error) {
     console.error('Error in handleGetProfile:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -77,7 +93,7 @@ async function handleUpdateProfile(req, res) {
     // 验证用户认证
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const { userId } = req.query;
@@ -86,7 +102,7 @@ async function handleUpdateProfile(req, res) {
     // 检查权限：用户只能更新自己的资料
     const ownershipResult = await requireOwnership(authResult.user, targetUserId);
     if (!ownershipResult.success) {
-      return res.status(403).json({ error: ownershipResult.error });
+      return res.status(403).json({ code: 'request_error', error: ownershipResult.error });
     }
 
     const {
@@ -112,18 +128,18 @@ async function handleUpdateProfile(req, res) {
     });
 
     if (!validationResult.valid) {
-      return res.status(400).json({ error: validationResult.error });
+      return res.status(400).json({ code: 'request_error', error: validationResult.error });
     }
 
     // 如果要更新密码，验证当前密码
     if (new_password) {
       if (!current_password) {
-        return res.status(400).json({ error: 'Current password is required to change password' });
+        return res.status(400).json({ code: 'request_error', error: 'Current password is required to change password' });
       }
 
       const passwordValid = await verifyCurrentPassword(targetUserId, current_password);
       if (!passwordValid) {
-        return res.status(400).json({ error: 'Current password is incorrect' });
+        return res.status(400).json({ code: 'request_error', error: 'Current password is incorrect' });
       }
     }
 
@@ -131,7 +147,7 @@ async function handleUpdateProfile(req, res) {
     if (username) {
       const usernameExists = await checkUsernameExists(username, targetUserId);
       if (usernameExists) {
-        return res.status(409).json({ error: 'Username is already taken' });
+        return res.status(409).json({ code: 'request_error', error: 'Username is already taken' });
       }
     }
 
@@ -183,7 +199,7 @@ async function handleUpdateProfile(req, res) {
 
     if (error) {
       console.error('Error updating profile:', error);
-      return res.status(500).json({ error: 'Failed to update profile' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to update profile' });
     }
 
     // 记录安全事件
@@ -199,7 +215,7 @@ async function handleUpdateProfile(req, res) {
     });
   } catch (error) {
     console.error('Error in handleUpdateProfile:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -249,10 +265,10 @@ async function getUserProfile(userId, res, includePrivate = false) {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ code: 'request_error', error: 'User not found' });
       }
       console.error('Error fetching profile:', error);
-      return res.status(500).json({ error: 'Failed to fetch profile' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to fetch profile' });
     }
 
     // 获取用户统计信息
@@ -266,7 +282,7 @@ async function getUserProfile(userId, res, includePrivate = false) {
     });
   } catch (error) {
     console.error('Error in getUserProfile:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 

@@ -2,9 +2,17 @@ name: RAG S1 Contract Gate
 
 on:
   pull_request:
-    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "docs/schemas/askai_response.schema.json"
+      - ".github/workflows/rag-s1-contract-gate.yml"
   push:
     branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "docs/schemas/askai_response.schema.json"
   workflow_dispatch:
 
 permissions:
@@ -47,3 +55,4 @@ jobs:
             runs/backend/rag_s1_contract_gate_summary.json
             runs/backend/rag_marking_isolation_summary.json
           if-no-files-found: ignore
+

@@ -22,6 +22,35 @@ function createBoundarySupabase({ row = null, error = null } = {}) {
   };
 }
 
+function createRetryBoundarySupabase({ failures = 0, finalRow }) {
+  let callCount = 0;
+  return {
+    from(table) {
+      expect(table).toBe('curriculum_nodes');
+      return {
+        select() {
+          return {
+            eq() {
+              return {
+                async maybeSingle() {
+                  callCount += 1;
+                  if (callCount <= failures) {
+                    throw new TypeError('fetch failed');
+                  }
+                  return { data: finalRow, error: null };
+                },
+              };
+            },
+          };
+        },
+      };
+    },
+    getCallCount() {
+      return callCount;
+    },
+  };
+}
+
 describe('RAG boundary contract', () => {
   it('returns TOPIC_PATH_MISSING when syllabus_node_id is absent', async () => {
     await expect(resolveBoundary({}, { supabase: createBoundarySupabase() })).rejects.toMatchObject({
@@ -83,5 +112,51 @@ describe('RAG boundary contract', () => {
     expect(resolved.current_topic_path).toBe('9709.P1');
     expect(resolved.subject_code).toBe('9709');
   });
-});
 
+  it('retries transient fetch failures and succeeds within retry budget', async () => {
+    const supabase = createRetryBoundarySupabase({
+      failures: 2,
+      finalRow: {
+        node_id: 'node-1',
+        topic_path: '9709.P1',
+        syllabus_code: '9709',
+        title: 'Pure 1',
+        description: 'Paper 1',
+      },
+    });
+
+    const resolved = await resolveBoundary(
+      { syllabus_node_id: 'node-1' },
+      {
+        supabase,
+        logger: () => {},
+      },
+    );
+
+    expect(resolved.current_topic_path).toBe('9709.P1');
+    expect(supabase.getCallCount()).toBe(3);
+  });
+
+  it('fails after retry budget is exhausted for transient fetch failures', async () => {
+    const supabase = createRetryBoundarySupabase({
+      failures: 3,
+      finalRow: null,
+    });
+
+    await expect(
+      resolveBoundary(
+        { syllabus_node_id: 'node-1' },
+        {
+          supabase,
+          logger: () => {},
+        },
+      ),
+    ).rejects.toMatchObject({
+      code: 'RAG_BOUNDARY_LOOKUP_FAILED',
+      status: 500,
+      details: { retryable: true },
+    });
+
+    expect(supabase.getCallCount()).toBe(3);
+  });
+});

@@ -1,0 +1,57 @@
+name: API Route Integration Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/**"
+      - "scripts/phase2/**"
+      - ".github/workflows/api-route-integration-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "scripts/phase2/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  api-route-gate:
+    name: API Route Integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run runtime adapter tests
+        run: node --experimental-vm-modules node_modules/jest/bin/jest.js api/_runtime/__tests__/adapter.test.js --runInBand
+
+      - name: Run API route integration tests
+        run: node --experimental-vm-modules node_modules/jest/bin/jest.js api/__tests__/api-route-integration.test.js --runInBand
+
+      - name: Generate route matrix and integration summary
+        run: |
+          node scripts/phase2/generate_route_matrix.js
+          node scripts/phase2/run_api_route_integration_summary.js
+
+      - name: Upload route gate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-route-integration-artifacts
+          path: |
+            runs/backend/route_matrix.json
+            docs/reports/phase2_route_matrix.md
+            runs/backend/api_route_integration_summary.json
+          if-no-files-found: ignore
+

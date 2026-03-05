@@ -1,11 +1,32 @@
-const bcrypt = require('bcryptjs');
-const { createClient } = require('@supabase/supabase-js');
-const { generateToken, verifyToken, USER_ROLES } = require('../middleware/auth');
+import bcrypt from 'bcryptjs';
+import { applyApiCors } from '../lib/http/cors.js';
+import { getServiceClient } from '../lib/supabase/client.js';
+import { generateToken, verifyToken, USER_ROLES } from '../middleware/auth.js';
 
-// 初始化 Supabase 客户端
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+let _supabase = null;
+
+function getSupabase() {
+  if (_supabase) return _supabase;
+  const url = process.env.SUPABASE_URL;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  _supabase = getServiceClient();
+  return _supabase;
+}
+
+const supabase = new Proxy(
+  {},
+  {
+    get(_target, prop) {
+      const client = getSupabase();
+      const value = client[prop];
+      return typeof value === 'function' ? value.bind(client) : value;
+    },
+  },
 );
 
 // 认证配置
@@ -21,32 +42,21 @@ const AUTH_CONFIG = {
 };
 
 /**
- * 设置CORS头
- */
-function setCorsHeaders(res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-}
-
-/**
  * 验证请求方法
  */
 function validateMethod(req, res, allowedMethods) {
-  if (req.method === 'OPTIONS') {
-    setCorsHeaders(res);
-    return res.status(200).end();
+  if (!applyApiCors(req, res, allowedMethods)) {
+    return false;
   }
-  
+
   if (!allowedMethods.includes(req.method)) {
-    setCorsHeaders(res);
-    return res.status(405).json({
+    res.status(405).json({
       error: 'Method not allowed',
       message: '不支持的请求方法'
     });
+    return false;
   }
-  
-  setCorsHeaders(res);
+
   return true;
 }
 
@@ -230,7 +240,7 @@ async function registerUser(req, res) {
       });
     
     // TODO: 发送验证邮件
-    console.log(`Verification code for ${email}: ${verificationCode}`);
+    console.log(`Verification artifact generated for ${email}`);
     
     res.status(201).json({
       message: '注册成功，请检查邮箱验证链接',
@@ -546,7 +556,7 @@ async function requestPasswordReset(req, res) {
       .eq('id', user.id);
     
     // TODO: 发送重置邮件
-    console.log(`Password reset token for ${email}: ${resetToken}`);
+    console.log(`Account reset artifact generated for ${email}`);
     
     res.status(200).json({
       message: '如果邮箱存在，重置链接已发送'

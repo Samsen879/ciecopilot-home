@@ -1,0 +1,88 @@
+name: RAG S1.2 Coverage And Diagnostics
+
+on:
+  pull_request:
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/rag_s1_2_syllabus_qa_core_v1.json"
+      - "data/eval/rag_s1_2_syllabus_qa_core_v1_manifest.json"
+      - ".github/workflows/rag-s1-2-benchmark.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/rag_s1_2_syllabus_qa_core_v1.json"
+      - "data/eval/rag_s1_2_syllabus_qa_core_v1_manifest.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-s1-2-benchmark:
+    name: S1.2 Coverage + Diagnostics (Advisory)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      VECTOR_EMBEDDING_API_KEY: ${{ secrets.VECTOR_EMBEDDING_API_KEY }}
+      VECTOR_EMBEDDING_BASE_URL: ${{ secrets.VECTOR_EMBEDDING_BASE_URL }}
+      VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL }}
+      VECTOR_EMBEDDING_DIMENSIONS: ${{ secrets.VECTOR_EMBEDDING_DIMENSIONS }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+      CHAT_MODEL: ${{ secrets.CHAT_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run S1.2 preflight
+        run: node scripts/rag/run_s1_2_preflight.js
+
+      - name: Build S1.2 advisory dataset
+        run: node scripts/rag/build_s1_2_syllabus_qa_core_set.js
+
+      - name: Run S1.2 advisory benchmark
+        continue-on-error: true
+        run: node scripts/rag/run_s1_2_benchmark.js
+
+      - name: Run corpus audit
+        continue-on-error: true
+        run: node scripts/rag/run_corpus_audit.js
+
+      - name: Build S1.2 decision report
+        if: always()
+        run: |
+          if [ -f runs/backend/rag_s1_2_benchmark_summary.json ] && [ -f runs/backend/rag_corpus_audit_summary.json ]; then
+            node scripts/rag/run_s1_2_decision.js
+          else
+            echo "Skipping decision report because prerequisite artifacts are missing."
+          fi
+
+      - name: Upload S1.2 advisory artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-s1-2-advisory-artifacts
+          path: |
+            runs/backend/rag_s1_2_preflight.json
+            data/eval/rag_s1_2_syllabus_qa_core_v1.json
+            data/eval/rag_s1_2_syllabus_qa_core_v1_manifest.json
+            runs/backend/rag_s1_2_benchmark_summary.json
+            runs/backend/rag_corpus_audit_summary.json
+            runs/backend/rag_s1_2_decision_summary.json
+            docs/reports/rag_s1_2_benchmark.md
+            docs/reports/rag_corpus_audit.md
+            docs/reports/rag_s1_2_decision_report.md
+          if-no-files-found: ignore

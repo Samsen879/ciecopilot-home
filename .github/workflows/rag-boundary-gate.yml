@@ -1,0 +1,52 @@
+name: RAG Boundary Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "docs/schemas/askai_response.schema.json"
+      - ".github/workflows/rag-boundary-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "docs/schemas/askai_response.schema.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-boundary:
+    name: Boundary Contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run S1 preflight
+        run: node scripts/rag/run_s1_preflight.js
+
+      - name: Run boundary contract tests
+        run: node scripts/rag/run_boundary_contract_summary.js
+
+      - name: Upload boundary artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-boundary-artifacts
+          path: |
+            runs/backend/rag_boundary_contract_summary.json
+            runs/backend/rag_s1_preflight.json
+          if-no-files-found: ignore

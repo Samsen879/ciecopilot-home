@@ -2,36 +2,42 @@
 
 ## Overview
 
-This project integrates AI chat + RAG through a canonical API surface under `apps/api-node/api`. The frontend uses `/api/*` routes, and legacy endpoints remain available but are deprecated.
+This project integrates AI chat + RAG through the active API gateway under `api/`. The frontend uses `/api/*` routes. Production no longer uses Vercel; the current deployment target is **Aliyun ECS**.
 
-## Canonical API Surface (apps/api-node/api)
+## Active API Surface
 
-**Primary entrypoint**: `POST /api/ask`  
-**Health check**: `GET /api/health`
+Current active entrypoints:
 
-Legacy endpoints (deprecated; thin wrappers to `/api/ask`):
-- `POST /api/chat`
-- `POST /api/rag/chat`
-- `POST /api/rag/chat-v2`
-- `POST /api/ai/tutor/chat`
+- `GET /api/info`
+- `GET /api/health`
+- `GET /api/routes`
+- `POST /api/rag/ask`
+- `POST /api/rag/search`
+- `POST /api/chat` (compatibility endpoint, deprecated)
+- `POST /api/rag/chat` (compatibility endpoint, deprecated)
+- `POST /api/ai/tutor/chat` (compatibility endpoint, deprecated)
 
-**Root `/api/` directory** is legacy-only and forwards to `apps/api-node/api`. Do not add business logic there.
+`api/index.js` is the active gateway/runtime entry for local development and ECS deployment.
 
 ## Project Structure
 
-**Important Note**: This is a **Vite + React project** running on **Aliyun ECS**. The API endpoint is served by the Node server in `apps/api-node/server.js`.
+Important paths:
 
 ```
-/apps/api-node/api/ask.js      # Canonical AI entrypoint (routing facade)
-/apps/api-node/api/health.js   # Health check
-/api/*.js                       # Legacy wrappers (deprecated)
-/src/components/ChatWidget.jsx  # Chat UI component with live AI integration
-/src/utils/openai.js      # Utility functions for API calls
+/api/index.js                   # Active API gateway / local ECS runtime entry
+/api/rag/ask.js                 # Current ask endpoint
+/api/rag/search.js              # RAG retrieval endpoint
+/api/chat.js                    # Compatibility chat endpoint
+/src/api/ragApi.js              # Frontend API wrapper
+/src/hooks/useChat.js           # Frontend chat hook
+/src/components/ChatWidget.jsx  # Chat UI component
 ```
+
+Historical compatibility code still exists under `apps/api-node/api`, but it is not the active deployment runtime described by this document.
 
 ## API Endpoint
 
-**URL**: `/api/ask`  
+**URL**: `/api/rag/ask`  
 **Method**: `POST`  
 **Content-Type**: `application/json`
 
@@ -117,72 +123,28 @@ node scripts/run-sql-migration.js --url $env:SUPABASE_URL --service-key $env:SUP
 
 ## Usage Examples
 
-### 1. Using the ChatWidget Component
-
-The ChatWidget is already integrated in your Landing page. It provides:
-- Real-time AI conversations
-- Context-aware responses
-- CIE curriculum specialization
-- Beautiful UI with animations
-
-### 2. Using Utility Functions
+### 1. Frontend Fetch Example
 
 ```javascript
-import { askCIETutor, askAI, callOpenAI } from './src/utils/openai.js';
-
-// Simple CIE tutoring question
-const response = await askCIETutor(
-  "Explain the chain rule in calculus", 
-  "Mathematics"
-);
-
-// General AI question
-const answer = await askAI("What is photosynthesis?");
-
-// Advanced usage with conversation history
-const messages = [
-  { role: "system", content: "You are a physics tutor." },
-  { role: "user", content: "What is Newton's first law?" },
-  { role: "assistant", content: "Newton's first law states..." },
-  { role: "user", content: "Can you give me an example?" }
-];
-const result = await callOpenAI(messages);
-```
-
-### 3. Frontend Fetch Example
-
-```javascript
-// Direct API call from any React component
-const callChatAPI = async (userMessage) => {
+const callAskAPI = async (messages) => {
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch('/api/rag/ask', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        messages: [
-          {
-            role: "system",
-            content: "You are a CIE A-Level tutor specializing in Mathematics, Physics, and Economics."
-          },
-          {
-            role: "user",
-            content: userMessage
-          }
-        ]
+        messages,
       }),
     });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
-    const data = await response.json();
-    return data.choices[0]?.message?.content;
+    return await response.json();
   } catch (error) {
     console.error('Error:', error);
-    return 'Sorry, something went wrong.';
+    throw error;
   }
 };
 ```
@@ -193,14 +155,14 @@ const callChatAPI = async (userMessage) => {
 ✅ **Method Validation**: Only POST requests allowed  
 ✅ **Input Validation**: Validates message format and content  
 ✅ **Error Handling**: Comprehensive error responses without exposing internal details  
-✅ **Rate Limiting**: Handled by Vercel and OpenAI  
+✅ **Rate Limiting**: Handled by server-side gateway and route policy  
 
 ## Testing
 
 ### 1. Test the API endpoint directly
 
 ```bash
-curl -X POST https://your-site.vercel.app/api/ask \
+curl -X POST https://your-domain/api/rag/ask \
   -H "Content-Type: application/json" \
   -d '{
     "messages": [
@@ -228,7 +190,7 @@ Currently using **GPT-4 Turbo** (`gpt-4-1106-preview`) with these settings:
 ### Common Issues
 
 1. **"OpenAI API key not configured"**
-   - Check Vercel environment variables
+   - Check environment variables on Aliyun ECS
    - Ensure key name is exactly `OPENAI_API_KEY`
 
 2. **"Method not allowed"**
@@ -241,7 +203,7 @@ Currently using **GPT-4 Turbo** (`gpt-4-1106-preview`) with these settings:
 
 4. **Chat shows "technical difficulties"**
    - Check browser console for errors
-   - Verify API endpoint is accessible
+   - Verify `/api/rag/ask` or compatibility endpoint is accessible
    - Check OpenAI API key validity
 
 ## Next Steps

@@ -1,5 +1,5 @@
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -23,8 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-.vercel
-
 # Environment variables
 .env
 .env.local
@@ -42,7 +40,58 @@ past_papers_sorted_by_topic/
 outputs/
 output_files/
 archive/
+data/ms-screenshots/
 
 # Supabase CLI local state / profile artifacts, not source
 supabase/.temp/
 supabase/.branches/
+
+# Generated evidence / review outputs
+docs/reviews/
+docs/*_qc_anomalies.json
+docs/*_review_queue.json
+docs/*_vertical_gap_flags.json
+docs/ms_*_qc_anomalies.json
+docs/ms_*_review_queue.json
+docs/PARALLEL_AGENTS_SUMMARY.md
+docs/agent_prompt_review.md
+docs/agent_prompts/
+docs/agent_prompts_10.md
+docs/agent_prompts_15.md
+docs/agent_prompts_15_unicode.txt
+docs/agent_prompts_vlm_qc.md
+runs/a1/
+runs/assets/
+runs/backend/
+runs/db/
+runs/kiro_readonly/
+runs/marking/
+runs/ms/
+runs/phase1/
+runs/governance/cleanup_reference_check_20260216.txt
+runs/governance/quarantine_manifest_20260216.json
+runs/governance/quarantine_restore_drill_20260216.md
+runs/governance/repo_size_after_cleanup_20260216.txt
+runs/governance/repo_size_before_cleanup_20260216.txt
+runs/governance/td_baseline_status_20260216.txt
+runs/governance/td_baseline_tracked_20260216.txt
+runs/governance/td_baseline_untracked_20260216.txt
+codex-spec-mode/
+核心项目文档/
+sql/schema_assets.sql
+
+# Temporary / scratch files (Phase1 governance)
+.tmp*
+tmp_*
+scratch_*
+*.bak
+*.swp
+
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+.venv/
+.venv_*/

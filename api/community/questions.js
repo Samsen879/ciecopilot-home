@@ -1,17 +1,28 @@
 // 社区问答系统API端点
 // 处理问题的增删改查和相关操作
 
-import { createClient } from '@supabase/supabase-js';
+import { getServiceClient } from '../lib/supabase/client.js';
+import {
+  applyCors,
+  sanitizePlainText,
+  sanitizeSearchTerm,
+  sanitizeTagList,
+  toPositiveInt
+} from './lib/security.js';
 
 // 创建Supabase客户端
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = getServiceClient();
 
 // 社区配置
 const COMMUNITY_CONFIG = {
@@ -27,13 +38,8 @@ const COMMUNITY_CONFIG = {
 
 // 主要的社区问答API处理函数
 export default async function handler(req, res) {
-  // 设置CORS头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (!applyCors(req, res, ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])) {
+    return;
   }
 
   try {
@@ -126,9 +132,10 @@ async function handleGetQuestions(req, res, user) {
     }
 
     // 验证分页参数
-    const pageNum = Math.max(1, parseInt(page));
-    const limitNum = Math.min(COMMUNITY_CONFIG.MAX_PAGE_SIZE, Math.max(1, parseInt(limit)));
+    const pageNum = toPositiveInt(page, 1, 1, Number.MAX_SAFE_INTEGER);
+    const limitNum = toPositiveInt(limit, COMMUNITY_CONFIG.DEFAULT_PAGE_SIZE, 1, COMMUNITY_CONFIG.MAX_PAGE_SIZE);
     const offset = (pageNum - 1) * limitNum;
+    const searchTerm = sanitizeSearchTerm(search);
 
     // 构建查询
     let query = supabase
@@ -156,13 +163,20 @@ async function handleGetQuestions(req, res, user) {
     }
 
     // 搜索功能
-    if (search) {
-      query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
+    if (searchTerm) {
+      query = query.or(`title.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%`);
     }
 
     // 标签过滤
     if (tags) {
-      const tagArray = tags.split(',').map(tag => tag.trim());
+      const rawTags = typeof tags === 'string' ? tags.split(',') : [];
+      const tagArray = sanitizeTagList(rawTags, COMMUNITY_CONFIG.MAX_TAGS, 40);
+      if (tagArray.length === 0) {
+        return res.status(400).json({
+          error: 'Invalid tags filter',
+          code: 'INVALID_TAGS'
+        });
+      }
       // 这里需要通过content_tags表进行关联查询
       const { data: taggedQuestionIds } = await supabase
         .from('content_tags')
@@ -275,9 +289,13 @@ async function handleGetQuestions(req, res, user) {
 async function handleCreateQuestion(req, res, user) {
   try {
     const { title, content, subject_code, tags = [] } = req.body;
+    const sanitizedTitle = sanitizePlainText(title, COMMUNITY_CONFIG.MAX_TITLE_LENGTH);
+    const sanitizedContent = sanitizePlainText(content, COMMUNITY_CONFIG.MAX_CONTENT_LENGTH);
+    const sanitizedTags = sanitizeTagList(tags, COMMUNITY_CONFIG.MAX_TAGS, 40);
+    const sanitizedSubjectCode = sanitizePlainText(subject_code, 20).toUpperCase();
 
     // 验证必需参数
-    if (!title || !content || !subject_code) {
+    if (!sanitizedTitle || !sanitizedContent || !sanitizedSubjectCode) {
       return res.status(400).json({
         error: 'title, content, and subject_code are required',
         code: 'MISSING_REQUIRED_FIELDS'
@@ -285,23 +303,7 @@ async function handleCreateQuestion(req, res, user) {
     }
 
     // 验证标题长度
-    if (title.length > COMMUNITY_CONFIG.MAX_TITLE_LENGTH) {
-      return res.status(400).json({
-        error: `Title too long. Maximum ${COMMUNITY_CONFIG.MAX_TITLE_LENGTH} characters allowed`,
-        code: 'TITLE_TOO_LONG'
-      });
-    }
-
-    // 验证内容长度
-    if (content.length > COMMUNITY_CONFIG.MAX_CONTENT_LENGTH) {
-      return res.status(400).json({
-        error: `Content too long. Maximum ${COMMUNITY_CONFIG.MAX_CONTENT_LENGTH} characters allowed`,
-        code: 'CONTENT_TOO_LONG'
-      });
-    }
-
-    // 验证标签数量
-    if (tags.length > COMMUNITY_CONFIG.MAX_TAGS) {
+    if (Array.isArray(tags) && tags.length > COMMUNITY_CONFIG.MAX_TAGS) {
       return res.status(400).json({
         error: `Too many tags. Maximum ${COMMUNITY_CONFIG.MAX_TAGS} allowed`,
         code: 'TOO_MANY_TAGS'
@@ -320,9 +322,9 @@ async function handleCreateQuestion(req, res, user) {
 
     // 创建问题
     const questionData = {
-      title: title.trim(),
-      content: content.trim(),
-      subject_code,
+      title: sanitizedTitle,
+      content: sanitizedContent,
+      subject_code: sanitizedSubjectCode,
       author_id: user.id,
       status: 'open',
       view_count: 0,
@@ -348,8 +350,8 @@ async function handleCreateQuestion(req, res, user) {
     }
 
     // 添加标签
-    if (tags.length > 0) {
-      await addQuestionTags(question.id, tags);
+    if (sanitizedTags.length > 0) {
+      await addQuestionTags(question.id, sanitizedTags);
     }
 
     // 更新用户统计
@@ -379,6 +381,15 @@ async function handleUpdateQuestion(req, res, user) {
   try {
     const { question_id } = req.query;
     const { title, content, tags, status } = req.body;
+    const sanitizedTitle = title === undefined
+      ? undefined
+      : sanitizePlainText(title, COMMUNITY_CONFIG.MAX_TITLE_LENGTH);
+    const sanitizedContent = content === undefined
+      ? undefined
+      : sanitizePlainText(content, COMMUNITY_CONFIG.MAX_CONTENT_LENGTH);
+    const sanitizedTags = tags === undefined
+      ? undefined
+      : sanitizeTagList(tags, COMMUNITY_CONFIG.MAX_TAGS, 40);
 
     if (!question_id) {
       return res.status(400).json({
@@ -418,24 +429,36 @@ async function handleUpdateQuestion(req, res, user) {
       updated_at: new Date().toISOString()
     };
 
-    if (title !== undefined) {
-      if (title.length > COMMUNITY_CONFIG.MAX_TITLE_LENGTH) {
+    if (sanitizedTitle !== undefined) {
+      if (!sanitizedTitle) {
+        return res.status(400).json({
+          error: 'Title is required',
+          code: 'INVALID_TITLE'
+        });
+      }
+      if (sanitizedTitle.length > COMMUNITY_CONFIG.MAX_TITLE_LENGTH) {
         return res.status(400).json({
           error: `Title too long. Maximum ${COMMUNITY_CONFIG.MAX_TITLE_LENGTH} characters allowed`,
           code: 'TITLE_TOO_LONG'
         });
       }
-      updateData.title = title.trim();
+      updateData.title = sanitizedTitle;
     }
 
-    if (content !== undefined) {
-      if (content.length > COMMUNITY_CONFIG.MAX_CONTENT_LENGTH) {
+    if (sanitizedContent !== undefined) {
+      if (!sanitizedContent) {
+        return res.status(400).json({
+          error: 'Content is required',
+          code: 'INVALID_CONTENT'
+        });
+      }
+      if (sanitizedContent.length > COMMUNITY_CONFIG.MAX_CONTENT_LENGTH) {
         return res.status(400).json({
           error: `Content too long. Maximum ${COMMUNITY_CONFIG.MAX_CONTENT_LENGTH} characters allowed`,
           code: 'CONTENT_TOO_LONG'
         });
       }
-      updateData.content = content.trim();
+      updateData.content = sanitizedContent;
     }
 
     if (status !== undefined && isAdmin) {
@@ -463,14 +486,14 @@ async function handleUpdateQuestion(req, res, user) {
     }
 
     // 更新标签
-    if (tags !== undefined) {
-      if (tags.length > COMMUNITY_CONFIG.MAX_TAGS) {
+    if (sanitizedTags !== undefined) {
+      if (sanitizedTags.length > COMMUNITY_CONFIG.MAX_TAGS) {
         return res.status(400).json({
           error: `Too many tags. Maximum ${COMMUNITY_CONFIG.MAX_TAGS} allowed`,
           code: 'TOO_MANY_TAGS'
         });
       }
-      await updateQuestionTags(question_id, tags);
+      await updateQuestionTags(question_id, sanitizedTags);
     }
 
     // 获取完整的问题信息
@@ -645,15 +668,16 @@ async function getQuestionsTags(questionIds) {
 // 添加问题标签
 async function addQuestionTags(questionId, tags) {
   try {
-    if (tags.length === 0) {
+    const normalizedTags = sanitizeTagList(tags, COMMUNITY_CONFIG.MAX_TAGS, 40);
+    if (normalizedTags.length === 0) {
       return;
     }
 
     // 准备标签数据
-    const tagData = tags.map(tag => ({
+    const tagData = normalizedTags.map(tag => ({
       content_type: 'question',
       content_id: questionId,
-      tag_name: tag.trim().toLowerCase()
+      tag_name: tag
     }));
 
     // 插入标签
@@ -666,8 +690,8 @@ async function addQuestionTags(questionId, tags) {
     }
 
     // 更新标签使用计数
-    for (const tag of tags) {
-      await updateTagUsageCount(tag.trim().toLowerCase(), 1);
+    for (const tag of normalizedTags) {
+      await updateTagUsageCount(tag, 1);
     }
 
   } catch (error) {
@@ -679,6 +703,7 @@ async function addQuestionTags(questionId, tags) {
 // 更新问题标签
 async function updateQuestionTags(questionId, newTags) {
   try {
+    const normalizedNewTags = sanitizeTagList(newTags, COMMUNITY_CONFIG.MAX_TAGS, 40);
     // 获取现有标签
     const { data: existingTags, error: getError } = await supabase
       .from('content_tags')
@@ -691,7 +716,7 @@ async function updateQuestionTags(questionId, newTags) {
     }
 
     const existingTagNames = existingTags.map(tag => tag.tag_name);
-    const newTagNames = newTags.map(tag => tag.trim().toLowerCase());
+    const newTagNames = normalizedNewTags;
 
     // 删除不再需要的标签
     const tagsToRemove = existingTagNames.filter(tag => !newTagNames.includes(tag));

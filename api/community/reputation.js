@@ -1,17 +1,22 @@
 // 社区声誉系统API端点
 // 处理声誉计算、等级提升、声誉历史等功能
 
-import { createClient } from '@supabase/supabase-js';
+import { getServiceClient } from '../lib/supabase/client.js';
+import { applyCors, isCommunityRoleAllowed, sanitizePlainText } from './lib/security.js';
 
 // 创建Supabase客户端
-const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = getServiceClient();
 
 // 声誉系统配置
 const REPUTATION_CONFIG = {
@@ -72,13 +77,8 @@ const REPUTATION_CONFIG = {
 
 // 主要的声誉API处理函数
 export default async function handler(req, res) {
-  // 设置CORS头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  if (!applyCors(req, res, ['GET', 'POST', 'PUT', 'OPTIONS'])) {
+    return;
   }
 
   try {
@@ -248,9 +248,19 @@ async function handleUpdateReputation(req, res, user) {
       related_content_type,
       metadata = {}
     } = req.body;
+    const sanitizedActionType = sanitizePlainText(action_type, 64);
+    const sanitizedReason = sanitizePlainText(reason, 512);
+
+    const hasAdminPermission = await isCommunityRoleAllowed(supabase, user.id, ['admin', 'moderator']);
+    if (!hasAdminPermission) {
+      return res.status(403).json({
+        error: 'Insufficient permissions to update reputation',
+        code: 'INSUFFICIENT_PERMISSIONS'
+      });
+    }
 
     // 验证必需参数
-    if (!user_id || !action_type || points_change === undefined) {
+    if (!user_id || !sanitizedActionType || points_change === undefined) {
       return res.status(400).json({
         error: 'user_id, action_type, and points_change are required',
         code: 'MISSING_REQUIRED_FIELDS'
@@ -279,8 +289,8 @@ async function handleUpdateReputation(req, res, user) {
     const result = await updateUserReputation({
       userId: user_id,
       pointsChange: points_change,
-      actionType: action_type,
-      reason: reason,
+      actionType: sanitizedActionType,
+      reason: sanitizedReason || 'reputation_update',
       relatedContentId: related_content_id,
       relatedContentType: related_content_type,
       metadata: metadata,
@@ -307,9 +317,10 @@ async function handleUpdateReputation(req, res, user) {
 async function handleAdjustReputation(req, res, user) {
   try {
     const { user_id, new_reputation, reason } = req.body;
+    const sanitizedReason = sanitizePlainText(reason, 512);
 
     // 验证必需参数
-    if (!user_id || new_reputation === undefined || !reason) {
+    if (!user_id || new_reputation === undefined || !sanitizedReason) {
       return res.status(400).json({
         error: 'user_id, new_reputation, and reason are required',
         code: 'MISSING_REQUIRED_FIELDS'
@@ -317,8 +328,8 @@ async function handleAdjustReputation(req, res, user) {
     }
 
     // 检查权限（只有管理员可以调整声誉）
-    const userProfile = await getUserCommunityProfile(user.id);
-    if (!['admin', 'moderator'].includes(userProfile.role)) {
+    const hasAdminPermission = await isCommunityRoleAllowed(supabase, user.id, ['admin', 'moderator']);
+    if (!hasAdminPermission) {
       return res.status(403).json({
         error: 'Insufficient permissions to adjust reputation',
         code: 'INSUFFICIENT_PERMISSIONS'
@@ -335,7 +346,7 @@ async function handleAdjustReputation(req, res, user) {
       userId: user_id,
       pointsChange: pointsChange,
       actionType: 'ADMIN_ADJUSTMENT',
-      reason: reason,
+      reason: sanitizedReason,
       metadata: {
         previous_reputation: currentReputation,
         new_reputation: new_reputation,

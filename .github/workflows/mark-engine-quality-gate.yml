@@ -1,0 +1,74 @@
+name: Mark Engine Quality Gate
+
+on:
+  pull_request:
+    paths:
+      - "config/marking_engine_v0.json"
+      - "data/eval/marking_eval_set_v2_blind_9709_p1p3.json"
+      - "data/eval/marking_eval_set_v3_hard_blind_9709_p1p3_120.json"
+      - "scripts/marking/**"
+      - "scripts/evaluation/**"
+      - "tests/marking/**"
+      - ".github/workflows/mark-engine-quality-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "config/marking_engine_v0.json"
+      - "data/eval/marking_eval_set_v2_blind_9709_p1p3.json"
+      - "data/eval/marking_eval_set_v3_hard_blind_9709_p1p3_120.json"
+      - "scripts/marking/**"
+      - "scripts/evaluation/**"
+      - "tests/marking/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    name: B2 Gate (v3_hard_120)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install pytest sympy
+
+      - name: Run marking unit tests
+        run: pytest tests/marking -q
+
+      - name: Run Smart Mark Engine CI gate
+        run: |
+          python scripts/evaluation/run_mark_engine_ci_gate.py \
+            --config config/marking_engine_v0.json \
+            --json-out docs/reports/b2_mark_engine_eval_ci_gate.json \
+            --report-out docs/reports/b2_mark_engine_quality_gate_ci.md
+
+      - name: Upload gate artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mark-engine-quality-gate-artifacts
+          path: |
+            docs/reports/b2_mark_engine_eval_ci_gate.json
+            docs/reports/b2_mark_engine_quality_gate_ci.md
+          if-no-files-found: ignore
+
+      - name: Print diagnostics on failure
+        if: failure()
+        run: |
+          echo "Mark engine quality gate failed. Collecting debug context..."
+          python --version
+          pip --version
+          ls -la docs/reports || true

@@ -1,10 +1,31 @@
-const { createClient } = require('@supabase/supabase-js');
-const { authenticateToken, requirePermission } = require('../middleware/auth');
+import { getServiceClient } from '../lib/supabase/client.js';
+import { applyApiCors } from '../lib/http/cors.js';
+import { authenticateToken, requirePermission } from '../middleware/auth.js';
 
-// 初始化 Supabase 客户端
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+let _supabase = null;
+
+function getSupabase() {
+  if (_supabase) return _supabase;
+  const url = process.env.SUPABASE_URL;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY;
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  _supabase = getServiceClient();
+  return _supabase;
+}
+
+const supabase = new Proxy(
+  {},
+  {
+    get(_target, prop) {
+      const client = getSupabase();
+      const value = client[prop];
+      return typeof value === 'function' ? value.bind(client) : value;
+    },
+  },
 );
 
 // 权限配置
@@ -52,19 +73,14 @@ const PERMISSION_CONFIG = {
   }
 };
 
-module.exports = async (req, res) => {
-  // 设置 CORS 头
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+export default async function handler(req, res) {
+  if (!applyApiCors(req, res, ['GET', 'POST', 'PUT', 'DELETE'])) {
+    return;
   }
 
   // 验证请求方法
   if (!['GET', 'POST', 'PUT', 'DELETE'].includes(req.method)) {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ code: 'request_error', error: 'Method not allowed' });
   }
 
   try {
@@ -79,20 +95,20 @@ module.exports = async (req, res) => {
       case 'DELETE':
         return await handleRevokePermission(req, res);
       default:
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).json({ code: 'request_error', error: 'Method not allowed' });
     }
   } catch (error) {
     console.error('Permissions API error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
-};
+}
 
 // 获取用户权限
 async function handleGetPermissions(req, res) {
   try {
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const { userId } = req.query;
@@ -103,7 +119,7 @@ async function handleGetPermissions(req, res) {
     const isOwner = authResult.user.id === targetUserId;
 
     if (!isAdmin.success && !isOwner) {
-      return res.status(403).json({ error: 'Permission denied' });
+      return res.status(403).json({ code: 'request_error', error: 'Permission denied' });
     }
 
     // 获取用户信息
@@ -114,7 +130,7 @@ async function handleGetPermissions(req, res) {
       .single();
 
     if (userError || !user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ code: 'request_error', error: 'User not found' });
     }
 
     // 获取角色权限
@@ -129,7 +145,7 @@ async function handleGetPermissions(req, res) {
 
     if (permError) {
       console.error('Error fetching special permissions:', permError);
-      return res.status(500).json({ error: 'Failed to fetch permissions' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to fetch permissions' });
     }
 
     // 计算有效权限
@@ -152,7 +168,7 @@ async function handleGetPermissions(req, res) {
     });
   } catch (error) {
     console.error('Error in handleGetPermissions:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -162,18 +178,18 @@ async function handleGrantPermission(req, res) {
     // 验证管理员权限
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const permissionResult = await requirePermission(authResult.user, 'manage_roles');
     if (!permissionResult.success) {
-      return res.status(403).json({ error: permissionResult.error });
+      return res.status(403).json({ code: 'request_error', error: permissionResult.error });
     }
 
     const { userId, permission, expires_at, reason } = req.body;
 
     if (!userId || !permission) {
-      return res.status(400).json({ error: 'User ID and permission are required' });
+      return res.status(400).json({ code: 'request_error', error: 'User ID and permission are required' });
     }
 
     // 验证权限是否存在
@@ -182,7 +198,7 @@ async function handleGrantPermission(req, res) {
       .concat(Object.keys(PERMISSION_CONFIG.SPECIAL_PERMISSIONS));
 
     if (!allPermissions.includes(permission)) {
-      return res.status(400).json({ error: 'Invalid permission' });
+      return res.status(400).json({ code: 'request_error', error: 'Invalid permission' });
     }
 
     // 检查用户是否存在
@@ -193,7 +209,7 @@ async function handleGrantPermission(req, res) {
       .single();
 
     if (userError || !user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ code: 'request_error', error: 'User not found' });
     }
 
     // 检查权限是否已存在
@@ -206,7 +222,7 @@ async function handleGrantPermission(req, res) {
       .single();
 
     if (existingPermission) {
-      return res.status(409).json({ error: 'Permission already granted' });
+      return res.status(409).json({ code: 'request_error', error: 'Permission already granted' });
     }
 
     // 授予权限
@@ -226,7 +242,7 @@ async function handleGrantPermission(req, res) {
 
     if (error) {
       console.error('Error granting permission:', error);
-      return res.status(500).json({ error: 'Failed to grant permission' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to grant permission' });
     }
 
     // 记录安全事件
@@ -242,7 +258,7 @@ async function handleGrantPermission(req, res) {
     });
   } catch (error) {
     console.error('Error in handleGrantPermission:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -252,23 +268,23 @@ async function handleUpdateUserRole(req, res) {
     // 验证管理员权限
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const permissionResult = await requirePermission(authResult.user, 'manage_roles');
     if (!permissionResult.success) {
-      return res.status(403).json({ error: permissionResult.error });
+      return res.status(403).json({ code: 'request_error', error: permissionResult.error });
     }
 
     const { userId, newRole, reason } = req.body;
 
     if (!userId || !newRole) {
-      return res.status(400).json({ error: 'User ID and new role are required' });
+      return res.status(400).json({ code: 'request_error', error: 'User ID and new role are required' });
     }
 
     // 验证角色是否有效
     if (!PERMISSION_CONFIG.ROLES[newRole]) {
-      return res.status(400).json({ error: 'Invalid role' });
+      return res.status(400).json({ code: 'request_error', error: 'Invalid role' });
     }
 
     // 获取当前用户信息
@@ -279,13 +295,13 @@ async function handleUpdateUserRole(req, res) {
       .single();
 
     if (userError || !user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ code: 'request_error', error: 'User not found' });
     }
 
     // 防止降级自己的权限
     if (authResult.user.id === userId && 
         PERMISSION_CONFIG.ROLES[newRole].level < PERMISSION_CONFIG.ROLES[authResult.user.role].level) {
-      return res.status(400).json({ error: 'Cannot downgrade your own role' });
+      return res.status(400).json({ code: 'request_error', error: 'Cannot downgrade your own role' });
     }
 
     const oldRole = user.role;
@@ -303,7 +319,7 @@ async function handleUpdateUserRole(req, res) {
 
     if (error) {
       console.error('Error updating user role:', error);
-      return res.status(500).json({ error: 'Failed to update user role' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to update user role' });
     }
 
     // 记录角色变更历史
@@ -336,7 +352,7 @@ async function handleUpdateUserRole(req, res) {
     });
   } catch (error) {
     console.error('Error in handleUpdateUserRole:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 
@@ -346,18 +362,18 @@ async function handleRevokePermission(req, res) {
     // 验证管理员权限
     const authResult = await authenticateToken(req);
     if (!authResult.success) {
-      return res.status(401).json({ error: authResult.error });
+      return res.status(401).json({ code: 'request_error', error: authResult.error });
     }
 
     const permissionResult = await requirePermission(authResult.user, 'manage_roles');
     if (!permissionResult.success) {
-      return res.status(403).json({ error: permissionResult.error });
+      return res.status(403).json({ code: 'request_error', error: permissionResult.error });
     }
 
     const { userId, permission, reason } = req.body;
 
     if (!userId || !permission) {
-      return res.status(400).json({ error: 'User ID and permission are required' });
+      return res.status(400).json({ code: 'request_error', error: 'User ID and permission are required' });
     }
 
     // 撤销权限（软删除）
@@ -377,10 +393,10 @@ async function handleRevokePermission(req, res) {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        return res.status(404).json({ error: 'Permission not found or already revoked' });
+        return res.status(404).json({ code: 'request_error', error: 'Permission not found or already revoked' });
       }
       console.error('Error revoking permission:', error);
-      return res.status(500).json({ error: 'Failed to revoke permission' });
+      return res.status(500).json({ code: 'request_error', error: 'Failed to revoke permission' });
     }
 
     // 记录安全事件
@@ -396,7 +412,7 @@ async function handleRevokePermission(req, res) {
     });
   } catch (error) {
     console.error('Error in handleRevokePermission:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ code: 'request_error', error: 'Internal server error' });
   }
 }
 

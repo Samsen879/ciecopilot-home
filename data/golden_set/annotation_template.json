@@ -1,0 +1,189 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Golden Set Annotation Template",
+  "description": "基于 annotation_guideline.md 的标注模板",
+  "version": "v1.0.0",
+  "fields": {
+    "storage_key": {
+      "type": "string",
+      "required": true,
+      "auto_filled": true,
+      "description": "资产存储路径，从采样清单自动填充"
+    },
+    "sha256": {
+      "type": "string",
+      "required": true,
+      "auto_filled": true,
+      "description": "文件 SHA-256 哈希，从采样清单自动填充"
+    },
+    "syllabus_code": {
+      "type": "string",
+      "required": true,
+      "auto_filled": true,
+      "enum": ["9709", "9231", "9702"],
+      "description": "CIE 课程代码"
+    },
+    "year": {
+      "type": "integer",
+      "required": true,
+      "auto_filled": true,
+      "description": "年份"
+    },
+    "session": {
+      "type": "string",
+      "required": true,
+      "auto_filled": true,
+      "enum": ["s", "w", "m"],
+      "description": "考季"
+    },
+    "paper": {
+      "type": "integer",
+      "required": true,
+      "auto_filled": true,
+      "description": "试卷号"
+    },
+    "variant": {
+      "type": "integer",
+      "required": true,
+      "auto_filled": true,
+      "description": "变体号"
+    },
+    "q_number": {
+      "type": "integer",
+      "required": true,
+      "auto_filled": true,
+      "description": "题号"
+    },
+    "subpart": {
+      "type": "string",
+      "required": false,
+      "manual": true,
+      "pattern": "^[a-z](_[ivx]+)?$",
+      "examples": ["a", "b", "a_i", "b_ii", "c_iii"],
+      "description": "子题标识，如 a, b, a_i, b_ii"
+    },
+    "question_type": {
+      "type": "string",
+      "required": true,
+      "manual": true,
+      "enum": ["calculation", "proof", "graph", "diagram", "multiple_choice", "structured", "definition", "application"],
+      "description": "题目类型"
+    },
+    "answer_form": {
+      "type": "string",
+      "required": true,
+      "manual": true,
+      "enum": ["exact", "approx", "proof", "graph", "table", "other"],
+      "description": "答案形式"
+    },
+    "math_expressions_latex": {
+      "type": "array",
+      "items": {"type": "string"},
+      "required": false,
+      "manual": true,
+      "max_items": 10,
+      "description": "LaTeX 数学表达式列表"
+    },
+    "variables": {
+      "type": "array",
+      "items": {"type": "string"},
+      "required": false,
+      "manual": true,
+      "max_items": 10,
+      "description": "变量列表"
+    },
+    "units": {
+      "type": "array",
+      "items": {"type": "string"},
+      "required": false,
+      "manual": true,
+      "max_items": 10,
+      "description": "单位列表"
+    },
+    "summary": {
+      "type": "string",
+      "required": true,
+      "manual": true,
+      "max_length": 200,
+      "description": "题目摘要，不超过 200 字符"
+    }
+  },
+  "validation_rules": [
+    {
+      "rule": "summary_length",
+      "field": "summary",
+      "condition": "length <= 200",
+      "error_message": "摘要不能超过 200 字符"
+    },
+    {
+      "rule": "subpart_format",
+      "field": "subpart",
+      "condition": "matches ^[a-z](_[ivx]+)?$ or null",
+      "error_message": "子题格式错误，应为 a, b, a_i, b_ii 等"
+    },
+    {
+      "rule": "latex_no_newline",
+      "field": "math_expressions_latex",
+      "condition": "no newline in any item",
+      "error_message": "LaTeX 表达式不能包含换行"
+    }
+  ],
+  "examples": [
+    {
+      "storage_key": "9231/WM_9231_s20_qp_11/questions/q01.png",
+      "sha256": "abc123def456...",
+      "syllabus_code": "9231",
+      "year": 2020,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 1,
+      "subpart": null,
+      "question_type": "calculation",
+      "answer_form": "exact",
+      "math_expressions_latex": ["\\frac{d}{dx}(x^2)", "2x"],
+      "variables": ["x"],
+      "units": [],
+      "summary": "Find the derivative of a polynomial function"
+    },
+    {
+      "storage_key": "9709/WM_9709_w21_qp_31/questions/q05a.png",
+      "sha256": "def789ghi012...",
+      "syllabus_code": "9709",
+      "year": 2021,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 5,
+      "subpart": "a",
+      "question_type": "proof",
+      "answer_form": "proof",
+      "math_expressions_latex": ["\\sin^2\\theta + \\cos^2\\theta = 1"],
+      "variables": ["θ"],
+      "units": [],
+      "summary": "Prove the trigonometric identity"
+    },
+    {
+      "storage_key": "9702/WM_9702_s22_qp_21/questions/q03b_i.png",
+      "sha256": "ghi345jkl678...",
+      "syllabus_code": "9702",
+      "year": 2022,
+      "session": "s",
+      "paper": 2,
+      "variant": 1,
+      "q_number": 3,
+      "subpart": "b_i",
+      "question_type": "calculation",
+      "answer_form": "approx",
+      "math_expressions_latex": ["v = \\frac{ds}{dt}"],
+      "variables": ["v", "s", "t"],
+      "units": ["m/s", "m", "s"],
+      "summary": "Calculate the velocity of a particle at a given time"
+    }
+  ],
+  "quality_control": {
+    "double_annotation_rate": 0.2,
+    "agreement_threshold": 0.95,
+    "arbitration_required_on_disagreement": true
+  }
+}

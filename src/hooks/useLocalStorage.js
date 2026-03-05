@@ -84,44 +84,6 @@ export const useTopicProgress = (topicId) => {
   };
 };
 
-// Error book management
-export const useErrorBook = () => {
-  const [errors, setErrors] = useLocalStorage('global-error-book', []);
-
-  const addToErrorBook = (question, userAnswer, correctAnswer, topicId, errorType = 'unknown') => {
-    const newError = {
-      id: Date.now(),
-      question,
-      userAnswer,
-      correctAnswer,
-      topicId,
-      errorType,
-      timestamp: new Date().toISOString(),
-      reviewed: false
-    };
-    
-    setErrors(prev => [newError, ...prev]);
-    return newError;
-  };
-
-  const markAsReviewed = (errorId) => {
-    setErrors(prev => prev.map(error => 
-      error.id === errorId ? { ...error, reviewed: true } : error
-    ));
-  };
-
-  const removeError = (errorId) => {
-    setErrors(prev => prev.filter(error => error.id !== errorId));
-  };
-
-  return {
-    errors,
-    addToErrorBook,
-    markAsReviewed,
-    removeError
-  };
-};
-
 // Search history tracking
 export const useSearchHistory = () => {
   const [searchHistory, setSearchHistory] = useLocalStorage('search-history', []);

@@ -8,7 +8,7 @@ function hasConflict(evidence) {
   return hasNegation && hasAffirm;
 }
 
-function defaultUncertainAnswer(reasonCode) {
+export function defaultUncertainAnswer(reasonCode) {
   if (reasonCode === UNCERTAIN_REASON_CODES.TOPIC_LEAKAGE_BLOCKED) {
     return 'I cannot answer confidently because retrieved evidence may be outside the current syllabus boundary.';
   }
@@ -24,6 +24,19 @@ function defaultUncertainAnswer(reasonCode) {
   return 'I do not have sufficient grounded evidence to provide a high-confidence answer.';
 }
 
+export function buildForcedUncertainPolicy(reasonCode, { topic_leakage_reason = null } = {}) {
+  return {
+    answer: defaultUncertainAnswer(reasonCode),
+    uncertain: true,
+    uncertain_reason_code: reasonCode,
+    topic_leakage_flag: reasonCode === UNCERTAIN_REASON_CODES.TOPIC_LEAKAGE_BLOCKED,
+    topic_leakage_reason:
+      reasonCode === UNCERTAIN_REASON_CODES.TOPIC_LEAKAGE_BLOCKED
+        ? topic_leakage_reason || TOPIC_LEAKAGE_REASON_CODES.APP_LAYER_BUG
+        : null,
+  };
+}
+
 export function decideAnswerPolicy({
   query,
   evidence = [],
@@ -32,53 +45,25 @@ export function decideAnswerPolicy({
   retrievalError = null,
 }) {
   if (topicLeakage?.topic_leakage_flag) {
-    return {
-      answer: defaultUncertainAnswer(UNCERTAIN_REASON_CODES.TOPIC_LEAKAGE_BLOCKED),
-      uncertain: true,
-      uncertain_reason_code: UNCERTAIN_REASON_CODES.TOPIC_LEAKAGE_BLOCKED,
-      topic_leakage_flag: true,
-      topic_leakage_reason: topicLeakage.topic_leakage_reason || TOPIC_LEAKAGE_REASON_CODES.APP_LAYER_BUG,
-    };
+    return buildForcedUncertainPolicy(UNCERTAIN_REASON_CODES.TOPIC_LEAKAGE_BLOCKED, {
+      topic_leakage_reason: topicLeakage.topic_leakage_reason,
+    });
   }
 
   if (retrievalError) {
-    return {
-      answer: defaultUncertainAnswer(UNCERTAIN_REASON_CODES.RETRIEVER_ERROR),
-      uncertain: true,
-      uncertain_reason_code: UNCERTAIN_REASON_CODES.RETRIEVER_ERROR,
-      topic_leakage_flag: false,
-      topic_leakage_reason: null,
-    };
+    return buildForcedUncertainPolicy(UNCERTAIN_REASON_CODES.RETRIEVER_ERROR);
   }
 
   if (!Array.isArray(evidence) || evidence.length === 0) {
-    return {
-      answer: defaultUncertainAnswer(UNCERTAIN_REASON_CODES.INSUFFICIENT_EVIDENCE),
-      uncertain: true,
-      uncertain_reason_code: UNCERTAIN_REASON_CODES.INSUFFICIENT_EVIDENCE,
-      topic_leakage_flag: false,
-      topic_leakage_reason: null,
-    };
+    return buildForcedUncertainPolicy(UNCERTAIN_REASON_CODES.INSUFFICIENT_EVIDENCE);
   }
 
   if (hasConflict(evidence)) {
-    return {
-      answer: defaultUncertainAnswer(UNCERTAIN_REASON_CODES.CONFLICTING_EVIDENCE),
-      uncertain: true,
-      uncertain_reason_code: UNCERTAIN_REASON_CODES.CONFLICTING_EVIDENCE,
-      topic_leakage_flag: false,
-      topic_leakage_reason: null,
-    };
+    return buildForcedUncertainPolicy(UNCERTAIN_REASON_CODES.CONFLICTING_EVIDENCE);
   }
 
   if (!llmAnswer || !String(llmAnswer).trim()) {
-    return {
-      answer: defaultUncertainAnswer(UNCERTAIN_REASON_CODES.INSUFFICIENT_EVIDENCE),
-      uncertain: true,
-      uncertain_reason_code: UNCERTAIN_REASON_CODES.INSUFFICIENT_EVIDENCE,
-      topic_leakage_flag: false,
-      topic_leakage_reason: null,
-    };
+    return buildForcedUncertainPolicy(UNCERTAIN_REASON_CODES.INSUFFICIENT_EVIDENCE);
   }
 
   return {
@@ -89,4 +74,3 @@ export function decideAnswerPolicy({
     topic_leakage_reason: null,
   };
 }
-

@@ -1,0 +1,244 @@
+{
+  "fixtures": [
+    {
+      "id": "simple_single_awarded",
+      "student_steps": [
+        { "step_id": "s1", "text": "M1 use the quadratic formula correctly" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "M1 use the quadratic formula correctly"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "simple_single_failed",
+      "student_steps": [
+        { "step_id": "s1", "text": "the weather is sunny today" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "integration by parts to solve the integral"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "multi_rubric_all_awarded",
+      "student_steps": [
+        { "step_id": "s1", "text": "M1 differentiate using chain rule" },
+        { "step_id": "s2", "text": "A1 correct derivative answer 6x squared" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "M1 differentiate using chain rule"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": [],
+          "description": "A1 correct derivative answer 6x squared"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "multi_rubric_all_failed",
+      "student_steps": [
+        { "step_id": "s1", "text": "I do not know the answer" },
+        { "step_id": "s2", "text": "maybe something about triangles" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "apply integration by substitution"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": [],
+          "description": "obtain the correct integral value of 12"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "dependency_chain_met",
+      "student_steps": [
+        { "step_id": "s1", "text": "M1 set up the equation using simultaneous equations method" },
+        { "step_id": "s2", "text": "A1 solve simultaneous equations to get x equals 3" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "M1 set up the equation using simultaneous equations method"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": ["r1"],
+          "description": "A1 solve simultaneous equations to get x equals 3"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "dependency_chain_not_met",
+      "student_steps": [
+        { "step_id": "s1", "text": "the sky is blue and grass is green" },
+        { "step_id": "s2", "text": "A1 correct final answer is 42" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "apply the binomial expansion formula"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": ["r1"],
+          "description": "A1 correct final answer is 42"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "mixed_awarded_failed",
+      "student_steps": [
+        { "step_id": "s1", "text": "B1 state that velocity equals displacement over time" },
+        { "step_id": "s2", "text": "random unrelated text about cooking recipes" },
+        { "step_id": "s3", "text": "B1 draw the force diagram showing weight and normal reaction" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "B1",
+          "kind": "concept",
+          "marks": 1,
+          "depends_on": [],
+          "description": "B1 state that velocity equals displacement over time"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 2,
+          "depends_on": [],
+          "description": "resolve forces parallel and perpendicular to the inclined plane"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "B1",
+          "kind": "concept",
+          "marks": 1,
+          "depends_on": [],
+          "description": "B1 draw the force diagram showing weight and normal reaction"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "empty_student_steps",
+      "student_steps": [],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "use partial fractions decomposition"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "dependency_missing_ref",
+      "student_steps": [
+        { "step_id": "s1", "text": "M1 apply the product rule for differentiation" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": ["nonexistent_rubric"],
+          "description": "M1 apply the product rule for differentiation"
+        }
+      ],
+      "options": {}
+    },
+    {
+      "id": "three_point_chain",
+      "student_steps": [
+        { "step_id": "s1", "text": "M1 write the equation of motion F equals ma" },
+        { "step_id": "s2", "text": "M1 substitute values to get acceleration equals 5" },
+        { "step_id": "s3", "text": "A1 calculate final velocity using v equals u plus at to get 25 ms" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "description": "M1 write the equation of motion F equals ma"
+        },
+        {
+          "rubric_id": "r2",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": ["r1"],
+          "description": "M1 substitute values to get acceleration equals 5"
+        },
+        {
+          "rubric_id": "r3",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 2,
+          "depends_on": ["r2"],
+          "description": "A1 calculate final velocity using v equals u plus at to get 25 ms"
+        }
+      ],
+      "options": {}
+    }
+  ]
+}

@@ -55,3 +55,44 @@ export async function callHybridSearchRpc(
   return Array.isArray(data) ? data : [];
 }
 
+export async function retrieveHybridCandidates(
+  {
+    query,
+    queryEmbedding,
+    currentTopicPath,
+    matchCount,
+    densePool,
+    keyPool,
+    wSem,
+    wKey,
+    rrfK,
+  },
+  {
+    supabase,
+  },
+) {
+  const rows = await callHybridSearchRpc(
+    {
+      query,
+      queryEmbedding,
+      currentTopicPath,
+      matchCount,
+      densePool,
+      keyPool,
+      wSem,
+      wKey,
+      rrfK,
+    },
+    { supabase },
+  );
+
+  return rows.map((row, index) => ({
+    ...row,
+    rank_sem: Number.isFinite(Number(row.rank_sem)) ? Number(row.rank_sem) : null,
+    rank_key: Number.isFinite(Number(row.rank_key)) ? Number(row.rank_key) : null,
+    fused_rank: Number.isFinite(Number(row.fused_rank)) ? Number(row.fused_rank) : index + 1,
+    fused_score: Number.isFinite(Number(row.fused_score ?? row.score))
+      ? Number(row.fused_score ?? row.score)
+      : 0,
+  }));
+}

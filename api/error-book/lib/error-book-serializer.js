@@ -5,6 +5,85 @@ function toObject(value) {
   return value;
 }
 
+function normalizeNullableString(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+
+function normalizeIsoDate(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+  return parsed.toISOString();
+}
+
+function normalizeReviewInterval(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < 1 || parsed > 365) {
+    return null;
+  }
+  return parsed;
+}
+
+function normalizeTagList(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((entry) => normalizeNullableString(entry))
+    .filter(Boolean);
+}
+
+function mergeTags(...tagSets) {
+  const merged = [];
+  const seen = new Set();
+
+  for (const tagSet of tagSets) {
+    for (const tag of normalizeTagList(tagSet)) {
+      const key = tag.toLowerCase();
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      merged.push(tag);
+    }
+  }
+
+  return merged;
+}
+
+function firstDefined(...values) {
+  for (const value of values) {
+    if (value !== undefined) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function computeFallbackNextReviewAt(baseIso, reviewInterval) {
+  if (!baseIso || !Number.isFinite(reviewInterval)) {
+    return null;
+  }
+  const baseTime = new Date(baseIso).getTime();
+  if (Number.isNaN(baseTime)) {
+    return null;
+  }
+
+  return new Date(baseTime + reviewInterval * 24 * 60 * 60 * 1000).toISOString();
+}
+
 function serializeAttempt(attempt) {
   if (!attempt) {
     return {
@@ -89,11 +168,43 @@ function serializeErrorEvent(errorEvent) {
 
 export function serializeErrorBookItem(record, enrichment = {}) {
   const metadata = toObject(record?.metadata);
+  const reviewMetadata = toObject(metadata.review);
   const attempt = serializeAttempt(enrichment.attempt);
   const markDecision = serializeMarkDecision(enrichment.markDecision);
   const errorEvent = serializeErrorEvent(enrichment.errorEvent);
   const topicName = record?.topic_name ?? null;
   const syllabusCode = record?.syllabus_code ?? record?.subject_code ?? attempt.syllabus_code ?? null;
+  const misconceptionTag =
+    normalizeNullableString(firstDefined(
+      record?.misconception_tag,
+      reviewMetadata.misconception_tag,
+      metadata.misconception_tag,
+      errorEvent.misconception_tag,
+    ));
+  const reviewInterval =
+    normalizeReviewInterval(firstDefined(
+      record?.review_interval,
+      reviewMetadata.review_interval,
+      metadata.review_interval,
+    )) ?? 1;
+  const lastReviewedAt = normalizeIsoDate(firstDefined(
+    record?.last_reviewed_at,
+    reviewMetadata.last_reviewed_at,
+    metadata.last_reviewed_at,
+  ));
+  const nextReviewAtRaw = normalizeIsoDate(firstDefined(
+    record?.next_review_at,
+    reviewMetadata.next_review_at,
+    metadata.next_review_at,
+  ));
+  const nextReviewAt =
+    nextReviewAtRaw ||
+    computeFallbackNextReviewAt(lastReviewedAt || normalizeIsoDate(record?.created_at), reviewInterval);
+  const reviewTags = mergeTags(
+    record?.tags,
+    reviewMetadata.tags,
+    misconceptionTag ? [misconceptionTag] : [],
+  );
 
   return {
     id: record?.id ?? null,
@@ -119,11 +230,24 @@ export function serializeErrorBookItem(record, enrichment = {}) {
     tags: Array.isArray(record?.tags) ? record.tags : [],
     status: record?.status ?? 'unresolved',
     review_count: Number(record?.review_count ?? 0),
+    next_review_at: nextReviewAt,
+    review_interval: reviewInterval,
+    last_reviewed_at: lastReviewedAt,
+    misconception_tag: misconceptionTag,
     is_starred: Boolean(record?.is_starred),
     notes: record?.notes ?? null,
     storage_key: record?.storage_key ?? attempt.storage_key,
     node_id: record?.node_id ?? attempt.node_id ?? errorEvent.node_id,
     metadata,
+    review: {
+      schedule: {
+        next_review_at: nextReviewAt,
+        review_interval: reviewInterval,
+        last_reviewed_at: lastReviewedAt,
+      },
+      tags: reviewTags,
+      misconception_tag: misconceptionTag,
+    },
     created_at: record?.created_at ?? null,
     updated_at: record?.updated_at ?? null,
     enrichment: {

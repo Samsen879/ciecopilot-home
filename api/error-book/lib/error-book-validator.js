@@ -4,6 +4,12 @@ const ALLOWED_SOURCES = new Set(['manual', 'mark_engine_auto', 'all']);
 const WRITABLE_SOURCES = new Set(['manual', 'mark_engine_auto']);
 const ALLOWED_STATUSES = new Set(['unresolved', 'reviewing', 'resolved']);
 const ALLOWED_DIFFICULTIES = new Set(['easy', 'medium', 'hard']);
+const MIN_REVIEW_INTERVAL = 1;
+const MAX_REVIEW_INTERVAL = 365;
+const DEFAULT_REVIEW_INTERVAL = 1;
+const REVIEW_FIELDS = ['next_review_at', 'review_interval', 'last_reviewed_at', 'misconception_tag'];
+const ALLOWED_LIST_SORT_FIELDS = new Set(['next_review_at']);
+const ALLOWED_LIST_SORT_ORDERS = new Set(['asc', 'desc']);
 
 export class ValidationError extends Error {
   constructor(message, { status = 400, code = 'bad_request', details } = {}) {
@@ -88,6 +94,38 @@ function normalizeDate(value, fieldName) {
   return parsed.toISOString();
 }
 
+function normalizeSortField(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+
+  const normalized = normalizeString(value).toLowerCase();
+  if (!ALLOWED_LIST_SORT_FIELDS.has(normalized)) {
+    throw new ValidationError('sort_by is invalid.', {
+      code: 'bad_request',
+      details: { field: 'sort_by', allowed: [...ALLOWED_LIST_SORT_FIELDS] },
+    });
+  }
+
+  return normalized;
+}
+
+function normalizeSortOrder(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+
+  const normalized = normalizeString(value).toLowerCase();
+  if (!ALLOWED_LIST_SORT_ORDERS.has(normalized)) {
+    throw new ValidationError('sort_order is invalid.', {
+      code: 'bad_request',
+      details: { field: 'sort_order', allowed: [...ALLOWED_LIST_SORT_ORDERS] },
+    });
+  }
+
+  return normalized;
+}
+
 function normalizeTags(value) {
   if (value === null || value === undefined) {
     return [];
@@ -117,6 +155,101 @@ function normalizeMetadata(value) {
     });
   }
   return value;
+}
+
+function toObject(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {};
+  }
+  return value;
+}
+
+function hasOwn(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+function resolveReviewField(body, fieldName) {
+  if (hasOwn(body, fieldName)) {
+    return {
+      provided: true,
+      value: body[fieldName],
+    };
+  }
+
+  const review = toObject(body.review);
+  if (hasOwn(review, fieldName)) {
+    return {
+      provided: true,
+      value: review[fieldName],
+    };
+  }
+
+  return {
+    provided: false,
+    value: undefined,
+  };
+}
+
+function normalizeReviewField(fieldName, value) {
+  if (fieldName === 'next_review_at' || fieldName === 'last_reviewed_at') {
+    return normalizeDate(value, fieldName);
+  }
+  if (fieldName === 'review_interval') {
+    return normalizeInteger(value, fieldName, {
+      min: MIN_REVIEW_INTERVAL,
+      max: MAX_REVIEW_INTERVAL,
+    });
+  }
+  if (fieldName === 'misconception_tag') {
+    return normalizeNullableString(value);
+  }
+  return value;
+}
+
+function normalizeReviewPatch(body = {}) {
+  const patch = {};
+  for (const fieldName of REVIEW_FIELDS) {
+    const { provided, value } = resolveReviewField(body, fieldName);
+    if (!provided) {
+      continue;
+    }
+    patch[fieldName] = normalizeReviewField(fieldName, value);
+  }
+  return patch;
+}
+
+function mergeReviewMetadata(metadata, reviewPatch, { applyDefaults = false } = {}) {
+  const nextMetadata = { ...metadata };
+  const mergedReview = {
+    ...toObject(nextMetadata.review),
+  };
+
+  for (const fieldName of REVIEW_FIELDS) {
+    if (hasOwn(reviewPatch, fieldName)) {
+      mergedReview[fieldName] = reviewPatch[fieldName];
+    }
+  }
+
+  if (applyDefaults) {
+    if (!hasOwn(mergedReview, 'review_interval')) {
+      mergedReview.review_interval = DEFAULT_REVIEW_INTERVAL;
+    }
+    if (!hasOwn(mergedReview, 'next_review_at')) {
+      mergedReview.next_review_at = null;
+    }
+    if (!hasOwn(mergedReview, 'last_reviewed_at')) {
+      mergedReview.last_reviewed_at = null;
+    }
+    if (!hasOwn(mergedReview, 'misconception_tag')) {
+      mergedReview.misconception_tag = null;
+    }
+  }
+
+  if (Object.keys(mergedReview).length > 0) {
+    nextMetadata.review = mergedReview;
+  }
+
+  return nextMetadata;
 }
 
 function normalizeStatus(value) {
@@ -195,6 +328,10 @@ export function normalizeListFilters(query = {}, options = {}) {
     q_number: normalizeInteger(query.q_number, 'q_number', { min: 1, max: 500 }),
     created_after: normalizeDate(query.created_after, 'created_after'),
     created_before: normalizeDate(query.created_before, 'created_before'),
+    next_review_after: normalizeDate(query.next_review_after, 'next_review_after'),
+    next_review_before: normalizeDate(query.next_review_before, 'next_review_before'),
+    sort_by: normalizeSortField(query.sort_by),
+    sort_order: normalizeSortOrder(query.sort_order),
     is_starred: normalizeBoolean(query.is_starred, 'is_starred'),
     storage_key: normalizeNullableString(query.storage_key),
   };
@@ -205,6 +342,25 @@ export function normalizeListFilters(query = {}, options = {}) {
       details: {
         created_after: filters.created_after,
         created_before: filters.created_before,
+      },
+    });
+  }
+
+  if (filters.next_review_after && filters.next_review_before && filters.next_review_after > filters.next_review_before) {
+    throw new ValidationError('next_review_after cannot be later than next_review_before.', {
+      code: 'bad_request',
+      details: {
+        next_review_after: filters.next_review_after,
+        next_review_before: filters.next_review_before,
+      },
+    });
+  }
+
+  if (!filters.sort_by && filters.sort_order) {
+    throw new ValidationError('sort_order requires sort_by.', {
+      code: 'bad_request',
+      details: {
+        field: 'sort_order',
       },
     });
   }
@@ -224,6 +380,11 @@ export function validateCreatePayload(body = {}, options = {}) {
   }
 
   const syllabusCode = normalizeNullableString(body.syllabus_code || body.subject_code);
+  const metadata = mergeReviewMetadata(
+    normalizeMetadata(body.metadata),
+    normalizeReviewPatch(body),
+    { applyDefaults: true },
+  );
 
   return {
     subject_code: normalizeNullableString(body.subject_code) || syllabusCode,
@@ -249,7 +410,7 @@ export function validateCreatePayload(body = {}, options = {}) {
     source: normalizeSource(body.source || 'manual', {
       allowAutoSource,
     }),
-    metadata: normalizeMetadata(body.metadata),
+    metadata,
   };
 }
 
@@ -262,6 +423,7 @@ export function validateUpdatePayload(body = {}) {
   }
 
   const payload = {};
+  const reviewPatch = normalizeReviewPatch(body);
 
   if (body.question !== undefined) {
     const question = normalizeString(body.question);
@@ -288,6 +450,9 @@ export function validateUpdatePayload(body = {}) {
   if (body.storage_key !== undefined) payload.storage_key = normalizeNullableString(body.storage_key);
   if (body.node_id !== undefined) payload.node_id = normalizeNullableString(body.node_id);
   if (body.metadata !== undefined) payload.metadata = normalizeMetadata(body.metadata);
+  if (Object.keys(reviewPatch).length > 0) {
+    payload.metadata = mergeReviewMetadata(payload.metadata || {}, reviewPatch);
+  }
   if (body.topic_id !== undefined) payload.topic_id = normalizeNullableString(body.topic_id);
   if (body.topic_name !== undefined) payload.topic_name = normalizeNullableString(body.topic_name);
   if (body.paper !== undefined) payload.paper = normalizeInteger(body.paper, 'paper', { min: 1, max: 6 });

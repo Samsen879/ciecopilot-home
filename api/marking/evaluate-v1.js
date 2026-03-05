@@ -88,6 +88,37 @@ function errorResponse(res, errorDef, message, extra = {}) {
   });
 }
 
+function serializeDecisionForResponse(decision, { includeUncertainReason = false } = {}) {
+  const out = {
+    rubric_id: decision.rubric_id,
+    mark_label: decision.mark_label,
+    reason: decision.reason,
+    awarded: decision.awarded,
+    awarded_marks: decision.awarded_marks,
+    alignment_confidence: decision.alignment_confidence,
+    evidence_spans: decision.evidence_spans,
+  };
+  if (includeUncertainReason && decision.uncertain_reason !== undefined) {
+    out.uncertain_reason = decision.uncertain_reason;
+  }
+  return out;
+}
+
+function serializeAlignmentForResponse(alignment, { includeUncertainReason = false } = {}) {
+  const out = {
+    step_id: alignment.step_id,
+    status: alignment.status,
+    confidence: alignment.confidence,
+    rubric_id: alignment.rubric_id,
+    mark_label: alignment.mark_label,
+    reason: alignment.reason,
+  };
+  if (includeUncertainReason && alignment.uncertain_reason !== undefined) {
+    out.uncertain_reason = alignment.uncertain_reason;
+  }
+  return out;
+}
+
 // ── Scoring engine version constant (re-exported from decision engine) ──────
 const SCORING_ENGINE_VERSION = ENGINE_VERSION;
 
@@ -123,6 +154,7 @@ export default async function handler(req, res) {
       student_steps,
       rubric_source_version: requestedVersion = null,
       compat_mode = null,
+      include_uncertain_reason = false,
     } = body;
 
     // ── Resolve trusted user_id (JWT required) ─────────────────────────────
@@ -192,11 +224,18 @@ export default async function handler(req, res) {
       const engineResult = runDecisionEngine({
         student_steps,
         rubric_points,
-        options: { compat_mode: compat_mode },
+        options: {
+          compat_mode: compat_mode,
+          include_uncertain_reason: include_uncertain_reason === true,
+        },
       });
-      decisions = engineResult.decisions;
+      decisions = engineResult.decisions.map((d) => serializeDecisionForResponse(d, {
+        includeUncertainReason: include_uncertain_reason === true,
+      }));
       if (engineResult.alignments) {
-        alignments = engineResult.alignments;
+        alignments = engineResult.alignments.map((a) => serializeAlignmentForResponse(a, {
+          includeUncertainReason: include_uncertain_reason === true,
+        }));
       }
     } catch (engineError) {
       console.error(JSON.stringify({

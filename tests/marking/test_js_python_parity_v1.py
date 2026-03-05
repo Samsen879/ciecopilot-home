@@ -19,9 +19,9 @@ CI Environment Requirements:
 from __future__ import annotations
 
 import json
-import os
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -29,6 +29,7 @@ import pytest
 # ── Paths ────────────────────────────────────────────────────────────────────
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
+
 FIXTURE_PATH = ROOT_DIR / "tests" / "marking" / "fixtures" / "parity_v1_fixtures.json"
 REFERENCE_PATH = ROOT_DIR / "tests" / "marking" / "fixtures" / "parity_v1_reference.json"
 NODE_EXECUTOR = ROOT_DIR / "scripts" / "marking" / "run_js_decision_fixture_v1.js"
@@ -243,3 +244,36 @@ class TestJsPythonParity:
                     assert field in d, (
                         f"Fixture '{item['id']}' decision[{di}] missing field '{field}'"
                     )
+
+    def test_uncertain_reason_payload_is_stable_when_opted_in(self):
+        """uncertain_reason appears with stable shape only when explicitly enabled."""
+        with open(FIXTURE_PATH, "r", encoding="utf-8") as f:
+            fixture_data = json.load(f)
+        fixture_data["fixtures"] = [
+            {
+                **item,
+                "options": {
+                    **(item.get("options") or {}),
+                    "include_uncertain_reason": True,
+                },
+            }
+            for item in fixture_data["fixtures"]
+        ]
+
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as tmp:
+            json.dump(fixture_data, tmp, ensure_ascii=True, indent=2)
+            tmp_path = Path(tmp.name)
+
+        try:
+            js_output = run_js_executor(tmp_path)
+            for item in js_output["results"]:
+                for di, decision in enumerate(item["decisions"]):
+                    assert "uncertain_reason" in decision
+                    uncertain = decision["uncertain_reason"]
+                    assert isinstance(uncertain, dict), (
+                        f"Fixture '{item['id']}' decision[{di}] uncertain_reason must be an object"
+                    )
+                    assert set(uncertain.keys()) == {"is_uncertain", "code", "source_reason"}
+                    assert uncertain["is_uncertain"] is (decision["awarded"] is False)
+        finally:
+            tmp_path.unlink(missing_ok=True)

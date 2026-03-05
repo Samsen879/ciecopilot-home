@@ -15,6 +15,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.marking.engine_config_v0 import get_alignment_thresholds, load_marking_engine_config
+from scripts.marking.marking_semantics_v1 import build_uncertain_reason
 
 
 TOKEN_RE = re.compile(r"[a-z0-9]+")
@@ -73,21 +74,23 @@ def align_steps(
     rubric_points: list[RubricPoint],
     min_confidence: float = DEFAULT_MIN_CONFIDENCE,
     uncertain_margin: float = DEFAULT_UNCERTAIN_MARGIN,
+    include_uncertain_reason: bool = False,
 ) -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
 
     if not rubric_points:
         for step in steps:
-            results.append(
-                {
-                    "step_id": step.step_id,
-                    "status": "uncertain",
-                    "confidence": 0.0,
-                    "rubric_id": None,
-                    "mark_label": None,
-                    "reason": "no_rubric_points",
-                }
-            )
+            item = {
+                "step_id": step.step_id,
+                "status": "uncertain",
+                "confidence": 0.0,
+                "rubric_id": None,
+                "mark_label": None,
+                "reason": "no_rubric_points",
+            }
+            if include_uncertain_reason:
+                item["uncertain_reason"] = build_uncertain_reason("no_rubric_points")
+            results.append(item)
         return results
 
     for step in steps:
@@ -111,16 +114,17 @@ def align_steps(
             status = "uncertain"
             reason = "borderline_score"
 
-        results.append(
-            {
-                "step_id": step.step_id,
-                "status": status,
-                "confidence": confidence,
-                "rubric_id": best.rubric_id,
-                "mark_label": best.mark_label,
-                "reason": reason,
-            }
-        )
+        item = {
+            "step_id": step.step_id,
+            "status": status,
+            "confidence": confidence,
+            "rubric_id": best.rubric_id,
+            "mark_label": best.mark_label,
+            "reason": reason,
+        }
+        if include_uncertain_reason:
+            item["uncertain_reason"] = build_uncertain_reason(reason, awarded=(status == "aligned"))
+        results.append(item)
 
     return results
 
@@ -148,6 +152,7 @@ def run_from_payload(
     payload: dict[str, Any],
     min_confidence: float = DEFAULT_MIN_CONFIDENCE,
     uncertain_margin: float = DEFAULT_UNCERTAIN_MARGIN,
+    include_uncertain_reason: bool = False,
 ) -> dict[str, Any]:
     steps = parse_steps(payload.get("steps", []))
     rubric_points = parse_rubric_points(payload.get("rubric_points", []))
@@ -156,6 +161,7 @@ def run_from_payload(
         rubric_points=rubric_points,
         min_confidence=min_confidence,
         uncertain_margin=uncertain_margin,
+        include_uncertain_reason=include_uncertain_reason,
     )
     return {
         "min_confidence": min_confidence,
@@ -178,6 +184,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--min-confidence", type=float, default=None)
     parser.add_argument("--uncertain-margin", type=float, default=None)
+    parser.add_argument("--include-uncertain-reason", action="store_true")
     return parser.parse_args()
 
 
@@ -188,7 +195,12 @@ def main() -> int:
     min_confidence = cfg_min_confidence if args.min_confidence is None else float(args.min_confidence)
     uncertain_margin = cfg_uncertain_margin if args.uncertain_margin is None else float(args.uncertain_margin)
     payload = json.loads(args.input.read_text(encoding="utf-8"))
-    result = run_from_payload(payload, min_confidence=min_confidence, uncertain_margin=uncertain_margin)
+    result = run_from_payload(
+        payload,
+        min_confidence=min_confidence,
+        uncertain_margin=uncertain_margin,
+        include_uncertain_reason=bool(args.include_uncertain_reason),
+    )
     output = json.dumps(result, ensure_ascii=True, indent=2)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -3,6 +3,12 @@
 // Takes student_steps[] and rubric_points[] (from rubric-resolver-v1),
 // produces decisions[] with optional v0-compat alignments[].
 
+import {
+  FT_MODE,
+  buildUncertainReason,
+  normalizeFtMode,
+} from './marking-semantics-v1.js';
+
 // ── Scoring engine version ──────────────────────────────────────────────────
 export const SCORING_ENGINE_VERSION = 'b2_smart_mark_engine_v1';
 
@@ -127,12 +133,6 @@ function findBestMatch(rubricPoint, studentSteps) {
   };
 }
 
-function normalizeFtMode(value) {
-  const mode = String(value || 'none').toLowerCase();
-  if (mode === 'ft' || mode === 'strictft') return mode;
-  return 'none';
-}
-
 function getAccuracyPolicy(rubricPoint, options) {
   const defaultPolicy = (options && typeof options.accuracy_policy_default === 'object')
     ? options.accuracy_policy_default
@@ -187,11 +187,13 @@ function getCaoGroupKey(rubricPoint) {
  * @param {object}   [params.options]
  * @param {number}   [params.options.min_confidence=0.55]
  * @param {number}   [params.options.uncertain_margin=0.15]
+ * @param {boolean}  [params.options.include_uncertain_reason=false]
  * @param {string}   [params.options.compat_mode] - 'v0' to also produce alignments[]
  * @returns {{ decisions: object[], alignments?: object[] }}
  */
 export function runDecisionEngine({ student_steps, rubric_points, options = {} }) {
   const compatMode = options.compat_mode || null;
+  const includeUncertainReason = options.include_uncertain_reason === true;
 
   // ── Phase 0: validate dependency graph ──────────────────────────────────
   const depErrors = validateDependencies(rubric_points);
@@ -252,12 +254,12 @@ export function runDecisionEngine({ student_steps, rubric_points, options = {} }
 
     const decision = initialDecisions.get(rp.rubric_id);
     if (!decision) continue;
-    const ftMode = normalizeFtMode(rp.ft_mode);
+    const ftMode = decision._ft_mode;
 
     const unmetDep = deps.find((depId) => {
       const depDecision = initialDecisions.get(depId);
       if (!depDecision || !depDecision.awarded) return true;
-      if (ftMode === 'strictft' && depDecision.reason !== 'best_match') return true;
+      if (ftMode === FT_MODE.STRICT_FT && depDecision.reason !== 'best_match') return true;
       return false;
     });
 
@@ -311,6 +313,9 @@ export function runDecisionEngine({ student_steps, rubric_points, options = {} }
       rubric_id: d.rubric_id,
       mark_label: d.mark_label,
       reason: d.reason,
+      ...(includeUncertainReason
+        ? { uncertain_reason: buildUncertainReason(d.reason, { awarded: d.awarded }) }
+        : {}),
       awarded: d.awarded,
       awarded_marks: d.awarded_marks,
       alignment_confidence: d._confidence,
@@ -322,7 +327,12 @@ export function runDecisionEngine({ student_steps, rubric_points, options = {} }
 
   // ── Phase 6: v0 compat — build alignments[] ────────────────────────────
   if (compatMode === 'v0') {
-    result.alignments = buildV0Alignments(rubric_points, student_steps, initialDecisions);
+    result.alignments = buildV0Alignments(
+      rubric_points,
+      student_steps,
+      initialDecisions,
+      { include_uncertain_reason: includeUncertainReason },
+    );
   }
 
   return result;
@@ -335,7 +345,12 @@ export function runDecisionEngine({ student_steps, rubric_points, options = {} }
  * v0 format: per-step, each step gets its best rubric match.
  * { step_id, status, confidence, rubric_id, mark_label, reason }
  */
-function buildV0Alignments(rubricPoints, studentSteps, decisionsMap) {
+function buildV0Alignments(
+  rubricPoints,
+  studentSteps,
+  decisionsMap,
+  { include_uncertain_reason: includeUncertainReason = false } = {},
+) {
   return studentSteps.map((step, idx) => {
     const stepId = String(step.step_id || `s${idx + 1}`);
     const stepText = String(step.text || '');
@@ -348,6 +363,9 @@ function buildV0Alignments(rubricPoints, studentSteps, decisionsMap) {
         rubric_id: null,
         mark_label: null,
         reason: 'no_rubric_points',
+        ...(includeUncertainReason
+          ? { uncertain_reason: buildUncertainReason('no_rubric_points') }
+          : {}),
       };
     }
 
@@ -392,6 +410,9 @@ function buildV0Alignments(rubricPoints, studentSteps, decisionsMap) {
       rubric_id: bestRubricId,
       mark_label: bestMarkLabel,
       reason,
+      ...(includeUncertainReason
+        ? { uncertain_reason: buildUncertainReason(reason, { awarded: status === 'aligned' }) }
+        : {}),
     };
   });
 }

@@ -100,7 +100,58 @@
           "description": "alpha beta gamma delta"
         }
       ]
+    },
+    {
+      "id": "follow_through_dependency_propagation",
+      "student_steps": [
+        { "step_id": "s1", "text": "final answer is x equals 3" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r_m1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "ft_mode": "none",
+          "description": "apply substitution method correctly"
+        },
+        {
+          "rubric_id": "r_a1",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": ["r_m1"],
+          "ft_mode": "follow_through",
+          "description": "final answer is x equals 3"
+        }
+      ]
+    },
+    {
+      "id": "strict_ft_dependency_propagation",
+      "student_steps": [
+        { "step_id": "s1", "text": "some partly related step text" }
+      ],
+      "rubric_points": [
+        {
+          "rubric_id": "r_m1",
+          "mark_label": "M1",
+          "kind": "method",
+          "marks": 1,
+          "depends_on": [],
+          "ft_mode": "strict_ft",
+          "description": "complex method with several required transformations"
+        },
+        {
+          "rubric_id": "r_a1",
+          "mark_label": "A1",
+          "kind": "accuracy",
+          "marks": 1,
+          "depends_on": ["r_m1"],
+          "ft_mode": "strict_ft",
+          "description": "exact final expression after all transformations"
+        }
+      ]
     }
   ]
 }
-

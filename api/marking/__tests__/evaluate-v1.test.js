@@ -162,9 +162,31 @@ describe('evaluate-v1 route skeleton', () => {
     expect(body).toHaveProperty('scoring_engine_version', 'b2_smart_mark_engine_v1');
     expect(body).toHaveProperty('rubric_rows_used');
     expect(body).toHaveProperty('decisions');
+    expect(body.decisions[0]).not.toHaveProperty('uncertain_reason');
     expect(body).toHaveProperty('ledger_write_status');
     expect(body).not.toHaveProperty('error_book_write_status');
     expect(body).not.toHaveProperty('error_book_write_counts');
+  });
+
+  it('includes uncertain_reason only when include_uncertain_reason=true', async () => {
+    const req = mockReq({
+      body: { ...mockReq().body, include_uncertain_reason: true },
+    });
+    const res = mockRes();
+    await handler(req, res);
+    const body = res.json.mock.calls[0][0];
+    expect(body.decisions[0]).toHaveProperty('uncertain_reason');
+  });
+
+  it('does not leak private/internal decision fields', async () => {
+    const req = mockReq({ body: { ...mockReq().body, include_uncertain_reason: true } });
+    const res = mockRes();
+    await handler(req, res);
+    const body = res.json.mock.calls[0][0];
+    const keys = Object.keys(body.decisions[0]);
+    for (const key of keys) {
+      expect(key.startsWith('_')).toBe(false);
+    }
   });
 });
 
@@ -280,6 +302,17 @@ describe('v0 compat mode', () => {
     const body = res.json.mock.calls[0][0];
     expect(body).toHaveProperty('alignments');
     expect(Array.isArray(body.alignments)).toBe(true);
+    expect(body.alignments[0]).not.toHaveProperty('uncertain_reason');
+  });
+
+  it('includes uncertain_reason in alignments[] only when explicitly enabled', async () => {
+    const req = mockReq({
+      body: { ...mockReq().body, compat_mode: 'v0', include_uncertain_reason: true },
+    });
+    const res = mockRes();
+    await handler(req, res);
+    const body = res.json.mock.calls[0][0];
+    expect(body.alignments[0]).toHaveProperty('uncertain_reason');
   });
 
   it('does not include alignments[] by default', async () => {

@@ -19,10 +19,44 @@ describe('decision-engine-v1 FT/StrictFT/CAO + accuracy_policy', () => {
     const a1 = decisions.find((d) => d.rubric_id === 'r_a1');
     expect(a1.awarded).toBe(false);
     expect(a1.reason).toBe('dependency_not_met');
+    expect(a1).not.toHaveProperty('uncertain_reason');
   });
 
   it('propagates dependency_not_met under StrictFT mode', () => {
     const fixture = byId('strictft_dependency_propagation');
+    const { decisions } = runDecisionEngine({
+      student_steps: fixture.student_steps,
+      rubric_points: fixture.rubric_points,
+    });
+    const a1 = decisions.find((d) => d.rubric_id === 'r_a1');
+    expect(a1.awarded).toBe(false);
+    expect(a1.reason).toBe('dependency_not_met');
+  });
+
+  it('exposes uncertain_reason when explicitly enabled', () => {
+    const fixture = byId('strictft_dependency_propagation');
+    const { decisions } = runDecisionEngine({
+      student_steps: fixture.student_steps,
+      rubric_points: fixture.rubric_points,
+      options: { include_uncertain_reason: true },
+    });
+    const a1 = decisions.find((d) => d.rubric_id === 'r_a1');
+    expect(a1.uncertain_reason.code).toBe('dependency_not_met');
+  });
+
+  it('normalizes follow_through alias to FT mode behavior', () => {
+    const fixture = byId('follow_through_dependency_propagation');
+    const { decisions } = runDecisionEngine({
+      student_steps: fixture.student_steps,
+      rubric_points: fixture.rubric_points,
+    });
+    const a1 = decisions.find((d) => d.rubric_id === 'r_a1');
+    expect(a1.awarded).toBe(false);
+    expect(a1.reason).toBe('dependency_not_met');
+  });
+
+  it('normalizes strict_ft alias to StrictFT behavior', () => {
+    const fixture = byId('strict_ft_dependency_propagation');
     const { decisions } = runDecisionEngine({
       student_steps: fixture.student_steps,
       rubric_points: fixture.rubric_points,
@@ -70,4 +104,3 @@ describe('decision-engine-v1 FT/StrictFT/CAO + accuracy_policy', () => {
     expect(decision.evidence_spans[0]).toHaveProperty('end');
   });
 });
-

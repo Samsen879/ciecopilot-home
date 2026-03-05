@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.marking.adjudicator_v0 import adjudicate
+from scripts.marking.marking_semantics_v1 import normalize_uncertain_reason
 
 
 def _base_payload():
@@ -28,6 +29,7 @@ def test_dependency_chain_awards_a_after_m():
     dec = {d["rubric_id"]: d for d in out["decisions"]}
     assert dec["m1"]["awarded"] is True
     assert dec["a1"]["awarded"] is True
+    assert "uncertain_reason" not in dec["a1"]
 
 
 def test_dependency_blocks_answer_mark():
@@ -38,6 +40,7 @@ def test_dependency_blocks_answer_mark():
     assert dec["m1"]["awarded"] is False
     assert dec["a1"]["awarded"] is False
     assert dec["a1"]["reason"] == "dependency_blocked"
+    assert "uncertain_reason" not in dec["a1"]
 
 
 def test_ft_default_off_and_explicit_on_behavior():
@@ -53,3 +56,16 @@ def test_ft_default_off_and_explicit_on_behavior():
     assert dec2["a1"]["awarded"] is False
     assert dec2["a1"]["reason"] == "ft_capped"
 
+
+def test_optional_uncertain_reason_payload_is_stable():
+    payload = _base_payload()
+    payload["include_uncertain_reason"] = True
+    out = adjudicate(payload)
+    dec = {d["rubric_id"]: d for d in out["decisions"]}
+    assert dec["a1"]["uncertain_reason"]["is_uncertain"] is False
+    assert dec["a1"]["uncertain_reason"]["code"] is None
+
+    payload["ft"] = {"enabled": True, "triggered": True}
+    out2 = adjudicate(payload)
+    dec2 = {d["rubric_id"]: d for d in out2["decisions"]}
+    assert dec2["a1"]["uncertain_reason"]["code"] == normalize_uncertain_reason("ft_capped", awarded=False)

@@ -154,7 +154,7 @@ describe('validateDependencies', () => {
 // ── runDecisionEngine: decisions[] output ────────────────────────────────────
 
 describe('runDecisionEngine — decisions output', () => {
-  it('returns decisions[] with correct fields for each rubric point', () => {
+  it('returns decisions[] with stable v1 public fields by default', () => {
     const rubric_points = [
       makeRubricPoint({ rubric_id: 'rp-001', mark_label: 'M1', marks: 1 }),
       makeRubricPoint({ rubric_id: 'rp-002', mark_label: 'A1', marks: 1, description: 'correct answer' }),
@@ -175,7 +175,30 @@ describe('runDecisionEngine — decisions output', () => {
       expect(d).toHaveProperty('awarded_marks');
       expect(typeof d.awarded).toBe('boolean');
       expect(typeof d.awarded_marks).toBe('number');
+      expect(d).not.toHaveProperty('uncertain_reason');
+      expect(Object.keys(d).every((k) => !k.startsWith('_'))).toBe(true);
     }
+  });
+
+  it('includes uncertain_reason when include_uncertain_reason=true', () => {
+    const rubric_points = [
+      makeRubricPoint({ rubric_id: 'rp-001', description: 'alpha beta gamma', marks: 2 }),
+    ];
+    const student_steps = [
+      makeStep({ step_id: 's1', text: 'alpha beta gamma' }),
+    ];
+
+    const { decisions } = runDecisionEngine({
+      student_steps,
+      rubric_points,
+      options: { include_uncertain_reason: true },
+    });
+
+    expect(decisions[0].uncertain_reason).toEqual({
+      is_uncertain: false,
+      code: null,
+      source_reason: 'best_match',
+    });
   });
 
   it('awards marks when confidence is above threshold + margin', () => {
@@ -324,7 +347,7 @@ describe('runDecisionEngine — compat_mode=v0', () => {
     expect(result.alignments).toBeUndefined();
   });
 
-  it('alignment has correct v0 shape', () => {
+  it('alignment has stable v0 shape by default', () => {
     const rubric_points = [makeRubricPoint({ rubric_id: 'rp-001', mark_label: 'M1' })];
     const student_steps = [makeStep({ step_id: 's1' })];
 
@@ -341,8 +364,22 @@ describe('runDecisionEngine — compat_mode=v0', () => {
     expect(a).toHaveProperty('rubric_id');
     expect(a).toHaveProperty('mark_label');
     expect(a).toHaveProperty('reason');
+    expect(a).not.toHaveProperty('uncertain_reason');
     expect(typeof a.confidence).toBe('number');
     expect(['aligned', 'uncertain']).toContain(a.status);
+  });
+
+  it('alignment includes uncertain_reason when explicitly enabled', () => {
+    const rubric_points = [makeRubricPoint({ rubric_id: 'rp-001', mark_label: 'M1' })];
+    const student_steps = [makeStep({ step_id: 's1' })];
+
+    const { alignments } = runDecisionEngine({
+      student_steps,
+      rubric_points,
+      options: { compat_mode: 'v0', include_uncertain_reason: true },
+    });
+
+    expect(alignments[0]).toHaveProperty('uncertain_reason');
   });
 
   it('alignment returns no_rubric_points when rubric is empty', () => {

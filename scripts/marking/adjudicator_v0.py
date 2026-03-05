@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from scripts.marking.marking_semantics_v1 import build_uncertain_reason
+
 
 @dataclass
 class RubricPoint:
@@ -86,6 +88,7 @@ def adjudicate(payload: dict[str, Any]) -> dict[str, Any]:
     points = parse_rubric_points(payload.get("rubric_points") or [])
     signals = payload.get("signals") or {}
     min_confidence = float(payload.get("min_confidence") or 0.55)
+    include_uncertain_reason = bool(payload.get("include_uncertain_reason", False))
 
     ft = payload.get("ft") or {}
     ft_enabled = bool(ft.get("enabled", False))
@@ -118,19 +121,20 @@ def adjudicate(payload: dict[str, Any]) -> dict[str, Any]:
         if awarded:
             total_awarded += p.marks
 
-        decisions.append(
-            {
-                "rubric_id": p.rubric_id,
-                "mark_label": p.mark_label,
-                "kind": p.kind,
-                "depends_on": p.depends_on,
-                "matched": matched,
-                "confidence": round(confidence, 4),
-                "awarded": awarded,
-                "awarded_marks": p.marks if awarded else 0.0,
-                "reason": reason,
-            }
-        )
+        item = {
+            "rubric_id": p.rubric_id,
+            "mark_label": p.mark_label,
+            "kind": p.kind,
+            "depends_on": p.depends_on,
+            "matched": matched,
+            "confidence": round(confidence, 4),
+            "awarded": awarded,
+            "awarded_marks": p.marks if awarded else 0.0,
+            "reason": reason,
+        }
+        if include_uncertain_reason:
+            item["uncertain_reason"] = build_uncertain_reason(reason, awarded=awarded)
+        decisions.append(item)
 
     awarded_count = sum(1 for d in decisions if d["awarded"])
     return {
@@ -166,4 +170,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

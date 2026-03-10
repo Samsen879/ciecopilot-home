@@ -2,6 +2,7 @@ import { getServiceClient } from '../lib/supabase/client.js';
 import {
   authenticateRecommendationsRequest,
   createRequestContext,
+  enforceRecommendationsProductionGate,
   handleUnexpectedError,
   normalizeStringArray,
   parseBooleanFlag,
@@ -505,6 +506,10 @@ export default async function handler(req, res) {
       code: 'method_not_allowed',
       message: 'Method not allowed.',
     });
+    return;
+  }
+
+  if (enforceRecommendationsProductionGate(res, context)) {
     return;
   }
 

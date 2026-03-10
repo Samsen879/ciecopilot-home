@@ -12,38 +12,23 @@ Usage:
 """
 from __future__ import annotations
 
-import os
+import argparse
 import sys
 from pathlib import Path
 
-from scripts.common.env import load_project_env
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.phase1.common import RUN_DIR, load_env, require_db_url, utc_now_iso, write_json_file
 OLD_INDEX_NAME = "idx_user_errors_user_storage_key_unique"
-
-
-def _load_env() -> None:
-    load_project_env()
-
-
-
-def _get_db_url() -> str:
-    for key in ("DATABASE_URL", "SUPABASE_DB_URL", "SUPABASE_DATABASE_URL"):
-        val = os.environ.get(key)
-        if val:
-            return val
-    print(
-        "ERROR: DATABASE_URL (or SUPABASE_DB_URL / SUPABASE_DATABASE_URL) must be set",
-        file=sys.stderr,
-    )
-    sys.exit(2)
+OUTPUT_FILE = RUN_DIR / "preflight_old_index_audit.json"
 
 
 def check_index() -> dict:
     """Return dict with index existence info and definition if found."""
     import psycopg2  # type: ignore
 
-    db_url = _get_db_url()
+    db_url = require_db_url()
     conn = psycopg2.connect(db_url)
     try:
         with conn.cursor() as cur:
@@ -73,18 +58,33 @@ def check_index() -> dict:
     exists = row is not None
     return {
         "check": "preflight_old_index_exists",
+        "timestamp": utc_now_iso(),
         "index_name": OLD_INDEX_NAME,
         "exists": exists,
         "definition": row[1] if exists else None,
         "action_required": "DROP INDEX before migration" if exists else "none — already absent",
         "all_user_errors_indexes": all_indexes,
+        "gate_pass": not exists,
+        "release_blocked": exists,
     }
 
 
-def main() -> int:
-    _load_env()
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Audit legacy user_errors unique index")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit non-zero when the legacy index still exists",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    load_env()
     print(f"Checking for legacy index: {OLD_INDEX_NAME} ...")
     result = check_index()
+    write_json_file(OUTPUT_FILE, result)
 
     if result["exists"]:
         print(f"  FOUND — definition: {result['definition']}")
@@ -95,8 +95,9 @@ def main() -> int:
     print(f"\nAll indexes on user_errors ({len(result['all_user_errors_indexes'])}):")
     for idx in result["all_user_errors_indexes"]:
         print(f"  - {idx['name']}")
+    print(f"Audit written to {OUTPUT_FILE}")
 
-    return 0
+    return 1 if args.strict and not result["gate_pass"] else 0
 
 
 if __name__ == "__main__":

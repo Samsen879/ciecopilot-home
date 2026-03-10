@@ -10,8 +10,13 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SUMMARY_PATH = PROJECT_ROOT / "runs" / "phase1" / "phase1_e2e_gate_summary.json"
+A1_GOVERNANCE_PATH = PROJECT_ROOT / "runs" / "a1" / "a1_topic_link_governance_summary.json"
 A1_SUMMARY_PATH = PROJECT_ROOT / "runs" / "a1" / "a1_gate_summary.json"
+B1_GOVERNANCE_PATH = PROJECT_ROOT / "runs" / "ms" / "b1_rubric_governance_summary.json"
 B1_SUMMARY_PATH = PROJECT_ROOT / "runs" / "ms" / "b1_gate_summary.json"
+B2_PRE_MIGRATION_PREFLIGHT_PATH = PROJECT_ROOT / "runs" / "phase1" / "phase1_preflight_post_migration.json"
+B2_POST_FIXTURE_PREFLIGHT_PATH = PROJECT_ROOT / "runs" / "phase1" / "phase1_preflight_post_fixture.json"
+B2_FIXTURE_PATH = PROJECT_ROOT / "runs" / "phase1" / "phase1_e2e_fixture_manifest.json"
 B2_SMOKE_PATH = PROJECT_ROOT / "runs" / "phase1" / "evaluate_v1_smoke_response.json"
 B2_PARITY_PATH = PROJECT_ROOT / "runs" / "phase1" / "b2_parity_summary.json"
 B3_SUMMARY_PATH = PROJECT_ROOT / "runs" / "phase1" / "b3_auto_write_summary.json"
@@ -42,12 +47,67 @@ def check_a1_gate() -> tuple[bool, str]:
     return passed, f"gate_pass={passed}"
 
 
+def check_a1_governance() -> tuple[bool, str]:
+    data = load_json_safe(A1_GOVERNANCE_PATH)
+    if data is None:
+        return False, f"missing or invalid: {A1_GOVERNANCE_PATH}"
+    passed = bool(data.get("gate_pass"))
+    return passed, (
+        "gate_pass={gate_pass}, broken={broken}, stale={stale}, duplicate={duplicate}".format(
+            gate_pass=passed,
+            broken=data.get("broken_primary_link_count", 0),
+            stale=data.get("stale_asset_link_count", 0),
+            duplicate=data.get("duplicate_primary_link_storage_key_count", 0),
+        )
+    )
+
+
 def check_b1_gate() -> tuple[bool, str]:
     data = load_json_safe(B1_SUMMARY_PATH)
     if data is None:
         return False, f"missing or invalid: {B1_SUMMARY_PATH}"
     passed = bool(data.get("passed")) or data.get("result") == "passed"
     return passed, f"passed={passed}"
+
+
+def check_b1_governance() -> tuple[bool, str]:
+    data = load_json_safe(B1_GOVERNANCE_PATH)
+    if data is None:
+        return False, f"missing or invalid: {B1_GOVERNANCE_PATH}"
+    passed = bool(data.get("gate_pass"))
+    return passed, (
+        "gate_pass={gate_pass}, ready_rows={ready_rows}, duplicate_keys={duplicate_keys}".format(
+            gate_pass=passed,
+            ready_rows=data.get("ready_rubric_points_rows", 0),
+            duplicate_keys=data.get("duplicate_ready_key_count", 0),
+        )
+    )
+
+
+def check_phase1_preflight_post_migration() -> tuple[bool, str]:
+    data = load_json_safe(B2_PRE_MIGRATION_PREFLIGHT_PATH)
+    if data is None:
+        return False, f"missing or invalid: {B2_PRE_MIGRATION_PREFLIGHT_PATH}"
+    passed = bool(data.get("gate_pass"))
+    return passed, f"gate_pass={passed}"
+
+
+def check_phase1_fixture() -> tuple[bool, str]:
+    data = load_json_safe(B2_FIXTURE_PATH)
+    if data is None:
+        return False, f"missing or invalid: {B2_FIXTURE_PATH}"
+    verification = data.get("verification") or {}
+    ready_rows = int(verification.get("ready_rubric_points_rows", 0))
+    passed = ready_rows >= 2
+    return passed, f"ready_rubric_points_rows={ready_rows}"
+
+
+def check_phase1_preflight_post_fixture() -> tuple[bool, str]:
+    data = load_json_safe(B2_POST_FIXTURE_PREFLIGHT_PATH)
+    if data is None:
+        return False, f"missing or invalid: {B2_POST_FIXTURE_PREFLIGHT_PATH}"
+    passed = bool(data.get("gate_pass"))
+    return passed, f"gate_pass={passed}"
 
 
 def check_b2_smoke() -> tuple[bool, str]:
@@ -57,7 +117,8 @@ def check_b2_smoke() -> tuple[bool, str]:
     status_ok = data.get("status_code") == 200
     body = data.get("body") or {}
     required_ok = (
-        isinstance(body.get("run_id"), str)
+        isinstance(data.get("request"), dict)
+        and isinstance(body.get("run_id"), str)
         and isinstance(body.get("rubric_source_version"), str)
         and isinstance(body.get("scoring_engine_version"), str)
         and isinstance(body.get("decisions"), list)
@@ -79,15 +140,31 @@ def check_b3_auto_write() -> tuple[bool, str]:
     data = load_json_safe(B3_SUMMARY_PATH)
     if data is None:
         return False, f"missing or invalid: {B3_SUMMARY_PATH}"
-    passed = bool(data.get("gate_pass")) and int(data.get("rows_found", 0)) >= 1
-    return passed, f"gate_pass={data.get('gate_pass')}, rows_found={data.get('rows_found')}"
+    passed = (
+        bool(data.get("gate_pass"))
+        and int(data.get("rows_found", 0)) >= 1
+        and int(data.get("invalid_row_count", 0)) == 0
+    )
+    return (
+        passed,
+        "gate_pass={gate_pass}, rows_found={rows_found}, invalid_row_count={invalid}".format(
+            gate_pass=data.get("gate_pass"),
+            rows_found=data.get("rows_found"),
+            invalid=data.get("invalid_row_count", 0),
+        ),
+    )
 
 
 def main() -> int:
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     steps = [
+        check_step_status("phase1_preflight_post_migration", check_phase1_preflight_post_migration),
         check_step_status("a1_quality_gate", check_a1_gate),
+        check_step_status("a1_topic_link_governance", check_a1_governance),
+        check_step_status("phase1_fixture_manifest", check_phase1_fixture),
         check_step_status("b1_rubric_gate", check_b1_gate),
+        check_step_status("b1_rubric_governance", check_b1_governance),
+        check_step_status("phase1_preflight_post_fixture", check_phase1_preflight_post_fixture),
         check_step_status("b2_evaluate_v1_smoke", check_b2_smoke),
         check_step_status("b2_js_python_parity", check_b2_parity),
         check_step_status("b3_auto_error_write", check_b3_auto_write),

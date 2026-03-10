@@ -128,6 +128,42 @@ function keywordCoverage(candidateTerms, userTerms) {
   return clamp(hits / userTerms.length);
 }
 
+function normalizeDurationMinutes(value) {
+  if (typeof value === 'number' && Number.isFinite(value) && value >= 0) {
+    return Math.round(value);
+  }
+
+  if (typeof value === 'string') {
+    const match = value.match(/\d+/);
+    if (match) {
+      return normalizeDurationMinutes(Number(match[0]));
+    }
+  }
+
+  return null;
+}
+
+function normalizeDifficulty(candidateDifficulty) {
+  if (typeof candidateDifficulty === 'number' && Number.isFinite(candidateDifficulty)) {
+    return {
+      difficulty_level: candidateDifficulty,
+      difficulty_label: null,
+    };
+  }
+
+  if (typeof candidateDifficulty === 'string' && candidateDifficulty.trim()) {
+    return {
+      difficulty_level: null,
+      difficulty_label: candidateDifficulty.trim(),
+    };
+  }
+
+  return {
+    difficulty_level: null,
+    difficulty_label: null,
+  };
+}
+
 function buildReasoning({ type, keywordScore, difficultyScore, noveltyScore, recency }) {
   const factors = [];
 
@@ -162,6 +198,24 @@ function buildCandidateTerms(candidate) {
     ...(toArray(candidate.topic_tags) || []),
     ...(toArray(candidate.learning_objectives) || []),
   ].filter(Boolean));
+}
+
+function buildStableCandidateMetadata(candidate, candidateTerms) {
+  const difficulty = normalizeDifficulty(candidate.difficulty_level);
+
+  return {
+    source_type: candidate.target_type,
+    source_id: candidate.target_id,
+    source_label: candidate.recommendation_type,
+    difficulty_level: difficulty.difficulty_level,
+    difficulty_label: difficulty.difficulty_label,
+    published_at: candidate.published_at || null,
+    estimated_duration_minutes: normalizeDurationMinutes(candidate.estimated_duration),
+    keywords: normalizeStringArray(candidate.keywords),
+    learning_objectives: normalizeStringArray(candidate.learning_objectives, 6),
+    topic_tags: normalizeStringArray(candidate.topic_tags, 6),
+    candidate_terms: normalizeStringArray(candidateTerms),
+  };
 }
 
 function sortRecommendations(left, right) {
@@ -411,12 +465,7 @@ export class RecommendationEngine {
         noveltyScore,
         recency,
       }),
-      metadata: {
-        candidate_terms: candidateTerms,
-        source_type: candidate.target_type,
-        source_id: candidate.target_id,
-        source_row: candidate.source_row,
-      },
+      metadata: buildStableCandidateMetadata(candidate, candidateTerms),
     };
   }
 }

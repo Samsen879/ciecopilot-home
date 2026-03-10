@@ -154,6 +154,17 @@ function normalizeMetadata(value) {
       details: { field: 'metadata' },
     });
   }
+  if (
+    Object.prototype.hasOwnProperty.call(value, 'review') &&
+    value.review !== null &&
+    value.review !== undefined &&
+    (typeof value.review !== 'object' || Array.isArray(value.review))
+  ) {
+    throw new ValidationError('metadata.review must be an object.', {
+      code: 'bad_request',
+      details: { field: 'metadata.review' },
+    });
+  }
   return value;
 }
 
@@ -403,7 +414,7 @@ export function validateCreatePayload(body = {}, options = {}) {
     tags: normalizeTags(body.tags),
     status: normalizeStatus(body.status) || 'unresolved',
     review_count: 0,
-    is_starred: Boolean(body.is_starred),
+    is_starred: normalizeBoolean(body.is_starred, 'is_starred') ?? false,
     notes: normalizeNullableString(body.notes),
     storage_key: normalizeNullableString(body.storage_key),
     node_id: normalizeNullableString(body.node_id),

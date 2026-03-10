@@ -4,12 +4,16 @@ on:
   pull_request:
     paths:
       - "scripts/evaluation/**"
+      - "scripts/compliance/**"
+      - "tests/fixtures/**"
       - "tests/test_a1_*.py"
       - ".github/workflows/a1-topic-link-gate.yml"
   push:
     branches: [main]
     paths:
       - "scripts/evaluation/**"
+      - "scripts/compliance/**"
+      - "tests/fixtures/**"
       - "tests/test_a1_*.py"
   workflow_dispatch:
 
@@ -54,12 +58,10 @@ jobs:
           fi
           pip install pytest hypothesis psycopg2-binary python-dotenv
 
-      - name: Seed A1 gate fixture data
-        run: python scripts/evaluation/seed_a1_gate_fixture.py
-
-      - name: Run A1 quality gate
+      - name: Run A1 topic-link governance audit
         run: |
-          python scripts/evaluation/run_a1_quality_gate.py \
+          python scripts/compliance/run_topic_link_governance_audit.py \
+            --seed \
             --input tests/fixtures/a1_gate_audit_sample.csv \
             --allow-remote
 
@@ -70,6 +72,7 @@ jobs:
           name: a1-gate-artifacts
           path: |
             runs/a1/a1_gate_summary.json
+            runs/a1/a1_topic_link_governance_summary.json
             docs/reports/a1_topic_link_quality_gate_latest.md
           if-no-files-found: ignore
 
@@ -80,4 +83,5 @@ jobs:
           python --version
           pip --version
           ls -la runs || true
+          cat runs/a1/a1_topic_link_governance_summary.json || true
           ls -la docs/reports || true

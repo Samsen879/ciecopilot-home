@@ -13,10 +13,15 @@ import {
 
 // ── Constants (mirrored from implementation) ────────────────────────────────
 
-const EXCLUDED_MASTERY_REASONS = new Set(['borderline_score', 'dependency_error']);
+const EXCLUDED_MASTERY_REASONS = new Set([
+  'borderline_score',
+  'dependency_error',
+  'dependency_not_met',
+  'uncertain',
+]);
 const VALID_REASONS = [
   'best_match', 'below_threshold', 'borderline_score',
-  'dependency_not_met', 'dependency_error', 'no_match',
+  'dependency_not_met', 'dependency_error', 'no_match', 'uncertain',
 ];
 const INCLUDED_REASONS = VALID_REASONS.filter(r => !EXCLUDED_MASTERY_REASONS.has(r));
 const DECAY_WINDOWS = [
@@ -47,7 +52,7 @@ const arbReason = fc.constantFrom(...VALID_REASONS);
 const arbIncludedReason = fc.constantFrom(...INCLUDED_REASONS);
 
 /** Random reason that IS excluded from mastery */
-const arbExcludedReason = fc.constantFrom('borderline_score', 'dependency_error');
+const arbExcludedReason = fc.constantFrom(...EXCLUDED_MASTERY_REASONS);
 
 /** Random attempt_id */
 const arbAttemptId = fc.uuid().map(u => `att-${u}`);
@@ -128,6 +133,30 @@ const arbTopicPath = fc.tuple(
  * Mirrors attempt-level aggregation in production code.
  * Used to verify the real implementation against.
  */
+function compareIsoDescThenId(a, b) {
+  const timeDiff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  if (timeDiff !== 0) return timeDiff;
+  return String(a.attempt_id || '').localeCompare(String(b.attempt_id || ''));
+}
+
+function referenceClassifyMasteryDecision(decision) {
+  const reason = String(decision?.reason || '').trim().toLowerCase();
+
+  if (reason === 'borderline_score' || reason === 'uncertain') {
+    return { counted: false, category: 'uncertain', polarity: null };
+  }
+
+  if (reason === 'dependency_error' || reason === 'dependency_not_met') {
+    return { counted: false, category: 'structural_gating', polarity: null };
+  }
+
+  if (decision?.awarded === true) {
+    return { counted: true, category: 'positive', polarity: 'positive' };
+  }
+
+  return { counted: true, category: 'ability_gap', polarity: 'negative' };
+}
+
 function referenceMasteryForNode(decisions) {
   const byAttempt = new Map();
   for (const d of decisions) {
@@ -135,25 +164,32 @@ function referenceMasteryForNode(decisions) {
     if (!byAttempt.has(d.attempt_id)) {
       byAttempt.set(d.attempt_id, {
         latest_created_at: d.created_at,
-        awarded_true: 0,
-        total: 0,
+        attempt_id: d.attempt_id,
+        counted_awarded_true: 0,
+        counted_total: 0,
       });
     }
 
     const agg = byAttempt.get(d.attempt_id);
-    agg.total += 1;
-    if (d.awarded === true) agg.awarded_true += 1;
     if (new Date(d.created_at) > new Date(agg.latest_created_at)) {
       agg.latest_created_at = d.created_at;
     }
+
+    const classification = referenceClassifyMasteryDecision(d);
+    if (!classification.counted) continue;
+
+    agg.counted_total += 1;
+    if (classification.polarity === 'positive') agg.counted_awarded_true += 1;
   }
 
   const sortedAttempts = Array.from(byAttempt.values())
+    .filter((attempt) => attempt.counted_total > 0)
     .map(a => ({
+      attempt_id: a.attempt_id,
       created_at: a.latest_created_at,
-      attempt_score: a.total > 0 ? (a.awarded_true / a.total) : 0,
+      attempt_score: a.counted_total > 0 ? (a.counted_awarded_true / a.counted_total) : 0,
     }))
-    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    .sort(compareIsoDescThenId);
 
   const recent = sortedAttempts.slice(0, MAX_ATTEMPTS);
 

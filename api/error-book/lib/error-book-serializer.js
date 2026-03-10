@@ -13,6 +13,22 @@ function normalizeNullableString(value) {
   return normalized || null;
 }
 
+function normalizeFiniteNumber(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+  const parsed = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function normalizeNonNegativeInteger(value, fallback = 0) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return fallback;
+  }
+  return parsed;
+}
+
 function normalizeIsoDate(value) {
   if (value === null || value === undefined || value === '') {
     return null;
@@ -134,7 +150,7 @@ function serializeMarkDecision(markDecision) {
     rubric_id: markDecision.rubric_id ?? null,
     mark_label: markDecision.mark_label ?? null,
     awarded: typeof markDecision.awarded === 'boolean' ? markDecision.awarded : null,
-    awarded_marks: typeof markDecision.awarded_marks === 'number' ? markDecision.awarded_marks : null,
+    awarded_marks: normalizeFiniteNumber(markDecision.awarded_marks),
     reason: markDecision.reason ?? null,
     created_at: markDecision.created_at ?? null,
   };
@@ -172,6 +188,7 @@ export function serializeErrorBookItem(record, enrichment = {}) {
   const attempt = serializeAttempt(enrichment.attempt);
   const markDecision = serializeMarkDecision(enrichment.markDecision);
   const errorEvent = serializeErrorEvent(enrichment.errorEvent);
+  const tags = normalizeTagList(record?.tags);
   const topicName = record?.topic_name ?? null;
   const syllabusCode = record?.syllabus_code ?? record?.subject_code ?? attempt.syllabus_code ?? null;
   const misconceptionTag =
@@ -201,7 +218,7 @@ export function serializeErrorBookItem(record, enrichment = {}) {
     nextReviewAtRaw ||
     computeFallbackNextReviewAt(lastReviewedAt || normalizeIsoDate(record?.created_at), reviewInterval);
   const reviewTags = mergeTags(
-    record?.tags,
+    tags,
     reviewMetadata.tags,
     misconceptionTag ? [misconceptionTag] : [],
   );
@@ -227,9 +244,9 @@ export function serializeErrorBookItem(record, enrichment = {}) {
     explanation: record?.explanation ?? null,
     error_type: record?.error_type ?? null,
     difficulty_level: record?.difficulty_level ?? null,
-    tags: Array.isArray(record?.tags) ? record.tags : [],
+    tags,
     status: record?.status ?? 'unresolved',
-    review_count: Number(record?.review_count ?? 0),
+    review_count: normalizeNonNegativeInteger(record?.review_count, 0),
     next_review_at: nextReviewAt,
     review_interval: reviewInterval,
     last_reviewed_at: lastReviewedAt,

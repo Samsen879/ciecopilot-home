@@ -88,11 +88,13 @@ describe('computeMasteryByNode()', () => {
     expect(result['node-001'].weighted_sample_count).toBe(15);
   });
 
-  it('excludes borderline_score and dependency_error reasons', () => {
+  it('excludes uncertain and structural-gating reasons from mastery scoring', () => {
     const decisions = [
       makeDecision({ awarded: true, reason: 'best_match' }),
       makeDecision({ awarded: false, reason: 'borderline_score' }),
       makeDecision({ awarded: false, reason: 'dependency_error' }),
+      makeDecision({ awarded: false, reason: 'dependency_not_met' }),
+      makeDecision({ awarded: false, reason: 'uncertain' }),
     ];
     const result = computeMasteryByNode(decisions, NOW);
 
@@ -160,6 +162,8 @@ describe('computeMasteryByNode()', () => {
     const decisions = [
       makeDecision({ reason: 'borderline_score' }),
       makeDecision({ reason: 'dependency_error' }),
+      makeDecision({ reason: 'dependency_not_met' }),
+      makeDecision({ reason: 'uncertain' }),
     ];
     const result = computeMasteryByNode(decisions, NOW);
     expect(result).toEqual({});

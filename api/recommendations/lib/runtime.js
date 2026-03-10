@@ -4,6 +4,7 @@ import { requireAuth } from '../../lib/security/auth-guard.js';
 
 export const RECOMMENDATIONS_ORCHESTRATOR = 'recommendations-production';
 export const RECOMMENDATIONS_BACKEND_VERSION = 'post-rag-s1-recommendations-v1';
+export const RECOMMENDATIONS_GATE_FLAG = 'RECOMMENDATIONS_ENABLED';
 
 const DEFAULT_ALLOWED_ORIGIN = 'http://localhost:3000';
 const bootState = {
@@ -11,6 +12,17 @@ const bootState = {
   booted_at: new Date().toISOString(),
   request_count: 0,
 };
+
+function hasRecommendationsServerEnv() {
+  return Boolean(
+    process.env.SUPABASE_URL &&
+    (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE),
+  );
+}
+
+function isStrictProductionRuntime() {
+  return process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
+}
 
 function parseAllowedOrigins() {
   const raw = process.env.ALLOWED_ORIGINS || DEFAULT_ALLOWED_ORIGIN;
@@ -39,6 +51,7 @@ function setCommonHeaders(req, res, meta) {
   res.setHeader('X-Recommendations-Orchestrator', meta.orchestrator);
   res.setHeader('X-Recommendations-Version', meta.version);
   res.setHeader('X-Cold-Start', meta.cold_start.is_cold_start ? '1' : '0');
+  res.setHeader('X-Recommendations-Gate', meta.gate?.enabled ? 'enabled' : 'disabled');
   if (req?.headers?.origin) {
     res.setHeader('Vary', 'Origin');
   }
@@ -64,6 +77,7 @@ export function createRequestContext(req, res, moduleName) {
       module: moduleName,
       orchestrator: RECOMMENDATIONS_ORCHESTRATOR,
       version: RECOMMENDATIONS_BACKEND_VERSION,
+      gate: getRecommendationsGateStatus(),
       cold_start: nextColdStartState(),
     });
 
@@ -96,6 +110,7 @@ export function createRequestContext(req, res, moduleName) {
     module: moduleName,
     orchestrator: RECOMMENDATIONS_ORCHESTRATOR,
     version: RECOMMENDATIONS_BACKEND_VERSION,
+    gate: getRecommendationsGateStatus(),
     cold_start: nextColdStartState(),
   };
 
@@ -107,6 +122,69 @@ export function createRequestContext(req, res, moduleName) {
   }
 
   return { handled: false, meta };
+}
+
+export function getRecommendationsGateStatus() {
+  const strict = isStrictProductionRuntime();
+  const flagEnabled = process.env[RECOMMENDATIONS_GATE_FLAG] === 'true';
+  const envReady = hasRecommendationsServerEnv();
+
+  if (!strict) {
+    return {
+      enabled: true,
+      strict,
+      reason: 'non_production_runtime',
+      flag_name: RECOMMENDATIONS_GATE_FLAG,
+      env_ready: envReady,
+    };
+  }
+
+  if (!flagEnabled) {
+    return {
+      enabled: false,
+      strict,
+      reason: 'feature_flag_disabled',
+      flag_name: RECOMMENDATIONS_GATE_FLAG,
+      env_ready: envReady,
+    };
+  }
+
+  if (!envReady) {
+    return {
+      enabled: false,
+      strict,
+      reason: 'server_env_missing',
+      flag_name: RECOMMENDATIONS_GATE_FLAG,
+      env_ready: envReady,
+    };
+  }
+
+  return {
+    enabled: true,
+    strict,
+    reason: 'feature_flag_enabled',
+    flag_name: RECOMMENDATIONS_GATE_FLAG,
+    env_ready: envReady,
+  };
+}
+
+export function enforceRecommendationsProductionGate(res, context) {
+  const gate = context?.meta?.gate || getRecommendationsGateStatus();
+  if (gate.enabled) {
+    return false;
+  }
+
+  const message = gate.reason === 'feature_flag_disabled'
+    ? `recommendations is not enabled. Set ${RECOMMENDATIONS_GATE_FLAG}=true.`
+    : 'recommendations runtime is not ready for production traffic.';
+
+  sendError(res, context, {
+    status: 503,
+    code: 'feature_disabled',
+    message,
+    details: gate,
+  });
+  return true;
 }
 
 export async function authenticateRecommendationsRequest(req, res, context) {
@@ -166,9 +244,12 @@ export function sendError(
 export function handleUnexpectedError(res, context, error, code, message) {
   console.error(`[${context.meta.module}] ${code}:`, error);
   return sendError(res, context, {
-    status: 500,
-    code,
-    message,
+    status: Number.isInteger(error?.status) ? error.status : 500,
+    code: typeof error?.code === 'string' ? error.code : code,
+    message: Number.isInteger(error?.status) && error.status < 500 && typeof error?.message === 'string'
+      ? error.message
+      : message,
+    details: typeof error?.details === 'undefined' ? undefined : error.details,
   });
 }
 

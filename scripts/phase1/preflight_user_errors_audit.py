@@ -15,43 +15,25 @@ Usage:
 """
 from __future__ import annotations
 
-import json
-import os
+import argparse
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
-from scripts.common.env import load_project_env
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-OUTPUT_DIR = PROJECT_ROOT / "runs" / "phase1"
-OUTPUT_FILE = OUTPUT_DIR / "preflight_user_errors_source_audit.json"
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.phase1.common import RUN_DIR, load_env, require_db_url, utc_now_iso, write_json_file
+
+OUTPUT_FILE = RUN_DIR / "preflight_user_errors_source_audit.json"
 
 EXPECTED_SOURCES = {"manual", "mark_engine_auto"}
-
-
-def _load_env() -> None:
-    load_project_env()
-
-
-
-def _get_db_url() -> str:
-    for key in ("DATABASE_URL", "SUPABASE_DB_URL", "SUPABASE_DATABASE_URL"):
-        val = os.environ.get(key)
-        if val:
-            return val
-    print(
-        "ERROR: DATABASE_URL (or SUPABASE_DB_URL / SUPABASE_DATABASE_URL) must be set",
-        file=sys.stderr,
-    )
-    sys.exit(2)
 
 
 def run_audit() -> dict:
     """Connect to DB, query user_errors.source distribution, return audit dict."""
     import psycopg2  # type: ignore
 
-    db_url = _get_db_url()
+    db_url = require_db_url()
     conn = psycopg2.connect(db_url)
     try:
         with conn.cursor() as cur:
@@ -107,9 +89,10 @@ def run_audit() -> dict:
     finally:
         conn.close()
 
+    gate_pass = null_count == 0 and len(anomalous) == 0
     return {
         "audit": "preflight_user_errors_source",
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": utc_now_iso(),
         "total_rows": total_rows,
         "source_distribution": distribution,
         "null_source_count": null_count,
@@ -117,26 +100,35 @@ def run_audit() -> dict:
         "expected_sources": sorted(EXPECTED_SOURCES),
         "anomalous_sources": anomalous,
         "anomaly_samples": anomaly_samples,
-        "migration_action_needed": null_count > 0 or len(anomalous) > 0,
+        "migration_action_needed": not gate_pass,
+        "gate_pass": gate_pass,
+        "release_blocked": not gate_pass,
     }
 
 
-def main() -> int:
-    _load_env()
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Audit user_errors.source values")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit non-zero when NULL or anomalous source values are found",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    load_env()
     print("Running user_errors.source audit...")
     result = run_audit()
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    OUTPUT_FILE.write_text(
-        json.dumps(result, indent=2, default=str, ensure_ascii=False),
-        encoding="utf-8",
-    )
+    write_json_file(OUTPUT_FILE, result)
     print(f"Audit written to {OUTPUT_FILE}")
     print(f"  total_rows={result['total_rows']}")
     print(f"  null_source_count={result['null_source_count']}")
     print(f"  anomalous_sources={list(result['anomalous_sources'].keys())}")
     print(f"  migration_action_needed={result['migration_action_needed']}")
-    return 0
+    return 1 if args.strict and not result["gate_pass"] else 0
 
 
 if __name__ == "__main__":

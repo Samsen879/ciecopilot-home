@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { getPgCompatClient, isPgCompatEnabled, resetPgCompatClient } from './pg-compat-client.js';
 
 let serviceClient = null;
 let anonClient = null;
@@ -26,6 +27,10 @@ function buildClient(url, key) {
 
 export function getServiceClient() {
   if (serviceClient) return serviceClient;
+  if (isPgCompatEnabled()) {
+    serviceClient = getPgCompatClient();
+    return serviceClient;
+  }
   const { url, serviceKey } = assertServerEnv();
   serviceClient = buildClient(url, serviceKey);
   return serviceClient;
@@ -33,6 +38,10 @@ export function getServiceClient() {
 
 export function getAnonClient() {
   if (anonClient) return anonClient;
+  if (isPgCompatEnabled()) {
+    anonClient = getPgCompatClient();
+    return anonClient;
+  }
   const url = process.env.SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY;
   if (!url || !anonKey) {
@@ -42,7 +51,8 @@ export function getAnonClient() {
   return anonClient;
 }
 
-export function _resetSupabaseClientsForTest() {
+export async function _resetSupabaseClientsForTest() {
   serviceClient = null;
   anonClient = null;
+  await resetPgCompatClient();
 }

@@ -13,6 +13,10 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+import {
+  MARKING_SEMANTICS_VERSION,
+  normalizeUncertainReason,
+} from '../../api/marking/lib/marking-semantics-v1.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,8 +24,11 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config({ path: path.resolve(__dirname, '../../.env.local'), override: false });
 
-// ── Reasons excluded from mastery aggregation (uncertain verdicts) ───────────
-const EXCLUDED_MASTERY_REASONS = new Set(['borderline_score', 'dependency_error']);
+// ── Mastery reason policy ────────────────────────────────────────────────────
+const COUNTED_NEGATIVE_REASON_CODES = new Set(['below_threshold', 'no_match']);
+const UNCERTAIN_REASON_CODES = new Set(['borderline', 'parse_fail', 'no_rubric_points', 'uncertain']);
+const STRUCTURAL_GATING_REASON_CODES = new Set(['dependency_not_met', 'dependency_error']);
+const LEGACY_STRUCTURAL_GATING_REASONS = new Set(['ft_capped']);
 
 // ── Time decay windows for misconception frequency (in days) ────────────────
 const DECAY_WINDOWS = [
@@ -54,72 +61,266 @@ function parseArgs(argv) {
   return args;
 }
 
+function round4(value) {
+  return Math.round(value * 10000) / 10000;
+}
+
+function incrementCounter(target, key, delta = 1) {
+  const safeKey = String(key || 'unknown');
+  target[safeKey] = (target[safeKey] || 0) + delta;
+}
+
+function sortCounters(counterMap) {
+  return Object.fromEntries(
+    Object.entries(counterMap).sort(([a], [b]) => a.localeCompare(b)),
+  );
+}
+
+function createEmptyNodeDiagnostics() {
+  return {
+    counted_attempt_count: 0,
+    counted_decision_count: 0,
+    positive_decision_count: 0,
+    negative_decision_count: 0,
+    excluded_decision_count: 0,
+    uncertain_decision_count: 0,
+    structural_gating_decision_count: 0,
+    excluded_only_attempt_count: 0,
+    mixed_signal_attempt_count: 0,
+    excluded_reason_counts: {},
+  };
+}
+
+function createEmptyMasteryDiagnostics() {
+  return {
+    reason_semantics_version: MARKING_SEMANTICS_VERSION,
+    node_count: 0,
+    scored_node_count: 0,
+    excluded_only_node_count: 0,
+    counted_attempt_count: 0,
+    counted_decision_count: 0,
+    positive_decision_count: 0,
+    negative_decision_count: 0,
+    excluded_decision_count: 0,
+    uncertain_decision_count: 0,
+    structural_gating_decision_count: 0,
+    excluded_only_attempt_count: 0,
+    mixed_signal_attempt_count: 0,
+    excluded_reason_counts: {},
+  };
+}
+
+function mergeNodeDiagnostics(summary, nodeDiagnostics) {
+  summary.counted_attempt_count += nodeDiagnostics.counted_attempt_count;
+  summary.counted_decision_count += nodeDiagnostics.counted_decision_count;
+  summary.positive_decision_count += nodeDiagnostics.positive_decision_count;
+  summary.negative_decision_count += nodeDiagnostics.negative_decision_count;
+  summary.excluded_decision_count += nodeDiagnostics.excluded_decision_count;
+  summary.uncertain_decision_count += nodeDiagnostics.uncertain_decision_count;
+  summary.structural_gating_decision_count += nodeDiagnostics.structural_gating_decision_count;
+  summary.excluded_only_attempt_count += nodeDiagnostics.excluded_only_attempt_count;
+  summary.mixed_signal_attempt_count += nodeDiagnostics.mixed_signal_attempt_count;
+
+  for (const [reason, count] of Object.entries(nodeDiagnostics.excluded_reason_counts)) {
+    incrementCounter(summary.excluded_reason_counts, reason, count);
+  }
+}
+
+function compareIsoDescThenId(a, b) {
+  const timeDiff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  if (timeDiff !== 0) return timeDiff;
+  return String(a.attempt_id || '').localeCompare(String(b.attempt_id || ''));
+}
+
+export function classifyMasteryDecision(decision) {
+  const awarded = decision?.awarded === true;
+  const sourceReason = typeof decision?.reason === 'string' && decision.reason.trim()
+    ? decision.reason.trim()
+    : null;
+  const rawReasonSemantics = normalizeUncertainReason(sourceReason, { awarded: false });
+  const rawReasonKey = sourceReason ? sourceReason.toLowerCase() : null;
+
+  if (rawReasonKey && LEGACY_STRUCTURAL_GATING_REASONS.has(rawReasonKey)) {
+    return {
+      counted: false,
+      polarity: null,
+      category: 'structural_gating',
+      normalized_reason: rawReasonKey,
+      source_reason: sourceReason,
+    };
+  }
+
+  if (STRUCTURAL_GATING_REASON_CODES.has(rawReasonSemantics)) {
+    return {
+      counted: false,
+      polarity: null,
+      category: 'structural_gating',
+      normalized_reason: rawReasonSemantics,
+      source_reason: sourceReason,
+    };
+  }
+
+  if (UNCERTAIN_REASON_CODES.has(rawReasonSemantics)) {
+    return {
+      counted: false,
+      polarity: null,
+      category: 'uncertain',
+      normalized_reason: rawReasonSemantics,
+      source_reason: sourceReason,
+    };
+  }
+
+  if (awarded) {
+    return {
+      counted: true,
+      polarity: 'positive',
+      category: 'positive',
+      normalized_reason: null,
+      source_reason: sourceReason,
+    };
+  }
+
+  if (COUNTED_NEGATIVE_REASON_CODES.has(rawReasonSemantics)) {
+    return {
+      counted: true,
+      polarity: 'negative',
+      category: 'ability_gap',
+      normalized_reason: rawReasonSemantics,
+      source_reason: sourceReason,
+    };
+  }
+
+  return {
+    counted: true,
+    polarity: 'negative',
+    category: 'ability_gap',
+    normalized_reason: rawReasonSemantics,
+    source_reason: sourceReason,
+  };
+}
+
 // ── Core aggregation functions (exported for testing) ───────────────────────
 
 /**
  * Compute mastery_by_node from mark_decisions for a single user.
  *
  * Algorithm (Requirement 6.1):
- * 1. Filter out decisions with reason = borderline_score or dependency_error
- * 2. Group by node_id + attempt_id (attempt-level samples)
- * 3. For each node, compute per-attempt correctness:
- *    attempt_score = awarded_true_decisions / total_decisions
- * 4. For each node, take the most recent 20 attempts (by attempt latest decision time DESC)
- * 5. Most recent 5 attempts get weight 2.0, rest get weight 1.0
- * 6. score = sum(weight * attempt_score) / sum(weight)
- * 7. If sample_count < 3, mark low_confidence = true (Requirement 6.5)
+ * 1. Group by node_id + attempt_id (attempt-level samples)
+ * 2. Classify each decision into:
+ *    - counted positive evidence
+ *    - counted negative evidence (true ability shortfall)
+ *    - excluded uncertainty
+ *    - excluded structural gating
+ * 3. For each node, compute per-attempt correctness from counted decisions only:
+ *    attempt_score = awarded_true_decisions / counted_decisions
+ * 4. Drop attempts that contain only excluded evidence
+ * 5. For each node, take the most recent 20 counted attempts
+ * 6. Most recent 5 attempts get weight 2.0, rest get weight 1.0
+ * 7. score = sum(weight * attempt_score) / sum(weight)
+ * 8. If sample_count < 3, mark low_confidence = true (Requirement 6.5)
  *
  * @param {object[]} decisions - Rows with: attempt_id, node_id, awarded, reason, created_at
  * @param {Date} [now] - Current time (for last_updated); defaults to new Date()
- * @returns {object} mastery_by_node: { [node_id]: { score, sample_count, weighted_sample_count, low_confidence, last_updated } }
+ * @returns {{mastery_by_node: object, diagnostics: object}} Aggregated mastery data plus audit diagnostics.
  */
-export function computeMasteryByNode(decisions, now = new Date()) {
-  if (!Array.isArray(decisions) || decisions.length === 0) return {};
+export function aggregateMasteryEvidence(decisions, now = new Date()) {
+  const diagnostics = createEmptyMasteryDiagnostics();
+  if (!Array.isArray(decisions) || decisions.length === 0) {
+    return { mastery_by_node: {}, diagnostics };
+  }
 
-  // 1. Filter excluded reasons
-  const filtered = decisions.filter(d => !EXCLUDED_MASTERY_REASONS.has(d.reason));
-  if (filtered.length === 0) return {};
-
-  // 2. Group by node_id + attempt_id
   const byNode = new Map();
-  for (const d of filtered) {
+  for (const d of decisions) {
     if (!d.node_id || !d.attempt_id) continue;
     if (!byNode.has(d.node_id)) byNode.set(d.node_id, []);
     byNode.get(d.node_id).push(d);
   }
 
+  diagnostics.node_count = byNode.size;
+  if (byNode.size === 0) {
+    return { mastery_by_node: {}, diagnostics };
+  }
+
   const result = {};
 
-  for (const [nodeId, nodeDecs] of byNode) {
-    // 3. Collapse decision rows into attempt-level samples for this node
+  for (const nodeId of Array.from(byNode.keys()).sort()) {
+    const nodeDecs = byNode.get(nodeId) || [];
     const byAttempt = new Map();
+    const nodeDiagnostics = createEmptyNodeDiagnostics();
+
     for (const d of nodeDecs) {
       const key = d.attempt_id;
       if (!byAttempt.has(key)) {
         byAttempt.set(key, {
           attempt_id: key,
           latest_created_at: d.created_at,
-          awarded_true: 0,
-          total: 0,
+          counted_awarded_true: 0,
+          counted_total: 0,
+          excluded_decision_count: 0,
         });
       }
+
       const agg = byAttempt.get(key);
-      agg.total += 1;
-      if (d.awarded === true) agg.awarded_true += 1;
       if (new Date(d.created_at) > new Date(agg.latest_created_at)) {
         agg.latest_created_at = d.created_at;
       }
+
+      const classification = classifyMasteryDecision(d);
+      if (classification.counted) {
+        agg.counted_total += 1;
+        nodeDiagnostics.counted_decision_count += 1;
+        if (classification.polarity === 'positive') {
+          agg.counted_awarded_true += 1;
+          nodeDiagnostics.positive_decision_count += 1;
+        } else {
+          nodeDiagnostics.negative_decision_count += 1;
+        }
+        continue;
+      }
+
+      agg.excluded_decision_count += 1;
+      nodeDiagnostics.excluded_decision_count += 1;
+      if (classification.category === 'structural_gating') {
+        nodeDiagnostics.structural_gating_decision_count += 1;
+      } else if (classification.category === 'uncertain') {
+        nodeDiagnostics.uncertain_decision_count += 1;
+      }
+
+      incrementCounter(
+        nodeDiagnostics.excluded_reason_counts,
+        classification.source_reason || classification.normalized_reason || 'unknown',
+      );
     }
 
-    const attempts = Array.from(byAttempt.values())
+    const attempts = Array.from(byAttempt.values());
+    nodeDiagnostics.excluded_only_attempt_count = attempts.filter(
+      (attempt) => attempt.counted_total === 0 && attempt.excluded_decision_count > 0,
+    ).length;
+    nodeDiagnostics.mixed_signal_attempt_count = attempts.filter(
+      (attempt) => attempt.counted_total > 0 && attempt.excluded_decision_count > 0,
+    ).length;
+
+    const scoredAttempts = attempts
+      .filter((attempt) => attempt.counted_total > 0)
       .map(a => ({
+        attempt_id: a.attempt_id,
         created_at: a.latest_created_at,
-        attempt_score: a.total > 0 ? (a.awarded_true / a.total) : 0,
+        attempt_score: a.counted_total > 0 ? (a.counted_awarded_true / a.counted_total) : 0,
       }))
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      .sort(compareIsoDescThenId);
 
     // 4. Keep most recent N attempts for this node
-    const recent = attempts.slice(0, MAX_ATTEMPTS);
+    const recent = scoredAttempts.slice(0, MAX_ATTEMPTS);
+    nodeDiagnostics.counted_attempt_count = recent.length;
+    nodeDiagnostics.excluded_reason_counts = sortCounters(nodeDiagnostics.excluded_reason_counts);
+    mergeNodeDiagnostics(diagnostics, nodeDiagnostics);
+
+    if (recent.length === 0) {
+      diagnostics.excluded_only_node_count += 1;
+      continue;
+    }
+
+    diagnostics.scored_node_count += 1;
 
     // 5. Assign weights: first RECENT_COUNT get RECENT_WEIGHT, rest get DEFAULT_WEIGHT
     let weightedScore = 0;
@@ -136,15 +337,21 @@ export function computeMasteryByNode(decisions, now = new Date()) {
     const sampleCount = recent.length;
 
     result[nodeId] = {
-      score: Math.round(score * 10000) / 10000, // 4 decimal places
+      score: round4(score),
       sample_count: sampleCount,
       weighted_sample_count: weightedTotal,
       low_confidence: sampleCount < LOW_CONFIDENCE_THRESHOLD,
       last_updated: now.toISOString(),
+      diagnostics: nodeDiagnostics,
     };
   }
 
-  return result;
+  diagnostics.excluded_reason_counts = sortCounters(diagnostics.excluded_reason_counts);
+  return { mastery_by_node: result, diagnostics };
+}
+
+export function computeMasteryByNode(decisions, now = new Date()) {
+  return aggregateMasteryEvidence(decisions, now).mastery_by_node;
 }
 
 /**
@@ -393,7 +600,7 @@ async function fetchErrorEventsForUser(supabase, userId, subjectCode) {
  * @param {string} params.subjectCode
  * @param {boolean} params.dryRun
  * @param {Date} [params.now]
- * @returns {Promise<{status: 'success'|'skipped'|'failed', mastery_nodes: number, misconception_tags: number, error?: string}>}
+ * @returns {Promise<{status: 'success'|'skipped'|'failed', mastery_nodes: number, misconception_tags: number, diagnostics?: object, error?: string}>}
  */
 export async function aggregateForUser({ supabase, userId, subjectCode, dryRun = false, now = new Date() }) {
   try {
@@ -404,7 +611,9 @@ export async function aggregateForUser({ supabase, userId, subjectCode, dryRun =
     const errorEvents = await fetchErrorEventsForUser(supabase, userId, subjectCode);
 
     // 3. Compute aggregations
-    const masteryByNode = computeMasteryByNode(decisions, now);
+    const masteryAggregation = aggregateMasteryEvidence(decisions, now);
+    const masteryByNode = masteryAggregation.mastery_by_node;
+    const masteryDiagnostics = masteryAggregation.diagnostics;
     const misconceptionFreqs = computeMisconceptionFrequencies(errorEvents, now);
 
     const masteryNodeCount = Object.keys(masteryByNode).length;
@@ -415,9 +624,15 @@ export async function aggregateForUser({ supabase, userId, subjectCode, dryRun =
         event: 'aggregation_skip_empty',
         user_id: userId,
         subject_code: subjectCode,
+        mastery_diagnostics: masteryDiagnostics,
         ts: now.toISOString(),
       }));
-      return { status: 'skipped', mastery_nodes: 0, misconception_tags: 0 };
+      return {
+        status: 'skipped',
+        mastery_nodes: 0,
+        misconception_tags: 0,
+        diagnostics: { mastery: masteryDiagnostics },
+      };
     }
 
     // 4. Upsert to user_learning_profiles
@@ -428,11 +643,17 @@ export async function aggregateForUser({ supabase, userId, subjectCode, dryRun =
         subject_code: subjectCode,
         mastery_nodes: masteryNodeCount,
         misconception_tags: misconceptionTagCount,
+        mastery_diagnostics: masteryDiagnostics,
         mastery_by_node: masteryByNode,
         misconception_frequencies: misconceptionFreqs,
         ts: now.toISOString(),
       }));
-      return { status: 'success', mastery_nodes: masteryNodeCount, misconception_tags: misconceptionTagCount };
+      return {
+        status: 'success',
+        mastery_nodes: masteryNodeCount,
+        misconception_tags: misconceptionTagCount,
+        diagnostics: { mastery: masteryDiagnostics },
+      };
     }
 
     const { error: upsertError } = await supabase
@@ -465,10 +686,16 @@ export async function aggregateForUser({ supabase, userId, subjectCode, dryRun =
       subject_code: subjectCode,
       mastery_nodes: masteryNodeCount,
       misconception_tags: misconceptionTagCount,
+      mastery_diagnostics: masteryDiagnostics,
       ts: now.toISOString(),
     }));
 
-    return { status: 'success', mastery_nodes: masteryNodeCount, misconception_tags: misconceptionTagCount };
+    return {
+      status: 'success',
+      mastery_nodes: masteryNodeCount,
+      misconception_tags: misconceptionTagCount,
+      diagnostics: { mastery: masteryDiagnostics },
+    };
   } catch (err) {
     console.error(JSON.stringify({
       event: 'aggregation_exception',

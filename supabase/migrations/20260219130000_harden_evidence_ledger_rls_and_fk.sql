@@ -8,7 +8,7 @@
 -- ============================================================
 
 -- attempts: service_role full access
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE policyname = 'attempts_service_role_all' AND tablename = 'attempts'
@@ -18,10 +18,10 @@ BEGIN
       USING (true)
       WITH CHECK (true);
   END IF;
-END $;
+END $$;
 
 -- mark_runs: service_role full access
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE policyname = 'mark_runs_service_role_all' AND tablename = 'mark_runs'
@@ -31,10 +31,10 @@ BEGIN
       USING (true)
       WITH CHECK (true);
   END IF;
-END $;
+END $$;
 
 -- mark_decisions: service_role full access
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE policyname = 'mark_decisions_service_role_all' AND tablename = 'mark_decisions'
@@ -44,10 +44,10 @@ BEGIN
       USING (true)
       WITH CHECK (true);
   END IF;
-END $;
+END $$;
 
 -- error_events: service_role full access
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE policyname = 'error_events_service_role_all' AND tablename = 'error_events'
@@ -57,10 +57,10 @@ BEGIN
       USING (true)
       WITH CHECK (true);
   END IF;
-END $;
+END $$;
 
 -- question_bank: service_role full access
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE policyname = 'question_bank_service_role_all' AND tablename = 'question_bank'
@@ -73,10 +73,10 @@ BEGIN
       USING (true)
       WITH CHECK (true);
   END IF;
-END $;
+END $$;
 
 -- user_learning_profiles: service_role full access
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies WHERE policyname = 'user_learning_profiles_service_role_all' AND tablename = 'user_learning_profiles'
@@ -86,12 +86,12 @@ BEGIN
       USING (true)
       WITH CHECK (true);
   END IF;
-END $;
+END $$;
 
 -- ============================================================
 -- 2. FK on error_events.user_id → auth.users(id)
 -- ============================================================
-DO $
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_constraint WHERE conname = 'fk_error_events_user_id'
@@ -102,4 +102,4 @@ BEGIN
       REFERENCES auth.users(id)
       ON DELETE CASCADE;
   END IF;
-END $;
+END $$;

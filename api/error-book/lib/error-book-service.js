@@ -340,7 +340,8 @@ export function createErrorBookService({ supabase, now = () => new Date(), logge
         throw makeServiceError(500, 'insert_failed', error.message || 'Failed to create Error Book entry.');
       }
 
-      return serializeErrorBookSingle(serializeErrorBookItem(data));
+      const [item] = await serializeRecords(supabase, userId, [data]);
+      return serializeErrorBookSingle(item);
     },
 
     async getEntry({ userId, id }) {

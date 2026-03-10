@@ -177,6 +177,7 @@ function createSupabaseStub(resolveQuery) {
 
 beforeEach(() => {
   process.env.ALLOWED_ORIGINS = 'http://localhost:3000';
+  delete process.env.RECOMMENDATIONS_ENABLED;
   jest.clearAllMocks();
 });
 
@@ -320,6 +321,135 @@ describe('recommendations production hardening', () => {
 
     expect(res.statusCode).toBe(400);
     expect(res.body.error.code).toBe('invalid_recommendation_type');
+  });
+
+  it('serves stale cache instead of failing closed when regeneration errors', async () => {
+    supabaseStub = createSupabaseStub((query) => {
+      if (query.table === 'recommendation_cache' && query.operation === 'select') {
+        const isFreshLookup = query.filters.some((filter) => (
+          filter.operator === 'gt' && filter.field === 'expires_at'
+        ));
+
+        if (isFreshLookup) {
+          return { data: null, error: null };
+        }
+
+        return {
+          data: {
+            id: 'cache-stale',
+            recommendation_data: {
+              version: 'post-rag-s1-recommendations-v1',
+              engine_version: 'cached-engine-v1',
+              source_count: 9,
+              generated_at: '2026-03-01T00:00:00.000Z',
+              expires_at: '2026-03-02T00:00:00.000Z',
+              filters: {
+                subject_code: '9709',
+                type: 'content',
+                min_confidence: 0.4,
+              },
+              items: [
+                {
+                  id: 'stale-rec-1',
+                  recommendation_type: 'content',
+                  target: { type: 'paper', id: 'paper-1' },
+                  title: 'Cached vectors drill',
+                  description: 'Previously generated cached recommendation.',
+                  scores: {
+                    confidence: 0.91,
+                    relevance: 0.86,
+                    priority: 0.88,
+                  },
+                  state: {
+                    clicked: false,
+                    dismissed: false,
+                    click_count: 0,
+                    impression_count: 1,
+                  },
+                  reasoning: {
+                    summary: 'Cached fallback recommendation.',
+                    factors: ['goal_alignment'],
+                  },
+                  metadata: {
+                    source_type: 'paper',
+                    source_id: 'paper-1',
+                    candidate_terms: ['vectors'],
+                  },
+                },
+              ],
+            },
+            expires_at: '2026-03-02T00:00:00.000Z',
+            hit_count: 4,
+          },
+          error: null,
+        };
+      }
+
+      if (query.table === 'user_learning_profiles') {
+        return { data: null, error: null };
+      }
+
+      if (query.table === 'user_learning_data') {
+        return { data: [], error: null, count: 0 };
+      }
+
+      if (query.table === 'recommendation_feedback') {
+        return { data: [], error: null };
+      }
+
+      if (query.table === 'papers') {
+        throw new Error('candidate fetch exploded');
+      }
+
+      return { data: null, error: null };
+    });
+
+    const req = createMockReq({
+      method: 'GET',
+      headers: { origin: 'http://localhost:3000' },
+      query: { subject_code: '9709', type: 'content', refresh: 'true' },
+      authUser: { id: 'user-1' },
+      authUserId: 'user-1',
+    });
+    const res = createMockRes();
+
+    await recommendationsHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.meta.cached).toBe(true);
+    expect(res.body.meta.stale).toBe(true);
+    expect(res.body.meta.fallback_reason).toBe('generation_failed');
+    expect(res.body.data.items[0].id).toBe('stale-rec-1');
+    expect(res.body.data.items[0].metadata.source_row).toBeUndefined();
+  });
+
+  it('enforces the production feature gate before auth or database work', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    try {
+      supabaseStub = createSupabaseStub(() => ({ data: null, error: null }));
+
+      const req = createMockReq({
+        method: 'GET',
+        headers: { origin: 'http://localhost:3000' },
+        query: { subject_code: '9709', type: 'content' },
+        authUser: { id: 'user-1' },
+        authUserId: 'user-1',
+      });
+      const res = createMockRes();
+
+      await recommendationsHandler(req, res);
+
+      expect(res.statusCode).toBe(503);
+      expect(res.headers['x-recommendations-gate']).toBe('disabled');
+      expect(res.body.error.code).toBe('feature_disabled');
+      expect(res.body.meta.gate.reason).toBe('feature_flag_disabled');
+      expect(mockRequireAuth).not.toHaveBeenCalled();
+      expect(supabaseStub.calls).toHaveLength(0);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
   });
 
   it('returns exact pagination totals for learning data and preserves false/zero values on create', async () => {

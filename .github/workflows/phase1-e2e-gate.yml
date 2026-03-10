@@ -113,11 +113,15 @@ jobs:
       - name: Replay migrations
         run: |
           set -euo pipefail
+          has_pg_cron=$(PGPASSWORD=postgres psql -At -h localhost -U postgres -d postgres -c "SELECT 1 FROM pg_available_extensions WHERE name = 'pg_cron';" || true)
           for f in supabase/migrations/*.sql; do
+            if [ "$f" = "supabase/migrations/20260118090900_008_rag_log_retention.sql" ] && [ "$has_pg_cron" != "1" ]; then
+              echo "=== Skipping: $f (pg_cron unavailable in CI image) ==="
+              continue
+            fi
             echo "=== Applying: $f ==="
             PGPASSWORD=postgres psql -v ON_ERROR_STOP=1 -h localhost -U postgres -d postgres -f "$f"
           done
-
       # Step 2: Governance preflight on migrated schema
       - name: Run Phase1 post-migration preflight
         run: python scripts/phase1/run_phase1_preflight.py --stage post-migration --strict

@@ -101,8 +101,10 @@ jobs:
           CREATE SCHEMA IF NOT EXISTS auth;
           CREATE TABLE IF NOT EXISTS auth.users (
             id UUID PRIMARY KEY,
-            email TEXT
+            email TEXT,
+            raw_user_meta_data JSONB DEFAULT '{}'::jsonb
           );
+          ALTER TABLE auth.users ADD COLUMN IF NOT EXISTS raw_user_meta_data JSONB DEFAULT '{}'::jsonb;
           CREATE OR REPLACE FUNCTION auth.uid() RETURNS UUID
           LANGUAGE sql STABLE AS $$ SELECT NULL::uuid; $$;
           CREATE OR REPLACE FUNCTION auth.role() RETURNS TEXT

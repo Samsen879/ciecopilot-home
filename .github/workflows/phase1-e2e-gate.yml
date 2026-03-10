@@ -107,6 +107,8 @@ jobs:
           LANGUAGE sql STABLE AS $$ SELECT NULL::uuid; $$;
           CREATE OR REPLACE FUNCTION auth.role() RETURNS TEXT
           LANGUAGE sql STABLE AS $$ SELECT 'authenticated'::text; $$;
+          CREATE OR REPLACE FUNCTION auth.email() RETURNS TEXT
+          LANGUAGE sql STABLE AS $$ SELECT NULL::text; $$;
           SQL
 
       # Step 1: Replay migrations from empty DB

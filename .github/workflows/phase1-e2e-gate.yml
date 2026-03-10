@@ -55,6 +55,7 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
       SUPABASE_URL: http://localhost:5432
       SUPABASE_SERVICE_ROLE_KEY: test-service-role-key
+      SUPABASE_PG_COMPAT: "true"
       MARKING_V1_ENABLED: "true"
       MARKING_AUTO_ERROR_WRITE_ENABLED: "true"
       PYTHONPATH: .

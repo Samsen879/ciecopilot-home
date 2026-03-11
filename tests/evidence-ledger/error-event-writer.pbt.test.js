@@ -19,12 +19,12 @@ const arbUuid = fc.uuid().map(u => u.toString());
 
 const VALID_REASONS = [
   'best_match', 'below_threshold', 'borderline_score',
-  'dependency_not_met', 'dependency_error', 'no_match',
+  'dependency_not_met', 'dependency_error', 'no_match', 'uncertain',
 ];
 
 /** Reasons that are error candidates (awarded=false AND not excluded) */
 const ERROR_CANDIDATE_REASONS = ['best_match', 'below_threshold', 'borderline_score', 'no_match'];
-const EXCLUDED_REASONS = ['dependency_not_met', 'dependency_error'];
+const EXCLUDED_REASONS = ['dependency_not_met', 'dependency_error', 'uncertain'];
 
 const arbValidReason = fc.constantFrom(...VALID_REASONS);
 const arbErrorCandidateReason = fc.constantFrom(...ERROR_CANDIDATE_REASONS);

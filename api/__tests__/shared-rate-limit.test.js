@@ -13,8 +13,10 @@ import { SharedRateLimitStore } from '../lib/security/rate-limit-shared-store.js
 
 describe('shared rate limit gate coverage', () => {
   let server;
+  let warnSpy;
 
   beforeAll(async () => {
+    warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     process.env.NODE_ENV = 'test';
     process.env.AUTH_LOCAL_TEST_MODE = 'true';
     process.env.ALLOWED_ORIGINS = 'http://localhost:3000';
@@ -28,6 +30,7 @@ describe('shared rate limit gate coverage', () => {
   });
 
   afterAll((done) => {
+    warnSpy?.mockRestore();
     _clearRateLimitBackendOverrideForTest();
     if (!server || !server.listening) {
       done();
@@ -62,7 +65,14 @@ describe('shared rate limit gate coverage', () => {
 
     expect(blocked.status).toBe(429);
     expect(blocked.body.code).toBe('rate_limited');
+    expect(blocked.body.details?.policy_id).toBe('rag_ai_default_v1');
+    expect(blocked.body.details?.scope).toBe('user');
     expect(blocked.headers['retry-after']).toBeDefined();
+    expect(blocked.headers['x-ratelimit-limit']).toBe('10');
+    expect(blocked.headers['x-ratelimit-remaining']).toBe('0');
+    expect(blocked.headers['x-ratelimit-policy']).toBe('rag_ai_default_v1');
+    expect(blocked.headers['x-ratelimit-scope']).toBe('user');
+    expect(blocked.headers['x-ratelimit-store']).toBe('memory');
   });
 
   it('can enforce per-ip limits when unauthenticated traffic is allowed by policy', async () => {
@@ -148,3 +158,5 @@ describe('shared rate limit gate coverage', () => {
     expect(communityWrite?.profile?.limit).toBe(20);
   });
 });
+
+

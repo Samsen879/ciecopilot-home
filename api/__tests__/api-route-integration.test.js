@@ -1,21 +1,45 @@
-import fs from 'node:fs';
+﻿import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import request from 'supertest';
 import { listRoutes } from '../_runtime/route-registry.js';
 
+const FORBIDDEN_DIAGNOSTIC_KEYS = new Set([
+  'authorization_matrix',
+  'requiredRoles',
+  'coverageActors',
+  'verificationStrategies',
+  'rateLimitProfile',
+  'legacy_excluded',
+]);
+
 function toSamplePath(pathPrefix) {
-  return pathPrefix.includes(':id')
-    ? pathPrefix.replace(':id', 'sample-id')
-    : pathPrefix;
+  return pathPrefix.includes(':id') ? pathPrefix.replace(':id', 'sample-id') : pathPrefix;
 }
 
 function pickProbeMethod(methods = []) {
   if (!Array.isArray(methods) || methods.length === 0 || methods.includes('*')) {
     return 'GET';
   }
-  const candidate = methods.find((m) => m !== 'OPTIONS') || methods[0];
+  const candidate = methods.find((method) => method !== 'OPTIONS') || methods[0];
   return String(candidate || 'GET').toUpperCase();
+}
+
+function collectForbiddenKeys(value, found = []) {
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectForbiddenKeys(item, found));
+    return found;
+  }
+  if (!value || typeof value !== 'object') {
+    return found;
+  }
+  for (const [key, nested] of Object.entries(value)) {
+    if (FORBIDDEN_DIAGNOSTIC_KEYS.has(key)) {
+      found.push(key);
+    }
+    collectForbiddenKeys(nested, found);
+  }
+  return found;
 }
 
 describe('api route integration', () => {
@@ -49,14 +73,62 @@ describe('api route integration', () => {
     });
   });
 
-  it('serves info and health endpoints', async () => {
+  it('serves redacted public diagnostics endpoints', async () => {
     const info = await request(server).get('/api/info').set('Origin', 'http://localhost:3000');
     expect(info.status).toBe(200);
-    expect(info.body).toHaveProperty('routes');
+    expect(info.body.routes).toBeUndefined();
+    expect(info.body.gateway?.route_count).toBe(listRoutes().length);
+    expect(collectForbiddenKeys(info.body)).toEqual([]);
 
     const health = await request(server).get('/api/health').set('Origin', 'http://localhost:3000');
     expect(health.status).toBe(200);
     expect(health.body.status).toBe('healthy');
+    expect(health.body.liveness).toBe('alive');
+    expect(health.body.readiness).toBe('ready');
+    expect(health.body.memory).toBeUndefined();
+    expect(collectForbiddenKeys(health.body)).toEqual([]);
+
+    const routes = await request(server).get('/api/routes').set('Origin', 'http://localhost:3000');
+    expect(routes.status).toBe(200);
+    expect(routes.body.summary?.route_count).toBe(listRoutes().length);
+    expect(routes.body.routes).toBeUndefined();
+    expect(collectForbiddenKeys(routes.body)).toEqual([]);
+  });
+
+  it('serves full internal route diagnostics only in explicit non-production view', async () => {
+    const routes = await request(server)
+      .get('/api/routes?view=internal')
+      .set('Origin', 'http://localhost:3000');
+
+    expect(routes.status).toBe(200);
+    expect(routes.body.summary?.route_count).toBe(listRoutes().length);
+    expect(routes.body.authorization_matrix?.length).toBe(
+      routes.body.summary?.authorization_matrix_row_count,
+    );
+    expect(routes.body.legacy_excluded).toEqual(expect.any(Array));
+    expect(routes.body.routes?.length).toBe(listRoutes().length);
+    expect(routes.body.routes?.[0]).toHaveProperty('coverageActors');
+    expect(routes.body.routes?.[0]).toHaveProperty('verificationStrategies');
+  });
+
+  it('keeps /api/routes redacted in production even when internal view is requested', async () => {
+    const previousEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    try {
+      const routes = await request(server)
+        .get('/api/routes?view=internal')
+        .set('Origin', 'http://localhost:3000');
+
+      expect(routes.status).toBe(200);
+      expect(routes.body.summary?.route_count).toBe(listRoutes().length);
+      expect(routes.body.routes).toBeUndefined();
+      expect(routes.body.authorization_matrix).toBeUndefined();
+      expect(routes.body.legacy_excluded).toBeUndefined();
+      expect(collectForbiddenKeys(routes.body)).toEqual([]);
+    } finally {
+      process.env.NODE_ENV = previousEnv;
+    }
   });
 
   it('routes every registered endpoint to a non-404 handler response', async () => {
@@ -79,7 +151,10 @@ describe('api route integration', () => {
     expect(methodDenied.status).toBe(405);
     expect(methodDenied.body.code).toBe('method_not_allowed');
 
-    const legacy = await request(server).post('/api/chat').set('Origin', 'http://localhost:3000').send({});
+    const legacy = await request(server)
+      .post('/api/chat')
+      .set('Origin', 'http://localhost:3000')
+      .send({});
     expect(legacy.status).toBe(404);
     expect(legacy.body.code).toBe('endpoint_not_found');
   });
@@ -103,3 +178,4 @@ describe('api route integration', () => {
     expect(offenders).toEqual([]);
   });
 });
+

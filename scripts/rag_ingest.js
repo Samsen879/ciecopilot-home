@@ -19,6 +19,10 @@ import {
   resolveCorpusVersion,
   upsertCanonicalChunk,
 } from './rag/lib/canonical-chunks.js';
+import {
+  parseMarkScheme,
+  parseQuestionPaper,
+} from './rag/lib/question-aware-chunker.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -120,6 +124,9 @@ const PAPERS_DIR = path.join(ROOT, 'data', 'past-papers');
 const MARK_SCHEMES_DIR = path.join(ROOT, 'data', 'mark-schemes');
 const RUN_STARTED_AT = new Date();
 const WRITE_MODE = normalizeWriteMode(argv['write-mode'] || process.env.RAG_INGEST_WRITE_MODE || 'canonical');
+const PDF_CHUNK_MODE = normalizePdfChunkMode(
+  argv['pdf-chunk-mode'] || process.env.RAG_PDF_CHUNK_MODE || 'page_level',
+);
 const CORPUS_VERSION = resolveCorpusVersion({
   cliValue: argv['corpus-version'],
   envValue: process.env.RAG_CORPUS_VERSION,
@@ -146,6 +153,14 @@ function writeModeUsesCanonical(writeMode = WRITE_MODE) {
   return describeWriteModeTargets(writeMode).writesCanonical;
 }
 
+function normalizePdfChunkMode(mode) {
+  const normalized = String(mode || 'page_level').trim().toLowerCase().replace(/-/g, '_');
+  if (normalized === 'page' || normalized === 'token_page') return 'page_level';
+  if (normalized === 'question_aware') return 'question_aware';
+  if (normalized === 'page_level') return 'page_level';
+  throw new Error(`Unsupported pdf chunk mode: ${mode}`);
+}
+
 function createRunSummary() {
   return {
     generated_at: new Date().toISOString(),
@@ -162,6 +177,8 @@ function createRunSummary() {
       dry_run: !!argv.dry,
       skip_existing: argv['skip-existing'] !== false,
       continue_on_error: argv['continue-on-error'] !== false,
+      source_list_json: argv['source-list-json'] || null,
+      pdf_chunk_mode: PDF_CHUNK_MODE,
     },
     counts: {
       files_considered: 0,
@@ -219,6 +236,31 @@ function listFilesRecursive(baseDir, exts) {
   }
   if (fs.existsSync(baseDir)) walk(baseDir);
   return results;
+}
+
+function readSourceList(filePath) {
+  const resolved = path.resolve(ROOT, filePath);
+  if (!fs.existsSync(resolved)) {
+    throw new Error(`Source list file not found: ${resolved}`);
+  }
+  const parsed = JSON.parse(fs.readFileSync(resolved, 'utf8'));
+  const rows = Array.isArray(parsed)
+    ? parsed
+    : Array.isArray(parsed?.selected)
+      ? parsed.selected
+      : [];
+  if (!Array.isArray(rows) || rows.length === 0) {
+    throw new Error(`Source list is empty: ${resolved}`);
+  }
+  return rows.map((item) => {
+    const relativePath = typeof item === 'string'
+      ? item
+      : item.relative_path || item.source_path || item.path;
+    if (!relativePath) {
+      throw new Error(`Invalid source list entry in ${resolved}: ${JSON.stringify(item)}`);
+    }
+    return path.resolve(ROOT, relativePath);
+  });
 }
 
 function normalizeSubjectFromPath(p) {
@@ -309,17 +351,27 @@ function parseExamPaperMetadata(filePath) {
 }
 
 async function extractPdfText(filePath) {
-  // Use CJS require through createRequire to avoid pdf-parse debug-mode side effects under ESM import.
-  const pdf = require('pdf-parse');
-  const data = await pdf(fs.readFileSync(filePath));
-  // Simple page split approximation; pdf-parse returns text merged, not per page.
-  // As a minimal viable approach, split by form feed or by \n\n\n.
-  const pages = data.text.split(/\f|\n\n\n/g).map((t) => t.trim()).filter(Boolean);
+  const { pages } = await extractPdfTextBundle(filePath);
   return pages;
 }
 
+async function extractPdfTextBundle(filePath) {
+  // Use CJS require through createRequire to avoid pdf-parse debug-mode side effects under ESM import.
+  const pdf = require('pdf-parse');
+  const data = await pdf(fs.readFileSync(filePath));
+  const text = String(data.text || '');
+  // Simple page split approximation; pdf-parse returns text merged, not per page.
+  // As a minimal viable approach, split by form feed or by \n\n\n.
+  const pages = text.split(/\f|\n\n\n/g).map((t) => t.trim()).filter(Boolean);
+  return {
+    text,
+    pages,
+    numpages: Number.isInteger(data.numpages) ? data.numpages : pages.length,
+  };
+}
+
 function chunkTextByTokens(text, targetTokens = 600, overlapTokens = 80) {
-  const words = text.split(/\s+/);
+  const words = text.split(/\s+/).filter(Boolean);
   const approxTokens = (w) => Math.ceil(w.length * 0.75);
   const chunks = [];
   let start = 0;
@@ -333,9 +385,165 @@ function chunkTextByTokens(text, targetTokens = 600, overlapTokens = 80) {
     const content = words.slice(start, end).join(' ');
     chunks.push(content);
     if (end >= words.length) break;
-    start = Math.max(end - Math.ceil(overlapTokens / 1.0), start + 1);
+
+    const consumed = end - start;
+    // Avoid pathological near-duplicate windows when a dense equation block already fits within the overlap size.
+    if (consumed <= overlapTokens) {
+      start = end;
+    } else {
+      start = end - Math.ceil(overlapTokens / 1.0);
+    }
   }
   return chunks;
+}
+
+const EXPECTED_QP_IDS_CACHE = new Map();
+
+function countBy(items, selector) {
+  const counts = {};
+  for (const item of items || []) {
+    const key = selector(item);
+    const normalized = key == null || key === '' ? 'unknown' : String(key);
+    counts[normalized] = (counts[normalized] || 0) + 1;
+  }
+  return counts;
+}
+
+function resolveMarkSchemeQuestionPaperPair(filePath, metadata) {
+  if (metadata?.source_type !== 'mark_scheme_pdf') return null;
+  if (!Number.isInteger(metadata?.paper_number) || metadata.paper_number <= 0) return null;
+
+  const subjectFolder = path.basename(path.dirname(filePath));
+  const markSchemeFilename = path.basename(filePath);
+  const qpFilename = markSchemeFilename.replace(/^WM_/i, '').replace(/_ms_/i, '_qp_');
+  const candidate = path.join(PAPERS_DIR, subjectFolder, `paper${metadata.paper_number}`, qpFilename);
+  return fs.existsSync(candidate) ? candidate : null;
+}
+
+async function getExpectedQuestionIdsForMarkScheme(filePath, metadata) {
+  const pairedQuestionPaperPath = resolveMarkSchemeQuestionPaperPair(filePath, metadata);
+  if (!pairedQuestionPaperPath) {
+    return [];
+  }
+
+  const cacheKey = toPosixRelative(pairedQuestionPaperPath);
+  if (EXPECTED_QP_IDS_CACHE.has(cacheKey)) {
+    return EXPECTED_QP_IDS_CACHE.get(cacheKey);
+  }
+
+  const qpData = await extractPdfTextBundle(pairedQuestionPaperPath);
+  const qpChunks = parseQuestionPaper(qpData.text, {
+    paper_id: metadata.paper_id,
+    subject_code: metadata.subject_code,
+  });
+  const expectedQuestionIds = [...new Set(
+    qpChunks
+      .filter((chunk) => chunk.retrieval_eligible)
+      .map((chunk) => chunk.question_id)
+      .filter(Boolean),
+  )];
+  EXPECTED_QP_IDS_CACHE.set(cacheKey, expectedQuestionIds);
+  return expectedQuestionIds;
+}
+
+function buildStructuredSourceRefExtra(chunk) {
+  const extra = {
+    chunk_kind: chunk.source_type,
+  };
+
+  if (chunk.parent_question_id && chunk.parent_question_id !== chunk.question_id) {
+    extra.parent_question_id = chunk.parent_question_id;
+  }
+  if (chunk.part_label) {
+    extra.part_label = chunk.part_label;
+  }
+  if (Array.isArray(chunk.mark_labels) && chunk.mark_labels.length > 0) {
+    extra.mark_labels = chunk.mark_labels;
+  }
+  if (Number.isFinite(chunk.marks)) {
+    extra.marks = chunk.marks;
+  }
+  if (chunk.has_figure) {
+    extra.has_figure = true;
+  }
+  if (Number.isFinite(chunk.formula_density) && chunk.formula_density > 0) {
+    extra.formula_density = chunk.formula_density;
+  }
+  if (chunk.latex_norm_version) {
+    extra.latex_norm_version = chunk.latex_norm_version;
+  }
+  if (Number.isInteger(chunk.subchunk_index)) {
+    extra.subchunk_index = chunk.subchunk_index;
+  }
+
+  return extra;
+}
+
+async function buildPdfChunkPlan(filePath, metadata, chunkMode = PDF_CHUNK_MODE) {
+  if (chunkMode === 'question_aware') {
+    const pdfData = await extractPdfTextBundle(filePath);
+    const expectedQuestionIds = metadata.source_type === 'mark_scheme_pdf'
+      ? await getExpectedQuestionIdsForMarkScheme(filePath, metadata)
+      : [];
+    const structuredChunks = metadata.source_type === 'mark_scheme_pdf'
+      ? parseMarkScheme(pdfData.text, {
+        paper_id: metadata.paper_id,
+        subject_code: metadata.subject_code,
+        expected_question_ids: expectedQuestionIds,
+      })
+      : parseQuestionPaper(pdfData.text, {
+        paper_id: metadata.paper_id,
+        subject_code: metadata.subject_code,
+      });
+
+    const retrievalChunks = structuredChunks
+      .filter((chunk) => chunk.retrieval_eligible && String(chunk.content || '').trim())
+      .map((chunk) => ({
+        txt: chunk.content,
+        page: null,
+        question_id: chunk.question_id || null,
+        section_id: chunk.parent_question_id || null,
+        source_ref_extra: buildStructuredSourceRefExtra(chunk),
+        chunk_kind: chunk.source_type,
+        part_label: chunk.part_label || null,
+        mark_labels: Array.isArray(chunk.mark_labels) ? chunk.mark_labels : [],
+      }));
+
+    return {
+      mode: 'question_aware',
+      page_count: pdfData.numpages || pdfData.pages.length,
+      raw_chunk_count: structuredChunks.length,
+      non_retrieval_chunk_count: structuredChunks.length - retrievalChunks.length,
+      chunk_kind_counts: countBy(structuredChunks, (chunk) => chunk.source_type),
+      expected_question_ids: expectedQuestionIds,
+      chunks: retrievalChunks,
+    };
+  }
+
+  const pages = await extractPdfText(filePath);
+  const chunks = pages.flatMap((pageText, idx) => {
+    const sub = chunkTextByTokens(pageText, 500, 60);
+    return sub.map((txt) => ({
+      txt,
+      page: idx + 1,
+      question_id: null,
+      section_id: null,
+      source_ref_extra: { chunk_kind: 'page_level_pdf' },
+      chunk_kind: 'page_level_pdf',
+      part_label: null,
+      mark_labels: [],
+    }));
+  });
+
+  return {
+    mode: 'page_level',
+    page_count: pages.length,
+    raw_chunk_count: chunks.length,
+    non_retrieval_chunk_count: 0,
+    chunk_kind_counts: { page_level_pdf: chunks.length },
+    expected_question_ids: [],
+    chunks,
+  };
 }
 
 // 新增：简单的sleep工具，用于节流和退避等待
@@ -471,6 +679,7 @@ function buildCanonicalChunkArgs({
   node_id = null,
   question_id = null,
   section_id = null,
+  source_ref_extra = null,
 }) {
   const sourceRef = buildSourceRef({
     assetId: source_path,
@@ -480,6 +689,7 @@ function buildCanonicalChunkArgs({
     chunkIndex: chunk_index,
     paperId: paper_id,
     sourcePath: source_path,
+    extra: source_ref_extra,
   });
 
   return buildCanonicalChunkRow({
@@ -827,6 +1037,7 @@ async function ingestPdfsEnhanced({
   dryRun = false,
   skipExisting = true,
   continueOnError = true,
+  sourceListJson = null,
 }) {
   const pdfDirs = [PAPERS_DIR, MARK_SCHEMES_DIR];
   let count = 0;
@@ -843,11 +1054,17 @@ async function ingestPdfsEnhanced({
   console.log(`⏭️  跳过已存在: ${skipExisting ? '是' : '否'}`);
   console.log(`🔄 错误继续: ${continueOnError ? '是' : '否'}\n`);
   
-  // 收集所有PDF文件
+  // 收集所有PDF文件。Pilot mode can pass an explicit source list so only approved files are ingested.
   const allFiles = [];
-  for (const base of pdfDirs) {
-    const files = listFilesRecursive(base, ['.pdf']);
-    allFiles.push(...files.map(file => ({ file, base })));
+  if (sourceListJson) {
+    const explicitFiles = readSourceList(sourceListJson);
+    allFiles.push(...explicitFiles.map((file) => ({ file, base: path.dirname(file), explicit: true })));
+    console.log(`📋 使用显式 source list: ${sourceListJson}`);
+  } else {
+    for (const base of pdfDirs) {
+      const files = listFilesRecursive(base, ['.pdf']);
+      allFiles.push(...files.map(file => ({ file, base })));
+    }
   }
   
   console.log(`📂 总共找到 ${allFiles.length} 个PDF文件`);
@@ -941,11 +1158,8 @@ async function ingestPdfsEnhanced({
       console.log(`   🏷️  类型: ${source_type}`);
       console.log(`   🆔 Paper ID: ${paper_id || 'N/A'}`);
 
-      const pages = await extractPdfText(file);
-      const chunks = pages.flatMap((pageText, idx) => {
-        const sub = chunkTextByTokens(pageText, 500, 60);
-        return sub.map((txt) => ({ txt, page: idx + 1 }));
-      });
+      const chunkPlan = await buildPdfChunkPlan(file, metadata, PDF_CHUNK_MODE);
+      const chunks = chunkPlan.chunks;
       
       if (chunks.length === 0) {
         console.log(`   ⚠️  警告: 无法提取文本内容，跳过`);
@@ -953,6 +1167,11 @@ async function ingestPdfsEnhanced({
         recordSourceSummary({
           ...sourceSummary,
           chunk_count: 0,
+          pdf_chunk_mode: chunkPlan.mode,
+          page_count: chunkPlan.page_count,
+          raw_chunk_count: chunkPlan.raw_chunk_count,
+          non_retrieval_chunk_count: chunkPlan.non_retrieval_chunk_count,
+          chunk_kind_counts: chunkPlan.chunk_kind_counts,
           status: 'skipped',
           reason: 'no_content_chunks',
         });
@@ -960,13 +1179,20 @@ async function ingestPdfsEnhanced({
         continue;
       }
 
-      console.log(`   📝 提取内容: ${pages.length} 页 -> ${chunks.length} 个文本块`);
+      console.log(`   📝 提取内容: ${chunkPlan.page_count} 页 -> ${chunks.length} 个可检索文本块`);
+      console.log(`   🧩 Chunk 模式: ${chunkPlan.mode} | 原始块 ${chunkPlan.raw_chunk_count} | 过滤掉 ${chunkPlan.non_retrieval_chunk_count}`);
+      console.log(`   🧭 Chunk 种类: ${JSON.stringify(chunkPlan.chunk_kind_counts)}`);
       
       if (dryRun) { 
         console.log(`   ✅ DRY RUN: 模拟处理完成`);
         recordSourceSummary({
           ...sourceSummary,
           chunk_count: chunks.length,
+          pdf_chunk_mode: chunkPlan.mode,
+          page_count: chunkPlan.page_count,
+          raw_chunk_count: chunkPlan.raw_chunk_count,
+          non_retrieval_chunk_count: chunkPlan.non_retrieval_chunk_count,
+          chunk_kind_counts: chunkPlan.chunk_kind_counts,
           status: 'skipped',
           reason: 'dry_run',
         });
@@ -998,16 +1224,31 @@ async function ingestPdfsEnhanced({
       
       console.log(`   📤 上传文本块和嵌入...`);
       for (let i = 0; i < chunks.length; i++) {
-        const { txt, page } = chunks[i];
+        const {
+          txt,
+          page,
+          question_id,
+          section_id,
+          source_ref_extra,
+          chunk_kind,
+          part_label,
+          mark_labels,
+        } = chunks[i];
         const chunkExtra = {
           kind: 'pdf',
+          chunk_mode: chunkPlan.mode,
+          chunk_kind,
           year,
           session,
           paper_number,
           paper_type,
-             paper_id,
-             original_filename
-           };
+          paper_id,
+          original_filename,
+          question_id,
+          section_id,
+          part_label,
+          mark_labels,
+        };
 
         if (writeModeUsesLegacy()) {
           const chunk = await upsertChunk({ 
@@ -1033,6 +1274,9 @@ async function ingestPdfsEnhanced({
             chunk_index: i,
             page_no: page,
             paper_id,
+            question_id,
+            section_id,
+            source_ref_extra,
           }));
         }
       }
@@ -1043,6 +1287,11 @@ async function ingestPdfsEnhanced({
       recordSourceSummary({
         ...sourceSummary,
         chunk_count: chunks.length,
+        pdf_chunk_mode: chunkPlan.mode,
+        page_count: chunkPlan.page_count,
+        raw_chunk_count: chunkPlan.raw_chunk_count,
+        non_retrieval_chunk_count: chunkPlan.non_retrieval_chunk_count,
+        chunk_kind_counts: chunkPlan.chunk_kind_counts,
         embeddings_generated: embeddings.length,
         status: 'processed',
         legacy_document_id: doc?.id || null,
@@ -1119,6 +1368,7 @@ async function main() {
   const dry = !!argv.dry;
   const skipExisting = argv['skip-existing'] !== false; // 默认为true
   const continueOnError = argv['continue-on-error'] !== false; // 默认为true
+  const sourceListJson = argv['source-list-json'] || null;
 
   if (!doNotes && !doPdf) {
     console.log('Nothing to ingest. Use --notes and/or --pdf');
@@ -1131,6 +1381,8 @@ async function main() {
     console.log('  --continue-on-error   遇到错误时继续处理（默认启用）');
     console.log('  --write-mode canonical|bridge|legacy');
     console.log(`                       当前默认: ${WRITE_MODE}`);
+    console.log(`  --pdf-chunk-mode page_level|question_aware`);
+    console.log(`                       当前默认: ${PDF_CHUNK_MODE}`);
     console.log(`  --corpus-version v1   当前默认: ${CORPUS_VERSION}`);
     console.log(`  --summary-out path    当前默认: ${path.relative(ROOT, SUMMARY_OUT).replace(/\\/g, '/')}`);
     console.log('  --notes               处理Markdown笔记');
@@ -1140,6 +1392,7 @@ async function main() {
   }
 
   console.log(`📦 Canonical write mode: ${WRITE_MODE}`);
+  console.log(`🧩 PDF chunk mode: ${PDF_CHUNK_MODE}`);
   console.log(`🧾 Corpus version: ${CORPUS_VERSION}`);
   console.log(`📝 Summary out: ${path.relative(ROOT, SUMMARY_OUT).replace(/\\/g, '/')}`);
 
@@ -1157,7 +1410,8 @@ async function main() {
       limit: limit || 30, 
       dryRun: dry,
       skipExisting,
-      continueOnError
+      continueOnError,
+      sourceListJson
     });
     
     console.log(`\n📈 最终统计: 成功${result.processed}, 跳过${result.skipped + result.existingSkipped}, 失败${result.errors}`);
@@ -1176,3 +1430,6 @@ main().catch((err) => {
   console.error('Ingestion failed:', err);
   process.exit(1);
 });
+
+
+

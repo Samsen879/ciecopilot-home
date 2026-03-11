@@ -1,0 +1,73 @@
+{
+  "generated_at_utc": "2026-03-10T05:38:41+00:00",
+  "gate_pass": false,
+  "release_blocked": true,
+  "steps": [
+    {
+      "name": "phase1_preflight_post_migration",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/phase1/phase1_preflight_post_migration.json"
+    },
+    {
+      "name": "a1_quality_gate",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/a1/a1_gate_summary.json"
+    },
+    {
+      "name": "a1_topic_link_governance",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/a1/a1_topic_link_governance_summary.json"
+    },
+    {
+      "name": "phase1_fixture_manifest",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/phase1/phase1_e2e_fixture_manifest.json"
+    },
+    {
+      "name": "b1_rubric_gate",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/ms/b1_gate_summary.json"
+    },
+    {
+      "name": "b1_rubric_governance",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/ms/b1_rubric_governance_summary.json"
+    },
+    {
+      "name": "phase1_preflight_post_fixture",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/phase1/phase1_preflight_post_fixture.json"
+    },
+    {
+      "name": "b2_evaluate_v1_smoke",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/phase1/evaluate_v1_smoke_response.json"
+    },
+    {
+      "name": "b2_js_python_parity",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/phase1/b2_parity_summary.json"
+    },
+    {
+      "name": "b3_auto_error_write",
+      "status": "fail",
+      "detail": "missing or invalid: /home/runner/work/ciecopilot-home/ciecopilot-home/runs/phase1/b3_auto_write_summary.json"
+    }
+  ],
+  "failed_steps": [
+    "phase1_preflight_post_migration",
+    "a1_quality_gate",
+    "a1_topic_link_governance",
+    "phase1_fixture_manifest",
+    "b1_rubric_gate",
+    "b1_rubric_governance",
+    "phase1_preflight_post_fixture",
+    "b2_evaluate_v1_smoke",
+    "b2_js_python_parity",
+    "b3_auto_error_write"
+  ],
+  "env": {
+    "MARKING_V1_ENABLED": "true",
+    "MARKING_AUTO_ERROR_WRITE_ENABLED": "true"
+  }
+}

@@ -62,7 +62,7 @@ const arbUuid = fc.uuid().map(u => u.toString());
 
 const VALID_REASONS = [
   'best_match', 'below_threshold', 'borderline_score',
-  'dependency_not_met', 'dependency_error', 'no_match',
+  'dependency_not_met', 'dependency_error', 'no_match', 'uncertain',
 ];
 const arbValidReason = fc.constantFrom(...VALID_REASONS);
 

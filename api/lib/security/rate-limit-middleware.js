@@ -27,7 +27,33 @@ export function resolveRateLimitDescriptor(req, route) {
     profile,
     key,
     actor: userId ? 'user' : 'ip',
+    policyId: route.rateLimitPolicyId || null,
+    routeModule: route.module,
   };
+}
+
+export function applyRateLimitHeaders(res, route, evaluation) {
+  if (!res || !evaluation?.profile || !evaluation?.result) {
+    return;
+  }
+
+  const { actor, policyId, profile, result } = evaluation;
+  const remaining = Number.isFinite(Number(result.remaining))
+    ? Math.max(Number(result.remaining), 0)
+    : 0;
+
+  res.setHeader('X-RateLimit-Limit', String(profile.limit));
+  res.setHeader('X-RateLimit-Remaining', String(remaining));
+  res.setHeader('X-RateLimit-Scope', actor || 'unknown');
+  if (policyId || route?.rateLimitPolicyId) {
+    res.setHeader('X-RateLimit-Policy', String(policyId || route.rateLimitPolicyId));
+  }
+  if (result.store) {
+    res.setHeader('X-RateLimit-Store', String(result.store));
+  }
+  if (result.degraded) {
+    res.setHeader('X-RateLimit-Degraded', 'true');
+  }
 }
 
 export async function applyRateLimitGuard(req, route) {

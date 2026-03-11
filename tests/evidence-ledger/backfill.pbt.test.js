@@ -15,7 +15,7 @@ import {
 
 const VALID_REASONS = [
   'best_match', 'below_threshold', 'borderline_score',
-  'dependency_not_met', 'dependency_error', 'no_match',
+  'dependency_not_met', 'dependency_error', 'no_match', 'uncertain',
 ];
 
 // ── Generators ──────────────────────────────────────────────────────────────

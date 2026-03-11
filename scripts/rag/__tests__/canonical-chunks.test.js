@@ -82,6 +82,35 @@ describe('canonical-chunks', () => {
     });
   });
 
+  test('buildSourceRef includes structured chunk metadata when provided', () => {
+    const ref = buildSourceRef({
+      assetId: 'data/past-papers/9709Mathematics/paper1/9709_w23_qp_13.pdf',
+      questionId: 'Q3a',
+      chunkIndex: 7,
+      paperId: '9709_w23_13',
+      sourcePath: 'data/past-papers/9709Mathematics/paper1/9709_w23_qp_13.pdf',
+      extra: {
+        chunk_kind: 'past_paper_question',
+        part_label: 'a',
+        parent_question_id: 'Q3',
+        mark_labels: [],
+        subchunk_index: 1,
+      },
+    });
+
+    expect(ref).toEqual({
+      asset_id: 'data/past-papers/9709Mathematics/paper1/9709_w23_qp_13.pdf',
+      question_id: 'Q3a',
+      chunk_index: 7,
+      paper_id: '9709_w23_13',
+      source_path: 'data/past-papers/9709Mathematics/paper1/9709_w23_qp_13.pdf',
+      chunk_kind: 'past_paper_question',
+      part_label: 'a',
+      parent_question_id: 'Q3',
+      subchunk_index: 1,
+    });
+  });
+
   test('buildCanonicalChunkRow injects canonical defaults', () => {
     const sourceRef = buildSourceRef({
       assetId: 'src/data/data-notes/9702/ch1.md',

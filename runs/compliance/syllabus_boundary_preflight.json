@@ -1,0 +1,50 @@
+{
+  "generated_at_utc": "2026-03-10T04:55:40+00:00",
+  "db_check_enabled": false,
+  "gate_pass": true,
+  "release_blocked": false,
+  "checks": [
+    {
+      "name": "required_files_exist",
+      "status": "pass",
+      "detail": "all required fixture and migration files present"
+    },
+    {
+      "name": "baseline_schema_is_pre_boundary",
+      "status": "pass",
+      "detail": "baseline schema excludes boundary columns"
+    },
+    {
+      "name": "chunks_migration_adds_boundary_columns",
+      "status": "pass",
+      "detail": "chunks migration adds syllabus_code, topic_path, and fts"
+    },
+    {
+      "name": "curriculum_nodes_migration_has_canonical_guards",
+      "status": "pass",
+      "detail": "curriculum_nodes migration enforces canonical non-unmapped paths"
+    },
+    {
+      "name": "rpc_migration_enforces_topic_boundary",
+      "status": "pass",
+      "detail": "hybrid_search_v2 requires topic_path and excludes unmapped content"
+    },
+    {
+      "name": "seed_sql_covers_expected_syllabuses",
+      "status": "pass",
+      "detail": "9231,9702,9709",
+      "extra": {
+        "syllabus_codes": [
+          "9231",
+          "9702",
+          "9709"
+        ]
+      }
+    },
+    {
+      "name": "seed_sql_contains_unmapped_rows",
+      "status": "pass",
+      "detail": "seed includes unmapped fixture rows"
+    }
+  ]
+}

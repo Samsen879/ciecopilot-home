@@ -44,6 +44,7 @@ describe('writeDecisions()', () => {
         expect.objectContaining({ mark_decision_id: 'md-2', rubric_id: 'r2', reason: 'below_threshold' }),
         expect.objectContaining({ mark_decision_id: 'md-3', rubric_id: 'r3', reason: 'best_match' }),
       ]);
+      expect(result.decisions[0]).not.toHaveProperty('uncertain_reason');
     });
 
     it('returns count matching the number of returned rows', async () => {
@@ -57,6 +58,43 @@ describe('writeDecisions()', () => {
       });
 
       expect(result.count).toBe(1);
+    });
+
+    it('backfills phase2 fields from input decisions when legacy RPC rows omit them', async () => {
+      const decision = {
+        rubric_id: 'r-uncertain',
+        mark_label: 'A1',
+        awarded: false,
+        awarded_marks: 0,
+        reason: 'uncertain',
+        alignment_confidence: 0.91,
+        evidence_spans: [{ step_id: 's1', start: 0, end: 12 }],
+        uncertain_reason: { is_uncertain: true, code: 'uncertain', source_reason: 'uncertain' },
+      };
+      const sb = {
+        rpc: jest.fn().mockResolvedValue({
+          data: [{ mark_decision_id: 'md-legacy', rubric_id: 'r-uncertain' }],
+          error: null,
+        }),
+      };
+
+      const result = await writeDecisions({
+        supabase: sb,
+        mark_run_id: MARK_RUN_ID,
+        decisions: [decision],
+      });
+
+      expect(result.status).toBe('success');
+      expect(result.decisions).toEqual([
+        expect.objectContaining({
+          mark_decision_id: 'md-legacy',
+          rubric_id: 'r-uncertain',
+          reason: 'uncertain',
+          alignment_confidence: 0.91,
+          evidence_spans: [{ step_id: 's1', start: 0, end: 12 }],
+          uncertain_reason: { is_uncertain: true, code: 'uncertain', source_reason: 'uncertain' },
+        }),
+      ]);
     });
   });
 

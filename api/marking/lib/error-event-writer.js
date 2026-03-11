@@ -5,12 +5,14 @@
 // forces user_id = attempts.user_id on INSERT.
 // Requirements: 4.1, 4.2, 4.4, 4.5, 4.6
 
-// ── Reasons that represent structural dependencies, not student errors ──────
-const EXCLUDED_REASONS = new Set(['dependency_not_met', 'dependency_error']);
+// ── Reasons that represent structural gating, not student errors ────────────
+// `uncertain` is emitted when CAO all-or-nothing downgrades an otherwise
+// matched point, so it should not create a separate misconception record.
+const EXCLUDED_REASONS = new Set(['dependency_not_met', 'dependency_error', 'uncertain']);
 
 /**
  * Determine if a mark_decision is an error candidate.
- * Error candidates: awarded === false, excluding structural dependency reasons.
+ * Error candidates: awarded === false, excluding structural gating reasons.
  *
  * @param {object} decision
  * @returns {boolean}

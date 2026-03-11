@@ -2,18 +2,22 @@ import http from 'node:http';
 import { adaptRequestBasics, ensureParsedJsonBody } from './_runtime/request-adapter.js';
 import { adaptResponse } from './_runtime/response-adapter.js';
 import { loadHandler } from './_runtime/handler-loader.js';
-import { findRoute, listRoutes, LEGACY_EXCLUDED_ENDPOINTS } from './_runtime/route-registry.js';
+import {
+  buildGatewayRouteSnapshot,
+  canExposeInternalDiagnostics,
+} from './_runtime/gateway-diagnostics.js';
+import { findRoute, LEGACY_EXCLUDED_ENDPOINTS } from './_runtime/route-registry.js';
 import { errorResponse } from './lib/http/respond.js';
 import { requireAuth } from './lib/security/auth-guard.js';
 import { buildSecurityFailure, sendSecurityFailure } from './lib/security/error-envelope.js';
-import { applyRateLimitGuard } from './lib/security/rate-limit-middleware.js';
+import { applyRateLimitGuard, applyRateLimitHeaders } from './lib/security/rate-limit-middleware.js';
 import { safeLog } from './lib/security/redaction.js';
 
 function parseAllowedOrigins() {
   const raw = process.env.ALLOWED_ORIGINS || 'http://localhost:3000';
   return raw
     .split(',')
-    .map((v) => v.trim())
+    .map((value) => value.trim())
     .filter(Boolean);
 }
 
@@ -52,7 +56,7 @@ function apiInfo() {
     version: '2.0.0',
     status: 'active',
     timestamp: new Date().toISOString(),
-    routes: listRoutes(),
+    gateway: buildGatewayRouteSnapshot({ visibility: 'public' }).summary,
   };
 }
 
@@ -60,9 +64,14 @@ function healthInfo() {
   return {
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
+    liveness: 'alive',
+    readiness: 'ready',
   };
+}
+
+function routesInfo(req) {
+  const visibility = canExposeInternalDiagnostics(req) ? 'internal' : 'public';
+  return buildGatewayRouteSnapshot({ visibility });
 }
 
 function handleInternalRoutes(req, res) {
@@ -75,10 +84,7 @@ function handleInternalRoutes(req, res) {
     return true;
   }
   if (req.path === '/api/routes') {
-    res.status(200).json({
-      routes: listRoutes(),
-      legacy_excluded: LEGACY_EXCLUDED_ENDPOINTS,
-    });
+    res.status(200).json(routesInfo(req));
     return true;
   }
   return false;
@@ -118,10 +124,13 @@ async function applyRateLimitIfNeeded(req, res, route) {
   const evaluation = await applyRateLimitGuard(req, route);
   if (!evaluation) return true;
   const { result } = evaluation;
+  applyRateLimitHeaders(res, route, evaluation);
   if (result.degraded) {
     safeLog('warn', 'rate_limit_degraded', {
       request_id: req.request_id,
       route_module: route.module,
+      policy_id: evaluation.policyId,
+      actor: evaluation.actor,
       store: result.store,
       degrade_reason: result.degrade_reason || null,
     });
@@ -129,6 +138,15 @@ async function applyRateLimitIfNeeded(req, res, route) {
   if (result.allowed) return true;
   const retryAfterSec = Math.max(Math.ceil((result.retryAfterMs || 0) / 1000), 1);
   res.setHeader('Retry-After', String(retryAfterSec));
+  safeLog('warn', 'rate_limit_blocked', {
+    request_id: req.request_id,
+    route_module: route.module,
+    policy_id: evaluation.policyId,
+    actor: evaluation.actor,
+    store: result.store,
+    retry_after_ms: result.retryAfterMs || 0,
+    remaining: result.remaining ?? 0,
+  });
   errorResponse(res, {
     status: 429,
     code: 'rate_limited',
@@ -136,6 +154,10 @@ async function applyRateLimitIfNeeded(req, res, route) {
     request_id: req.request_id,
     details: {
       retry_after_sec: retryAfterSec,
+      policy_id: evaluation.policyId,
+      scope: evaluation.actor,
+      store: result.store || null,
+      degraded: Boolean(result.degraded),
     },
   });
   return false;

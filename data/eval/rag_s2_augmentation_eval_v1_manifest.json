@@ -1,0 +1,66 @@
+{
+  "generated_at": "2026-03-06T08:33:53.730Z",
+  "dataset": "data/eval/rag_s2_augmentation_eval_v1.json",
+  "benchmark_profile": "s2_augmentation_eval_v1",
+  "benchmark_tier": "advisory",
+  "total_cases": 90,
+  "source_dataset": "data/eval/rag_s1_3_forced_retrieval_v1.json",
+  "source_dataset_total_cases": 240,
+  "source_node_count": 30,
+  "target_slices": [
+    "cross_topic",
+    "global_planning",
+    "prerequisite_chain"
+  ],
+  "coverage": {
+    "target_slice": {
+      "cross_topic": 30,
+      "global_planning": 30,
+      "prerequisite_chain": 30
+    },
+    "all_target_slices_covered": true
+  },
+  "strata": {
+    "subject_code": {
+      "9231": 12,
+      "9700": 3,
+      "9702": 6,
+      "9709": 69
+    },
+    "difficulty": {
+      "easy": 30,
+      "medium": 30,
+      "hard": 30
+    },
+    "query_family": {
+      "cross_topic_linking": 30,
+      "global_planning": 30,
+      "prerequisite_chain": 30
+    },
+    "expected_behavior": {
+      "s2_augmentation_candidate": 90
+    },
+    "target_slice": {
+      "cross_topic": 30,
+      "global_planning": 30,
+      "prerequisite_chain": 30
+    }
+  },
+  "run_config": {
+    "script": "scripts/rag/build_s2_augmentation_eval_set.js",
+    "max_nodes": 30,
+    "cases_per_node": 3,
+    "query_families": {
+      "cross_topic": "cross_topic_linking",
+      "global_planning": "global_planning",
+      "prerequisite_chain": "prerequisite_chain"
+    },
+    "output_dataset": "data/eval/rag_s2_augmentation_eval_v1.json",
+    "output_manifest": "data/eval/rag_s2_augmentation_eval_v1_manifest.json"
+  },
+  "notes": [
+    "S2 eval set is augmentation-focused and does not replace S1 default routing.",
+    "All cases are retrieval-targeted and short-circuit is disabled.",
+    "Fallback to S1 is allowed and expected for fail-closed behavior validation."
+  ]
+}

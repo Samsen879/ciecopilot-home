@@ -3,6 +3,13 @@ function toNumber(value, fallback = 0) {
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
+function formatRequiredSourceTypes(context = {}) {
+  const required = Array.isArray(context?.corpus?.required_source_types)
+    ? context.corpus.required_source_types
+    : ['note_md', 'past_paper_pdf', 'mark_scheme_pdf'];
+  return required.join('/');
+}
+
 function buildBlockingReasons(checks = {}, context = {}) {
   const reasons = [];
   if (!checks.nodes_critical_rate) {
@@ -14,7 +21,9 @@ function buildBlockingReasons(checks = {}, context = {}) {
     reasons.push('curriculum_nodes has unresolved critical items in benchmark-covered nodes');
   }
   if (!checks.corpus_required_source_types) {
-    reasons.push('canonical corpus missing required source_type coverage (note_md/past_paper_pdf/mark_scheme_pdf)');
+    reasons.push(
+      `canonical corpus missing required source_type coverage (${formatRequiredSourceTypes(context)})`,
+    );
   }
   if (!checks.corpus_source_ref_resolvability_rate) {
     reasons.push('source_ref resolvability rate below threshold');
@@ -168,6 +177,8 @@ export function renderS13TrustReport({
     '',
     `- Source artifact: \`${sourcePaths.corpusCoverage}\``,
     `- source_type_counts: \`${JSON.stringify(corpusCoverage?.source_type_counts || {})}\``,
+    `- policy_mode: \`${corpusCoverage?.policy?.mode || 'unspecified'}\``,
+    `- policy_required_source_types: \`${JSON.stringify(corpusCoverage?.policy?.required_source_types || corpusCoverage?.required_source_types || [])}\``,
     `- source_ref_resolvability_rate: \`${((toNumber(corpusCoverage?.metrics?.source_ref_resolvability_rate, 0) || 0) * 100).toFixed(2)}%\``,
     `- topic_path_coverage_rate: \`${((toNumber(corpusCoverage?.metrics?.topic_path_coverage_rate, 0) || 0) * 100).toFixed(2)}%\``,
     `- required source types all present: \`${corpusCoverage?.threshold_checks?.required_source_types_all_present}\``,

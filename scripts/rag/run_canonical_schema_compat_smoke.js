@@ -6,7 +6,7 @@ import { summarizeCorpusSchemaCompat } from './lib/corpus-schema-compat.js';
 
 const ROOT = process.cwd();
 const MIGRATION_FILE = path.join(ROOT, 'supabase', 'migrations', '20260302190000_chunks_add_corpus_contract.sql');
-const HYBRID_FILE = path.join(ROOT, 'supabase', 'migrations', '20260118093200_recreate_hybrid_search_v2.sql');
+const HYBRID_FILE = path.join(ROOT, 'supabase', 'migrations', '20260311173000_hybrid_search_v2_add_corpus_version_filter.sql');
 const OUT_JSON = path.join(ROOT, 'runs', 'backend', 'rag_canonical_schema_compat_smoke.json');
 
 function main() {

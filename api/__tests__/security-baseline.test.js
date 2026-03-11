@@ -3,6 +3,32 @@ import request from 'supertest';
 import { consumeRateLimit, _resetRateLimitStoreForTest } from '../lib/security/rate-limit.js';
 import { redact } from '../lib/security/redaction.js';
 
+const FORBIDDEN_DIAGNOSTIC_KEYS = new Set([
+  'authorization_matrix',
+  'requiredRoles',
+  'coverageActors',
+  'verificationStrategies',
+  'rateLimitProfile',
+  'legacy_excluded',
+]);
+
+function collectForbiddenKeys(value, found = []) {
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectForbiddenKeys(item, found));
+    return found;
+  }
+  if (!value || typeof value !== 'object') {
+    return found;
+  }
+  for (const [key, nested] of Object.entries(value)) {
+    if (FORBIDDEN_DIAGNOSTIC_KEYS.has(key)) {
+      found.push(key);
+    }
+    collectForbiddenKeys(nested, found);
+  }
+  return found;
+}
+
 describe('security baseline', () => {
   let server;
 
@@ -39,6 +65,21 @@ describe('security baseline', () => {
       .send({ q: 'test', subject_code: '9709' });
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('auth_required');
+  });
+
+  it('keeps public diagnostics redacted for anonymous callers', async () => {
+    const info = await request(server).get('/api/info').set('Origin', 'http://localhost:3000');
+    const health = await request(server).get('/api/health').set('Origin', 'http://localhost:3000');
+    const routes = await request(server).get('/api/routes').set('Origin', 'http://localhost:3000');
+
+    expect(info.status).toBe(200);
+    expect(health.status).toBe(200);
+    expect(routes.status).toBe(200);
+    expect(info.body.routes).toBeUndefined();
+    expect(routes.body.routes).toBeUndefined();
+    expect(collectForbiddenKeys(info.body)).toEqual([]);
+    expect(collectForbiddenKeys(health.body)).toEqual([]);
+    expect(collectForbiddenKeys(routes.body)).toEqual([]);
   });
 
   it('enforces CORS allowlist and never returns wildcard origin', async () => {

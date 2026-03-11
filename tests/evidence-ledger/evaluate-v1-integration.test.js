@@ -109,6 +109,19 @@ const DECISIONS = [
   { rubric_id: 'r2', mark_label: 'A1', awarded: false, awarded_marks: 0, reason: 'below_threshold' },
 ];
 
+const UNCERTAIN_DECISIONS = [
+  {
+    rubric_id: 'r-cao-1',
+    mark_label: 'A1',
+    awarded: false,
+    awarded_marks: 0,
+    reason: 'uncertain',
+    alignment_confidence: 1,
+    evidence_spans: [{ step_id: 's1', start: 0, end: 3 }],
+    uncertain_reason: { is_uncertain: true, code: 'uncertain', source_reason: 'uncertain' },
+  },
+];
+
 function setupDefaults() {
   mockResolveUserId.mockResolvedValue({ user_id: 'user-001', auth_source: 'jwt' });
 
@@ -224,6 +237,25 @@ describe('evaluate-v1 Evidence Ledger integration', () => {
 
       expect(res._json).not.toHaveProperty('error_book_write_status');
       expect(res._json).not.toHaveProperty('error_book_write_counts');
+    });
+
+    it('passes CAO uncertain decisions and explainability fields through to ledger', async () => {
+      mockRunDecisionEngine.mockReturnValue({ decisions: UNCERTAIN_DECISIONS });
+
+      const req = makeReq({
+        body: {
+          ...makeReq().body,
+          include_uncertain_reason: true,
+        },
+      });
+      const res = makeRes();
+      await handler(req, res);
+
+      expect(res._status).toBe(200);
+      expect(res._json.decisions).toEqual(UNCERTAIN_DECISIONS);
+      expect(mockWriteLedger).toHaveBeenCalledWith(
+        expect.objectContaining({ decisions: UNCERTAIN_DECISIONS }),
+      );
     });
   });
 

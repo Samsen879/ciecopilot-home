@@ -11,7 +11,7 @@ WHERE n.nspname = 'public'
   AND p.proname ILIKE '%search%'
 ORDER BY p.proname;
 
--- 2) Guardrail tests against public.hybrid_search_v2(text, vector(1536), ltree, int, int, int, real, real, int)
+-- 2) Guardrail tests against public.hybrid_search_v2(text, vector(1536), ltree, int, int, int, real, real, int, text[])
 DO $$
 DECLARE
   v_exists boolean;

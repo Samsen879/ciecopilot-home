@@ -63,7 +63,8 @@ CREATE OR REPLACE FUNCTION public.hybrid_search_v2(
   p_key_pool int DEFAULT 50,
   p_w_sem real DEFAULT 0.3,
   p_w_key real DEFAULT 0.7,
-  p_rrf_k int DEFAULT 60
+  p_rrf_k int DEFAULT 60,
+  p_corpus_versions text[] DEFAULT NULL
 )
 RETURNS TABLE (
   id bigint,
@@ -105,6 +106,7 @@ BEGIN
     FROM public.chunks c
     WHERE c.topic_path <@ p_topic_path
       AND c.topic_path <> 'unmapped'::ltree
+      AND (p_corpus_versions IS NULL OR c.corpus_version = ANY(p_corpus_versions))
     ORDER BY (c.embedding <=> p_query_embedding) ASC, c.id ASC
     LIMIT p_dense_pool
   ),
@@ -121,6 +123,7 @@ BEGIN
     FROM public.chunks c
     WHERE c.topic_path <@ p_topic_path
       AND c.topic_path <> 'unmapped'::ltree
+      AND (p_corpus_versions IS NULL OR c.corpus_version = ANY(p_corpus_versions))
       AND c.fts @@ websearch_to_tsquery('english', p_query)
     ORDER BY ts_rank_cd(c.fts, websearch_to_tsquery('english', p_query)) DESC, c.id ASC
     LIMIT p_key_pool

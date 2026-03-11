@@ -1,0 +1,116 @@
+name: RAG S2 Advisory Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/rag_s2_augmentation_eval_v1.json"
+      - "data/eval/rag_s2_augmentation_eval_v1_manifest.json"
+      - ".github/workflows/rag-s2-advisory-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/rag_s2_augmentation_eval_v1.json"
+      - "data/eval/rag_s2_augmentation_eval_v1_manifest.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-s2-advisory:
+    name: S2 Advisory Gate (Non-Blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      VECTOR_EMBEDDING_API_KEY: ${{ secrets.VECTOR_EMBEDDING_API_KEY }}
+      VECTOR_EMBEDDING_BASE_URL: ${{ secrets.VECTOR_EMBEDDING_BASE_URL }}
+      VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL }}
+      VECTOR_EMBEDDING_DIMENSIONS: ${{ secrets.VECTOR_EMBEDDING_DIMENSIONS }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+      CHAT_MODEL: ${{ secrets.CHAT_MODEL }}
+      RAG_S2_ENABLED: "true"
+      RAG_S2_ROUTE_KILL_SWITCH: "false"
+      RAG_S2_ROUTE_RULES_ONLY: "false"
+      RAG_S2_LLM_CLASSIFIER_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run S2 preflight
+        run: node scripts/rag/run_s2_preflight.js
+
+      - name: Build S2 augmentation eval set
+        run: node scripts/rag/build_s2_augmentation_eval_set.js
+
+      - name: Build S2 readiness profile
+        run: node scripts/rag/build_s2_readiness_profile.js
+
+      - name: Run S2 C2 execution checkpoint
+        run: node scripts/rag/run_s2_c2_execution_checkpoint.js
+
+      - name: Run S2 augmentation eval
+        continue-on-error: true
+        run: node scripts/rag/run_s2_augmentation_eval.js
+
+      - name: Run S2 advisory gate
+        if: always()
+        continue-on-error: true
+        run: node scripts/rag/run_s2_advisory_gate.js
+
+      - name: Run S2 release decision
+        if: always()
+        continue-on-error: true
+        run: node scripts/rag/run_s2_release_decision.js
+
+      - name: Run S2 C3 eval checkpoint
+        if: always()
+        continue-on-error: true
+        run: node scripts/rag/run_s2_c3_eval_checkpoint.js
+
+      - name: Verify S1 required workflow invariants
+        if: always()
+        run: node scripts/rag/run_s2_workflow_invariant_check.js
+
+      - name: Run S2 C4 release checkpoint
+        if: always()
+        continue-on-error: true
+        run: node scripts/rag/run_s2_c4_release_checkpoint.js
+
+      - name: Upload S2 advisory artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-s2-advisory-artifacts
+          path: |
+            runs/backend/rag_s2_preflight.json
+            runs/backend/rag_s2_route_classifier_model.json
+            runs/backend/rag_s2_route_classifier_eval.json
+            runs/backend/rag_s2_readiness_profile.json
+            runs/backend/rag_s2_c1_classifier_gate.json
+            runs/backend/rag_s2_c2_execution_checkpoint.json
+            runs/backend/rag_s2_augmentation_eval_summary.json
+            runs/backend/rag_s2_advisory_gate_summary.json
+            runs/backend/rag_s2_release_decision.json
+            runs/backend/rag_s2_c3_eval_checkpoint.json
+            runs/backend/rag_s2_workflow_invariant_check.json
+            runs/backend/rag_s2_c4_release_checkpoint.json
+            data/eval/rag_s2_augmentation_eval_v1.json
+            data/eval/rag_s2_augmentation_eval_v1_manifest.json
+            docs/reports/rag_s2_augmentation_eval_report.md
+            docs/reports/rag_s2_advisory_workflow_and_kill_switch_runbook.md
+          if-no-files-found: ignore

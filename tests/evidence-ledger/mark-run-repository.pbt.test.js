@@ -22,7 +22,7 @@ const arbUuid = fc.uuid().map(u => u.toString());
 /** Valid reason values from the Decision Engine contract */
 const arbReason = fc.constantFrom(
   'best_match', 'below_threshold', 'borderline_score',
-  'dependency_not_met', 'dependency_error', 'no_match',
+  'dependency_not_met', 'dependency_error', 'no_match', 'uncertain',
 );
 
 /** Random non-negative integer for marks (0–20) */

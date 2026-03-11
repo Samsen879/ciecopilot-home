@@ -2,39 +2,28 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { buildGatewayRouteSnapshot } from '../../api/_runtime/gateway-diagnostics.js';
 
 const ROOT = process.cwd();
-const API_DIR = path.join(ROOT, 'api');
 const OUT_DIR = path.join(ROOT, 'runs', 'backend');
 const OUT_FILE = path.join(OUT_DIR, 'preflight_baseline.json');
+const PLATFORM_SURFACE_PATHS = [
+  'api/index.js',
+  'api/_runtime',
+  'api/lib/security',
+  'api/auth',
+  'api/users',
+  'middleware',
+  'api/lib/supabase/client.js',
+];
 
-const MODULE_ENTRYPOINTS = {
-  auth: ['api/auth/index.js'],
-  users: ['api/users/index.js', 'api/users/profile.js', 'api/users/permissions.js'],
-  recommendations: ['api/recommendations/index.js'],
-  community: ['api/community/index.js'],
-  ai: ['api/ai/tutor/chat.js', 'api/ai/analysis/knowledge-gaps.js', 'api/ai/learning/path-generator.js'],
-  rag: ['api/rag/search.js', 'api/rag/chat.js'],
-  marking: ['api/marking/evaluate-v1.js', 'api/marking/evaluate.js'],
-  'error-book': ['api/error-book/index.js', 'api/error-book/[id].js'],
-  evidence: ['api/evidence/context.js'],
-};
+function ensureDir(dir) {
+  fs.mkdirSync(dir, { recursive: true });
+}
 
-function walkJsFiles(dir) {
-  const out = [];
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue;
-      out.push(...walkJsFiles(full));
-      continue;
-    }
-    if (entry.isFile() && entry.name.endsWith('.js')) {
-      out.push(full);
-    }
-  }
-  return out;
+function toPosix(relPath) {
+  return relPath.split(path.sep).join('/');
 }
 
 function read(filePath) {
@@ -45,15 +34,44 @@ function read(filePath) {
   }
 }
 
-function toPosix(relPath) {
-  return relPath.split(path.sep).join('/');
+function walkPlatformFiles() {
+  const files = [];
+  for (const relativePath of PLATFORM_SURFACE_PATHS) {
+    const absolutePath = path.join(ROOT, relativePath);
+    if (!fs.existsSync(absolutePath)) continue;
+    const stat = fs.statSync(absolutePath);
+    if (stat.isFile()) {
+      files.push(absolutePath);
+      continue;
+    }
+    files.push(...walkDirectory(absolutePath));
+  }
+  return [...new Set(files)];
+}
+
+function walkDirectory(dir) {
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (entry.name === '__tests__' || entry.name === 'node_modules' || entry.name.startsWith('.')) {
+        continue;
+      }
+      files.push(...walkDirectory(full));
+      continue;
+    }
+    if (entry.isFile() && entry.name.endsWith('.js')) {
+      files.push(full);
+    }
+  }
+  return files;
 }
 
 function lineCountMatch(content, pattern) {
   let count = 0;
   const lines = content.split(/\r?\n/);
-  for (let i = 0; i < lines.length; i += 1) {
-    if (pattern.test(lines[i])) count += 1;
+  for (const line of lines) {
+    if (pattern.test(line)) count += 1;
   }
   return count;
 }
@@ -71,23 +89,8 @@ function detectModuleFormat(content) {
   return 'plain';
 }
 
-function parseApiIndexRouteBaseline() {
-  const indexPath = path.join(API_DIR, 'index.js');
-  const content = read(indexPath);
-  const availableModules = [...content.matchAll(/case\s+'([^']+)':/g)].map((m) => m[1]);
-  return {
-    file: 'api/index.js',
-    exists: fs.existsSync(indexPath),
-    uses_create_server: /http\.createServer\(/.test(content),
-    uses_split_query_strip: /split\('\?'\)\[0\]/.test(content),
-    under_development_occurrences: lineCountMatch(content, /under_development/),
-    wildcard_cors: /Access-Control-Allow-Origin['"],\s*['"]\*/.test(content),
-    available_modules: [...new Set(availableModules)],
-  };
-}
-
-function buildModuleFormatSnapshot(apiFiles) {
-  const items = apiFiles.map((absPath) => {
+function buildModuleFormatSnapshot(platformFiles) {
+  const items = platformFiles.map((absPath) => {
     const rel = toPosix(path.relative(ROOT, absPath));
     const content = read(absPath);
     return {
@@ -103,29 +106,26 @@ function buildModuleFormatSnapshot(apiFiles) {
 
   return {
     counts,
-    cjs_or_mixed: items.filter((x) => x.format === 'cjs' || x.format === 'mixed'),
+    cjs_or_mixed: items.filter((item) => item.format === 'cjs' || item.format === 'mixed'),
   };
 }
 
-function buildSupabaseInitSnapshot(apiFiles) {
+function buildSupabaseInitSnapshot(platformFiles) {
   const findings = [];
-  for (const absPath of apiFiles) {
+  for (const absPath of platformFiles) {
     const rel = toPosix(path.relative(ROOT, absPath));
     const content = read(absPath);
     if (!/createClient\(/.test(content)) continue;
 
-    const envVars = [...content.matchAll(/process\.env\.([A-Z0-9_]+)/g)].map((m) => m[1]);
+    const envVars = [...content.matchAll(/process\.env\.([A-Z0-9_]+)/g)].map((match) => match[1]);
     const uniqueEnvVars = [...new Set(envVars)];
-    const hasVite = uniqueEnvVars.some((v) => v.startsWith('VITE_'));
-    const usesServiceRole = uniqueEnvVars.includes('SUPABASE_SERVICE_ROLE_KEY') || uniqueEnvVars.includes('SUPABASE_SERVICE_ROLE');
-    const usesAnon = uniqueEnvVars.includes('SUPABASE_ANON_KEY') || uniqueEnvVars.includes('VITE_SUPABASE_ANON_KEY');
-
     findings.push({
       file: rel,
       env_vars: uniqueEnvVars,
-      uses_vite_env: hasVite,
-      uses_service_role: usesServiceRole,
-      uses_anon_key: usesAnon,
+      uses_service_role:
+        uniqueEnvVars.includes('SUPABASE_SERVICE_ROLE_KEY') ||
+        uniqueEnvVars.includes('SUPABASE_SERVICE_ROLE'),
+      uses_anon_key: uniqueEnvVars.includes('SUPABASE_ANON_KEY'),
     });
   }
 
@@ -135,99 +135,98 @@ function buildSupabaseInitSnapshot(apiFiles) {
   };
 }
 
-function hasStrongAuth(content) {
-  return (
-    /\bresolveUserId\s*\(/.test(content) ||
-    /\bauthenticateToken\s*\(/.test(content) ||
-    /\bauthGuard\b/.test(content) ||
-    /\brequireJwt\s*:\s*true/.test(content)
-  );
+function buildRouteBaseline(gatewaySnapshot) {
+  const indexPath = path.join(ROOT, 'api', 'index.js');
+  const content = read(indexPath);
+  return {
+    file: 'api/index.js',
+    exists: fs.existsSync(indexPath),
+    uses_create_server: /http\.createServer\(/.test(content),
+    uses_route_registry: /findRoute\(/.test(content),
+    uses_gateway_diagnostics: /buildGatewayRouteSnapshot\(/.test(content),
+    under_development_occurrences: lineCountMatch(content, /under_development/),
+    wildcard_cors: /Access-Control-Allow-Origin['"],\s*['"]\*/.test(content),
+    route_count: gatewaySnapshot.summary.route_count,
+    protected_route_count: gatewaySnapshot.summary.protected_route_count,
+    public_route_count: gatewaySnapshot.summary.public_route_count,
+    available_modules: gatewaySnapshot.routes.map((route) => route.module),
+  };
 }
 
-function hasTokenInspection(content) {
-  return /Authorization|authorization|Bearer /.test(content);
-}
-
-function hasWildcardCors(content) {
-  return /Access-Control-Allow-Origin['"],\s*['"]\*/.test(content);
-}
-
-function buildSecurityBaseline() {
-  const moduleRows = [];
-  const risks = [];
-
-  for (const [moduleName, files] of Object.entries(MODULE_ENTRYPOINTS)) {
-    const rows = files.map((relFile) => {
-      const abs = path.join(ROOT, relFile);
-      const content = read(abs);
-      return {
-        file: relFile,
-        exists: fs.existsSync(abs),
-        has_strong_auth: hasStrongAuth(content),
-        has_token_inspection: hasTokenInspection(content),
-        wildcard_cors: hasWildcardCors(content),
-      };
-    });
-
-    const authCovered = rows.some((r) => r.has_strong_auth);
-    const tokenInspected = rows.some((r) => r.has_token_inspection);
-    const wildcardCors = rows.some((r) => r.wildcard_cors);
-
-    if (!authCovered && tokenInspected) {
-      risks.push({
-        severity: 'high',
-        module: moduleName,
-        issue: 'token检查存在但缺少统一强认证守卫',
-      });
-    } else if (!authCovered && !tokenInspected) {
-      risks.push({
-        severity: 'critical',
-        module: moduleName,
-        issue: '未发现JWT鉴权实现',
-      });
-    }
-
-    if (wildcardCors) {
-      risks.push({
-        severity: 'high',
-        module: moduleName,
-        issue: '存在Access-Control-Allow-Origin=*',
-      });
-    }
-
-    moduleRows.push({
-      module: moduleName,
-      auth_covered: authCovered,
-      token_inspection_present: tokenInspected,
-      wildcard_cors_present: wildcardCors,
-      files: rows,
-    });
-  }
+function buildSecurityBaselineSnapshot(gatewaySnapshot) {
+  const issues = [
+    ...gatewaySnapshot.summary.routes_missing_explicit_policy.map((module) => ({
+      severity: 'high',
+      module,
+      issue: 'route missing explicit security policy registry entry',
+    })),
+    ...gatewaySnapshot.summary.routes_missing_rate_limit_policy.map((module) => ({
+      severity: 'high',
+      module,
+      issue: 'rate limited route missing rate limit policy id',
+    })),
+    ...gatewaySnapshot.summary.routes_with_unknown_rate_limit_policy.map((item) => ({
+      severity: 'high',
+      module: item,
+      issue: 'route references unknown rate limit policy',
+    })),
+    ...gatewaySnapshot.summary.routes_with_auth_mode_mismatch.map((module) => ({
+      severity: 'high',
+      module,
+      issue: 'route auth mode disagrees with gateway auth setting',
+    })),
+  ];
 
   return {
-    modules: moduleRows,
-    risks,
+    architecture: {
+      mode: 'gateway_centralized',
+      gateway_entry: 'api/index.js',
+      route_registry: 'api/_runtime/route-registry.js',
+      gateway_diagnostics: 'api/_runtime/gateway-diagnostics.js',
+      auth_guard: 'api/lib/security/auth-guard.js',
+      policy_registry: 'api/lib/security/policy-registry.js',
+      rate_limit_guard: 'api/lib/security/rate-limit-middleware.js',
+    },
+    gateway_summary: gatewaySnapshot.summary,
+    route_policies: gatewaySnapshot.routes.map((route) => ({
+      module: route.module,
+      path_prefix: route.pathPrefix,
+      auth: route.auth,
+      auth_mode: route.authMode,
+      explicit_policy: route.explicitPolicy,
+      coverage_actors: route.coverageActors,
+      required_roles: route.requiredRoles,
+      runtime: route.runtime,
+      rate_limit_policy_id: route.rateLimitPolicyId,
+      has_rate_limit: route.hasRateLimit,
+      verification_strategies: route.verificationStrategies,
+    })),
+    risks: issues,
   };
 }
 
-function ensureDir(dir) {
-  fs.mkdirSync(dir, { recursive: true });
-}
+export function buildPreflightBaselineReport() {
+  const gatewaySnapshot = buildGatewayRouteSnapshot({ visibility: 'internal' });
+  const platformFiles = walkPlatformFiles();
 
-function main() {
-  const apiFiles = walkJsFiles(API_DIR);
-
-  const report = {
+  return {
     generated_at: new Date().toISOString(),
-    route_baseline: parseApiIndexRouteBaseline(),
-    module_format_snapshot: buildModuleFormatSnapshot(apiFiles),
-    supabase_init_snapshot: buildSupabaseInitSnapshot(apiFiles),
-    security_baseline_snapshot: buildSecurityBaseline(),
+    route_baseline: buildRouteBaseline(gatewaySnapshot),
+    module_format_snapshot: buildModuleFormatSnapshot(platformFiles),
+    supabase_init_snapshot: buildSupabaseInitSnapshot(platformFiles),
+    security_baseline_snapshot: buildSecurityBaselineSnapshot(gatewaySnapshot),
   };
+}
 
+export function main() {
+  const report = buildPreflightBaselineReport();
   ensureDir(OUT_DIR);
   fs.writeFileSync(OUT_FILE, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   process.stdout.write(`${OUT_FILE}\n`);
 }
 
-main();
+const entryHref = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : null;
+if (entryHref && import.meta.url === entryHref) {
+  main();
+}
+

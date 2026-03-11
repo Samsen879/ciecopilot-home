@@ -78,6 +78,21 @@ describe('decision-engine-v1 FT/StrictFT/CAO + accuracy_policy', () => {
     expect(cao2.awarded).toBe(false);
     expect(cao1.awarded_marks).toBe(0);
     expect(cao2.awarded_marks).toBe(0);
+    expect(cao1.reason).toBe('uncertain');
+    expect(cao2.reason).toBe('below_threshold');
+  });
+
+  it('exposes uncertain_reason for CAO-downgraded points when enabled', () => {
+    const fixture = byId('cao_all_or_nothing_group');
+    const { decisions } = runDecisionEngine({
+      student_steps: fixture.student_steps,
+      rubric_points: fixture.rubric_points,
+      options: { include_uncertain_reason: true },
+    });
+    const cao1 = decisions.find((d) => d.rubric_id === 'r_cao_1');
+    const cao2 = decisions.find((d) => d.rubric_id === 'r_cao_2');
+    expect(cao1.uncertain_reason.code).toBe('uncertain');
+    expect(cao2.uncertain_reason.code).toBe('below_threshold');
   });
 
   it('applies point-level accuracy_policy override', () => {

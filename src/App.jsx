@@ -26,6 +26,7 @@ const Search = React.lazy(() => import('./pages/Search'));
 const LearningPath = React.lazy(() => import('./pages/LearningPath'));
 const CommunityAndRecommendations = React.lazy(() => import('./pages/CommunityAndRecommendations'));
 const QuestionDetail = React.lazy(() => import('./pages/QuestionDetail'));
+const MarkingResult = React.lazy(() => import('./pages/MarkingResult'));
 
 // Subject-specific pages - lazy loaded
 const SubjectSelection = React.lazy(() => import("./pages/SubjectSelection"));
@@ -94,6 +95,7 @@ function ContentWithChatShift() {
               {/* AI Chat Page */}
               <Route path="/ask-ai" element={<div className="container mx-auto p-4"><AskAI /></div>} />
               <Route path="/ai-tutoring" element={<AITutoring />} />
+              <Route path="/marking-result" element={<MarkingResult />} />
               {/* Search Page */}
               <Route path="/search" element={<Search />} />
               {/* Smart Tools */}

@@ -25,7 +25,8 @@
     "api:test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "api:test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:community": "node scripts/test-community-api.js",
-    "test:community:dev": "npm run dev & sleep 5 && npm run test:community"
+    "test:community:dev": "npm run dev & sleep 5 && npm run test:community",
+    "gemini:extract": "node scripts/extract-gemini-page.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.53.1",
@@ -69,6 +70,7 @@
     "node-fetch": "^3.3.2",
     "nodemon": "^3.0.1",
     "pg": "^8.16.3",
+    "playwright": "^1.58.2",
     "postcss": "^8.4.33",
     "supertest": "^6.3.3",
     "tailwindcss": "^3.4.1",

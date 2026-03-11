@@ -14,7 +14,7 @@
  * @param {object[]} params.decisions - Decision Engine output array
  *   Each element: {
  *     rubric_id, mark_label, awarded, awarded_marks, reason,
- *     alignment_confidence?, evidence_spans?
+ *     alignment_confidence?, evidence_spans?, uncertain_reason?
  *   }
  * @returns {Promise<{status: 'success'|'failed', count: number, decisions?: object[], error?: string}>}
  */
@@ -63,6 +63,9 @@ export async function writeDecisions({ supabase, mark_run_id, decisions }) {
         reason: r.reason ?? source.reason ?? null,
         alignment_confidence: r.alignment_confidence ?? source.alignment_confidence ?? null,
         evidence_spans: r.evidence_spans ?? source.evidence_spans ?? [],
+        ...((r.uncertain_reason !== undefined || source.uncertain_reason !== undefined)
+          ? { uncertain_reason: r.uncertain_reason ?? source.uncertain_reason }
+          : {}),
       };
     });
 

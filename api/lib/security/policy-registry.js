@@ -75,6 +75,15 @@ const POLICY_BY_MODULE = Object.freeze({
   },
 });
 
+export function hasExplicitRoutePolicy(routeOrModule) {
+  const moduleName = typeof routeOrModule === 'string' ? routeOrModule : routeOrModule?.module;
+  return Object.prototype.hasOwnProperty.call(POLICY_BY_MODULE, moduleName);
+}
+
+export function listExplicitRoutePolicyModules() {
+  return Object.keys(POLICY_BY_MODULE).sort();
+}
+
 function expectedStatusForActor(actor) {
   switch (actor) {
     case 'anonymous':
@@ -140,3 +149,4 @@ export function buildAuthorizationMatrix(routes) {
   }
   return rows;
 }
+

@@ -16,7 +16,9 @@ export function summarizeCorpusSchemaCompat({
     'CREATE OR REPLACE FUNCTION public.hybrid_search_v2(',
     'p_query text,',
     'p_query_embedding vector(1536),',
-    'p_topic_path ltree',
+    'p_topic_path ltree,',
+    'p_rrf_k int DEFAULT 60,',
+    'p_corpus_versions text[] DEFAULT NULL',
     'RETURNS TABLE (',
     'id bigint,',
     'snippet text,',
@@ -28,6 +30,7 @@ export function summarizeCorpusSchemaCompat({
 
   const missingAdditiveClauses = requiredAdditiveClauses.filter((fragment) => !normalizedMigrationSql.includes(normalize(fragment)));
   const missingHybridFragments = requiredHybridFragments.filter((fragment) => !normalizedHybridSql.includes(normalize(fragment)));
+  const legacySignatureDropPresent = /DROP\s+FUNCTION\s+IF\s+EXISTS\s+public\.hybrid_search_v2\s*\(\s*text\s*,\s*vector\(1536\)\s*,\s*ltree\s*,\s*int\s*,\s*int\s*,\s*int\s*,\s*real\s*,\s*real\s*,\s*int\s*\)\s*;/i.test(hybridSql);
   const destructiveStatements = [
     /DROP\s+COLUMN/i,
     /DROP\s+TABLE\s+public\.chunks/i,
@@ -39,6 +42,7 @@ export function summarizeCorpusSchemaCompat({
   const status =
     missingAdditiveClauses.length === 0 &&
     missingHybridFragments.length === 0 &&
+    legacySignatureDropPresent &&
     destructiveStatements.length === 0
       ? 'pass'
       : 'fail';
@@ -52,7 +56,8 @@ export function summarizeCorpusSchemaCompat({
       destructive_statements: destructiveStatements,
     },
     hybrid_search_checks: {
-      signature_compatible: missingHybridFragments.length === 0,
+      signature_compatible: missingHybridFragments.length === 0 && legacySignatureDropPresent,
+      legacy_signature_drop_present: legacySignatureDropPresent,
       missing_hybrid_fragments: missingHybridFragments,
     },
   };

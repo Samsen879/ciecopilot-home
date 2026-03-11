@@ -11,10 +11,29 @@ describe('corpus-schema-compat', () => {
           ADD COLUMN IF NOT EXISTS content_hash text;
       `,
       hybridSql: `
+        DROP FUNCTION IF EXISTS public.hybrid_search_v2(
+          text,
+          vector(1536),
+          ltree,
+          int,
+          int,
+          int,
+          real,
+          real,
+          int
+        );
         CREATE OR REPLACE FUNCTION public.hybrid_search_v2(
           p_query text,
           p_query_embedding vector(1536),
-          p_topic_path ltree
+          p_topic_path ltree,
+          p_corpus_versions text[] DEFAULT NULL,
+          p_match_count int DEFAULT 12,
+          p_dense_pool int DEFAULT 50,
+          p_key_pool int DEFAULT 50,
+          p_w_sem real DEFAULT 0.3,
+          p_w_key real DEFAULT 0.7,
+          p_rrf_k int DEFAULT 60,
+          p_corpus_versions text[] DEFAULT NULL
         )
         RETURNS TABLE (
           id bigint,
@@ -30,6 +49,7 @@ describe('corpus-schema-compat', () => {
     expect(summary.status).toBe('pass');
     expect(summary.migration_checks.additive_columns_present).toBe(true);
     expect(summary.hybrid_search_checks.signature_compatible).toBe(true);
+    expect(summary.hybrid_search_checks.legacy_signature_drop_present).toBe(true);
   });
 
   test('fails when migration is destructive or hybrid signature drifts', () => {
@@ -39,7 +59,9 @@ describe('corpus-schema-compat', () => {
       `,
       hybridSql: `
         CREATE OR REPLACE FUNCTION public.hybrid_search_v2(
-          p_query text
+          p_query text,
+          p_query_embedding vector(1536),
+          p_topic_path ltree
         )
         RETURNS TABLE (
           id bigint

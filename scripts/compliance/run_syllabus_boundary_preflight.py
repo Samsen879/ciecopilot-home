@@ -21,6 +21,8 @@ REQUIRED_MIGRATIONS = [
     PROJECT_ROOT / "supabase" / "migrations" / "20251223000200_chunks_add_topic_path_fts.sql",
     PROJECT_ROOT / "supabase" / "migrations" / "20251223000300_create_curriculum_nodes.sql",
     PROJECT_ROOT / "supabase" / "migrations" / "20251223000400_rpc_hybrid_search_v2.sql",
+    PROJECT_ROOT / "supabase" / "migrations" / "20260118093200_recreate_hybrid_search_v2.sql",
+    PROJECT_ROOT / "supabase" / "migrations" / "20260311173000_hybrid_search_v2_add_corpus_version_filter.sql",
 ]
 
 
@@ -93,12 +95,21 @@ def _run_file_checks() -> list[dict]:
         )
     )
 
-    migration4 = _read(REQUIRED_MIGRATIONS[3])
+    migration4 = _read(REQUIRED_MIGRATIONS[5])
     checks.append(
         _check(
             "rpc_migration_enforces_topic_boundary",
-            all(token in migration4 for token in ("p_topic_path", "c.topic_path <@ p_topic_path", "c.topic_path <> 'unmapped'::ltree")),
-            "hybrid_search_v2 requires topic_path and excludes unmapped content",
+            all(
+                token in migration4
+                for token in (
+                    "p_topic_path",
+                    "p_corpus_versions",
+                    "c.topic_path <@ p_topic_path",
+                    "c.topic_path <> 'unmapped'::ltree",
+                    "c.corpus_version = ANY(p_corpus_versions)",
+                )
+            ),
+            "hybrid_search_v2 recreates boundary guardrails with corpus-version isolation",
         )
     )
 
@@ -151,7 +162,7 @@ def _run_db_checks() -> list[dict]:
             cur.execute(
                 """
                 SELECT to_regprocedure(
-                    'public.hybrid_search_v2(text, vector(1536), ltree, integer, integer, integer, real, real, integer)'
+                    'public.hybrid_search_v2(text, vector(1536), ltree, integer, integer, integer, real, real, integer, text[])'
                 );
                 """
             )

@@ -22,6 +22,7 @@ const sampleDecisions = [
   { mark_decision_id: 'md-4', rubric_id: 'r4', awarded: false, awarded_marks: 0, reason: 'dependency_not_met' },
   { mark_decision_id: 'md-5', rubric_id: 'r5', awarded: false, awarded_marks: 0, reason: 'dependency_error' },
   { mark_decision_id: 'md-6', rubric_id: 'r6', awarded: true, awarded_marks: 2, reason: 'borderline_score' },
+  { mark_decision_id: 'md-7', rubric_id: 'r7', awarded: false, awarded_marks: 0, reason: 'uncertain' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -77,6 +78,10 @@ describe('isErrorCandidate()', () => {
     expect(isErrorCandidate({ awarded: false, reason: 'dependency_error' })).toBe(false);
   });
 
+  it('returns false for uncertain even when awarded=false', () => {
+    expect(isErrorCandidate({ awarded: false, reason: 'uncertain' })).toBe(false);
+  });
+
   it('returns false when awarded is undefined or null', () => {
     expect(isErrorCandidate({ reason: 'below_threshold' })).toBe(false);
     expect(isErrorCandidate({ awarded: null, reason: 'no_match' })).toBe(false);
@@ -127,8 +132,9 @@ describe('resolveMisconceptionTag()', () => {
 describe('writeErrorEvents()', () => {
   describe('success path', () => {
     it('filters candidates, resolves tags, and inserts error_events', async () => {
-      // Only md-2 (below_threshold) and md-3 (no_match) are candidates
-      // md-1 awarded=true, md-4 dependency_not_met, md-5 dependency_error, md-6 awarded=true
+      // Only md-2 (below_threshold) and md-3 (no_match) are candidates.
+      // md-4/md-5 are structural dependency failures, md-6 is awarded=true,
+      // and md-7 is a structural CAO downgrade.
       const tagChain = {};
       const taxChain = {};
       const insertChain = {};
@@ -219,6 +225,7 @@ describe('writeErrorEvents()', () => {
         mark_decisions: [
           { mark_decision_id: 'md-4', rubric_id: 'r4', awarded: false, reason: 'dependency_not_met' },
           { mark_decision_id: 'md-5', rubric_id: 'r5', awarded: false, reason: 'dependency_error' },
+          { mark_decision_id: 'md-7', rubric_id: 'r7', awarded: false, reason: 'uncertain' },
         ],
       });
       expect(result.status).toBe('success');

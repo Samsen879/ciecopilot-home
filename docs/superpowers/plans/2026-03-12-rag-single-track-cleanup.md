@@ -12,23 +12,25 @@
 
 ## Chunk 1: Runtime Track Removal
 
-### Task 1: Delete obsolete Express RAG runtime and tests
+### Task 1: Delete obsolete runtime surfaces and tests
 
 **Files:**
 - Delete: `apps/api-node/api/rag/index.js`
 - Delete: `apps/api-node/api/rag/chat-v2.js`
+- Delete or hard-disable: `api/ai/tutor/chat.js`
 - Delete: `apps/api-node/api/tests/syllabus-boundary-api-contract.test.js`
 - Delete: `apps/api-node/api/tests/syllabus-boundary-leakage.test.js`
 - Delete: `apps/api-node/api/tests/syllabus-boundary-rpc.test.js`
 - Review for deletion: `apps/api-node/api/services/syllabusSearch.js`
+- Modify: `api/_runtime/route-registry.js`
 - Modify: `docs/setup/README_API.md`
-- Verify references: repository-wide grep for `apps/api-node/api/rag`, `chat-v2`, `/api/rag/chat-v2`
+- Verify references: repository-wide grep for `apps/api-node/api/rag`, `chat-v2`, `/api/rag/chat-v2`, `/api/ai/tutor/chat`
 
 - [ ] **Step 1: Confirm active runtime ownership before deletion**
 
 Run:
 ```powershell
-rg -n "apps/api-node/api/rag|chat-v2|/api/rag/chat-v2" -S .
+rg -n "apps/api-node/api/rag|chat-v2|/api/rag/chat-v2|/api/ai/tutor/chat|ai-tutor" -S .
 Get-Content api/index.js -TotalCount 120
 Get-Content api/_runtime/route-registry.js -TotalCount 220
 ```
@@ -39,13 +41,14 @@ Expected:
 
 - [ ] **Step 2: Remove obsolete runtime files and legacy boundary tests**
 
-Delete only the files listed above, plus `apps/api-node/api/services/syllabusSearch.js` if no remaining active references exist after Step 1.
+Delete only the files listed above, plus `apps/api-node/api/services/syllabusSearch.js` if no remaining active references exist after Step 1. Remove the `/api/ai/tutor/chat` route from the active registry so `/api/routes` no longer exposes it.
 
 - [ ] **Step 3: Rewrite active API documentation**
 
 Update `docs/setup/README_API.md` so it no longer:
 - advertises historical compatibility runtime under `apps/api-node/api`
 - references `/api/rag/chat-v2`
+- references `/api/ai/tutor/chat` as part of the active RAG surface
 - presents old migration ordering as the active setup path if it is no longer current
 
 - [ ] **Step 4: Run targeted runtime verification**
@@ -81,6 +84,7 @@ git commit -m "refactor: remove obsolete express rag runtime"
 - Delete: `scripts/rag/lib/corpus-unification.js`
 - Delete: `scripts/rag/__tests__/corpus-reconciliation.test.js`
 - Delete: `scripts/rag/__tests__/corpus-unification.test.js`
+- Modify: `scripts/rag_ingest.js`
 - Modify if needed: docs or helper scripts that reference the removed files
 
 - [ ] **Step 1: Prove these scripts are legacy-only**
@@ -93,16 +97,26 @@ rg -n "run_legacy_route_governance|run_corpus_unification_preflight|run_corpus_r
 Expected:
 - hits are limited to legacy governance/reporting/doc references
 - active `api/rag/**` runtime does not import these files
+- `scripts/rag_ingest.js` is identified as active and therefore must be simplified, not deleted
 
 - [ ] **Step 2: Remove the legacy-table tooling and their direct tests**
 
 Delete the files listed above.
 
-- [ ] **Step 3: Clean remaining references**
+- [ ] **Step 3: Simplify active ingest entrypoint to canonical-only**
+
+Update `scripts/rag_ingest.js` so active commands no longer expose `legacy` or `bridge` write modes.
+
+Requirements:
+- canonical mode remains supported
+- removed modes fail fast with a clear error if explicitly requested
+- package scripts still point to the retained ingest entrypoint
+
+- [ ] **Step 4: Clean remaining references**
 
 Update or delete docs/report pointers that still present these scripts as required active tooling.
 
-- [ ] **Step 4: Run targeted current-tooling verification**
+- [ ] **Step 5: Run targeted current-tooling verification**
 
 Run:
 ```powershell
@@ -113,7 +127,7 @@ Expected:
 - Jest exits `0`
 - current canonical/chunks/S2 script chain still passes
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```powershell
 git add -A
@@ -135,7 +149,7 @@ git commit -m "refactor: remove legacy rag bridge tooling"
 
 Run:
 ```powershell
-rg -n "apps/api-node/api/rag|chat-v2|rag_documents|rag_chunks|rag_embeddings|run_legacy_route_governance|run_corpus_unification_preflight|run_corpus_reconciliation|run_corpus_chain_inventory|check-rag-status" -S docs package.json scripts api src
+rg -n "apps/api-node/api/rag|chat-v2|/api/ai/tutor/chat|rag_documents|rag_chunks|rag_embeddings|run_legacy_route_governance|run_corpus_unification_preflight|run_corpus_reconciliation|run_corpus_chain_inventory|check-rag-status" -S docs package.json scripts api src
 ```
 
 Expected:
@@ -146,6 +160,7 @@ Expected:
 Ensure current docs consistently say:
 - active runtime is `api/index.js` + `api/rag/**`
 - current backend RAG data path is canonical/chunks + `hybrid_search_v2`
+- `/api/ai/tutor/chat` is no longer part of the active RAG surface
 - removed legacy runtime/tooling are not part of active setup
 
 - [ ] **Step 3: Keep migration history, but remove misleading setup guidance**
@@ -157,7 +172,7 @@ Do update docs so engineers are not told to bootstrap the old `rag_documents/rag
 
 Run:
 ```powershell
-rg -n "apps/api-node/api/rag|/api/rag/chat-v2|run_legacy_route_governance|run_corpus_unification_preflight|run_corpus_reconciliation|run_corpus_chain_inventory|check-rag-status" -S .
+rg -n "apps/api-node/api/rag|/api/rag/chat-v2|/api/ai/tutor/chat|run_legacy_route_governance|run_corpus_unification_preflight|run_corpus_reconciliation|run_corpus_chain_inventory|check-rag-status" -S .
 ```
 
 Expected:

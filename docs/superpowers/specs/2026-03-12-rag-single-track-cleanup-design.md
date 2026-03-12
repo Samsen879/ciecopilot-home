@@ -12,12 +12,15 @@ This cleanup will keep:
 
 - `api/index.js`
 - `api/rag/**`
+- the RAG internals still used by active routes after cleanup
 - the current `scripts/rag/**` path that supports canonical chunks, `hybrid_search_v2`, S1/S2 evaluation, corpus coverage, and current ingestion
+- `scripts/rag_ingest.js`, but only after simplifying it to canonical-only behavior
 - current schema history required by the active canonical/chunks search path
 
 This cleanup will remove:
 
 - obsolete RAG runtime under `apps/api-node/api/rag/**`
+- obsolete tutor compatibility runtime under `api/ai/tutor/chat.js`
 - obsolete operational scripts that still target `rag_documents`, `rag_chunks`, and `rag_embeddings`
 - obsolete tests that only validate removed runtime behavior
 - misleading docs that present old endpoints, old runtime, or old table chains as active
@@ -34,6 +37,8 @@ The repository currently carries two parallel RAG stories:
 
 1. The active gateway/runtime in `api/` using `api/rag/**`.
 2. A historical Express-based RAG implementation under `apps/api-node/api/rag/**`.
+
+There is also a lingering compatibility route under `api/ai/tutor/chat.js` that still serves legacy RAG behavior and prevents the repository from having one clean runtime story.
 
 There is a similar split in tooling:
 
@@ -61,10 +66,11 @@ Why this approach:
 ### Group A: Remove Obsolete Runtime
 
 Delete the legacy RAG runtime tree under `apps/api-node/api/rag/**`.
+Retire the compatibility tutor route under `api/ai/tutor/chat.js`.
 
 Expected result:
 
-- only `api/rag/**` remains as the RAG backend runtime
+- only `api/rag/**` remains as the active RAG backend runtime surface
 - the repository no longer carries two runnable RAG server implementations
 
 ### Group B: Remove Legacy-Table / Bridge Tooling
@@ -82,6 +88,8 @@ Examples already identified:
 - `scripts/rag/lib/corpus-unification.js`
 
 Potentially remove or simplify additional files only if their primary purpose is legacy bridge analysis rather than active runtime support.
+
+In addition, simplify `scripts/rag_ingest.js` so the active ingestion entrypoint no longer exposes `legacy` or `bridge` write modes.
 
 Expected result:
 
@@ -109,6 +117,7 @@ Expected result:
 
 - no doc points engineers toward `apps/api-node/api/rag/**`
 - no doc presents `rag_documents/rag_chunks/rag_embeddings` as the active search chain
+- `/api/routes` no longer exposes `/api/ai/tutor/chat`
 
 ## Migration Policy
 
@@ -156,7 +165,9 @@ The cleanup is successful when all of the following are true:
 
 - `api/rag/**` is the only active RAG runtime path in the repository
 - obsolete `apps/api-node/api/rag/**` code is gone
+- obsolete `api/ai/tutor/chat.js` compatibility route is gone or hard-disabled
 - obsolete legacy-table governance scripts are gone
+- `scripts/rag_ingest.js` no longer offers legacy/bridge write modes
 - active docs describe only the current runtime and current data chain
 - the current backend RAG tests still pass
 - no active command, doc, or check encourages engineers to use removed legacy paths

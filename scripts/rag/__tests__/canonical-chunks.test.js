@@ -23,26 +23,17 @@ describe('canonical-chunks', () => {
     expect(computeContentHash('same content')).not.toBe(computeContentHash('other content'));
   });
 
-  test('normalizeWriteMode defaults to bridge and rejects unknown modes', () => {
-    expect(normalizeWriteMode()).toBe('bridge');
+  test('normalizeWriteMode defaults to canonical and rejects unknown modes', () => {
+    expect(normalizeWriteMode()).toBe('canonical');
     expect(normalizeWriteMode('CANONICAL')).toBe('canonical');
-    expect(() => normalizeWriteMode('graph')).toThrow('Unsupported canonical write mode');
+    expect(() => normalizeWriteMode('bridge')).toThrow('Unsupported canonical write mode');
+    expect(() => normalizeWriteMode('legacy')).toThrow('Unsupported canonical write mode');
   });
 
-  test('describeWriteModeTargets keeps legacy and canonical modes separated', () => {
-    expect(describeWriteModeTargets('legacy')).toEqual({
-      mode: 'legacy',
-      writesLegacy: true,
-      writesCanonical: false,
-    });
+  test('describeWriteModeTargets is canonical-only', () => {
     expect(describeWriteModeTargets('canonical')).toEqual({
       mode: 'canonical',
       writesLegacy: false,
-      writesCanonical: true,
-    });
-    expect(describeWriteModeTargets('bridge')).toEqual({
-      mode: 'bridge',
-      writesLegacy: true,
       writesCanonical: true,
     });
   });

@@ -20,7 +20,6 @@ const TopicDetail = React.lazy(() => import("./pages/TopicDetail"));
 const PhysicsASLevel = React.lazy(() => import("./pages/PhysicsASLevel"));
 const PhysicsA2Level = React.lazy(() => import("./pages/PhysicsA2Level"));
 const StudyHub = React.lazy(() => import("./pages/StudyHub"));
-const AITutoring = React.lazy(() => import("./pages/AITutoring"));
 const SubjectPage = React.lazy(() => import('./pages/SubjectPage'));
 const Search = React.lazy(() => import('./pages/Search'));
 const LearningPath = React.lazy(() => import('./pages/LearningPath'));
@@ -93,7 +92,6 @@ function ContentWithChatShift() {
               <Route path="/physics/a2-level" element={<PhysicsA2Level />} />
               {/* AI Chat Page */}
               <Route path="/ask-ai" element={<div className="container mx-auto p-4"><AskAI /></div>} />
-              <Route path="/ai-tutoring" element={<AITutoring />} />
               {/* Search Page */}
               <Route path="/search" element={<Search />} />
               {/* Smart Tools */}

@@ -26,10 +26,10 @@ async function main() {
 
   const protectedPaths = [
     '/api/rag/search',
-    '/api/rag/chat',
-    '/api/ai/tutor/chat',
+    '/api/rag/ask',
     '/api/ai/analysis/knowledge-gaps',
     '/api/ai/learning/path-generator',
+    '/api/marking/evaluate-v1',
     '/api/recommendations',
     '/api/community',
     '/api/error-book',

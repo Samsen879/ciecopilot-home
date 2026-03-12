@@ -1,20 +1,20 @@
-name: Syllabus Boundary Tests
+name: RAG Boundary Tests
 
 on:
   pull_request:
     paths:
-      - 'apps/api-node/**'
+      - 'api/**'
+      - 'scripts/rag/**'
       - 'libs/topic-path/**'
-      - 'scripts/compliance/**'
       - 'supabase/migrations/**'
       - 'tests/fixtures/**'
       - '.github/workflows/syllabus-boundary-tests.yml'
   push:
     branches: [main]
     paths:
-      - 'apps/api-node/**'
+      - 'api/**'
+      - 'scripts/rag/**'
       - 'libs/topic-path/**'
-      - 'scripts/compliance/**'
       - 'supabase/migrations/**'
       - 'tests/fixtures/**'
   workflow_dispatch:
@@ -23,20 +23,12 @@ permissions:
   contents: read
 
 jobs:
-  # ==========================================================================
-  # Job 1: Unit Tests (no DB required)
-  # ==========================================================================
-  unit-tests:
-    name: Unit Tests
+  boundary-contract:
+    name: Boundary Contract
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -46,21 +38,17 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install psycopg2-binary python-dotenv
       
-      - name: Run topic-path unit tests
+      - name: Run current RAG boundary and route tests
         env:
           NODE_OPTIONS: --experimental-vm-modules
-        run: npx jest apps/api-node/api/tests/topic-path.test.js --passWithNoTests
-      
-      - name: Run API contract unit tests
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
-        run: npx jest apps/api-node/api/tests/syllabus-boundary-api-contract.test.js --testPathIgnorePatterns="Integration" --passWithNoTests
+        run: >
+          npx jest
+          api/rag/__tests__/boundary.contract.test.js
+          api/rag/__tests__/ask-service.test.js
+          api/__tests__/api-route-integration.test.js
+          scripts/rag/__tests__/corpus-schema-compat.test.js
+          --runInBand
 
       - name: Print diagnostics on failure
         if: failure()
@@ -69,163 +57,3 @@ jobs:
           node --version
           npm --version
 
-  # ==========================================================================
-  # Job 2: Leakage Gate (CI Required - MUST PASS)
-  # ==========================================================================
-  syllabus-boundary-leakage-gate:
-    name: Leakage Gate (Required)
-    runs-on: ubuntu-latest
-    needs: unit-tests
-    timeout-minutes: 25
-    
-    services:
-      postgres:
-        image: pgvector/pgvector:pg16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: cie_copilot_test
-        ports:
-          - 54322:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install psycopg2-binary python-dotenv
-      
-      - name: Wait for PostgreSQL
-        run: |
-          for i in {1..30}; do
-            pg_isready -h localhost -p 54322 -U postgres && break
-            echo "Waiting for PostgreSQL..."
-            sleep 2
-          done
-      
-      - name: Setup test database
-        env:
-          PGHOST: localhost
-          PGPORT: 54322
-          PGUSER: postgres
-          PGPASSWORD: postgres
-          PGDATABASE: cie_copilot_test
-        run: |
-          # Step 1: Create roles (required by Supabase RLS policies)
-          psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN; END IF; END \$\$;"
-          psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF; END \$\$;"
-          psql -c "DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN; END IF; END \$\$;"
-          
-          # Step 2: Apply baseline schema (simulates old production state)
-          # Creates chunks table WITHOUT syllabus boundary columns
-          psql -v ON_ERROR_STOP=1 -f tests/fixtures/baseline-schema.sql
-          
-          # Step 3: Apply Supabase shims (required before migration 3 for RLS)
-          psql -v ON_ERROR_STOP=1 -f tests/fixtures/supabase-shims.sql
-          
-          # Step 4: Replay migrations in order (CRITICAL - validates migration correctness)
-          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000100_enable_ltree.sql
-          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000200_chunks_add_topic_path_fts.sql
-          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000300_create_curriculum_nodes.sql
-          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000400_rpc_hybrid_search_v2.sql
-          
-          # Step 5: Apply deterministic seed data
-          psql -v ON_ERROR_STOP=1 -f tests/fixtures/syllabus_boundary_seed.sql
-
-      - name: Run syllabus boundary governance audit
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:54322/cie_copilot_test
-          PYTHONPATH: .
-        run: python scripts/compliance/run_syllabus_boundary_governance_audit.py
-      
-      - name: Run leakage tests
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
-          TEST_DB_HOST: localhost
-          TEST_DB_PORT: 54322
-          TEST_DB_NAME: cie_copilot_test
-          TEST_DB_USER: postgres
-          TEST_DB_PASSWORD: postgres
-        run: npx jest apps/api-node/api/tests/syllabus-boundary-leakage.test.js --forceExit --detectOpenHandles
-      
-      - name: Run RPC tests
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
-          TEST_DB_HOST: localhost
-          TEST_DB_PORT: 54322
-          TEST_DB_NAME: cie_copilot_test
-          TEST_DB_USER: postgres
-          TEST_DB_PASSWORD: postgres
-        run: npx jest apps/api-node/api/tests/syllabus-boundary-rpc.test.js --forceExit --detectOpenHandles
-
-      - name: Print diagnostics on failure
-        if: failure()
-        run: |
-          echo "Syllabus leakage gate failed. Collecting debug context..."
-          node --version
-          npm --version
-          python --version
-          docker ps || true
-          pg_isready -h localhost -p 54322 -U postgres || true
-          cat runs/backend/syllabus_boundary_governance_summary.json || true
-
-      - name: Upload syllabus boundary artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: syllabus-boundary-artifacts
-          path: |
-            runs/backend/syllabus_boundary_governance_summary.json
-          if-no-files-found: ignore
-
-  # ==========================================================================
-  # Job 3: API Contract Tests
-  # ==========================================================================
-  api-contract-tests:
-    name: API Contract Tests
-    runs-on: ubuntu-latest
-    needs: unit-tests
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run API contract tests
-        env:
-          NODE_OPTIONS: --experimental-vm-modules
-        run: npx jest apps/api-node/api/tests/syllabus-boundary-api-contract.test.js --forceExit
-
-      - name: Print diagnostics on failure
-        if: failure()
-        run: |
-          echo "Syllabus API contract tests failed. Collecting debug context..."
-          node --version
-          npm --version

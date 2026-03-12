@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { enhanceMessageWithRAG } from '../api/ragApi';
+import { ragApi } from '../api/ragApi';
 
 export const useChat = (initialMessages = []) => {
   const [messages, setMessages] = useState(
@@ -25,38 +25,21 @@ export const useChat = (initialMessages = []) => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Call OpenAI API through our backend endpoint with RAG enhancement
-  const getAIResponse = useCallback(async (userMessage) => {
+  // Call the current ask endpoint through the RAG compatibility adapter.
+  const getAIResponse = useCallback(async (conversationMessages) => {
     try {
-      // Enhance the message with RAG context if applicable
-      const enhancedMessage = await enhanceMessageWithRAG(userMessage);
-      
-      const response = await fetch('/api/rag/ask', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: enhancedMessage,
-        }),
+      const response = await ragApi.chat({
+        messages: conversationMessages.map((message) => ({
+          role: message.type === 'user' ? 'user' : 'assistant',
+          content: message.content,
+        })),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        
-        // Use user-friendly error message if available
-        const userMessage = errorData.userMessage || errorData.message || 'AI服务暂时不可用，请稍后重试。';
-        throw new Error(userMessage);
-      }
-
-      const data = await response.json();
-      
-      if (typeof data?.answer !== 'string' || data.answer.length === 0) {
+      if (typeof response?.answer !== 'string' || response.answer.length === 0) {
         throw new Error('AI回答格式异常，请重新提问。');
       }
-      
-      return data.answer || "抱歉，我无法生成回答，请重新提问。";
+
+      return response.answer || "抱歉，我无法生成回答，请重新提问。";
       
     } catch (error) {
       console.error('Error calling AI API:', error);
@@ -69,7 +52,7 @@ export const useChat = (initialMessages = []) => {
       // Return the error message (which should be user-friendly from API)
       throw new Error(error.message || "AI服务遇到问题，请稍后重试。");
     }
-  }, [messages]);
+  }, []);
 
   // Send a message
   const sendMessage = useCallback(async (content) => {
@@ -82,12 +65,13 @@ export const useChat = (initialMessages = []) => {
       timestamp: new Date().toLocaleTimeString()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const nextMessages = [...messages, userMessage];
+    setMessages(nextMessages);
     setIsTyping(true);
     setError(null);
 
     try {
-      const aiContent = await getAIResponse(content.trim());
+      const aiContent = await getAIResponse(nextMessages);
       const aiResponse = {
         id: Date.now() + 1,
         type: 'ai',
@@ -110,7 +94,7 @@ export const useChat = (initialMessages = []) => {
     } finally {
       setIsTyping(false);
     }
-  }, [getAIResponse]);
+  }, [getAIResponse, messages]);
 
   // Clear chat history
   const clearMessages = useCallback(() => {

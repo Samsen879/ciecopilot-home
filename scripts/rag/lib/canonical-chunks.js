@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-export const CANONICAL_WRITE_MODES = Object.freeze(['legacy', 'bridge', 'canonical']);
+export const CANONICAL_WRITE_MODES = Object.freeze(['canonical']);
 
 function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -30,7 +30,7 @@ export function computeContentHash(content) {
 }
 
 export function normalizeWriteMode(mode) {
-  const normalized = String(mode || 'bridge').trim().toLowerCase();
+  const normalized = String(mode || 'canonical').trim().toLowerCase();
   if (!CANONICAL_WRITE_MODES.includes(normalized)) {
     throw new Error(`Unsupported canonical write mode: ${mode}`);
   }
@@ -41,8 +41,8 @@ export function describeWriteModeTargets(mode) {
   const normalized = normalizeWriteMode(mode);
   return {
     mode: normalized,
-    writesLegacy: normalized === 'legacy' || normalized === 'bridge',
-    writesCanonical: normalized === 'canonical' || normalized === 'bridge',
+    writesLegacy: false,
+    writesCanonical: true,
   };
 }
 

@@ -41,31 +41,6 @@ async function postJson(path, body, init = {}) {
 	return data;
 }
 
-export async function tutorChat(payload, init) {
-	const body = payload || {};
-	const question = typeof body.message === 'string' ? body.message : '';
-	const subjectCode = body?.context?.subject_code || body?.subject_code || null;
-	const topicId = body?.context?.topic_id || body?.topic_id || null;
-	const response = await postJson('/api/rag/ask', {
-		query: question,
-		subject_code: subjectCode,
-		syllabus_node_id: topicId
-	}, init);
-
-	return {
-		success: true,
-		response: {
-			content: response?.answer || '',
-			confidence: response?.uncertain ? 0 : 1,
-			citations: response?.evidence || []
-		},
-		knowledge_gaps: [],
-		suggestions: [],
-		request_id: response?.request_id || null,
-		retrieval_version: response?.retrieval_version || null
-	};
-}
-
 export async function generateLearningPath(payload, init) {
 	return postJson('/api/ai/learning/path-generator', payload, init);
 }
@@ -78,7 +53,7 @@ export function getStreamSupportHeader(headers) {
 	return null;
 }
 
-export default { tutorChat, generateLearningPath, getStreamSupportHeader };
+export default { generateLearningPath, getStreamSupportHeader };
 
 
 

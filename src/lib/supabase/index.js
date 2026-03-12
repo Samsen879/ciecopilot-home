@@ -24,7 +24,7 @@ export {
   markRecommendationAsCompleted,
   getUserLearningAnalytics,
   createLearningAnalyticsEntry
-} from './aiTutoringQueries.js';
+} from './recommendationQueries.js';
 
 // 错误处理
 export {
@@ -46,7 +46,7 @@ import {
   markRecommendationAsCompleted,
   getUserLearningAnalytics,
   createLearningAnalyticsEntry
-} from './aiTutoringQueries.js';
+} from './recommendationQueries.js';
 
 /**
  * 包装所有查询函数，添加统一错误处理

@@ -8,7 +8,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 // 提供一个在未配置时的“空实现”，避免因抛错导致页面白屏
 function createSupabaseStub() {
   const notConfiguredError = new Error(
-    'Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local.'
+    'Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.'
   )
 
   const noopPromise = (data = null, error = null) =>
@@ -66,7 +66,7 @@ export const supabase = isSupabaseConfigured
     })
   : (() => {
       console.warn(
-        'Missing Supabase environment variables. Running with a no-op Supabase client. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local to enable Supabase.'
+        'Missing Supabase environment variables. Running with a no-op Supabase client. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env to enable Supabase.'
       )
       return createSupabaseStub()
     })()

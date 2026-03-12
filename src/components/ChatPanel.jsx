@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { ragApi } from '../api/ragApi';
 import { useAIContext } from '../context/AIContext';
 import { PureMultimodalInput } from './ui/multimodal-ai-chat-input';
 
 export default function ChatPanel() {
+  const location = useLocation();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('What is the relation between E and V?');
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ export default function ChatPanel() {
     setError('');
 
     try {
-      const res = await ragApi.chat({ messages: next, subject_code: '9702' }, { signal: controllerRef.current.signal });
+      const res = await ragApi.chat({ messages: next, route_pathname: location.pathname }, { signal: controllerRef.current.signal });
       setMessages([...next, { role: 'assistant', content: res.answer, citations: res.citations }]);
       if (contextSegments.length) clearContextSegments();
       if (attachments.length) setAttachments([]);

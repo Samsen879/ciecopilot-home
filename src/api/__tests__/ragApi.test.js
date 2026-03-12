@@ -52,6 +52,34 @@ describe('ragApi chat compatibility adapter', () => {
     expect(payload.syllabus_node_id).toBe('9702');
   });
 
+  test('uses route subject scope for floating chat when no explicit subject is passed', () => {
+    const payload = buildAskChatPayload({
+      messages: [{ role: 'user', content: 'How does this topic work?' }],
+      route_pathname: '/topics/physics',
+    });
+
+    expect(payload.subject_code).toBe('9702');
+    expect(payload.syllabus_node_id).toBe('9702');
+  });
+
+  test('infers subject from question text instead of defaulting to mathematics', () => {
+    const payload = buildAskChatPayload({
+      messages: [{ role: 'user', content: 'What is the relation between E and V?' }],
+    });
+
+    expect(payload.subject_code).toBe('9702');
+    expect(payload.syllabus_node_id).toBe('9702');
+  });
+
+  test('returns null scope when neither route nor question reveals a subject', () => {
+    const payload = buildAskChatPayload({
+      messages: [{ role: 'user', content: 'Help me make a revision plan.' }],
+    });
+
+    expect(payload.subject_code).toBeNull();
+    expect(payload.syllabus_node_id).toBeNull();
+  });
+
   test('posts chat requests through /api/rag/ask and returns current-response-compatible fields', async () => {
     global.fetch.mockResolvedValue({
       ok: true,

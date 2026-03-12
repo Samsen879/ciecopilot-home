@@ -1,7 +1,10 @@
+import { resolveChatScope } from './chatScope.js';
+
 const META_ENV = import.meta.env || {};
 const RAG_API_BASE = META_ENV.VITE_RAG_API_BASE || '/api/rag';
 const DEFAULT_TIMEOUT = Number(META_ENV.VITE_RAG_API_TIMEOUT || 30000);
 export const DEFAULT_RAG_SUBJECT_CODE = META_ENV.VITE_DEFAULT_SUBJECT_CODE || '9709';
+export const MISSING_CHAT_SCOPE_ERROR = 'Please specify the subject in your question or open chat from a subject page.';
 
 function sleep(ms) { return new Promise((res) => setTimeout(res, ms)); }
 
@@ -40,15 +43,6 @@ function normalizeChatMessages(messages = []) {
     .filter((message) => message.content.length > 0);
 }
 
-function isLikelySyllabusNodeId(candidate, subjectCode) {
-  const value = String(candidate || '').trim();
-  const subject = String(subjectCode || '').trim();
-  if (!value) return false;
-  if (subject && value === subject) return true;
-  if (subject && value.startsWith(`${subject}.`)) return true;
-  return /^\d{4}(?:\.|$)/.test(value) && !/\s/.test(value);
-}
-
 export function buildAskChatPayload(params = {}) {
   const normalizedMessages = normalizeChatMessages(params.messages);
   const latestUserIndex = [...normalizedMessages].map((message) => message.role).lastIndexOf('user');
@@ -56,12 +50,6 @@ export function buildAskChatPayload(params = {}) {
   const conversationContext = latestUserIndex > 0
     ? normalizedMessages.slice(Math.max(0, latestUserIndex - 5), latestUserIndex)
     : [];
-
-  const subjectCode = String(params.subject_code || DEFAULT_RAG_SUBJECT_CODE).trim();
-  const requestedBoundary = params.syllabus_node_id ?? params.topic_id ?? null;
-  const syllabusNodeId = isLikelySyllabusNodeId(requestedBoundary, subjectCode)
-    ? String(requestedBoundary).trim()
-    : subjectCode;
 
   let query = String(params.query || '').trim();
   if (latestUserMessage?.content) {
@@ -74,10 +62,16 @@ export function buildAskChatPayload(params = {}) {
     }
   }
 
+  const scope = resolveChatScope({
+    ...params,
+    messages: normalizedMessages,
+    query,
+  });
+
   return {
     query,
-    subject_code: subjectCode,
-    syllabus_node_id: syllabusNodeId,
+    subject_code: scope.subject_code,
+    syllabus_node_id: scope.syllabus_node_id,
     lang: params.lang || 'en',
   };
 }
@@ -156,6 +150,10 @@ export function createRagApi() {
     async chat(params = {}, options = {}) {
       const { signal } = options;
       const body = buildAskChatPayload(params);
+
+      if (!body.syllabus_node_id) {
+        throw new Error(MISSING_CHAT_SCOPE_ERROR);
+      }
 
       return withRetry(async () => {
         const resp = await fetchWithTimeout(`${RAG_API_BASE}/ask`, {

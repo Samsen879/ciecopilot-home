@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ragApi } from '../api/ragApi';
 
-export const useChat = (initialMessages = []) => {
+export const useChat = (initialMessages = [], requestContext = {}) => {
   const [messages, setMessages] = useState(
     initialMessages.length > 0 ? initialMessages : [
       {
@@ -33,6 +33,7 @@ export const useChat = (initialMessages = []) => {
           role: message.type === 'user' ? 'user' : 'assistant',
           content: message.content,
         })),
+        ...requestContext,
       });
 
       if (typeof response?.answer !== 'string' || response.answer.length === 0) {
@@ -52,7 +53,7 @@ export const useChat = (initialMessages = []) => {
       // Return the error message (which should be user-friendly from API)
       throw new Error(error.message || "AI服务遇到问题，请稍后重试。");
     }
-  }, []);
+  }, [requestContext]);
 
   // Send a message
   const sendMessage = useCallback(async (content) => {

@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import ErrorBookButton from './ErrorBookButton';
 import { useAIContext } from '../context/AIContext';
 import { PureMultimodalInput } from './ui/multimodal-ai-chat-input';
 
 const ChatWidget = ({ embedded = false }) => {
+  const location = useLocation();
   const { contextSegments, clearContextSegments, isChatOpen, setIsChatOpen, panelWidth, setPanelWidth } = useAIContext();
   const [isOpen, setIsOpenLocal] = useState(embedded);
   const [inputValue, setInputValue] = useState('');
@@ -25,7 +27,7 @@ const ChatWidget = ({ embedded = false }) => {
     sendMessage,
     clearMessages,
     retryLastMessage
-  } = useChat();
+  } = useChat([], { route_pathname: location.pathname });
 
   // Focus input when chat opens
   useEffect(() => {

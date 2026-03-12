@@ -31,26 +31,13 @@ export const useChat = (initialMessages = []) => {
       // Enhance the message with RAG context if applicable
       const enhancedMessage = await enhanceMessageWithRAG(userMessage);
       
-      const response = await fetch('/api/chat', {
+      const response = await fetch('/api/rag/ask', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: "You are a specialized AI tutor for CIE (Cambridge International Education) students. You help with Mathematics, Physics, and Economics at A-Level standard. Provide clear, step-by-step explanations that follow CIE curriculum guidelines. Always identify key concepts and mark scheme points when relevant. When answering in Chinese, ensure mathematical terminology uses standard English terms in parentheses. If reference materials are provided in the user message, use them to give more accurate and curriculum-specific answers."
-            },
-            ...messages.slice(-5).map(msg => ({ // Include last 5 messages for context
-              role: msg.type === 'user' ? 'user' : 'assistant',
-              content: msg.content
-            })),
-            {
-              role: "user",
-              content: enhancedMessage
-            }
-          ]
+          query: enhancedMessage,
         }),
       });
 
@@ -65,12 +52,11 @@ export const useChat = (initialMessages = []) => {
 
       const data = await response.json();
       
-      // Validate response structure
-      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      if (typeof data?.answer !== 'string' || data.answer.length === 0) {
         throw new Error('AI回答格式异常，请重新提问。');
       }
       
-      return data.choices[0].message.content || "抱歉，我无法生成回答，请重新提问。";
+      return data.answer || "抱歉，我无法生成回答，请重新提问。";
       
     } catch (error) {
       console.error('Error calling AI API:', error);

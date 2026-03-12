@@ -29,10 +29,6 @@ const POLICY_BY_MODULE = Object.freeze({
     authMode: 'authenticated',
     coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
   },
-  'ai-tutor': {
-    authMode: 'authenticated',
-    coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
-  },
   'ai-analysis': {
     authMode: 'authenticated',
     coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
@@ -42,10 +38,6 @@ const POLICY_BY_MODULE = Object.freeze({
     coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
   },
   'rag-search': {
-    authMode: 'authenticated',
-    coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
-  },
-  'rag-chat': {
     authMode: 'authenticated',
     coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
   },

@@ -13,9 +13,6 @@ Current active entrypoints:
 - `GET /api/routes`
 - `POST /api/rag/ask`
 - `POST /api/rag/search`
-- `POST /api/chat` (compatibility endpoint, deprecated)
-- `POST /api/rag/chat` (compatibility endpoint, deprecated)
-- `POST /api/ai/tutor/chat` (compatibility endpoint, deprecated)
 
 `api/index.js` is the active gateway/runtime entry for local development and ECS deployment.
 
@@ -27,13 +24,12 @@ Important paths:
 /api/index.js                   # Active API gateway / local ECS runtime entry
 /api/rag/ask.js                 # Current ask endpoint
 /api/rag/search.js              # RAG retrieval endpoint
-/api/chat.js                    # Compatibility chat endpoint
 /src/api/ragApi.js              # Frontend API wrapper
 /src/hooks/useChat.js           # Frontend chat hook
 /src/components/ChatWidget.jsx  # Chat UI component
 ```
 
-Historical compatibility code still exists under `apps/api-node/api`, but it is not the active deployment runtime described by this document.
+Historical compatibility code under `apps/api-node/api` and deprecated tutor/chat wrappers are no longer part of the active RAG runtime.
 
 ## API Endpoint
 
@@ -83,7 +79,7 @@ Historical compatibility code still exists under `apps/api-node/api`, but it is 
 
 ### 2. Local Development
 
-Create a `.env.local` file in your project root:
+Create a `.env` file in your project root:
 ```bash
 OPENAI_API_KEY=your_openai_api_key_here
 ```

@@ -8,8 +8,8 @@ import { getServiceClient } from '../../api/lib/supabase/client.js';
 dotenv.config();
 
 const ROOT = process.cwd();
-const OUT_JSON = path.join(ROOT, 'runs', 'backend', 'rag_topic_path_mapping_backfill_summary.json');
-const OUT_MD = path.join(ROOT, 'docs', 'reports', 'rag_topic_path_mapping_backfill.md');
+const DEFAULT_OUT_JSON = path.join(ROOT, 'runs', 'backend', 'rag_topic_path_mapping_backfill_summary.json');
+const DEFAULT_OUT_MD = path.join(ROOT, 'docs', 'reports', 'rag_topic_path_mapping_backfill.md');
 const PAGE_SIZE = 500;
 const RETRY_DELAYS_MS = [300, 800, 1500, 3000, 5000, 8000];
 const SOURCE_TYPES_WITH_SUBJECT_FALLBACK = new Set(['note_md', 'past_paper_pdf', 'mark_scheme_pdf']);
@@ -28,6 +28,12 @@ const NOTE_PATH_HINTS = Object.freeze({
 });
 
 const PAPER_TRACK_MAP = Object.freeze({
+  '9709:1': '9709.P1',
+  '9709:2': '9709.P2',
+  '9709:3': '9709.P3',
+  '9709:4': '9709.M1',
+  '9709:5': '9709.S1',
+  '9709:6': '9709.S2',
   '9702:1': '9702.P1',
   '9702:2': '9702.P2',
   '9702:3': '9702.P3',
@@ -429,7 +435,15 @@ async function fetchCurriculumNodes(supabase) {
   return rows;
 }
 
-async function fetchChunkRows(supabase, { onlyUnmapped = true, limit = null } = {}) {
+async function fetchChunkRows(
+  supabase,
+  {
+    onlyUnmapped = true,
+    limit = null,
+    subjectCode = null,
+    corpusVersion = null,
+  } = {},
+) {
   const rows = [];
   for (let from = 0; ; from += PAGE_SIZE) {
     const to = from + PAGE_SIZE - 1;
@@ -461,6 +475,12 @@ async function fetchChunkRows(supabase, { onlyUnmapped = true, limit = null } = 
 
     if (onlyUnmapped) {
       query = query.eq('topic_path', 'unmapped');
+    }
+    if (subjectCode) {
+      query = query.eq('syllabus_code', subjectCode);
+    }
+    if (corpusVersion) {
+      query = query.eq('corpus_version', corpusVersion);
     }
 
     const result = await withRetry(async () => await query);
@@ -652,11 +672,15 @@ async function main() {
   const includeMapped = isTruthy(argv['include-mapped']);
   const limit = toPositiveInt(argv.limit, null);
   const onlyUnmapped = !includeMapped;
+  const subjectCode = argv.subject ? String(argv.subject).trim() : null;
+  const corpusVersion = argv['corpus-version'] ? String(argv['corpus-version']).trim() : null;
+  const outJson = argv['out-json'] ? path.join(ROOT, argv['out-json']) : DEFAULT_OUT_JSON;
+  const outMd = argv['out-md'] ? path.join(ROOT, argv['out-md']) : DEFAULT_OUT_MD;
 
   const supabase = getServiceClient();
   const [nodes, chunkRows] = await Promise.all([
     fetchCurriculumNodes(supabase),
-    fetchChunkRows(supabase, { onlyUnmapped, limit }),
+    fetchChunkRows(supabase, { onlyUnmapped, limit, subjectCode, corpusVersion }),
   ]);
   const nodeIndexes = buildNodeIndexes(nodes);
 
@@ -754,6 +778,8 @@ async function main() {
       only_unmapped: onlyUnmapped,
       include_mapped: includeMapped,
       limit,
+      subject_code: subjectCode,
+      corpus_version: corpusVersion,
     },
     totals: {
       rows_scanned: chunkRows.length,
@@ -772,14 +798,16 @@ async function main() {
     update_errors: updateErrors.slice(0, 50),
   };
 
-  fs.mkdirSync(path.dirname(OUT_JSON), { recursive: true });
-  fs.mkdirSync(path.dirname(OUT_MD), { recursive: true });
-  fs.writeFileSync(OUT_JSON, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
-  fs.writeFileSync(OUT_MD, buildReport(summary), 'utf8');
-  process.stdout.write(`${OUT_JSON}\n${OUT_MD}\n`);
+  fs.mkdirSync(path.dirname(outJson), { recursive: true });
+  fs.mkdirSync(path.dirname(outMd), { recursive: true });
+  fs.writeFileSync(outJson, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
+  fs.writeFileSync(outMd, buildReport(summary), 'utf8');
+  process.stdout.write(`${outJson}\n${outMd}\n`);
 }
 
 main().catch((error) => {
   process.stderr.write(`${error.message}\n`);
   process.exit(1);
 });
+
+

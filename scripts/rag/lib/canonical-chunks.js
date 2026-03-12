@@ -67,6 +67,7 @@ export function buildSourceRef({
   chunkIndex,
   paperId,
   sourcePath,
+  extra,
 } = {}) {
   if (typeof assetId !== 'string' || !assetId.trim()) {
     throw new Error('assetId is required to build canonical source_ref');
@@ -95,6 +96,15 @@ export function buildSourceRef({
     sourceRef.source_path = sourcePath.trim();
   }
 
+  if (isPlainObject(extra)) {
+    for (const [key, value] of Object.entries(stableSortObject(extra))) {
+      if (value === undefined || value === null) continue;
+      if (typeof value === 'string' && !value.trim()) continue;
+      if (Array.isArray(value) && value.length === 0) continue;
+      sourceRef[key] = value;
+    }
+  }
+
   if (!sourceRef.page_no && !sourceRef.question_id) {
     sourceRef.question_id = `chunk:${sourceRef.chunk_index ?? 0}`;
   }
@@ -120,6 +130,13 @@ export function canonicalChunkIdentity({
   return `${sourceType.trim()}::${stableStringify(sourceRef)}::${contentHash.trim()}`;
 }
 
+function sanitizeTextPayload(value) {
+  return String(value || '')
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function buildCanonicalChunkRow({
   content,
   embedding,
@@ -131,7 +148,7 @@ export function buildCanonicalChunkRow({
   corpusVersion,
   contentHash,
 } = {}) {
-  const normalizedContent = String(content || '').trim();
+  const normalizedContent = sanitizeTextPayload(content);
   if (!normalizedContent) {
     throw new Error('content is required for canonical chunk row');
   }
@@ -195,18 +212,22 @@ function isTransientSupabaseError(error) {
   );
 }
 
-async function withTransientRetry(fn, { maxAttempts = 3, baseDelayMs = 250 } = {}) {
+async function withTransientRetry(
+  fn,
+  {
+    retryDelaysMs = [300, 800, 1500, 3000, 5000, 8000],
+  } = {},
+) {
   let lastError = null;
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+  for (let attempt = 0; attempt <= retryDelaysMs.length; attempt += 1) {
     try {
       return await fn();
     } catch (error) {
       lastError = error;
-      if (!isTransientSupabaseError(error) || attempt >= maxAttempts) {
+      if (!isTransientSupabaseError(error) || attempt >= retryDelaysMs.length) {
         throw error;
       }
-      const delayMs = baseDelayMs * attempt;
-      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      await new Promise((resolve) => setTimeout(resolve, retryDelaysMs[attempt]));
     }
   }
   throw lastError;
@@ -287,3 +308,5 @@ export async function upsertCanonicalChunk({
     row: data,
   };
 }
+
+

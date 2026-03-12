@@ -16,9 +16,11 @@ function main() {
     scope: 'rag-corpus-chunking-unification',
     canonical_reader: {
       api_path: 'api/rag/lib/ask-service.js',
-      rpc_path: 'supabase/migrations/20260118093200_recreate_hybrid_search_v2.sql',
+      rpc_path: 'supabase/migrations/20260312143000_hybrid_search_v2_asset_family_version_shadow.sql',
       table: 'public.chunks',
-      exists: exists('api/rag/lib/ask-service.js') && exists('supabase/migrations/20260118093200_recreate_hybrid_search_v2.sql'),
+      exists:
+        exists('api/rag/lib/ask-service.js')
+        && exists('supabase/migrations/20260312143000_hybrid_search_v2_asset_family_version_shadow.sql'),
     },
     legacy_writer: {
       script: 'scripts/rag_ingest.js',

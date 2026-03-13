@@ -142,8 +142,26 @@ def _run_file_checks() -> list[dict]:
     checks.append(
         _check(
             "version_priority_migration_adds_distinct_on_dedupe",
-            all(token in version_priority_migration for token in ("array_position(p_corpus_versions", "SELECT DISTINCT ON", "dense_candidates", "key_candidates")),
-            "hybrid_search_v2 adds version-priority stable-identity dedupe",
+            all(token in version_priority_migration for token in ("array_position(p_corpus_versions", "SELECT DISTINCT ON", "c.source_ref")),
+            "hybrid_search_v2 adds version-priority source_ref dedupe",
+        )
+    )
+
+    stable_identity_migration = _read(MIGRATION_STABLE_IDENTITY)
+    checks.append(
+        _check(
+            "stable_identity_migration_replaces_source_ref_with_structured_identity",
+            all(token in stable_identity_migration for token in ("dedupe_asset_id", "dedupe_question_id", "SELECT DISTINCT ON")),
+            "hybrid_search_v2 promotes stable structured dedupe identity",
+        )
+    )
+
+    candidate_pool_priority_migration = _read(MIGRATION_CANDIDATE_POOL_PRIORITY)
+    checks.append(
+        _check(
+            "candidate_pool_priority_migration_pushes_version_priority_into_dense_and_key_pools",
+            all(token in candidate_pool_priority_migration for token in ("dense_candidates", "key_candidates", "SELECT DISTINCT ON")),
+            "hybrid_search_v2 applies version-priority dedupe inside dense/key candidate pools",
         )
     )
 

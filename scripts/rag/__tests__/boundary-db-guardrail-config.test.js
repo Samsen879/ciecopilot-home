@@ -50,4 +50,12 @@ describe('boundary db guardrail config', () => {
 
     expect([...migration].filter((ch) => ch.charCodeAt(0) > 127)).toEqual([]);
   });
+
+  test('preflight token checks match the split version-priority migration chain', () => {
+    const preflight = fs.readFileSync(preflightPath, 'utf8');
+
+    expect(preflight).toContain('"c.source_ref"');
+    expect(preflight).toContain('"dense_candidates"');
+    expect(preflight).toContain('"key_candidates"');
+  });
 });

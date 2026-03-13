@@ -16,11 +16,29 @@ OUTPUT_PATH = PROJECT_ROOT / "runs" / "compliance" / "syllabus_boundary_prefligh
 BASELINE_SCHEMA = PROJECT_ROOT / "tests" / "fixtures" / "baseline-schema.sql"
 SUPABASE_SHIMS = PROJECT_ROOT / "tests" / "fixtures" / "supabase-shims.sql"
 SEED_SQL = PROJECT_ROOT / "tests" / "fixtures" / "syllabus_boundary_seed.sql"
+MIGRATION_ENABLE_LTREE = PROJECT_ROOT / "supabase" / "migrations" / "20251223000100_enable_ltree.sql"
+MIGRATION_CHUNKS_BOUNDARY = PROJECT_ROOT / "supabase" / "migrations" / "20251223000200_chunks_add_topic_path_fts.sql"
+MIGRATION_CURRICULUM_NODES = PROJECT_ROOT / "supabase" / "migrations" / "20251223000300_create_curriculum_nodes.sql"
+MIGRATION_RECREATE_HYBRID = PROJECT_ROOT / "supabase" / "migrations" / "20260118093200_recreate_hybrid_search_v2.sql"
+MIGRATION_CHUNKS_CORPUS_CONTRACT = PROJECT_ROOT / "supabase" / "migrations" / "20260302190000_chunks_add_corpus_contract.sql"
+MIGRATION_CORPUS_FILTER = PROJECT_ROOT / "supabase" / "migrations" / "20260311173000_hybrid_search_v2_add_corpus_version_filter.sql"
+MIGRATION_VERSION_PRIORITY = PROJECT_ROOT / "supabase" / "migrations" / "20260312110000_hybrid_search_v2_add_version_priority_dedupe.sql"
+MIGRATION_STABLE_IDENTITY = PROJECT_ROOT / "supabase" / "migrations" / "20260312123000_hybrid_search_v2_stable_identity_dedupe.sql"
+MIGRATION_CANDIDATE_POOL_PRIORITY = PROJECT_ROOT / "supabase" / "migrations" / "20260312130000_hybrid_search_v2_candidate_pool_version_priority.sql"
+MIGRATION_CANDIDATE_POOL_PRIORITY_FIX = PROJECT_ROOT / "supabase" / "migrations" / "20260312131500_hybrid_search_v2_candidate_pool_version_priority_fix.sql"
+MIGRATION_ASSET_FAMILY_SHADOW = PROJECT_ROOT / "supabase" / "migrations" / "20260312143000_hybrid_search_v2_asset_family_version_shadow.sql"
 REQUIRED_MIGRATIONS = [
-    PROJECT_ROOT / "supabase" / "migrations" / "20251223000100_enable_ltree.sql",
-    PROJECT_ROOT / "supabase" / "migrations" / "20251223000200_chunks_add_topic_path_fts.sql",
-    PROJECT_ROOT / "supabase" / "migrations" / "20251223000300_create_curriculum_nodes.sql",
-    PROJECT_ROOT / "supabase" / "migrations" / "20251223000400_rpc_hybrid_search_v2.sql",
+    MIGRATION_ENABLE_LTREE,
+    MIGRATION_CHUNKS_BOUNDARY,
+    MIGRATION_CURRICULUM_NODES,
+    MIGRATION_RECREATE_HYBRID,
+    MIGRATION_CHUNKS_CORPUS_CONTRACT,
+    MIGRATION_CORPUS_FILTER,
+    MIGRATION_VERSION_PRIORITY,
+    MIGRATION_STABLE_IDENTITY,
+    MIGRATION_CANDIDATE_POOL_PRIORITY,
+    MIGRATION_CANDIDATE_POOL_PRIORITY_FIX,
+    MIGRATION_ASSET_FAMILY_SHADOW,
 ]
 
 
@@ -75,7 +93,7 @@ def _run_file_checks() -> list[dict]:
         )
     )
 
-    migration2 = _read(REQUIRED_MIGRATIONS[1])
+    migration2 = _read(MIGRATION_CHUNKS_BOUNDARY)
     checks.append(
         _check(
             "chunks_migration_adds_boundary_columns",
@@ -84,7 +102,7 @@ def _run_file_checks() -> list[dict]:
         )
     )
 
-    migration3 = _read(REQUIRED_MIGRATIONS[2])
+    migration3 = _read(MIGRATION_CURRICULUM_NODES)
     checks.append(
         _check(
             "curriculum_nodes_migration_has_canonical_guards",
@@ -93,12 +111,48 @@ def _run_file_checks() -> list[dict]:
         )
     )
 
-    migration4 = _read(REQUIRED_MIGRATIONS[3])
+    migration4 = _read(MIGRATION_RECREATE_HYBRID)
     checks.append(
         _check(
-            "rpc_migration_enforces_topic_boundary",
-            all(token in migration4 for token in ("p_topic_path", "c.topic_path <@ p_topic_path", "c.topic_path <> 'unmapped'::ltree")),
-            "hybrid_search_v2 requires topic_path and excludes unmapped content",
+            "recreated_rpc_migration_enforces_topic_boundary",
+            all(token in migration4 for token in ("p_topic_path", "current_topic_path required", "c.topic_path <@ p_topic_path", "c.topic_path <> 'unmapped'::ltree")),
+            "recreated hybrid_search_v2 requires topic_path and excludes unmapped content",
+        )
+    )
+
+    corpus_contract_migration = _read(MIGRATION_CHUNKS_CORPUS_CONTRACT)
+    checks.append(
+        _check(
+            "chunks_contract_migration_adds_corpus_columns",
+            all(token in corpus_contract_migration for token in ("source_type", "source_ref", "corpus_version", "content_hash")),
+            "chunks corpus contract adds provenance columns",
+        )
+    )
+
+    corpus_filter_migration = _read(MIGRATION_CORPUS_FILTER)
+    checks.append(
+        _check(
+            "corpus_filter_migration_adds_version_filtering",
+            all(token in corpus_filter_migration for token in ("p_corpus_versions", "c.corpus_version = ANY(p_corpus_versions)")),
+            "hybrid_search_v2 supports corpus-version filtering",
+        )
+    )
+
+    version_priority_migration = _read(MIGRATION_VERSION_PRIORITY)
+    checks.append(
+        _check(
+            "version_priority_migration_adds_distinct_on_dedupe",
+            all(token in version_priority_migration for token in ("array_position(p_corpus_versions", "SELECT DISTINCT ON", "dense_candidates", "key_candidates")),
+            "hybrid_search_v2 adds version-priority stable-identity dedupe",
+        )
+    )
+
+    asset_family_shadow_migration = _read(MIGRATION_ASSET_FAMILY_SHADOW)
+    checks.append(
+        _check(
+            "asset_family_shadow_migration_present",
+            all(token in asset_family_shadow_migration for token in ("asset_family_latest", "family_asset_id", "min_version_priority")),
+            "hybrid_search_v2 shadows stale versions at asset-family granularity",
         )
     )
 
@@ -138,11 +192,11 @@ def _run_db_checks() -> list[dict]:
                 """
             )
             chunk_columns = {row[0] for row in cur.fetchall()}
-            required_columns = {"syllabus_code", "topic_path", "node_id", "fts"}
+            required_columns = {"syllabus_code", "topic_path", "node_id", "fts", "source_type", "source_ref", "corpus_version", "content_hash"}
             missing_columns = sorted(required_columns - chunk_columns)
             checks.append(
                 _check(
-                    "db_chunks_boundary_columns_present",
+                        "db_chunks_boundary_columns_present",
                     not missing_columns,
                     "chunks columns present" if not missing_columns else ", ".join(missing_columns),
                 )
@@ -151,7 +205,7 @@ def _run_db_checks() -> list[dict]:
             cur.execute(
                 """
                 SELECT to_regprocedure(
-                    'public.hybrid_search_v2(text, vector(1536), ltree, integer, integer, integer, real, real, integer)'
+                    'public.hybrid_search_v2(text, vector(1536), ltree, integer, integer, integer, real, real, integer, text[])'
                 );
                 """
             )

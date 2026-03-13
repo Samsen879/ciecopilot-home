@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { enhanceMessageWithRAG } from '../api/ragApi';
+import { ragApi } from '../api/ragApi';
+import { appendUserMessage, prepareRetry } from './chatHistory.js';
 
-export const useChat = (initialMessages = []) => {
+export const useChat = (initialMessages = [], requestContext = {}) => {
   const [messages, setMessages] = useState(
     initialMessages.length > 0 ? initialMessages : [
       {
@@ -25,52 +26,22 @@ export const useChat = (initialMessages = []) => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Call OpenAI API through our backend endpoint with RAG enhancement
-  const getAIResponse = useCallback(async (userMessage) => {
+  // Call the current ask endpoint through the RAG compatibility adapter.
+  const getAIResponse = useCallback(async (conversationMessages) => {
     try {
-      // Enhance the message with RAG context if applicable
-      const enhancedMessage = await enhanceMessageWithRAG(userMessage);
-      
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: "You are a specialized AI tutor for CIE (Cambridge International Education) students. You help with Mathematics, Physics, and Economics at A-Level standard. Provide clear, step-by-step explanations that follow CIE curriculum guidelines. Always identify key concepts and mark scheme points when relevant. When answering in Chinese, ensure mathematical terminology uses standard English terms in parentheses. If reference materials are provided in the user message, use them to give more accurate and curriculum-specific answers."
-            },
-            ...messages.slice(-5).map(msg => ({ // Include last 5 messages for context
-              role: msg.type === 'user' ? 'user' : 'assistant',
-              content: msg.content
-            })),
-            {
-              role: "user",
-              content: enhancedMessage
-            }
-          ]
-        }),
+      const response = await ragApi.chat({
+        messages: conversationMessages.map((message) => ({
+          role: message.type === 'user' ? 'user' : 'assistant',
+          content: message.content,
+        })),
+        ...requestContext,
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        
-        // Use user-friendly error message if available
-        const userMessage = errorData.userMessage || errorData.message || 'AI服务暂时不可用，请稍后重试。';
-        throw new Error(userMessage);
-      }
-
-      const data = await response.json();
-      
-      // Validate response structure
-      if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      if (typeof response?.answer !== 'string' || response.answer.length === 0) {
         throw new Error('AI回答格式异常，请重新提问。');
       }
-      
-      return data.choices[0].message.content || "抱歉，我无法生成回答，请重新提问。";
+
+      return response.answer || "抱歉，我无法生成回答，请重新提问。";
       
     } catch (error) {
       console.error('Error calling AI API:', error);
@@ -83,25 +54,19 @@ export const useChat = (initialMessages = []) => {
       // Return the error message (which should be user-friendly from API)
       throw new Error(error.message || "AI服务遇到问题，请稍后重试。");
     }
-  }, [messages]);
+  }, [requestContext]);
 
   // Send a message
-  const sendMessage = useCallback(async (content) => {
+  const sendMessage = useCallback(async (content, options = {}) => {
     if (!content.trim()) return;
-
-    const userMessage = {
-      id: Date.now(),
-      type: 'user',
-      content: content.trim(),
-      timestamp: new Date().toLocaleTimeString()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    const baseMessages = Array.isArray(options.history) ? options.history : messages;
+    const nextMessages = appendUserMessage(baseMessages, content, new Date().toLocaleTimeString());
+    setMessages(nextMessages);
     setIsTyping(true);
     setError(null);
 
     try {
-      const aiContent = await getAIResponse(content.trim());
+      const aiContent = await getAIResponse(nextMessages);
       const aiResponse = {
         id: Date.now() + 1,
         type: 'ai',
@@ -124,7 +89,7 @@ export const useChat = (initialMessages = []) => {
     } finally {
       setIsTyping(false);
     }
-  }, [getAIResponse]);
+  }, [getAIResponse, messages]);
 
   // Clear chat history
   const clearMessages = useCallback(() => {
@@ -140,13 +105,10 @@ export const useChat = (initialMessages = []) => {
   // Retry last message
   const retryLastMessage = useCallback(() => {
     if (messages.length < 2) return;
-    
-    const lastUserMessage = [...messages].reverse().find(msg => msg.type === 'user');
-    if (lastUserMessage) {
-      // Remove all messages after the last user message
-      const lastUserIndex = messages.findIndex(msg => msg.id === lastUserMessage.id);
-      setMessages(messages.slice(0, lastUserIndex + 1));
-      sendMessage(lastUserMessage.content);
+
+    const { retryContent, history } = prepareRetry(messages);
+    if (retryContent) {
+      sendMessage(retryContent, { history });
     }
   }, [messages, sendMessage]);
 

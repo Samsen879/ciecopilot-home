@@ -17,19 +17,14 @@ export {
   deleteLearningPath
 } from './learningPathQueries.js';
 
-// AI辅导查询
+// Recommendations and learning analytics
 export {
-  createAITutoringSession,
-  updateAITutoringSession,
-  getAITutoringSession,
-  getUserAITutoringSessions,
-  endAITutoringSession,
   getUserRecommendations,
   markRecommendationAsViewed,
   markRecommendationAsCompleted,
   getUserLearningAnalytics,
   createLearningAnalyticsEntry
-} from './aiTutoringQueries.js';
+} from './recommendationQueries.js';
 
 // 错误处理
 export {
@@ -45,7 +40,13 @@ export {
 import { handleSupabaseQuery } from './errorHandler.js';
 import * as userProfileQueries from './userProfileQueries.js';
 import * as learningPathQueries from './learningPathQueries.js';
-import * as aiTutoringQueries from './aiTutoringQueries.js';
+import {
+  getUserRecommendations,
+  markRecommendationAsViewed,
+  markRecommendationAsCompleted,
+  getUserLearningAnalytics,
+  createLearningAnalyticsEntry
+} from './recommendationQueries.js';
 
 /**
  * 包装所有查询函数，添加统一错误处理
@@ -67,13 +68,19 @@ const createModuleWrapper = (queryModule, moduleName) => {
 // 导出包装后的查询模块
 export const userProfile = createModuleWrapper(userProfileQueries, 'userProfile');
 export const learningPath = createModuleWrapper(learningPathQueries, 'learningPath');
-export const aiTutoring = createModuleWrapper(aiTutoringQueries, 'aiTutoring');
+export const recommendations = createModuleWrapper({
+  getUserRecommendations,
+  markRecommendationAsViewed,
+  markRecommendationAsCompleted,
+  getUserLearningAnalytics,
+  createLearningAnalyticsEntry,
+}, 'recommendations');
 
 // 默认导出所有模块
 export default {
   userProfile,
   learningPath,
-  aiTutoring,
+  recommendations,
   ErrorTypes,
   SupabaseError,
   getUserFriendlyMessage

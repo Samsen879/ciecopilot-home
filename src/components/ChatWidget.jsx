@@ -1,15 +1,27 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Bot, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import ErrorBookButton from './ErrorBookButton';
 import { useAIContext } from '../context/AIContext';
+import {
+  CHAT_SUBJECT_OPTIONS,
+  deriveRouteSubjectCode,
+  requiresSubjectSelection,
+  resolveChatRequestContext,
+} from '../api/chatScope.js';
 import { PureMultimodalInput } from './ui/multimodal-ai-chat-input';
 
 const ChatWidget = ({ embedded = false }) => {
+  const location = useLocation();
+  const routeSubjectCode = deriveRouteSubjectCode(location.pathname);
+  const needsSubjectSelection = requiresSubjectSelection(location.pathname);
   const { contextSegments, clearContextSegments, isChatOpen, setIsChatOpen, panelWidth, setPanelWidth } = useAIContext();
   const [isOpen, setIsOpenLocal] = useState(embedded);
   const [inputValue, setInputValue] = useState('');
+  const [scopeError, setScopeError] = useState('');
+  const [selectedSubjectCode, setSelectedSubjectCode] = useState(routeSubjectCode || '');
   const inputRef = useRef(null);
   
   // 面板调整大小状态
@@ -17,6 +29,31 @@ const ChatWidget = ({ embedded = false }) => {
   const resizeRef = useRef(null);
   
   // Use the custom chat hook
+  useEffect(() => {
+    if (routeSubjectCode) {
+      setSelectedSubjectCode(routeSubjectCode);
+      setScopeError('');
+      return;
+    }
+    const remembered = window.localStorage.getItem('chat_subject_code');
+    if (remembered) {
+      setSelectedSubjectCode(remembered);
+    }
+  }, [routeSubjectCode]);
+
+  useEffect(() => {
+    if (needsSubjectSelection && selectedSubjectCode) {
+      window.localStorage.setItem('chat_subject_code', selectedSubjectCode);
+    }
+  }, [needsSubjectSelection, selectedSubjectCode]);
+
+  const chatRequestContext = React.useMemo(() => (
+    resolveChatRequestContext({
+      routePathname: location.pathname,
+      selectedSubjectCode,
+    })
+  ), [location.pathname, selectedSubjectCode]);
+
   const {
     messages,
     isTyping,
@@ -25,7 +62,9 @@ const ChatWidget = ({ embedded = false }) => {
     sendMessage,
     clearMessages,
     retryLastMessage
-  } = useChat();
+  } = useChat([], chatRequestContext);
+
+  const activeError = scopeError || error;
 
   // Focus input when chat opens
   useEffect(() => {
@@ -44,6 +83,11 @@ const ChatWidget = ({ embedded = false }) => {
   // Handle sending message
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
+    if (needsSubjectSelection && !selectedSubjectCode) {
+      setScopeError('Please select a subject before asking a generic question.');
+      return;
+    }
+    setScopeError('');
     const contextPrefix = contextSegments.length
       ? `Use the following selected context when answering. Keep citations concise.\n\n${contextSegments.map((s, i) => `[#${i+1}] ${s.title ? s.title + ': ' : ''}${s.text}`).join('\n\n')}\n\n---\nQuestion: `
       : '';
@@ -212,6 +256,25 @@ const ChatWidget = ({ embedded = false }) => {
       <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-800 transition-colors duration-200">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {needsSubjectSelection && (
+            <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3 text-sm text-blue-900">
+              <label className="block font-medium mb-2" htmlFor="embedded-chat-subject">Subject</label>
+              <select
+                id="embedded-chat-subject"
+                className="w-full rounded-md border border-blue-200 bg-white px-3 py-2"
+                value={selectedSubjectCode}
+                onChange={(event) => {
+                  setSelectedSubjectCode(event.target.value);
+                  setScopeError('');
+                }}
+              >
+                <option value="">Select a subject</option>
+                {CHAT_SUBJECT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+          )}
           {contextSegments.length > 0 && (
             <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-3 text-xs">
               <div className="font-semibold mb-1">Context attached ({contextSegments.length})</div>
@@ -245,11 +308,19 @@ const ChatWidget = ({ embedded = false }) => {
 
         {/* Input Area */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors duration-200">
+          {activeError && (
+            <div className="mb-3 text-sm text-red-600 dark:text-red-400">
+              {activeError}
+            </div>
+          )}
           <div className="flex items-center gap-3">
             <textarea
               ref={inputRef}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+                if (scopeError) setScopeError('');
+              }}
               onKeyPress={handleKeyPress}
               placeholder="输入您的问题..."
               className="flex-1 resize-none border border-gray-200 dark:border-gray-600 rounded-2xl px-4 py-3 
@@ -261,7 +332,7 @@ const ChatWidget = ({ embedded = false }) => {
             />
             <button
               onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isTyping}
+              disabled={!inputValue.trim() || isTyping || (needsSubjectSelection && !selectedSubjectCode)}
               className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 dark:disabled:bg-gray-600
                        text-white p-3 rounded-2xl transition-colors flex-shrink-0
                        disabled:cursor-not-allowed"
@@ -373,6 +444,25 @@ const ChatWidget = ({ embedded = false }) => {
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-gray-50">
+          {needsSubjectSelection && (
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-sm text-blue-900">
+              <label className="block font-medium mb-2" htmlFor="floating-chat-subject">Subject</label>
+              <select
+                id="floating-chat-subject"
+                className="w-full rounded-md border border-blue-200 bg-white px-3 py-2"
+                value={selectedSubjectCode}
+                onChange={(event) => {
+                  setSelectedSubjectCode(event.target.value);
+                  setScopeError('');
+                }}
+              >
+                <option value="">Select a subject</option>
+                {CHAT_SUBJECT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+          )}
           {contextSegments.length > 0 && (
             <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-2 text-xs">
               <div className="font-semibold mb-1">Context attached ({contextSegments.length})</div>
@@ -403,15 +493,27 @@ const ChatWidget = ({ embedded = false }) => {
 
         {/* 新的多模态输入区 */}
         <div className="p-3 border-t border-gray-200 bg-white">
+          {activeError && (
+            <div className="mb-2 text-sm text-red-600">
+              {activeError}
+            </div>
+          )}
           <PureMultimodalInput
             chatId="floating"
             messages={messages.map(m => ({ id: String(m.id), role: m.type === 'user' ? 'user' : 'assistant', content: m.content }))}
             attachments={[]}
             setAttachments={() => {}}
-            onSendMessage={({ input }) => sendMessage(input)}
+            onSendMessage={({ input }) => {
+              if (needsSubjectSelection && !selectedSubjectCode) {
+                setScopeError('Please select a subject before asking a generic question.');
+                return;
+              }
+              setScopeError('');
+              sendMessage(input);
+            }}
             onStopGenerating={() => { /* No streaming stop in this hook */ }}
             isGenerating={isTyping}
-            canSend={true}
+            canSend={!needsSubjectSelection || Boolean(selectedSubjectCode)}
             selectedVisibilityType="private"
           />
           {contextSegments.length > 0 && (

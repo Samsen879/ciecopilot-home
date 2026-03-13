@@ -76,7 +76,7 @@ BEGIN
       dedupe_page_no,
       dedupe_chunk_index,
       dedupe_subchunk_index
-    ）
+    )
       c.id,
       dense_candidates.sem_distance
     FROM dense_candidates

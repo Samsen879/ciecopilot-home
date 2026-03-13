@@ -5,6 +5,10 @@ const ROOT = path.resolve(process.cwd());
 const workflowPath = path.join(ROOT, '.github/workflows/syllabus-boundary-tests.yml');
 const preflightPath = path.join(ROOT, 'scripts/compliance/run_syllabus_boundary_preflight.py');
 const guardrailSqlPath = path.join(ROOT, 'scripts/db/verify_search_guardrail.sql');
+const candidatePoolPriorityMigrationPath = path.join(
+  ROOT,
+  'supabase/migrations/20260312130000_hybrid_search_v2_candidate_pool_version_priority.sql',
+);
 
 describe('boundary db guardrail config', () => {
   test('workflow replays recreated hybrid_search_v2 and latest version-isolation migrations', () => {
@@ -39,5 +43,11 @@ describe('boundary db guardrail config', () => {
     expect(sql).toContain("'9709'");
     expect(sql).toContain("'9702'");
     expect(sql).toContain("'9231'");
+  });
+
+  test('candidate-pool version-priority migration stays ASCII-clean for CI replay', () => {
+    const migration = fs.readFileSync(candidatePoolPriorityMigrationPath, 'utf8');
+
+    expect([...migration].filter((ch) => ch.charCodeAt(0) > 127)).toEqual([]);
   });
 });

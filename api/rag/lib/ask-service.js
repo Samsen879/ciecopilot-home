@@ -11,6 +11,7 @@ import { computeRequestCostAudit } from './cost.js';
 import { assembleEvidence } from './evidence-assembler.js';
 import { generateEmbedding } from './embedding-client.js';
 import { toRagError, toRagErrorAudit } from './errors.js';
+import { resolveProductionEvidenceRetrievalRollout } from './production-evidence-rollout.js';
 import { normalizeQuery } from './query-normalizer.js';
 import { retrieveHybridCandidates } from './retrievers/_hybrid-rpc.js';
 import { assertAskResponseSchema } from './response-schema-validator.js';
@@ -976,13 +977,47 @@ export async function executeAskAI(
 
   const normalized = normalizeQuery(parsed.query);
   const retrievalQuery = normalized.keyword_query || normalized.normalized_query || parsed.query;
+  const productionEvidenceRollout = resolveProductionEvidenceRetrievalRollout({
+    retrievalConfig: {
+      corpusVersions:
+        Array.isArray(effectiveConfig?.retrieval?.corpusVersions) && effectiveConfig.retrieval.corpusVersions.length > 0
+          ? effectiveConfig.retrieval.corpusVersions
+          : null,
+      excludedSourceTypes:
+        Array.isArray(effectiveConfig?.retrieval?.excludedSourceTypes) &&
+        effectiveConfig.retrieval.excludedSourceTypes.length > 0
+          ? effectiveConfig.retrieval.excludedSourceTypes
+          : null,
+      excludedCorpusVersions:
+        Array.isArray(effectiveConfig?.retrieval?.excludedCorpusVersions) &&
+        effectiveConfig.retrieval.excludedCorpusVersions.length > 0
+          ? effectiveConfig.retrieval.excludedCorpusVersions
+          : null,
+      productionEvidenceRolloutEnabled: effectiveConfig?.retrieval?.productionEvidenceRolloutEnabled,
+      productionEvidenceRolloutRequireBaseCorpusVersions:
+        effectiveConfig?.retrieval?.productionEvidenceRolloutRequireBaseCorpusVersions,
+      productionEvidenceRolloutGate: effectiveConfig?.retrieval?.productionEvidenceRolloutGate,
+    },
+    subjectCode: boundary.subject_code || parsed.subject_code || null,
+  });
+  routeAudit = normalizeRouteAudit({
+    ...routeAudit,
+    route_scores: {
+      ...(routeAudit.route_scores || {}),
+      production_evidence_rollout_active: productionEvidenceRollout.audit.active,
+      production_evidence_rollout_reason: productionEvidenceRollout.audit.reason,
+      production_evidence_rollout_bundle_ids: productionEvidenceRollout.audit.online_bundle_ids,
+      production_evidence_rollout_corpus_versions: productionEvidenceRollout.audit.online_corpus_versions,
+      production_evidence_rollout_source_types: productionEvidenceRollout.audit.unblocked_source_types,
+    },
+  });
   const baseRetrievalParams = {
     query: retrievalQuery,
     queryEmbedding: null,
     currentTopicPath: boundary.current_topic_path,
-    corpusVersions: Array.isArray(effectiveConfig?.retrieval?.corpusVersions) && effectiveConfig.retrieval.corpusVersions.length > 0
-      ? effectiveConfig.retrieval.corpusVersions
-      : null,
+    corpusVersions: productionEvidenceRollout.corpusVersions,
+    excludedSourceTypes: productionEvidenceRollout.excludedSourceTypes,
+    excludedCorpusVersions: productionEvidenceRollout.excludedCorpusVersions,
     matchCount: effectiveConfig.retrieval.fused_top_k,
     densePool: Math.max(effectiveConfig.retrieval.k_sem, effectiveConfig.retrieval.fused_top_k),
     keyPool: Math.max(effectiveConfig.retrieval.k_key, effectiveConfig.retrieval.fused_top_k),
@@ -1045,6 +1080,8 @@ export async function executeAskAI(
               subjectCode: boundary.subject_code || null,
               retrievalConfig: {
                 corpusVersions: baseRetrievalParams.corpusVersions,
+                excludedSourceTypes: baseRetrievalParams.excludedSourceTypes,
+                excludedCorpusVersions: baseRetrievalParams.excludedCorpusVersions,
                 matchCount: baseRetrievalParams.matchCount,
                 densePool: baseRetrievalParams.densePool,
                 keyPool: baseRetrievalParams.keyPool,

@@ -103,6 +103,66 @@ describe('s2 multi-hop retriever', () => {
     expect(result.rows).toHaveLength(1);
   });
 
+  it('skips missing hop-1 topic paths and continues with remaining expansions', async () => {
+    const calls = [];
+    const result = await retrieveS2MultiHopCandidates(
+      {
+        query: 'cross-topic',
+        queryEmbedding: [0.1],
+        currentTopicPath: '9231.FP2.Hyperbolic_Functions',
+        subjectCode: '9231',
+        retrievalConfig: {
+          matchCount: 4,
+          densePool: 4,
+          keyPool: 4,
+          wSem: 0.3,
+          wKey: 0.7,
+          rrfK: 60,
+        },
+      },
+      {
+        supabase: createSupabaseStub(),
+        retrieveFn: async ({ currentTopicPath }) => {
+          calls.push(currentTopicPath);
+          if (currentTopicPath === '9231.FP1.Hyperbolic_Functions') {
+            const error = new Error('unknown current_topic_path');
+            error.code = 'TOPIC_PATH_NOT_FOUND';
+            throw error;
+          }
+          if (currentTopicPath === '9231.FP1') {
+            return [
+              { id: 'chunk-2', topic_path: '9231.FP1', fused_score: 0.7, rank_sem: 1, rank_key: 1 },
+            ];
+          }
+          return [
+            {
+              id: 'chunk-1',
+              topic_path: '9231.FP2.Hyperbolic_Functions',
+              fused_score: 0.9,
+              rank_sem: 1,
+              rank_key: 1,
+            },
+          ];
+        },
+        expandFn: () => ({
+          expanded_topic_paths: ['9231.FP1.Hyperbolic_Functions', '9231.FP1'],
+          expansion_reason_counts: { paper_related_suffix: 1, paper_related_root: 1 },
+          skipped_topic_paths: [],
+        }),
+      },
+    );
+
+    expect(calls).toEqual([
+      '9231.FP2.Hyperbolic_Functions',
+      '9231.FP1.Hyperbolic_Functions',
+      '9231.FP1',
+    ]);
+    expect(result.audit.s2_expanded_topic_count).toBe(1);
+    expect(result.audit.expanded_topic_paths).toEqual(['9231.FP1']);
+    expect(result.audit.skipped_topic_paths).toContain('9231.FP1.Hyperbolic_Functions');
+    expect(result.rows).toHaveLength(2);
+  });
+
   it('throws typed error when hop-1 retrieval fails', async () => {
     await expect(
       retrieveS2MultiHopCandidates(

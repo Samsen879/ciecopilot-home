@@ -1,0 +1,30 @@
+{
+  "manifest_role": "production_evidence_rollout_gate",
+  "evidence_layer": "production_evidence",
+  "policy_mode": "production_evidence",
+  "schema_version": "v1",
+  "generated_at": "2026-03-13T10:45:00.000Z",
+  "default_retrieval_state": "blocked",
+  "entries": [
+    {
+      "bundle_id": "phase_b_pilot_ready_v1",
+      "manifest_path": "data/evidence/production/pilot_ready_v1/manifest.json",
+      "subject_scope": "single_subject",
+      "subject_codes": [
+        "9702"
+      ],
+      "rollout_state": "offline_default",
+      "corpus_versions": [
+        "rag_production_evidence_pilot_20260313"
+      ],
+      "allowed_source_types": [
+        "evidence_authored",
+        "evidence_transformed"
+      ],
+      "notes": [
+        "The first ready-for-ingest bundle remains blocked from online retrieval by default.",
+        "Promoting this entry to online_enabled is the explicit rollout step."
+      ]
+    }
+  ]
+}

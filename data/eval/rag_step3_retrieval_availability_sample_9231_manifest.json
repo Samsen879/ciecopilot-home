@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-03-13T04:06:29.831Z",
+  "subject_code": "9231",
+  "subject_scope": "single_subject",
+  "subject_codes": [
+    "9231"
+  ],
+  "corpus_scope_policy": {
+    "mode": "subject_scoped",
+    "compatible_subject_codes": [
+      "9231"
+    ],
+    "allow_mixed_subject_corpus_versions": false
+  },
+  "source_dataset": "data/eval/rag_s2_augmentation_eval_v1.json",
+  "total_cases": 12,
+  "requested_limit": 12,
+  "roots_priority": [
+    "9231",
+    "9231.FP1",
+    "9231.FP2",
+    "9231.FM",
+    "9231.FS"
+  ],
+  "slices_priority": [
+    "cross_topic",
+    "prerequisite_chain",
+    "global_planning"
+  ],
+  "coverage": {
+    "derived_root": {
+      "9231": 3,
+      "9231.FP1": 3,
+      "9231.FP2": 6
+    },
+    "target_slice": {
+      "cross_topic": 4,
+      "prerequisite_chain": 4,
+      "global_planning": 4
+    }
+  },
+  "notes": [
+    "This sample reuses the existing S2 augmentation eval dataset and narrows it to the current Step 3 production-availability pilot.",
+    "It is intended to verify retrieval availability, not to replace the formal balanced_profile rerun."
+  ]
+}

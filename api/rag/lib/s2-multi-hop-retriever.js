@@ -70,6 +70,11 @@ function tagRows(rows, hop, expandedFrom = null) {
   }));
 }
 
+function shouldSkipHop1PathError(error) {
+  const code = String(error?.code || '').toUpperCase();
+  return code === 'TOPIC_PATH_NOT_FOUND' || code === 'TOPIC_PATH_MISSING';
+}
+
 export async function retrieveS2MultiHopCandidates(
   {
     query,
@@ -101,6 +106,12 @@ export async function retrieveS2MultiHopCandidates(
   const rrfK = Math.floor(toPositiveNumber(retrievalConfig.rrfK, 60));
   const expandedLimit = Math.floor(toPositiveNumber(maxExpandedTopics, 6));
   const corpusVersions = Array.isArray(retrievalConfig.corpusVersions) ? retrievalConfig.corpusVersions : null;
+  const excludedSourceTypes = Array.isArray(retrievalConfig.excludedSourceTypes)
+    ? retrievalConfig.excludedSourceTypes
+    : null;
+  const excludedCorpusVersions = Array.isArray(retrievalConfig.excludedCorpusVersions)
+    ? retrievalConfig.excludedCorpusVersions
+    : null;
 
   let hop0Rows = [];
   const hop1SkippedPaths = [];
@@ -112,6 +123,8 @@ export async function retrieveS2MultiHopCandidates(
         queryEmbedding,
         currentTopicPath,
         corpusVersions,
+        excludedSourceTypes,
+        excludedCorpusVersions,
         matchCount,
         densePool,
         keyPool,
@@ -140,6 +153,10 @@ export async function retrieveS2MultiHopCandidates(
   const expandedTopicPaths = Array.isArray(expansion?.expanded_topic_paths)
     ? expansion.expanded_topic_paths
     : [];
+  const successfulExpandedTopicPaths = [];
+  const skippedTopicPaths = new Set(
+    Array.isArray(expansion?.skipped_topic_paths) ? expansion.skipped_topic_paths : [],
+  );
 
   const hop1Rows = [];
   hop1SkippedPaths.push(...(Array.isArray(expansion?.skipped_topic_paths) ? expansion.skipped_topic_paths : []));
@@ -153,6 +170,8 @@ export async function retrieveS2MultiHopCandidates(
           queryEmbedding,
           currentTopicPath: expandedTopicPath,
           corpusVersions,
+          excludedSourceTypes,
+          excludedCorpusVersions,
           matchCount: hop1PerPath,
           densePool: Math.max(hop1PerPath, densePool),
           keyPool: Math.max(hop1PerPath, keyPool),
@@ -162,11 +181,15 @@ export async function retrieveS2MultiHopCandidates(
         },
         { supabase },
       );
+      successfulExpandedTopicPaths.push(expandedTopicPath);
       hop1Rows.push(...tagRows(rows, 1, expandedTopicPath));
     } catch (error) {
-      if (error?.code === 'TOPIC_PATH_NOT_FOUND') {
+      if (shouldSkipHop1PathError(error)) {
+        const reasonKey =
+          error?.code === 'TOPIC_PATH_MISSING' ? 'hop_1_topic_path_missing' : 'hop_1_topic_path_not_found';
+        skippedTopicPaths.add(expandedTopicPath);
         hop1SkippedPaths.push(expandedTopicPath);
-        hop1ReasonCounts.hop_1_topic_path_not_found = (hop1ReasonCounts.hop_1_topic_path_not_found || 0) + 1;
+        hop1ReasonCounts[reasonKey] = (hop1ReasonCounts[reasonKey] || 0) + 1;
         continue;
       }
       throw new RagError({
@@ -182,17 +205,21 @@ export async function retrieveS2MultiHopCandidates(
   }
 
   const mergedRows = mergeRows([...tagRows(hop0Rows, 0), ...hop1Rows], matchCount);
+  const dedupedSkippedPaths = [...new Set([...hop1SkippedPaths, ...skippedTopicPaths])];
+  const expandedTopicCount =
+    successfulExpandedTopicPaths.length > 0 ? successfulExpandedTopicPaths.length : expandedTopicPaths.length;
   return {
     rows: mergedRows,
     audit: {
       s2_hop_count: expandedTopicPaths.length > 0 ? 2 : 1,
-      s2_expanded_topic_count: expandedTopicPaths.length,
+      s2_expanded_topic_count: expandedTopicCount,
       hop_0_row_count: Array.isArray(hop0Rows) ? hop0Rows.length : 0,
       hop_1_row_count: hop1Rows.length,
       merged_row_count: mergedRows.length,
-      expanded_topic_paths: expandedTopicPaths,
+      expanded_topic_paths: successfulExpandedTopicPaths,
       expansion_reason_counts: hop1ReasonCounts,
-      skipped_expansion_paths: [...new Set(hop1SkippedPaths)],
+      skipped_topic_paths: dedupedSkippedPaths,
+      skipped_expansion_paths: dedupedSkippedPaths,
       max_expanded_topics: expandedLimit,
     },
   };

@@ -1,0 +1,67 @@
+{
+  "manifest_role": "production_evidence_whitelist",
+  "evidence_layer": "production_evidence",
+  "policy_mode": "production_evidence",
+  "schema_version": "v1",
+  "generated_at": "2026-03-13T06:10:00.000Z",
+  "allowed_bundle_ids": [
+    "phase_b_seed_v1",
+    "phase_b_pilot_ready_v1"
+  ],
+  "allowed_manifest_paths": [
+    "data/evidence/production/seed_v1/manifest.json",
+    "data/evidence/production/pilot_ready_v1/manifest.json"
+  ],
+  "allowed_source_types": [
+    "evidence_authored",
+    "evidence_transformed"
+  ],
+  "reserved_source_types": [
+    "evidence_reserved"
+  ],
+  "required_restricted_official_posture": "internal_context_only",
+  "entries": [
+    {
+      "bundle_id": "phase_b_seed_v1",
+      "manifest_path": "data/evidence/production/seed_v1/manifest.json",
+      "subject_scope": "mixed_subject",
+      "subject_codes": [
+        "9702",
+        "9231"
+      ],
+      "allowed_source_types": [
+        "evidence_authored",
+        "evidence_transformed"
+      ],
+      "release_channel": "offline_governance_only",
+      "ingest_allowed": false,
+      "release_ready_expected": false,
+      "notes": [
+        "This entry exists only to validate the Phase B governance chain.",
+        "The seed bundle is intentionally not ingest-allowed and not release-ready."
+      ]
+    },
+    {
+      "bundle_id": "phase_b_pilot_ready_v1",
+      "manifest_path": "data/evidence/production/pilot_ready_v1/manifest.json",
+      "subject_scope": "single_subject",
+      "subject_codes": [
+        "9702"
+      ],
+      "allowed_source_types": [
+        "evidence_authored",
+        "evidence_transformed"
+      ],
+      "approved_corpus_versions": [
+        "rag_production_evidence_pilot_20260313"
+      ],
+      "release_channel": "ready_for_ingest",
+      "ingest_allowed": true,
+      "release_ready_expected": true,
+      "notes": [
+        "This is the first real Phase B pilot bundle.",
+        "It is allowed to pass the ingest gate, but live retrieval stays blocked until the rollout gate explicitly enables it."
+      ]
+    }
+  ]
+}

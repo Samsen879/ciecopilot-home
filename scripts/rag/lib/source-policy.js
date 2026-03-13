@@ -1,4 +1,6 @@
 const RESTRICTED_OFFICIAL_SOURCE_TYPES = ['past_paper_pdf', 'mark_scheme_pdf'];
+const PRODUCTION_EVIDENCE_ENABLED_SOURCE_TYPES = ['evidence_authored', 'evidence_transformed'];
+const PRODUCTION_EVIDENCE_RESERVED_SOURCE_TYPES = ['evidence_reserved'];
 
 const SOURCE_POLICIES = {
   research: {
@@ -38,11 +40,38 @@ const SOURCE_POLICIES = {
       'For new Step 3 work, prefer the explicit mode name restricted_official.',
     ],
   },
+  production_evidence: {
+    mode: 'production_evidence',
+    description:
+      'Offline governance policy for authored/transformed product-safe evidence bundles. This mode is distinct from restricted_official and does not imply that official PDF assets are user-facing production evidence.',
+    declared_source_types: [
+      ...PRODUCTION_EVIDENCE_ENABLED_SOURCE_TYPES,
+      ...PRODUCTION_EVIDENCE_RESERVED_SOURCE_TYPES,
+    ],
+    enabled_source_types: PRODUCTION_EVIDENCE_ENABLED_SOURCE_TYPES,
+    reserved_source_types: PRODUCTION_EVIDENCE_RESERVED_SOURCE_TYPES,
+    allowed_source_types: PRODUCTION_EVIDENCE_ENABLED_SOURCE_TYPES,
+    required_source_types: PRODUCTION_EVIDENCE_ENABLED_SOURCE_TYPES,
+    disallowed_source_types: [
+      'evidence_reserved',
+      'note_md',
+      'past_paper_pdf',
+      'mark_scheme_pdf',
+    ],
+    notes: [
+      'Use this mode only for authored/transformed production-evidence governance artifacts.',
+      'The reserved source type slot exists for future schema expansion, but it is inactive in v1 and must not appear in active items.',
+      'restricted_official remains a separate internal official corpus layer and must not be relabeled as production evidence.',
+    ],
+  },
 };
 
 function clonePolicy(policy) {
   return {
     ...policy,
+    declared_source_types: [...(policy.declared_source_types || [])],
+    enabled_source_types: [...(policy.enabled_source_types || [])],
+    reserved_source_types: [...(policy.reserved_source_types || [])],
     allowed_source_types: [...(policy.allowed_source_types || [])],
     required_source_types: [...(policy.required_source_types || [])],
     disallowed_source_types: [...(policy.disallowed_source_types || [])],

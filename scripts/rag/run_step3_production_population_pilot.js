@@ -9,6 +9,10 @@ import {
   buildProductionSourceInventory,
   renderProductionSourceInventoryReport,
 } from './lib/production-source-inventory.js';
+import {
+  shouldContinueAfterIngest,
+  summarizePilotRetrievalAvailability,
+} from './lib/population-pilot.js';
 
 const ROOT = process.cwd();
 const __filename = fileURLToPath(import.meta.url);
@@ -44,9 +48,13 @@ function writeJson(filePath, payload) {
   fs.writeFileSync(filePath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
-function runNodeScript(args) {
+function runNodeScript(args, options = {}) {
   const result = spawnSync(process.execPath, args, {
     cwd: ROOT,
+    env: {
+      ...process.env,
+      ...(options.env || {}),
+    },
     stdio: 'inherit',
     shell: false,
   });
@@ -107,6 +115,7 @@ function buildArtifactPaths(subjectCode, policyMode) {
     coverageMd: path.join(ROOT, `docs/reports/rag_step3_${artifactPrefix}_${subjectCode}_coverage.md`),
     datasetJson: path.join(ROOT, `data/eval/rag_step3_retrieval_availability_sample_${subjectCode}.json`),
     datasetManifestJson: path.join(ROOT, `data/eval/rag_step3_retrieval_availability_sample_${subjectCode}_manifest.json`),
+    readinessProfileJson: path.join(ROOT, `runs/backend/rag_s2_readiness_profile_${subjectCode}.json`),
     evalSummaryJson: path.join(ROOT, `runs/backend/rag_step3_retrieval_availability_summary_${subjectCode}.json`),
     evalReportMd: path.join(ROOT, `docs/reports/rag_step3_retrieval_availability_${subjectCode}.md`),
     overallSummaryJson: path.join(ROOT, `runs/backend/rag_step3_${artifactPrefix}_population_pilot_summary_${subjectCode}.json`),
@@ -163,7 +172,11 @@ function main() {
     ]),
   });
 
-  const ingestOk = steps[steps.length - 1].ok;
+  const ingestSummary = readJsonIfExists(paths.ingestSummaryJson);
+  const ingestOk = shouldContinueAfterIngest({
+    ingestStep: steps[steps.length - 1],
+    ingestSummary,
+  });
 
   if (ingestOk) {
     steps.push({
@@ -207,6 +220,21 @@ function main() {
 
   if (ingestOk && mappingOk && sampleBuildOk) {
     steps.push({
+      step: 'build_readiness_profile',
+      ...runNodeScript([
+        'scripts/rag/build_s2_readiness_profile.js',
+        '--dataset', toRel(paths.datasetJson),
+        '--corpus-summary', toRel(paths.coverageJson),
+        '--out', toRel(paths.readinessProfileJson),
+      ]),
+    });
+  }
+
+  const readinessProfileOk =
+    steps[steps.length - 1]?.step === 'build_readiness_profile' ? steps[steps.length - 1].ok : false;
+
+  if (ingestOk && mappingOk && sampleBuildOk && readinessProfileOk) {
+    steps.push({
       step: 'retrieval_availability_eval',
       ...runNodeScript([
         'scripts/rag/run_s2_augmentation_eval.js',
@@ -216,14 +244,18 @@ function main() {
         '--out-summary', toRel(paths.evalSummaryJson),
         '--out-report', toRel(paths.evalReportMd),
         '--limit', String(retrievalLimit),
-      ]),
+      ], {
+        env: {
+          RAG_S2_READINESS_PROFILE_PATH: paths.readinessProfileJson,
+        },
+      }),
     });
   }
 
   const coverage = readJsonIfExists(paths.coverageJson);
   const evalSummary = readJsonIfExists(paths.evalSummaryJson);
-  const ingestSummary = readJsonIfExists(paths.ingestSummaryJson);
   const mappingSummary = readJsonIfExists(paths.mappingJson);
+  const readinessProfile = readJsonIfExists(paths.readinessProfileJson);
 
   const overall = {
     generated_at: new Date().toISOString(),
@@ -261,13 +293,12 @@ function main() {
         source_ref_resolvability_rate: coverage.metrics?.source_ref_resolvability_rate ?? null,
         topic_path_coverage_rate: coverage.metrics?.topic_path_coverage_rate ?? null,
       } : null,
-      retrieval_availability: evalSummary ? {
-        status: evalSummary.status,
-        case_count: evalSummary.case_count || null,
-        fallback_reason_counts: evalSummary.fallback_reason_counts || {},
-        s2_empty_evidence_reason_counts: evalSummary.s2_empty_evidence_reason_counts || {},
-        subject_counts: evalSummary.subject_counts || {},
+      readiness_profile: readinessProfile ? {
+        covered_subjects: readinessProfile.covered_subjects || [],
+        recommended_max_topic_depth_by_subject:
+          readinessProfile.recommended_max_topic_depth_by_subject || {},
       } : null,
+      retrieval_availability: summarizePilotRetrievalAvailability(evalSummary),
     },
   };
 

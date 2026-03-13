@@ -1,0 +1,43 @@
+{
+  "manifest_role": "production_evidence_bundle",
+  "evidence_layer": "production_evidence",
+  "policy_mode": "production_evidence",
+  "schema_version": "v1",
+  "bundle_id": "phase_b_seed_v1",
+  "generated_at": "2026-03-13T04:20:00.000Z",
+  "bundle_status": "governance_seed_only",
+  "subject_scope": "mixed_subject",
+  "subject_codes": [
+    "9702",
+    "9231"
+  ],
+  "language": "en",
+  "declared_source_types": [
+    "evidence_authored",
+    "evidence_transformed",
+    "evidence_reserved"
+  ],
+  "enabled_source_types": [
+    "evidence_authored",
+    "evidence_transformed"
+  ],
+  "allowed_source_types": [
+    "evidence_authored",
+    "evidence_transformed"
+  ],
+  "reserved_source_types": [
+    "evidence_reserved"
+  ],
+  "restricted_official_posture": "internal_context_only",
+  "items_file": "items.json",
+  "bundle_item_count": 2,
+  "review": {
+    "status": "draft",
+    "owner": "phase_b_governance"
+  },
+  "notes": [
+    "This seed bundle exists only to validate Phase B governance wiring.",
+    "It is not a production-ready corpus and must not be wired into live retrieval.",
+    "restricted_official remains a separate internal official corpus layer."
+  ]
+}

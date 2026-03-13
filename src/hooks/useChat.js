@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ragApi } from '../api/ragApi';
+import { appendUserMessage, prepareRetry } from './chatHistory.js';
 
 export const useChat = (initialMessages = [], requestContext = {}) => {
   const [messages, setMessages] = useState(
@@ -56,17 +57,10 @@ export const useChat = (initialMessages = [], requestContext = {}) => {
   }, [requestContext]);
 
   // Send a message
-  const sendMessage = useCallback(async (content) => {
+  const sendMessage = useCallback(async (content, options = {}) => {
     if (!content.trim()) return;
-
-    const userMessage = {
-      id: Date.now(),
-      type: 'user',
-      content: content.trim(),
-      timestamp: new Date().toLocaleTimeString()
-    };
-
-    const nextMessages = [...messages, userMessage];
+    const baseMessages = Array.isArray(options.history) ? options.history : messages;
+    const nextMessages = appendUserMessage(baseMessages, content, new Date().toLocaleTimeString());
     setMessages(nextMessages);
     setIsTyping(true);
     setError(null);
@@ -111,13 +105,10 @@ export const useChat = (initialMessages = [], requestContext = {}) => {
   // Retry last message
   const retryLastMessage = useCallback(() => {
     if (messages.length < 2) return;
-    
-    const lastUserMessage = [...messages].reverse().find(msg => msg.type === 'user');
-    if (lastUserMessage) {
-      // Remove all messages after the last user message
-      const lastUserIndex = messages.findIndex(msg => msg.id === lastUserMessage.id);
-      setMessages(messages.slice(0, lastUserIndex + 1));
-      sendMessage(lastUserMessage.content);
+
+    const { retryContent, history } = prepareRetry(messages);
+    if (retryContent) {
+      sendMessage(retryContent, { history });
     }
   }, [messages, sendMessage]);
 

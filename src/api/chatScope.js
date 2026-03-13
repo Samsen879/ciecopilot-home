@@ -11,6 +11,29 @@ export function deriveRouteSubjectCode(pathname = '') {
   return null;
 }
 
+export const CHAT_SUBJECT_OPTIONS = [
+  { value: '9709', label: 'Mathematics (9709)' },
+  { value: '9702', label: 'Physics (9702)' },
+  { value: '9231', label: 'Further Mathematics (9231)' },
+];
+
+export function requiresSubjectSelection(pathname = '') {
+  return !deriveRouteSubjectCode(pathname);
+}
+
+export function resolveChatRequestContext({
+  routePathname = '',
+  selectedSubjectCode = null,
+} = {}) {
+  const routeSubjectCode = deriveRouteSubjectCode(routePathname);
+  const subject_code = routeSubjectCode || String(selectedSubjectCode || '').trim() || undefined;
+
+  return {
+    route_pathname: routePathname,
+    ...(subject_code ? { subject_code } : {}),
+  };
+}
+
 export function inferSubjectCodeFromText(text = '') {
   const normalized = String(text || '').toLowerCase();
   if (!normalized.trim()) return null;

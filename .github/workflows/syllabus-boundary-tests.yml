@@ -136,6 +136,13 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/20251223000300_create_curriculum_nodes.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260118093200_recreate_hybrid_search_v2.sql
           psql -v ON_ERROR_STOP=1 -f tests/fixtures/syllabus_boundary_seed.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260302190000_chunks_add_corpus_contract.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260311173000_hybrid_search_v2_add_corpus_version_filter.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260312110000_hybrid_search_v2_add_version_priority_dedupe.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260312123000_hybrid_search_v2_stable_identity_dedupe.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260312130000_hybrid_search_v2_candidate_pool_version_priority.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260312131500_hybrid_search_v2_candidate_pool_version_priority_fix.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20260312143000_hybrid_search_v2_asset_family_version_shadow.sql
 
       - name: Run syllabus boundary preflight
         env:

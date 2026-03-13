@@ -93,7 +93,7 @@ function handleLegacyExcluded(req, res) {
     code: 'endpoint_not_found',
     message: 'Endpoint not found.',
     request_id: req.request_id,
-    hint: 'Use /api/rag/chat or /api/marking/evaluate-v1.',
+    hint: 'Use /api/rag/ask or /api/marking/evaluate-v1.',
   });
   return true;
 }

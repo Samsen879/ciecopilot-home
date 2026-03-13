@@ -72,14 +72,11 @@ export const handlers = [
     return HttpResponse.json(response);
   }),
 
-  // RAG Chat endpoint
-  http.post('/api/rag/chat', async ({ request }) => {
+  // RAG Ask endpoint
+  http.post('/api/rag/ask', async ({ request }) => {
     await maybeDelay();
     const body = await request.json().catch(() => ({}));
-    const { messages = [], subject_code = '9702', paper_code = null, topic_id = null, lang = 'en' } = body || {};
-
-    const lastUser = [...messages].reverse().find((m) => m.role === 'user');
-    const question = lastUser?.content || 'Explain electric potential difference.';
+    const { query = 'Explain electric potential difference.', subject_code = '9702', topic_id = null, lang = 'en' } = body || {};
 
     const answer = `Answer (${lang}): Electric potential difference (V) between two points is the work done per unit charge (W/q) to move a small positive test charge between the points. In uniform fields, E = -dV/dx. For CIE exams, mention units and definitions explicitly.`;
 
@@ -102,13 +99,25 @@ export const handlers = [
     ];
 
     const response = {
-      subject_code,
-      paper_code,
-      topic_id,
-      lang,
       answer,
-      citations,
-      usage: { prompt_tokens: 210, completion_tokens: 120, total_tokens: 330 },
+      evidence: citations.map((item, index) => ({
+        id: `mock-evidence-${index + 1}`,
+        topic_path: `${subject_code}.mock`,
+        source_type: item.source_type,
+        source_ref: {
+          asset_id: item.document_id,
+          page_no: item.page_from,
+        },
+        snippet: item.snippet,
+        score: 0.8 - index * 0.05,
+      })),
+      uncertain: false,
+      uncertain_reason_code: null,
+      topic_leakage_flag: false,
+      topic_leakage_reason: null,
+      retrieval_version: 'mock-rag-ask-v1',
+      request_id: 'mock-request-id',
+      metrics: { cost_avg_usd_per_req: 0.01 },
     };
 
     return HttpResponse.json(response);

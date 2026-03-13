@@ -115,7 +115,7 @@ describe('RAG boundary contract', () => {
 
   it('retries transient fetch failures and succeeds within retry budget', async () => {
     const supabase = createRetryBoundarySupabase({
-      failures: 2,
+      failures: 4,
       finalRow: {
         node_id: 'node-1',
         topic_path: '9709.P1',
@@ -134,12 +134,12 @@ describe('RAG boundary contract', () => {
     );
 
     expect(resolved.current_topic_path).toBe('9709.P1');
-    expect(supabase.getCallCount()).toBe(3);
+    expect(supabase.getCallCount()).toBe(5);
   });
 
   it('fails after retry budget is exhausted for transient fetch failures', async () => {
     const supabase = createRetryBoundarySupabase({
-      failures: 3,
+      failures: 5,
       finalRow: null,
     });
 
@@ -157,6 +157,6 @@ describe('RAG boundary contract', () => {
       details: { retryable: true },
     });
 
-    expect(supabase.getCallCount()).toBe(3);
+    expect(supabase.getCallCount()).toBe(5);
   });
 });

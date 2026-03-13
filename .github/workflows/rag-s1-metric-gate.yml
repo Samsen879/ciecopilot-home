@@ -27,12 +27,12 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       VECTOR_EMBEDDING_API_KEY: ${{ secrets.VECTOR_EMBEDDING_API_KEY }}
-      VECTOR_EMBEDDING_BASE_URL: ${{ secrets.VECTOR_EMBEDDING_BASE_URL }}
-      VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL }}
+      VECTOR_EMBEDDING_BASE_URL: ${{ secrets.VECTOR_EMBEDDING_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1' }}
+      VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL || 'text-embedding-v4' }}
       VECTOR_EMBEDDING_DIMENSIONS: ${{ secrets.VECTOR_EMBEDDING_DIMENSIONS }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
-      CHAT_MODEL: ${{ secrets.CHAT_MODEL }}
+      CHAT_MODEL: ${{ secrets.CHAT_MODEL || 'qwen-plus' }}
     steps:
       - uses: actions/checkout@v4
 

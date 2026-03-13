@@ -41,10 +41,6 @@ async function postJson(path, body, init = {}) {
 	return data;
 }
 
-export async function tutorChat(payload, init) {
-	return postJson('/api/ai/tutor/chat', payload, init);
-}
-
 export async function generateLearningPath(payload, init) {
 	return postJson('/api/ai/learning/path-generator', payload, init);
 }
@@ -57,7 +53,7 @@ export function getStreamSupportHeader(headers) {
 	return null;
 }
 
-export default { tutorChat, generateLearningPath, getStreamSupportHeader };
+export default { generateLearningPath, getStreamSupportHeader };
 
 
 

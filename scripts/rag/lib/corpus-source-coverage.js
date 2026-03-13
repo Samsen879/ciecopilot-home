@@ -1,3 +1,5 @@
+import { filterRowsBySourcePolicy, resolveSourcePolicy } from './source-policy.js';
+
 function isNonEmptyString(value) {
   return typeof value === 'string' && value.trim().length > 0;
 }
@@ -21,40 +23,51 @@ function countBy(items, keyFn) {
 export function summarizeCorpusSourceCoverage(
   rows = [],
   {
-    requiredSourceTypes = ['note_md', 'past_paper_pdf', 'mark_scheme_pdf'],
+    policyMode = 'research',
+    requiredSourceTypes = null,
     sourceRefResolvableRateMin = 0.95,
     topicPathCoverageRateMin = 0.95,
   } = {},
 ) {
   const allRows = Array.isArray(rows) ? rows : [];
-  const total = allRows.length;
+  const sourcePolicy = resolveSourcePolicy(policyMode);
+  const policySelection = filterRowsBySourcePolicy(allRows, policyMode);
+  const evaluatedRows = [...policySelection.included_rows, ...policySelection.unknown_rows];
+  const blockedRows = policySelection.excluded_rows;
+  const totalScanned = allRows.length;
+  const totalEvaluated = evaluatedRows.length;
+  const requiredTypes = Array.isArray(requiredSourceTypes) && requiredSourceTypes.length > 0
+    ? requiredSourceTypes
+    : sourcePolicy.required_source_types;
 
-  const sourceTypeCounts = countBy(allRows, (row) => row.source_type || 'unknown');
-  const corpusVersionCounts = countBy(allRows, (row) => row.corpus_version || 'unknown');
-  const subjectCounts = countBy(allRows, (row) => row.syllabus_code || 'unknown');
+  const sourceTypeCounts = countBy(evaluatedRows, (row) => row.source_type || 'unknown');
+  const observedSourceTypeCounts = countBy(allRows, (row) => row.source_type || 'unknown');
+  const blockedSourceTypeCounts = countBy(blockedRows, (row) => row.source_type || 'unknown');
+  const corpusVersionCounts = countBy(evaluatedRows, (row) => row.corpus_version || 'unknown');
+  const subjectCounts = countBy(evaluatedRows, (row) => row.syllabus_code || 'unknown');
 
   const subjectBySourceType = {};
-  for (const row of allRows) {
+  for (const row of evaluatedRows) {
     const sourceType = String(row.source_type || 'unknown');
     const subject = String(row.syllabus_code || 'unknown');
     subjectBySourceType[sourceType] ||= {};
     subjectBySourceType[sourceType][subject] = (subjectBySourceType[sourceType][subject] || 0) + 1;
   }
 
-  const sourceRefResolvableRows = allRows.filter((row) => isSourceRefResolvable(row.source_ref));
-  const mappedTopicPathRows = allRows.filter((row) => {
+  const sourceRefResolvableRows = evaluatedRows.filter((row) => isSourceRefResolvable(row.source_ref));
+  const mappedTopicPathRows = evaluatedRows.filter((row) => {
     const topicPath = String(row.topic_path || '').trim();
     return topicPath.length > 0 && topicPath.toLowerCase() !== 'unmapped';
   });
 
-  const sourceRefResolvableRate = total > 0 ? sourceRefResolvableRows.length / total : 0;
-  const topicPathCoverageRate = total > 0 ? mappedTopicPathRows.length / total : 0;
+  const sourceRefResolvableRate = totalEvaluated > 0 ? sourceRefResolvableRows.length / totalEvaluated : 0;
+  const topicPathCoverageRate = totalEvaluated > 0 ? mappedTopicPathRows.length / totalEvaluated : 0;
 
   const requiredSourceTypeChecks = Object.fromEntries(
-    requiredSourceTypes.map((type) => [type, Number(sourceTypeCounts[type] || 0) > 0]),
+    requiredTypes.map((type) => [type, Number(sourceTypeCounts[type] || 0) > 0]),
   );
 
-  const missingAssetExamples = allRows
+  const missingAssetExamples = evaluatedRows
     .filter((row) => !isSourceRefResolvable(row.source_ref))
     .slice(0, 50)
     .map((row) => ({
@@ -69,12 +82,27 @@ export function summarizeCorpusSourceCoverage(
   const payload = {
     generated_at: new Date().toISOString(),
     table: 'public.chunks',
+    policy: {
+      mode: sourcePolicy.mode,
+      description: sourcePolicy.description,
+      allowed_source_types: sourcePolicy.allowed_source_types,
+      required_source_types: requiredTypes,
+      disallowed_source_types: sourcePolicy.disallowed_source_types,
+      notes: sourcePolicy.notes,
+    },
+    scan_totals: {
+      total_rows_scanned: totalScanned,
+      total_rows_evaluated: totalEvaluated,
+      blocked_by_policy_rows: blockedRows.length,
+    },
     canonical_totals: {
-      total_rows: total,
+      total_rows: totalEvaluated,
       mapped_topic_path_rows: mappedTopicPathRows.length,
       source_ref_resolvable_rows: sourceRefResolvableRows.length,
     },
     source_type_counts: sourceTypeCounts,
+    observed_source_type_counts: observedSourceTypeCounts,
+    blocked_source_type_counts: blockedSourceTypeCounts,
     subject_counts: subjectCounts,
     corpus_version_counts: corpusVersionCounts,
     subject_by_source_type: subjectBySourceType,
@@ -82,7 +110,7 @@ export function summarizeCorpusSourceCoverage(
       source_ref_resolvability_rate: Number(sourceRefResolvableRate.toFixed(6)),
       topic_path_coverage_rate: Number(topicPathCoverageRate.toFixed(6)),
     },
-    required_source_types: requiredSourceTypes,
+    required_source_types: requiredTypes,
     threshold_checks: {
       required_source_types_present: requiredSourceTypeChecks,
       required_source_types_all_present: Object.values(requiredSourceTypeChecks).every(Boolean),
@@ -105,13 +133,28 @@ export function summarizeCorpusSourceCoverage(
 }
 
 export function renderCorpusSourceCoverageReport(summary) {
+  const reportTitle = summary.policy?.mode === 'restricted_official'
+    ? '# RAG Restricted Official Corpus Coverage'
+    : '# RAG S1.3 Corpus Source Coverage';
+
   const lines = [
-    '# RAG S1.3 Corpus Source Coverage',
+    reportTitle,
     '',
     `- Generated at: \`${summary.generated_at}\``,
     `- Table: \`${summary.table}\``,
+    `- Policy mode: \`${summary.policy?.mode || 'research'}\``,
+    `- evaluated_rows: \`${summary.scan_totals?.total_rows_evaluated ?? (summary.canonical_totals?.total_rows || 0)}\``,
+    `- rows_scanned: \`${summary.scan_totals?.total_rows_scanned ?? (summary.canonical_totals?.total_rows || 0)}\``,
+    `- blocked_by_policy_rows: \`${summary.scan_totals?.blocked_by_policy_rows || 0}\``,
     `- Total rows: \`${summary.canonical_totals?.total_rows || 0}\``,
     `- Status: \`${summary.status}\``,
+    '',
+    '## Policy',
+    '',
+    `- description: \`${summary.policy?.description || 'n/a'}\``,
+    `- allowed_source_types: \`${JSON.stringify(summary.policy?.allowed_source_types || [])}\``,
+    `- required_source_types: \`${JSON.stringify(summary.policy?.required_source_types || summary.required_source_types || [])}\``,
+    `- disallowed_source_types: \`${JSON.stringify(summary.policy?.disallowed_source_types || [])}\``,
     '',
     '## Threshold Checks',
     '',
@@ -131,6 +174,14 @@ export function renderCorpusSourceCoverageReport(summary) {
   lines.push('', '## Source Type Counts', '');
   for (const [type, count] of Object.entries(summary.source_type_counts || {})) {
     lines.push(`- ${type}: \`${count}\``);
+  }
+
+  const blockedCounts = Object.entries(summary.blocked_source_type_counts || {});
+  if (blockedCounts.length > 0) {
+    lines.push('', '## Blocked Source Type Counts', '');
+    for (const [type, count] of blockedCounts) {
+      lines.push(`- ${type}: \`${count}\``);
+    }
   }
 
   lines.push('', '## Metrics', '');
@@ -155,3 +206,4 @@ export function renderCorpusSourceCoverageReport(summary) {
 
   return `${lines.join('\n')}\n`;
 }
+

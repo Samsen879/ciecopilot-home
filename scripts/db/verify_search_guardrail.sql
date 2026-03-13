@@ -11,33 +11,25 @@ WHERE n.nspname = 'public'
   AND p.proname ILIKE '%search%'
 ORDER BY p.proname;
 
--- 2) Guardrail tests against public.hybrid_search_v2(text, vector(1536), ltree, int, int, int, real, real, int)
+-- 2) Guardrail tests against public.hybrid_search_v2(text, vector(1536), ltree, int, int, int, real, real, int, text[])
 DO $$
 DECLARE
-  v_exists boolean;
+  v_signature regprocedure;
 BEGIN
-  SELECT EXISTS (
-    SELECT 1
-    FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-    WHERE n.nspname = 'public'
-      AND p.proname = 'hybrid_search_v2'
-  ) INTO v_exists;
+  SELECT to_regprocedure(
+    'public.hybrid_search_v2(text, vector(1536), ltree, integer, integer, integer, real, real, integer, text[])'
+  ) INTO v_signature;
 
-  IF NOT v_exists THEN
-    RAISE EXCEPTION 'FAIL: required function public.hybrid_search_v2 not found';
+  IF v_signature IS NULL THEN
+    RAISE EXCEPTION 'FAIL: required function public.hybrid_search_v2(text, vector(1536), ltree, integer, integer, integer, real, real, integer, text[]) not found';
   END IF;
 END $$;
 
 BEGIN;
 
--- Ensure at least one topic_path exists (rolled back at end)
-INSERT INTO public.curriculum_nodes (syllabus_code, topic_path, title)
-VALUES ('9709', '9709.test', 'Verification Node')
-ON CONFLICT (topic_path) DO NOTHING;
-
 DO $$
 DECLARE
+  v_subject text;
   v_topic ltree;
   v_total int;
   v_leak int;
@@ -46,7 +38,7 @@ DECLARE
 BEGIN
   -- Negative case: missing topic_path/current_topic_path
   BEGIN
-    PERFORM public.hybrid_search_v2('test', NULL::vector(1536), NULL::ltree);
+    PERFORM public.hybrid_search_v2('test', NULL::vector(1536), NULL::ltree, 12, 50, 50, 0.3, 0.7, 60, NULL);
   EXCEPTION WHEN others THEN
     v_neg_null := true;
     RAISE NOTICE 'negative case (missing topic_path) error: %', SQLERRM;
@@ -58,7 +50,7 @@ BEGIN
 
   -- Negative case: empty topic_path
   BEGIN
-    PERFORM public.hybrid_search_v2('test', NULL::vector(1536), ''::ltree);
+    PERFORM public.hybrid_search_v2('test', NULL::vector(1536), ''::ltree, 12, 50, 50, 0.3, 0.7, 60, NULL);
   EXCEPTION WHEN others THEN
     v_neg_empty := true;
     RAISE NOTICE 'negative case (empty topic_path) error: %', SQLERRM;
@@ -68,31 +60,53 @@ BEGIN
     RAISE EXCEPTION 'FAIL: empty topic_path did not error';
   END IF;
 
-  SELECT topic_path INTO v_topic
-  FROM public.curriculum_nodes
-  WHERE topic_path <> 'unmapped'::ltree
-  ORDER BY topic_path
-  LIMIT 1;
+  FOREACH v_subject IN ARRAY ARRAY['9709', '9702', '9231']
+  LOOP
+    SELECT topic_path INTO v_topic
+    FROM public.curriculum_nodes
+    WHERE syllabus_code = v_subject
+      AND topic_path = v_subject::ltree
+    LIMIT 1;
 
-  IF v_topic IS NULL THEN
-    RAISE EXCEPTION 'FAIL: no curriculum_nodes rows available for positive case';
-  END IF;
+    IF v_topic IS NULL THEN
+      SELECT topic_path INTO v_topic
+      FROM public.curriculum_nodes
+      WHERE syllabus_code = v_subject
+        AND topic_path <> 'unmapped'::ltree
+      ORDER BY topic_path
+      LIMIT 1;
+    END IF;
 
-  SELECT
-    COUNT(*) AS total,
-    COUNT(*) FILTER (WHERE NOT (topic_path <@ v_topic)) AS leakage_count
-  INTO v_total, v_leak
-  FROM public.hybrid_search_v2(
-    'test',
-    ARRAY_FILL(0::real, ARRAY[1536])::vector(1536),
-    v_topic
-  );
+    IF v_topic IS NULL THEN
+      RAISE EXCEPTION 'FAIL: no curriculum_nodes rows available for subject %', v_subject;
+    END IF;
 
-  IF v_leak <> 0 THEN
-    RAISE EXCEPTION 'FAIL: leakage_count=%', v_leak;
-  END IF;
+    SELECT
+      COUNT(*) AS total,
+      COUNT(*) FILTER (
+        WHERE split_part(topic_path::text, '.', 1) <> v_subject
+           OR NOT (topic_path <@ v_topic)
+      ) AS leakage_count
+    INTO v_total, v_leak
+    FROM public.hybrid_search_v2(
+      'test',
+      ARRAY_FILL(0::real, ARRAY[1536])::vector(1536),
+      v_topic,
+      12,
+      50,
+      50,
+      0.3,
+      0.7,
+      60,
+      NULL
+    );
 
-  RAISE NOTICE 'positive case: total=% leakage_count=%', v_total, v_leak;
+    IF v_leak <> 0 THEN
+      RAISE EXCEPTION 'FAIL: subject % leakage_count=%', v_subject, v_leak;
+    END IF;
+
+    RAISE NOTICE 'positive case: subject=% total=% leakage_count=%', v_subject, v_total, v_leak;
+  END LOOP;
 END $$;
 
 ROLLBACK;

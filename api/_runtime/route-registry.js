@@ -3,6 +3,8 @@ import { getRoutePolicy } from '../lib/security/policy-registry.js';
 
 export const LEGACY_EXCLUDED_ENDPOINTS = [
   '/api/chat',
+  '/api/rag/chat',
+  '/api/ai/tutor/chat',
   '/api/marking/evaluate',
 ];
 
@@ -79,16 +81,6 @@ const ROUTES = [
     rateLimit: COMMUNITY_WRITE_RATE_LIMIT,
   },
   {
-    module: 'ai-tutor',
-    pathPrefix: '/api/ai/tutor/chat',
-    importPath: '../ai/tutor/chat.js',
-    auth: 'jwt_required',
-    authMode: 'authenticated',
-    methods: ['POST', 'OPTIONS'],
-    rateLimitPolicyId: RAG_AI_RATE_LIMIT_POLICY_ID,
-    rateLimit: RAG_AI_RATE_LIMIT,
-  },
-  {
     module: 'ai-analysis',
     pathPrefix: '/api/ai/analysis/knowledge-gaps',
     importPath: '../ai/analysis/knowledge-gaps.js',
@@ -112,16 +104,6 @@ const ROUTES = [
     module: 'rag-search',
     pathPrefix: '/api/rag/search',
     importPath: '../rag/search.js',
-    auth: 'jwt_required',
-    authMode: 'authenticated',
-    methods: ['POST', 'OPTIONS'],
-    rateLimitPolicyId: RAG_AI_RATE_LIMIT_POLICY_ID,
-    rateLimit: RAG_AI_RATE_LIMIT,
-  },
-  {
-    module: 'rag-chat',
-    pathPrefix: '/api/rag/chat',
-    importPath: '../rag/chat.js',
     auth: 'jwt_required',
     authMode: 'authenticated',
     methods: ['POST', 'OPTIONS'],

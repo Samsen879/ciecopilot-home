@@ -1,8 +1,8 @@
 import { BOUNDARY_ERROR_CODES } from './constants.js';
 import { RagError } from './errors.js';
 
-const BOUNDARY_LOOKUP_MAX_ATTEMPTS = 3;
-const BOUNDARY_LOOKUP_RETRY_DELAYS_MS = [50, 150];
+const BOUNDARY_LOOKUP_MAX_ATTEMPTS = 5;
+const BOUNDARY_LOOKUP_RETRY_DELAYS_MS = [100, 250, 500, 1000];
 
 function extractAllowedSubjects(authUser) {
   const candidates = [

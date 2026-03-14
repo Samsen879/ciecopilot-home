@@ -57,6 +57,48 @@ function toList(value, fallback = []) {
   return [value];
 }
 
+function parseSubjectCodes(value) {
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseVerificationMappingSpec(value) {
+  const [bundleIdRaw = '', subjectCodesRaw = '', artifactPathRaw = ''] = String(value || '').split('|');
+  const bundle_id = bundleIdRaw.trim();
+  const subject_codes = parseSubjectCodes(subjectCodesRaw);
+  const pathValue = artifactPathRaw.trim();
+  if (!bundle_id || subject_codes.length === 0 || !pathValue) {
+    throw new Error(
+      'verification-mapping must use bundle_id|subject_code[,subject_code...]|artifact_path format',
+    );
+  }
+  return {
+    bundle_id,
+    subject_codes,
+    path: pathValue,
+  };
+}
+
+function buildVerificationMappings(cli) {
+  const explicitMappings = toList(cli['verification-mapping']).map(parseVerificationMappingSpec);
+  if (explicitMappings.length > 0) return explicitMappings;
+
+  const verificationArtifactPaths = toList(
+    cli['verification-artifact'],
+    DEFAULT_VERIFICATION_MAPPINGS.map((item) => item.path),
+  );
+  return verificationArtifactPaths.map((artifactPath) => {
+    const defaultMapping = DEFAULT_VERIFICATION_MAPPINGS.find((item) => item.path === artifactPath) || null;
+    return {
+      bundle_id: defaultMapping?.bundle_id || '',
+      subject_codes: defaultMapping?.subject_codes || [],
+      path: artifactPath,
+    };
+  });
+}
+
 function describeArtifact(filePath) {
   const resolved = filePath ? resolveCliPath(filePath) : null;
   return {
@@ -80,10 +122,7 @@ export function main(argv = process.argv.slice(2)) {
 
   const rolloutGateArtifact = readJson(rolloutGateArtifactPath);
   const rolloutGateSourcePath = resolveCliPath(cli['rollout-gate'] || rolloutGateArtifact.rollout_gate || '');
-  const verificationArtifactPaths = toList(
-    cli['verification-artifact'],
-    DEFAULT_VERIFICATION_MAPPINGS.map((item) => item.path),
-  );
+  const verificationMappings = buildVerificationMappings(cli);
 
   const sourceArtifacts = {
     rollout_gate_artifact: {
@@ -94,8 +133,8 @@ export function main(argv = process.argv.slice(2)) {
       path: rolloutGateSourcePath ? toRel(rolloutGateSourcePath) : null,
       exists: Boolean(rolloutGateSourcePath) && fs.existsSync(rolloutGateSourcePath),
     },
-    verification_artifacts: verificationArtifactPaths.map((artifactPath) => {
-      const described = describeArtifact(artifactPath);
+    verification_artifacts: verificationMappings.map((mapping) => {
+      const described = describeArtifact(mapping.path);
       return {
         path: described.path,
         exists: described.exists,
@@ -109,14 +148,12 @@ export function main(argv = process.argv.slice(2)) {
       sourceArtifacts.rollout_gate.exists === true && rolloutGateSourcePath
         ? readJson(rolloutGateSourcePath)
         : null,
-    verificationArtifacts: verificationArtifactPaths.map((artifactPath) => {
-      const defaultMapping = DEFAULT_VERIFICATION_MAPPINGS.find((item) => item.path === artifactPath)
-        || DEFAULT_VERIFICATION_MAPPINGS[0];
-      const resolved = resolveCliPath(artifactPath);
+    verificationArtifacts: verificationMappings.map((mapping) => {
+      const resolved = resolveCliPath(mapping.path);
       return {
-        bundle_id: defaultMapping?.bundle_id || '',
-        subject_codes: defaultMapping?.subject_codes || [],
-        path: resolved ? toRel(resolved) : artifactPath,
+        bundle_id: mapping.bundle_id,
+        subject_codes: mapping.subject_codes,
+        path: resolved ? toRel(resolved) : mapping.path,
         payload: resolved && fs.existsSync(resolved) ? readJson(resolved) : null,
       };
     }),

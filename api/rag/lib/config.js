@@ -177,6 +177,12 @@ export function getRagConfig() {
     path.join(process.cwd(), 'data', 'evidence', 'production', 'rollout_gate_v1.json');
   const productionEvidenceRolloutGate =
     productionEvidenceRolloutEnabled ? readJsonFileIfExists(productionEvidenceRolloutGatePath) : null;
+  const productionEvidenceRolloutForcedExcludedSourceTypes = toCsvList(
+    process.env.RAG_PRODUCTION_EVIDENCE_FORCED_EXCLUDED_SOURCE_TYPES,
+  );
+  const productionEvidenceRolloutForcedExcludedCorpusVersions = toCsvList(
+    process.env.RAG_PRODUCTION_EVIDENCE_FORCED_EXCLUDED_CORPUS_VERSIONS,
+  );
   const s2RouteClassifierModelPath =
     process.env.RAG_S2_ROUTE_CLASSIFIER_MODEL_PATH ||
     path.join(process.cwd(), 'runs', 'backend', 'rag_s2_route_classifier_model.json');
@@ -201,6 +207,8 @@ export function getRagConfig() {
       productionEvidenceRolloutRequireBaseCorpusVersions,
       productionEvidenceRolloutGatePath,
       productionEvidenceRolloutGate,
+      productionEvidenceRolloutForcedExcludedSourceTypes,
+      productionEvidenceRolloutForcedExcludedCorpusVersions,
     },
     embedding: {
       baseUrl: embeddingBaseUrl.replace(/\/$/, ''),

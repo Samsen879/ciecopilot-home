@@ -40,6 +40,10 @@ export function resolveProductionEvidenceRetrievalRollout({
   const baseCorpusVersions = normalizeStringList(config.corpusVersions);
   const excludedSourceTypes = normalizeStringList(config.excludedSourceTypes);
   const excludedCorpusVersions = normalizeStringList(config.excludedCorpusVersions);
+  const forcedExcludedSourceTypes = normalizeStringList(config.productionEvidenceRolloutForcedExcludedSourceTypes);
+  const forcedExcludedCorpusVersions = normalizeStringList(config.productionEvidenceRolloutForcedExcludedCorpusVersions);
+  const baseExcludedSourceTypes = normalizeStringList([...excludedSourceTypes, ...forcedExcludedSourceTypes]);
+  const baseExcludedCorpusVersions = normalizeStringList([...excludedCorpusVersions, ...forcedExcludedCorpusVersions]);
   const gateEnabled = config.productionEvidenceRolloutEnabled !== false;
   const requireBaseCorpusVersions = config.productionEvidenceRolloutRequireBaseCorpusVersions !== false;
   const gate = normalizeObject(config.productionEvidenceRolloutGate);
@@ -57,15 +61,15 @@ export function resolveProductionEvidenceRetrievalRollout({
   const onlineSourceTypes = normalizeStringList(onlineEntries.flatMap((entry) => entry.allowed_source_types));
   const blockedSourceTypes =
     gateEnabled
-      ? normalizeStringList([...excludedSourceTypes, ...PRODUCTION_EVIDENCE_SOURCE_TYPES])
-      : excludedSourceTypes;
+      ? normalizeStringList([...baseExcludedSourceTypes, ...PRODUCTION_EVIDENCE_SOURCE_TYPES])
+      : baseExcludedSourceTypes;
   const blockedCorpusVersions =
     gateEnabled && allGatedCorpusVersions.length > 0
       ? normalizeStringList([
-        ...excludedCorpusVersions,
+        ...baseExcludedCorpusVersions,
         ...allGatedCorpusVersions,
       ])
-      : excludedCorpusVersions;
+      : baseExcludedCorpusVersions;
   const gatedExcludedCorpusVersions =
     gateEnabled && allGatedCorpusVersions.length > 0
       ? normalizeStringList([
@@ -90,8 +94,8 @@ export function resolveProductionEvidenceRetrievalRollout({
     audit.reason = 'rollout_gate_disabled';
     return {
       corpusVersions: toNullableList(baseCorpusVersions),
-      excludedSourceTypes: toNullableList(excludedSourceTypes),
-      excludedCorpusVersions: toNullableList(excludedCorpusVersions),
+      excludedSourceTypes: toNullableList(baseExcludedSourceTypes),
+      excludedCorpusVersions: toNullableList(baseExcludedCorpusVersions),
       audit,
     };
   }
@@ -142,8 +146,12 @@ export function resolveProductionEvidenceRetrievalRollout({
   }
 
   const mergedCorpusVersions = normalizeStringList([...baselineCorpusVersions, ...onlineCorpusVersions]);
-  const filteredExcludedSourceTypes = blockedSourceTypes.filter((value) => !onlineSourceTypes.includes(value));
-  const filteredExcludedCorpusVersions = gatedExcludedCorpusVersions.filter((value) => !onlineCorpusVersions.includes(value));
+  const filteredExcludedSourceTypes = blockedSourceTypes.filter(
+    (value) => forcedExcludedSourceTypes.includes(value) || !onlineSourceTypes.includes(value),
+  );
+  const filteredExcludedCorpusVersions = gatedExcludedCorpusVersions.filter(
+    (value) => forcedExcludedCorpusVersions.includes(value) || !onlineCorpusVersions.includes(value),
+  );
 
   audit.active = true;
   audit.reason = 'online_enabled_subject_match';

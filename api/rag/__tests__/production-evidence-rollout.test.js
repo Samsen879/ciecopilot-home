@@ -40,6 +40,29 @@ describe('production evidence retrieval rollout runtime', () => {
     expect(result.excludedCorpusVersions).toBeNull();
   });
 
+  test('preserves manual source and corpus exclusions even when a subject is online-enabled', () => {
+    const result = resolveProductionEvidenceRetrievalRollout({
+      retrievalConfig: {
+        corpusVersions: ['rag_step3_9702_question_aware_v1'],
+        excludedSourceTypes: [],
+        excludedCorpusVersions: [],
+        productionEvidenceRolloutForcedExcludedSourceTypes: ['evidence_authored'],
+        productionEvidenceRolloutForcedExcludedCorpusVersions: ['rag_production_evidence_pilot_20260313'],
+        productionEvidenceRolloutEnabled: true,
+        productionEvidenceRolloutGate: createOnlineGate(),
+      },
+      subjectCode: '9702',
+    });
+
+    expect(result.audit.active).toBe(true);
+    expect(result.corpusVersions).toEqual([
+      'rag_step3_9702_question_aware_v1',
+      'rag_production_evidence_pilot_20260313',
+    ]);
+    expect(result.excludedSourceTypes).toEqual(['evidence_authored', 'evidence_reserved']);
+    expect(result.excludedCorpusVersions).toEqual(['rag_production_evidence_pilot_20260313']);
+  });
+
   test('fails closed when rollout is enabled but the gate file is missing', () => {
     const result = resolveProductionEvidenceRetrievalRollout({
       retrievalConfig: {

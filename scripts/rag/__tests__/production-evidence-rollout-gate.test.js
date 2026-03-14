@@ -11,7 +11,7 @@ describe('production evidence retrieval rollout gate', () => {
   const whitelistPath = 'data/evidence/production/whitelist_v1.json';
   const rolloutGatePath = 'data/evidence/production/rollout_gate_v1.json';
 
-  test('keeps the checked-in rollout gate offline by default while referencing a ready bundle', () => {
+  test('keeps the checked-in rollout gate online for the first 9702 rollout while referencing a ready bundle', () => {
     const whitelist = readJson(rootDir, whitelistPath);
     const rolloutGate = readJson(rootDir, rolloutGatePath);
 
@@ -21,9 +21,10 @@ describe('production evidence retrieval rollout gate', () => {
     });
 
     expect(result.ok).toBe(true);
-    expect(result.summary.online_bundle_ids).toEqual([]);
-    expect(result.summary.online_subject_codes).toEqual([]);
-    expect(result.summary.offline_bundle_ids).toEqual(['phase_b_pilot_ready_v1']);
+    expect(result.summary.online_bundle_ids).toEqual(['phase_b_pilot_ready_v1']);
+    expect(result.summary.online_subject_codes).toEqual(['9702']);
+    expect(result.summary.online_corpus_versions).toEqual(['rag_production_evidence_pilot_20260313']);
+    expect(result.summary.offline_bundle_ids).toEqual([]);
   });
 
   test('allows an online-enabled entry only when it points at a ready-for-ingest whitelisted bundle', () => {

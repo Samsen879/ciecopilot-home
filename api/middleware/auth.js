@@ -12,16 +12,18 @@ function getRequiredJwtSecret() {
   return secret;
 }
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
-const ENFORCE_SESSIONS = process.env.AUTH_ENFORCE_SESSIONS === 'true';
+function isSessionEnforcementEnabled() {
+  return process.env.AUTH_ENFORCE_SESSIONS === 'true';
+}
 
 let supabaseClient = null;
 function getSupabaseClient() {
   if (supabaseClient) {
     return supabaseClient;
   }
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+  if (!supabaseUrl || !supabaseKey) {
     const error = new Error('Missing Supabase auth configuration: SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY');
     error.code = 'SUPABASE_AUTH_CONFIG_MISSING';
     throw error;
@@ -145,6 +147,14 @@ function isMissingRelationError(error) {
   return error.code === '42P01' || message.includes('does not exist') || message.includes('relation');
 }
 
+function isMissingColumnError(error, columnName) {
+  if (!error) {
+    return false;
+  }
+  const message = `${error.message || ''} ${error.details || ''}`.toLowerCase();
+  return error.code === '42703' && (!columnName || message.includes(String(columnName).toLowerCase()));
+}
+
 function buildFailure(status, error, message, code, extras = {}) {
   return {
     success: false,
@@ -254,65 +264,185 @@ async function getUserPermissions(userId, role) {
   return Array.from(permissionSet);
 }
 
-async function validateActiveSession(userId, token) {
+async function validateRefreshSession(userId, refreshToken) {
   const supabase = getSupabaseClient();
+  const refreshTokenHash = hashToken(refreshToken);
   try {
-    const { data, error } = await supabase
+    let query = await supabase
       .from('user_sessions')
-      .select('id')
+      .select('id, user_id, expires_at')
       .eq('user_id', userId)
-      .eq('token_hash', hashToken(token))
-      .eq('is_active', true)
+      .eq('refresh_token_hash', refreshTokenHash)
       .gte('expires_at', new Date().toISOString())
       .maybeSingle();
 
-    if (error) {
-      if (isMissingRelationError(error)) {
-        return { checked: false, valid: !ENFORCE_SESSIONS, reason: 'session_table_missing' };
-      }
-      console.warn('Session validation query failed:', error.message || error);
-      return { checked: false, valid: !ENFORCE_SESSIONS, reason: 'session_query_error' };
+    if (query.error && isMissingColumnError(query.error, 'refresh_token_hash')) {
+      query = await supabase
+        .from('user_sessions')
+        .select('id, user_id, expires_at')
+        .eq('user_id', userId)
+        .eq('token_hash', refreshTokenHash)
+        .gte('expires_at', new Date().toISOString())
+        .maybeSingle();
     }
 
-    if (!data) {
+    if (query.error) {
+      if (isMissingRelationError(query.error)) {
+        return { checked: false, valid: !isSessionEnforcementEnabled(), reason: 'session_table_missing' };
+      }
+      console.warn('Refresh session validation query failed:', query.error.message || query.error);
+      return { checked: false, valid: !isSessionEnforcementEnabled(), reason: 'session_query_error' };
+    }
+
+    if (!query.data) {
       return { checked: true, valid: false, reason: 'session_not_found' };
     }
 
-    return { checked: true, valid: true, sessionId: data.id };
+    return { checked: true, valid: true, sessionId: query.data.id };
   } catch (error) {
-    console.warn('Session validation failed:', error.message || error);
-    return { checked: false, valid: !ENFORCE_SESSIONS, reason: 'session_validation_exception' };
+    console.warn('Refresh session validation failed:', error.message || error);
+    return { checked: false, valid: !isSessionEnforcementEnabled(), reason: 'session_validation_exception' };
   }
 }
 
-async function touchSession(sessionId) {
-  if (!sessionId) {
-    return;
-  }
+async function persistRefreshSession({ userId, refreshToken, expiresAt, ipAddress = null, userAgent = null }) {
   const supabase = getSupabaseClient();
   try {
-    await supabase
+    let result = await supabase
       .from('user_sessions')
-      .update({ last_activity: new Date().toISOString() })
-      .eq('id', sessionId);
+      .insert({
+        user_id: userId,
+        refresh_token_hash: hashToken(refreshToken),
+        ip_address: ipAddress,
+        user_agent: userAgent,
+        expires_at: expiresAt,
+      });
+
+    if (result?.error && isMissingColumnError(result.error, 'refresh_token_hash')) {
+      result = await supabase
+        .from('user_sessions')
+        .insert({
+          user_id: userId,
+          token_hash: hashToken(refreshToken),
+          ip_address: ipAddress,
+          user_agent: userAgent,
+          expires_at: expiresAt,
+        });
+    }
+
+    if (result?.error) {
+      if (isMissingRelationError(result.error)) {
+        return { persisted: false, checked: false, reason: 'session_table_missing' };
+      }
+      console.warn('Failed to persist refresh session:', result.error.message || result.error);
+      return { persisted: false, checked: true, reason: 'session_insert_failed' };
+    }
+
+    return { persisted: true, checked: true, reason: null };
   } catch (error) {
-    console.warn('Failed to update session activity:', error.message || error);
+    console.warn('Failed to persist refresh session:', error.message || error);
+    return { persisted: false, checked: false, reason: 'session_insert_exception' };
+  }
+}
+
+async function rotateRefreshSession({
+  userId,
+  currentRefreshToken,
+  nextRefreshToken,
+  expiresAt,
+  ipAddress = null,
+  userAgent = null,
+}) {
+  const validation = await validateRefreshSession(userId, currentRefreshToken);
+  if (!validation.valid) {
+    return validation;
+  }
+
+  if (!validation.checked || !validation.sessionId) {
+    const persisted = await persistRefreshSession({
+      userId,
+      refreshToken: nextRefreshToken,
+      expiresAt,
+      ipAddress,
+      userAgent,
+    });
+    return {
+      checked: persisted.checked,
+      valid: persisted.persisted || !persisted.checked,
+      sessionId: null,
+      reason: persisted.reason,
+    };
+  }
+
+  const supabase = getSupabaseClient();
+  try {
+    let result = await supabase
+      .from('user_sessions')
+      .update({
+        refresh_token_hash: hashToken(nextRefreshToken),
+        ip_address: ipAddress,
+        user_agent: userAgent,
+        expires_at: expiresAt,
+      })
+      .eq('id', validation.sessionId);
+
+    if (result?.error && isMissingColumnError(result.error, 'refresh_token_hash')) {
+      result = await supabase
+        .from('user_sessions')
+        .update({
+          token_hash: hashToken(nextRefreshToken),
+          ip_address: ipAddress,
+          user_agent: userAgent,
+          expires_at: expiresAt,
+        })
+        .eq('id', validation.sessionId);
+    }
+
+    if (result?.error) {
+      console.warn('Failed to rotate refresh session:', result.error.message || result.error);
+      return { checked: true, valid: false, reason: 'session_rotate_failed' };
+    }
+
+    return { checked: true, valid: true, sessionId: validation.sessionId };
+  } catch (error) {
+    console.warn('Failed to rotate refresh session:', error.message || error);
+    return { checked: true, valid: false, reason: 'session_rotate_exception' };
   }
 }
 
 async function recordSecurityEvent(userId, eventType, metadata = {}) {
   const supabase = getSupabaseClient();
+  const payload = {
+    user_id: userId || null,
+    event_type: eventType,
+    severity: metadata.severity || 'info',
+    details: metadata,
+    ip_address: metadata.ip_address || null,
+    user_agent: metadata.user_agent || null,
+    created_at: new Date().toISOString()
+  };
   try {
-    await supabase
+    let result = await supabase
       .from('security_events')
-      .insert({
-        user_id: userId || null,
-        event_type: eventType,
-        metadata,
-        ip_address: metadata.ip_address || null,
-        user_agent: metadata.user_agent || null,
-        created_at: new Date().toISOString()
-      });
+      .insert(payload);
+
+    if (result?.error && isMissingColumnError(result.error, 'details')) {
+      result = await supabase
+        .from('security_events')
+        .insert({
+          user_id: userId || null,
+          event_type: eventType,
+          severity: metadata.severity || 'info',
+          metadata,
+          ip_address: metadata.ip_address || null,
+          user_agent: metadata.user_agent || null,
+          created_at: new Date().toISOString()
+        });
+    }
+
+    if (result?.error && !isMissingRelationError(result.error)) {
+      console.warn('Failed to record security event:', result.error.message || result.error);
+    }
   } catch (error) {
     if (!isMissingRelationError(error)) {
       console.warn('Failed to record security event:', error.message || error);
@@ -354,6 +484,10 @@ async function authenticateRequest(req, { optional = false } = {}) {
       return buildFailure(401, 'invalid_token_payload', '访问令牌载荷无效', 'AUTH_001');
     }
 
+    if (decoded?.type === 'refresh') {
+      return buildFailure(401, 'invalid_token_type', '访问令牌类型无效', 'AUTH_001');
+    }
+
     const userProfile = await fetchActiveUserProfile(userId);
     if (!userProfile) {
       return buildFailure(401, 'invalid_token', '无效的访问令牌', 'AUTH_002');
@@ -362,27 +496,13 @@ async function authenticateRequest(req, { optional = false } = {}) {
     const permissions = await getUserPermissions(userProfile.id, userProfile.role);
     const user = buildUserContext(userProfile, permissions);
 
-    const sessionResult = await validateActiveSession(user.id, token);
-    if (!sessionResult.valid) {
-      await recordSecurityEvent(user.id, 'invalid_session', {
-        reason: sessionResult.reason,
-        endpoint: req?.url || req?.path || null,
-        method: req?.method || null
-      });
-      return buildFailure(401, 'session_invalid', '会话已过期或无效', 'AUTH_002');
-    }
-
-    if (sessionResult.sessionId) {
-      await touchSession(sessionResult.sessionId);
-    }
-
     return {
       success: true,
       user,
       auth: {
-        session_checked: sessionResult.checked,
-        session_validated: sessionResult.valid,
-        session_id: sessionResult.sessionId || null
+        session_checked: false,
+        session_validated: null,
+        session_id: null
       }
     };
   } catch (error) {
@@ -688,6 +808,9 @@ export {
   generateToken,
   verifyToken,
   hashToken,
+  persistRefreshSession,
+  validateRefreshSession,
+  rotateRefreshSession,
   getUserPermissions,
   recordSecurityEvent,
   USER_ROLES,

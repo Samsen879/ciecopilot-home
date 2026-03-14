@@ -14,6 +14,11 @@ export const RATE_LIMIT_POLICIES = Object.freeze({
     user: { limit: 12, windowMs: 60_000, burstLimit: 12, keyMode: 'user' },
     ip: { limit: 6, windowMs: 60_000, burstLimit: 6, keyMode: 'ip' },
   },
+  auth_public_v1: {
+    policyId: 'auth_public_v1',
+    user: { limit: 20, windowMs: 60_000, burstLimit: 20, keyMode: 'user' },
+    ip: { limit: 8, windowMs: 60_000, burstLimit: 8, keyMode: 'ip' },
+  },
 });
 
 export function getRateLimitPolicy(id) {

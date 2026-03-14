@@ -3,6 +3,11 @@
 // run-level idempotency (X-Run-Id), calculates total_awarded/total_available,
 // and supports status updates for the Evidence Ledger pipeline.
 
+import {
+  IdempotencyConflictError,
+  stableJsonFingerprint,
+} from './idempotency-conflict.js';
+
 /**
  * Calculate total_awarded from Decision Engine output.
  * @param {object[]} decisions
@@ -21,6 +26,51 @@ export function calcTotalAwarded(decisions) {
 export function calcTotalAvailable(rubricPoints) {
   if (!Array.isArray(rubricPoints)) return 0;
   return rubricPoints.reduce((sum, rp) => sum + (rp.marks || 0), 0);
+}
+
+function buildRunIdentity(payload) {
+  return {
+    engine_version: payload.engine_version || null,
+    rubric_version: payload.rubric_version || null,
+    total_awarded: Number(payload.total_awarded ?? 0),
+    total_available: Number(payload.total_available ?? 0),
+    request_summary: payload.request_summary ?? {},
+    response_summary: payload.response_summary ?? {},
+  };
+}
+
+function assertReusableExistingRun(existingRun, expectedRow, { attempt_id, run_idempotency_key }) {
+  const status = existingRun.status ?? 'completed';
+  const decisionWriteStatus = existingRun.decision_write_status ?? 'success';
+
+  if (status !== 'completed' || decisionWriteStatus !== 'success') {
+    throw new IdempotencyConflictError(
+      'Idempotency conflict: run idempotency key conflict because the referenced mark_run is not reusable.',
+      {
+        scope: 'mark_run',
+        attempt_id,
+        run_idempotency_key,
+        mark_run_id: existingRun.mark_run_id,
+        status,
+        decision_write_status: decisionWriteStatus,
+      },
+    );
+  }
+
+  const existingIdentity = buildRunIdentity(existingRun);
+  const expectedIdentity = buildRunIdentity(expectedRow);
+
+  if (stableJsonFingerprint(existingIdentity) !== stableJsonFingerprint(expectedIdentity)) {
+    throw new IdempotencyConflictError(
+      'Idempotency conflict: run idempotency key conflict because it already refers to a different scoring payload.',
+      {
+        scope: 'mark_run',
+        attempt_id,
+        run_idempotency_key,
+        mark_run_id: existingRun.mark_run_id,
+      },
+    );
+  }
 }
 
 /**
@@ -45,7 +95,7 @@ export function calcTotalAvailable(rubricPoints) {
  * @param {object[]} params.rubric_points - Resolved rubric points (for total_available)
  * @param {object} params.request_summary
  * @param {object} params.response_summary
- * @returns {Promise<{mark_run_id: string, is_new: boolean}>}
+ * @returns {Promise<{mark_run_id: string, is_new: boolean, status?: string, decision_write_status?: string}>}
  */
 export async function createOrReuseMarkRun({
   supabase,
@@ -72,12 +122,10 @@ export async function createOrReuseMarkRun({
     response_summary,
   };
 
-  // ── Path A: run_idempotency_key provided → idempotent upsert ────────────
   if (run_idempotency_key) {
-    // 1) Pre-check existing row for deterministic reuse semantics
     const { data: existing, error: existingError } = await supabase
       .from('mark_runs')
-      .select('mark_run_id')
+      .select('mark_run_id, status, decision_write_status, engine_version, rubric_version, total_awarded, total_available, request_summary, response_summary')
       .eq('attempt_id', attempt_id)
       .eq('run_idempotency_key', run_idempotency_key)
       .maybeSingle();
@@ -95,10 +143,15 @@ export async function createOrReuseMarkRun({
     }
 
     if (existing?.mark_run_id) {
-      return { mark_run_id: existing.mark_run_id, is_new: false };
+      assertReusableExistingRun(existing, row, { attempt_id, run_idempotency_key });
+      return {
+        mark_run_id: existing.mark_run_id,
+        is_new: false,
+        status: existing.status ?? 'completed',
+        decision_write_status: existing.decision_write_status ?? 'success',
+      };
     }
 
-    // 2) No existing row → insert new
     const { data: inserted, error: insertError } = await supabase
       .from('mark_runs')
       .insert(row)
@@ -106,11 +159,10 @@ export async function createOrReuseMarkRun({
       .single();
 
     if (insertError) {
-      // Concurrent insert path: unique violation means another writer won the race
       if (insertError.code === '23505') {
         const { data: raced, error: racedError } = await supabase
           .from('mark_runs')
-          .select('mark_run_id')
+          .select('mark_run_id, status, decision_write_status, engine_version, rubric_version, total_awarded, total_available, request_summary, response_summary')
           .eq('attempt_id', attempt_id)
           .eq('run_idempotency_key', run_idempotency_key)
           .single();
@@ -120,7 +172,14 @@ export async function createOrReuseMarkRun({
             `Failed to retrieve mark_run after unique conflict: ${racedError?.message || 'no data returned'}`,
           );
         }
-        return { mark_run_id: raced.mark_run_id, is_new: false };
+
+        assertReusableExistingRun(raced, row, { attempt_id, run_idempotency_key });
+        return {
+          mark_run_id: raced.mark_run_id,
+          is_new: false,
+          status: raced.status ?? 'completed',
+          decision_write_status: raced.decision_write_status ?? 'success',
+        };
       }
 
       console.error(JSON.stringify({
@@ -137,7 +196,6 @@ export async function createOrReuseMarkRun({
     return { mark_run_id: inserted.mark_run_id, is_new: true };
   }
 
-  // ── Path B: no run_idempotency_key → always create new ─────────────────
   const { data: inserted, error: insertError } = await supabase
     .from('mark_runs')
     .insert(row)
@@ -159,7 +217,6 @@ export async function createOrReuseMarkRun({
 
   return { mark_run_id: inserted.mark_run_id, is_new: true };
 }
-
 
 /**
  * Update mark_run status and decision_write_status.

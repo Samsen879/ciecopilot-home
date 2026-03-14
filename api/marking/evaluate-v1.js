@@ -10,6 +10,7 @@ import { runDecisionEngine, SCORING_ENGINE_VERSION as ENGINE_VERSION } from './l
 import { resolveUserId, AuthError } from './lib/auth-helper.js';
 import { resolveQuestionId, ValidationError } from './lib/attempt-repository.js';
 import { writeLedger } from './lib/ledger-orchestrator.js';
+import { isIdempotencyConflictError } from './lib/idempotency-conflict.js';
 
 // ── Feature flag (evaluated per-request so env changes take effect) ──────────
 function isV1Enabled() {
@@ -25,7 +26,9 @@ const ErrorCodes = Object.freeze({
   AUTH_FAILED:              { status: 401, code: 'auth_failed' },
   QUESTION_NOT_FOUND:       { status: 422, code: 'question_not_found' },
   RUBRIC_NOT_READY:         { status: 409, code: 'rubric_not_ready' },
+  IDEMPOTENCY_CONFLICT:     { status: 409, code: 'idempotency_conflict' },
   RUBRIC_CONTRACT_INVALID:  { status: 422, code: 'rubric_contract_invalid' },
+
   DECISION_ENGINE_FAILED:   { status: 500, code: 'decision_engine_failed' },
   INTERNAL_ERROR:           { status: 500, code: 'internal_error' },
 });
@@ -124,18 +127,18 @@ const SCORING_ENGINE_VERSION = ENGINE_VERSION;
 
 // ── Main handler ────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
+  const run_id = crypto.randomUUID();
+
   // Only POST allowed
   if (req.method !== 'POST') {
-    return errorResponse(res, ErrorCodes.METHOD_NOT_ALLOWED, 'Only POST is accepted.');
+    return errorResponse(res, ErrorCodes.METHOD_NOT_ALLOWED, 'Only POST is accepted.', { run_id });
   }
 
   // Feature flag guard
   if (!isV1Enabled()) {
-    return errorResponse(res, ErrorCodes.FEATURE_DISABLED, 'evaluate-v1 is not enabled. Set MARKING_V1_ENABLED=true.');
+    return errorResponse(res, ErrorCodes.FEATURE_DISABLED, 'evaluate-v1 is not enabled. Set MARKING_V1_ENABLED=true.', { run_id });
   }
 
-  // Generate run_id early so it appears in every log & response
-  const run_id = crypto.randomUUID();
 
   try {
     const body = req.body || {};
@@ -290,6 +293,10 @@ export default async function handler(req, res) {
         ts: new Date().toISOString(),
       }));
     } catch (ledgerErr) {
+      if (isIdempotencyConflictError(ledgerErr)) {
+        return errorResponse(res, ErrorCodes.IDEMPOTENCY_CONFLICT, ledgerErr.message, { run_id });
+      }
+
       // Ledger write failure must NOT block the scoring response
       ledger_write_status = 'failed';
       console.error(JSON.stringify({
@@ -361,6 +368,16 @@ export default async function handler(req, res) {
         run_id,
         details: error.details,
       });
+    }
+
+    if (isIdempotencyConflictError(error)) {
+      console.log(JSON.stringify({
+        event: 'evaluate_v1_idempotency_conflict',
+        run_id,
+        error: error.message,
+        ts: new Date().toISOString(),
+      }));
+      return errorResponse(res, ErrorCodes.IDEMPOTENCY_CONFLICT, error.message, { run_id });
     }
 
     console.error(JSON.stringify({

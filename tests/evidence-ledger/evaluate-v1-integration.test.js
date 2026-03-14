@@ -57,6 +57,13 @@ class MockRubricContractInvalidError extends Error {
   constructor(msg, details) { super(msg); this.name = 'RubricContractInvalidError'; this.details = details; }
 }
 
+class MockIdempotencyConflictError extends Error {
+  constructor(msg) {
+    super(msg);
+    this.name = 'IdempotencyConflictError';
+  }
+}
+
 jest.unstable_mockModule('../../api/marking/lib/rubric-resolver-v1.js', () => ({
   resolveRubric: mockResolveRubric,
   RubricNotReadyError: MockRubricNotReadyError,
@@ -288,6 +295,22 @@ describe('evaluate-v1 Evidence Ledger integration', () => {
 
       expect(res._status).toBe(200);
       expect(res._json.ledger_write_status).toBe('failed');
+    });
+
+    it('returns 409 when writeLedger throws an idempotency conflict', async () => {
+      mockWriteLedger.mockRejectedValue(
+        new MockIdempotencyConflictError('run_idempotency_key already refers to a different scoring payload'),
+      );
+
+      const req = makeReq({
+        headers: { 'x-run-id': 'reuse-run-id' },
+      });
+      const res = makeRes();
+      await handler(req, res);
+
+      expect(res._status).toBe(409);
+      expect(res._json.error).toBe('idempotency_conflict');
+      expect(typeof res._json.run_id).toBe('string');
     });
   });
 

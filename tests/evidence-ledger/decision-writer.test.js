@@ -216,7 +216,7 @@ describe('writeDecisions()', () => {
   });
 
   describe('data handling edge cases', () => {
-    it('handles RPC returning non-array data gracefully', async () => {
+    it('returns failed when RPC returns non-array data for non-empty input', async () => {
       const sb = { rpc: jest.fn().mockResolvedValue({ data: null, error: null }) };
 
       const result = await writeDecisions({
@@ -225,9 +225,28 @@ describe('writeDecisions()', () => {
         decisions: sampleDecisions,
       });
 
-      expect(result.status).toBe('success');
+      expect(result.status).toBe('failed');
       expect(result.count).toBe(0);
-      expect(result.decisions).toEqual([]);
+      expect(result.error).toContain('did not return decision rows');
+    });
+
+    it('returns failed when RPC returns fewer rows than requested decisions', async () => {
+      const sb = {
+        rpc: jest.fn().mockResolvedValue({
+          data: [{ mark_decision_id: 'md-1', rubric_id: 'r1' }],
+          error: null,
+        }),
+      };
+
+      const result = await writeDecisions({
+        supabase: sb,
+        mark_run_id: MARK_RUN_ID,
+        decisions: sampleDecisions,
+      });
+
+      expect(result.status).toBe('failed');
+      expect(result.count).toBe(0);
+      expect(result.error).toContain('row count mismatch');
     });
   });
 });

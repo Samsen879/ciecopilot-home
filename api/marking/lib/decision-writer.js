@@ -42,6 +42,28 @@ export async function writeDecisions({ supabase, mark_run_id, decisions }) {
     }
 
     const rows = Array.isArray(data) ? data : [];
+    if (rows.length === 0) {
+      const errorMessage = `insert_mark_decisions did not return decision rows for mark_run_id=${mark_run_id}.`;
+      console.error(JSON.stringify({
+        event: 'decision_writer_empty_rpc_rows',
+        mark_run_id,
+        decision_count: decisions.length,
+        ts: new Date().toISOString(),
+      }));
+      return { status: 'failed', count: 0, error: errorMessage };
+    }
+
+    if (rows.length !== decisions.length) {
+      const errorMessage = `insert_mark_decisions row count mismatch for mark_run_id=${mark_run_id}: expected ${decisions.length}, got ${rows.length}.`;
+      console.error(JSON.stringify({
+        event: 'decision_writer_row_count_mismatch',
+        mark_run_id,
+        decision_count: decisions.length,
+        returned_count: rows.length,
+        ts: new Date().toISOString(),
+      }));
+      return { status: 'failed', count: 0, error: errorMessage };
+    }
 
     // Backward/forward compatibility:
     // - New RPC returns full decision fields

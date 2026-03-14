@@ -171,7 +171,17 @@ describe('createOrReuseMarkRun()', () => {
       chain.select = jest.fn().mockReturnValue(chain);
       chain.eq = jest.fn().mockReturnValue(chain);
       chain.maybeSingle = jest.fn().mockResolvedValue({
-        data: { mark_run_id: 'mr-uuid-existing' },
+        data: {
+          mark_run_id: 'mr-uuid-existing',
+          status: 'completed',
+          decision_write_status: 'success',
+          engine_version: 'decision-engine-v1',
+          rubric_version: 'rubric-2024-06',
+          total_awarded: 3,
+          total_available: 5,
+          request_summary: { q: 1 },
+          response_summary: { score: 3 },
+        },
         error: null,
       });
       chain.insert = jest.fn();
@@ -181,6 +191,92 @@ describe('createOrReuseMarkRun()', () => {
 
       expect(result.mark_run_id).toBe('mr-uuid-existing');
       expect(result.is_new).toBe(false);
+      expect(result.status).toBe('completed');
+      expect(result.decision_write_status).toBe('success');
+      expect(chain.insert).not.toHaveBeenCalled();
+    });
+
+    it('throws idempotency conflict when an existing run has a different persisted payload', async () => {
+      const chain = buildChain({});
+      chain.select = jest.fn().mockReturnValue(chain);
+      chain.eq = jest.fn().mockReturnValue(chain);
+      chain.maybeSingle = jest.fn().mockResolvedValue({
+        data: {
+          mark_run_id: 'mr-uuid-existing',
+          status: 'completed',
+          decision_write_status: 'success',
+          engine_version: 'decision-engine-v1',
+          rubric_version: 'rubric-2024-06',
+          total_awarded: 2,
+          total_available: 5,
+          request_summary: { q: 1 },
+          response_summary: { score: 2 },
+        },
+        error: null,
+      });
+      chain.insert = jest.fn();
+
+      const sb = { from: jest.fn().mockReturnValue(chain) };
+
+      await expect(
+        createOrReuseMarkRun({ ...idempotentParams, supabase: sb }),
+      ).rejects.toMatchObject({
+        name: 'IdempotencyConflictError',
+      });
+    });
+
+    it('throws idempotency conflict when an existing run is not in completed/success state', async () => {
+      const chain = buildChain({});
+      chain.select = jest.fn().mockReturnValue(chain);
+      chain.eq = jest.fn().mockReturnValue(chain);
+      chain.maybeSingle = jest.fn().mockResolvedValue({
+        data: {
+          mark_run_id: 'mr-uuid-existing',
+          status: 'failed',
+          decision_write_status: 'failed',
+          engine_version: 'decision-engine-v1',
+          rubric_version: 'rubric-2024-06',
+          total_awarded: 3,
+          total_available: 5,
+          request_summary: { q: 1 },
+          response_summary: { score: 3 },
+        },
+        error: null,
+      });
+      chain.insert = jest.fn();
+
+      const sb = { from: jest.fn().mockReturnValue(chain) };
+
+      await expect(
+        createOrReuseMarkRun({ ...idempotentParams, supabase: sb }),
+      ).rejects.toMatchObject({
+        name: 'IdempotencyConflictError',
+      });
+    });
+
+    it('rejects reuse when an existing run_idempotency_key points at different run content', async () => {
+      const chain = buildChain({});
+      chain.select = jest.fn().mockReturnValue(chain);
+      chain.eq = jest.fn().mockReturnValue(chain);
+      chain.maybeSingle = jest.fn().mockResolvedValue({
+        data: {
+          mark_run_id: 'mr-uuid-existing',
+          engine_version: 'old-engine',
+          rubric_version: 'rubric-2024-05',
+          total_awarded: 1,
+          total_available: 9,
+          request_summary: { q: 99 },
+          response_summary: { score: 1 },
+        },
+        error: null,
+      });
+      chain.insert = jest.fn();
+
+      const sb = { from: jest.fn().mockReturnValue(chain) };
+
+      await expect(
+        createOrReuseMarkRun({ ...idempotentParams, supabase: sb }),
+      ).rejects.toThrow('Idempotency conflict');
       expect(chain.insert).not.toHaveBeenCalled();
     });
 
@@ -204,6 +300,34 @@ describe('createOrReuseMarkRun()', () => {
           run_idempotency_key: 'run-id-001',
         }),
       );
+    });
+
+    it('rejects idempotent reuse when the existing run payload differs', async () => {
+      const chain = buildChain({});
+      chain.select = jest.fn().mockReturnValue(chain);
+      chain.eq = jest.fn().mockReturnValue(chain);
+      chain.maybeSingle = jest.fn().mockResolvedValue({
+        data: {
+          mark_run_id: 'mr-uuid-existing',
+          status: 'completed',
+          decision_write_status: 'success',
+          engine_version: 'decision-engine-v0',
+          rubric_version: 'rubric-old',
+          total_awarded: 99,
+          total_available: 100,
+          request_summary: { q: 2 },
+          response_summary: { score: 99 },
+        },
+        error: null,
+      });
+      chain.insert = jest.fn();
+
+      const sb = { from: jest.fn().mockReturnValue(chain) };
+
+      await expect(
+        createOrReuseMarkRun({ ...idempotentParams, supabase: sb }),
+      ).rejects.toThrow(/idempotency conflict/i);
+      expect(chain.insert).not.toHaveBeenCalled();
     });
 
     it('throws on lookup error', async () => {
@@ -232,14 +356,29 @@ describe('createOrReuseMarkRun()', () => {
           error: { code: '23505', message: 'duplicate key value violates unique constraint' },
         })
         .mockResolvedValueOnce({
-          data: { mark_run_id: 'mr-raced' },
+          data: {
+            mark_run_id: 'mr-raced',
+            status: 'completed',
+            decision_write_status: 'success',
+            engine_version: 'decision-engine-v1',
+            rubric_version: 'rubric-2024-06',
+            total_awarded: 3,
+            total_available: 5,
+            request_summary: { q: 1 },
+            response_summary: { score: 3 },
+          },
           error: null,
         });
 
       const sb = { from: jest.fn().mockReturnValue(chain) };
       const result = await createOrReuseMarkRun({ ...idempotentParams, supabase: sb });
 
-      expect(result).toEqual({ mark_run_id: 'mr-raced', is_new: false });
+      expect(result).toEqual({
+        mark_run_id: 'mr-raced',
+        is_new: false,
+        status: 'completed',
+        decision_write_status: 'success',
+      });
     });
   });
 

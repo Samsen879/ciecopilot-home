@@ -545,7 +545,7 @@ async function handleDeleteAnswer(req, res, user) {
     await updateQuestionAnswerCount(existingAnswer.question_id, -1);
 
     // 更新用户统计
-    await updateUserAnswerCount(user.id, -1);
+    await updateUserAnswerCount(existingAnswer.author_id, -1);
 
     // 如果删除的是最佳答案，扣除声誉分
     if (existingAnswer.is_best_answer) {
@@ -747,3 +747,4 @@ async function updateUserReputation(userId, increment) {
 
 // 导出配置供其他模块使用
 export { ANSWER_CONFIG };
+

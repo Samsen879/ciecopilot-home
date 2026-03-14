@@ -61,17 +61,57 @@ export default async function handler(req, res) {
 			});
 		}
 
-		const { error } = await supabase
+		const { data: existingNotification, error: existingError } = await supabase
+			.from('community_notifications')
+			.select('id, is_read, read_at')
+			.eq('id', id)
+			.eq('user_id', user.id)
+			.maybeSingle();
+
+		if (existingError) {
+			throw existingError;
+		}
+
+		if (!existingNotification?.id) {
+			return sendApiError(res, {
+				status: 404,
+				error: 'notification_not_found',
+				code: 'NOTIFICATION_NOT_FOUND',
+				message: 'Notification not found',
+				requestId
+			});
+		}
+
+		if (existingNotification.is_read) {
+			return res.status(200).json({
+				success: true,
+				already_read: true,
+				read_at: existingNotification.read_at || null
+			});
+		}
+
+		const { data, error } = await supabase
 			.from('community_notifications')
 			.update({ is_read: true, read_at: new Date().toISOString() })
 			.eq('id', id)
-			.eq('user_id', user.id);
+			.eq('user_id', user.id)
+			.eq('is_read', false)
+			.select('id, read_at')
+			.maybeSingle();
 
 		if (error) {
 			throw error;
 		}
 
-		return res.status(200).json({ success: true });
+		if (!data?.id) {
+			return res.status(200).json({
+				success: true,
+				already_read: true,
+				read_at: existingNotification.read_at || null
+			});
+		}
+
+		return res.status(200).json({ success: true, read_at: data.read_at || null });
 	} catch (error) {
 		console.error('Mark as read error:', { request_id: requestId, error });
 		return sendApiError(res, {
@@ -83,3 +123,4 @@ export default async function handler(req, res) {
 		});
 	}
 }
+

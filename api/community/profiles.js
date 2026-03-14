@@ -128,14 +128,7 @@ async function handleGetProfile(req, res, user) {
       activity_limit = 20
     } = req.query;
 
-    // 检查是否有权限查看该档案
-    const canView = await checkProfileViewPermission(user.id, user_id);
-    if (!canView) {
-      return res.status(403).json({
-        error: 'No permission to view this profile',
-        code: 'PROFILE_ACCESS_DENIED'
-      });
-    }
+    const isOwnProfile = user.id === user_id;
 
     // 获取基础档案信息
     const { data: profile, error: profileError } = await supabase
@@ -154,16 +147,43 @@ async function handleGetProfile(req, res, user) {
       throw profileError;
     }
 
-    // 如果档案不存在，创建默认档案
+    if (!profile && !isOwnProfile) {
+      return res.status(404).json({
+        error: 'Profile not found',
+        code: 'PROFILE_NOT_FOUND'
+      });
+    }
+
+    // 检查是否有权限查看该档案
+    const canView = await checkProfileViewPermission(user.id, user_id, profile?.visibility);
+    if (!canView) {
+      return res.status(403).json({
+        error: 'No permission to view this profile',
+        code: 'PROFILE_ACCESS_DENIED'
+      });
+    }
+
+    // 如果档案不存在，返回瞬时默认档案，但不在GET路径中写库
     if (!profile) {
-      const defaultProfile = await createDefaultProfile(user_id);
+      const defaultProfile = {
+        user_id,
+        role: 'student',
+        reputation_score: 0,
+        level: 'NEWCOMER',
+        visibility: 'public',
+        email_notifications: true,
+        push_notifications: true,
+        user_profiles: null
+      };
       return res.status(200).json({
         success: true,
         data: {
           ...defaultProfile,
           statistics: {},
           badges: [],
-          recent_activity: []
+          recent_activity: [],
+          profile_completeness: calculateProfileCompleteness(defaultProfile),
+          is_own_profile: isOwnProfile
         },
         response_time: Date.now() - startTime
       });
@@ -215,7 +235,7 @@ async function handleGetProfile(req, res, user) {
         badges,
         recent_activity: recentActivity,
         profile_completeness: completeness,
-        is_own_profile: user.id === user_id
+        is_own_profile: isOwnProfile
       },
       response_time: Date.now() - startTime
     });
@@ -582,25 +602,31 @@ async function getUserRecentActivity(userId, limit = 20) {
 }
 
 // 检查档案查看权限
-async function checkProfileViewPermission(viewerId, targetUserId) {
+async function checkProfileViewPermission(viewerId, targetUserId, resolvedVisibility) {
   try {
     // 自己的档案总是可以查看
     if (viewerId === targetUserId) {
       return true;
     }
 
-    // 获取目标用户的隐私设置
-    const { data: targetProfile, error } = await supabase
-      .from('user_community_profiles')
-      .select('visibility')
-      .eq('user_id', targetUserId)
-      .single();
+    let visibility = typeof resolvedVisibility === 'string' ? resolvedVisibility : null;
+    if (!visibility) {
+      const { data: targetProfile, error } = await supabase
+        .from('user_community_profiles')
+        .select('visibility')
+        .eq('user_id', targetUserId)
+        .single();
 
-    if (error && error.code !== 'PGRST116') {
-      throw error;
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      if (!targetProfile?.visibility) {
+        return false;
+      }
+
+      visibility = targetProfile.visibility;
     }
-
-    const visibility = targetProfile?.visibility || 'public';
 
     // 公开档案总是可以查看
     if (visibility === 'public') {
@@ -613,9 +639,10 @@ async function checkProfileViewPermission(viewerId, targetUserId) {
       return ['admin', 'moderator'].includes(viewerProfile.role);
     }
 
-    // 朋友可见档案（暂时按公开处理，后续可扩展好友系统）
+    // 在好友系统落地前，friends_only 按受限资源处理，避免被公开读取
     if (visibility === 'friends_only') {
-      return true; // 暂时允许查看
+      const viewerProfile = await getUserCommunityProfile(viewerId);
+      return ['admin', 'moderator'].includes(viewerProfile.role);
     }
 
     return false;
@@ -860,3 +887,4 @@ function isValidUrl(string) {
 
 // 导出配置供其他模块使用
 export { PROFILE_CONFIG };
+

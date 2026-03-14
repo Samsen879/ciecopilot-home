@@ -60,14 +60,26 @@ export default async function handler(req, res) {
 				requestId
 			});
 		}
-		const { error } = await supabase
+		const { data, error } = await supabase
 			.from('community_notifications')
 			.delete()
 			.eq('id', id)
-			.eq('user_id', user.id);
+			.eq('user_id', user.id)
+			.select('id')
+			.maybeSingle();
 
 		if (error) {
 			throw error;
+		}
+
+		if (!data?.id) {
+			return sendApiError(res, {
+				status: 404,
+				error: 'notification_not_found',
+				code: 'NOTIFICATION_NOT_FOUND',
+				message: 'Notification not found',
+				requestId
+			});
 		}
 
 		return res.status(200).json({ success: true });
@@ -82,4 +94,5 @@ export default async function handler(req, res) {
 		});
 	}
 }
+
 

@@ -186,6 +186,8 @@ describe('writeLedger()', () => {
       mockCreateOrReuseMarkRun.mockResolvedValue({
         mark_run_id: MARK_RUN_ID,
         is_new: false,
+        status: 'completed',
+        decision_write_status: 'success',
       });
 
       const result = await writeLedger({
@@ -205,6 +207,31 @@ describe('writeLedger()', () => {
       expect(mockWriteDecisions).not.toHaveBeenCalled();
       expect(mockWriteErrorEvents).not.toHaveBeenCalled();
       expect(mockUpdateMarkRunStatus).not.toHaveBeenCalled();
+    });
+
+    it('throws idempotency conflict when a reused run is not reusable', async () => {
+      mockCreateOrReuseAttempt.mockResolvedValue({
+        attempt_id: ATTEMPT_ID,
+        topic_path: '9709.p1.algebra',
+        node_id: 'node-001',
+        is_new: false,
+      });
+      mockCreateOrReuseMarkRun.mockResolvedValue({
+        mark_run_id: MARK_RUN_ID,
+        is_new: false,
+        status: 'failed',
+        decision_write_status: 'failed',
+      });
+
+      await expect(writeLedger({
+        ...baseParams,
+        run_idempotency_key: 'run-001',
+      })).rejects.toMatchObject({
+        name: 'IdempotencyConflictError',
+      });
+
+      expect(mockWriteDecisions).not.toHaveBeenCalled();
+      expect(mockWriteErrorEvents).not.toHaveBeenCalled();
     });
 
     it('proceeds normally when run_idempotency_key is set but is_new=true', async () => {
@@ -295,6 +322,20 @@ describe('writeLedger()', () => {
       expect(mockUpdateMarkRunStatus).toHaveBeenCalledWith(
         baseParams.supabase, MARK_RUN_ID, 'failed', 'failed',
       );
+      expect(mockWriteErrorEvents).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('mark_run status update failure', () => {
+    it('returns failed and skips error_events when completion status update fails', async () => {
+      setupSuccessPath();
+      mockUpdateMarkRunStatus.mockResolvedValue({ ok: false, error: 'status update failed' });
+
+      const result = await writeLedger(baseParams);
+
+      expect(result.decision_write_status).toBe('failed');
+      expect(result.error_event_count).toBe(0);
+      expect(result.is_reused_run).toBe(false);
       expect(mockWriteErrorEvents).not.toHaveBeenCalled();
     });
   });

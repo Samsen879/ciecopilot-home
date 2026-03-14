@@ -8,6 +8,16 @@ import { createOrReuseAttempt } from './attempt-repository.js';
 import { createOrReuseMarkRun, updateMarkRunStatus } from './mark-run-repository-v2.js';
 import { writeDecisions } from './decision-writer.js';
 import { writeErrorEvents } from './error-event-writer.js';
+import { IdempotencyConflictError } from './idempotency-conflict.js';
+
+async function ensureMarkRunStatusUpdated(supabase, mark_run_id, status, decisionWriteStatus) {
+  const updateResult = await updateMarkRunStatus(supabase, mark_run_id, status, decisionWriteStatus);
+  if (!updateResult.ok) {
+    throw new Error(
+      `Failed to persist mark_run status for ${mark_run_id}: ${updateResult.error || 'unknown error'}`,
+    );
+  }
+}
 
 /**
  * Orchestrate the full Evidence Ledger write pipeline.
@@ -58,7 +68,6 @@ export async function writeLedger(params) {
     response_summary = {},
   } = params;
 
-  // ── Stage 1: Create or reuse Attempt ────────────────────────────────────
   console.log(JSON.stringify({
     event: 'ledger_orchestrator_start',
     user_id,
@@ -88,7 +97,6 @@ export async function writeLedger(params) {
     ts: new Date().toISOString(),
   }));
 
-  // ── Stage 2: Create or reuse Mark Run ───────────────────────────────────
   const markRunResult = await createOrReuseMarkRun({
     supabase,
     attempt_id,
@@ -110,8 +118,23 @@ export async function writeLedger(params) {
     ts: new Date().toISOString(),
   }));
 
-  // ── Short-circuit: reused run → skip decisions & error_events ───────────
   if (run_idempotency_key && !is_new_run) {
+    const status = markRunResult.status ?? 'completed';
+    const decisionWriteStatus = markRunResult.decision_write_status ?? 'success';
+
+    if (status !== 'completed' || decisionWriteStatus !== 'success') {
+      throw new IdempotencyConflictError(
+        'Idempotency conflict: x-run-id resolved to a mark_run that is not reusable.',
+        {
+          scope: 'mark_run',
+          mark_run_id,
+          run_idempotency_key,
+          status,
+          decision_write_status: decisionWriteStatus,
+        },
+      );
+    }
+
     console.log(JSON.stringify({
       event: 'ledger_orchestrator_run_reused',
       mark_run_id,
@@ -128,7 +151,6 @@ export async function writeLedger(params) {
     };
   }
 
-  // ── Stage 3: Write Decisions ────────────────────────────────────────────
   let decision_write_status = 'pending';
   let writtenDecisions = [];
 
@@ -149,8 +171,7 @@ export async function writeLedger(params) {
         ts: new Date().toISOString(),
       }));
 
-      // Update mark_run to reflect failure
-      await updateMarkRunStatus(supabase, mark_run_id, 'failed', 'failed');
+      await ensureMarkRunStatusUpdated(supabase, mark_run_id, 'failed', 'failed');
 
       return {
         attempt_id,
@@ -164,8 +185,7 @@ export async function writeLedger(params) {
     decision_write_status = 'success';
     writtenDecisions = decisionResult.decisions || [];
 
-    // Update mark_run to completed
-    await updateMarkRunStatus(supabase, mark_run_id, 'completed', 'success');
+    await ensureMarkRunStatusUpdated(supabase, mark_run_id, 'completed', 'success');
 
     console.log(JSON.stringify({
       event: 'ledger_orchestrator_decisions_done',
@@ -194,7 +214,6 @@ export async function writeLedger(params) {
     };
   }
 
-  // ── Stage 4: Write Error Events (non-blocking) ─────────────────────────
   let error_event_count = 0;
 
   try {
@@ -213,7 +232,6 @@ export async function writeLedger(params) {
         error: errorResult.error,
         ts: new Date().toISOString(),
       }));
-      // error_event_count stays 0 — does not affect scoring response
     } else {
       error_event_count = errorResult.count || 0;
     }
@@ -231,7 +249,6 @@ export async function writeLedger(params) {
       error: err?.message || String(err),
       ts: new Date().toISOString(),
     }));
-    // error_event_count stays 0 — does not affect scoring response
   }
 
   return {

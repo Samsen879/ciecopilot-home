@@ -427,6 +427,12 @@ describe('createOrReuseAttempt()', () => {
       lookupResult: {
         data: {
           attempt_id: 'att-existing',
+          question_id: 'q-uuid-1',
+          paper_id: 'p-uuid-1',
+          storage_key: '9709/s22/qp11/q01.png',
+          q_number: 1,
+          subpart: null,
+          submitted_steps: [{ step_id: 's1', text: '2x+1=0' }],
           node_id: null,
           topic_path: null,
           topic_source: null,
@@ -441,6 +447,87 @@ describe('createOrReuseAttempt()', () => {
 
     expect(result.attempt_id).toBe('att-existing');
     expect(result.is_new).toBe(false);
+  });
+
+  it('throws idempotency conflict when an existing attempt belongs to a different request scope', async () => {
+    const sb = buildMultiTableSupabase({
+      lookupResult: {
+        data: {
+          attempt_id: 'att-existing',
+          question_id: 'q-uuid-old',
+          paper_id: 'p-uuid-old',
+          storage_key: '9709/s22/qp11/q99.png',
+          q_number: 99,
+          subpart: 'b',
+          submitted_steps: [{ step_id: 's1', text: 'old answer' }],
+          node_id: null,
+          topic_path: null,
+          topic_source: null,
+          topic_confidence: null,
+          topic_resolved_at: null,
+        },
+        error: null,
+      },
+    });
+
+    await expect(
+      createOrReuseAttempt({ ...baseParams, supabase: sb }),
+    ).rejects.toMatchObject({
+      name: 'IdempotencyConflictError',
+    });
+  });
+
+  it('rejects idempotency reuse when the existing attempt belongs to a different request scope', async () => {
+    const sb = buildMultiTableSupabase({
+      lookupResult: {
+        data: {
+          attempt_id: 'att-existing',
+          question_id: 'q-other',
+          paper_id: 'p-other',
+          storage_key: '9709/s22/qp11/q02.png',
+          q_number: 2,
+          subpart: 'a',
+          submitted_steps: [{ step_id: 's9', text: 'other attempt' }],
+          syllabus_code: '9709',
+          node_id: null,
+          topic_path: null,
+          topic_source: null,
+          topic_confidence: null,
+          topic_resolved_at: null,
+        },
+        error: null,
+      },
+    });
+
+    await expect(
+      createOrReuseAttempt({ ...baseParams, supabase: sb }),
+    ).rejects.toThrow('Idempotency conflict');
+  });
+
+  it('rejects idempotent reuse when the existing attempt payload differs', async () => {
+    const sb = buildMultiTableSupabase({
+      lookupResult: {
+        data: {
+          attempt_id: 'att-existing',
+          question_id: 'q-other',
+          paper_id: 'p-uuid-1',
+          storage_key: '9709/s22/qp11/q02.png',
+          q_number: 2,
+          subpart: 'a',
+          submitted_steps: [{ step_id: 's9', text: 'different working' }],
+          node_id: null,
+          topic_path: null,
+          topic_source: null,
+          topic_confidence: null,
+          topic_resolved_at: null,
+        },
+        error: null,
+      },
+    });
+
+    await expect(
+      createOrReuseAttempt({ ...baseParams, supabase: sb }),
+    ).rejects.toThrow(/idempotency key conflict/i);
   });
 
   it('throws on insert database error (non-conflict)', async () => {

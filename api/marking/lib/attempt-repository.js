@@ -3,7 +3,7 @@
 // resolves topic_path from question_concept_links + curriculum_nodes,
 // and resolves question_id from the question bank mapping.
 
-// ── Custom error class for validation failures ──────────────────────────────
+// ── Custom error classes ────────────────────────────────────────────────────
 export class ValidationError extends Error {
   /**
    * @param {string} message
@@ -16,12 +16,62 @@ export class ValidationError extends Error {
   }
 }
 
+export class IdempotencyConflictError extends Error {
+  constructor(message, status = 409) {
+    super(message);
+    this.name = 'IdempotencyConflictError';
+    this.status = status;
+    this.code = 'idempotency_conflict';
+  }
+}
+
 function isMissingRelationError(error, relationName) {
   if (!error) return false;
   const code = String(error.code || '');
   const message = String(error.message || '').toLowerCase();
   if (code === '42P01') return true;
   return message.includes('relation') && message.includes(relationName.toLowerCase());
+}
+
+function stableForComparison(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => stableForComparison(item));
+  }
+  if (value && typeof value === 'object') {
+    return Object.keys(value)
+      .sort()
+      .reduce((acc, key) => {
+        acc[key] = stableForComparison(value[key]);
+        return acc;
+      }, {});
+  }
+  return value;
+}
+
+function stableSerialize(value) {
+  return JSON.stringify(stableForComparison(value));
+}
+
+function buildAttemptIdentity(payload) {
+  return {
+    question_id: payload.question_id || null,
+    paper_id: payload.paper_id || null,
+    storage_key: payload.storage_key,
+    q_number: Number(payload.q_number),
+    subpart: payload.subpart ?? null,
+    submitted_steps: payload.submitted_steps ?? [],
+  };
+}
+
+function assertMatchingAttemptPayload(existingAttempt, expectedPayload, { user_id, idempotency_key }) {
+  const existingIdentity = buildAttemptIdentity(existingAttempt);
+  const expectedIdentity = buildAttemptIdentity(expectedPayload);
+
+  if (stableSerialize(existingIdentity) !== stableSerialize(expectedIdentity)) {
+    throw new IdempotencyConflictError(
+      `Idempotency conflict: idempotency key conflict with existing attempt payload for user_id=${user_id}, idempotency_key=${idempotency_key}.`,
+    );
+  }
 }
 
 // ── Source priority for topic_path resolution ───────────────────────────────
@@ -239,10 +289,19 @@ export async function createOrReuseAttempt({
   // ── Resolve topic_path (non-blocking — NULLs on failure) ────────────────
   const topicData = await resolveTopicPath(supabase, storage_key);
 
+  const attemptPayload = {
+    question_id,
+    paper_id,
+    storage_key,
+    q_number,
+    subpart,
+    submitted_steps,
+  };
+
   // ── Deterministic idempotency lookup ─────────────────────────────────────
   const { data: existingBefore, error: existingBeforeError } = await supabase
     .from('attempts')
-    .select('attempt_id, node_id, topic_path, topic_source, topic_confidence, topic_resolved_at')
+    .select('attempt_id, question_id, paper_id, storage_key, q_number, subpart, submitted_steps, node_id, topic_path, topic_source, topic_confidence, topic_resolved_at')
     .eq('user_id', user_id)
     .eq('idempotency_key', idempotency_key)
     .maybeSingle();
@@ -252,6 +311,7 @@ export async function createOrReuseAttempt({
   }
 
   if (existingBefore?.attempt_id) {
+    assertMatchingAttemptPayload(existingBefore, attemptPayload, { user_id, idempotency_key });
     return {
       attempt_id: existingBefore.attempt_id,
       topic_path: existingBefore.topic_path || null,
@@ -284,14 +344,14 @@ export async function createOrReuseAttempt({
   const { data: inserted, error: insertError } = await supabase
     .from('attempts')
     .insert(row)
-    .select('attempt_id, node_id, topic_path, topic_source, topic_confidence, topic_resolved_at')
+    .select('attempt_id, question_id, paper_id, storage_key, q_number, subpart, submitted_steps, node_id, topic_path, topic_source, topic_confidence, topic_resolved_at')
     .single();
 
   if (insertError) {
     if (insertError.code === '23505') {
       const { data: raced, error: racedError } = await supabase
         .from('attempts')
-        .select('attempt_id, node_id, topic_path, topic_source, topic_confidence, topic_resolved_at')
+        .select('attempt_id, question_id, paper_id, storage_key, q_number, subpart, submitted_steps, node_id, topic_path, topic_source, topic_confidence, topic_resolved_at')
         .eq('user_id', user_id)
         .eq('idempotency_key', idempotency_key)
         .single();
@@ -301,6 +361,8 @@ export async function createOrReuseAttempt({
           `Failed to retrieve attempt after unique conflict: ${racedError?.message || 'no data returned'}`,
         );
       }
+
+      assertMatchingAttemptPayload(raced, attemptPayload, { user_id, idempotency_key });
 
       return {
         attempt_id: raced.attempt_id,

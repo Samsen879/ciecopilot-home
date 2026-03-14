@@ -289,6 +289,27 @@ describe('run_id generation', () => {
     const id2 = res2.json.mock.calls[0][0].run_id;
     expect(id1).not.toBe(id2);
   });
+
+  it('includes run_id in method_not_allowed responses', async () => {
+    const req = mockReq({ method: 'GET' });
+    const res = mockRes();
+    await handler(req, res);
+    const body = res.json.mock.calls[0][0];
+    expect(body.run_id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
+  });
+
+  it('includes run_id in feature_disabled responses', async () => {
+    process.env.MARKING_V1_ENABLED = 'false';
+    const req = mockReq();
+    const res = mockRes();
+    await handler(req, res);
+    const body = res.json.mock.calls[0][0];
+    expect(body.run_id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
+  });
 });
 
 // ── 3.5 v0 compat: compat_mode=v0 adds alignments[] ────────────────────────

@@ -36,6 +36,41 @@ const COMMUNITY_CONFIG = {
   MIN_REPUTATION_TO_VOTE: 10
 };
 
+function isPrivilegedCommunityRole(role) {
+  return role === 'admin' || role === 'moderator';
+}
+
+function applyQuestionListFilters(
+  query,
+  { subjectCode, authorId, status, searchTerm, allowedQuestionIds, isPrivilegedViewer }
+) {
+  if (subjectCode) {
+    query = query.eq('subject_code', subjectCode);
+  }
+
+  if (authorId) {
+    query = query.eq('author_id', authorId);
+  }
+
+  if (Array.isArray(allowedQuestionIds)) {
+    query = query.in('id', allowedQuestionIds);
+  }
+
+  if (searchTerm) {
+    query = query.or('title.ilike.%' + searchTerm + '%,content.ilike.%' + searchTerm + '%');
+  }
+
+  if (!isPrivilegedViewer) {
+    query = query.neq('status', 'deleted');
+  }
+
+  if (status && status !== 'all') {
+    query = query.eq('status', status);
+  }
+
+  return query;
+}
+
 // 主要的社区问答API处理函数
 export default async function handler(req, res) {
   if (!applyCors(req, res, ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])) {
@@ -99,9 +134,9 @@ export default async function handler(req, res) {
 // 获取问题列表
 async function handleGetQuestions(req, res, user) {
   const startTime = Date.now();
-  
+
   try {
-    const { 
+    const {
       question_id,
       subject_code,
       page = 1,
@@ -109,21 +144,31 @@ async function handleGetQuestions(req, res, user) {
       sort = 'latest',
       search,
       tags,
-      status = 'all',
+      status,
       author_id
     } = req.query;
 
-    // 如果指定了问题ID，获取单个问题详情
+    const userProfile = await getUserCommunityProfile(user.id);
+    const isPrivilegedViewer = isPrivilegedCommunityRole(userProfile.role);
+    const normalizedStatus = sanitizePlainText(status, 32).toLowerCase();
+
+    if (!isPrivilegedViewer && normalizedStatus === 'deleted') {
+      return res.status(403).json({
+        error: 'Permission denied',
+        code: 'PERMISSION_DENIED'
+      });
+    }
+
     if (question_id) {
-      const question = await getQuestionById(question_id, user.id);
-      
+      const question = await getQuestionById(question_id, user.id, { viewerRole: userProfile.role });
+
       if (!question) {
         return res.status(404).json({
           error: 'Question not found',
           code: 'QUESTION_NOT_FOUND'
         });
       }
-      
+
       return res.status(200).json({
         success: true,
         data: question,
@@ -131,43 +176,13 @@ async function handleGetQuestions(req, res, user) {
       });
     }
 
-    // 验证分页参数
     const pageNum = toPositiveInt(page, 1, 1, Number.MAX_SAFE_INTEGER);
     const limitNum = toPositiveInt(limit, COMMUNITY_CONFIG.DEFAULT_PAGE_SIZE, 1, COMMUNITY_CONFIG.MAX_PAGE_SIZE);
     const offset = (pageNum - 1) * limitNum;
     const searchTerm = sanitizeSearchTerm(search);
+    const statusFilter = normalizedStatus || 'all';
 
-    // 构建查询
-    let query = supabase
-      .from('community_questions')
-      .select(`
-        id, title, content, subject_code, author_id, status,
-        view_count, answer_count, vote_score, is_featured,
-        created_at, updated_at,
-        author:user_community_profiles!author_id(
-          display_name, avatar_url, reputation_score
-        )
-      `);
-
-    // 应用过滤条件
-    if (subject_code) {
-      query = query.eq('subject_code', subject_code);
-    }
-
-    if (author_id) {
-      query = query.eq('author_id', author_id);
-    }
-
-    if (status !== 'all') {
-      query = query.eq('status', status);
-    }
-
-    // 搜索功能
-    if (searchTerm) {
-      query = query.or(`title.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%`);
-    }
-
-    // 标签过滤
+    let allowedQuestionIds = null;
     if (tags) {
       const rawTags = typeof tags === 'string' ? tags.split(',') : [];
       const tagArray = sanitizeTagList(rawTags, COMMUNITY_CONFIG.MAX_TAGS, 40);
@@ -177,18 +192,16 @@ async function handleGetQuestions(req, res, user) {
           code: 'INVALID_TAGS'
         });
       }
-      // 这里需要通过content_tags表进行关联查询
+
       const { data: taggedQuestionIds } = await supabase
         .from('content_tags')
         .select('content_id')
         .eq('content_type', 'question')
         .in('tag_name', tagArray);
-      
+
       if (taggedQuestionIds && taggedQuestionIds.length > 0) {
-        const questionIds = taggedQuestionIds.map(item => item.content_id);
-        query = query.in('id', questionIds);
+        allowedQuestionIds = taggedQuestionIds.map((item) => item.content_id);
       } else {
-        // 如果没有找到匹配的标签，返回空结果
         return res.status(200).json({
           success: true,
           data: {
@@ -205,7 +218,39 @@ async function handleGetQuestions(req, res, user) {
       }
     }
 
-    // 排序
+    let query = supabase
+      .from('community_questions')
+      .select(`
+        id, title, content, subject_code, author_id, status,
+        view_count, answer_count, vote_score, is_featured,
+        created_at, updated_at,
+        author:user_community_profiles!author_id(
+          display_name, avatar_url, reputation_score
+        )
+      `);
+
+    let countQuery = supabase
+      .from('community_questions')
+      .select('*', { count: 'exact', head: true });
+
+    query = applyQuestionListFilters(query, {
+      subjectCode: subject_code,
+      authorId: author_id,
+      status: statusFilter,
+      searchTerm,
+      allowedQuestionIds,
+      isPrivilegedViewer
+    });
+
+    countQuery = applyQuestionListFilters(countQuery, {
+      subjectCode: subject_code,
+      authorId: author_id,
+      status: statusFilter,
+      searchTerm,
+      allowedQuestionIds,
+      isPrivilegedViewer
+    });
+
     switch (sort) {
       case 'latest':
         query = query.order('created_at', { ascending: false });
@@ -229,37 +274,27 @@ async function handleGetQuestions(req, res, user) {
         query = query.order('created_at', { ascending: false });
     }
 
-    // 获取总数（用于分页）
-    const { count: totalCount, error: countError } = await supabase
-      .from('community_questions')
-      .select('*', { count: 'exact', head: true })
-      .eq('subject_code', subject_code || '');
+    query = query.range(offset, offset + limitNum - 1);
 
-    if (countError && subject_code) {
+    const { count: totalCount, error: countError } = await countQuery;
+    if (countError) {
       throw countError;
     }
 
-    // 应用分页
-    query = query.range(offset, offset + limitNum - 1);
-
-    // 执行查询
     const { data: questions, error: questionsError } = await query;
-
     if (questionsError) {
       throw questionsError;
     }
 
-    // 获取问题的标签
-    const questionIds = questions.map(q => q.id);
+    const questionIds = questions.map((question) => question.id);
     const questionTags = await getQuestionsTags(questionIds);
-
-    // 合并标签信息
-    const questionsWithTags = questions.map(question => ({
+    const questionsWithTags = questions.map((question) => ({
       ...question,
       tags: questionTags[question.id] || []
     }));
 
-    const totalPages = Math.ceil((totalCount || questions.length) / limitNum);
+    const safeTotal = totalCount || 0;
+    const totalPages = safeTotal > 0 ? Math.ceil(safeTotal / limitNum) : 0;
 
     return res.status(200).json({
       success: true,
@@ -268,7 +303,7 @@ async function handleGetQuestions(req, res, user) {
         pagination: {
           page: pageNum,
           limit: limitNum,
-          total: totalCount || questions.length,
+          total: safeTotal,
           total_pages: totalPages
         }
       },
@@ -390,6 +425,9 @@ async function handleUpdateQuestion(req, res, user) {
     const sanitizedTags = tags === undefined
       ? undefined
       : sanitizeTagList(tags, COMMUNITY_CONFIG.MAX_TAGS, 40);
+    const normalizedStatus = status === undefined
+      ? undefined
+      : sanitizePlainText(status, 32).toLowerCase();
 
     if (!question_id) {
       return res.status(400).json({
@@ -398,7 +436,6 @@ async function handleUpdateQuestion(req, res, user) {
       });
     }
 
-    // 检查问题是否存在且用户有权限修改
     const { data: existingQuestion, error: checkError } = await supabase
       .from('community_questions')
       .select('id, author_id, title, content')
@@ -412,10 +449,9 @@ async function handleUpdateQuestion(req, res, user) {
       });
     }
 
-    // 检查权限（只有作者或管理员可以修改）
     const userProfile = await getUserCommunityProfile(user.id);
     const isAuthor = existingQuestion.author_id === user.id;
-    const isAdmin = userProfile.role === 'admin' || userProfile.role === 'moderator';
+    const isAdmin = isPrivilegedCommunityRole(userProfile.role);
 
     if (!isAuthor && !isAdmin) {
       return res.status(403).json({
@@ -424,7 +460,6 @@ async function handleUpdateQuestion(req, res, user) {
       });
     }
 
-    // 准备更新数据
     const updateData = {
       updated_at: new Date().toISOString()
     };
@@ -461,19 +496,33 @@ async function handleUpdateQuestion(req, res, user) {
       updateData.content = sanitizedContent;
     }
 
-    if (status !== undefined && isAdmin) {
-      const validStatuses = ['open', 'closed', 'resolved', 'deleted'];
-      if (!validStatuses.includes(status)) {
+    if (normalizedStatus !== undefined) {
+      if (!isAdmin) {
+        return res.status(403).json({
+          error: 'Permission denied to update status',
+          code: 'PERMISSION_DENIED'
+        });
+      }
+
+      if (normalizedStatus === 'deleted') {
+        return res.status(400).json({
+          error: 'Use the delete endpoint for deleted status transitions',
+          code: 'USE_DELETE_ENDPOINT'
+        });
+      }
+
+      const validStatuses = ['open', 'closed', 'resolved'];
+      if (!validStatuses.includes(normalizedStatus)) {
         return res.status(400).json({
           error: 'Invalid status',
           code: 'INVALID_STATUS',
           valid_statuses: validStatuses
         });
       }
-      updateData.status = status;
+
+      updateData.status = normalizedStatus;
     }
 
-    // 更新问题
     const { data: updatedQuestion, error: updateError } = await supabase
       .from('community_questions')
       .update(updateData)
@@ -485,7 +534,6 @@ async function handleUpdateQuestion(req, res, user) {
       throw updateError;
     }
 
-    // 更新标签
     if (sanitizedTags !== undefined) {
       if (sanitizedTags.length > COMMUNITY_CONFIG.MAX_TAGS) {
         return res.status(400).json({
@@ -496,8 +544,7 @@ async function handleUpdateQuestion(req, res, user) {
       await updateQuestionTags(question_id, sanitizedTags);
     }
 
-    // 获取完整的问题信息
-    const fullQuestion = await getQuestionById(question_id, user.id);
+    const fullQuestion = await getQuestionById(question_id, user.id, { viewerRole: userProfile.role });
 
     return res.status(200).json({
       success: true,
@@ -567,7 +614,7 @@ async function handleDeleteQuestion(req, res, user) {
     }
 
     // 更新用户统计
-    await updateUserQuestionCount(user.id, -1);
+    await updateUserQuestionCount(existingQuestion.author_id, -1);
 
     return res.status(200).json({
       success: true,
@@ -585,9 +632,8 @@ async function handleDeleteQuestion(req, res, user) {
 }
 
 // 获取单个问题详情
-async function getQuestionById(questionId, currentUserId) {
+async function getQuestionById(questionId, currentUserId, options = {}) {
   try {
-    // 获取问题基本信息
     const { data: question, error: questionError } = await supabase
       .from('community_questions')
       .select(`
@@ -609,17 +655,22 @@ async function getQuestionById(questionId, currentUserId) {
       return null;
     }
 
-    // 获取标签
+    const viewerRole = options.viewerRole || (await getUserCommunityProfile(currentUserId)).role;
+    const canViewDeleted = question.author_id === currentUserId || isPrivilegedCommunityRole(viewerRole);
+
+    if (question.status === 'deleted' && !canViewDeleted) {
+      return null;
+    }
+
     const tags = await getQuestionsTags([questionId]);
     question.tags = tags[questionId] || [];
 
-    // 增加浏览次数（如果不是作者本人）
-    if (question.author_id !== currentUserId) {
+    if (question.status !== 'deleted' && question.author_id !== currentUserId) {
       await supabase
         .from('community_questions')
         .update({ view_count: supabase.sql`view_count + 1` })
         .eq('id', questionId);
-      
+
       question.view_count += 1;
     }
 
@@ -837,3 +888,6 @@ async function updateUserQuestionCount(userId, increment) {
 
 // 导出配置供其他模块使用
 export { COMMUNITY_CONFIG };
+
+
+

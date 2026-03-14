@@ -424,11 +424,15 @@ async function handleCreateInteraction(req, res, user) {
 // 删除互动
 async function handleDeleteInteraction(req, res, user) {
   try {
-    const { content_type, content_id, interaction_type } = req.query;
+    const { interaction_id, content_type, content_id, interaction_type } = req.query;
+
+    if (interaction_id) {
+      return await handleDeleteInteractionById(interaction_id, user, res);
+    }
 
     if (!content_type || !content_id || !interaction_type) {
       return res.status(400).json({
-        error: 'content_type, content_id, and interaction_type are required',
+        error: 'interaction_id or content_type, content_id, and interaction_type are required',
         code: 'MISSING_REQUIRED_FIELDS'
       });
     }
@@ -570,6 +574,14 @@ async function updateInteractionType(interactionId, newType, user, res) {
       await updateUserReputationLocal(contentAuthorId, oldReputationChange + newReputationChange);
     }
 
+    const oldVoterReputationChange = oldInteraction.interaction_type === 'upvote'
+      ? -INTERACTION_CONFIG.REPUTATION_REWARDS.UPVOTE_GIVEN
+      : -INTERACTION_CONFIG.REPUTATION_REWARDS.DOWNVOTE_GIVEN;
+    const newVoterReputationChange = newType === 'upvote'
+      ? INTERACTION_CONFIG.REPUTATION_REWARDS.UPVOTE_GIVEN
+      : INTERACTION_CONFIG.REPUTATION_REWARDS.DOWNVOTE_GIVEN;
+    await updateUserReputationLocal(user.id, oldVoterReputationChange + newVoterReputationChange);
+
     return res.status(200).json({
       success: true,
       data: updatedInteraction,
@@ -627,14 +639,22 @@ async function checkIfUserIsContentAuthor(userId, contentType, contentId) {
 // 获取现有互动
 async function getExistingInteraction(userId, contentType, contentId, interactionType) {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('community_interactions')
       .select('*')
       .eq('user_id', userId)
       .eq('content_type', contentType)
-      .eq('content_id', contentId)
-      .in('interaction_type', ['upvote', 'downvote']) // 只检查投票类型的冲突
-      .single();
+      .eq('content_id', contentId);
+
+    if (['upvote', 'downvote'].includes(interactionType)) {
+      query = query.in('interaction_type', ['upvote', 'downvote']);
+    } else {
+      query = query.eq('interaction_type', interactionType);
+    }
+
+    const { data, error } = await query
+      .limit(1)
+      .maybeSingle();
 
     if (error && error.code !== 'PGRST116') {
       throw error;

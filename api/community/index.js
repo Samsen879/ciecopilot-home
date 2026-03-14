@@ -1,26 +1,27 @@
-// 社区系统主路由
 import express from 'express';
 import cors from 'cors';
 import { authenticateToken, requirePermission } from '../middleware/auth.js';
 import { getRequestId, sendApiError } from './lib/security.js';
 
-// 导入各个模块的处理函数
-import { handleGetQuestions, handleCreateQuestion, handleGetQuestionById, handleUpdateQuestion, handleDeleteQuestion } from './questions.js';
-import { handleGetAnswers, handleCreateAnswer, handleGetAnswerById, handleUpdateAnswer, handleDeleteAnswer } from './answers.js';
-import { handleGetInteractions, handleCreateInteraction, handleDeleteInteraction } from './interactions.js';
-import { handleGetBadges, handleAwardBadge } from './badges.js';
-import { handleGetReputation, handleUpdateReputation, handleAdjustReputation } from './reputation.js';
-import { handleGetProfile, handleUpdateProfile, handleCreateProfile } from './profiles.js';
+import questionsHandler from './questions.js';
+import answersHandler from './answers.js';
+import interactionsHandler from './interactions.js';
+import badgesHandler from './badges.js';
+import reputationHandler from './reputation.js';
+import profilesHandler from './profiles.js';
+import notificationsHandler from './notifications.js';
+import notificationsReadAllHandler from './notifications/read-all.js';
+import notificationsUnreadCountHandler from './notifications/unread-count.js';
+import notificationItemHandler from './notifications/[id].js';
+import notificationReadHandler from './notifications/[id]/read.js';
 
 const router = express.Router();
 
-// CORS配置
 router.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+  credentials: true,
 }));
 
-// JSON解析中间件
 router.use(express.json());
 router.use((req, res, next) => {
   const requestId = getRequestId(req);
@@ -29,255 +30,105 @@ router.use((req, res, next) => {
   next();
 });
 
-// ==================== 问题相关路由 ====================
+function delegate(handler, { query, body, method } = {}) {
+  return async (req, res, next) => {
+    const originalQuery = req.query;
+    const originalBody = req.body;
+    const originalMethod = req.method;
 
-// 获取问题列表
-router.get('/questions', async (req, res) => {
-  try {
-    await handleGetQuestions(req, res);
-  } catch (error) {
-    console.error('Get questions error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
+    if (typeof query === 'function') {
+      req.query = {
+        ...(req.query || {}),
+        ...query(req),
+      };
+    }
 
-// 创建问题
-router.post('/questions', authenticateToken, async (req, res) => {
-  try {
-    await handleCreateQuestion(req, res);
-  } catch (error) {
-    console.error('Create question error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
+    if (typeof body === 'function') {
+      req.body = {
+        ...(req.body || {}),
+        ...body(req),
+      };
+    }
 
-// 获取单个问题
-router.get('/questions/:id', async (req, res) => {
-  try {
-    await handleGetQuestionById(req, res);
-  } catch (error) {
-    console.error('Get question by id error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
+    if (typeof method === 'string' && method) {
+      req.method = method;
+    }
 
-// 更新问题
-router.put('/questions/:id', authenticateToken, async (req, res) => {
-  try {
-    await handleUpdateQuestion(req, res);
-  } catch (error) {
-    console.error('Update question error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 删除问题
-router.delete('/questions/:id', authenticateToken, async (req, res) => {
-  try {
-    await handleDeleteQuestion(req, res);
-  } catch (error) {
-    console.error('Delete question error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// ==================== 回答相关路由 ====================
-
-// 获取回答列表
-router.get('/answers', async (req, res) => {
-  try {
-    await handleGetAnswers(req, res);
-  } catch (error) {
-    console.error('Get answers error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 创建回答
-router.post('/answers', authenticateToken, async (req, res) => {
-  try {
-    await handleCreateAnswer(req, res);
-  } catch (error) {
-    console.error('Create answer error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 获取单个回答
-router.get('/answers/:id', async (req, res) => {
-  try {
-    await handleGetAnswerById(req, res);
-  } catch (error) {
-    console.error('Get answer by id error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 更新回答
-router.put('/answers/:id', authenticateToken, async (req, res) => {
-  try {
-    await handleUpdateAnswer(req, res);
-  } catch (error) {
-    console.error('Update answer error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 删除回答
-router.delete('/answers/:id', authenticateToken, async (req, res) => {
-  try {
-    await handleDeleteAnswer(req, res);
-  } catch (error) {
-    console.error('Delete answer error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// ==================== 互动相关路由 ====================
-
-// 获取互动记录
-router.get('/interactions', authenticateToken, async (req, res) => {
-  try {
-    await handleGetInteractions(req, res);
-  } catch (error) {
-    console.error('Get interactions error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 创建互动
-router.post('/interactions', authenticateToken, async (req, res) => {
-  try {
-    await handleCreateInteraction(req, res);
-  } catch (error) {
-    console.error('Create interaction error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 删除互动
-router.delete('/interactions/:id', authenticateToken, async (req, res) => {
-  try {
-    await handleDeleteInteraction(req, res);
-  } catch (error) {
-    console.error('Delete interaction error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 通用互动端点（兼容性）
-router.post('/:type/:id/interact', authenticateToken, async (req, res) => {
-  try {
-    // 将参数转换为interactions格式
-    req.body.contentType = req.params.type;
-    req.body.contentId = req.params.id;
-    await handleCreateInteraction(req, res);
-  } catch (error) {
-    console.error('Interact error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// ==================== 徽章相关路由 ====================
-
-// 获取用户徽章
-router.get('/badges/:userId?', async (req, res) => {
-  try {
-    await handleGetBadges(req, res);
-  } catch (error) {
-    console.error('Get badges error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 颁发徽章（系统调用）
-router.post('/badges/award', authenticateToken, requirePermission('manage_roles'), async (req, res) => {
-  try {
-    await handleAwardBadge(req, res);
-  } catch (error) {
-    console.error('Award badge error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// ==================== 声誉相关路由 ====================
-
-// 获取用户声誉信息
-router.get('/reputation/:userId?', async (req, res) => {
-  try {
-    await handleGetReputation(req, res);
-  } catch (error) {
-    console.error('Get reputation error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 更新用户声誉（系统调用）
-router.post('/reputation/update', authenticateToken, requirePermission('manage_roles'), async (req, res) => {
-  try {
-    await handleUpdateReputation(req, res);
-  } catch (error) {
-    console.error('Update reputation error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 调整用户声誉（管理员功能）
-router.post('/reputation/adjust', authenticateToken, requirePermission('manage_roles'), async (req, res) => {
-  try {
-    await handleAdjustReputation(req, res);
-  } catch (error) {
-    console.error('Adjust reputation error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// ==================== 用户档案相关路由 ====================
-
-// 获取用户档案
-router.get('/users/:userId/profile', async (req, res) => {
-  try {
-    await handleGetProfile(req, res);
-  } catch (error) {
-    console.error('Get profile error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 更新用户档案
-router.put('/users/:userId/profile', authenticateToken, async (req, res) => {
-  try {
-    await handleUpdateProfile(req, res);
-  } catch (error) {
-    console.error('Update profile error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// 创建用户档案
-router.post('/users/:userId/profile', authenticateToken, async (req, res) => {
-  try {
-    await handleCreateProfile(req, res);
-  } catch (error) {
-    console.error('Create profile error:', error);
-    sendApiError(res, { status: 500, error: 'internal_server_error', code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error', requestId: req.requestId });
-  }
-});
-
-// ==================== 健康检查 ====================
+    try {
+      await handler(req, res);
+    } catch (error) {
+      next(error);
+    } finally {
+      req.query = originalQuery;
+      req.body = originalBody;
+      req.method = originalMethod;
+    }
+  };
+}
 
 router.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     service: 'community-api',
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.0',
   });
 });
 
-// ==================== 错误处理 ====================
+router.all('/questions', delegate(questionsHandler));
+router.all('/questions/:id', delegate(questionsHandler, {
+  query: (req) => ({ question_id: req.params.id }),
+}));
 
-// 404处理
+router.all('/answers', delegate(answersHandler));
+router.all('/answers/:id', delegate(answersHandler, {
+  query: (req) => ({ answer_id: req.params.id }),
+}));
+
+router.all('/interactions', delegate(interactionsHandler));
+router.delete('/interactions/:id', delegate(interactionsHandler, {
+  query: (req) => ({ interaction_id: req.params.id }),
+}));
+router.post('/:type/:id/interact', authenticateToken, delegate(interactionsHandler, {
+  body: (req) => ({
+    content_type: req.params.type,
+    content_id: req.params.id,
+  }),
+}));
+
+router.post('/badges/award', authenticateToken, requirePermission('manage_roles'), delegate(badgesHandler));
+router.all('/badges', delegate(badgesHandler));
+router.all('/badges/:userId', delegate(badgesHandler, {
+  query: (req) => ({ user_id: req.params.userId }),
+}));
+
+router.post('/reputation/update', authenticateToken, requirePermission('manage_roles'), delegate(reputationHandler));
+router.post('/reputation/adjust', authenticateToken, requirePermission('manage_roles'), delegate(reputationHandler, {
+  method: 'PUT',
+}));
+router.all('/reputation', delegate(reputationHandler));
+router.all('/reputation/:userId', delegate(reputationHandler, {
+  query: (req) => ({ user_id: req.params.userId }),
+}));
+
+router.all('/profiles', delegate(profilesHandler));
+router.all('/profiles/:userId', delegate(profilesHandler, {
+  query: (req) => ({ user_id: req.params.userId }),
+}));
+router.all('/users/:userId/profile', delegate(profilesHandler, {
+  query: (req) => ({ user_id: req.params.userId }),
+}));
+
+router.post('/notifications/read-all', delegate(notificationsReadAllHandler));
+router.get('/notifications/unread-count', delegate(notificationsUnreadCountHandler));
+router.all('/notifications', delegate(notificationsHandler));
+router.all('/notifications/:id/read', delegate(notificationReadHandler, {
+  query: (req) => ({ id: req.params.id }),
+}));
+router.all('/notifications/:id', delegate(notificationItemHandler, {
+  query: (req) => ({ id: req.params.id }),
+}));
+
 router.use('*', (req, res) => {
   sendApiError(res, {
     status: 404,
@@ -287,15 +138,15 @@ router.use('*', (req, res) => {
     requestId: req.requestId,
     details: {
       path: req.originalUrl,
-      method: req.method
-    }
+      method: req.method,
+    },
   });
 });
 
-// 全局错误处理
 router.use((error, req, res, next) => {
+  void next;
   console.error('Community API Error:', { request_id: req.requestId, error });
-  
+
   if (error.name === 'ValidationError') {
     return sendApiError(res, {
       status: 400,
@@ -303,28 +154,27 @@ router.use((error, req, res, next) => {
       code: 'VALIDATION_ERROR',
       message: 'Validation failed',
       requestId: req.requestId,
-      details: error.message
+      details: error.message,
     });
   }
-  
+
   if (error.name === 'UnauthorizedError') {
     return sendApiError(res, {
       status: 401,
       error: 'unauthorized',
       code: 'UNAUTHORIZED',
       message: 'Unauthorized access',
-      requestId: req.requestId
+      requestId: req.requestId,
     });
   }
-  
-  sendApiError(res, {
+
+  return sendApiError(res, {
     status: 500,
     error: 'internal_server_error',
     code: 'INTERNAL_SERVER_ERROR',
     message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
-    requestId: req.requestId
+    requestId: req.requestId,
   });
 });
 
 export default router;
-

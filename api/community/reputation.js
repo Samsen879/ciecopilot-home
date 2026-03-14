@@ -138,12 +138,24 @@ async function handleGetReputation(req, res, user) {
   const startTime = Date.now();
   
   try {
-    const { 
+    const {
       user_id = user.id,
       include_history = 'false',
       include_breakdown = 'false',
       days = 30
     } = req.query;
+    const normalizedDays = Math.min(Math.max(parseInt(days, 10) || 30, 1), 365);
+
+    const requestingSensitiveDetails = include_history === 'true' || include_breakdown === 'true';
+    if (user_id !== user.id && requestingSensitiveDetails) {
+      const canViewSensitiveDetails = await isCommunityRoleAllowed(supabase, user.id, ['admin', 'moderator']);
+      if (!canViewSensitiveDetails) {
+        return res.status(403).json({
+          error: 'Insufficient permissions to view reputation history',
+          code: 'REPUTATION_HISTORY_ACCESS_DENIED'
+        });
+      }
+    }
 
     // 获取用户声誉档案
     const { data: profile, error: profileError } = await supabase
@@ -167,9 +179,9 @@ async function handleGetReputation(req, res, user) {
     if (include_history === 'true') {
       const { data: history, error: historyError } = await supabase
         .from('reputation_history')
-        .select('*')
+        .select('points_change, action_type, reason, previous_reputation, new_reputation, related_content_id, related_content_type, created_at')
         .eq('user_id', user_id)
-        .gte('created_at', new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString())
+        .gte('created_at', new Date(Date.now() - normalizedDays * 24 * 60 * 60 * 1000).toISOString())
         .order('created_at', { ascending: false })
         .limit(100);
 
@@ -182,7 +194,7 @@ async function handleGetReputation(req, res, user) {
     
     // 获取声誉来源分析
     if (include_breakdown === 'true') {
-      reputationBreakdown = await getReputationBreakdown(user_id, days);
+      reputationBreakdown = await getReputationBreakdown(user_id, normalizedDays);
     }
 
     // 计算今日声誉变化
@@ -677,3 +689,4 @@ export async function batchUpdateReputation(updates) {
 
 // 导出配置供其他模块使用
 export { REPUTATION_CONFIG };
+

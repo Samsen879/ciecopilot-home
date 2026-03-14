@@ -1,4 +1,5 @@
 import { getServiceClient } from '../supabase/client.js';
+import { authenticateRequest } from '../../middleware/auth.js';
 
 export function parseBearerToken(req) {
   const raw = req?.headers?.authorization || req?.headers?.Authorization;
@@ -24,6 +25,17 @@ function buildAuthContext(user, token, source = 'supabase') {
     user,
     token,
     source,
+  };
+}
+
+function buildCustomJwtContext(authResult, token) {
+  return {
+    userId: authResult.user.id,
+    role: authResult.user.role,
+    user: authResult.user.profile || authResult.user,
+    token,
+    source: 'custom_jwt',
+    permissions: authResult.user.permissions || [],
   };
 }
 
@@ -67,32 +79,39 @@ export async function resolveTrustedAuthContext(req) {
     };
   }
 
-  let client;
   try {
-    client = getServiceClient();
+    const client = getServiceClient();
+    const { data, error } = await client.auth.getUser(token);
+    if (!error && data?.user) {
+      return {
+        ok: true,
+        token,
+        context: buildAuthContext(data.user, token, 'supabase'),
+      };
+    }
   } catch (error) {
-    return {
-      ok: false,
-      status: 500,
-      code: 'auth_config_missing',
-      message: error?.message || 'Supabase auth config missing.',
-    };
+    // Fall through to custom JWT validation.
   }
 
-  const { data, error } = await client.auth.getUser(token);
-  if (error || !data?.user) {
+  const authResult = await authenticateRequest(req, { optional: false });
+  if (authResult.success) {
     return {
-      ok: false,
-      status: 401,
-      code: 'auth_invalid',
-      message: error?.message || 'Invalid token.',
+      ok: true,
+      token,
+      context: buildCustomJwtContext(authResult, token),
     };
   }
 
   return {
-    ok: true,
-    token,
-    context: buildAuthContext(data.user, token, 'supabase'),
+    ok: false,
+    status: authResult.status || 401,
+    code:
+      authResult.error === 'access_token_required'
+        ? 'auth_required'
+        : authResult.status >= 500 || authResult.error === 'auth_config_missing'
+          ? 'auth_config_missing'
+          : 'auth_invalid',
+    message: authResult.message || 'Invalid token.',
   };
 }
 

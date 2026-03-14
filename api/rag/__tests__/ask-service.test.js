@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { executeAskAI } from '../lib/ask-service.js';
 
 const RETRIEVAL_AUDIT_KEYS = Object.freeze([
@@ -115,8 +117,16 @@ function createSupabaseRouteMapStub({
   rowsByTopicPath = {},
   defaultRows = [],
   boundaryData = null,
+  nodeData = null,
 } = {}) {
   const rpcCalls = [];
+  const defaultNodeData = {
+    node_id: 'node-1',
+    topic_path: '9709.P1',
+    syllabus_code: '9709',
+    title: 'Pure Mathematics 1',
+    description: 'Paper 1',
+  };
   return {
     from(table) {
       if (table !== 'curriculum_nodes') throw new Error(`Unexpected table: ${table}`);
@@ -127,13 +137,7 @@ function createSupabaseRouteMapStub({
               return {
                 async maybeSingle() {
                   return {
-                    data: boundaryData || {
-                      node_id: 'node-1',
-                      topic_path: '9709.P1',
-                      syllabus_code: '9709',
-                      title: 'Pure Mathematics 1',
-                      description: 'Paper 1',
-                    },
+                    data: boundaryData || nodeData || defaultNodeData,
                     error: null,
                   };
                 },
@@ -192,7 +196,17 @@ function createFetchStub() {
 function createConfig() {
   return {
     retrievalVersion: 'test',
-    retrieval: { k_key: 30, k_sem: 30, rrf_k: 60, fused_top_k: 8, w_key: 0.7, w_sem: 0.3 },
+    retrieval: {
+      k_key: 30,
+      k_sem: 30,
+      rrf_k: 60,
+      fused_top_k: 8,
+      w_key: 0.7,
+      w_sem: 0.3,
+      corpusVersions: [],
+      excludedSourceTypes: ['evidence_authored', 'evidence_transformed', 'evidence_reserved'],
+      excludedCorpusVersions: [],
+    },
     embedding: {
       baseUrl: 'https://example.com/v1',
       apiKey: 'k',
@@ -260,6 +274,37 @@ function createSupabaseNoBoundaryLookupStub() {
     },
     __rpcCalls: rpcCalls,
   };
+}
+
+function createProductionEvidenceRolloutGate({ rolloutState = 'online_enabled', subjectCodes = ['9702'] } = {}) {
+  return {
+    manifest_role: 'production_evidence_rollout_gate',
+    evidence_layer: 'production_evidence',
+    policy_mode: 'production_evidence',
+    schema_version: 'v1',
+    generated_at: '2026-03-13T10:30:00.000Z',
+    default_retrieval_state: 'blocked',
+    entries: [
+      {
+        bundle_id: 'phase_b_pilot_ready_v1',
+        manifest_path: 'data/evidence/production/pilot_ready_v1/manifest.json',
+        subject_scope: 'single_subject',
+        subject_codes: subjectCodes,
+        rollout_state: rolloutState,
+        corpus_versions: ['rag_production_evidence_pilot_20260313'],
+        allowed_source_types: ['evidence_authored', 'evidence_transformed'],
+      },
+    ],
+  };
+}
+
+function loadCheckedInProductionEvidenceRolloutGate() {
+  return JSON.parse(
+    fs.readFileSync(
+      path.join(process.cwd(), 'data/evidence/production/rollout_gate_v1.json'),
+      'utf8',
+    ),
+  );
 }
 
 function createSupabaseRpcErrorStub() {
@@ -647,6 +692,451 @@ describe('ask service', () => {
     expect(supabase.__rpcCalls[0].params.p_corpus_versions).toEqual([
       'rag_step3_9709_question_aware_v1',
     ]);
+  });
+
+  it('excludes production evidence source types from s1 retrieval by default', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseRouteMapStub({
+      defaultRows: [
+        {
+          id: 901,
+          snippet: 'Pilot authored row',
+          topic_path: '9709.P1',
+          source_type: 'evidence_authored',
+          corpus_version: 'rag_production_evidence_pilot_20260313',
+          rank_sem: 1,
+          rank_key: 1,
+          score: 0.95,
+        },
+        {
+          id: 902,
+          snippet: 'Restricted official row',
+          topic_path: '9709.P1',
+          source_type: 'past_paper_pdf',
+          corpus_version: 'rag_step3_9709_question_aware_v1',
+          rank_sem: 2,
+          rank_key: 2,
+          score: 0.9,
+        },
+      ],
+    });
+
+    const result = await executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-6a-prod-evidence-filter-default', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.metrics.retrieval_audit.hybrid_row_count).toBe(1);
+    expect(result.evidence.map((item) => item.source_type)).toEqual(['past_paper_pdf']);
+  });
+
+  it('allows production evidence retrieval rows only when rollout enforcement is explicitly disabled', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseRouteMapStub({
+      defaultRows: [
+        {
+          id: 903,
+          snippet: 'Pilot authored row',
+          topic_path: '9709.P1',
+          source_type: 'evidence_authored',
+          corpus_version: 'rag_production_evidence_pilot_20260313',
+          rank_sem: 1,
+          rank_key: 1,
+          score: 0.95,
+        },
+      ],
+    });
+    const config = createConfig();
+    config.retrieval.excludedSourceTypes = [];
+    config.retrieval.excludedCorpusVersions = [];
+    config.retrieval.productionEvidenceRolloutEnabled = false;
+
+    const result = await executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-6a-prod-evidence-filter-opt-in', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config,
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.metrics.retrieval_audit.hybrid_row_count).toBe(1);
+    expect(result.evidence.map((item) => item.source_type)).toEqual(['evidence_authored']);
+  });
+
+  it('activates production evidence rollout for a matching subject with approved online bundle', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseRouteMapStub({
+      nodeData: {
+        node_id: 'node-9702',
+        topic_path: '9702.P1',
+        syllabus_code: '9702',
+        title: 'Mechanics 1',
+        description: 'Paper 1',
+      },
+      defaultRows: [
+        {
+          id: 904,
+          snippet: 'Pilot authored row',
+          topic_path: '9702.P1',
+          source_type: 'evidence_authored',
+          corpus_version: 'rag_production_evidence_pilot_20260313',
+          rank_sem: 1,
+          rank_key: 1,
+          score: 0.95,
+        },
+        {
+          id: 905,
+          snippet: 'Pilot reserved row',
+          topic_path: '9702.P1',
+          source_type: 'evidence_reserved',
+          corpus_version: 'rag_production_evidence_pilot_20260313',
+          rank_sem: 2,
+          rank_key: 2,
+          score: 0.92,
+        },
+        {
+          id: 906,
+          snippet: 'Restricted official row',
+          topic_path: '9702.P1',
+          source_type: 'past_paper_pdf',
+          corpus_version: 'rag_step3_9702_question_aware_v1',
+          rank_sem: 3,
+          rank_key: 3,
+          score: 0.9,
+        },
+      ],
+    });
+    const config = createConfig();
+    config.retrieval.corpusVersions = ['rag_step3_9702_question_aware_v1'];
+    config.retrieval.productionEvidenceRolloutGate = loadCheckedInProductionEvidenceRolloutGate();
+
+    const result = await executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-9702',
+      },
+      {
+        req: { request_id: 'req-6a-prod-evidence-rollout-online', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config,
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.metrics.retrieval_audit.hybrid_row_count).toBe(2);
+    expect(result.evidence.map((item) => item.source_type)).toEqual([
+      'evidence_authored',
+      'past_paper_pdf',
+    ]);
+    expect(result.evidence.map((item) => item.source_type)).not.toContain('evidence_reserved');
+    expect(supabase.__rpcCalls).toHaveLength(1);
+    expect(supabase.__rpcCalls[0].params.p_corpus_versions).toEqual([
+      'rag_step3_9702_question_aware_v1',
+      'rag_production_evidence_pilot_20260313',
+    ]);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_active).toBe(true);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_reason).toBe(
+      'online_enabled_subject_match',
+    );
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_bundle_ids).toEqual([
+      'phase_b_pilot_ready_v1',
+    ]);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_corpus_versions).toEqual([
+      'rag_production_evidence_pilot_20260313',
+    ]);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_source_types).toEqual([
+      'evidence_authored',
+      'evidence_transformed',
+    ]);
+  });
+
+  it('keeps production evidence rollout blocked for non-target subject 9231 even when 9702 is promoted', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseRouteMapStub({
+      nodeData: {
+        node_id: 'node-9231',
+        topic_path: '9231.P1',
+        syllabus_code: '9231',
+        title: 'Further Pure Mathematics 1',
+        description: 'Paper 1',
+      },
+      defaultRows: [
+        {
+          id: 910,
+          snippet: 'Pilot authored row',
+          topic_path: '9231.P1',
+          source_type: 'evidence_authored',
+          corpus_version: 'rag_production_evidence_pilot_20260313',
+          rank_sem: 1,
+          rank_key: 1,
+          score: 0.95,
+        },
+        {
+          id: 911,
+          snippet: 'Restricted official row',
+          topic_path: '9231.P1',
+          source_type: 'past_paper_pdf',
+          corpus_version: 'rag_step3_9231_question_aware_v1',
+          rank_sem: 2,
+          rank_key: 2,
+          score: 0.9,
+        },
+      ],
+    });
+    const config = createConfig();
+    config.retrieval.corpusVersions = ['rag_step3_9231_question_aware_v1'];
+    config.retrieval.productionEvidenceRolloutGate = loadCheckedInProductionEvidenceRolloutGate();
+
+    const result = await executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-9231',
+      },
+      {
+        req: { request_id: 'req-6a-prod-evidence-rollout-control-9231', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config,
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.metrics.retrieval_audit.hybrid_row_count).toBe(1);
+    expect(result.evidence.map((item) => item.source_type)).toEqual(['past_paper_pdf']);
+    expect(supabase.__rpcCalls).toHaveLength(1);
+    expect(supabase.__rpcCalls[0].params.p_corpus_versions).toEqual([
+      'rag_step3_9231_question_aware_v1',
+    ]);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_active).toBe(false);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_reason).toBe('no_subject_match');
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_bundle_ids).toEqual([]);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_corpus_versions).toEqual([]);
+    expect(result.metrics.route_audit.route_scores.production_evidence_rollout_source_types).toEqual([]);
+  });
+
+  it('keeps production evidence rollout blocked when no baseline corpus allowlist is configured', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseRouteMapStub({
+      nodeData: {
+        node_id: 'node-9702-no-baseline',
+        topic_path: '9702.P1',
+        syllabus_code: '9702',
+        title: 'Mechanics 1',
+        description: 'Paper 1',
+      },
+      defaultRows: [
+        {
+          id: 906,
+          snippet: 'Pilot authored row',
+          topic_path: '9702.P1',
+          source_type: 'evidence_authored',
+          corpus_version: 'rag_production_evidence_pilot_20260313',
+          rank_sem: 1,
+          rank_key: 1,
+          score: 0.95,
+        },
+        {
+          id: 907,
+          snippet: 'Restricted official row',
+          topic_path: '9702.P1',
+          source_type: 'past_paper_pdf',
+          corpus_version: 'rag_step3_9702_question_aware_v1',
+          rank_sem: 2,
+          rank_key: 2,
+          score: 0.9,
+        },
+      ],
+    });
+    const config = createConfig();
+    config.retrieval.productionEvidenceRolloutGate = createProductionEvidenceRolloutGate();
+
+    const result = await executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-9702-no-baseline',
+      },
+      {
+        req: { request_id: 'req-6a-prod-evidence-rollout-no-baseline', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config,
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.metrics.retrieval_audit.hybrid_row_count).toBe(1);
+    expect(result.evidence.map((item) => item.source_type)).toEqual(['past_paper_pdf']);
+    expect(supabase.__rpcCalls).toHaveLength(1);
+    expect(supabase.__rpcCalls[0].params.p_corpus_versions).toBeNull();
+  });
+
+  it('keeps rollout-gated production evidence corpus versions out of the baseline allowlist until promotion', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseRouteMapStub({
+      nodeData: {
+        node_id: 'node-9702-offline-gate',
+        topic_path: '9702.P1',
+        syllabus_code: '9702',
+        title: 'Mechanics 1',
+        description: 'Paper 1',
+      },
+      defaultRows: [
+        {
+          id: 908,
+          snippet: 'Pilot authored row',
+          topic_path: '9702.P1',
+          source_type: 'evidence_authored',
+          corpus_version: 'rag_production_evidence_pilot_20260313',
+          rank_sem: 1,
+          rank_key: 1,
+          score: 0.95,
+        },
+        {
+          id: 909,
+          snippet: 'Restricted official row',
+          topic_path: '9702.P1',
+          source_type: 'past_paper_pdf',
+          corpus_version: 'rag_step3_9702_question_aware_v1',
+          rank_sem: 2,
+          rank_key: 2,
+          score: 0.9,
+        },
+      ],
+    });
+    const config = createConfig();
+    config.retrieval.corpusVersions = [
+      'rag_step3_9702_question_aware_v1',
+      'rag_production_evidence_pilot_20260313',
+    ];
+    config.retrieval.excludedSourceTypes = [];
+    config.retrieval.excludedCorpusVersions = [];
+    config.retrieval.productionEvidenceRolloutGate = createProductionEvidenceRolloutGate({
+      rolloutState: 'offline_default',
+    });
+
+    const result = await executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-9702-offline-gate',
+      },
+      {
+        req: { request_id: 'req-6a-prod-evidence-rollout-offline-baseline', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config,
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.metrics.retrieval_audit.hybrid_row_count).toBe(1);
+    expect(result.evidence.map((item) => item.source_type)).toEqual(['past_paper_pdf']);
+    expect(supabase.__rpcCalls).toHaveLength(1);
+    expect(supabase.__rpcCalls[0].params.p_corpus_versions).toEqual([
+      'rag_step3_9702_question_aware_v1',
+    ]);
+  });
+
+  it('passes promoted production evidence retrieval config into the s2 path for 9702 while keeping reserved rows blocked', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseRouteMapStub({
+      nodeData: {
+        node_id: 'node-9702-s2',
+        topic_path: '9702.P1',
+        syllabus_code: '9702',
+        title: 'Mechanics 1',
+        description: 'Paper 1',
+      },
+      defaultRows: [],
+    });
+    const config = createConfig();
+    config.retrieval.corpusVersions = ['rag_step3_9702_question_aware_v1'];
+    config.retrieval.productionEvidenceRolloutGate = loadCheckedInProductionEvidenceRolloutGate();
+    config.s2.enabled = true;
+    const s2Calls = [];
+
+    const result = await executeAskAI(
+      {
+        query: 'Create a cross-topic study plan across chapters with prerequisite chain.',
+        syllabus_node_id: 'node-9702-s2',
+      },
+      {
+        req: { request_id: 'req-6a-prod-evidence-rollout-s2-9702', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config,
+        s2Retriever: async (payload) => {
+          s2Calls.push(payload);
+          const corpusVersions = payload?.retrievalConfig?.corpusVersions || [];
+          const excludedSourceTypes = payload?.retrievalConfig?.excludedSourceTypes || [];
+          const promoted =
+            JSON.stringify(corpusVersions) ===
+              JSON.stringify([
+                'rag_step3_9702_question_aware_v1',
+                'rag_production_evidence_pilot_20260313',
+              ]) &&
+            JSON.stringify(excludedSourceTypes) === JSON.stringify(['evidence_reserved']);
+          return promoted
+            ? {
+              rows: [
+                {
+                  id: 912,
+                  snippet: 'Pilot authored row from s2',
+                  topic_path: '9702.P1',
+                  source_type: 'evidence_authored',
+                  corpus_version: 'rag_production_evidence_pilot_20260313',
+                  rank_sem: 1,
+                  rank_key: 1,
+                  score: 0.95,
+                },
+              ],
+              audit: {
+                s2_hop_count: 1,
+                s2_expanded_topic_count: 0,
+              },
+            }
+            : {
+              rows: [],
+              audit: {
+                s2_hop_count: 1,
+                s2_expanded_topic_count: 0,
+              },
+            };
+        },
+      },
+    );
+
+    expect(s2Calls).toHaveLength(1);
+    expect(s2Calls[0].retrievalConfig.corpusVersions).toEqual([
+      'rag_step3_9702_question_aware_v1',
+      'rag_production_evidence_pilot_20260313',
+    ]);
+    expect(s2Calls[0].retrievalConfig.excludedSourceTypes).toEqual(['evidence_reserved']);
+    expect(result.metrics.route_audit.final_execution_route).toBe('s2_augmentation');
+    expect(result.metrics.retrieval_audit.query_mode).toBe('s2_multi_hop');
+    expect(result.evidence.map((item) => item.source_type)).toContain('evidence_authored');
   });
 
   it('uses internal boundary override without querying curriculum_nodes', async () => {

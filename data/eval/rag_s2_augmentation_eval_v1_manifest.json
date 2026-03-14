@@ -3,6 +3,23 @@
   "dataset": "data/eval/rag_s2_augmentation_eval_v1.json",
   "benchmark_profile": "s2_augmentation_eval_v1",
   "benchmark_tier": "advisory",
+  "subject_scope": "mixed_subject",
+  "subject_codes": [
+    "9700",
+    "9702",
+    "9709",
+    "9231"
+  ],
+  "corpus_scope_policy": {
+    "mode": "mixed_subject",
+    "compatible_subject_codes": [
+      "9700",
+      "9702",
+      "9709",
+      "9231"
+    ],
+    "allow_single_subject_corpus_versions": false
+  },
   "total_cases": 90,
   "source_dataset": "data/eval/rag_s1_3_forced_retrieval_v1.json",
   "source_dataset_total_cases": 240,

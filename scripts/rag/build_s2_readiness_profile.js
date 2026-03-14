@@ -2,11 +2,35 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const ROOT = process.cwd();
-const DATASET_FILE = path.join(ROOT, 'data', 'eval', 'rag_s2_augmentation_eval_v1.json');
-const CORPUS_SUMMARY_FILE = path.join(ROOT, 'runs', 'backend', 'rag_corpus_source_coverage_summary.json');
-const OUT_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s2_readiness_profile.json');
+const __filename = fileURLToPath(import.meta.url);
+const DEFAULT_DATASET_FILE = path.join(ROOT, 'data', 'eval', 'rag_s2_augmentation_eval_v1.json');
+const DEFAULT_CORPUS_SUMMARY_FILE = path.join(ROOT, 'runs', 'backend', 'rag_corpus_source_coverage_summary.json');
+const DEFAULT_OUT_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s2_readiness_profile.json');
+
+function parseCliArgs(args) {
+  const out = {};
+  for (let index = 0; index < args.length; index += 1) {
+    const token = args[index];
+    if (!token.startsWith('-')) continue;
+    const eq = token.indexOf('=');
+    if (eq !== -1) {
+      out[token.slice(token.startsWith('--') ? 2 : 1, eq)] = token.slice(eq + 1);
+      continue;
+    }
+    const key = token.slice(token.startsWith('--') ? 2 : 1);
+    const next = args[index + 1];
+    if (next && !next.startsWith('-')) {
+      out[key] = next;
+      index += 1;
+    } else {
+      out[key] = true;
+    }
+  }
+  return out;
+}
 
 function toRel(filePath) {
   return path.relative(ROOT, filePath).replace(/\\/g, '/');
@@ -17,7 +41,7 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
-function getTopicDepth(topicPath) {
+export function getTopicDepth(topicPath) {
   return String(topicPath || '')
     .split('.')
     .map((part) => part.trim())
@@ -31,7 +55,7 @@ function percentile(values, p) {
   return sorted[index];
 }
 
-function summarizeDepth(depths) {
+export function summarizeDepth(depths) {
   const distribution = {};
   for (const depth of depths) {
     distribution[depth] = (distribution[depth] || 0) + 1;
@@ -46,10 +70,14 @@ function summarizeDepth(depths) {
   };
 }
 
-function chooseRecommendedDepth({ subjectCode, depthSummary, evalCaseCount, corpusRowCount }) {
+export function chooseRecommendedDepth({ subjectCode, depthSummary, evalCaseCount, corpusRowCount }) {
   const depthMax = Number(depthSummary?.max || 1);
   if (subjectCode === '9709') {
     return Math.min(Math.max(2, Number(depthSummary?.p50 || 2)), depthMax);
+  }
+  const deepSubjectSlice = depthMax >= 3 && Number(depthSummary?.p50 || 0) >= 3;
+  if (deepSubjectSlice && corpusRowCount >= 20 && evalCaseCount >= 6) {
+    return Math.min(3, depthMax);
   }
   if (corpusRowCount >= 20 && evalCaseCount >= 10) {
     return Math.min(2, depthMax);
@@ -57,12 +85,10 @@ function chooseRecommendedDepth({ subjectCode, depthSummary, evalCaseCount, corp
   return 1;
 }
 
-function main() {
-  const dataset = readJson(DATASET_FILE);
+export function buildReadinessProfile({ dataset, corpusSummary = {}, runConfig = {} } = {}) {
   if (!Array.isArray(dataset) || dataset.length === 0) {
-    throw new Error(`dataset missing or empty: ${DATASET_FILE}`);
+    throw new Error('dataset missing or empty');
   }
-  const corpusSummary = readJson(CORPUS_SUMMARY_FILE) || {};
   const corpusSubjectCounts =
     corpusSummary && typeof corpusSummary.subject_counts === 'object' && corpusSummary.subject_counts
       ? corpusSummary.subject_counts
@@ -116,11 +142,7 @@ function main() {
   const payload = {
     generated_at: new Date().toISOString(),
     stage: 'rag_s2_readiness_profile',
-    run_config: {
-      script: 'scripts/rag/build_s2_readiness_profile.js',
-      dataset: toRel(DATASET_FILE),
-      corpus_coverage_summary: toRel(CORPUS_SUMMARY_FILE),
-    },
+    run_config: runConfig,
     defaults: {
       readiness_guard_enabled: true,
       default_max_topic_depth: 1,
@@ -137,9 +159,36 @@ function main() {
     ],
   };
 
-  fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
-  fs.writeFileSync(OUT_FILE, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
-  process.stdout.write(`${toRel(OUT_FILE)}\n`);
+  return payload;
 }
 
-main();
+export function main(argv = process.argv.slice(2)) {
+  const cli = parseCliArgs(argv);
+  const datasetFile = cli.dataset ? path.join(ROOT, cli.dataset) : DEFAULT_DATASET_FILE;
+  const corpusSummaryFile = cli['corpus-summary']
+    ? path.join(ROOT, cli['corpus-summary'])
+    : DEFAULT_CORPUS_SUMMARY_FILE;
+  const outFile = cli.out ? path.join(ROOT, cli.out) : DEFAULT_OUT_FILE;
+  const dataset = readJson(datasetFile);
+  if (!Array.isArray(dataset) || dataset.length === 0) {
+    throw new Error(`dataset missing or empty: ${datasetFile}`);
+  }
+  const corpusSummary = readJson(corpusSummaryFile) || {};
+  const payload = buildReadinessProfile({
+    dataset,
+    corpusSummary,
+    runConfig: {
+      script: 'scripts/rag/build_s2_readiness_profile.js',
+      dataset: toRel(datasetFile),
+      corpus_coverage_summary: toRel(corpusSummaryFile),
+    },
+  });
+
+  fs.mkdirSync(path.dirname(outFile), { recursive: true });
+  fs.writeFileSync(outFile, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+  process.stdout.write(`${toRel(outFile)}\n`);
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  main();
+}

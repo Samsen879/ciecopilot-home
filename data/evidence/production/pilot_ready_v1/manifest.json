@@ -1,0 +1,42 @@
+{
+  "manifest_role": "production_evidence_bundle",
+  "evidence_layer": "production_evidence",
+  "policy_mode": "production_evidence",
+  "schema_version": "v1",
+  "bundle_id": "phase_b_pilot_ready_v1",
+  "generated_at": "2026-03-13T07:30:00.000Z",
+  "bundle_status": "pilot_ready_for_ingest",
+  "subject_scope": "single_subject",
+  "subject_codes": [
+    "9702"
+  ],
+  "language": "en",
+  "declared_source_types": [
+    "evidence_authored",
+    "evidence_transformed",
+    "evidence_reserved"
+  ],
+  "enabled_source_types": [
+    "evidence_authored",
+    "evidence_transformed"
+  ],
+  "allowed_source_types": [
+    "evidence_authored",
+    "evidence_transformed"
+  ],
+  "reserved_source_types": [
+    "evidence_reserved"
+  ],
+  "restricted_official_posture": "internal_context_only",
+  "items_file": "items.json",
+  "bundle_item_count": 5,
+  "review": {
+    "status": "approved",
+    "owner": "phase_b_pilot"
+  },
+  "notes": [
+    "This is the first real Phase B production evidence pilot bundle.",
+    "It is ready for ingest verification and remains blocked from live retrieval unless the rollout gate explicitly enables it.",
+    "restricted_official remains provenance-only context for transformed evidence."
+  ]
+}

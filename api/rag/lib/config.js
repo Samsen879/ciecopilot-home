@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { DEFAULT_RETRIEVAL_CONFIG, RETRIEVAL_VERSION } from './constants.js';
 
@@ -29,6 +30,10 @@ function toCsvList(raw) {
     .filter(Boolean);
 }
 
+function mergeCsvList(defaultValues = [], raw) {
+  return [...new Set([...(Array.isArray(defaultValues) ? defaultValues : []), ...toCsvList(raw)])];
+}
+
 function toPositiveDepthMap(raw) {
   if (!raw) return {};
   let parsed = raw;
@@ -47,8 +52,17 @@ function toPositiveDepthMap(raw) {
   );
 }
 
+function readJsonFileIfExists(filePath) {
+  if (!filePath || !fs.existsSync(filePath)) return null;
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
 export function getRagConfig() {
   const allowOpenAiFallback = toBoolean(process.env.RAG_ALLOW_OPENAI_FALLBACK, false);
+  const excludeProductionEvidenceFromRetrieval = toBoolean(
+    process.env.RAG_EXCLUDE_PRODUCTION_EVIDENCE_FROM_RETRIEVAL,
+    true,
+  );
 
   const embeddingApiKey =
     process.env.VECTOR_EMBEDDING_API_KEY ||
@@ -150,6 +164,25 @@ export function getRagConfig() {
     process.env.RAG_S2_READINESS_ENFORCE_SUMMARY_COVERAGE,
     false,
   );
+  const productionEvidenceRolloutEnabled = toBoolean(
+    process.env.RAG_PRODUCTION_EVIDENCE_ROLLOUT_ENABLED,
+    true,
+  );
+  const productionEvidenceRolloutRequireBaseCorpusVersions = toBoolean(
+    process.env.RAG_PRODUCTION_EVIDENCE_ROLLOUT_REQUIRE_BASE_CORPUS_VERSIONS,
+    true,
+  );
+  const productionEvidenceRolloutGatePath =
+    process.env.RAG_PRODUCTION_EVIDENCE_ROLLOUT_GATE_PATH ||
+    path.join(process.cwd(), 'data', 'evidence', 'production', 'rollout_gate_v1.json');
+  const productionEvidenceRolloutGate =
+    productionEvidenceRolloutEnabled ? readJsonFileIfExists(productionEvidenceRolloutGatePath) : null;
+  const productionEvidenceRolloutForcedExcludedSourceTypes = toCsvList(
+    process.env.RAG_PRODUCTION_EVIDENCE_FORCED_EXCLUDED_SOURCE_TYPES,
+  );
+  const productionEvidenceRolloutForcedExcludedCorpusVersions = toCsvList(
+    process.env.RAG_PRODUCTION_EVIDENCE_FORCED_EXCLUDED_CORPUS_VERSIONS,
+  );
   const s2RouteClassifierModelPath =
     process.env.RAG_S2_ROUTE_CLASSIFIER_MODEL_PATH ||
     path.join(process.cwd(), 'runs', 'backend', 'rag_s2_route_classifier_model.json');
@@ -163,6 +196,19 @@ export function getRagConfig() {
       w_key: toNonNegativeNumber(process.env.RAG_W_KEY, DEFAULT_RETRIEVAL_CONFIG.w_key),
       w_sem: toNonNegativeNumber(process.env.RAG_W_SEM, DEFAULT_RETRIEVAL_CONFIG.w_sem),
       corpusVersions: toCsvList(process.env.RAG_CORPUS_VERSIONS),
+      excludedSourceTypes: mergeCsvList(
+        excludeProductionEvidenceFromRetrieval
+          ? ['evidence_authored', 'evidence_transformed', 'evidence_reserved']
+          : [],
+        process.env.RAG_EXCLUDED_SOURCE_TYPES,
+      ),
+      excludedCorpusVersions: toCsvList(process.env.RAG_EXCLUDED_CORPUS_VERSIONS),
+      productionEvidenceRolloutEnabled,
+      productionEvidenceRolloutRequireBaseCorpusVersions,
+      productionEvidenceRolloutGatePath,
+      productionEvidenceRolloutGate,
+      productionEvidenceRolloutForcedExcludedSourceTypes,
+      productionEvidenceRolloutForcedExcludedCorpusVersions,
     },
     embedding: {
       baseUrl: embeddingBaseUrl.replace(/\/$/, ''),

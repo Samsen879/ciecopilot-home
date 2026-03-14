@@ -19,6 +19,23 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function normalizeStringList(values = []) {
+  return [...new Set((Array.isArray(values) ? values : []).map((value) => String(value || '').trim()).filter(Boolean))];
+}
+
+function normalizeOptionalString(value) {
+  const normalized = String(value || '').trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function shouldExcludeRow(row, { excludedSourceTypes = [], excludedCorpusVersions = [] } = {}) {
+  const sourceType = normalizeOptionalString(row?.source_type);
+  if (sourceType && excludedSourceTypes.includes(sourceType)) return true;
+  const corpusVersion = normalizeOptionalString(row?.corpus_version);
+  if (corpusVersion && excludedCorpusVersions.includes(corpusVersion)) return true;
+  return false;
+}
+
 function isRetryableRpcMessage(message, error = null) {
   const normalized = String(message || error?.message || '').toLowerCase();
   return (
@@ -200,6 +217,8 @@ export async function retrieveHybridCandidates(
     queryEmbedding,
     currentTopicPath,
     corpusVersions,
+    excludedSourceTypes,
+    excludedCorpusVersions,
     matchCount,
     densePool,
     keyPool,
@@ -233,6 +252,18 @@ export async function retrieveHybridCandidates(
   );
 
   const normalizedRows = normalizeHybridRows(rows);
-  const filteredRows = await shadowOlderAssetFamilyRows(normalizedRows, { supabase, corpusVersions });
+  const shadowedRows = await shadowOlderAssetFamilyRows(normalizedRows, { supabase, corpusVersions });
+  const normalizedExcludedSourceTypes = normalizeStringList(excludedSourceTypes);
+  const normalizedExcludedCorpusVersions = normalizeStringList(excludedCorpusVersions);
+  const filteredRows =
+    normalizedExcludedSourceTypes.length > 0 || normalizedExcludedCorpusVersions.length > 0
+      ? shadowedRows.filter(
+        (row) =>
+          !shouldExcludeRow(row, {
+            excludedSourceTypes: normalizedExcludedSourceTypes,
+            excludedCorpusVersions: normalizedExcludedCorpusVersions,
+          }),
+      )
+      : shadowedRows;
   return filteredRows.slice(0, rawMatchCount);
 }

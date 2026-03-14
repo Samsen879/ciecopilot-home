@@ -12,6 +12,7 @@ import {
   renderS2AugmentationEvalReport,
   summarizeS2AugmentationEval,
 } from './lib/s2_augmentation_eval.js';
+import { validateBenchmarkScope } from './lib/benchmark-scope.js';
 
 dotenv.config();
 
@@ -481,6 +482,11 @@ async function main() {
   }
 
   const baseConfig = getRagConfig();
+  const scopeAudit = validateBenchmarkScope({
+    manifest,
+    selectedCases,
+    corpusVersions: baseConfig?.retrieval?.corpusVersions || [],
+  });
   const modeConfigs = createModeConfigs(baseConfig, argv);
   const roundBundle = createAbortBundle({
     timeoutMs: roundTimeoutMs,
@@ -528,6 +534,7 @@ async function main() {
     s2_readiness_profile_path: modeConfigs.s2_enabled?.s2?.readinessProfilePath || null,
     s2_readiness_max_topic_depth_by_subject: modeConfigs.s2_enabled?.s2?.readinessMaxTopicDepthBySubject || {},
     s2_readiness_subject_allowlist: modeConfigs.s2_enabled?.s2?.readinessSubjectAllowlist || [],
+    active_corpus_versions: baseConfig?.retrieval?.corpusVersions || [],
     round_aborted: roundAborted,
   };
 
@@ -539,6 +546,7 @@ async function main() {
     runConfig,
     corpusCoverageSummary,
   });
+  summary.subject_scope_audit = scopeAudit;
   if (roundAborted) summary.status = 'warn';
 
   fs.mkdirSync(path.dirname(outSummary), { recursive: true });

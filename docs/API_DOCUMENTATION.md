@@ -18,13 +18,15 @@ Authorization: Bearer <access_token>
 
 ## 错误响应格式
 
-所有错误响应都遵循以下格式：
+当前 API 网关与 auth backend 使用带机器可读 `code` 的 envelope。auth 请求会额外携带 `request_id`。
 
 ```json
 {
   "success": false,
-  "message": "错误描述",
-  "errors": ["详细错误信息"]
+  "code": "AUTH_INVALID_CREDENTIALS",
+  "error": "Invalid credentials",
+  "message": "邮箱或密码错误",
+  "request_id": "req_123"
 }
 ```
 
@@ -43,18 +45,22 @@ Authorization: Bearer <access_token>
 
 用户认证、注册、登录相关接口
 
+### Active Auth Route Note
+
+当前运行时 auth 使用单一路由 `/api/auth` 加 `action` 分发，不再使用旧的 path-split 形式 `/api/auth/login`。
+
 ### 1. 用户注册
 
-**POST** `/api/auth/register`
+**POST** `/api/auth?action=register`
 
 **请求体:**
 
 ```json
 {
   "email": "user@example.com",
-  "password": "SecurePassword123!",
-  "username": "username",
-  "full_name": "Full Name"
+  "password": "abc12345",
+  "name": "Full Name",
+  "role": "student"
 }
 ```
 
@@ -64,13 +70,14 @@ Authorization: Bearer <access_token>
 ```json
 {
   "success": true,
-  "message": "用户注册成功",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "code": "AUTH_REGISTERED",
+  "message": "注册成功，请检查邮箱验证链接",
   "user": {
     "id": "uuid",
     "email": "user@example.com",
-    "username": "username",
-    "role": "student"
+    "name": "Full Name",
+    "role": "student",
+    "status": "pending_verification"
   }
 }
 ```
@@ -79,7 +86,7 @@ Authorization: Bearer <access_token>
 
 ### 2. 用户登录
 
-**POST** `/api/auth/login`
+**POST** `/api/auth?action=login`
 
 **请求体:**
 
@@ -95,13 +102,19 @@ Authorization: Bearer <access_token>
 ```json
 {
   "success": true,
+  "code": "AUTH_LOGIN_SUCCESS",
   "message": "登录成功",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": "uuid",
     "email": "user@example.com",
-    "username": "username",
-    "role": "student"
+    "role": "student",
+    "status": "active"
+  },
+  "tokens": {
+    "accessToken": "jwt-access-token",
+    "refreshToken": "jwt-refresh-token",
+    "expiresIn": "24h",
+    "refreshExpiresIn": "7d"
   }
 }
 ```
@@ -110,16 +123,21 @@ Authorization: Bearer <access_token>
 
 ### 3. 刷新访问令牌
 
-**POST** `/api/auth/refresh`
+**POST** `/api/auth?action=refresh`
 
-**请求头:**
-- `Authorization`: Bearer <refresh_token>
+**请求体:**
+
+```json
+{
+  "refreshToken": "jwt-refresh-token"
+}
+```
 
 ---
 
 ### 4. 验证访问令牌
 
-**GET** `/api/auth/verify`
+**GET** `/api/auth?action=verify`
 
 **请求头:**
 - `Authorization`: Bearer <access_token>
@@ -128,7 +146,7 @@ Authorization: Bearer <access_token>
 
 ### 5. 请求密码重置
 
-**POST** `/api/auth/forgot-password`
+**POST** `/api/auth?action=request-reset`
 
 **请求体:**
 
@@ -142,16 +160,18 @@ Authorization: Bearer <access_token>
 
 ### 6. 重置密码
 
-**POST** `/api/auth/reset-password`
+**POST** `/api/auth?action=reset-password`
 
 **请求体:**
 
 ```json
 {
   "token": "reset_token",
-  "password": "NewSecurePassword123!"
+  "newPassword": "abc12345"
 }
 ```
+
+更多本地运行说明见 [docs/setup/README_AUTH.md](/C:/Users/Samsen/cie-copilot/.worktrees/codex-auth-prod/docs/setup/README_AUTH.md)。
 
 ---
 

@@ -9,9 +9,11 @@ export const LEGACY_EXCLUDED_ENDPOINTS = [
 const RAG_AI_RATE_LIMIT_POLICY_ID = 'rag_ai_default_v1';
 const COMMUNITY_WRITE_RATE_LIMIT_POLICY_ID = 'community_write_v1';
 const ERROR_BOOK_WRITE_RATE_LIMIT_POLICY_ID = 'error_book_write_v1';
+const AUTH_PUBLIC_RATE_LIMIT_POLICY_ID = 'auth_public_v1';
 const RAG_AI_RATE_LIMIT = getRateLimitPolicy(RAG_AI_RATE_LIMIT_POLICY_ID);
 const COMMUNITY_WRITE_RATE_LIMIT = getRateLimitPolicy(COMMUNITY_WRITE_RATE_LIMIT_POLICY_ID);
 const ERROR_BOOK_WRITE_RATE_LIMIT = getRateLimitPolicy(ERROR_BOOK_WRITE_RATE_LIMIT_POLICY_ID);
+const AUTH_PUBLIC_RATE_LIMIT = getRateLimitPolicy(AUTH_PUBLIC_RATE_LIMIT_POLICY_ID);
 
 const ROUTES = [
   {
@@ -189,6 +191,8 @@ const ROUTES = [
     authMode: 'public',
     methods: ['*'],
     moduleOwnsMethodRouting: true,
+    rateLimitPolicyId: AUTH_PUBLIC_RATE_LIMIT_POLICY_ID,
+    rateLimit: AUTH_PUBLIC_RATE_LIMIT,
   },
 ];
 

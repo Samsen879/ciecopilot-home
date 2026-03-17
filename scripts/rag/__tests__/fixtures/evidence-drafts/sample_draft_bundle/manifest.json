@@ -1,0 +1,51 @@
+{
+  "manifest_role": "production_evidence_bundle",
+  "evidence_layer": "production_evidence",
+  "policy_mode": "production_evidence",
+  "schema_version": "v1",
+  "bundle_id": "phase_c_evidence_draft_20260317",
+  "generated_at": "2026-03-17T12:30:00.000Z",
+  "bundle_status": "draft_review_only",
+  "subject_scope": "mixed_subject",
+  "subject_codes": [
+    "9231",
+    "9702"
+  ],
+  "language": "en",
+  "declared_source_types": [
+    "evidence_authored",
+    "evidence_transformed",
+    "evidence_reserved"
+  ],
+  "enabled_source_types": [
+    "evidence_authored",
+    "evidence_transformed"
+  ],
+  "allowed_source_types": [
+    "evidence_authored",
+    "evidence_transformed"
+  ],
+  "reserved_source_types": [
+    "evidence_reserved"
+  ],
+  "restricted_official_posture": "internal_context_only",
+  "items_file": "items.json",
+  "bundle_item_count": 3,
+  "review": {
+    "status": "draft",
+    "owner": "phase_c_gap_draft_pipeline"
+  },
+  "draft_context": {
+    "source_brief_schema_version": "evidence_gap_brief_bundle_v1",
+    "generation_mode": "llm",
+    "generation_models": [
+      "qwen3.5-plus"
+    ],
+    "promotion_blocked": true,
+    "promotion_blockers": [
+      "human_review_required",
+      "not_whitelisted",
+      "not_rollout_enabled"
+    ]
+  }
+}

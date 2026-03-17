@@ -1,0 +1,50 @@
+{
+  "schema_version": "evidence_draft_review_v1",
+  "review_id": "review-20260317-fixture",
+  "generated_at": "2026-03-17T14:30:00.000Z",
+  "reviewed_at": "2026-03-17T14:35:00.000Z",
+  "source_bundle_id": "phase_c_evidence_draft_20260317",
+  "source_bundle_path": "scripts/rag/__tests__/fixtures/evidence-drafts/sample_draft_bundle",
+  "source_generation_mode": "llm",
+  "review_status": "completed",
+  "reviewer": "fixture-reviewer",
+  "review_notes": "Deterministic fixture review for promotion-candidate verification.",
+  "item_reviews": [
+    {
+      "evidence_id": "phase_c_evidence_draft_20260317-9231-9231-2-001",
+      "brief_id": "evidence-gap-9231-9231-2",
+      "subject_code": "9231",
+      "legacy_target_topic_path": "9231.2",
+      "canonical_target_topic_path": "9231.fp2",
+      "decision": "approve",
+      "decision_reason": "Scoped to the syllabus anchor and narrow enough for production evidence.",
+      "approved_patch": {
+        "title": "Reviewed Hyperbolic Functions Anchor",
+        "statement": "Reviewed evidence should define hyperbolic functions from exponentials, connect inverse forms, and stay inside the FP2 hyperbolic functions syllabus boundary.",
+        "topic_paths": [
+          "9231.2"
+        ]
+      }
+    },
+    {
+      "evidence_id": "phase_c_evidence_draft_20260317-9231-9231-2-002",
+      "brief_id": "evidence-gap-9231-9231-2",
+      "subject_code": "9231",
+      "legacy_target_topic_path": "9231.2",
+      "canonical_target_topic_path": "9231.fp2",
+      "decision": "reject",
+      "decision_reason": "Too broad for the first promoted patch.",
+      "approved_patch": {}
+    },
+    {
+      "evidence_id": "phase_c_evidence_draft_20260317-9702-9702-5-001",
+      "brief_id": "evidence-gap-9702-9702-5",
+      "subject_code": "9702",
+      "legacy_target_topic_path": "9702.5",
+      "canonical_target_topic_path": "9702.as.work_energy_and_power",
+      "decision": "revise",
+      "decision_reason": "Needs a tighter statement before promotion.",
+      "approved_patch": {}
+    }
+  ]
+}

@@ -27,6 +27,7 @@
 - `rag_phase_b_first_online_rollout_9702.md` - focused first-online verification report for the `9702` rollout.
 - `rag_phase_b_first_online_rollout_9231.md` - focused first-online verification report for the `9231` rollout.
 - `rag_phase_b_production_evidence_rollout_status.md` - merged rollout health and rollback status surface.
+- `rag_evidence_draft_promotion_candidate.md` - latest backend-only reviewed draft promotion candidate summary before any ingest or rollout action.
 
 ## Coverage And Inventory
 

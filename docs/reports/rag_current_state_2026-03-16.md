@@ -79,6 +79,18 @@ This confirms that the current usable RAG data lives in `public.chunks`, not in 
 
 The `runs/backend/` gap for `S2` was partially recoverable and is now much clearer.
 
+### 2.5 Reviewed draft promotion candidate surface
+
+A backend-only reviewed draft promotion candidate surface now exists for evidence-gap follow-up work.
+
+The current scope is intentionally narrow:
+
+- scaffold a machine-readable review decision file from a draft bundle
+- compile approved items into a `production_evidence_bundle`
+- keep the compiled candidate at `bundle_status = governance_seed_only`
+
+This does not change ingest status, whitelist state, rollout gates, `S2 advisory_only`, or the default `S1` route.
+
 Fresh standard-path artifacts regenerated in this pass:
 
 - `runs/backend/rag_s2_readiness_profile.json`

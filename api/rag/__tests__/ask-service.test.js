@@ -193,6 +193,40 @@ function createFetchStub() {
   return fn;
 }
 
+function createDelayedFetchStub({ embeddingDelayMs = 5, chatDelayMs = 7 } = {}) {
+  const calls = [];
+  const fn = async (url) => {
+    calls.push(url);
+    if (String(url).includes('/embeddings')) {
+      await new Promise((resolve) => setTimeout(resolve, embeddingDelayMs));
+      return {
+        ok: true,
+        async json() {
+          return {
+            data: [{ embedding: [0.1, 0.2, 0.3] }],
+            usage: { total_tokens: 10 },
+          };
+        },
+      };
+    }
+    if (String(url).includes('/chat/completions')) {
+      await new Promise((resolve) => setTimeout(resolve, chatDelayMs));
+      return {
+        ok: true,
+        async json() {
+          return {
+            choices: [{ message: { content: 'Pure Mathematics 1' } }],
+            usage: { prompt_tokens: 20, completion_tokens: 10 },
+          };
+        },
+      };
+    }
+    throw new Error(`Unexpected url: ${url}`);
+  };
+  fn.calls = calls;
+  return fn;
+}
+
 function createConfig() {
   return {
     retrievalVersion: 'test',
@@ -375,12 +409,46 @@ describe('ask service', () => {
     expect(result.metrics.retrieval_audit.query_mode).toBe('short_circuit');
     expect(result.metrics.retrieval_audit.short_circuit_label).toBe('concept_lookup');
     expect(result.metrics.retrieval_audit.rpc_call_count).toBe(0);
+    expect(result.metrics.retrieval_latency_ms).toBe(result.metrics.latency_ms);
+    expect(result.metrics.llm_latency_ms).toBe(0);
     expectStableRetrievalAuditShape(result.metrics.retrieval_audit);
     expect(result.metrics.route_audit.retrieval_route).toBe('s1_default');
     expect(result.metrics.route_audit.route_reason).toBe('short_circuit_query_intent');
     expectStableRouteAuditShape(result.metrics.route_audit);
     expect(result.metrics.evidence_traceability_rate).toBe(1);
+    expect(result.metrics.cost_audit.usage.prompt_tokens).toBe(0);
+    expect(result.metrics.cost_audit.usage.completion_tokens).toBe(0);
+    expect(result.metrics.cost_audit.usage.embedding_tokens).toBe(0);
     expect(fetchStub.calls).toHaveLength(0);
+  });
+
+  it('surfaces stage latencies and token usage for chat-enabled retrieval flows', async () => {
+    const fetchStub = createDelayedFetchStub();
+    const result = await executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-1',
+      },
+      {
+        req: { request_id: 'req-1-stage-latency', auth_user: null },
+        supabase: createSupabaseStub(),
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    );
+
+    expect(result.uncertain).toBe(false);
+    expect(result.metrics.retrieval_audit.chat_mode).toBe('upstream_ok');
+    expect(result.metrics.latency_ms).toBeGreaterThan(0);
+    expect(result.metrics.retrieval_latency_ms).toBeGreaterThan(0);
+    expect(result.metrics.llm_latency_ms).toBeGreaterThan(0);
+    expect(result.metrics.latency_ms).toBeGreaterThanOrEqual(
+      result.metrics.retrieval_latency_ms + result.metrics.llm_latency_ms,
+    );
+    expect(result.metrics.cost_audit.usage.prompt_tokens).toBe(20);
+    expect(result.metrics.cost_audit.usage.completion_tokens).toBe(10);
+    expect(result.metrics.cost_audit.usage.embedding_tokens).toBe(10);
   });
 
   it('returns node summary answer without calling embedding or chat', async () => {

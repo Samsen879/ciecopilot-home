@@ -545,6 +545,10 @@ function toNonNegativeNumber(value, fallback = 0) {
   return parsed;
 }
 
+function getElapsedMs(startedAt) {
+  return Math.max(0, Date.now() - startedAt);
+}
+
 function normalizeRetrievalAudit(rawAudit) {
   const input = rawAudit && typeof rawAudit === 'object' ? rawAudit : {};
   const merged = {
@@ -925,6 +929,7 @@ export async function executeAskAI(
         },
       },
     );
+    const totalLatencyMs = getElapsedMs(started);
 
     const response = {
       answer: policy.answer,
@@ -943,7 +948,9 @@ export async function executeAskAI(
           ...routeAudit,
           route_reason: 'short_circuit_query_intent',
         }),
-        latency_ms: Date.now() - started,
+        retrieval_latency_ms: totalLatencyMs,
+        llm_latency_ms: 0,
+        latency_ms: totalLatencyMs,
       },
       request_id: requestId,
     };
@@ -975,6 +982,7 @@ export async function executeAskAI(
     return response;
   }
 
+  const retrievalStartedAt = Date.now();
   const normalized = normalizeQuery(parsed.query);
   const retrievalQuery = normalized.keyword_query || normalized.normalized_query || parsed.query;
   const productionEvidenceRollout = resolveProductionEvidenceRetrievalRollout({
@@ -1234,65 +1242,72 @@ export async function executeAskAI(
     allowedTopicPaths = normalizeTopicLeakageAllowlist([boundary.current_topic_path]);
   }
 
+  const retrievalLatencyMs = getElapsedMs(retrievalStartedAt);
+  let llmLatencyMs = 0;
   let llmAnswer = '';
   if (!retrievalError && evidence.length > 0 && !leakage.topic_leakage_flag) {
-    if (/title|node title|节点标题/i.test(parsed.query)) {
-      llmAnswer = boundary.title || evidence[0]?.snippet || '';
-      retrievalAudit.chat_mode = 'short_circuit_title';
-    } else {
-      const chatEnabled = effectiveConfig.chat?.enabled === true;
-      const chatConfigured = Boolean(effectiveConfig.chat?.apiKey) && Boolean(effectiveConfig.chat?.baseUrl);
-      const chatFailOpen = effectiveConfig.chat?.failOpen !== false;
-      const useS2CompactTemplate =
-        routeAudit.retrieval_route === 's2_augmentation' &&
-        routeAudit.final_execution_route === 's2_augmentation';
-
-      if (!chatEnabled || !chatConfigured) {
-        llmAnswer = buildFallbackGroundedAnswer({
-          boundary,
-          evidence,
-          useS2CompactTemplate,
-        });
-        retrievalAudit.chat_mode = !chatEnabled ? 'disabled_fallback' : 'missing_key_fallback';
+    const llmStartedAt = Date.now();
+    try {
+      if (/title|node title|节点标题/i.test(parsed.query)) {
+        llmAnswer = boundary.title || evidence[0]?.snippet || '';
+        retrievalAudit.chat_mode = 'short_circuit_title';
       } else {
-        try {
-          const llm = await generateGroundedAnswer(
-            {
-              query: parsed.query,
-              evidence,
-              language: parsed.language,
-              chatConfig: effectiveConfig.chat,
-            },
-            { fetchImpl },
-          );
-          llmAnswer = llm.answer;
-          chatUsage = llm.usage;
-          retrievalAudit.chat_mode = 'upstream_ok';
-        } catch (error) {
-          const chatError = toRagError(error, {
-            status: 502,
-            code: 'RAG_CHAT_ERROR',
-            message: 'chat generation failed',
+        const chatEnabled = effectiveConfig.chat?.enabled === true;
+        const chatConfigured = Boolean(effectiveConfig.chat?.apiKey) && Boolean(effectiveConfig.chat?.baseUrl);
+        const chatFailOpen = effectiveConfig.chat?.failOpen !== false;
+        const useS2CompactTemplate =
+          routeAudit.retrieval_route === 's2_augmentation' &&
+          routeAudit.final_execution_route === 's2_augmentation';
+
+        if (!chatEnabled || !chatConfigured) {
+          llmAnswer = buildFallbackGroundedAnswer({
+            boundary,
+            evidence,
+            useS2CompactTemplate,
           });
-          if (chatFailOpen) {
-            llmAnswer = buildFallbackGroundedAnswer({
-              boundary,
-              evidence,
-              useS2CompactTemplate,
+          retrievalAudit.chat_mode = !chatEnabled ? 'disabled_fallback' : 'missing_key_fallback';
+        } else {
+          try {
+            const llm = await generateGroundedAnswer(
+              {
+                query: parsed.query,
+                evidence,
+                language: parsed.language,
+                chatConfig: effectiveConfig.chat,
+              },
+              { fetchImpl },
+            );
+            llmAnswer = llm.answer;
+            chatUsage = llm.usage;
+            retrievalAudit.chat_mode = 'upstream_ok';
+          } catch (error) {
+            const chatError = toRagError(error, {
+              status: 502,
+              code: 'RAG_CHAT_ERROR',
+              message: 'chat generation failed',
             });
-            retrievalAudit.chat_mode = 'upstream_error_fallback';
-            retrievalAudit.error_details = {
-              ...(retrievalAudit.error_details || {}),
-              chat_fallback_used: true,
-              chat_fallback_reason: chatError.code,
-            };
-          } else {
-            retrievalError = chatError;
-            retrievalAudit.chat_mode = 'upstream_error_blocking';
-            Object.assign(retrievalAudit, toRagErrorAudit(retrievalError, { stage: 'chat_generation' }));
+            if (chatFailOpen) {
+              llmAnswer = buildFallbackGroundedAnswer({
+                boundary,
+                evidence,
+                useS2CompactTemplate,
+              });
+              retrievalAudit.chat_mode = 'upstream_error_fallback';
+              retrievalAudit.error_details = {
+                ...(retrievalAudit.error_details || {}),
+                chat_fallback_used: true,
+                chat_fallback_reason: chatError.code,
+              };
+            } else {
+              retrievalError = chatError;
+              retrievalAudit.chat_mode = 'upstream_error_blocking';
+              Object.assign(retrievalAudit, toRagErrorAudit(retrievalError, { stage: 'chat_generation' }));
+            }
           }
         }
       }
+    } finally {
+      llmLatencyMs = getElapsedMs(llmStartedAt);
     }
   }
 
@@ -1324,6 +1339,7 @@ export async function executeAskAI(
       },
     },
   );
+  const totalLatencyMs = getElapsedMs(started);
 
   const response = {
     answer: policy.answer,
@@ -1339,7 +1355,9 @@ export async function executeAskAI(
       cost_audit: costAudit,
       retrieval_audit: normalizeRetrievalAudit(retrievalAudit),
       route_audit: routeAudit,
-      latency_ms: Date.now() - started,
+      retrieval_latency_ms: retrievalLatencyMs,
+      llm_latency_ms: llmLatencyMs,
+      latency_ms: totalLatencyMs,
     },
     request_id: requestId,
   };

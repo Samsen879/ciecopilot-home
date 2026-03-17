@@ -1,6 +1,7 @@
 import { errorResponse } from '../lib/http/respond.js';
 import { executeAskAI } from './lib/ask-service.js';
 import { toRagError } from './lib/errors.js';
+import { recordRagTelemetryFailure, recordRagTelemetrySuccess } from './lib/telemetry-recorder.js';
 
 function normalizeInput(body = {}) {
   return {
@@ -41,6 +42,13 @@ export default async function handler(req, res) {
     const started = Date.now();
     const input = normalizeInput(req.body || {});
     const response = await executeAskAI(input, { req });
+    await recordRagTelemetrySuccess({
+      req,
+      endpoint: '/api/rag/search',
+      method: req.method,
+      input,
+      response,
+    });
     const items = mapItemsFromEvidence(response.evidence);
 
     return res.status(200).json({
@@ -57,6 +65,15 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     const ragError = toRagError(error);
+    const input = normalizeInput(req.body || {});
+    await recordRagTelemetryFailure({
+      req,
+      endpoint: '/api/rag/search',
+      method: req.method,
+      input,
+      ragError,
+      partialResponse: null,
+    });
     return errorResponse(res, {
       status: ragError.status,
       code: ragError.code,

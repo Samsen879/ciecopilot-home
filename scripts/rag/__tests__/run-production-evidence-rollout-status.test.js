@@ -1,21 +1,17 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
-import { resolveCliPath } from '../run_production_evidence_rollout_status.js';
-
-const FIRST_ONLINE_SCRIPT_PATH = path.join(
-  process.cwd(),
-  'scripts',
-  'rag',
-  'run_production_evidence_first_online_rollout_verification.js',
-);
-const SCRIPT_PATH = path.join(
-  process.cwd(),
-  'scripts',
-  'rag',
-  'run_production_evidence_rollout_status.js',
-);
+import {
+  main as firstOnlineRolloutMain,
+} from '../run_production_evidence_first_online_rollout_verification.js';
+import {
+  main as rolloutGateMain,
+} from '../run_production_evidence_rollout_gate.js';
+import {
+  main as rolloutStatusMain,
+  resolveCliPath,
+} from '../run_production_evidence_rollout_status.js';
+import { invokeCliMain } from './helpers/cli-main-harness.js';
 
 function makeTempWorkspace() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'rag-rollout-status-cli-'));
@@ -29,18 +25,27 @@ function copyIntoWorkspace(workspaceRoot, relPath) {
   return targetPath;
 }
 
-function runCli(args, options = {}) {
-  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], {
-    cwd: options.cwd,
-    encoding: 'utf8',
-  });
+async function runCli(args, options = {}) {
+  return invokeCliMain(rolloutStatusMain, args, options);
 }
 
-function seedVerificationArtifact(workspaceRoot) {
-  return spawnSync(process.execPath, [FIRST_ONLINE_SCRIPT_PATH], {
-    cwd: workspaceRoot,
-    encoding: 'utf8',
-  });
+async function seedVerificationArtifact(workspaceRoot) {
+  return invokeCliMain(firstOnlineRolloutMain, [], { cwd: workspaceRoot });
+}
+
+async function seedRolloutGateArtifact(workspaceRoot) {
+  return invokeCliMain(
+    rolloutGateMain,
+    [
+      '--rollout-gate',
+      'data/evidence/production/rollout_gate_v1.json',
+      '--whitelist',
+      'data/evidence/production/whitelist_v1.json',
+      '--out-json',
+      'runs/backend/rag_phase_b_production_evidence_rollout_gate.json',
+    ],
+    { cwd: workspaceRoot },
+  );
 }
 
 describe('run_production_evidence_rollout_status cli', () => {
@@ -54,16 +59,16 @@ describe('run_production_evidence_rollout_status cli', () => {
     expect(resolveCliPath(filePath)).toBe(path.join(process.cwd(), filePath));
   });
 
-  test('writes the default output paths when no explicit outputs are provided', () => {
+  test('writes the default output paths when no explicit outputs are provided', async () => {
     const workspaceRoot = makeTempWorkspace();
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json');
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/whitelist_v1.json');
-    copyIntoWorkspace(workspaceRoot, 'runs/backend/rag_phase_b_production_evidence_rollout_gate.json');
-    expect(seedVerificationArtifact(workspaceRoot).status).toBe(0);
+    expect((await seedRolloutGateArtifact(workspaceRoot)).exitCode).toBe(0);
+    expect((await seedVerificationArtifact(workspaceRoot)).exitCode).toBe(0);
 
-    const result = runCli([], { cwd: workspaceRoot });
+    const result = await runCli([], { cwd: workspaceRoot });
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(
       fs.existsSync(path.join(workspaceRoot, 'runs/backend/rag_phase_b_production_evidence_rollout_status.json')),
     ).toBe(true);
@@ -72,28 +77,28 @@ describe('run_production_evidence_rollout_status cli', () => {
     ).toBe(true);
   });
 
-  test('writes explicit output paths when requested', () => {
+  test('writes explicit output paths when requested', async () => {
     const workspaceRoot = makeTempWorkspace();
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json');
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/whitelist_v1.json');
-    copyIntoWorkspace(workspaceRoot, 'runs/backend/rag_phase_b_production_evidence_rollout_gate.json');
-    expect(seedVerificationArtifact(workspaceRoot).status).toBe(0);
+    expect((await seedRolloutGateArtifact(workspaceRoot)).exitCode).toBe(0);
+    expect((await seedVerificationArtifact(workspaceRoot)).exitCode).toBe(0);
 
     const outJson = 'tmp/rollout-status.json';
     const outMd = 'tmp/rollout-status.md';
-    const result = runCli(['--out-json', outJson, '--out-md', outMd], { cwd: workspaceRoot });
+    const result = await runCli(['--out-json', outJson, '--out-md', outMd], { cwd: workspaceRoot });
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(fs.existsSync(path.join(workspaceRoot, outJson))).toBe(true);
     expect(fs.existsSync(path.join(workspaceRoot, outMd))).toBe(true);
   });
 
-  test('does not infer entry mapping metadata for non-default verification artifact paths', () => {
+  test('does not infer entry mapping metadata for non-default verification artifact paths', async () => {
     const workspaceRoot = makeTempWorkspace();
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json');
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/whitelist_v1.json');
-    copyIntoWorkspace(workspaceRoot, 'runs/backend/rag_phase_b_production_evidence_rollout_gate.json');
-    expect(seedVerificationArtifact(workspaceRoot).status).toBe(0);
+    expect((await seedRolloutGateArtifact(workspaceRoot)).exitCode).toBe(0);
+    expect((await seedVerificationArtifact(workspaceRoot)).exitCode).toBe(0);
 
     const customArtifactRelPath = 'runs/backend/custom_rollout_9702.json';
     fs.copyFileSync(
@@ -101,7 +106,7 @@ describe('run_production_evidence_rollout_status cli', () => {
       path.join(workspaceRoot, customArtifactRelPath),
     );
 
-    const result = runCli(['--verification-artifact', customArtifactRelPath], { cwd: workspaceRoot });
+    const result = await runCli(['--verification-artifact', customArtifactRelPath], { cwd: workspaceRoot });
     const payload = JSON.parse(
       fs.readFileSync(
         path.join(workspaceRoot, 'runs/backend/rag_phase_b_production_evidence_rollout_status.json'),
@@ -109,7 +114,7 @@ describe('run_production_evidence_rollout_status cli', () => {
       ),
     );
 
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(payload.rollback_required).toBe(true);
     expect(payload.verification_mapping.mapped_online_entries).toBe(0);
     expect(payload.rollback_reasons).toEqual(
@@ -119,15 +124,20 @@ describe('run_production_evidence_rollout_status cli', () => {
     );
   });
 
-  test('accepts explicit verification mappings for custom artifact paths', () => {
+  test('accepts explicit verification mappings for custom artifact paths', async () => {
     const workspaceRoot = makeTempWorkspace();
     const rolloutGatePath = copyIntoWorkspace(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json');
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/whitelist_v1.json');
     const gateArtifactPath = copyIntoWorkspace(
       workspaceRoot,
+      'data/evidence/production/rollout_gate_v1.json',
+    );
+    const generatedGateArtifactPath = path.join(
+      workspaceRoot,
       'runs/backend/rag_phase_b_production_evidence_rollout_gate.json',
     );
-    expect(seedVerificationArtifact(workspaceRoot).status).toBe(0);
+    expect((await seedRolloutGateArtifact(workspaceRoot)).exitCode).toBe(0);
+    expect((await seedVerificationArtifact(workspaceRoot)).exitCode).toBe(0);
 
     const custom9702RelPath = 'runs/backend/custom_rollout_9702.json';
     const custom9231RelPath = 'runs/backend/custom_rollout_9231.json';
@@ -152,16 +162,16 @@ describe('run_production_evidence_rollout_status cli', () => {
     });
     fs.writeFileSync(rolloutGatePath, `${JSON.stringify(rolloutGate, null, 2)}\n`, 'utf8');
 
-    const gateArtifact = JSON.parse(fs.readFileSync(gateArtifactPath, 'utf8'));
+    const gateArtifact = JSON.parse(fs.readFileSync(generatedGateArtifactPath, 'utf8'));
     gateArtifact.summary.online_bundle_ids = ['phase_b_pilot_ready_v1', 'phase_b_extra_ready_v2'];
     gateArtifact.summary.online_subject_codes = ['9702', '9231'];
     gateArtifact.summary.online_corpus_versions = [
       'rag_production_evidence_pilot_20260313',
       'rag_production_evidence_pilot_20260314',
     ];
-    fs.writeFileSync(gateArtifactPath, `${JSON.stringify(gateArtifact, null, 2)}\n`, 'utf8');
+    fs.writeFileSync(generatedGateArtifactPath, `${JSON.stringify(gateArtifact, null, 2)}\n`, 'utf8');
 
-    const result = runCli(
+    const result = await runCli(
       [
         '--verification-mapping',
         `phase_b_pilot_ready_v1|9702|${custom9702RelPath}`,
@@ -177,7 +187,7 @@ describe('run_production_evidence_rollout_status cli', () => {
       ),
     );
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(payload.rollback_required).toBe(false);
     expect(payload.verification_mapping.mapped_online_entries).toBe(2);
     expect(payload.verification_mapping.unmapped_online_entries).toHaveLength(0);
@@ -186,15 +196,20 @@ describe('run_production_evidence_rollout_status cli', () => {
     );
   });
 
-  test('returns a nonzero exit when the rollout status is unhealthy', () => {
+  test('returns a nonzero exit when the rollout status is unhealthy', async () => {
     const workspaceRoot = makeTempWorkspace();
     const rolloutGatePath = copyIntoWorkspace(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json');
     copyIntoWorkspace(workspaceRoot, 'data/evidence/production/whitelist_v1.json');
     const gateArtifactPath = copyIntoWorkspace(
       workspaceRoot,
+      'data/evidence/production/rollout_gate_v1.json',
+    );
+    const generatedGateArtifactPath = path.join(
+      workspaceRoot,
       'runs/backend/rag_phase_b_production_evidence_rollout_gate.json',
     );
-    expect(seedVerificationArtifact(workspaceRoot).status).toBe(0);
+    expect((await seedRolloutGateArtifact(workspaceRoot)).exitCode).toBe(0);
+    expect((await seedVerificationArtifact(workspaceRoot)).exitCode).toBe(0);
 
     const rolloutGate = JSON.parse(fs.readFileSync(rolloutGatePath, 'utf8'));
     rolloutGate.entries.push({
@@ -208,16 +223,16 @@ describe('run_production_evidence_rollout_status cli', () => {
     });
     fs.writeFileSync(rolloutGatePath, `${JSON.stringify(rolloutGate, null, 2)}\n`, 'utf8');
 
-    const gateArtifact = JSON.parse(fs.readFileSync(gateArtifactPath, 'utf8'));
+    const gateArtifact = JSON.parse(fs.readFileSync(generatedGateArtifactPath, 'utf8'));
     gateArtifact.summary.online_bundle_ids = ['phase_b_pilot_ready_v1', 'phase_b_extra_ready_v2'];
     gateArtifact.summary.online_subject_codes = ['9702', '9231'];
     gateArtifact.summary.online_corpus_versions = [
       'rag_production_evidence_pilot_20260313',
       'rag_production_evidence_pilot_20260314',
     ];
-    fs.writeFileSync(gateArtifactPath, `${JSON.stringify(gateArtifact, null, 2)}\n`, 'utf8');
+    fs.writeFileSync(generatedGateArtifactPath, `${JSON.stringify(gateArtifact, null, 2)}\n`, 'utf8');
 
-    const result = runCli([], { cwd: workspaceRoot });
+    const result = await runCli([], { cwd: workspaceRoot });
     const payload = JSON.parse(
       fs.readFileSync(
         path.join(workspaceRoot, 'runs/backend/rag_phase_b_production_evidence_rollout_status.json'),
@@ -225,7 +240,7 @@ describe('run_production_evidence_rollout_status cli', () => {
       ),
     );
 
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(payload.rollback_required).toBe(true);
     expect(payload.recommended_action).toBe('rollback_to_offline');
   });

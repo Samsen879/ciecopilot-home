@@ -8,8 +8,11 @@ import {
   validateProductionEvidenceRolloutGate,
 } from './lib/production-evidence-rollout-gate.js';
 
-const ROOT = process.cwd();
 const __filename = fileURLToPath(import.meta.url);
+
+function getRoot() {
+  return process.cwd();
+}
 
 function parseCliArgs(args) {
   const out = {};
@@ -38,12 +41,12 @@ function readJson(filePath) {
 }
 
 function toRel(filePath) {
-  return path.relative(ROOT, filePath).replace(/\\/g, '/');
+  return path.relative(getRoot(), filePath).replace(/\\/g, '/');
 }
 
 export function resolveCliPath(inputPath) {
   if (!inputPath) return null;
-  return path.isAbsolute(inputPath) ? inputPath : path.join(ROOT, inputPath);
+  return path.isAbsolute(inputPath) ? inputPath : path.join(getRoot(), inputPath);
 }
 
 export function main(argv = process.argv.slice(2)) {

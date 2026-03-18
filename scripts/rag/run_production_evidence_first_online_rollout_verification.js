@@ -8,12 +8,15 @@ import {
   renderProductionEvidenceFirstOnlineRolloutVerificationReport,
 } from './lib/production-evidence-first-online-rollout-verification.js';
 
-const ROOT = process.cwd();
 const __filename = fileURLToPath(import.meta.url);
 const DEFAULT_ROLLOUT_GATE = 'data/evidence/production/rollout_gate_v1.json';
 const DEFAULT_WHITELIST = 'data/evidence/production/whitelist_v1.json';
 const DEFAULT_OUT_JSON = 'runs/backend/rag_phase_b_first_online_rollout_9702.json';
 const DEFAULT_OUT_MD = 'docs/reports/rag_phase_b_first_online_rollout_9702.md';
+
+function getRoot() {
+  return process.cwd();
+}
 
 function parseCliArgs(args) {
   const out = {};
@@ -42,12 +45,12 @@ function readJson(filePath) {
 }
 
 function toRel(filePath) {
-  return path.relative(ROOT, filePath).replace(/\\/g, '/');
+  return path.relative(getRoot(), filePath).replace(/\\/g, '/');
 }
 
 export function resolveCliPath(inputPath) {
   if (!inputPath) return null;
-  return path.isAbsolute(inputPath) ? inputPath : path.join(ROOT, inputPath);
+  return path.isAbsolute(inputPath) ? inputPath : path.join(getRoot(), inputPath);
 }
 
 export async function main(argv = process.argv.slice(2)) {

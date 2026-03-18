@@ -126,13 +126,32 @@ export function loadPromotionCandidateBundle({
   rootDir = process.cwd(),
   candidateDir = null,
   manifestPath = null,
+  itemsPath = null,
 } = {}) {
   const resolvedManifestPath =
     normalizeString(manifestPath) || (normalizeString(candidateDir) ? path.join(candidateDir, 'manifest.json') : null);
-  const bundle = loadProductionEvidenceBundle({
-    root: rootDir,
-    manifestPath: resolvedManifestPath,
-  });
+  const normalizedItemsPath = normalizeString(itemsPath);
+  const bundle = normalizedItemsPath
+    ? (() => {
+        const manifestFilePath = path.resolve(rootDir, resolvedManifestPath || '');
+        const itemsFilePath = path.resolve(rootDir, normalizedItemsPath);
+        if (!resolvedManifestPath || !fs.existsSync(manifestFilePath)) {
+          throw new Error(`production evidence manifest not found: ${resolvedManifestPath || 'missing'}`);
+        }
+        if (!fs.existsSync(itemsFilePath)) {
+          throw new Error(`production evidence items file not found: ${normalizedItemsPath}`);
+        }
+        return {
+          manifest: readJson(manifestFilePath),
+          items: readJson(itemsFilePath),
+          manifestPath: toRel(rootDir, manifestFilePath),
+          itemsPath: toRel(rootDir, itemsFilePath),
+        };
+      })()
+    : loadProductionEvidenceBundle({
+        root: rootDir,
+        manifestPath: resolvedManifestPath,
+      });
 
   if (normalizeString(bundle.manifest?.bundle_status) !== 'governance_seed_only') {
     throw new Error('promotion candidate manifest bundle_status must be governance_seed_only');
@@ -325,6 +344,7 @@ export function executeProductionEvidencePromotionBridge({
   mode = 'apply',
   candidateManifestPath = null,
   candidateDir = null,
+  candidateItemsPath = null,
   targetBundleId,
   targetManifestPath = null,
   approvedCorpusVersions,
@@ -349,6 +369,7 @@ export function executeProductionEvidencePromotionBridge({
     rootDir,
     candidateDir,
     manifestPath: candidateManifestPath,
+    itemsPath: candidateItemsPath,
   });
 
   const normalizedProposalDir = normalizePathToken(proposalDir);
@@ -389,12 +410,20 @@ export function executeProductionEvidencePromotionBridge({
     receipt: false,
     proposal: false,
   };
+  const pathSummary = {
+    targetManifestPath: normalizedTargetManifestPath,
+    targetItemsPath: normalizePathToken(path.posix.join(path.posix.dirname(normalizedTargetManifestPath), 'items.json')),
+    whitelistPath: normalizedWhitelistPath,
+    receiptJsonPath: normalizePathToken(previewReceiptJsonPath),
+    receiptMdPath: normalizePathToken(previewReceiptMdPath),
+  };
 
   if (resolvedMode === 'dry-run') {
     return {
       ...preview,
       mode: resolvedMode,
       writes,
+      paths: pathSummary,
     };
   }
 
@@ -463,12 +492,6 @@ export function executeProductionEvidencePromotionBridge({
     ...preview,
     mode: resolvedMode,
     writes,
-    paths: {
-      targetManifestPath: normalizedTargetManifestPath,
-      targetItemsPath: normalizePathToken(path.posix.join(path.posix.dirname(normalizedTargetManifestPath), 'items.json')),
-      whitelistPath: normalizedWhitelistPath,
-      receiptJsonPath: normalizePathToken(previewReceiptJsonPath),
-      receiptMdPath: normalizePathToken(previewReceiptMdPath),
-    },
+    paths: pathSummary,
   };
 }

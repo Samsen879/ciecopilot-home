@@ -29,9 +29,52 @@ function pushError(errors, message) {
   errors.push(message);
 }
 
-export function loadEvidenceDraftBundle(bundleDir) {
-  const manifestPath = path.join(bundleDir, 'manifest.json');
-  const reviewPath = path.join(bundleDir, 'review.md');
+function resolveDraftBundlePaths(input) {
+  if (typeof input === 'string') {
+    return resolveDraftBundlePaths({ bundleDir: input });
+  }
+
+  const source = normalizeObject(input);
+  const bundleDir = normalizeString(source.bundleDir || source.bundle_dir);
+  const manifestPathInput = normalizeString(source.manifestPath || source.manifest_path);
+  const itemsPathInput = normalizeString(source.itemsPath || source.items_path);
+  const reviewPathInput = normalizeString(source.reviewPath || source.review_path);
+  const usesBundleDir = Boolean(bundleDir);
+  const usesExplicitPaths = Boolean(manifestPathInput || itemsPathInput || reviewPathInput);
+
+  if (!usesBundleDir && !usesExplicitPaths) {
+    throw new Error('bundle input is required');
+  }
+  if (usesBundleDir && usesExplicitPaths) {
+    throw new Error('bundle input must use either --bundle-dir or explicit --manifest/--items-json paths');
+  }
+
+  if (usesBundleDir) {
+    const manifestPath = path.join(bundleDir, 'manifest.json');
+    const reviewPath = path.join(bundleDir, 'review.md');
+
+    return {
+      bundleDir,
+      manifestPath,
+      itemsPath: null,
+      reviewPath: fs.existsSync(reviewPath) ? reviewPath : null,
+    };
+  }
+
+  if (!manifestPathInput || !itemsPathInput) {
+    throw new Error('explicit bundle input requires both manifest and items json paths');
+  }
+
+  return {
+    bundleDir: path.dirname(manifestPathInput),
+    manifestPath: manifestPathInput,
+    itemsPath: itemsPathInput,
+    reviewPath: reviewPathInput || null,
+  };
+}
+
+export function loadEvidenceDraftBundle(input) {
+  const { bundleDir, manifestPath, itemsPath: explicitItemsPath, reviewPath: explicitReviewPath } = resolveDraftBundlePaths(input);
 
   if (!fs.existsSync(manifestPath)) {
     throw new Error(`draft manifest not found: ${manifestPath}`);
@@ -39,20 +82,29 @@ export function loadEvidenceDraftBundle(bundleDir) {
 
   const manifest = readJson(manifestPath);
   const itemsFile = normalizeString(manifest.items_file) || 'items.json';
-  const itemsPath = path.join(bundleDir, itemsFile);
+  const itemsPath = explicitItemsPath || path.join(bundleDir, itemsFile);
+  const fallbackReviewPath = path.join(bundleDir, 'review.md');
+  const reviewPath = explicitReviewPath
+    ? explicitReviewPath
+    : fs.existsSync(fallbackReviewPath)
+      ? fallbackReviewPath
+      : null;
 
   if (!fs.existsSync(itemsPath)) {
     throw new Error(`draft items not found: ${itemsPath}`);
+  }
+  if (explicitReviewPath && !fs.existsSync(explicitReviewPath)) {
+    throw new Error(`draft review markdown not found: ${explicitReviewPath}`);
   }
 
   return {
     bundle_dir: bundleDir,
     manifest_path: manifestPath,
     items_path: itemsPath,
-    review_path: fs.existsSync(reviewPath) ? reviewPath : null,
+    review_path: reviewPath,
     manifest,
     items: readJson(itemsPath),
-    review_markdown: fs.existsSync(reviewPath) ? fs.readFileSync(reviewPath, 'utf8') : '',
+    review_markdown: reviewPath ? fs.readFileSync(reviewPath, 'utf8') : '',
   };
 }
 
@@ -209,13 +261,21 @@ export function renderEvidenceDraftReviewReport({ bundle = null, review = null }
 
 export function writeEvidenceDraftReviewScaffoldOutputs({
   bundleDir,
+  manifestPath = null,
+  itemsPath = null,
+  reviewPath = null,
   outJson,
   outMd = null,
   reviewer = '',
   reviewId = null,
   generatedAt = new Date().toISOString(),
 } = {}) {
-  const bundle = loadEvidenceDraftBundle(bundleDir);
+  const bundle = loadEvidenceDraftBundle({
+    bundleDir,
+    manifestPath,
+    itemsPath,
+    reviewPath,
+  });
   const review = buildEvidenceDraftReviewTemplate({
     bundle,
     reviewId,

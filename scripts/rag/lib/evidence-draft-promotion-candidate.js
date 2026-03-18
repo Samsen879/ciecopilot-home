@@ -198,6 +198,9 @@ export function renderEvidenceDraftPromotionCandidateReport(result = {}) {
 
 export function writeEvidenceDraftPromotionCandidateOutputs({
   bundleDir,
+  manifestPath: draftManifestPath = null,
+  itemsPath: draftItemsPath = null,
+  reviewPath: draftReviewPath = null,
   decisionJsonPath,
   candidateDir,
   outJson = null,
@@ -205,7 +208,12 @@ export function writeEvidenceDraftPromotionCandidateOutputs({
   candidateBundleId = null,
   generatedAt = new Date().toISOString(),
 } = {}) {
-  const bundle = loadEvidenceDraftBundle(bundleDir);
+  const bundle = loadEvidenceDraftBundle({
+    bundleDir,
+    manifestPath: draftManifestPath,
+    itemsPath: draftItemsPath,
+    reviewPath: draftReviewPath,
+  });
   const review = readJson(decisionJsonPath);
   const bundleId = normalizeString(candidateBundleId) || path.basename(candidateDir);
   const result = buildEvidenceDraftPromotionCandidate({

@@ -70,4 +70,55 @@ describe('run_evidence_draft_review_scaffold cli', () => {
     expect(markdown).toContain('operator-a');
     expect(markdown).toContain('phase_c_evidence_draft_20260317');
   });
+
+  test('accepts explicit manifest, items, and review file inputs', () => {
+    const workspaceRoot = makeTempWorkspace();
+    copyFixtureBundle(workspaceRoot);
+
+    const result = runCli(
+      [
+        '--manifest',
+        'tmp/sample_draft_bundle/manifest.json',
+        '--items-json',
+        'tmp/sample_draft_bundle/items.json',
+        '--review-md',
+        'tmp/sample_draft_bundle/review.md',
+        '--out-json',
+        'tmp/out/decision.json',
+        '--reviewer',
+        'operator-b',
+      ],
+      { cwd: workspaceRoot },
+    );
+
+    const decision = JSON.parse(fs.readFileSync(path.join(workspaceRoot, 'tmp/out/decision.json'), 'utf8'));
+
+    expect(result.status).toBe(0);
+    expect(decision.source_bundle_path).toBe('tmp/sample_draft_bundle');
+    expect(decision.reviewer).toBe('operator-b');
+  });
+
+  test('fails when bundle-dir and explicit file inputs are mixed', () => {
+    const workspaceRoot = makeTempWorkspace();
+    copyFixtureBundle(workspaceRoot);
+
+    const result = runCli(
+      [
+        '--bundle-dir',
+        'tmp/sample_draft_bundle',
+        '--manifest',
+        'tmp/sample_draft_bundle/manifest.json',
+        '--items-json',
+        'tmp/sample_draft_bundle/items.json',
+        '--out-json',
+        'tmp/out/decision.json',
+        '--reviewer',
+        'operator-c',
+      ],
+      { cwd: workspaceRoot },
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain('bundle input must use either --bundle-dir or explicit --manifest/--items-json paths');
+  });
 });

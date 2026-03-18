@@ -118,6 +118,36 @@ describe('run_evidence_draft_promotion_candidate cli', () => {
     expect(reviewPath).toContain('completed_review.json');
   });
 
+  test('accepts explicit manifest, items, and review file inputs', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const bundleDir = copyFixtureBundle(workspaceRoot);
+    writeCompletedReview(workspaceRoot, bundleDir);
+
+    const result = runCli(
+      [
+        '--manifest',
+        'tmp/sample_draft_bundle/manifest.json',
+        '--items-json',
+        'tmp/sample_draft_bundle/items.json',
+        '--review-md',
+        'tmp/sample_draft_bundle/review.md',
+        '--decision-json',
+        'tmp/completed_review.json',
+        '--candidate-dir',
+        'tmp/review_candidates/phase_d_fixture_candidate_v2',
+      ],
+      { cwd: workspaceRoot },
+    );
+
+    const manifest = JSON.parse(
+      fs.readFileSync(path.join(workspaceRoot, 'tmp/review_candidates/phase_d_fixture_candidate_v2/manifest.json'), 'utf8'),
+    );
+
+    expect(result.status).toBe(0);
+    expect(manifest.bundle_id).toBe('phase_d_fixture_candidate_v2');
+    expect(manifest.bundle_status).toBe('governance_seed_only');
+  });
+
   test('exits nonzero when the completed review is invalid', () => {
     const workspaceRoot = makeTempWorkspace();
     const bundleDir = copyFixtureBundle(workspaceRoot);

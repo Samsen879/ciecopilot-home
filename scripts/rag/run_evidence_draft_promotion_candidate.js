@@ -38,14 +38,17 @@ function toRel(filePath) {
 export function main(argv = process.argv.slice(2)) {
   const cli = parseCliArgs(argv);
   const bundleDir = resolveCliPath(cli['bundle-dir']);
+  const manifestPath = resolveCliPath(cli.manifest);
+  const itemsPath = resolveCliPath(cli['items-json']);
+  const reviewPath = resolveCliPath(cli['review-md']);
   const decisionJsonPath = resolveCliPath(cli['decision-json']);
   const candidateDir = resolveCliPath(cli['candidate-dir']);
   const outJson = resolveCliPath(cli['out-json']);
   const outMd = resolveCliPath(cli['out-md']);
   const candidateBundleId = typeof cli['bundle-id'] === 'string' ? cli['bundle-id'] : null;
 
-  if (!bundleDir) {
-    throw new Error('bundle dir is required');
+  if (!bundleDir && !(manifestPath || itemsPath || reviewPath)) {
+    throw new Error('bundle dir or explicit manifest/items paths are required');
   }
   if (!decisionJsonPath) {
     throw new Error('decision json path is required');
@@ -56,6 +59,9 @@ export function main(argv = process.argv.slice(2)) {
 
   const result = writeEvidenceDraftPromotionCandidateOutputs({
     bundleDir,
+    manifestPath,
+    itemsPath,
+    reviewPath,
     decisionJsonPath,
     candidateDir,
     outJson,

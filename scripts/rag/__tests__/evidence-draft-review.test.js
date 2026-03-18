@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 
 import {
@@ -16,6 +18,17 @@ const FIXTURE_DIR = path.join(
   'evidence-drafts',
   'sample_draft_bundle',
 );
+
+function makeTempWorkspace() {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'evidence-draft-review-'));
+}
+
+function copyFixtureBundle(workspaceRoot) {
+  const targetDir = path.join(workspaceRoot, 'tmp', 'sample_draft_bundle');
+  fs.mkdirSync(path.dirname(targetDir), { recursive: true });
+  fs.cpSync(FIXTURE_DIR, targetDir, { recursive: true });
+  return targetDir;
+}
 
 describe('evidence draft review', () => {
   test('loads a draft bundle fixture and scaffolds a pending review template', () => {
@@ -91,5 +104,45 @@ describe('evidence draft review', () => {
     expect(result.errors.join('\n')).toContain('reviewer is required');
     expect(result.errors.join('\n')).toContain('item_reviews[1].decision_reason is required');
     expect(result.errors.join('\n')).toContain('item_reviews[2].decision is required');
+  });
+
+  test('loads a draft bundle from explicit manifest, items, and review paths', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const bundleDir = copyFixtureBundle(workspaceRoot);
+    const manifestPath = path.join(bundleDir, 'manifest.json');
+    const itemsPath = path.join(bundleDir, 'items.json');
+    const reviewPath = path.join(bundleDir, 'review.md');
+
+    const bundle = loadEvidenceDraftBundle({
+      manifestPath,
+      itemsPath,
+      reviewPath,
+    });
+
+    expect(bundle.bundle_dir).toBe(bundleDir);
+    expect(bundle.manifest_path).toBe(manifestPath);
+    expect(bundle.items_path).toBe(itemsPath);
+    expect(bundle.review_path).toBe(reviewPath);
+    expect(bundle.manifest.bundle_id).toBe('phase_c_evidence_draft_20260317');
+    expect(bundle.items).toHaveLength(3);
+    expect(bundle.review_markdown).toContain('# Evidence Draft Review');
+  });
+
+  test('loads explicit manifest and items paths without requiring review markdown', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const bundleDir = copyFixtureBundle(workspaceRoot);
+    const manifestPath = path.join(bundleDir, 'manifest.json');
+    const itemsPath = path.join(bundleDir, 'items.json');
+
+    fs.unlinkSync(path.join(bundleDir, 'review.md'));
+
+    const bundle = loadEvidenceDraftBundle({
+      manifestPath,
+      itemsPath,
+    });
+
+    expect(bundle.bundle_dir).toBe(bundleDir);
+    expect(bundle.review_path).toBeNull();
+    expect(bundle.review_markdown).toBe('');
   });
 });

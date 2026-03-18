@@ -38,13 +38,16 @@ function toRel(filePath) {
 export function main(argv = process.argv.slice(2)) {
   const cli = parseCliArgs(argv);
   const bundleDir = resolveCliPath(cli['bundle-dir']);
+  const manifestPath = resolveCliPath(cli.manifest);
+  const itemsPath = resolveCliPath(cli['items-json']);
+  const reviewPath = resolveCliPath(cli['review-md']);
   const outJson = resolveCliPath(cli['out-json']);
   const outMd = resolveCliPath(cli['out-md']);
   const reviewer = typeof cli.reviewer === 'string' ? cli.reviewer : '';
   const reviewId = typeof cli['review-id'] === 'string' ? cli['review-id'] : null;
 
-  if (!bundleDir) {
-    throw new Error('bundle dir is required');
+  if (!bundleDir && !(manifestPath || itemsPath || reviewPath)) {
+    throw new Error('bundle dir or explicit manifest/items paths are required');
   }
   if (!outJson) {
     throw new Error('out json path is required');
@@ -52,6 +55,9 @@ export function main(argv = process.argv.slice(2)) {
 
   const result = writeEvidenceDraftReviewScaffoldOutputs({
     bundleDir,
+    manifestPath,
+    itemsPath,
+    reviewPath,
     outJson,
     outMd,
     reviewer,

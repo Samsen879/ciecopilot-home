@@ -8,6 +8,7 @@ import {
   buildPilotReadyBundle,
   buildPilotReadyWhitelistEntry,
   loadPromotionCandidateBundle,
+  previewProductionEvidencePromotionBridge,
 } from '../lib/production-evidence-promotion-bridge.js';
 
 const DRAFT_FIXTURE_DIR = path.join(
@@ -28,6 +29,7 @@ const REVIEW_FIXTURE_PATH = path.join(
   'evidence-drafts',
   'sample_completed_review.json',
 );
+const TRACKED_WHITELIST_PATH = path.join(process.cwd(), 'data', 'evidence', 'production', 'whitelist_v1.json');
 
 function makeTempWorkspace() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'production-evidence-promotion-bridge-'));
@@ -59,6 +61,10 @@ function buildReviewedCandidate(workspaceRoot) {
     candidateBundleId: 'phase_d_gap_fill_candidate_9231_v1',
     generatedAt: '2026-03-18T09:00:00.000Z',
   });
+}
+
+function readTrackedWhitelist() {
+  return JSON.parse(fs.readFileSync(TRACKED_WHITELIST_PATH, 'utf8'));
 }
 
 describe('production evidence promotion bridge builders', () => {
@@ -134,5 +140,115 @@ describe('production evidence promotion bridge builders', () => {
       release_ready_expected: true,
       approved_corpus_versions: ['rag_production_evidence_pilot_9231_20260318'],
     });
+  });
+
+  test('upserts a promoted ready-for-ingest entry into the canonical whitelist deterministically', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const candidate = buildReviewedCandidate(workspaceRoot);
+
+    const result = previewProductionEvidencePromotionBridge({
+      whitelist: readTrackedWhitelist(),
+      candidateManifest: candidate.manifest,
+      candidateItems: candidate.items,
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+    });
+
+    expect(result.whitelistChanged).toBe(true);
+    expect(result.whitelist.entries.find((entry) => entry.bundle_id === 'phase_e_pilot_ready_9231_v1')).toMatchObject({
+      release_channel: 'ready_for_ingest',
+      ingest_allowed: true,
+      release_ready_expected: true,
+      approved_corpus_versions: ['rag_production_evidence_pilot_9231_20260318'],
+    });
+    expect(result.whitelist.allowed_bundle_ids).toEqual([...result.whitelist.allowed_bundle_ids].slice().sort());
+    expect(result.whitelist.allowed_manifest_paths).toEqual([...result.whitelist.allowed_manifest_paths].slice().sort());
+    expect(result.whitelist.entries.map((entry) => entry.bundle_id)).toEqual(
+      [...result.whitelist.entries.map((entry) => entry.bundle_id)].slice().sort(),
+    );
+  });
+
+  test('replays idempotently when the promoted whitelist entry already exists', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const candidate = buildReviewedCandidate(workspaceRoot);
+
+    const firstPass = previewProductionEvidencePromotionBridge({
+      whitelist: readTrackedWhitelist(),
+      candidateManifest: candidate.manifest,
+      candidateItems: candidate.items,
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+    });
+    const secondPass = previewProductionEvidencePromotionBridge({
+      whitelist: firstPass.whitelist,
+      candidateManifest: candidate.manifest,
+      candidateItems: candidate.items,
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+    });
+
+    expect(secondPass.whitelistChanged).toBe(false);
+    expect(secondPass.whitelist).toEqual(firstPass.whitelist);
+  });
+
+  test('fails closed on conflicting approved corpus versions for the same bundle id', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const candidate = buildReviewedCandidate(workspaceRoot);
+    const whitelist = readTrackedWhitelist();
+    whitelist.entries.push({
+      bundle_id: 'phase_e_pilot_ready_9231_v1',
+      manifest_path: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      subject_scope: 'single_subject',
+      subject_codes: ['9231'],
+      allowed_source_types: ['evidence_authored', 'evidence_transformed'],
+      approved_corpus_versions: ['rag_production_evidence_pilot_9231_20260317'],
+      release_channel: 'ready_for_ingest',
+      ingest_allowed: true,
+      release_ready_expected: true,
+    });
+    whitelist.allowed_bundle_ids.push('phase_e_pilot_ready_9231_v1');
+    whitelist.allowed_manifest_paths.push('data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json');
+
+    expect(() =>
+      previewProductionEvidencePromotionBridge({
+        whitelist,
+        candidateManifest: candidate.manifest,
+        candidateItems: candidate.items,
+        targetBundleId: 'phase_e_pilot_ready_9231_v1',
+        targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+        approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+        promotedAt: '2026-03-18T10:00:00.000Z',
+        sourceReviewId: candidate.review_id,
+      }),
+    ).toThrow('conflicts with existing whitelist entry');
+  });
+
+  test('fails closed when approved corpus versions are empty', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const candidate = buildReviewedCandidate(workspaceRoot);
+    const targetBundle = buildPilotReadyBundle({
+      candidateManifest: candidate.manifest,
+      candidateItems: candidate.items,
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+    });
+
+    expect(() =>
+      buildPilotReadyWhitelistEntry({
+        targetManifest: targetBundle.manifest,
+        manifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+        approvedCorpusVersions: [],
+      }),
+    ).toThrow('approved corpus versions must not be empty');
   });
 });

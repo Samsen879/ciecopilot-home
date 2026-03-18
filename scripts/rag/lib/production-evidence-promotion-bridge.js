@@ -1,6 +1,7 @@
 import path from 'node:path';
 
 import { loadProductionEvidenceBundle } from './production-evidence-bundle.js';
+import { upsertProductionEvidenceWhitelistEntry } from './production-evidence-whitelist.js';
 
 function normalizeObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -56,6 +57,10 @@ export function buildPilotReadyBundle({
   promotedAt = new Date().toISOString(),
   sourceReviewId = null,
 } = {}) {
+  if (!normalizeString(targetBundleId)) {
+    throw new Error('target bundle id is required');
+  }
+
   const manifest = cloneJson(normalizeObject(candidateManifest));
   const items = normalizeArray(candidateItems).map((item) => cloneJson(item));
   const subjectCodes = normalizeStringArray(items.map((item) => normalizeObject(item).subject_code)).sort();
@@ -96,14 +101,18 @@ export function buildPilotReadyWhitelistEntry({
   approvedCorpusVersions,
 } = {}) {
   const manifest = normalizeObject(targetManifest);
+  const normalizedManifestPath = normalizeString(manifestPath);
   const corpusVersions = normalizeStringArray(approvedCorpusVersions).sort();
+  if (!normalizedManifestPath) {
+    throw new Error('manifest path is required');
+  }
   if (corpusVersions.length === 0) {
     throw new Error('approved corpus versions must not be empty');
   }
 
   return {
     bundle_id: normalizeString(manifest.bundle_id),
-    manifest_path: normalizeString(manifestPath),
+    manifest_path: normalizedManifestPath,
     subject_scope: normalizeString(manifest.subject_scope),
     subject_codes: normalizeStringArray(manifest.subject_codes).sort(),
     allowed_source_types: normalizeStringArray(manifest.allowed_source_types),
@@ -112,5 +121,42 @@ export function buildPilotReadyWhitelistEntry({
     ingest_allowed: true,
     release_ready_expected: true,
     notes: [buildPromotionNote(manifest.bundle_id, null)],
+  };
+}
+
+export function previewProductionEvidencePromotionBridge({
+  whitelist,
+  candidateManifest,
+  candidateItems,
+  targetBundleId,
+  targetManifestPath,
+  approvedCorpusVersions,
+  promotedAt = new Date().toISOString(),
+  sourceReviewId = null,
+} = {}) {
+  const targetBundle = buildPilotReadyBundle({
+    candidateManifest,
+    candidateItems,
+    targetBundleId,
+    promotedAt,
+    sourceReviewId,
+  });
+  const whitelistEntry = buildPilotReadyWhitelistEntry({
+    targetManifest: targetBundle.manifest,
+    manifestPath: targetManifestPath,
+    approvedCorpusVersions,
+  });
+  const whitelistUpsert = upsertProductionEvidenceWhitelistEntry({
+    whitelist,
+    entry: whitelistEntry,
+  });
+
+  return {
+    manifest: targetBundle.manifest,
+    items: targetBundle.items,
+    whitelist: whitelistUpsert.whitelist,
+    whitelistEntry: whitelistUpsert.entry,
+    whitelistChanged: whitelistUpsert.changed,
+    replayed: whitelistUpsert.replayed,
   };
 }

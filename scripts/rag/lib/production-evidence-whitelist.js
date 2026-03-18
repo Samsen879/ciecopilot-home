@@ -12,6 +12,10 @@ function normalizeString(value) {
   return isNonEmptyString(value) ? value.trim() : '';
 }
 
+function normalizeArray(values) {
+  return Array.isArray(values) ? values : [];
+}
+
 function normalizeStringArray(values) {
   if (!Array.isArray(values)) return [];
   return [...new Set(values.map((item) => normalizeString(item)).filter(Boolean))];
@@ -37,6 +41,85 @@ function normalizeEntry(rawEntry) {
     release_channel: normalizeString(entry.release_channel),
     ingest_allowed: Boolean(entry.ingest_allowed),
     release_ready_expected: Boolean(entry.release_ready_expected),
+    notes: normalizeStringArray(entry.notes),
+  };
+}
+
+function compareStrings(left, right) {
+  return left.localeCompare(right);
+}
+
+function buildEntryKey(entry) {
+  return `${entry.bundle_id}|${entry.manifest_path}`;
+}
+
+function sameNormalizedEntry(left, right) {
+  return JSON.stringify(normalizeEntry(left)) === JSON.stringify(normalizeEntry(right));
+}
+
+export function sortProductionEvidenceWhitelistEntries(entries = []) {
+  return normalizeArray(entries)
+    .map((entry) => normalizeEntry(entry))
+    .sort((left, right) => compareStrings(buildEntryKey(left), buildEntryKey(right)));
+}
+
+export function buildProductionEvidenceWhitelistDocument({
+  whitelist = null,
+  entries = [],
+} = {}) {
+  const whitelistObject = normalizeObject(whitelist);
+  const normalizedEntries = sortProductionEvidenceWhitelistEntries(entries);
+  return {
+    manifest_role: whitelistObject.manifest_role || 'production_evidence_whitelist',
+    evidence_layer: whitelistObject.evidence_layer || 'production_evidence',
+    policy_mode: whitelistObject.policy_mode || 'production_evidence',
+    schema_version: whitelistObject.schema_version || 'v1',
+    generated_at: whitelistObject.generated_at || new Date().toISOString(),
+    required_restricted_official_posture:
+      normalizeString(whitelistObject.required_restricted_official_posture) || REQUIRED_RESTRICTED_OFFICIAL_POSTURE,
+    allowed_bundle_ids: [...new Set(normalizedEntries.map((entry) => entry.bundle_id))].sort(compareStrings),
+    allowed_manifest_paths: [...new Set(normalizedEntries.map((entry) => entry.manifest_path))].sort(compareStrings),
+    allowed_source_types: normalizeStringArray(whitelistObject.allowed_source_types),
+    reserved_source_types: normalizeStringArray(whitelistObject.reserved_source_types),
+    entries: normalizedEntries,
+  };
+}
+
+export function upsertProductionEvidenceWhitelistEntry({
+  whitelist = null,
+  entry = null,
+} = {}) {
+  const whitelistObject = normalizeObject(whitelist);
+  const normalizedEntry = normalizeEntry(entry);
+  const normalizedEntries = sortProductionEvidenceWhitelistEntries(whitelistObject.entries);
+  const existingByBundleId = normalizedEntries.find((candidate) => candidate.bundle_id === normalizedEntry.bundle_id) || null;
+  const existingByManifestPath =
+    normalizedEntries.find((candidate) => candidate.manifest_path === normalizedEntry.manifest_path) || null;
+  const existing = existingByBundleId || existingByManifestPath;
+
+  if (existing) {
+    if (!sameNormalizedEntry(existing, normalizedEntry)) {
+      throw new Error(`bundle_id ${normalizedEntry.bundle_id} conflicts with existing whitelist entry`);
+    }
+    return {
+      whitelist: buildProductionEvidenceWhitelistDocument({
+        whitelist: whitelistObject,
+        entries: normalizedEntries,
+      }),
+      entry: existing,
+      changed: false,
+      replayed: true,
+    };
+  }
+
+  return {
+    whitelist: buildProductionEvidenceWhitelistDocument({
+      whitelist: whitelistObject,
+      entries: [...normalizedEntries, normalizedEntry],
+    }),
+    entry: normalizedEntry,
+    changed: true,
+    replayed: false,
   };
 }
 

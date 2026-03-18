@@ -7,6 +7,7 @@ import { validateProductionEvidenceManifest } from '../lib/production-evidence-m
 import {
   buildPilotReadyBundle,
   buildPilotReadyWhitelistEntry,
+  executeProductionEvidencePromotionBridge,
   loadPromotionCandidateBundle,
   previewProductionEvidencePromotionBridge,
 } from '../lib/production-evidence-promotion-bridge.js';
@@ -30,6 +31,7 @@ const REVIEW_FIXTURE_PATH = path.join(
   'sample_completed_review.json',
 );
 const TRACKED_WHITELIST_PATH = path.join(process.cwd(), 'data', 'evidence', 'production', 'whitelist_v1.json');
+const TRACKED_ROLLOUT_GATE_PATH = path.join(process.cwd(), 'data', 'evidence', 'production', 'rollout_gate_v1.json');
 
 function makeTempWorkspace() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'production-evidence-promotion-bridge-'));
@@ -65,6 +67,14 @@ function buildReviewedCandidate(workspaceRoot) {
 
 function readTrackedWhitelist() {
   return JSON.parse(fs.readFileSync(TRACKED_WHITELIST_PATH, 'utf8'));
+}
+
+function copyGovernanceInputs(workspaceRoot) {
+  const whitelistPath = path.join(workspaceRoot, 'data', 'evidence', 'production', 'whitelist_v1.json');
+  const rolloutGatePath = path.join(workspaceRoot, 'data', 'evidence', 'production', 'rollout_gate_v1.json');
+  fs.mkdirSync(path.dirname(whitelistPath), { recursive: true });
+  fs.copyFileSync(TRACKED_WHITELIST_PATH, whitelistPath);
+  fs.copyFileSync(TRACKED_ROLLOUT_GATE_PATH, rolloutGatePath);
 }
 
 describe('production evidence promotion bridge builders', () => {
@@ -282,5 +292,180 @@ describe('production evidence promotion bridge builders', () => {
         approvedCorpusVersions: [],
       }),
     ).toThrow('approved corpus versions must not be empty');
+  });
+
+  test('apply writes canonical bundle files, whitelist, and receipt without touching rollout gate', () => {
+    const workspaceRoot = makeTempWorkspace();
+    copyGovernanceInputs(workspaceRoot);
+    const candidate = buildReviewedCandidate(workspaceRoot);
+    const rolloutGateBefore = fs.readFileSync(
+      path.join(workspaceRoot, 'data', 'evidence', 'production', 'rollout_gate_v1.json'),
+      'utf8',
+    );
+
+    const result = executeProductionEvidencePromotionBridge({
+      rootDir: workspaceRoot,
+      mode: 'apply',
+      candidateManifestPath: path.relative(workspaceRoot, candidate.manifestPath),
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+      whitelistPath: 'data/evidence/production/whitelist_v1.json',
+      rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
+      receiptJsonPath: 'tmp/receipts/phase_e_promotion_9231_v1.json',
+      receiptMdPath: 'tmp/receipts/phase_e_promotion_9231_v1.md',
+    });
+
+    expect(result.mode).toBe('apply');
+    expect(fs.existsSync(path.join(workspaceRoot, 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'data/evidence/production/phase_e_pilot_ready_9231_v1/items.json'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/receipts/phase_e_promotion_9231_v1.json'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/receipts/phase_e_promotion_9231_v1.md'))).toBe(true);
+    expect(result.writes).toMatchObject({
+      bundle: true,
+      whitelist: true,
+      receipt: true,
+      proposal: false,
+    });
+
+    const updatedWhitelist = JSON.parse(
+      fs.readFileSync(path.join(workspaceRoot, 'data/evidence/production/whitelist_v1.json'), 'utf8'),
+    );
+    expect(updatedWhitelist.entries.find((entry) => entry.bundle_id === 'phase_e_pilot_ready_9231_v1')).toBeTruthy();
+    expect(
+      fs.readFileSync(path.join(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json'), 'utf8'),
+    ).toBe(rolloutGateBefore);
+  });
+
+  test('dry-run writes no canonical files', () => {
+    const workspaceRoot = makeTempWorkspace();
+    copyGovernanceInputs(workspaceRoot);
+    const candidate = buildReviewedCandidate(workspaceRoot);
+    const rolloutGateBefore = fs.readFileSync(
+      path.join(workspaceRoot, 'data', 'evidence', 'production', 'rollout_gate_v1.json'),
+      'utf8',
+    );
+    const whitelistBefore = fs.readFileSync(
+      path.join(workspaceRoot, 'data', 'evidence', 'production', 'whitelist_v1.json'),
+      'utf8',
+    );
+
+    const result = executeProductionEvidencePromotionBridge({
+      rootDir: workspaceRoot,
+      mode: 'dry-run',
+      candidateManifestPath: path.relative(workspaceRoot, candidate.manifestPath),
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+      whitelistPath: 'data/evidence/production/whitelist_v1.json',
+      rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
+      receiptJsonPath: 'tmp/receipts/phase_e_promotion_9231_v1.json',
+      receiptMdPath: 'tmp/receipts/phase_e_promotion_9231_v1.md',
+    });
+
+    expect(result.mode).toBe('dry-run');
+    expect(result.writes).toEqual({
+      bundle: false,
+      whitelist: false,
+      receipt: false,
+      proposal: false,
+    });
+    expect(fs.existsSync(path.join(workspaceRoot, 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json'))).toBe(false);
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/receipts/phase_e_promotion_9231_v1.json'))).toBe(false);
+    expect(
+      fs.readFileSync(path.join(workspaceRoot, 'data/evidence/production/whitelist_v1.json'), 'utf8'),
+    ).toBe(whitelistBefore);
+    expect(
+      fs.readFileSync(path.join(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json'), 'utf8'),
+    ).toBe(rolloutGateBefore);
+  });
+
+  test('proposal-only writes only proposal outputs under the proposal directory', () => {
+    const workspaceRoot = makeTempWorkspace();
+    copyGovernanceInputs(workspaceRoot);
+    const candidate = buildReviewedCandidate(workspaceRoot);
+    const rolloutGateBefore = fs.readFileSync(
+      path.join(workspaceRoot, 'data', 'evidence', 'production', 'rollout_gate_v1.json'),
+      'utf8',
+    );
+
+    const result = executeProductionEvidencePromotionBridge({
+      rootDir: workspaceRoot,
+      mode: 'proposal-only',
+      candidateManifestPath: path.relative(workspaceRoot, candidate.manifestPath),
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+      whitelistPath: 'data/evidence/production/whitelist_v1.json',
+      rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
+      proposalDir: 'tmp/proposal',
+    });
+
+    expect(result.mode).toBe('proposal-only');
+    expect(result.writes).toEqual({
+      bundle: false,
+      whitelist: false,
+      receipt: false,
+      proposal: true,
+    });
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/proposal/phase_e_pilot_ready_9231_v1/manifest.json'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/proposal/phase_e_pilot_ready_9231_v1/items.json'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/proposal/whitelist_v1.json'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/proposal/promotion_receipt.json'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/proposal/promotion_receipt.md'))).toBe(true);
+    expect(fs.existsSync(path.join(workspaceRoot, 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json'))).toBe(false);
+    expect(
+      fs.readFileSync(path.join(workspaceRoot, 'data/evidence/production/rollout_gate_v1.json'), 'utf8'),
+    ).toBe(rolloutGateBefore);
+  });
+
+  test('replaying apply with identical inputs is a no-op', () => {
+    const workspaceRoot = makeTempWorkspace();
+    copyGovernanceInputs(workspaceRoot);
+    const candidate = buildReviewedCandidate(workspaceRoot);
+
+    const firstPass = executeProductionEvidencePromotionBridge({
+      rootDir: workspaceRoot,
+      mode: 'apply',
+      candidateManifestPath: path.relative(workspaceRoot, candidate.manifestPath),
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+      whitelistPath: 'data/evidence/production/whitelist_v1.json',
+      rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
+      receiptJsonPath: 'tmp/receipts/phase_e_promotion_9231_v1.json',
+      receiptMdPath: 'tmp/receipts/phase_e_promotion_9231_v1.md',
+    });
+    const secondPass = executeProductionEvidencePromotionBridge({
+      rootDir: workspaceRoot,
+      mode: 'apply',
+      candidateManifestPath: path.relative(workspaceRoot, candidate.manifestPath),
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+      whitelistPath: 'data/evidence/production/whitelist_v1.json',
+      rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
+      receiptJsonPath: 'tmp/receipts/phase_e_promotion_9231_v1.json',
+      receiptMdPath: 'tmp/receipts/phase_e_promotion_9231_v1.md',
+    });
+
+    expect(firstPass.writes.bundle).toBe(true);
+    expect(secondPass.replayed).toBe(true);
+    expect(secondPass.writes).toEqual({
+      bundle: false,
+      whitelist: false,
+      receipt: false,
+      proposal: false,
+    });
   });
 });

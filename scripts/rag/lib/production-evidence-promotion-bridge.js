@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 
 import { loadProductionEvidenceBundle } from './production-evidence-bundle.js';
@@ -6,6 +7,7 @@ import { validateProductionEvidenceManifest } from './production-evidence-manife
 import { buildProductionEvidencePromotionReceipt } from './production-evidence-promotion-receipt.js';
 import { buildProductionEvidenceReleaseGate } from './production-evidence-release-gate.js';
 import { validateProductionEvidenceWhitelist, upsertProductionEvidenceWhitelistEntry } from './production-evidence-whitelist.js';
+import { renderProductionEvidencePromotionReceiptReport } from './production-evidence-promotion-receipt.js';
 
 function normalizeObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -27,8 +29,89 @@ function normalizePathToken(value) {
   return normalizeString(value).replace(/\\/g, '/');
 }
 
+function toRel(rootDir, filePath) {
+  return path.relative(rootDir, filePath).replace(/\\/g, '/');
+}
+
 function cloneJson(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function readJson(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+}
+
+function toJsonText(value) {
+  return `${JSON.stringify(value, null, 2)}\n`;
+}
+
+function writeTextIfChanged(filePath, content) {
+  if (fs.existsSync(filePath) && fs.readFileSync(filePath, 'utf8') === content) {
+    return false;
+  }
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, content, 'utf8');
+  return true;
+}
+
+function writeBundleIfChanged({
+  rootDir,
+  manifestPath,
+  itemsPath,
+  manifest,
+  items,
+} = {}) {
+  const manifestText = toJsonText(manifest);
+  const itemsText = toJsonText(items);
+  const targetDir = path.dirname(manifestPath);
+
+  if (fs.existsSync(targetDir)) {
+    const existingManifest = fs.existsSync(manifestPath) ? fs.readFileSync(manifestPath, 'utf8') : null;
+    const existingItems = fs.existsSync(itemsPath) ? fs.readFileSync(itemsPath, 'utf8') : null;
+    if (existingManifest === manifestText && existingItems === itemsText) {
+      return false;
+    }
+    throw new Error(`target bundle directory already exists with different contents: ${toRel(rootDir, targetDir)}`);
+  }
+
+  const stagingDir = `${targetDir}.__stage_${process.pid}`;
+  fs.rmSync(stagingDir, { recursive: true, force: true });
+  fs.mkdirSync(stagingDir, { recursive: true });
+  fs.writeFileSync(path.join(stagingDir, 'manifest.json'), manifestText, 'utf8');
+  fs.writeFileSync(path.join(stagingDir, 'items.json'), itemsText, 'utf8');
+  fs.renameSync(stagingDir, targetDir);
+  return true;
+}
+
+function ensurePromotionValidation(validation) {
+  if (
+    validation.manifest_valid !== true
+    || validation.whitelist_valid !== true
+    || validation.release_ready !== true
+    || validation.ingest_permitted !== true
+  ) {
+    throw new Error('promotion bridge preview failed governance validation');
+  }
+}
+
+function resolveMode(mode) {
+  const normalized = normalizeString(mode) || 'apply';
+  if (!['apply', 'dry-run', 'proposal-only'].includes(normalized)) {
+    throw new Error(`unsupported promotion bridge mode: ${normalized}`);
+  }
+  return normalized;
+}
+
+function defaultTargetManifestPath(targetBundleId) {
+  return `data/evidence/production/${normalizeString(targetBundleId)}/manifest.json`;
+}
+
+function defaultReceiptJsonPath(targetBundleId) {
+  return `docs/reports/receipts/${normalizeString(targetBundleId)}.json`;
+}
+
+function defaultReceiptMdPath(targetBundleId) {
+  return `docs/reports/receipts/${normalizeString(targetBundleId)}.md`;
 }
 
 function buildPromotionNote(candidateBundleId, sourceReviewId) {
@@ -234,5 +317,158 @@ export function previewProductionEvidencePromotionBridge({
     replayed: whitelistUpsert.replayed,
     validation,
     receipt,
+  };
+}
+
+export function executeProductionEvidencePromotionBridge({
+  rootDir = process.cwd(),
+  mode = 'apply',
+  candidateManifestPath = null,
+  candidateDir = null,
+  targetBundleId,
+  targetManifestPath = null,
+  approvedCorpusVersions,
+  promotedAt = new Date().toISOString(),
+  sourceReviewId = null,
+  whitelistPath = 'data/evidence/production/whitelist_v1.json',
+  rolloutGatePath = 'data/evidence/production/rollout_gate_v1.json',
+  proposalDir = null,
+  receiptJsonPath = null,
+  receiptMdPath = null,
+} = {}) {
+  const resolvedMode = resolveMode(mode);
+  const normalizedTargetManifestPath = normalizePathToken(
+    targetManifestPath || defaultTargetManifestPath(targetBundleId),
+  );
+  const normalizedWhitelistPath = normalizePathToken(whitelistPath);
+  const normalizedRolloutGatePath = normalizePathToken(rolloutGatePath);
+  const resolvedWhitelistPath = path.resolve(rootDir, normalizedWhitelistPath);
+  const whitelist = readJson(resolvedWhitelistPath);
+
+  const candidate = loadPromotionCandidateBundle({
+    rootDir,
+    candidateDir,
+    manifestPath: candidateManifestPath,
+  });
+
+  const normalizedProposalDir = normalizePathToken(proposalDir);
+  const previewReceiptJsonPath =
+    resolvedMode === 'proposal-only'
+      ? normalizePathToken(path.posix.join(normalizedProposalDir, 'promotion_receipt.json'))
+      : normalizePathToken(receiptJsonPath || defaultReceiptJsonPath(targetBundleId));
+  const previewReceiptMdPath =
+    resolvedMode === 'proposal-only'
+      ? normalizePathToken(path.posix.join(normalizedProposalDir, 'promotion_receipt.md'))
+      : normalizePathToken(receiptMdPath || defaultReceiptMdPath(targetBundleId));
+
+  if (resolvedMode === 'proposal-only' && !normalizedProposalDir) {
+    throw new Error('proposalDir is required for proposal-only mode');
+  }
+
+  const preview = previewProductionEvidencePromotionBridge({
+    rootDir,
+    whitelist,
+    candidateManifest: candidate.manifest,
+    candidateItems: candidate.items,
+    sourceCandidateManifestPath: candidate.manifestPath,
+    targetBundleId,
+    targetManifestPath: normalizedTargetManifestPath,
+    approvedCorpusVersions,
+    promotedAt,
+    sourceReviewId,
+    whitelistPath: normalizedWhitelistPath,
+    rolloutGatePath: normalizedRolloutGatePath,
+    receiptPath: previewReceiptJsonPath,
+    receiptMdPath: previewReceiptMdPath,
+  });
+  ensurePromotionValidation(preview.validation);
+
+  const writes = {
+    bundle: false,
+    whitelist: false,
+    receipt: false,
+    proposal: false,
+  };
+
+  if (resolvedMode === 'dry-run') {
+    return {
+      ...preview,
+      mode: resolvedMode,
+      writes,
+    };
+  }
+
+  if (resolvedMode === 'proposal-only') {
+    const proposalRoot = path.resolve(rootDir, normalizedProposalDir);
+    const proposalBundleDir = path.join(proposalRoot, normalizeString(targetBundleId));
+    const proposalManifestPath = path.join(proposalBundleDir, 'manifest.json');
+    const proposalItemsPath = path.join(proposalBundleDir, 'items.json');
+    const proposalWhitelistPath = path.join(proposalRoot, path.basename(normalizedWhitelistPath));
+    const proposalReceiptJsonPath = path.resolve(rootDir, previewReceiptJsonPath);
+    const proposalReceiptMdPath = path.resolve(rootDir, previewReceiptMdPath);
+
+    writeTextIfChanged(proposalManifestPath, toJsonText(preview.manifest));
+    writeTextIfChanged(proposalItemsPath, toJsonText(preview.items));
+    writeTextIfChanged(proposalWhitelistPath, toJsonText(preview.whitelist));
+    writeTextIfChanged(proposalReceiptJsonPath, toJsonText(preview.receipt));
+    writeTextIfChanged(proposalReceiptMdPath, renderProductionEvidencePromotionReceiptReport(preview.receipt));
+    writes.proposal = true;
+
+    return {
+      ...preview,
+      mode: resolvedMode,
+      writes,
+      proposalPaths: {
+        bundleDir: toRel(rootDir, proposalBundleDir),
+        manifestPath: toRel(rootDir, proposalManifestPath),
+        itemsPath: toRel(rootDir, proposalItemsPath),
+        whitelistPath: toRel(rootDir, proposalWhitelistPath),
+        receiptJsonPath: toRel(rootDir, proposalReceiptJsonPath),
+        receiptMdPath: toRel(rootDir, proposalReceiptMdPath),
+      },
+    };
+  }
+
+  const resolvedTargetManifestPath = path.resolve(rootDir, normalizedTargetManifestPath);
+  const resolvedTargetItemsPath = path.resolve(path.dirname(resolvedTargetManifestPath), 'items.json');
+  const resolvedReceiptJsonPath = path.resolve(rootDir, previewReceiptJsonPath);
+  const resolvedReceiptMdPath = path.resolve(rootDir, previewReceiptMdPath);
+
+  writes.bundle = writeBundleIfChanged({
+    rootDir,
+    manifestPath: resolvedTargetManifestPath,
+    itemsPath: resolvedTargetItemsPath,
+    manifest: preview.manifest,
+    items: preview.items,
+  });
+  writes.whitelist = writeTextIfChanged(resolvedWhitelistPath, toJsonText(preview.whitelist));
+  if (
+    preview.replayed === true
+    && writes.bundle === false
+    && writes.whitelist === false
+    && fs.existsSync(resolvedReceiptJsonPath)
+    && fs.existsSync(resolvedReceiptMdPath)
+  ) {
+    writes.receipt = false;
+  } else {
+    const receiptJsonWritten = writeTextIfChanged(resolvedReceiptJsonPath, toJsonText(preview.receipt));
+    const receiptMdWritten = writeTextIfChanged(
+      resolvedReceiptMdPath,
+      renderProductionEvidencePromotionReceiptReport(preview.receipt),
+    );
+    writes.receipt = receiptJsonWritten || receiptMdWritten;
+  }
+
+  return {
+    ...preview,
+    mode: resolvedMode,
+    writes,
+    paths: {
+      targetManifestPath: normalizedTargetManifestPath,
+      targetItemsPath: normalizePathToken(path.posix.join(path.posix.dirname(normalizedTargetManifestPath), 'items.json')),
+      whitelistPath: normalizedWhitelistPath,
+      receiptJsonPath: normalizePathToken(previewReceiptJsonPath),
+      receiptMdPath: normalizePathToken(previewReceiptMdPath),
+    },
   };
 }

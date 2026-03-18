@@ -1,7 +1,11 @@
 import path from 'node:path';
 
 import { loadProductionEvidenceBundle } from './production-evidence-bundle.js';
-import { upsertProductionEvidenceWhitelistEntry } from './production-evidence-whitelist.js';
+import { buildProductionEvidenceGovernancePreflight } from './production-evidence-governance-preflight.js';
+import { validateProductionEvidenceManifest } from './production-evidence-manifest.js';
+import { buildProductionEvidencePromotionReceipt } from './production-evidence-promotion-receipt.js';
+import { buildProductionEvidenceReleaseGate } from './production-evidence-release-gate.js';
+import { validateProductionEvidenceWhitelist, upsertProductionEvidenceWhitelistEntry } from './production-evidence-whitelist.js';
 
 function normalizeObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -17,6 +21,10 @@ function normalizeString(value) {
 
 function normalizeStringArray(value) {
   return [...new Set(normalizeArray(value).map((item) => normalizeString(item)).filter(Boolean))];
+}
+
+function normalizePathToken(value) {
+  return normalizeString(value).replace(/\\/g, '/');
 }
 
 function cloneJson(value) {
@@ -125,14 +133,20 @@ export function buildPilotReadyWhitelistEntry({
 }
 
 export function previewProductionEvidencePromotionBridge({
+  rootDir = process.cwd(),
   whitelist,
   candidateManifest,
   candidateItems,
+  sourceCandidateManifestPath = null,
   targetBundleId,
   targetManifestPath,
   approvedCorpusVersions,
   promotedAt = new Date().toISOString(),
   sourceReviewId = null,
+  whitelistPath = 'data/evidence/production/whitelist_v1.json',
+  rolloutGatePath = 'data/evidence/production/rollout_gate_v1.json',
+  receiptPath = null,
+  receiptMdPath = null,
 } = {}) {
   const targetBundle = buildPilotReadyBundle({
     candidateManifest,
@@ -150,6 +164,66 @@ export function previewProductionEvidencePromotionBridge({
     whitelist,
     entry: whitelistEntry,
   });
+  const manifestValidation = validateProductionEvidenceManifest({
+    manifest: targetBundle.manifest,
+    items: targetBundle.items,
+  });
+  const whitelistValidation = validateProductionEvidenceWhitelist({
+    whitelist: whitelistUpsert.whitelist,
+    manifest: targetBundle.manifest,
+    manifestPath: targetManifestPath,
+  });
+  const releaseGate = buildProductionEvidenceReleaseGate({
+    rootDir,
+    manifest: targetBundle.manifest,
+    items: targetBundle.items,
+    manifestPath: targetManifestPath,
+    whitelist: whitelistUpsert.whitelist,
+  });
+  const governancePreflight = buildProductionEvidenceGovernancePreflight({
+    rootDir,
+    manifest: targetBundle.manifest,
+    items: targetBundle.items,
+    manifestPath: targetManifestPath,
+    whitelist: whitelistUpsert.whitelist,
+  });
+  const validation = {
+    manifest_valid: manifestValidation.ok,
+    whitelist_valid: whitelistValidation.ok,
+    release_ready: releaseGate.release_ready === true,
+    ingest_permitted: governancePreflight.summary?.ingest_permitted === true,
+    manifest: manifestValidation,
+    whitelist: whitelistValidation,
+    release_gate: releaseGate,
+    governance_preflight: governancePreflight,
+  };
+  const receipt = buildProductionEvidencePromotionReceipt({
+    generatedAt: promotedAt,
+    mode: 'dry-run',
+    sourceCandidate: {
+      bundle_id: normalizeString(candidateManifest?.bundle_id),
+      manifest_path: normalizePathToken(sourceCandidateManifestPath),
+      bundle_status: normalizeString(candidateManifest?.bundle_status),
+    },
+    targetBundle: {
+      bundle_id: normalizeString(targetBundle.manifest.bundle_id),
+      manifest_path: normalizePathToken(targetManifestPath),
+      bundle_dir: path.posix.dirname(normalizePathToken(targetManifestPath)),
+      bundle_status: normalizeString(targetBundle.manifest.bundle_status),
+      subject_codes: normalizeStringArray(targetBundle.manifest.subject_codes),
+    },
+    whitelistUpdate: {
+      path: normalizePathToken(whitelistPath),
+      changed: whitelistUpsert.changed,
+      replayed: whitelistUpsert.replayed,
+      entry: whitelistUpsert.entry,
+    },
+    approvedCorpusVersions,
+    validation,
+    rolloutGatePath: normalizePathToken(rolloutGatePath),
+    receiptPath: normalizePathToken(receiptPath),
+    receiptMdPath: normalizePathToken(receiptMdPath),
+  });
 
   return {
     manifest: targetBundle.manifest,
@@ -158,5 +232,7 @@ export function previewProductionEvidencePromotionBridge({
     whitelistEntry: whitelistUpsert.entry,
     whitelistChanged: whitelistUpsert.changed,
     replayed: whitelistUpsert.replayed,
+    validation,
+    receipt,
   };
 }

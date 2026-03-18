@@ -200,6 +200,38 @@ describe('production evidence promotion bridge builders', () => {
     expect(secondPass.whitelist).toEqual(firstPass.whitelist);
   });
 
+  test('runs the governance chain in preview and emits receipt metadata without touching rollout', () => {
+    const workspaceRoot = makeTempWorkspace();
+    const candidate = buildReviewedCandidate(workspaceRoot);
+
+    const result = previewProductionEvidencePromotionBridge({
+      whitelist: readTrackedWhitelist(),
+      candidateManifest: candidate.manifest,
+      candidateItems: candidate.items,
+      sourceCandidateManifestPath: path.relative(workspaceRoot, candidate.manifestPath).replace(/\\/g, '/'),
+      targetBundleId: 'phase_e_pilot_ready_9231_v1',
+      targetManifestPath: 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json',
+      approvedCorpusVersions: ['rag_production_evidence_pilot_9231_20260318'],
+      promotedAt: '2026-03-18T10:00:00.000Z',
+      sourceReviewId: candidate.review_id,
+      whitelistPath: 'data/evidence/production/whitelist_v1.json',
+      rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
+      receiptPath: 'docs/reports/receipts/phase_e_promotion_9231_v1.json',
+      receiptMdPath: 'docs/reports/receipts/phase_e_promotion_9231_v1.md',
+    });
+
+    expect(result.validation).toMatchObject({
+      manifest_valid: true,
+      whitelist_valid: true,
+      release_ready: true,
+      ingest_permitted: true,
+    });
+    expect(result.receipt.rollout_gate).toEqual({
+      touched: false,
+      path: 'data/evidence/production/rollout_gate_v1.json',
+    });
+  });
+
   test('fails closed on conflicting approved corpus versions for the same bundle id', () => {
     const workspaceRoot = makeTempWorkspace();
     const candidate = buildReviewedCandidate(workspaceRoot);

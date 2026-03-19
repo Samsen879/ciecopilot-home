@@ -7,6 +7,7 @@ import {
   buildRagRequestTelemetryAudit,
   loadRagRequestTelemetryEvents,
 } from './lib/telemetry_audit.js';
+import { resolveCliPathFromRoot } from './lib/cli-paths.js';
 
 const ROOT = process.cwd();
 const __filename = fileURLToPath(import.meta.url);
@@ -92,8 +93,7 @@ function resolveSourceGlobMatches(sourceGlob) {
 }
 
 export function resolveCliPath(inputPath) {
-  if (!inputPath) return null;
-  return path.isAbsolute(inputPath) ? inputPath : path.join(ROOT, inputPath);
+  return resolveCliPathFromRoot(ROOT, inputPath);
 }
 
 export function renderRagRequestTelemetryAuditReport(summary = {}) {

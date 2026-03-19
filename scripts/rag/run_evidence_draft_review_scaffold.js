@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { writeEvidenceDraftReviewScaffoldOutputs } from './lib/evidence-draft-review.js';
+import { resolveCliPathFromRoot } from './lib/cli-paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -30,8 +31,7 @@ function parseCliArgs(args) {
 }
 
 function resolveCliPath(inputPath) {
-  if (!inputPath) return null;
-  return path.isAbsolute(inputPath) ? inputPath : path.join(getRoot(), inputPath);
+  return resolveCliPathFromRoot(getRoot(), inputPath);
 }
 
 function toRel(filePath) {

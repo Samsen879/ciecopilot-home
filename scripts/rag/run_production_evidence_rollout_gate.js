@@ -7,6 +7,7 @@ import {
   renderProductionEvidenceRolloutGateReport,
   validateProductionEvidenceRolloutGate,
 } from './lib/production-evidence-rollout-gate.js';
+import { resolveCliPathFromRoot } from './lib/cli-paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -45,8 +46,7 @@ function toRel(filePath) {
 }
 
 export function resolveCliPath(inputPath) {
-  if (!inputPath) return null;
-  return path.isAbsolute(inputPath) ? inputPath : path.join(getRoot(), inputPath);
+  return resolveCliPathFromRoot(getRoot(), inputPath);
 }
 
 export function main(argv = process.argv.slice(2)) {

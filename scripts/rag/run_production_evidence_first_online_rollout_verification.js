@@ -7,6 +7,7 @@ import {
   buildProductionEvidenceFirstOnlineRolloutVerification,
   renderProductionEvidenceFirstOnlineRolloutVerificationReport,
 } from './lib/production-evidence-first-online-rollout-verification.js';
+import { resolveCliPathFromRoot } from './lib/cli-paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const DEFAULT_ROLLOUT_GATE = 'data/evidence/production/rollout_gate_v1.json';
@@ -49,8 +50,7 @@ function toRel(filePath) {
 }
 
 export function resolveCliPath(inputPath) {
-  if (!inputPath) return null;
-  return path.isAbsolute(inputPath) ? inputPath : path.join(getRoot(), inputPath);
+  return resolveCliPathFromRoot(getRoot(), inputPath);
 }
 
 export async function main(argv = process.argv.slice(2)) {

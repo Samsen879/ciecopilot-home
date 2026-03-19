@@ -108,7 +108,7 @@ No environment‑specific divergence
 
 All guarantees above are verifiable by non‑experts via a single command.
 
-PowerShell runner: scripts/db/run_verify.ps1
+Verification runner: `scripts/db/run_verify.ps1` (PowerShell) or the Bash / WSL manual sequence in `docs/setup/LOCAL_DB_VERIFY.md`
 
 Documentation: docs/setup/LOCAL_DB_VERIFY.md
 

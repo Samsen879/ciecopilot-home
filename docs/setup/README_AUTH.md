@@ -14,11 +14,18 @@ The active runtime route is:
 - `POST /api/auth?action=request-reset`
 - `POST /api/auth?action=reset-password`
 
-The route is registered in [api/_runtime/route-registry.js](/C:/Users/Samsen/cie-copilot/.worktrees/codex-auth-prod/api/_runtime/route-registry.js#L187).
+The route is registered in `api/_runtime/route-registry.js`.
 
 ## Local/Test Environment
 
 Minimum server env for local auth backend work:
+
+```bash
+export SUPABASE_URL="https://<project>.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="<service-role-key>"
+export JWT_SECRET="replace-with-a-long-random-secret"
+export ALLOWED_ORIGINS="http://localhost:3000"
+```
 
 ```powershell
 $env:SUPABASE_URL="https://<project>.supabase.co"
@@ -28,6 +35,11 @@ $env:ALLOWED_ORIGINS="http://localhost:3000"
 ```
 
 Optional mail/env settings:
+
+```bash
+export AUTH_PUBLIC_BASE_URL="http://localhost:3000"
+export AUTH_EMAIL_MODE="log"
+```
 
 ```powershell
 $env:AUTH_PUBLIC_BASE_URL="http://localhost:3000"
@@ -82,6 +94,10 @@ POST /api/auth?action=reset-password
 ## Verification Commands
 
 Focused auth regression suite:
+
+```bash
+npm run api:test -- --runInBand api/auth/__tests__/productionization.test.js api/middleware/__tests__/auth-unification.test.js api/_runtime/__tests__/adapter.test.js api/__tests__/security-baseline.test.js api/__tests__/security-depth.test.js api/__tests__/shared-rate-limit.test.js api/__tests__/api-route-integration.test.js
+```
 
 ```powershell
 npm run api:test -- --runInBand api/auth/__tests__/productionization.test.js api/middleware/__tests__/auth-unification.test.js api/_runtime/__tests__/adapter.test.js api/__tests__/security-baseline.test.js api/__tests__/security-depth.test.js api/__tests__/shared-rate-limit.test.js api/__tests__/api-route-integration.test.js

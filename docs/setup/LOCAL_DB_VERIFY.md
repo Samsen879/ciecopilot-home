@@ -1,18 +1,36 @@
-# Local DB Verification (Windows PowerShell)
+# Local DB Verification
 
 ## Requirements
 - Docker Desktop running
 - Supabase CLI available in PATH
 
-## One-command run
+## PowerShell Runner
 ```powershell
 .\scripts\db\run_verify.ps1
 ```
 
-## Notes (PowerShell)
+## Bash / WSL Manual Flow
+```bash
+supabase start --debug
+supabase db reset --debug
+psql "$DATABASE_URL" -f scripts/db/verify_schema.sql
+psql "$DATABASE_URL" -f scripts/db/verify_search_guardrail.sql
+```
+
+If `DATABASE_URL` is not already exported, use the local Supabase default, for example:
+
+```bash
+export DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+```
+
+## Notes
 - Show stash in PowerShell (stash ref must be quoted):
   ```powershell
   git stash show -p --stat "stash@{0}" | Out-Host -Paging
+  ```
+- Show stash in Bash / WSL:
+  ```bash
+  git stash show -p --stat stash@{0} | less
   ```
 - Avoid Unix tools (head/sed). Use:
   - `Select-Object -First N`

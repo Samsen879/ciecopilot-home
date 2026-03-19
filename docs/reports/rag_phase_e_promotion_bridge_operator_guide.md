@@ -36,7 +36,8 @@ Apply writes:
 - `data/evidence/production/<target-bundle-id>/manifest.json`
 - `data/evidence/production/<target-bundle-id>/items.json`
 - updated `data/evidence/production/whitelist_v1.json`
-- receipt JSON / Markdown
+- `data/evidence/production/receipts/<target-bundle-id>_promotion_receipt.json`
+- `docs/reports/rag_phase_e_<target-bundle-id>_promotion_receipt.md`
 
 ### Dry Run
 
@@ -89,6 +90,11 @@ When reading the receipt, treat these fields as the minimum promotion health che
 - `validation.whitelist_valid`
 - `validation.release_ready`
 - `validation.ingest_permitted`
+
+Default tracked receipt outputs are:
+
+- `data/evidence/production/receipts/<target-bundle-id>_promotion_receipt.json`
+- `docs/reports/rag_phase_e_<target-bundle-id>_promotion_receipt.md`
 
 ## Rollout Boundary
 

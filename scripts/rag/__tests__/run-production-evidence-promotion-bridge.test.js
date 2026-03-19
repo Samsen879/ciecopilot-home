@@ -72,7 +72,7 @@ async function runCli(argv, workspaceRoot) {
 }
 
 describe('run_production_evidence_promotion_bridge cli', () => {
-  test('default apply mode writes canonical bundle, whitelist, and receipt', async () => {
+  test('default apply mode writes canonical bundle, whitelist, and tracked receipt', async () => {
     const workspaceRoot = makeTempWorkspace();
     copyGovernanceInputs(workspaceRoot);
     buildReviewedCandidate(workspaceRoot);
@@ -85,10 +85,6 @@ describe('run_production_evidence_promotion_bridge cli', () => {
         'phase_e_pilot_ready_9231_v1',
         '--approved-corpus-version',
         'rag_production_evidence_pilot_9231_20260318',
-        '--receipt-json',
-        'tmp/receipts/phase_e_promotion_9231_v1.json',
-        '--receipt-md',
-        'tmp/receipts/phase_e_promotion_9231_v1.md',
       ],
       workspaceRoot,
     );
@@ -97,8 +93,27 @@ describe('run_production_evidence_promotion_bridge cli', () => {
     expect(result.exitCode).toBe(0);
     expect(summary.mode).toBe('apply');
     expect(summary.validation.release_ready).toBe(true);
+    expect(summary.paths).toMatchObject({
+      receiptJsonPath: 'data/evidence/production/receipts/phase_e_pilot_ready_9231_v1_promotion_receipt.json',
+      receiptMdPath: 'docs/reports/rag_phase_e_phase_e_pilot_ready_9231_v1_promotion_receipt.md',
+    });
     expect(fs.existsSync(path.join(workspaceRoot, 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json'))).toBe(true);
-    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/receipts/phase_e_promotion_9231_v1.json'))).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(
+          workspaceRoot,
+          'data/evidence/production/receipts/phase_e_pilot_ready_9231_v1_promotion_receipt.json',
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(
+          workspaceRoot,
+          'docs/reports/rag_phase_e_phase_e_pilot_ready_9231_v1_promotion_receipt.md',
+        ),
+      ),
+    ).toBe(true);
   });
 
   test('collects repeated approved corpus version args', async () => {

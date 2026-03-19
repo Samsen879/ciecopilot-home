@@ -294,7 +294,7 @@ describe('production evidence promotion bridge builders', () => {
     ).toThrow('approved corpus versions must not be empty');
   });
 
-  test('apply writes canonical bundle files, whitelist, and receipt without touching rollout gate', () => {
+  test('apply writes canonical bundle files, whitelist, and tracked receipt without touching rollout gate', () => {
     const workspaceRoot = makeTempWorkspace();
     copyGovernanceInputs(workspaceRoot);
     const candidate = buildReviewedCandidate(workspaceRoot);
@@ -314,15 +314,31 @@ describe('production evidence promotion bridge builders', () => {
       sourceReviewId: candidate.review_id,
       whitelistPath: 'data/evidence/production/whitelist_v1.json',
       rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
-      receiptJsonPath: 'tmp/receipts/phase_e_promotion_9231_v1.json',
-      receiptMdPath: 'tmp/receipts/phase_e_promotion_9231_v1.md',
     });
 
     expect(result.mode).toBe('apply');
+    expect(result.paths).toMatchObject({
+      receiptJsonPath: 'data/evidence/production/receipts/phase_e_pilot_ready_9231_v1_promotion_receipt.json',
+      receiptMdPath: 'docs/reports/rag_phase_e_phase_e_pilot_ready_9231_v1_promotion_receipt.md',
+    });
     expect(fs.existsSync(path.join(workspaceRoot, 'data/evidence/production/phase_e_pilot_ready_9231_v1/manifest.json'))).toBe(true);
     expect(fs.existsSync(path.join(workspaceRoot, 'data/evidence/production/phase_e_pilot_ready_9231_v1/items.json'))).toBe(true);
-    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/receipts/phase_e_promotion_9231_v1.json'))).toBe(true);
-    expect(fs.existsSync(path.join(workspaceRoot, 'tmp/receipts/phase_e_promotion_9231_v1.md'))).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(
+          workspaceRoot,
+          'data/evidence/production/receipts/phase_e_pilot_ready_9231_v1_promotion_receipt.json',
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(
+          workspaceRoot,
+          'docs/reports/rag_phase_e_phase_e_pilot_ready_9231_v1_promotion_receipt.md',
+        ),
+      ),
+    ).toBe(true);
     expect(result.writes).toMatchObject({
       bundle: true,
       whitelist: true,

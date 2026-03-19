@@ -107,11 +107,11 @@ function defaultTargetManifestPath(targetBundleId) {
 }
 
 function defaultReceiptJsonPath(targetBundleId) {
-  return `docs/reports/receipts/${normalizeString(targetBundleId)}.json`;
+  return `data/evidence/production/receipts/${normalizeString(targetBundleId)}_promotion_receipt.json`;
 }
 
 function defaultReceiptMdPath(targetBundleId) {
-  return `docs/reports/receipts/${normalizeString(targetBundleId)}.md`;
+  return `docs/reports/rag_phase_e_${normalizeString(targetBundleId)}_promotion_receipt.md`;
 }
 
 function buildPromotionNote(candidateBundleId, sourceReviewId) {

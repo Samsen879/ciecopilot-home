@@ -31,8 +31,8 @@ describe('production evidence promotion receipt', () => {
         ingest_permitted: true,
       },
       rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
-      receiptPath: 'docs/reports/receipts/phase_e_promotion_9231_v1.json',
-      receiptMdPath: 'docs/reports/receipts/phase_e_promotion_9231_v1.md',
+      receiptPath: 'data/evidence/production/receipts/phase_e_pilot_ready_9231_v1_promotion_receipt.json',
+      receiptMdPath: 'docs/reports/rag_phase_e_phase_e_pilot_ready_9231_v1_promotion_receipt.md',
     });
 
     expect(receipt.rollout_gate).toEqual({
@@ -49,7 +49,7 @@ describe('production evidence promotion receipt', () => {
       expect.arrayContaining([
         'data/evidence/production/phase_e_pilot_ready_9231_v1',
         'data/evidence/production/whitelist_v1.json',
-        'docs/reports/receipts/phase_e_promotion_9231_v1.json',
+        'data/evidence/production/receipts/phase_e_pilot_ready_9231_v1_promotion_receipt.json',
       ]),
     );
   });
@@ -81,8 +81,8 @@ describe('production evidence promotion receipt', () => {
         ingest_permitted: true,
       },
       rolloutGatePath: 'data/evidence/production/rollout_gate_v1.json',
-      receiptPath: 'docs/reports/receipts/phase_e_promotion_9231_v1.json',
-      receiptMdPath: 'docs/reports/receipts/phase_e_promotion_9231_v1.md',
+      receiptPath: 'data/evidence/production/receipts/phase_e_pilot_ready_9231_v1_promotion_receipt.json',
+      receiptMdPath: 'docs/reports/rag_phase_e_phase_e_pilot_ready_9231_v1_promotion_receipt.md',
     });
 
     const report = renderProductionEvidencePromotionReceiptReport(receipt);

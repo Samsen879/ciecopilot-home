@@ -1,5 +1,5 @@
 import React from 'react';
-import PersonalizedRecommendations from '../components/recommendations/PersonalizedRecommendations';
+import PersonalizedRecommendations from '../components/Recommendations/PersonalizedRecommendations';
 
 export default function ToolsSmartRecommendations() {
   return (

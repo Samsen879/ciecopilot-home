@@ -22,7 +22,7 @@ from pathlib import Path
 from threading import Lock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from scripts.common.env import load_project_env
+from scripts.common.env import load_project_env, resolve_assets_root
 
 from scripts.common.local_guard import enforce_local
 
@@ -48,9 +48,7 @@ class Config:
     workers: int = 4
     status: list[str] = field(default_factory=lambda: ["pending"])
     max_jobs: int | None = None
-    assets_root: Path = field(default_factory=lambda: Path(
-        os.environ.get("ASSETS_ROOT", r"C:\Users\Samsen\cie-assets")
-    ))
+    assets_root: Path = field(default_factory=resolve_assets_root)
     dry_run: bool = False
     allow_remote: bool = False
     stale_timeout_minutes: int = 10
@@ -79,8 +77,8 @@ def parse_args(argv: list[str] | None = None) -> Config:
         help="Maximum number of jobs to process (default: unlimited)",
     )
     parser.add_argument(
-        "--assets-root", type=str,
-        default=os.environ.get("ASSETS_ROOT", r"C:\Users\Samsen\cie-assets"),
+        "--assets-root", type=Path,
+        default=resolve_assets_root(),
         help="Local assets root directory",
     )
     parser.add_argument(
@@ -110,7 +108,7 @@ def parse_args(argv: list[str] | None = None) -> Config:
         workers=args.workers,
         status=[s.strip() for s in args.status.split(",")],
         max_jobs=args.max_jobs,
-        assets_root=Path(args.assets_root),
+        assets_root=args.assets_root,
         dry_run=args.dry_run,
         allow_remote=args.allow_remote,
         stale_timeout_minutes=args.stale_timeout,

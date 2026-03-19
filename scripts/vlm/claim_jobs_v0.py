@@ -14,18 +14,20 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+from scripts.common.env import load_project_env, resolve_assets_root
 from scripts.vlm.db_utils import connect
 from scripts.common.local_guard import enforce_local
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(description="Claim pending VLM jobs")
     parser.add_argument("--batch", type=int, default=1)
     parser.add_argument("--worker-id", type=str, required=True)
     parser.add_argument("--partition-mod", type=int, default=None, help="分桶总数（用于严格分配）")
     parser.add_argument("--partition-idx", type=int, default=None, help="分桶编号（0-based）")
     parser.add_argument("--status", type=str, default="pending", choices=["pending", "blocked"], help="要领取的任务状态")
-    parser.add_argument("--assets-root", type=str, default=os.environ.get("ASSETS_ROOT", "C:\\Users\\Samsen\\cie-assets"))
+    parser.add_argument("--assets-root", type=str, default=str(resolve_assets_root()))
     parser.add_argument("--allow-remote", action="store_true", help="允许非本地连接（危险）")
     args = parser.parse_args()
 

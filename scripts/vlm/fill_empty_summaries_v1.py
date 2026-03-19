@@ -14,11 +14,12 @@ from openai import OpenAI
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from scripts.common.env import load_project_env
+from scripts.common.env import load_project_env, resolve_assets_root
 from scripts.vlm.db_utils import connect  # noqa: E402
 
+load_project_env()
 
-ASSETS_ROOT = Path(r"C:\Users\Samsen\cie-assets")
+ASSETS_ROOT = resolve_assets_root()
 MODEL = "qwen3-vl-flash"
 BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 CODE_BLOCK_RE = re.compile(r"```(?:json)?\s*(.*?)\s*```", re.DOTALL)

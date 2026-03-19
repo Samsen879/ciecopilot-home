@@ -24,7 +24,7 @@ from threading import Lock
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from scripts.common.env import load_project_env
+from scripts.common.env import load_project_env, resolve_assets_root
 from scripts.vlm.contracts import leakage_guard, compute_response_sha256
 from scripts.vlm.providers import get_provider, RetryableError
 
@@ -465,7 +465,7 @@ def _insert_batch(db: SupabaseClient, results: list[dict], counts: dict):
 
 def main():
     parser = argparse.ArgumentParser(description="VLM extraction pipeline")
-    parser.add_argument("--assets-root", type=Path, default=Path("/mnt/c/users/samsen/cie-assets"))
+    parser.add_argument("--assets-root", type=Path, default=resolve_assets_root())
     parser.add_argument("--provider", default="auto", help="mock|openai|auto")
     parser.add_argument("--model", default="gpt-4o-mini")
     parser.add_argument("--prompt-version", default="v0.1")

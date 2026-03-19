@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from openai import OpenAI
 
+from scripts.common.env import load_project_env, resolve_assets_root
 from scripts.vlm.qc_common import (
     DEFAULT_SPOT_CHECK_JSON,
     get_connection,
@@ -25,8 +26,9 @@ from scripts.vlm.qc_common import (
     write_json,
 )
 
+load_project_env()
 
-ASSETS_ROOT = Path(r"C:\Users\Samsen\cie-assets")
+ASSETS_ROOT = resolve_assets_root()
 MODEL = "qwen3-vl-flash"
 BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 TARGET_SYLLABUS = ["9709", "9231", "9702"]

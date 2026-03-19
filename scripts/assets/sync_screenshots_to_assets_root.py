@@ -9,6 +9,8 @@ import re
 import shutil
 from pathlib import Path
 
+from scripts.common.env import load_project_env, resolve_assets_root
+
 
 PAPER_DIR_RE = re.compile(
     r"^(?:WM_)?(?P<syllabus>\d{4})_(?P<session>[swm])(?P<year>\d{2})_(?P<doc_type>qp|ms)_(?P<paper>\d)(?P<variant>\d)$",
@@ -19,9 +21,10 @@ PAGE_FILE_RE = re.compile(r"^page_(\d+)$", re.IGNORECASE)
 
 
 def parse_args() -> argparse.Namespace:
+    load_project_env()
     p = argparse.ArgumentParser(description="Sync outputs/screenshots into ASSETS_ROOT canonical storage paths")
     p.add_argument("--screens-root", type=Path, default=Path("outputs/screenshots"))
-    p.add_argument("--assets-root", type=Path, default=Path(os.environ.get("ASSETS_ROOT", r"C:\Users\Samsen\cie-assets")))
+    p.add_argument("--assets-root", type=Path, default=resolve_assets_root())
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--copy", action="store_true", help="Use copy instead of hardlink")
     p.add_argument("--verify-sha", action="store_true", help="Verify sha256 when destination exists")

@@ -10,15 +10,17 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+from scripts.common.env import load_project_env, resolve_assets_root
 from scripts.vlm.db_utils import connect
 from scripts.common.local_guard import enforce_local
 
 
 def main() -> int:
+    load_project_env()
     parser = argparse.ArgumentParser(description="Claim jobs and print next steps")
     parser.add_argument("--batch", type=int, default=1)
     parser.add_argument("--worker-id", type=str, required=True)
-    parser.add_argument("--assets-root", type=str, default=os.environ.get("ASSETS_ROOT", "C:\\Users\\Samsen\\cie-assets"))
+    parser.add_argument("--assets-root", type=str, default=str(resolve_assets_root()))
     parser.add_argument("--allow-remote", action="store_true", help="允许非本地连接（危险）")
     args = parser.parse_args()
 

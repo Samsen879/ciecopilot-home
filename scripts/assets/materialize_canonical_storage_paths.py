@@ -8,13 +8,16 @@ import re
 import shutil
 from pathlib import Path
 
+from scripts.common.env import load_project_env, resolve_assets_root
+
 
 PAPER_DIR_RE = re.compile(r"^WM_(?P<syllabus>\d{4})_(?P<canonical>[swm]\d{2}_(?:qp|ms)_\d\d)$", re.IGNORECASE)
 
 
 def parse_args() -> argparse.Namespace:
+    load_project_env()
     p = argparse.ArgumentParser(description="Materialize non-WM canonical storage paths under ASSETS_ROOT")
-    p.add_argument("--assets-root", type=Path, default=Path(os.environ.get("ASSETS_ROOT", r"C:\Users\Samsen\cie-assets")))
+    p.add_argument("--assets-root", type=Path, default=resolve_assets_root())
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--copy", action="store_true", help="Use copy instead of hardlink")
     return p.parse_args()

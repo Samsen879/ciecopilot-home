@@ -13,8 +13,8 @@ import {
   Target,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { fetchRecommendations } from '../recommendations/recommendations-client.js';
-import { createRecommendationsViewModel } from '../recommendations/recommendation-view-model.js';
+import { fetchRecommendations } from '../Recommendations/recommendations-client.js';
+import { createRecommendationsViewModel } from '../Recommendations/recommendation-view-model.js';
 import { loadLearningPath } from './learning-path-client.js';
 import {
   createLearningPathViewModel,

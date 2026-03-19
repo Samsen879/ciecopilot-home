@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
 
-const SCRIPT_PATH = path.join(process.cwd(), 'scripts', 'rag', 'run_evidence_draft_review_scaffold.js');
+import { invokeCliMain } from './helpers/cli-main-harness.js';
+import { main as reviewScaffoldMain } from '../run_evidence_draft_review_scaffold.js';
+
 const FIXTURE_DIR = path.join(
   process.cwd(),
   'scripts',
@@ -25,23 +26,13 @@ function copyFixtureBundle(workspaceRoot) {
   return targetDir;
 }
 
-function runCli(args, options = {}) {
-  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], {
-    cwd: options.cwd,
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      ...(options.env || {}),
-    },
-  });
-}
-
 describe('run_evidence_draft_review_scaffold cli', () => {
-  test('writes a decision scaffold json and optional markdown report', () => {
+  test('writes a decision scaffold json and optional markdown report', async () => {
     const workspaceRoot = makeTempWorkspace();
     copyFixtureBundle(workspaceRoot);
 
-    const result = runCli(
+    const result = await invokeCliMain(
+      reviewScaffoldMain,
       [
         '--bundle-dir',
         'tmp/sample_draft_bundle',
@@ -58,7 +49,7 @@ describe('run_evidence_draft_review_scaffold cli', () => {
     const decision = JSON.parse(fs.readFileSync(path.join(workspaceRoot, 'tmp/out/decision.json'), 'utf8'));
     const markdown = fs.readFileSync(path.join(workspaceRoot, 'tmp/out/review.md'), 'utf8');
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(decision).toMatchObject({
       schema_version: 'evidence_draft_review_v1',
       source_bundle_id: 'phase_c_evidence_draft_20260317',
@@ -71,11 +62,12 @@ describe('run_evidence_draft_review_scaffold cli', () => {
     expect(markdown).toContain('phase_c_evidence_draft_20260317');
   });
 
-  test('accepts explicit manifest, items, and review file inputs', () => {
+  test('accepts explicit manifest, items, and review file inputs', async () => {
     const workspaceRoot = makeTempWorkspace();
     copyFixtureBundle(workspaceRoot);
 
-    const result = runCli(
+    const result = await invokeCliMain(
+      reviewScaffoldMain,
       [
         '--manifest',
         'tmp/sample_draft_bundle/manifest.json',
@@ -93,16 +85,17 @@ describe('run_evidence_draft_review_scaffold cli', () => {
 
     const decision = JSON.parse(fs.readFileSync(path.join(workspaceRoot, 'tmp/out/decision.json'), 'utf8'));
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(decision.source_bundle_path).toBe('tmp/sample_draft_bundle');
     expect(decision.reviewer).toBe('operator-b');
   });
 
-  test('fails when bundle-dir and explicit file inputs are mixed', () => {
+  test('fails when bundle-dir and explicit file inputs are mixed', async () => {
     const workspaceRoot = makeTempWorkspace();
     copyFixtureBundle(workspaceRoot);
 
-    const result = runCli(
+    const result = await invokeCliMain(
+      reviewScaffoldMain,
       [
         '--bundle-dir',
         'tmp/sample_draft_bundle',
@@ -118,7 +111,7 @@ describe('run_evidence_draft_review_scaffold cli', () => {
       { cwd: workspaceRoot },
     );
 
-    expect(result.status).not.toBe(0);
+    expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain('bundle input must use either --bundle-dir or explicit --manifest/--items-json paths');
   });
 });

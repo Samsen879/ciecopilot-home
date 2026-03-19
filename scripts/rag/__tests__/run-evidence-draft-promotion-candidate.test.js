@@ -1,14 +1,14 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
 
 import {
   buildEvidenceDraftReviewTemplate,
   loadEvidenceDraftBundle,
 } from '../lib/evidence-draft-review.js';
+import { main as promotionCandidateMain } from '../run_evidence_draft_promotion_candidate.js';
+import { invokeCliMain } from './helpers/cli-main-harness.js';
 
-const SCRIPT_PATH = path.join(process.cwd(), 'scripts', 'rag', 'run_evidence_draft_promotion_candidate.js');
 const FIXTURE_DIR = path.join(
   process.cwd(),
   'scripts',
@@ -60,24 +60,14 @@ function writeCompletedReview(workspaceRoot, bundleDir, options = {}) {
   return reviewPath;
 }
 
-function runCli(args, options = {}) {
-  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], {
-    cwd: options.cwd,
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      ...(options.env || {}),
-    },
-  });
-}
-
 describe('run_evidence_draft_promotion_candidate cli', () => {
-  test('writes a governance-seed candidate bundle and fixed-path reports', () => {
+  test('writes a governance-seed candidate bundle and fixed-path reports', async () => {
     const workspaceRoot = makeTempWorkspace();
     const bundleDir = copyFixtureBundle(workspaceRoot);
     const reviewPath = writeCompletedReview(workspaceRoot, bundleDir);
 
-    const result = runCli(
+    const result = await invokeCliMain(
+      promotionCandidateMain,
       [
         '--bundle-dir',
         'tmp/sample_draft_bundle',
@@ -102,7 +92,7 @@ describe('run_evidence_draft_promotion_candidate cli', () => {
     const summary = JSON.parse(fs.readFileSync(path.join(workspaceRoot, 'tmp/out/promotion_candidate.json'), 'utf8'));
     const markdown = fs.readFileSync(path.join(workspaceRoot, 'tmp/out/promotion_candidate.md'), 'utf8');
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(manifest.bundle_status).toBe('governance_seed_only');
     expect(manifest.subject_codes).toEqual(['9231']);
     expect(items).toHaveLength(1);
@@ -118,12 +108,13 @@ describe('run_evidence_draft_promotion_candidate cli', () => {
     expect(reviewPath).toContain('completed_review.json');
   });
 
-  test('accepts explicit manifest, items, and review file inputs', () => {
+  test('accepts explicit manifest, items, and review file inputs', async () => {
     const workspaceRoot = makeTempWorkspace();
     const bundleDir = copyFixtureBundle(workspaceRoot);
     writeCompletedReview(workspaceRoot, bundleDir);
 
-    const result = runCli(
+    const result = await invokeCliMain(
+      promotionCandidateMain,
       [
         '--manifest',
         'tmp/sample_draft_bundle/manifest.json',
@@ -143,12 +134,12 @@ describe('run_evidence_draft_promotion_candidate cli', () => {
       fs.readFileSync(path.join(workspaceRoot, 'tmp/review_candidates/phase_d_fixture_candidate_v2/manifest.json'), 'utf8'),
     );
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(manifest.bundle_id).toBe('phase_d_fixture_candidate_v2');
     expect(manifest.bundle_status).toBe('governance_seed_only');
   });
 
-  test('exits nonzero when the completed review is invalid', () => {
+  test('exits nonzero when the completed review is invalid', async () => {
     const workspaceRoot = makeTempWorkspace();
     const bundleDir = copyFixtureBundle(workspaceRoot);
     writeCompletedReview(workspaceRoot, bundleDir, {
@@ -157,7 +148,8 @@ describe('run_evidence_draft_promotion_candidate cli', () => {
       thirdDecision: '',
     });
 
-    const result = runCli(
+    const result = await invokeCliMain(
+      promotionCandidateMain,
       [
         '--bundle-dir',
         'tmp/sample_draft_bundle',
@@ -171,7 +163,7 @@ describe('run_evidence_draft_promotion_candidate cli', () => {
       { cwd: workspaceRoot },
     );
 
-    expect(result.status).not.toBe(0);
+    expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toContain('review decision is invalid');
   });
 });

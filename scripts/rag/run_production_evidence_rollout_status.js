@@ -8,7 +8,6 @@ import {
   renderProductionEvidenceRolloutStatusReport,
 } from './lib/production-evidence-rollout-status.js';
 
-const ROOT = process.cwd();
 const __filename = fileURLToPath(import.meta.url);
 const DEFAULT_ROLLOUT_GATE_ARTIFACT = 'runs/backend/rag_phase_b_production_evidence_rollout_gate.json';
 const DEFAULT_VERIFICATION_MAPPINGS = [
@@ -20,6 +19,10 @@ const DEFAULT_VERIFICATION_MAPPINGS = [
 ];
 const DEFAULT_OUT_JSON = 'runs/backend/rag_phase_b_production_evidence_rollout_status.json';
 const DEFAULT_OUT_MD = 'docs/reports/rag_phase_b_production_evidence_rollout_status.md';
+
+function getRoot() {
+  return process.cwd();
+}
 
 function parseCliArgs(args) {
   const out = {};
@@ -48,7 +51,7 @@ function readJson(filePath) {
 }
 
 function toRel(filePath) {
-  return path.relative(ROOT, filePath).replace(/\\/g, '/');
+  return path.relative(getRoot(), filePath).replace(/\\/g, '/');
 }
 
 function toList(value, fallback = []) {
@@ -110,7 +113,7 @@ function describeArtifact(filePath) {
 
 export function resolveCliPath(inputPath) {
   if (!inputPath) return null;
-  return path.isAbsolute(inputPath) ? inputPath : path.join(ROOT, inputPath);
+  return path.isAbsolute(inputPath) ? inputPath : path.join(getRoot(), inputPath);
 }
 
 export function main(argv = process.argv.slice(2)) {

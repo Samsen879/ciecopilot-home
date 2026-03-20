@@ -56,6 +56,31 @@ test('pilot type with a released rubric and validated uncertainty unlocks author
   });
 });
 
+test('pilot type with released rubric still falls back when classification confidence is missing', () => {
+  expect(
+    resolveReleasedScoringPosture({
+      questionTypeId: '9709.trigonometry.identities',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: 'trig-identities',
+          rubric_version_id: 'v1',
+          scope_level: 'question_type',
+          release_state: 'released',
+        },
+      ],
+      uncertaintyValidated: true,
+    }),
+  ).toEqual({
+    release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
+    authoritative_scoring_allowed: false,
+    fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
+    fallback_reason_code: FALLBACK_REASON_CODES.MISSING_CLASSIFICATION_CONFIDENCE,
+    classification_confidence: null,
+    learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+  });
+});
+
 test('non-pilot question types remain fallback only even with a released rubric', () => {
   expect(
     resolveReleasedScoringPosture({

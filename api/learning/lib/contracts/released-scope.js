@@ -11,6 +11,7 @@ export const FALLBACK_REASON_CODES = Object.freeze({
   MISSING_QUESTION_TYPE: 'missing_question_type',
   NON_PILOT_QUESTION_TYPE: 'non_pilot_question_type',
   MISSING_RELEASED_RUBRIC: 'missing_released_rubric',
+  MISSING_CLASSIFICATION_CONFIDENCE: 'missing_classification_confidence',
   UNVALIDATED_UNCERTAINTY_POSTURE: 'unvalidated_uncertainty_posture',
 });
 
@@ -107,6 +108,13 @@ export function resolveReleasedScoringPosture({
   if (!hasReleasedRubricRef(candidateRubricRefs)) {
     return buildFallbackPosture(
       FALLBACK_REASON_CODES.MISSING_RELEASED_RUBRIC,
+      normalizedClassificationConfidence,
+    );
+  }
+
+  if (normalizedClassificationConfidence === null) {
+    return buildFallbackPosture(
+      FALLBACK_REASON_CODES.MISSING_CLASSIFICATION_CONFIDENCE,
       normalizedClassificationConfidence,
     );
   }

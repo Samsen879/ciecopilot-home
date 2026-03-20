@@ -1,0 +1,57 @@
+port: 3310
+terminalPort: 14810
+directTerminalPort: 14811
+readyThresholdMs: 300000
+
+defaults:
+  runtime: tmux
+  agent: codex
+  workspace: worktree
+  notifiers: [desktop]
+  orchestrator:
+    agent: codex
+  worker:
+    agent: codex
+
+projects:
+  ciecopilot-home:
+    name: CIE Copilot Home
+    repo: Samsen879/ciecopilot-home
+    path: /home/samsen/code/ciecopilot-home
+    defaultBranch: main
+    sessionPrefix: cie
+    symlinks:
+      - .env
+    agentRulesFile: .agent-rules.md
+    decomposer:
+      enabled: false
+      maxDepth: 2
+      model: gpt-5-codex
+      requireApproval: true
+    reactions:
+      approved-and-green:
+        auto: false
+        action: notify
+        priority: action
+      agent-stuck:
+        threshold: 10m
+        action: notify
+        priority: urgent
+
+reactions:
+  ci-failed:
+    auto: true
+    action: send-to-agent
+    retries: 1
+  changes-requested:
+    auto: true
+    action: send-to-agent
+    escalateAfter: 30m
+  approved-and-green:
+    auto: false
+    action: notify
+    priority: action
+  agent-stuck:
+    threshold: 10m
+    action: notify
+    priority: urgent

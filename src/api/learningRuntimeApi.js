@@ -1,0 +1,266 @@
+import { requireSessionAccessToken } from '../services/utils/sessionAccessToken.js';
+import { supabase } from '../utils/supabase.js';
+
+const LEARNING_RUNTIME_API_BASE = '/api/learning';
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function camelizeKey(key) {
+  return String(key).replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
+function camelizeKeys(value) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => camelizeKeys(entry));
+  }
+
+  if (!isPlainObject(value)) {
+    return value ?? null;
+  }
+
+  return Object.entries(value).reduce((acc, [key, entry]) => {
+    acc[camelizeKey(key)] = camelizeKeys(entry);
+    return acc;
+  }, {});
+}
+
+function buildQuestionRef(questionId) {
+  return questionId ? { kind: 'question', questionId } : null;
+}
+
+function buildQuestionTypeRef(questionTypeId) {
+  return questionTypeId ? { kind: 'question_type', questionTypeId } : null;
+}
+
+function normalizeSessionRecord(session = {}) {
+  const activeScopeBundle = isPlainObject(session.activeScopeBundle)
+    ? session.activeScopeBundle
+    : {};
+  const activeScope = {
+    ...activeScopeBundle,
+    currentAnchorKind: activeScopeBundle.currentAnchorKind ?? session.currentAnchorKind ?? null,
+    currentAnchor: activeScopeBundle.currentAnchorRef ?? session.currentAnchorRef ?? null,
+    currentQuestion:
+      activeScopeBundle.currentQuestionRef ?? buildQuestionRef(session.currentQuestionId ?? null),
+    currentQuestionType:
+      activeScopeBundle.currentQuestionTypeRef
+      ?? buildQuestionTypeRef(session.currentQuestionTypeId ?? null),
+  };
+
+  return {
+    ...session,
+    currentAnchor: session.currentAnchorRef ?? activeScope.currentAnchor,
+    currentQuestion: activeScope.currentQuestion,
+    currentQuestionType: activeScope.currentQuestionType,
+    activeScope,
+  };
+}
+
+function normalizeRequestPayload(payload) {
+  return typeof payload === 'undefined' ? null : payload;
+}
+
+async function readJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+function createLearningRuntimeError(response, payload) {
+  const error = new Error(
+    payload?.error?.message
+      || payload?.message
+      || `HTTP ${response.status}: ${response.statusText || 'Request failed'}`,
+  );
+  error.name = 'LearningRuntimeApiError';
+  error.status = response.status;
+  error.code = payload?.error?.code ?? 'http_error';
+  error.retryable = payload?.error?.retryable ?? false;
+  error.details = payload?.error?.details ?? {};
+  error.requestId = payload?.request_id ?? null;
+  return error;
+}
+
+async function learningRequest(path, {
+  method = 'GET',
+  body,
+  headers = {},
+  idempotencyKey = null,
+} = {}) {
+  const accessToken = await requireSessionAccessToken(supabase);
+  const requestHeaders = {
+    Authorization: `Bearer ${accessToken}`,
+    ...headers,
+  };
+
+  const hasBody = typeof body !== 'undefined';
+  if (hasBody) {
+    requestHeaders['Content-Type'] = 'application/json';
+  }
+  if (idempotencyKey) {
+    requestHeaders['Idempotency-Key'] = idempotencyKey;
+  }
+
+  const response = await fetch(`${LEARNING_RUNTIME_API_BASE}${path}`, {
+    method,
+    headers: requestHeaders,
+    body: hasBody ? JSON.stringify(normalizeRequestPayload(body)) : undefined,
+  });
+
+  const payload = await readJson(response);
+  if (!response.ok) {
+    throw createLearningRuntimeError(response, payload);
+  }
+
+  return payload ?? {};
+}
+
+function buildQuery(params = {}, keyMap = {}) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === null || typeof value === 'undefined' || value === '') {
+      return;
+    }
+    searchParams.set(keyMap[key] || key, String(value));
+  });
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : '';
+}
+
+export function normalizeSessionResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+
+  return {
+    ...camelized,
+    session: normalizeSessionRecord(camelized.session || {}),
+    anchorValidity: camelized.anchorValidity || null,
+    canonicalHomeContext: camelized.canonicalHomeContext || null,
+    featureFlags: camelized.featureFlags || {},
+  };
+}
+
+export function normalizeAskResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+  const sessionDelta = isPlainObject(camelized.sessionDelta)
+    ? camelized.sessionDelta
+    : {};
+
+  return {
+    ...camelized,
+    fallbackPosture: camelized.fallbackPosture || null,
+    evidenceSummary: camelized.evidenceSummary || null,
+    sessionDelta: {
+      ...sessionDelta,
+      currentQuestion:
+        sessionDelta.currentQuestionRef
+        ?? buildQuestionRef(sessionDelta.currentQuestionId ?? null),
+      currentQuestionType:
+        sessionDelta.currentQuestionTypeRef
+        ?? buildQuestionTypeRef(sessionDelta.currentQuestionTypeId ?? null),
+    },
+    suggestedActions: Array.isArray(camelized.suggestedActions)
+      ? camelized.suggestedActions
+      : [],
+  };
+}
+
+export function normalizeImportQuestionResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+  return {
+    ...camelized,
+    scoringScopePosture: camelized.scoringScopePosture || null,
+  };
+}
+
+export function normalizeReviewTaskListResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+  return {
+    ...camelized,
+    items: Array.isArray(camelized.items) ? camelized.items : [],
+  };
+}
+
+export function normalizeWorkspaceResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+  return {
+    ...camelized,
+    workspace: camelized.workspace || null,
+    reviewQueue: normalizeReviewTaskListResponse(camelized.reviewQueue || {}),
+  };
+}
+
+export function normalizeArtifactResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+  return {
+    ...camelized,
+    artifact: camelized.artifact || null,
+    slotTransition: camelized.slotTransition || null,
+  };
+}
+
+export async function createSession(payload, options = {}) {
+  return normalizeSessionResponse(await learningRequest('/sessions', {
+    method: 'POST',
+    body: payload,
+    idempotencyKey: options.idempotencyKey ?? null,
+  }));
+}
+
+export async function getSession(sessionId) {
+  return normalizeSessionResponse(await learningRequest(`/sessions/${encodeURIComponent(sessionId)}`));
+}
+
+export async function askInSession(sessionId, payload) {
+  return normalizeAskResponse(await learningRequest(`/sessions/${encodeURIComponent(sessionId)}/ask`, {
+    method: 'POST',
+    body: payload,
+  }));
+}
+
+export async function importQuestion(payload, options = {}) {
+  return normalizeImportQuestionResponse(await learningRequest('/questions/import', {
+    method: 'POST',
+    body: payload,
+    idempotencyKey: options.idempotencyKey ?? null,
+  }));
+}
+
+export async function getWorkspace(topicId) {
+  return normalizeWorkspaceResponse(await learningRequest(`/workspaces/${encodeURIComponent(topicId)}`));
+}
+
+export async function listReviewTasks(params = {}) {
+  const query = buildQuery(params, {
+    topicId: 'topic_id',
+    dueBefore: 'due_before',
+  });
+
+  return normalizeReviewTaskListResponse(
+    await learningRequest(`/review-tasks${query}`),
+  );
+}
+
+export async function updateArtifact(artifactId, payload) {
+  return normalizeArtifactResponse(await learningRequest(`/artifacts/${encodeURIComponent(artifactId)}`, {
+    method: 'PATCH',
+    body: payload,
+  }));
+}
+
+export const learningRuntimeApi = {
+  createSession,
+  getSession,
+  askInSession,
+  importQuestion,
+  getWorkspace,
+  listReviewTasks,
+  updateArtifact,
+};
+
+export default learningRuntimeApi;

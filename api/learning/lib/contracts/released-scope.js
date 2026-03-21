@@ -84,12 +84,16 @@ export function resolveReleasedScoringPosture({
   uncertaintyValidated = false,
   uncertaintyPosture = null,
   classificationConfidence = null,
+  isPilotQuestionType = null,
 } = {}) {
   const normalizedQuestionTypeId = normalizeQuestionTypeId(questionTypeId);
   const normalizedClassificationConfidence = normalizeClassificationConfidence(classificationConfidence);
   const validatedUncertainty = hasValidatedUncertaintyPosture(
     uncertaintyPosture ?? uncertaintyValidated,
   );
+  const pilotQuestionTypeMatch = typeof isPilotQuestionType === 'boolean'
+    ? isPilotQuestionType
+    : isSeededPilotQuestionType(normalizedQuestionTypeId);
 
   if (!normalizedQuestionTypeId) {
     return buildFallbackPosture(
@@ -98,7 +102,7 @@ export function resolveReleasedScoringPosture({
     );
   }
 
-  if (!isSeededPilotQuestionType(normalizedQuestionTypeId)) {
+  if (!pilotQuestionTypeMatch) {
     return buildFallbackPosture(
       FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
       normalizedClassificationConfidence,

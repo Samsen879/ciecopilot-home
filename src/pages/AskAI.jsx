@@ -1,15 +1,75 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Bot, MessageSquare, Sparkles, Target } from "lucide-react";
-import ChatWidget from "../components/ChatWidget";
+import { ArrowRight, Bot, MessageSquare, Sparkles, Target } from "lucide-react";
+import { Link } from "react-router-dom";
 import ChatPanel from "../components/ChatPanel";
+import {
+  LEARNING_RUNTIME_ENTRY_TOPICS,
+  getAskAiEntryMode,
+} from "./legacy-entry-mode.js";
 
 const AskAI = () => {
+  const entryMode = getAskAiEntryMode();
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.8, ease: "easeOut" }
   };
+
+  if (entryMode === "learning_runtime") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 pt-20">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-slate-900 p-3 text-white">
+                <Bot size={28} />
+              </div>
+              <div>
+                <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-500">
+                  Learning Runtime
+                </p>
+                <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950">
+                  AskAI now hands off into runtime workspaces
+                </h1>
+              </div>
+            </div>
+
+            <p className="mt-6 max-w-3xl text-base leading-7 text-slate-600">
+              The legacy AskAI page no longer owns canonical learning state. Use a runtime workspace
+              to review stable slots, linked references, and the topic-filtered review queue for the
+              pilot trigonometry slice.
+            </p>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+              {LEARNING_RUNTIME_ENTRY_TOPICS.map((topic) => (
+                <Link
+                  key={topic.topicId}
+                  to={`/learn/workspace/${topic.topicId}`}
+                  className="group rounded-3xl border border-slate-200 bg-slate-50 p-6 transition hover:border-slate-900 hover:bg-white"
+                >
+                  <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-500">
+                    Runtime workspace
+                  </p>
+                  <h2 className="mt-3 text-2xl font-semibold text-slate-950">{topic.title}</h2>
+                  <p className="mt-2 text-sm text-slate-600">{topic.topicPath}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-slate-900">
+                    Open workspace
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+
+            <p className="mt-8 text-sm text-slate-500">
+              Legacy AskAI remains a compatibility entry only; stable runtime truth now lives on the
+              new session and workspace routes.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 pt-20">
@@ -74,7 +134,10 @@ const AskAI = () => {
             
             {/* 使用新的 ChatPanel 形成最小闭环 */}
             <div className="h-96">
-              <ChatPanel />
+              <ChatPanel
+                chatId="ask-ai-legacy"
+                compatibilityNotice="This legacy AskAI surface is route-scoped chat only; canonical runtime state lives on the new learning-runtime routes."
+              />
             </div>
           </div>
         </motion.div>

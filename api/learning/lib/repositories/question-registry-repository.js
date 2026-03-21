@@ -55,6 +55,32 @@ function buildClassificationSnapshotRow(questionId, input) {
   };
 }
 
+export async function getCanonicalQuestionType(client, {
+  subjectCode,
+  questionTypeId,
+} = {}) {
+  const normalizedSubjectCode = typeof subjectCode === 'string' ? subjectCode.trim() : '';
+  const normalizedQuestionTypeId = typeof questionTypeId === 'string' ? questionTypeId.trim() : '';
+
+  if (!normalizedSubjectCode || !normalizedQuestionTypeId) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from('learning_question_types')
+    .select('question_type_id, family_id, subject_code, release_state')
+    .eq('question_type_id', normalizedQuestionTypeId)
+    .eq('subject_code', normalizedSubjectCode)
+    .eq('release_state', 'released')
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load canonical question type: ${error.message}`);
+  }
+
+  return data || null;
+}
+
 export async function insertImportedQuestion(client, input) {
   const questionRow = buildQuestionInsertRow(input);
   const { data: insertedQuestion, error: questionError } = await client

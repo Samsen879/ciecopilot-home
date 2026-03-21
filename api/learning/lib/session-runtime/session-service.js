@@ -74,6 +74,17 @@ function cloneJson(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function createDeferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  promise.catch(() => {});
+  return { promise, resolve, reject };
+}
+
 function canonicalizeJson(value) {
   if (Array.isArray(value)) {
     return value.map((entry) => canonicalizeJson(entry));
@@ -369,33 +380,70 @@ function normalizedIdempotencyPayload(payload) {
 
 async function maybeReplayCreateSession(client, userId, cacheKey, normalizedPayload) {
   if (!cacheKey) return null;
-  const cached = IDEMPOTENT_CREATE_SESSIONS.get(cacheKey);
-  if (!cached) return null;
-  if (cached.normalizedPayload !== normalizedPayload) {
-    throw createLearningError('idempotency_conflict');
-  }
+  while (true) {
+    const cached = IDEMPOTENT_CREATE_SESSIONS.get(cacheKey);
+    if (!cached) return null;
 
-  const cachedSessionId = cached.response?.session?.session_id ?? null;
-  if (cachedSessionId) {
-    const session = await getSession(client, {
-      sessionId: cachedSessionId,
-      userId,
-    });
-    if (!session) {
+    if (cached.normalizedPayload !== normalizedPayload) {
+      throw createLearningError('idempotency_conflict');
+    }
+
+    if (cached.state === 'pending') {
+      try {
+        const response = await cached.deferred.promise;
+        return cloneJson(response);
+      } catch (error) {
+        const current = IDEMPOTENT_CREATE_SESSIONS.get(cacheKey);
+        if (current === cached) {
+          IDEMPOTENT_CREATE_SESSIONS.delete(cacheKey);
+        }
+        throw error;
+      }
+    }
+
+    const cachedSessionId = cached.response?.session?.session_id ?? null;
+    if (cachedSessionId) {
+      const session = await getSession(client, {
+        sessionId: cachedSessionId,
+        userId,
+      });
+      if (session) {
+        return cloneJson(cached.response);
+      }
+    }
+
+    if (IDEMPOTENT_CREATE_SESSIONS.get(cacheKey) === cached) {
       IDEMPOTENT_CREATE_SESSIONS.delete(cacheKey);
-      return null;
     }
   }
-
-  return cloneJson(cached.response);
 }
 
-function rememberCreateSession(cacheKey, normalizedPayload, response) {
-  if (!cacheKey) return;
-  IDEMPOTENT_CREATE_SESSIONS.set(cacheKey, {
+function reserveCreateSession(cacheKey, normalizedPayload) {
+  if (!cacheKey) return null;
+  const reservation = {
     normalizedPayload,
-    response: cloneJson(response),
-  });
+    state: 'pending',
+    response: null,
+    deferred: createDeferred(),
+  };
+  IDEMPOTENT_CREATE_SESSIONS.set(cacheKey, reservation);
+  return reservation;
+}
+
+function rememberCreateSession(cacheKey, reservation, response) {
+  if (!cacheKey || !reservation) return;
+  const clonedResponse = cloneJson(response);
+  reservation.state = 'fulfilled';
+  reservation.response = clonedResponse;
+  reservation.deferred.resolve(clonedResponse);
+}
+
+function releaseCreateSessionReservation(cacheKey, reservation, error) {
+  if (!cacheKey || !reservation) return;
+  if (IDEMPOTENT_CREATE_SESSIONS.get(cacheKey) === reservation) {
+    IDEMPOTENT_CREATE_SESSIONS.delete(cacheKey);
+  }
+  reservation.deferred.reject(error);
 }
 
 export function sendLearningError(req, res, code, overrides = {}) {
@@ -445,60 +493,67 @@ export async function createLearningSession(client, {
     return replay;
   }
 
-  const resolvedAnchor = await resolveCreateSessionAnchor(client, {
-    userId,
-    subjectCode: normalized.subjectCode,
-    anchorKind: normalized.anchorKind,
-    anchorRef: normalized.anchorRef,
-    currentQuestionId: normalized.currentQuestionId,
-    currentQuestionTypeId: normalized.currentQuestionTypeId,
-  });
+  const reservation = reserveCreateSession(cacheKey, normalizedPayload);
 
-  const activeScopeBundle = normalizeSessionBundle({
-    sessionGoal: normalized.sessionGoal,
-    mode: normalized.mode,
-    anchorKind: normalized.anchorKind,
-    anchorRef: normalized.anchorRef,
-    currentQuestionId: resolvedAnchor.currentQuestionId,
-    currentQuestionTypeId: resolvedAnchor.currentQuestionTypeId,
-    canonicalHome: resolvedAnchor.canonicalHome,
-  });
+  try {
+    const resolvedAnchor = await resolveCreateSessionAnchor(client, {
+      userId,
+      subjectCode: normalized.subjectCode,
+      anchorKind: normalized.anchorKind,
+      anchorRef: normalized.anchorRef,
+      currentQuestionId: normalized.currentQuestionId,
+      currentQuestionTypeId: normalized.currentQuestionTypeId,
+    });
 
-  const session = await insertSession(client, {
-    user_id: userId,
-    subject_code: normalized.subjectCode,
-    session_goal: normalized.sessionGoal,
-    mode: normalized.mode,
-    active_scope_bundle: activeScopeBundle,
-    current_anchor_kind: normalized.anchorKind,
-    current_anchor_ref: normalized.anchorRef,
-    current_question_id: resolvedAnchor.currentQuestionId,
-    current_question_type_id: resolvedAnchor.currentQuestionTypeId,
-    summary_state: {
-      handoff: createSessionHandoffStub(),
-    },
-    open_questions: [],
-    key_artifact_refs: [],
-    misconceptions_in_focus: [],
-  });
+    const activeScopeBundle = normalizeSessionBundle({
+      sessionGoal: normalized.sessionGoal,
+      mode: normalized.mode,
+      anchorKind: normalized.anchorKind,
+      anchorRef: normalized.anchorRef,
+      currentQuestionId: resolvedAnchor.currentQuestionId,
+      currentQuestionTypeId: resolvedAnchor.currentQuestionTypeId,
+      canonicalHome: resolvedAnchor.canonicalHome,
+    });
 
-  const normalizedSession = normalizeSessionResponse(session);
-  const response = {
-    session: normalizedSession,
-    anchor_validity: buildAnchorValidity(
-      normalized.anchorKind,
-      normalized.anchorRef,
-      resolvedAnchor.canonicalHome,
-    ),
-    canonical_home_context: buildCanonicalHomeContext(
-      normalized.anchorKind,
-      resolvedAnchor.canonicalHome,
-    ),
-    feature_flags: featureFlags(),
-  };
+    const session = await insertSession(client, {
+      user_id: userId,
+      subject_code: normalized.subjectCode,
+      session_goal: normalized.sessionGoal,
+      mode: normalized.mode,
+      active_scope_bundle: activeScopeBundle,
+      current_anchor_kind: normalized.anchorKind,
+      current_anchor_ref: normalized.anchorRef,
+      current_question_id: resolvedAnchor.currentQuestionId,
+      current_question_type_id: resolvedAnchor.currentQuestionTypeId,
+      summary_state: {
+        handoff: createSessionHandoffStub(),
+      },
+      open_questions: [],
+      key_artifact_refs: [],
+      misconceptions_in_focus: [],
+    });
 
-  rememberCreateSession(cacheKey, normalizedPayload, response);
-  return response;
+    const normalizedSession = normalizeSessionResponse(session);
+    const response = {
+      session: normalizedSession,
+      anchor_validity: buildAnchorValidity(
+        normalized.anchorKind,
+        normalized.anchorRef,
+        resolvedAnchor.canonicalHome,
+      ),
+      canonical_home_context: buildCanonicalHomeContext(
+        normalized.anchorKind,
+        resolvedAnchor.canonicalHome,
+      ),
+      feature_flags: featureFlags(),
+    };
+
+    rememberCreateSession(cacheKey, reservation, response);
+    return response;
+  } catch (error) {
+    releaseCreateSessionReservation(cacheKey, reservation, error);
+    throw error;
+  }
 }
 
 export async function readLearningSession(client, { userId, sessionId } = {}) {

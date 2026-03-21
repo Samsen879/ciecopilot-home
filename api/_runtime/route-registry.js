@@ -47,6 +47,7 @@ const ROUTES = [
   {
     module: 'learning-sessions',
     pathPrefix: '/api/learning/sessions',
+    pattern: /^\/api\/learning\/sessions$/,
     importPath: '../learning/sessions/index.js',
     auth: 'jwt_required',
     authMode: 'authenticated',

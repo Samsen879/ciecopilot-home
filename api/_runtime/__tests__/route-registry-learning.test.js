@@ -88,4 +88,12 @@ describe('learning route registry', () => {
     expect(sessionAsk.route?.module).toBe('learning-sessions-ask');
     expect(sessionAsk.allowed).toBe(false);
   });
+
+  test('does not let the create-session route match deeper subtree paths', () => {
+    expect(findRoute('/api/learning/sessions/session-1/extra', 'POST')).toEqual({
+      route: null,
+      allowed: false,
+      params: {},
+    });
+  });
 });

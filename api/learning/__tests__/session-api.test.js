@@ -16,7 +16,40 @@ const clientState = {
   reviewTasks: new Map(),
   sessions: new Map(),
   lineage: new Map(),
+  sessionInsertGate: null,
 };
+
+function createDeferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+async function waitForCondition(predicate, { attempts = 50, delayMs = 0 } = {}) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (predicate()) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+  throw new Error('Condition not reached in time.');
+}
+
+function dispatch(testRequest) {
+  return new Promise((resolve, reject) => {
+    testRequest.end((error, response) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(response);
+    });
+  });
+}
 
 class QueryBuilder {
   constructor(table) {
@@ -132,9 +165,15 @@ function resolveQuery(query) {
   }
 
   if (query.table === 'learning_sessions' && query.operation === 'insert') {
-    const row = createSessionRow(query.payload);
-    clientState.sessions.set(row.session_id, row);
-    return { data: row, error: null };
+    return (async () => {
+      if (clientState.sessionInsertGate) {
+        await clientState.sessionInsertGate.promise;
+      }
+
+      const row = createSessionRow(query.payload);
+      clientState.sessions.set(row.session_id, row);
+      return { data: row, error: null };
+    })();
   }
 
   if (query.table === 'learning_session_lineage' && query.operation === 'insert') {
@@ -238,6 +277,7 @@ describe('learning session api', () => {
     ]);
     clientState.sessions = new Map();
     clientState.lineage = new Map();
+    clientState.sessionInsertGate = null;
     jest.clearAllMocks();
   });
 
@@ -372,6 +412,61 @@ describe('learning session api', () => {
     expect(first.status).toBe(200);
     expect(second.status).toBe(409);
     expect(second.body.error.code).toBe('idempotency_conflict');
+  });
+
+  test('POST /api/learning/sessions reserves the idempotency key before async create work', async () => {
+    const gate = createDeferred();
+    clientState.sessionInsertGate = gate;
+
+    const firstRequest = dispatch(request(server)
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .set('Idempotency-Key', 'sess-race-1')
+      .send(buildSessionPayload()));
+
+    const secondRequest = dispatch(request(server)
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .set('Idempotency-Key', 'sess-race-1')
+      .send(buildSessionPayload()));
+
+    await waitForCondition(
+      () =>
+        clientState.calls.some(
+          (call) => call.table === 'learning_sessions' && call.operation === 'insert',
+        ),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const blockedInsertCalls = clientState.calls.filter(
+      (call) => call.table === 'learning_sessions' && call.operation === 'insert',
+    );
+    expect(blockedInsertCalls).toHaveLength(1);
+
+    gate.resolve();
+    const [first, second] = await Promise.all([firstRequest, secondRequest]);
+
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect(second.body.session.session_id).toBe(first.body.session.session_id);
+
+    const insertCalls = clientState.calls.filter(
+      (call) => call.table === 'learning_sessions' && call.operation === 'insert',
+    );
+    expect(insertCalls).toHaveLength(1);
+  });
+
+  test('POST /api/learning/sessions/extra segments does not hit create-session', async () => {
+    const res = await request(server)
+      .post('/api/learning/sessions/session-1/extra')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildSessionPayload());
+
+    expect(res.status).toBe(404);
+    expect(res.body.code).toBe('endpoint_not_found');
   });
 
   test('GET /api/learning/sessions/:id resolves the dynamic route', async () => {

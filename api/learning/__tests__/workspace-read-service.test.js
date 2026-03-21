@@ -278,11 +278,11 @@ function createBoundaryLearningDb() {
       review_task_id: task.review_task_id,
     }));
 
-    if (!workspace && activeArtifacts.length === 0 && reviewTaskRefs.length === 0) {
+    if (!workspace) {
       return null;
     }
 
-    const workspaceId = workspace?.workspace_id ?? `virtual-${userId}-${topicId}`;
+    const workspaceId = workspace.workspace_id;
     const slotsByKey = new Map(
       listWorkspaceSlots(workspaceId).map((slot) => [slot.slot_key, slot]),
     );
@@ -714,25 +714,28 @@ describe('workspace read service', () => {
     expect(outcome.review_tasks).toHaveLength(1);
     expect(outcome.artifact_candidates).toHaveLength(1);
 
-    const workspaceBeforePatch = await getWorkspaceView(db, {
+    await expect(
+      getWorkspaceView(db, {
+        userId: 'student-1',
+        topicId: 'repair-target-topic',
+      }),
+    ).rejects.toMatchObject({
+      code: 'workspace_not_found',
+      status: 404,
+    });
+
+    const reviewQueueBeforePatch = await listReviewTasks(db, {
       userId: 'student-1',
       topicId: 'repair-target-topic',
     });
 
-    expect(workspaceBeforePatch.review_queue.items).toHaveLength(1);
-    expect(workspaceBeforePatch.review_queue.items[0]).toMatchObject({
+    expect(reviewQueueBeforePatch.items).toHaveLength(1);
+    expect(reviewQueueBeforePatch.items[0]).toMatchObject({
       review_task_id: outcome.review_tasks[0].review_task_id,
       target_topic_id: 'repair-target-topic',
       target_topic_path: '9709.integration.repair',
       status: 'open',
     });
-    expect(workspaceBeforePatch.workspace.slots.common_traps.linked_references).toEqual([
-      {
-        kind: 'artifact',
-        artifact_id: outcome.artifact_candidates[0].artifact_id,
-      },
-    ]);
-    expect(workspaceBeforePatch.workspace.slots.common_traps.primary_artifact_ref).toBeNull();
 
     const patchResult = await patchLearningArtifact({
       client: db,

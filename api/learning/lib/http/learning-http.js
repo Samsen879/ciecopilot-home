@@ -5,8 +5,20 @@ import {
   getLearningErrorStatus,
 } from '../contracts/error-contract.js';
 
+const FROZEN_LEARNING_ERROR_CODES = new Set(Object.values(LEARNING_ERROR_CODES));
+
 function isPlainObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function normalizeLearningErrorCode(code, fallbackCode = LEARNING_ERROR_CODES.INVALID_PAYLOAD) {
+  const normalizedFallbackCode = FROZEN_LEARNING_ERROR_CODES.has(fallbackCode)
+    ? fallbackCode
+    : LEARNING_ERROR_CODES.INVALID_PAYLOAD;
+
+  return FROZEN_LEARNING_ERROR_CODES.has(code)
+    ? code
+    : normalizedFallbackCode;
 }
 
 function withRequestId(requestId, payload) {
@@ -83,7 +95,7 @@ export function sendLearningHttpError(
     defaultMessage,
   } = {},
 ) {
-  const code = typeof error?.code === 'string' ? error.code : defaultCode;
+  const code = normalizeLearningErrorCode(error?.code, defaultCode);
   const message = error?.publicMessage
     || (typeof error?.message === 'string' && error.message.trim())
     || defaultMessage;

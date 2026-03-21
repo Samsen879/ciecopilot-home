@@ -42,6 +42,15 @@ function normalizeTopicPath(value) {
   return normalized || null;
 }
 
+function normalizeOptionalString(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+
 function normalizeLimit(value) {
   const parsed = Number.parseInt(String(value ?? DEFAULT_LIMIT), 10);
   if (!Number.isFinite(parsed) || parsed < 1) {
@@ -62,5 +71,7 @@ export function parseEvidenceContextRequest(req = {}) {
   return {
     topic_path: topicPath,
     limit: normalizeLimit(readQueryValue(req, 'limit')),
+    topic_id: normalizeOptionalString(readQueryValue(req, 'topic_id')),
+    session_id: normalizeOptionalString(readQueryValue(req, 'session_id')),
   };
 }

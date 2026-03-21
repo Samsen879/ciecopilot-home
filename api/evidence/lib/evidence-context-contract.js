@@ -136,6 +136,87 @@ function serializeList(items, serializer) {
     .filter(Boolean);
 }
 
+function serializeRef(ref) {
+  if (!isObject(ref) || !normalizeString(ref.kind)) {
+    return null;
+  }
+
+  const normalizedEntries = Object.entries(ref).map(([key, value]) => {
+    if (key === 'kind') {
+      return [key, normalizeString(value)];
+    }
+
+    if (value === null || value === undefined || value === '') {
+      return [key, null];
+    }
+
+    return [key, normalizeString(value) ?? null];
+  });
+
+  return Object.fromEntries(normalizedEntries);
+}
+
+function serializeWorkspaceSlot(slot) {
+  if (!isObject(slot)) {
+    return null;
+  }
+
+  return {
+    workspace_slot_id: normalizePresentValue(slot, 'workspace_slot_id', normalizeString),
+    primary_artifact_ref: serializeRef(slot.primary_artifact_ref),
+    linked_references: serializeList(slot.linked_references, serializeRef),
+    updated_at: normalizePresentValue(slot, 'updated_at', normalizeTimestamp),
+  };
+}
+
+function serializeWorkspace(workspace) {
+  if (!isObject(workspace)) {
+    return null;
+  }
+
+  const slots = isObject(workspace.slots)
+    ? Object.fromEntries(
+      Object.entries(workspace.slots)
+        .map(([slotKey, slot]) => [slotKey, serializeWorkspaceSlot(slot)])
+        .filter(([, slot]) => slot),
+    )
+    : undefined;
+
+  const normalized = compactObject({
+    workspace_id: normalizePresentValue(workspace, 'workspace_id', normalizeString),
+    topic_id: normalizePresentValue(workspace, 'topic_id', normalizeString),
+    topic_path: normalizePresentValue(workspace, 'topic_path', normalizeString),
+    updated_at: normalizePresentValue(workspace, 'updated_at', normalizeTimestamp),
+  });
+
+  if (slots && Object.keys(slots).length > 0) {
+    normalized.slots = slots;
+  }
+
+  return Object.keys(normalized).length > 0 ? normalized : null;
+}
+
+function serializeLearningRuntime(learningRuntime) {
+  if (!isObject(learningRuntime)) {
+    return null;
+  }
+
+  const normalized = compactObject({
+    session_id: normalizePresentValue(learningRuntime, 'session_id', normalizeString),
+    current_anchor_kind: normalizePresentValue(
+      learningRuntime,
+      'current_anchor_kind',
+      normalizeString,
+    ),
+    current_anchor_ref: serializeRef(learningRuntime.current_anchor_ref),
+    current_question_ref: serializeRef(learningRuntime.current_question_ref),
+    current_question_type_ref: serializeRef(learningRuntime.current_question_type_ref),
+    workspace: serializeWorkspace(learningRuntime.workspace),
+  });
+
+  return Object.keys(normalized).length > 0 ? normalized : null;
+}
+
 export function serializeEvidenceContextPayload({
   mastery,
   recentDecisions,
@@ -144,12 +225,14 @@ export function serializeEvidenceContextPayload({
   topicPath,
   limit,
   source,
+  learningRuntime,
 } = {}) {
   return {
     mastery: serializeMastery(mastery),
     recent_decisions: serializeList(recentDecisions, serializeDecision),
     misconception_tags: serializeList(misconceptionTags, serializeMisconceptionTag),
     recent_errors: serializeList(recentErrors, serializeErrorEvent),
+    learning_runtime: serializeLearningRuntime(learningRuntime),
     meta: compactObject({
       topic_path: normalizeString(topicPath),
       limit: normalizeFiniteNumber(limit),

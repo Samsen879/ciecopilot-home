@@ -10,6 +10,7 @@ import { runDecisionEngine, SCORING_ENGINE_VERSION as ENGINE_VERSION } from './l
 import { resolveUserId, AuthError } from './lib/auth-helper.js';
 import { resolveQuestionId, ValidationError } from './lib/attempt-repository.js';
 import { writeLedger } from './lib/ledger-orchestrator.js';
+import { applyLearningEffects } from '../learning/lib/mastery/mastery-orchestrator.js';
 
 // ── Feature flag (evaluated per-request so env changes take effect) ──────────
 function isV1Enabled() {
@@ -117,6 +118,42 @@ function serializeAlignmentForResponse(alignment, { includeUncertainReason = fal
     out.uncertain_reason = alignment.uncertain_reason;
   }
   return out;
+}
+
+async function loadLearningQuestionContext(supabase, questionId) {
+  const { data, error } = await supabase
+    .from('learning_question_registry_projection')
+    .select(
+      'question_id, primary_topic_id, family_id, primary_question_type_id, classification_confidence, candidate_rubric_refs, release_scope_status',
+    )
+    .eq('question_id', questionId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load learning question context: ${error.message}`);
+  }
+
+  return data
+    ? {
+      question_id: data.question_id,
+      primary_topic_id: data.primary_topic_id ?? null,
+      family_id: data.family_id ?? null,
+      question_type_id: data.primary_question_type_id ?? null,
+      classification_confidence: data.classification_confidence ?? null,
+      candidate_rubric_refs: Array.isArray(data.candidate_rubric_refs)
+        ? data.candidate_rubric_refs
+        : [],
+      release_scope_status: data.release_scope_status ?? null,
+    }
+    : {
+      question_id: questionId,
+      primary_topic_id: null,
+      family_id: null,
+      question_type_id: null,
+      classification_confidence: null,
+      candidate_rubric_refs: [],
+      release_scope_status: null,
+    };
 }
 
 // ── Scoring engine version constant (re-exported from decision engine) ──────
@@ -249,6 +286,7 @@ export default async function handler(req, res) {
 
     // ── Evidence Ledger write ─────────────────────────────────────────────
     let ledger_write_status = null;
+    let learningEffects = null;
 
     try {
       const ledgerResult = await writeLedger({
@@ -289,6 +327,48 @@ export default async function handler(req, res) {
         is_reused_run: ledgerResult.is_reused_run,
         ts: new Date().toISOString(),
       }));
+
+      try {
+        const questionContext = await loadLearningQuestionContext(supabase, question_id);
+        learningEffects = await applyLearningEffects({
+          supabase,
+          user_id,
+          subject_code: storage_key.split('/')[0] || null,
+          question_id,
+          question_context: {
+            family_id: questionContext.family_id,
+            question_type_id: questionContext.question_type_id,
+            primary_topic_id:
+              questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
+            primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
+            classification_confidence: questionContext.classification_confidence,
+            candidate_rubric_refs: questionContext.candidate_rubric_refs,
+            release_scope_status: questionContext.release_scope_status,
+          },
+          attempt_id: ledgerResult.attempt_id,
+          mark_run_id: ledgerResult.mark_run_id,
+          source_attempt_ref: {
+            kind: 'attempt',
+            attempt_id: ledgerResult.attempt_id,
+          },
+          source_mark_run_ref: {
+            kind: 'mark_run',
+            mark_run_id: ledgerResult.mark_run_id,
+          },
+          source_attempt_context: ledgerResult.attempt_context ?? null,
+          decisions,
+          uncertainty_validated: true,
+        }, {
+          supabase,
+        });
+      } catch (learningEffectsError) {
+        console.warn(JSON.stringify({
+          event: 'evaluate_v1_learning_effects_error',
+          run_id,
+          error: learningEffectsError?.message || String(learningEffectsError),
+          ts: new Date().toISOString(),
+        }));
+      }
     } catch (ledgerErr) {
       // Ledger write failure must NOT block the scoring response
       ledger_write_status = 'failed';
@@ -309,6 +389,10 @@ export default async function handler(req, res) {
       decisions,
       ledger_write_status,
     };
+
+    if (learningEffects) {
+      response.learning_effects = learningEffects;
+    }
 
     // Compat mode: attach alignments[] when requested
     if (compat_mode === 'v0' && alignments) {

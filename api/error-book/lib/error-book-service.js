@@ -171,6 +171,45 @@ function mergeMetadata(baseMetadata, patchMetadata) {
   return merged;
 }
 
+export function buildLearningRuntimeAutoEntryPayload({
+  userId,
+  subjectCode = null,
+  question,
+  explanation = null,
+  repairTopicRef = null,
+  sourceQuestionRef = null,
+  sourceAttemptRef = null,
+  sourceMarkRunRef = null,
+  artifactRef = null,
+  misconceptionTag = null,
+} = {}) {
+  return {
+    user_id: userId,
+    subject_code: normalizeNullableString(subjectCode),
+    syllabus_code: normalizeNullableString(subjectCode),
+    topic_id: repairTopicRef?.topic_id ?? null,
+    topic_name: repairTopicRef?.topic_path ?? null,
+    question: normalizeNullableString(question),
+    explanation: normalizeNullableString(explanation),
+    error_type: 'misconception',
+    difficulty_level: 'medium',
+    status: 'unresolved',
+    source: 'mark_engine_auto',
+    metadata: normalizeScheduleMetadata({
+      review: {
+        misconception_tag: normalizeNullableString(misconceptionTag),
+      },
+      learning_runtime: {
+        repair_topic_ref: repairTopicRef ?? null,
+        source_question_ref: sourceQuestionRef ?? null,
+        source_attempt_ref: sourceAttemptRef ?? null,
+        source_mark_run_ref: sourceMarkRunRef ?? null,
+        artifact_ref: artifactRef ?? null,
+      },
+    }),
+  };
+}
+
 function applyReviewFiltersAndSort(items, filters) {
   const afterTimestamp = toTimestamp(filters.next_review_after);
   const beforeTimestamp = toTimestamp(filters.next_review_before);

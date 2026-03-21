@@ -32,11 +32,15 @@ const MOCK_READY_POINT = {
 
 function createChainMock(data) {
   const chain = {};
-  const methods = ['select', 'eq', 'or', 'order'];
+  const methods = ['select', 'eq', 'or', 'order', 'limit'];
   for (const m of methods) {
     chain[m] = jest.fn(() => chain);
   }
   chain.then = (resolve) => resolve({ data, error: null });
+  chain.maybeSingle = jest.fn(async () => ({
+    data: Array.isArray(data) ? data[0] ?? null : data,
+    error: null,
+  }));
   return chain;
 }
 
@@ -46,6 +50,23 @@ const mockFrom = jest.fn((table) => {
   }
   if (table === 'rubric_points_ready_v1') {
     return createChainMock([MOCK_READY_POINT]);
+  }
+  if (table === 'learning_question_registry_projection') {
+    return createChainMock({
+      question_id: 'q-001',
+      primary_topic_id: 'topic-trig-equations',
+      family_id: '9709.trigonometry_manipulation_equations',
+      primary_question_type_id: '9709.trigonometry.equations',
+      classification_confidence: 0.93,
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_version_id: 'trig-v1',
+          release_state: 'released',
+        },
+      ],
+      release_scope_status: 'released_scoring',
+    });
   }
   return createChainMock([]);
 });
@@ -73,6 +94,20 @@ const mockWriteLedger = jest.fn(async () => ({
   decision_write_status: 'success',
   error_event_count: 1,
   is_reused_run: false,
+  attempt_context: {
+    topic_id: 'topic-trig-equations',
+    topic_path: '9709/trigonometry/equations',
+  },
+}));
+
+const mockApplyLearningEffects = jest.fn(async () => ({
+  release_scope_status: 'released_scoring',
+  authoritative_scoring_allowed: true,
+  learning_signal_posture: 'authoritative_scoring',
+  mastery_updates: [],
+  review_tasks: [],
+  artifact_candidates: [],
+  reconciliation: null,
 }));
 
 jest.unstable_mockModule('../lib/auth-helper.js', () => ({
@@ -87,6 +122,10 @@ jest.unstable_mockModule('../lib/attempt-repository.js', () => ({
 
 jest.unstable_mockModule('../lib/ledger-orchestrator.js', () => ({
   writeLedger: mockWriteLedger,
+}));
+
+jest.unstable_mockModule('../../learning/lib/mastery/mastery-orchestrator.js', () => ({
+  applyLearningEffects: mockApplyLearningEffects,
 }));
 
 // Dynamic import after mocks are set up
@@ -122,6 +161,15 @@ beforeEach(() => {
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
   process.env.EVIDENCE_LEDGER_ENABLED = 'false';
   jest.clearAllMocks();
+  mockApplyLearningEffects.mockResolvedValue({
+    release_scope_status: 'released_scoring',
+    authoritative_scoring_allowed: true,
+    learning_signal_posture: 'authoritative_scoring',
+    mastery_updates: [],
+    review_tasks: [],
+    artifact_candidates: [],
+    reconciliation: null,
+  });
 });
 
 afterEach(() => {
@@ -321,5 +369,52 @@ describe('v0 compat mode', () => {
     await handler(req, res);
     const body = res.json.mock.calls[0][0];
     expect(body.alignments).toBeUndefined();
+  });
+});
+
+describe('learning-runtime orchestration', () => {
+  it('returns released-scope learning effects for a persisted pilot scoring run', async () => {
+    mockApplyLearningEffects.mockResolvedValueOnce({
+      release_scope_status: 'released_scoring',
+      authoritative_scoring_allowed: true,
+      learning_signal_posture: 'authoritative_scoring',
+      mastery_updates: [
+        {
+          level: 'question_type',
+          question_type_id: '9709.trigonometry.equations',
+        },
+      ],
+      review_tasks: [],
+      artifact_candidates: [],
+      reconciliation: {
+        reconciliation_run_id: 'recon-1',
+      },
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.learning_effects).toMatchObject({
+      release_scope_status: 'released_scoring',
+      learning_signal_posture: 'authoritative_scoring',
+      mastery_updates: [
+        {
+          level: 'question_type',
+          question_type_id: '9709.trigonometry.equations',
+        },
+      ],
+    });
+    expect(mockApplyLearningEffects).toHaveBeenCalledWith(
+      expect.objectContaining({
+        user_id: 'user-001',
+        question_id: 'q-001',
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'att-001' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mr-001' },
+      }),
+      expect.any(Object),
+    );
   });
 });

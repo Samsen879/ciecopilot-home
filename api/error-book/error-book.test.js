@@ -14,6 +14,7 @@ jest.unstable_mockModule('../lib/supabase/client.js', () => ({
 
 const { default: indexHandler } = await import('./index.js');
 const { default: itemHandler } = await import('./[id].js');
+const { buildLearningRuntimeAutoEntryPayload } = await import('./lib/error-book-service.js');
 
 function createReq({
   method = 'GET',
@@ -195,5 +196,70 @@ describe('error-book route smoke', () => {
 
     expect(res.statusCode).toBe(405);
     expect(res.body.code).toBe('method_not_allowed');
+  });
+
+  it('builds mark_engine_auto payloads from learning-runtime refs without losing repair-topic ownership', () => {
+    const payload = buildLearningRuntimeAutoEntryPayload({
+      userId: 'student-1',
+      subjectCode: '9709',
+      question: 'Sign error while solving tan(x)=1.',
+      explanation: 'Learner inverted the interval bounds after isolating tan(x).',
+      repairTopicRef: {
+        kind: 'topic',
+        topic_id: 'repair-target-topic',
+        topic_path: '9709/trigonometry/equations/repair',
+      },
+      sourceQuestionRef: {
+        kind: 'question',
+        question_id: 'question-1',
+      },
+      sourceAttemptRef: {
+        kind: 'attempt',
+        attempt_id: 'attempt-1',
+      },
+      sourceMarkRunRef: {
+        kind: 'mark_run',
+        mark_run_id: 'mark-run-1',
+      },
+      artifactRef: {
+        kind: 'artifact',
+        artifact_id: 'artifact-1',
+      },
+      misconceptionTag: 'interval-sign-slip',
+    });
+
+    expect(payload).toMatchObject({
+      user_id: 'student-1',
+      subject_code: '9709',
+      source: 'mark_engine_auto',
+      topic_id: 'repair-target-topic',
+      metadata: {
+        review: {
+          misconception_tag: 'interval-sign-slip',
+        },
+        learning_runtime: {
+          repair_topic_ref: {
+            kind: 'topic',
+            topic_id: 'repair-target-topic',
+          },
+          source_question_ref: {
+            kind: 'question',
+            question_id: 'question-1',
+          },
+          source_attempt_ref: {
+            kind: 'attempt',
+            attempt_id: 'attempt-1',
+          },
+          source_mark_run_ref: {
+            kind: 'mark_run',
+            mark_run_id: 'mark-run-1',
+          },
+          artifact_ref: {
+            kind: 'artifact',
+            artifact_id: 'artifact-1',
+          },
+        },
+      },
+    });
   });
 });

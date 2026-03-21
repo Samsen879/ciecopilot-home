@@ -1,5 +1,7 @@
 import { getServiceClient } from '../lib/supabase/client.js';
 import { resolveUserId, AuthError } from '../marking/lib/auth-helper.js';
+import { getSession } from '../learning/lib/repositories/session-repository.js';
+import { getWorkspaceView } from '../learning/lib/workspaces/workspace-read-service.js';
 import { sendContextError, sendContextJson } from './lib/evidence-context-http.js';
 import { serializeEvidenceContextPayload } from './lib/evidence-context-contract.js';
 import {
@@ -40,6 +42,159 @@ function isSubtreeMatch(candidatePath, prefix) {
   return candidatePath === prefix || candidatePath.startsWith(prefix + '.');
 }
 
+function normalizeString(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+
+function buildQuestionRef(questionId) {
+  return normalizeString(questionId)
+    ? { kind: 'question', question_id: normalizeString(questionId) }
+    : null;
+}
+
+function buildQuestionTypeRef(questionTypeId) {
+  return normalizeString(questionTypeId)
+    ? { kind: 'question_type', question_type_id: normalizeString(questionTypeId) }
+    : null;
+}
+
+function buildLearningRuntimeSummary({ session, workspace } = {}) {
+  if (!session && !workspace) {
+    return null;
+  }
+
+  const bundle =
+    session?.active_scope_bundle && typeof session.active_scope_bundle === 'object'
+      ? session.active_scope_bundle
+      : {};
+
+  const currentAnchorRef = bundle.current_anchor_ref ?? session?.current_anchor_ref ?? null;
+  const currentQuestionRef =
+    bundle.current_question_ref ?? buildQuestionRef(session?.current_question_id ?? null);
+  const currentQuestionTypeRef =
+    bundle.current_question_type_ref ??
+    buildQuestionTypeRef(session?.current_question_type_id ?? null);
+
+  return {
+    session_id: session?.session_id ?? null,
+    current_anchor_kind: bundle.current_anchor_kind ?? session?.current_anchor_kind ?? null,
+    current_anchor_ref: currentAnchorRef,
+    current_question_ref: currentQuestionRef,
+    current_question_type_ref: currentQuestionTypeRef,
+    workspace: workspace ?? null,
+  };
+}
+
+async function maybeLoadLearningWorkspace(
+  loadWorkspace,
+  client,
+  {
+    userId,
+    topicId,
+  } = {},
+) {
+  if (!normalizeString(topicId)) {
+    return null;
+  }
+
+  try {
+    const payload = await loadWorkspace(client, {
+      userId,
+      topicId,
+    });
+    return payload?.workspace ?? null;
+  } catch (error) {
+    if (error?.code === 'workspace_not_found') {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function getEvidenceContext(
+  {
+    client = getClient(),
+    loadSession = getSession,
+    loadWorkspace = getWorkspaceView,
+  } = {},
+  {
+    userId,
+    topicPath,
+    topicId = null,
+    sessionId = null,
+    limit = 10,
+  } = {},
+) {
+  const fastPath = await fetchContextViaRpc(client, userId, topicPath, limit);
+  let source = 'rpc';
+  let mastery;
+  let recentDecisions;
+  let misconceptionTags;
+  let recentErrors;
+
+  if (fastPath) {
+    mastery = fastPath.mastery;
+    recentDecisions = fastPath.recentDecisions;
+    misconceptionTags = fastPath.misconceptionTags;
+    recentErrors = fastPath.recentErrors;
+  } else {
+    source = 'fallback';
+    const subjectCode = extractSubjectCode(topicPath);
+    const [masteryPayload, decisions, errors] = await Promise.all([
+      fetchMastery(client, userId, subjectCode, topicPath),
+      fetchRecentDecisions(client, userId, subjectCode, topicPath, limit),
+      fetchRecentErrors(client, userId, topicPath),
+    ]);
+
+    mastery = masteryPayload.data;
+    recentDecisions = decisions;
+    misconceptionTags = masteryPayload._misconceptionTags;
+    recentErrors = errors;
+  }
+
+  const session = normalizeString(sessionId)
+    ? await loadSession(client, {
+      sessionId: sessionId,
+      userId,
+    })
+    : null;
+  const resolvedTopicId =
+    normalizeString(topicId)
+    || bundleTopicId(session?.active_scope_bundle)
+    || null;
+  const workspace = await maybeLoadLearningWorkspace(loadWorkspace, client, {
+    userId,
+    topicId: resolvedTopicId,
+  });
+
+  return serializeEvidenceContextPayload({
+    mastery,
+    recentDecisions,
+    misconceptionTags,
+    recentErrors,
+    topicPath,
+    limit,
+    source,
+    learningRuntime: buildLearningRuntimeSummary({
+      session,
+      workspace,
+    }),
+  });
+}
+
+function bundleTopicId(bundle) {
+  if (!bundle || typeof bundle !== 'object') {
+    return null;
+  }
+
+  return normalizeString(bundle.primary_topic_id);
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return sendContextError(req, res, {
@@ -64,7 +219,12 @@ export default async function handler(req, res) {
     throw err;
   }
 
-  const { topic_path: topicPath, limit } = requestParams;
+  const {
+    topic_path: topicPath,
+    topic_id: topicId,
+    session_id: sessionId,
+    limit,
+  } = requestParams;
 
   let userId;
   try {
@@ -88,42 +248,22 @@ export default async function handler(req, res) {
   }
 
   try {
-    const cacheKey = `${userId}:${topicPath}:${limit}`;
+    const cacheKey = `${userId}:${topicPath}:${topicId || ''}:${sessionId || ''}:${limit}`;
     const cached = readContextCache(cacheKey);
     if (cached) {
       return sendContextJson(res, cached);
     }
 
-    const supabase = getClient();
-    const fastPath = await fetchContextViaRpc(supabase, userId, topicPath, limit);
-    if (fastPath) {
-      const payload = serializeEvidenceContextPayload({
-        ...fastPath,
+    const payload = await getEvidenceContext(
+      { client: getClient() },
+      {
+        userId,
         topicPath,
+        topicId,
+        sessionId,
         limit,
-        source: 'rpc',
-      });
-      writeContextCache(cacheKey, payload);
-      return sendContextJson(res, payload);
-    }
-
-    const subjectCode = extractSubjectCode(topicPath);
-    const [mastery, recentDecisions, recentErrors] = await Promise.all([
-      fetchMastery(supabase, userId, subjectCode, topicPath),
-      fetchRecentDecisions(supabase, userId, subjectCode, topicPath, limit),
-      fetchRecentErrors(supabase, userId, topicPath),
-    ]);
-
-    const payload = serializeEvidenceContextPayload({
-      mastery: mastery.data,
-      recentDecisions,
-      misconceptionTags: mastery._misconceptionTags,
-      recentErrors,
-      topicPath,
-      limit,
-      source: 'fallback',
-    });
-
+      },
+    );
     writeContextCache(cacheKey, payload);
     return sendContextJson(res, payload);
   } catch (err) {

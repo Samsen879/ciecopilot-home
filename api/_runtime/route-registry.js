@@ -19,6 +19,83 @@ const AUTH_PUBLIC_RATE_LIMIT = getRateLimitPolicy(AUTH_PUBLIC_RATE_LIMIT_POLICY_
 
 const ROUTES = [
   {
+    module: 'learning-sessions-ask',
+    pathPrefix: '/api/learning/sessions/:id/ask',
+    pattern: /^\/api\/learning\/sessions\/[^/]+\/ask$/,
+    paramExtractor: (path) => {
+      const segments = path.split('/');
+      return { id: segments[4] || null };
+    },
+    importPath: '../learning/sessions/[id]/ask.js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['POST', 'OPTIONS'],
+  },
+  {
+    module: 'learning-sessions-id',
+    pathPrefix: '/api/learning/sessions/:id',
+    pattern: /^\/api\/learning\/sessions\/[^/]+$/,
+    paramExtractor: (path) => {
+      const segments = path.split('/');
+      return { id: segments[4] || null };
+    },
+    importPath: '../learning/sessions/[id].js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['GET', 'OPTIONS'],
+  },
+  {
+    module: 'learning-sessions',
+    pathPrefix: '/api/learning/sessions',
+    pattern: /^\/api\/learning\/sessions$/,
+    importPath: '../learning/sessions/index.js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['POST', 'OPTIONS'],
+  },
+  {
+    module: 'learning-questions-import',
+    pathPrefix: '/api/learning/questions/import',
+    importPath: '../learning/questions/import.js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['POST', 'OPTIONS'],
+  },
+  {
+    module: 'learning-workspace-topic',
+    pathPrefix: '/api/learning/workspaces/:topicId',
+    pattern: /^\/api\/learning\/workspaces\/[^/]+$/,
+    paramExtractor: (path) => {
+      const segments = path.split('/');
+      return { topicId: segments[4] || null };
+    },
+    importPath: '../learning/workspaces/[topicId].js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['GET', 'OPTIONS'],
+  },
+  {
+    module: 'learning-review-tasks',
+    pathPrefix: '/api/learning/review-tasks',
+    importPath: '../learning/review-tasks/index.js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['GET', 'OPTIONS'],
+  },
+  {
+    module: 'learning-artifact-id',
+    pathPrefix: '/api/learning/artifacts/:id',
+    pattern: /^\/api\/learning\/artifacts\/[^/]+$/,
+    paramExtractor: (path) => {
+      const segments = path.split('/');
+      return { id: segments[4] || null };
+    },
+    importPath: '../learning/artifacts/[id].js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['PATCH', 'OPTIONS'],
+  },
+  {
     module: 'users-profile',
     pathPrefix: '/api/users/profile',
     importPath: '../users/profile.js',

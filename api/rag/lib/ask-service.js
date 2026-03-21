@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { buildLearningSessionAskContext } from '../../learning/lib/session-runtime/ask-context-builder.js';
 import { getServiceClient } from '../../lib/supabase/client.js';
 import { safeLog } from '../../lib/security/redaction.js';
 import { buildForcedUncertainPolicy, decideAnswerPolicy } from './answer-policy.js';
@@ -714,6 +715,42 @@ async function runWithTimeout(task, timeoutMs, timeoutCode) {
   } finally {
     if (timer) clearTimeout(timer);
   }
+}
+
+export async function askWithinLearningSession(
+  {
+    req = null,
+    supabase = null,
+    fetchImpl = fetch,
+    logger = safeLog,
+    config = null,
+    s2Retriever = retrieveS2MultiHopCandidates,
+    executeAskAI: executeAskAIImpl = executeAskAI,
+    buildAskContext = buildLearningSessionAskContext,
+  } = {},
+  {
+    session,
+    message,
+    clientTurnId = null,
+  } = {},
+) {
+  const client = supabase || getServiceClient();
+  const askContext = await buildAskContext(client, {
+    session,
+    message,
+    clientTurnId,
+  });
+
+  const askResponse = await executeAskAIImpl(askContext.askInput, {
+    req,
+    supabase: client,
+    fetchImpl,
+    logger,
+    config,
+    s2Retriever,
+  });
+
+  return askContext.buildResponsePayload(askResponse);
 }
 
 export async function executeAskAI(

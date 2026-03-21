@@ -1,6 +1,7 @@
+import { jest } from '@jest/globals';
 import fs from 'node:fs';
 import path from 'node:path';
-import { executeAskAI } from '../lib/ask-service.js';
+import { askWithinLearningSession, executeAskAI } from '../lib/ask-service.js';
 
 const RETRIEVAL_AUDIT_KEYS = Object.freeze([
   'query_mode',
@@ -225,6 +226,87 @@ function createDelayedFetchStub({ embeddingDelayMs = 5, chatDelayMs = 7 } = {}) 
   };
   fn.calls = calls;
   return fn;
+}
+
+function createLearningAskResult(overrides = {}) {
+  return {
+    answer: 'Start by rewriting the expression into a standard form.',
+    uncertain: false,
+    uncertain_reason_code: null,
+    topic_leakage_flag: false,
+    topic_leakage_reason: null,
+    evidence: [],
+    retrieval_version: 'test',
+    metrics: {
+      evidence_traceability_rate: 1,
+      cost_avg_usd_per_req: 0,
+      cost_audit: {
+        request_cost_usd: 0,
+      },
+      retrieval_audit: {},
+      route_audit: {
+        retrieval_route: 's1_default',
+      },
+      retrieval_latency_ms: 1,
+      llm_latency_ms: 1,
+      latency_ms: 2,
+    },
+    request_id: 'rag-request-1',
+    ...overrides,
+  };
+}
+
+function createLearningSessionSupabaseStub({
+  questionRow = null,
+  workspaceRow = null,
+  evidenceContext = null,
+} = {}) {
+  const selects = [];
+  const rpcCalls = [];
+
+  function buildSelectQuery(table) {
+    const filters = [];
+    return {
+      eq(field, value) {
+        filters.push({ field, value });
+        return this;
+      },
+      async maybeSingle() {
+        selects.push({ table, filters: [...filters] });
+
+        if (table === 'learning_question_registry_projection') {
+          return { data: questionRow, error: null };
+        }
+
+        if (table === 'learning_workspace_projection') {
+          return { data: workspaceRow, error: null };
+        }
+
+        throw new Error(`Unexpected learning select table: ${table}`);
+      },
+    };
+  }
+
+  return {
+    selects,
+    rpcCalls,
+    from(table) {
+      return {
+        select() {
+          return buildSelectQuery(table);
+        },
+      };
+    },
+    async rpc(name, params) {
+      rpcCalls.push({ name, params });
+
+      if (name === 'get_evidence_context') {
+        return { data: evidenceContext, error: null };
+      }
+
+      throw new Error(`Unexpected learning rpc: ${name}`);
+    },
+  };
 }
 
 function createConfig() {
@@ -1950,5 +2032,163 @@ describe('ask service', () => {
     expect(result.topic_leakage_flag).toBe(false);
     expect(result.topic_leakage_reason).toBeNull();
     expect(supabase.__rpcCalls).toHaveLength(3);
+  });
+});
+
+describe('askWithinLearningSession', () => {
+  test('session ask consumes persisted active_scope_bundle instead of route-only scope', async () => {
+    const supabase = createLearningSessionSupabaseStub({
+      questionRow: {
+        question_id: 'question-1',
+        primary_question_type_id: '9709.trigonometry.identities',
+        primary_question_type_title: 'Trigonometric identities',
+        classification_confidence: 0.91,
+        candidate_rubric_refs: [
+          {
+            kind: 'rubric_release',
+            release_state: 'released',
+          },
+        ],
+      },
+      workspaceRow: {
+        workspace_id: 'workspace-1',
+        user_id: 'student-1',
+        topic_id: 'topic-1',
+        topic_path: '9709.trigonometry.identities',
+        slot_state: {},
+        linked_reference_summary: {},
+        updated_at: '2026-03-21T13:30:00.000Z',
+        slots: [],
+      },
+      evidenceContext: {
+        mastery: {
+          score: 0.62,
+        },
+        recent_decisions: [{ attempt_id: 'attempt-1' }],
+        misconception_tags: [{ tag: 'sign_error' }],
+        recent_errors: [],
+      },
+    });
+    const executeAskAIStub = jest.fn().mockResolvedValue(createLearningAskResult({
+      evidence: [{ id: 'evidence-1' }],
+    }));
+
+    const result = await askWithinLearningSession(
+      {
+        supabase,
+        executeAskAI: executeAskAIStub,
+      },
+      {
+        session: {
+          session_id: 'session-1',
+          user_id: 'student-1',
+          subject_code: '9709',
+          mode: 'guided_solve',
+          active_scope_bundle: {
+            primary_topic_id: 'topic-1',
+            primary_topic_path: '9709.trigonometry.identities',
+            secondary_topics_in_scope: [],
+            allowed_prerequisites: [],
+            paper_context: null,
+            current_anchor_kind: 'review_task',
+            current_anchor_ref: {
+              kind: 'review_task',
+              review_task_id: 'review-task-1',
+            },
+            current_question_ref: {
+              kind: 'question',
+              question_id: 'question-1',
+            },
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9709.trigonometry.identities',
+            },
+          },
+        },
+        message: 'next hint',
+        clientTurnId: 'local-turn-001',
+      },
+    );
+
+    expect(executeAskAIStub).toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: 'next hint',
+        subject_code: '9709',
+        current_topic_path: '9709.trigonometry.identities',
+        internal_debug: true,
+      }),
+      expect.objectContaining({
+        supabase,
+      }),
+    );
+    expect(result.session_delta).toMatchObject({
+      client_turn_id: 'local-turn-001',
+      current_question_ref: {
+        kind: 'question',
+        question_id: 'question-1',
+      },
+    });
+    expect(result.evidence_summary).toMatchObject({
+      source_topic_path: '9709.trigonometry.identities',
+      retrieved_evidence_count: 1,
+      workspace_id: 'workspace-1',
+    });
+  });
+
+  test('non-pilot family ask returns successful fallback posture, not an API error', async () => {
+    const supabase = createLearningSessionSupabaseStub({
+      workspaceRow: null,
+      evidenceContext: null,
+    });
+    const executeAskAIStub = jest.fn().mockResolvedValue(createLearningAskResult({
+      answer: 'I can still guide the method without authoritative scoring here.',
+    }));
+
+    const result = await askWithinLearningSession(
+      {
+        supabase,
+        executeAskAI: executeAskAIStub,
+      },
+      {
+        session: {
+          session_id: 'session-2',
+          user_id: 'student-1',
+          subject_code: '9709',
+          mode: 'spaced_review',
+          active_scope_bundle: {
+            primary_topic_id: 'topic-2',
+            primary_topic_path: '9709.integration.application',
+            secondary_topics_in_scope: [],
+            allowed_prerequisites: [],
+            paper_context: null,
+            current_anchor_kind: 'workspace_slot',
+            current_anchor_ref: {
+              kind: 'workspace_slot',
+              workspace_id: 'workspace-1',
+              slot_key: 'review_queue',
+            },
+            current_question_ref: null,
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9709.integration.application',
+            },
+          },
+        },
+        message: 'mark this',
+      },
+    );
+
+    expect(result.fallback_posture).toMatchObject({
+      fallback_mode: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_pilot_question_type',
+      classification_confidence: null,
+      learning_signal_posture: 'conservative_fallback',
+    });
+    expect(result.session_delta.current_question_ref).toBeNull();
+    expect(result.session_delta.current_question_type_ref).toEqual({
+      kind: 'question_type',
+      question_type_id: '9709.integration.application',
+    });
   });
 });

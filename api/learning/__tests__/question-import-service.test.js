@@ -17,7 +17,30 @@ const clientState = {
   registryTypes: new Map(),
   questions: new Map(),
   snapshots: new Map(),
+  questionInsertGate: null,
 };
+
+function createDeferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+async function waitForCondition(predicate, { attempts = 50, delayMs = 0 } = {}) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (predicate()) {
+      return;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+
+  throw new Error('Condition not reached in time.');
+}
 
 function seedRegistryTypes() {
   clientState.registryTypes = new Map([
@@ -48,6 +71,7 @@ function resetClientState() {
   clientState.nextSnapshotId = 1;
   clientState.questions = new Map();
   clientState.snapshots = new Map();
+  clientState.questionInsertGate = null;
   seedRegistryTypes();
 }
 
@@ -74,6 +98,12 @@ function resolveQuery(query) {
   }
 
   if (query.table === 'question_bank' && query.operation === 'insert') {
+    if (clientState.questionInsertGate) {
+      const gate = clientState.questionInsertGate;
+      clientState.questionInsertGate = null;
+      return gate.promise.then(() => resolveQuery(query));
+    }
+
     const questionId = `question-${clientState.nextQuestionId++}`;
     const row = {
       question_id: questionId,
@@ -337,6 +367,51 @@ describe('question import service', () => {
       primary_question_type_id: '9709.integration.application',
       release_scope_status: 'non_released_fallback',
     });
+  });
+
+  test('same idempotency key allows only one writer under concurrent replay', async () => {
+    const gate = createDeferred();
+    clientState.questionInsertGate = gate;
+
+    const firstImport = importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildTrigIdentityInput(),
+      idempotencyKey: 'import-race-1',
+    });
+    const secondImport = importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildTrigIdentityInput(),
+      idempotencyKey: 'import-race-1',
+    });
+
+    await waitForCondition(
+      () =>
+        clientState.calls.filter(
+          (call) => call.table === 'question_bank' && call.operation === 'insert',
+        ).length >= 1,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const questionInsertCallsBeforeRelease = clientState.calls.filter(
+      (call) => call.table === 'question_bank' && call.operation === 'insert',
+    );
+    expect(questionInsertCallsBeforeRelease).toHaveLength(1);
+
+    gate.resolve();
+    const [first, second] = await Promise.all([firstImport, secondImport]);
+
+    expect(first.question.question_id).toBe(second.question.question_id);
+    expect(
+      clientState.calls.filter(
+        (call) => call.table === 'question_bank' && call.operation === 'insert',
+      ),
+    ).toHaveLength(1);
+    expect(
+      clientState.calls.filter(
+        (call) =>
+          call.table === 'learning_question_analysis_snapshots' && call.operation === 'insert',
+      ),
+    ).toHaveLength(1);
   });
 });
 

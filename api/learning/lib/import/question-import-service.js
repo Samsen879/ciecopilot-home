@@ -204,7 +204,19 @@ async function maybeReplayQuestionImport(cacheKey, normalizedPayload) {
 
 function reserveQuestionImport(cacheKey, normalizedPayload) {
   if (!cacheKey) {
-    return null;
+    return { reservation: null, replay: null };
+  }
+
+  const existing = IDEMPOTENT_QUESTION_IMPORTS.get(cacheKey);
+  if (existing) {
+    if (existing.normalizedPayload !== normalizedPayload) {
+      throw createIdempotencyConflictError();
+    }
+
+    return {
+      reservation: null,
+      replay: existing,
+    };
   }
 
   const reservation = {
@@ -214,7 +226,10 @@ function reserveQuestionImport(cacheKey, normalizedPayload) {
     deferred: createDeferred(),
   };
   IDEMPOTENT_QUESTION_IMPORTS.set(cacheKey, reservation);
-  return reservation;
+  return {
+    reservation,
+    replay: null,
+  };
 }
 
 function rememberQuestionImport(cacheKey, reservation, response) {
@@ -265,12 +280,15 @@ export async function importQuestion(client, {
     idempotencyKey,
   );
   const normalizedPayload = normalizedIdempotencyPayload(normalizedInput);
-  const replay = await maybeReplayQuestionImport(cacheKey, normalizedPayload);
-  if (replay) {
-    return replay;
+  const reserved = reserveQuestionImport(cacheKey, normalizedPayload);
+  if (reserved.replay) {
+    const replay = await maybeReplayQuestionImport(cacheKey, normalizedPayload);
+    if (replay) {
+      return replay;
+    }
   }
 
-  const reservation = reserveQuestionImport(cacheKey, normalizedPayload);
+  const reservation = reserved.reservation;
 
   try {
     const canonicalQuestionType = await getCanonicalQuestionType(client, {

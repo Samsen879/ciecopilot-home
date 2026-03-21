@@ -8,11 +8,18 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql'
 ];
 
+function readMigration(relPath) {
+  return fs.readFileSync(path.join(process.cwd(), relPath), 'utf8').toLowerCase();
+}
+
 function readLearningRuntimeMigrations() {
   return LEARNING_RUNTIME_MIGRATIONS
-    .map((relPath) => fs.readFileSync(path.join(process.cwd(), relPath), 'utf8'))
+    .map((relPath) => readMigration(relPath))
     .join('\n')
-    .toLowerCase();
+}
+
+function normalizeSql(sql) {
+  return sql.replace(/\s+/g, ' ').trim();
 }
 
 function extractTableBlock(sql, tableName) {
@@ -64,7 +71,7 @@ describe('learning runtime schema contract', () => {
 
     expect(sql).toContain('alter column storage_key drop not null');
     expect(sql).toContain('alter column q_number drop not null');
-    expect(sql).toContain('where storage_key is not null and q_number is not null');
+    expect(sql).toContain('unique (storage_key, q_number)');
     expect(sql).toContain('create table if not exists public.learning_question_families');
     expect(sql).toContain('create table if not exists public.learning_question_types');
     expect(sql).toContain('create table if not exists public.learning_question_analysis_snapshots');
@@ -176,5 +183,21 @@ describe('learning runtime schema contract', () => {
       'started_at',
       'completed_at'
     ].forEach((token) => expect(reconciliationSql).toContain(token));
+  });
+
+  test('question_bank keeps a non-partial storage_key/q_number conflict target for legacy seed paths', () => {
+    const sql = normalizeSql(readMigration(
+      'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
+    ));
+
+    expect(sql).toContain('add constraint uq_question_bank_storage_q unique (storage_key, q_number)');
+  });
+
+  test('question analysis snapshots enforce a single active row per question', () => {
+    const sql = normalizeSql(readLearningRuntimeMigrations());
+
+    expect(sql).toContain(
+      'create unique index if not exists uq_learning_question_analysis_snapshots_active on public.learning_question_analysis_snapshots (question_id) where superseded_by_snapshot_id is null',
+    );
   });
 });

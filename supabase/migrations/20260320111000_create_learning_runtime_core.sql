@@ -242,6 +242,10 @@ CREATE INDEX IF NOT EXISTS idx_learning_question_types_family_id
 CREATE INDEX IF NOT EXISTS idx_learning_question_analysis_snapshots_question_id
   ON public.learning_question_analysis_snapshots (question_id, created_at DESC);
 
+CREATE UNIQUE INDEX IF NOT EXISTS uq_learning_question_analysis_snapshots_active
+  ON public.learning_question_analysis_snapshots (question_id)
+  WHERE superseded_by_snapshot_id IS NULL;
+
 CREATE INDEX IF NOT EXISTS idx_learning_sessions_user_updated
   ON public.learning_sessions (user_id, updated_at DESC);
 

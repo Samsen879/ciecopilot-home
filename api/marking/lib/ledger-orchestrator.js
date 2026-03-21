@@ -125,6 +125,10 @@ export async function writeLedger(params) {
       decision_write_status: 'skipped',
       error_event_count: 0,
       is_reused_run: true,
+      attempt_context: {
+        topic_id: node_id || null,
+        topic_path: topic_path || null,
+      },
     };
   }
 
@@ -158,6 +162,10 @@ export async function writeLedger(params) {
         decision_write_status: 'failed',
         error_event_count: 0,
         is_reused_run: false,
+        attempt_context: {
+          topic_id: node_id || null,
+          topic_path: topic_path || null,
+        },
       };
     }
 
@@ -191,6 +199,10 @@ export async function writeLedger(params) {
       decision_write_status: 'failed',
       error_event_count: 0,
       is_reused_run: false,
+      attempt_context: {
+        topic_id: node_id || null,
+        topic_path: topic_path || null,
+      },
     };
   }
 
@@ -240,5 +252,9 @@ export async function writeLedger(params) {
     decision_write_status,
     error_event_count,
     is_reused_run: false,
+    attempt_context: {
+      topic_id: node_id || null,
+      topic_path: topic_path || null,
+    },
   };
 }

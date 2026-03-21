@@ -12,6 +12,7 @@ import SelectionListener from './components/SelectionListener';
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { LEARNING_RUNTIME_ROUTE_PATHS } from "./pages/legacy-entry-mode.js";
 
 // Lazy loaded components for better performance
 const AskAI = React.lazy(() => import("./pages/AskAI"));
@@ -25,6 +26,8 @@ const Search = React.lazy(() => import('./pages/Search'));
 const LearningPath = React.lazy(() => import('./pages/LearningPath'));
 const CommunityAndRecommendations = React.lazy(() => import('./pages/CommunityAndRecommendations'));
 const QuestionDetail = React.lazy(() => import('./pages/QuestionDetail'));
+const LearningSessionPage = React.lazy(() => import('./pages/learning-runtime/LearningSessionPage'));
+const TopicWorkspacePage = React.lazy(() => import('./pages/learning-runtime/TopicWorkspacePage'));
 
 // Subject-specific pages - lazy loaded
 const SubjectSelection = React.lazy(() => import("./pages/SubjectSelection"));
@@ -60,6 +63,7 @@ const LoadingSpinner = () => (
 function ContentWithChatShift() {
   const { isChatOpen, panelWidth } = useAIContext();
   const rightPadding = isChatOpen ? panelWidth : 0;
+  const [learningSessionRoutePath, topicWorkspaceRoutePath] = LEARNING_RUNTIME_ROUTE_PATHS;
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 transition-colors duration-200" style={{ paddingRight: rightPadding, transition: 'padding-right 300ms ease' }}>
       <Navbar />
@@ -92,6 +96,8 @@ function ContentWithChatShift() {
               <Route path="/physics/a2-level" element={<PhysicsA2Level />} />
               {/* AI Chat Page */}
               <Route path="/ask-ai" element={<div className="container mx-auto p-4"><AskAI /></div>} />
+              <Route path={learningSessionRoutePath} element={<LearningSessionPage />} />
+              <Route path={topicWorkspaceRoutePath} element={<TopicWorkspacePage />} />
               {/* Search Page */}
               <Route path="/search" element={<Search />} />
               {/* Smart Tools */}

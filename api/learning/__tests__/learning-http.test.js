@@ -1,4 +1,7 @@
 import {
+  LEARNING_ERROR_CODES,
+} from '../lib/contracts/error-contract.js';
+import {
   sendLearningCreated,
   sendLearningError,
   sendLearningJson,
@@ -87,6 +90,30 @@ test('learning http helper maps structured validator failures through the frozen
       message: 'question anchor mismatch',
       retryable: false,
       details: { field: 'current_question_id' },
+    },
+  });
+});
+
+test('learning http helper falls back to frozen error codes for unknown upstream codes', () => {
+  const res = createResponse();
+  const error = Object.assign(new Error('connection reset by peer'), {
+    code: 'ECONNRESET',
+    status: 503,
+    details: { source: 'db' },
+  });
+
+  sendLearningHttpError(res, 'req-4', error, {
+    defaultCode: LEARNING_ERROR_CODES.SESSION_STATE_CONFLICT,
+  });
+
+  expect(res.statusCode).toBe(503);
+  expect(res.jsonPayload).toEqual({
+    request_id: 'req-4',
+    error: {
+      code: 'session_state_conflict',
+      message: 'connection reset by peer',
+      retryable: false,
+      details: { source: 'db' },
     },
   });
 });

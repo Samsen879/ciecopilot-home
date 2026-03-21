@@ -187,6 +187,18 @@ async function handlePlacementIntent({
     });
   }
 
+  if (
+    placementStatus === 'pinned'
+    && artifact.slot_key
+    && !isCompatibleArtifactKindForSlot(artifact.slot_key, artifact.artifact_kind)
+  ) {
+    throw buildArtifactConflict('Artifact kind is not compatible with the slot.', {
+      artifact_id: artifact.artifact_id,
+      slot_key: artifact.slot_key,
+      artifact_kind: artifact.artifact_kind,
+    });
+  }
+
   let slotTransition = null;
   const topic = artifact.slot_key
     ? await artifactRepository?.getTopicById?.(artifact.canonical_home_topic_id)

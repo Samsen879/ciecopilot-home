@@ -417,4 +417,50 @@ describe('learning-runtime orchestration', () => {
       expect.any(Object),
     );
   });
+
+  it('does not apply learning effects when the ledger write failed', async () => {
+    mockWriteLedger.mockResolvedValueOnce({
+      attempt_id: 'att-001',
+      mark_run_id: 'mr-001',
+      decision_write_status: 'failed',
+      error_event_count: 0,
+      is_reused_run: false,
+      attempt_context: {
+        topic_id: 'topic-trig-equations',
+        topic_path: '9709/trigonometry/equations',
+      },
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.learning_effects).toBeUndefined();
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+  });
+
+  it('does not apply learning effects when the ledger run was reused and skipped', async () => {
+    mockWriteLedger.mockResolvedValueOnce({
+      attempt_id: 'att-001',
+      mark_run_id: 'mr-001',
+      decision_write_status: 'skipped',
+      error_event_count: 0,
+      is_reused_run: true,
+      attempt_context: {
+        topic_id: 'topic-trig-equations',
+        topic_path: '9709/trigonometry/equations',
+      },
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.learning_effects).toBeUndefined();
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+  });
 });

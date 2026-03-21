@@ -328,46 +328,48 @@ export default async function handler(req, res) {
         ts: new Date().toISOString(),
       }));
 
-      try {
-        const questionContext = await loadLearningQuestionContext(supabase, question_id);
-        learningEffects = await applyLearningEffects({
-          supabase,
-          user_id,
-          subject_code: storage_key.split('/')[0] || null,
-          question_id,
-          question_context: {
-            family_id: questionContext.family_id,
-            question_type_id: questionContext.question_type_id,
-            primary_topic_id:
-              questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
-            primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
-            classification_confidence: questionContext.classification_confidence,
-            candidate_rubric_refs: questionContext.candidate_rubric_refs,
-            release_scope_status: questionContext.release_scope_status,
-          },
-          attempt_id: ledgerResult.attempt_id,
-          mark_run_id: ledgerResult.mark_run_id,
-          source_attempt_ref: {
-            kind: 'attempt',
+      if (ledgerResult.decision_write_status === 'success') {
+        try {
+          const questionContext = await loadLearningQuestionContext(supabase, question_id);
+          learningEffects = await applyLearningEffects({
+            supabase,
+            user_id,
+            subject_code: storage_key.split('/')[0] || null,
+            question_id,
+            question_context: {
+              family_id: questionContext.family_id,
+              question_type_id: questionContext.question_type_id,
+              primary_topic_id:
+                questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
+              primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
+              classification_confidence: questionContext.classification_confidence,
+              candidate_rubric_refs: questionContext.candidate_rubric_refs,
+              release_scope_status: questionContext.release_scope_status,
+            },
             attempt_id: ledgerResult.attempt_id,
-          },
-          source_mark_run_ref: {
-            kind: 'mark_run',
             mark_run_id: ledgerResult.mark_run_id,
-          },
-          source_attempt_context: ledgerResult.attempt_context ?? null,
-          decisions,
-          uncertainty_validated: true,
-        }, {
-          supabase,
-        });
-      } catch (learningEffectsError) {
-        console.warn(JSON.stringify({
-          event: 'evaluate_v1_learning_effects_error',
-          run_id,
-          error: learningEffectsError?.message || String(learningEffectsError),
-          ts: new Date().toISOString(),
-        }));
+            source_attempt_ref: {
+              kind: 'attempt',
+              attempt_id: ledgerResult.attempt_id,
+            },
+            source_mark_run_ref: {
+              kind: 'mark_run',
+              mark_run_id: ledgerResult.mark_run_id,
+            },
+            source_attempt_context: ledgerResult.attempt_context ?? null,
+            decisions,
+            uncertainty_validated: true,
+          }, {
+            supabase,
+          });
+        } catch (learningEffectsError) {
+          console.warn(JSON.stringify({
+            event: 'evaluate_v1_learning_effects_error',
+            run_id,
+            error: learningEffectsError?.message || String(learningEffectsError),
+            ts: new Date().toISOString(),
+          }));
+        }
       }
     } catch (ledgerErr) {
       // Ledger write failure must NOT block the scoring response

@@ -41,6 +41,19 @@ function createArtifactRepositoryFixture() {
         superseded_by_artifact_id: null,
       },
     ],
+    [
+      'art-incompatible',
+      {
+        artifact_id: 'art-incompatible',
+        artifact_kind: 'summary_card',
+        canonical_home_topic_id: 'topic-trig-equations',
+        slot_key: 'common_traps',
+        trust_status: 'grounded',
+        placement_status: 'inbox',
+        lifecycle_status: 'active',
+        superseded_by_artifact_id: null,
+      },
+    ],
   ]);
 
   const workspaceSlots = new Map([
@@ -172,6 +185,24 @@ describe('artifact-service', () => {
       service.patchArtifact({
         userId: 'student-1',
         artifactId: 'art-contested',
+        intent: 'set_placement_status',
+        placementStatus: 'pinned',
+      }),
+    ).rejects.toMatchObject({
+      code: 'artifact_state_conflict',
+      status: 409,
+    });
+  });
+
+  test('set_placement_status rejects pinning an artifact into an incompatible slot', async () => {
+    const service = createArtifactService({
+      artifactRepository: createArtifactRepositoryFixture(),
+    });
+
+    await expect(
+      service.patchArtifact({
+        userId: 'student-1',
+        artifactId: 'art-incompatible',
         intent: 'set_placement_status',
         placementStatus: 'pinned',
       }),

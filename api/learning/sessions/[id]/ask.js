@@ -10,6 +10,14 @@ import {
 } from '../../lib/http/learning-http.js';
 import { readLearningSession } from '../../lib/session-runtime/session-service.js';
 
+const KNOWN_LEARNING_ASK_ERROR_CODES = new Set([
+  LEARNING_ERROR_CODES.AUTH_REQUIRED,
+  LEARNING_ERROR_CODES.AUTH_FORBIDDEN,
+  LEARNING_ERROR_CODES.INVALID_PAYLOAD,
+  LEARNING_ERROR_CODES.SESSION_NOT_FOUND,
+  LEARNING_ERROR_CODES.SESSION_STATE_CONFLICT,
+]);
+
 async function ensureLearningAuth(req) {
   if (req?.auth_user_id) {
     return {
@@ -24,6 +32,18 @@ async function ensureLearningAuth(req) {
     ok: true,
     userId: auth.user?.id || req?.auth_user_id || null,
   };
+}
+
+function sendInternalLearningError(res, requestId) {
+  return res.status(500).json({
+    request_id: requestId ?? null,
+    error: {
+      code: 'internal_error',
+      message: 'Internal server error.',
+      retryable: false,
+      details: {},
+    },
+  });
 }
 
 export default async function handler(req, res) {
@@ -79,12 +99,18 @@ export default async function handler(req, res) {
 
     return sendLearningJson(res, req?.request_id || null, response);
   } catch (error) {
+    const knownCode = KNOWN_LEARNING_ASK_ERROR_CODES.has(error?.code)
+      ? error.code
+      : null;
+    if (!knownCode) {
+      return sendInternalLearningError(res, req?.request_id || null);
+    }
     return sendLearningHttpError(
       res,
       req?.request_id || null,
       error,
       {
-        defaultCode: LEARNING_ERROR_CODES.SESSION_STATE_CONFLICT,
+        defaultCode: knownCode,
       },
     );
   }

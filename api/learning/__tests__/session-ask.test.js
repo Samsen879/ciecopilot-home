@@ -210,4 +210,54 @@ describe('learning session ask api', () => {
       }),
     );
   });
+
+  test('POST /api/learning/sessions/:id/ask maps unknown ask failures to internal_error with 500', async () => {
+    mockAskWithinLearningSession.mockRejectedValue(new Error('workspace projection crashed'));
+
+    const res = await request(server)
+      .post('/api/learning/sessions/sess-1/ask')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        message: 'Can you give me the next hint only?',
+        client_turn_id: 'local-turn-002',
+      });
+
+    expect(res.status).toBe(500);
+    expect(res.body).toMatchObject({
+      request_id: expect.any(String),
+      error: {
+        code: 'internal_error',
+        retryable: false,
+      },
+    });
+  });
+
+  test('POST /api/learning/sessions/:id/ask preserves typed session_state_conflict failures', async () => {
+    const error = new Error('session became terminal');
+    error.code = 'session_state_conflict';
+    error.status = 409;
+    error.retryable = false;
+    error.details = { state: 'completed' };
+    mockAskWithinLearningSession.mockRejectedValue(error);
+
+    const res = await request(server)
+      .post('/api/learning/sessions/sess-1/ask')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        message: 'Can you give me the next hint only?',
+        client_turn_id: 'local-turn-003',
+      });
+
+    expect(res.status).toBe(409);
+    expect(res.body).toMatchObject({
+      request_id: expect.any(String),
+      error: {
+        code: 'session_state_conflict',
+        retryable: false,
+        details: { state: 'completed' },
+      },
+    });
+  });
 });

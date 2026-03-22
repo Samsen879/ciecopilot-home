@@ -14,9 +14,14 @@ const clientState = {
   calls: [],
   nextQuestionId: 1,
   nextSnapshotId: 1,
+  nextSessionId: 1,
   registryTypes: new Map(),
   questions: new Map(),
   snapshots: new Map(),
+  topics: new Map(),
+  sessions: new Map(),
+  lineage: new Map(),
+  workspaceProjections: new Map(),
   questionInsertGate: null,
 };
 
@@ -65,18 +70,105 @@ function seedRegistryTypes() {
   ]);
 }
 
+function seedTopics() {
+  clientState.topics = new Map([
+    [
+      'topic-integration-1',
+      {
+        node_id: 'topic-integration-1',
+        topic_path: '9709.integration.application',
+      },
+    ],
+  ]);
+}
+
+function seedWorkspaceProjections() {
+  clientState.workspaceProjections = new Map([
+    [
+      'student-1:topic-integration-1',
+      {
+        workspace_id: 'workspace-integration-1',
+        user_id: 'student-1',
+        topic_id: 'topic-integration-1',
+        topic_path: '9709.integration.application',
+        slot_state: {
+          common_traps: 'active',
+          review_queue: 'active',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T09:00:00.000Z',
+        slots: [
+          {
+            workspace_slot_id: 'slot-common-traps-integration',
+            slot_key: 'common_traps',
+            primary_artifact_ref: null,
+            linked_reference_refs: [],
+            updated_at: '2026-03-22T09:00:00.000Z',
+          },
+          {
+            workspace_slot_id: 'slot-review-queue-integration',
+            slot_key: 'review_queue',
+            primary_artifact_ref: null,
+            linked_reference_refs: [],
+            updated_at: '2026-03-22T09:00:00.000Z',
+          },
+        ],
+      },
+    ],
+  ]);
+}
+
 function resetClientState() {
   clientState.calls = [];
   clientState.nextQuestionId = 1;
   clientState.nextSnapshotId = 1;
+  clientState.nextSessionId = 1;
   clientState.questions = new Map();
   clientState.snapshots = new Map();
+  clientState.sessions = new Map();
+  clientState.lineage = new Map();
   clientState.questionInsertGate = null;
   seedRegistryTypes();
+  seedTopics();
+  seedWorkspaceProjections();
 }
 
 function findFilter(query, field) {
   return query.filters.find((filter) => filter.field === field)?.value ?? null;
+}
+
+function createSessionRow(payload) {
+  const sessionId = `session-${clientState.nextSessionId++}`;
+  const now = '2026-03-22T09:00:00.000Z';
+
+  return {
+    session_id: sessionId,
+    created_at: now,
+    updated_at: now,
+    ...payload,
+  };
+}
+
+function buildResumeProjection(sessionId) {
+  const session = clientState.sessions.get(sessionId);
+  if (!session) {
+    return null;
+  }
+
+  const lineage = clientState.lineage.get(sessionId) || {
+    parent_session_id: null,
+    handoff_kind: null,
+    summary_snapshot: session.summary_state || {},
+  };
+
+  return {
+    ...session,
+    parent_session_id: lineage.parent_session_id,
+    handoff_kind: lineage.handoff_kind,
+    summary_snapshot: lineage.summary_snapshot,
+  };
 }
 
 function resolveQuery(query) {
@@ -113,6 +205,11 @@ function resolveQuery(query) {
     return { data: row, error: null };
   }
 
+  if (query.table === 'question_bank' && query.operation === 'select') {
+    const questionId = findFilter(query, 'question_id');
+    return { data: clientState.questions.get(questionId) || null, error: null };
+  }
+
   if (query.table === 'learning_question_analysis_snapshots' && query.operation === 'insert') {
     const snapshotId = `snapshot-${clientState.nextSnapshotId++}`;
     const row = {
@@ -133,6 +230,50 @@ function resolveQuery(query) {
     }
 
     return { data: next, error: null };
+  }
+
+  if (query.table === 'curriculum_nodes' && query.operation === 'select') {
+    const nodeId = findFilter(query, 'node_id');
+    return { data: clientState.topics.get(nodeId) || null, error: null };
+  }
+
+  if (query.table === 'learning_sessions' && query.operation === 'insert') {
+    const row = createSessionRow(query.payload);
+    clientState.sessions.set(row.session_id, row);
+    return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_session_lineage' && query.operation === 'insert') {
+    const row = {
+      lineage_id: `lineage-${query.payload.child_session_id}`,
+      created_at: '2026-03-22T09:00:00.000Z',
+      ...query.payload,
+    };
+    clientState.lineage.set(query.payload.child_session_id, row);
+    return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_session_resume_projection' && query.operation === 'select') {
+    const sessionId = findFilter(query, 'session_id');
+    const userId = findFilter(query, 'user_id');
+    const row = buildResumeProjection(sessionId);
+
+    if (!row || (userId && row.user_id !== userId)) {
+      return { data: null, error: null };
+    }
+
+    return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_workspace_projection' && query.operation === 'select') {
+    const topicId = findFilter(query, 'topic_id');
+    const userId = findFilter(query, 'user_id');
+    const row = clientState.workspaceProjections.get(`${userId}:${topicId}`) || null;
+    return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_review_queue_projection' && query.operation === 'select') {
+    return { data: [], error: null };
   }
 
   throw new Error(`Unhandled learning query: ${query.table}:${query.operation}`);
@@ -206,9 +347,14 @@ function createClient() {
 }
 
 const mockGetServiceClient = jest.fn(() => createClient());
+const mockAskWithinLearningSession = jest.fn();
 
 jest.unstable_mockModule('../../lib/supabase/client.js', () => ({
   getServiceClient: mockGetServiceClient,
+}));
+
+jest.unstable_mockModule('../../rag/lib/ask-service.js', () => ({
+  askWithinLearningSession: mockAskWithinLearningSession,
 }));
 
 const {
@@ -274,7 +420,9 @@ function buildTrigWithoutReleasedRubricInput() {
   });
 }
 
-function buildIntegrationInput() {
+function buildIntegrationInput(overrides = {}) {
+  const classification = overrides.classification || {};
+
   return {
     subject_code: '9709',
     prompt_representation: {
@@ -287,6 +435,7 @@ function buildIntegrationInput() {
     classification: {
       family_id: '9709.integration_techniques',
       primary_question_type_id: '9709.integration.application',
+      primary_topic_id: 'topic-integration-1',
       classification_confidence: 0.77,
       candidate_rubric_refs: [
         buildReleasedRubricRef({
@@ -296,6 +445,23 @@ function buildIntegrationInput() {
       ],
       uncertainty_validated: true,
       variant_tags: ['paper:p3'],
+      ...classification,
+    },
+    ...overrides,
+    classification: {
+      family_id: '9709.integration_techniques',
+      primary_question_type_id: '9709.integration.application',
+      primary_topic_id: 'topic-integration-1',
+      classification_confidence: 0.77,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.integration.application',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p3'],
+      ...classification,
     },
   };
 }
@@ -472,5 +638,148 @@ describe('learning question import api', () => {
     expect(first.status).toBe(200);
     expect(second.status).toBe(409);
     expect(second.body.error.code).toBe('idempotency_conflict');
+  });
+
+  test('import -> create session -> ask -> workspace read keeps fallback posture and canonical-home consistency', async () => {
+    const importRes = await request(server)
+      .post('/api/learning/questions/import')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildIntegrationInput());
+
+    expect(importRes.status).toBe(200);
+    expect(importRes.body.question).toMatchObject({
+      release_scope_status: 'non_released_fallback',
+      primary_question_type_id: '9709.integration.application',
+      primary_topic_id: 'topic-integration-1',
+    });
+
+    const questionId = importRes.body.question.question_id;
+    const createSessionRes = await request(server)
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        subject_code: '9709',
+        mode: 'guided_solve',
+        session_goal: 'Repair integration setup',
+        anchor_kind: 'question',
+        anchor_ref: {
+          kind: 'question',
+          question_id: questionId,
+        },
+        current_question_id: questionId,
+        current_question_type_id: null,
+      });
+
+    expect(createSessionRes.status).toBe(200);
+    expect(createSessionRes.body.session.active_scope_bundle).toMatchObject({
+      primary_topic_id: 'topic-integration-1',
+      primary_topic_path: '9709.integration.application',
+      current_question_ref: {
+        kind: 'question',
+        question_id: questionId,
+      },
+      current_question_type_ref: {
+        kind: 'question_type',
+        question_type_id: '9709.integration.application',
+      },
+    });
+
+    const sessionId = createSessionRes.body.session.session_id;
+    mockAskWithinLearningSession.mockResolvedValueOnce({
+      assistant_message: 'Choose u = x^2 + x and du = (2x + 1)dx.',
+      evidence_summary: {
+        source_topic_path: '9709.integration.application',
+        retrieved_evidence_count: 0,
+      },
+      fallback_posture: {
+        fallback_mode: 'non_released_fallback',
+        authoritative_scoring_allowed: false,
+        fallback_reason_code: 'non_pilot_question_type',
+        classification_confidence: 0.77,
+        learning_signal_posture: 'conservative_fallback',
+      },
+      session_delta: {
+        client_turn_id: 'turn-1',
+        current_question_ref: {
+          kind: 'question',
+          question_id: questionId,
+        },
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.integration.application',
+        },
+      },
+      suggested_actions: [
+        {
+          kind: 'review_workspace',
+          workspace_id: 'workspace-integration-1',
+        },
+      ],
+    });
+
+    const askRes = await request(server)
+      .post(`/api/learning/sessions/${sessionId}/ask`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        message: 'Give me the next substitution hint only.',
+        client_turn_id: 'turn-1',
+      });
+
+    expect(askRes.status).toBe(200);
+    expect(mockAskWithinLearningSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        supabase: expect.any(Object),
+        req: expect.any(Object),
+      }),
+      expect.objectContaining({
+        clientTurnId: 'turn-1',
+        message: 'Give me the next substitution hint only.',
+        session: expect.objectContaining({
+          session_id: sessionId,
+          active_scope_bundle: expect.objectContaining({
+            primary_topic_id: 'topic-integration-1',
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9709.integration.application',
+            },
+          }),
+        }),
+      }),
+    );
+    expect(askRes.body.fallback_posture).toMatchObject({
+      fallback_mode: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_pilot_question_type',
+    });
+
+    const workspaceRes = await request(server)
+      .get('/api/learning/workspaces/topic-integration-1')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student');
+
+    expect(workspaceRes.status).toBe(200);
+    expect(workspaceRes.body.workspace).toMatchObject({
+      workspace_id: 'workspace-integration-1',
+      topic_id: 'topic-integration-1',
+      topic_path: '9709.integration.application',
+    });
+    expect(workspaceRes.body.workspace.topic_id)
+      .toBe(createSessionRes.body.session.active_scope_bundle.primary_topic_id);
+    expect(workspaceRes.body.workspace.slots.common_traps).toEqual({
+      workspace_slot_id: 'slot-common-traps-integration',
+      primary_artifact_ref: null,
+      linked_references: [],
+      updated_at: '2026-03-22T09:00:00.000Z',
+    });
+    expect(workspaceRes.body.review_queue).toEqual({
+      scope: 'global_queue_projection',
+      topic_id: 'topic-integration-1',
+      status: null,
+      due_before: null,
+      items: [],
+    });
   });
 });

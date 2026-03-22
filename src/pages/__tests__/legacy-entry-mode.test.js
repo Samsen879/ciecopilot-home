@@ -7,9 +7,9 @@ import {
 
 describe('legacy runtime entry modes', () => {
   test('legacy entry surfaces stay on their pre-runtime modes when the feature flag is absent', () => {
-    expect(getAskAiEntryMode()).toBe('legacy_chat');
-    expect(getStudyHubSurfaceMode()).toBe('legacy_hub');
-    expect(getLearningPathSurfaceMode()).toBe('legacy_path');
+    expect(getAskAiEntryMode({ learningRuntimeEnabled: false })).toBe('legacy_chat');
+    expect(getStudyHubSurfaceMode({ learningRuntimeEnabled: false })).toBe('legacy_hub');
+    expect(getLearningPathSurfaceMode({ learningRuntimeEnabled: false })).toBe('legacy_path');
   });
 
   test('legacy ask-ai page routes users into the new learning runtime entry under the feature flag', () => {

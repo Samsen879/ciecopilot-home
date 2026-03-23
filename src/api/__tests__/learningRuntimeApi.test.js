@@ -93,6 +93,38 @@ function createSessionEnvelope() {
   };
 }
 
+function createAskEnvelope() {
+  return {
+    assistant_message: 'Start by isolating sin(2x) before you expand anything else.',
+    evidence_summary: {
+      source_topic_path: '9709/trigonometry/equations',
+      retrieved_evidence_count: 2,
+    },
+    fallback_posture: {
+      fallback_mode: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_pilot_question_type',
+      classification_confidence: null,
+      learning_signal_posture: 'conservative_fallback',
+    },
+    session_delta: {
+      client_turn_id: 'local-turn-002',
+      current_question_ref: null,
+      current_question_type_ref: {
+        kind: 'question_type',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    },
+    suggested_actions: [
+      {
+        kind: 'review_workspace',
+        workspace_id: 'workspace-1',
+      },
+    ],
+    request_id: 'req-ask-2',
+  };
+}
+
 describe('learning runtime api', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
@@ -221,6 +253,87 @@ describe('learning runtime api', () => {
     });
 
     expect(response.session.activeScope.currentAnchor.reviewTaskId).toBe('review-task-1');
+  });
+
+  test('askInSession posts follow-up turns and normalizes the live session delta', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => createAskEnvelope(),
+    });
+
+    const response = await learningRuntimeApi.askInSession('sess-1', {
+      message: 'Give me the next hint only.',
+      client_turn_id: 'local-turn-002',
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch.mock.calls[0][0]).toBe('/api/learning/sessions/sess-1/ask');
+
+    const init = global.fetch.mock.calls[0][1];
+    expect(init.method).toBe('POST');
+    expect(init.headers).toMatchObject({
+      Authorization: 'Bearer token-123',
+      'Content-Type': 'application/json',
+    });
+    expect(JSON.parse(init.body)).toEqual({
+      message: 'Give me the next hint only.',
+      client_turn_id: 'local-turn-002',
+    });
+    expect(response.fallbackPosture).toEqual(expect.objectContaining({
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'non_pilot_question_type',
+    }));
+    expect(response.sessionDelta).toEqual(expect.objectContaining({
+      clientTurnId: 'local-turn-002',
+      currentQuestion: null,
+      currentQuestionType: {
+        kind: 'question_type',
+        questionTypeId: '9709.trigonometry.equations',
+      },
+    }));
+  });
+
+  test('createSession throws structured learning runtime errors for actionable UI states', async () => {
+    global.fetch.mockResolvedValue({
+      ok: false,
+      status: 409,
+      statusText: 'Conflict',
+      json: async () => ({
+        request_id: 'req-create-error-1',
+        error: {
+          code: 'unsupported_mode_for_anchor',
+          message: 'This mode is not allowed for the anchor kind.',
+          retryable: false,
+          details: {
+            anchor_kind: 'concept',
+            mode: 'spaced_review',
+          },
+        },
+      }),
+    });
+
+    await expect(learningRuntimeApi.createSession({
+      subject_code: '9709',
+      mode: 'spaced_review',
+      anchor_kind: 'concept',
+      anchor_ref: {
+        kind: 'concept',
+        topic_id: 'topic-trig-identities',
+        topic_path: '9709/trigonometry/identities',
+      },
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.identities',
+    })).rejects.toMatchObject({
+      name: 'LearningRuntimeApiError',
+      status: 409,
+      code: 'unsupported_mode_for_anchor',
+      retryable: false,
+      requestId: 'req-create-error-1',
+      details: {
+        anchor_kind: 'concept',
+        mode: 'spaced_review',
+      },
+    });
   });
 
   test('listReviewTasks encodes the frozen query params for the shared client surface', async () => {

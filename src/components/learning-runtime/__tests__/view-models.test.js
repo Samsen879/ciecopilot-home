@@ -1,4 +1,9 @@
 import { buildSessionViewModel } from '../view-models/session-view-model.js';
+import {
+  buildSessionLaunchPayload,
+  createSessionLaunchDraft,
+  mergeAskResponseIntoSessionPayload,
+} from '../view-models/session-live-state.js';
 import { buildWorkspaceViewModel } from '../view-models/workspace-view-model.js';
 
 function createQuestionlessSessionPayload() {
@@ -159,6 +164,118 @@ describe('learning runtime session view model', () => {
       kind: 'assistant_response',
       fallbackReasonCode: 'non_pilot_question_type',
       learningSignalPosture: 'conservative_fallback',
+    }));
+  });
+
+  test('builds launch payloads that keep concept sessions questionless', () => {
+    const payload = buildSessionLaunchPayload(createSessionLaunchDraft({
+      mode: 'learn_concept',
+      sessionGoal: 'Warm up trig identities',
+      anchorKind: 'concept',
+      topicId: 'topic-trig-identities',
+      topicPath: '9709/trigonometry/identities',
+      currentQuestionTypeId: '9709.trigonometry.identities',
+    }));
+
+    expect(payload).toEqual({
+      subject_code: '9709',
+      mode: 'learn_concept',
+      session_goal: 'Warm up trig identities',
+      anchor_kind: 'concept',
+      anchor_ref: {
+        kind: 'concept',
+        topic_id: 'topic-trig-identities',
+        topic_path: '9709/trigonometry/identities',
+      },
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.identities',
+    });
+  });
+
+  test('merges ask responses without inventing question ids for questionless sessions', () => {
+    const sessionPayload = mergeAskResponseIntoSessionPayload(
+      createQuestionlessSessionPayload(),
+      {
+        assistantMessage: 'Start by turning the left side into a single sine term.',
+        evidenceSummary: {
+          sourceTopicPath: '9709/trigonometry/identities',
+          retrievedEvidenceCount: 1,
+        },
+        fallbackPosture: {
+          fallbackMode: 'non_released_fallback',
+          authoritativeScoringAllowed: false,
+          fallbackReasonCode: 'non_pilot_question_type',
+          classificationConfidence: null,
+          learningSignalPosture: 'conservative_fallback',
+        },
+        sessionDelta: {
+          clientTurnId: 'local-turn-1',
+          currentQuestion: null,
+          currentQuestionType: {
+            kind: 'question_type',
+            questionTypeId: '9709.trigonometry.identities',
+          },
+        },
+      },
+    );
+
+    expect(sessionPayload.session.currentQuestion).toBeNull();
+    expect(sessionPayload.session.currentQuestionId).toBeNull();
+    expect(sessionPayload.session.currentQuestionTypeId).toBe('9709.trigonometry.identities');
+    expect(sessionPayload.session.activeScope.currentQuestion).toBeNull();
+    expect(sessionPayload.latestResponse.assistantMessage).toBe(
+      'Start by turning the left side into a single sine term.',
+    );
+  });
+
+  test('builds timeline entries from completed live turns', () => {
+    const updatedPayload = mergeAskResponseIntoSessionPayload(
+      createQuestionlessSessionPayload(),
+      {
+        assistantMessage: 'Rewrite the left-hand side with a double-angle identity first.',
+        evidenceSummary: {
+          sourceTopicPath: '9709/trigonometry/identities',
+          retrievedEvidenceCount: 2,
+        },
+        fallbackPosture: {
+          fallbackMode: 'non_released_fallback',
+          authoritativeScoringAllowed: false,
+          fallbackReasonCode: 'non_pilot_question_type',
+          classificationConfidence: null,
+          learningSignalPosture: 'conservative_fallback',
+        },
+        sessionDelta: {
+          clientTurnId: 'local-turn-2',
+          currentQuestion: null,
+          currentQuestionType: {
+            kind: 'question_type',
+            questionTypeId: '9709.trigonometry.identities',
+          },
+        },
+      },
+    );
+
+    const vm = buildSessionViewModel(updatedPayload, {
+      turnHistory: [
+        {
+          clientTurnId: 'local-turn-2',
+          userMessage: 'Give me the next hint only.',
+          response: updatedPayload.latestResponse,
+        },
+      ],
+    });
+
+    expect(vm.timeline[0]).toEqual(expect.objectContaining({
+      kind: 'user_turn',
+      message: 'Give me the next hint only.',
+    }));
+    expect(vm.timeline[1]).toEqual(expect.objectContaining({
+      kind: 'assistant_response',
+      message: 'Rewrite the left-hand side with a double-angle identity first.',
+      fallbackReasonCode: 'non_pilot_question_type',
+    }));
+    expect(vm.timeline[2]).toEqual(expect.objectContaining({
+      kind: 'questionless_state',
     }));
   });
 

@@ -3,6 +3,9 @@ import React from 'react';
 const h = React.createElement;
 
 function renderEntry(entry) {
+  const toneClass = entry.kind === 'user_turn'
+    ? 'border-slate-300 bg-white'
+    : 'border-slate-200 bg-slate-50';
   const metaLines = [];
 
   if (entry.questionTypeId) {
@@ -31,7 +34,7 @@ function renderEntry(entry) {
 
   return h('article', {
     key: entry.id,
-    className: 'rounded-2xl border border-slate-200 bg-slate-50 p-4',
+    className: `rounded-2xl border p-4 ${toneClass}`,
   }, [
     h('h3', { key: 'title', className: 'text-base font-semibold text-slate-950' }, entry.title),
     entry.message
@@ -47,7 +50,7 @@ function renderEntry(entry) {
   ]);
 }
 
-export default function SessionTimeline({ timeline = [] }) {
+export default function SessionTimeline({ timeline = [], isUpdating = false }) {
   return h('section', { className: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm' }, [
     h('div', { key: 'heading' }, [
       h('p', {
@@ -58,11 +61,24 @@ export default function SessionTimeline({ timeline = [] }) {
         key: 'title',
         className: 'mt-3 text-2xl font-semibold tracking-tight text-slate-950',
       }, 'Session flow'),
+      isUpdating
+        ? h('p', {
+          key: 'pending',
+          className: 'mt-2 text-sm text-slate-500',
+        }, 'Updating timeline from the live ask response...')
+        : null,
     ]),
     h(
       'div',
       { key: 'entries', className: 'mt-6 grid gap-4' },
-      timeline.map((entry) => renderEntry(entry)),
+      (timeline.length > 0
+        ? timeline.map((entry) => renderEntry(entry))
+        : [
+          h('p', {
+            key: 'empty',
+            className: 'rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-600',
+          }, 'No session turns yet. Launch a session and submit a follow-up to populate the live timeline.'),
+        ]),
     ),
   ]);
 }

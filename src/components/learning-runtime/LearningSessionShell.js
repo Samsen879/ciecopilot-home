@@ -1,5 +1,7 @@
 import React from 'react';
+import SessionAskComposer from './SessionAskComposer.js';
 import SessionHeader from './SessionHeader.js';
+import SessionLauncher from './SessionLauncher.js';
 import SessionTimeline from './SessionTimeline.js';
 
 const h = React.createElement;
@@ -33,8 +35,15 @@ function renderSessionMeta(session) {
   );
 }
 
-export default function LearningSessionShell({ viewModel }) {
+export default function LearningSessionShell({
+  viewModel,
+  onLauncherChange = () => {},
+  onLaunch = () => {},
+  onAskChange = () => {},
+  onAsk = () => {},
+}) {
   const session = viewModel?.session || {};
+  const hasSession = Boolean(viewModel?.hasSession);
 
   return h('div', { className: 'grid gap-6' }, [
     h(SessionHeader, {
@@ -42,8 +51,16 @@ export default function LearningSessionShell({ viewModel }) {
       header: viewModel?.header || {},
       session,
     }),
-    h('div', { key: 'meta' }, renderSessionMeta(session)),
-    session.hasQuestion && session.currentQuestionId
+    !hasSession
+      ? h(SessionLauncher, {
+        key: 'launcher',
+        launcher: viewModel?.launcher || {},
+        onChange: onLauncherChange,
+        onSubmit: onLaunch,
+      })
+      : null,
+    hasSession ? h('div', { key: 'meta' }, renderSessionMeta(session)) : null,
+    hasSession && session.hasQuestion && session.currentQuestionId
       ? h('section', {
         key: 'question-card',
         className: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm',
@@ -58,9 +75,20 @@ export default function LearningSessionShell({ viewModel }) {
         }, session.currentQuestionId),
       ])
       : null,
-    h(SessionTimeline, {
-      key: 'timeline',
-      timeline: viewModel?.timeline || [],
-    }),
+    hasSession
+      ? h(SessionTimeline, {
+        key: 'timeline',
+        timeline: viewModel?.timeline || [],
+        isUpdating: viewModel?.timelineUpdating || false,
+      })
+      : null,
+    hasSession
+      ? h(SessionAskComposer, {
+        key: 'composer',
+        composer: viewModel?.composer || {},
+        onChange: onAskChange,
+        onSubmit: onAsk,
+      })
+      : null,
   ].filter(Boolean));
 }

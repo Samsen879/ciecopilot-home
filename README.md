@@ -12,6 +12,7 @@
 - 执行进度日志：`docs/reports/technical_debt_execution_progress_20260216.md`
 - 全仓审计汇总：`docs/audit/phase7_02_summary.md`
 - 题目截图属于派生资产，不是可直接视为垃圾的临时文件。
+- AO release 实机验证记录见 `#42`（README-only sacrificial PR）。
 
 ## 目录结构（核心）
 

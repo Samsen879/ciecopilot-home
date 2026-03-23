@@ -3,6 +3,8 @@ import {
   buildSessionLaunchPayload,
   createSessionLaunchDraft,
   mergeAskResponseIntoSessionPayload,
+  shouldApplyAskResponse,
+  shouldApplyLaunchSuccess,
 } from '../view-models/session-live-state.js';
 import { buildWorkspaceViewModel } from '../view-models/workspace-view-model.js';
 
@@ -277,6 +279,52 @@ describe('learning runtime session view model', () => {
     expect(vm.timeline[2]).toEqual(expect.objectContaining({
       kind: 'questionless_state',
     }));
+  });
+
+  test('ignores stale launch completions after the launcher route stops being active', () => {
+    expect(shouldApplyLaunchSuccess({
+      requestKey: 'launch-1',
+      activeRequestKey: 'launch-1',
+      isLauncherSurface: false,
+      isMounted: true,
+    })).toBe(false);
+
+    expect(shouldApplyLaunchSuccess({
+      requestKey: 'launch-1',
+      activeRequestKey: 'launch-2',
+      isLauncherSurface: true,
+      isMounted: true,
+    })).toBe(false);
+
+    expect(shouldApplyLaunchSuccess({
+      requestKey: 'launch-2',
+      activeRequestKey: 'launch-2',
+      isLauncherSurface: true,
+      isMounted: true,
+    })).toBe(true);
+  });
+
+  test('ignores stale ask responses after the route switches to a different session', () => {
+    expect(shouldApplyAskResponse({
+      requestSessionId: 'sess-a',
+      activeRouteSessionId: 'sess-b',
+      currentSessionId: 'sess-b',
+      isMounted: true,
+    })).toBe(false);
+
+    expect(shouldApplyAskResponse({
+      requestSessionId: 'sess-a',
+      activeRouteSessionId: 'sess-a',
+      currentSessionId: 'sess-b',
+      isMounted: true,
+    })).toBe(false);
+
+    expect(shouldApplyAskResponse({
+      requestSessionId: 'sess-a',
+      activeRouteSessionId: 'sess-a',
+      currentSessionId: 'sess-a',
+      isMounted: true,
+    })).toBe(true);
   });
 
   test('workspace view-model separates canonical slot artifacts from linked references', () => {

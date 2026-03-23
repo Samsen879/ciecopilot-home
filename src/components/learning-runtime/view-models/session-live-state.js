@@ -283,3 +283,34 @@ export function mergeAskResponseIntoSessionPayload(sessionPayload = {}, askRespo
     latestResponse: askResponse,
   };
 }
+
+export function shouldApplyLaunchSuccess({
+  activeRequestKey,
+  isLauncherSurface,
+  isMounted,
+  requestKey,
+} = {}) {
+  return Boolean(
+    isMounted
+    && isLauncherSurface
+    && requestKey
+    && activeRequestKey
+    && requestKey === activeRequestKey,
+  );
+}
+
+export function shouldApplyAskResponse({
+  activeRouteSessionId,
+  currentSessionId,
+  isMounted,
+  requestSessionId,
+} = {}) {
+  return Boolean(
+    isMounted
+    && requestSessionId
+    && activeRouteSessionId
+    && currentSessionId
+    && requestSessionId === activeRouteSessionId
+    && requestSessionId === currentSessionId,
+  );
+}

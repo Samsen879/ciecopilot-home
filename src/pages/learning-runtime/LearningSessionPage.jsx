@@ -18,6 +18,8 @@ import {
   createSessionLaunchDraft,
   mergeAskResponseIntoSessionPayload,
   patchSessionLaunchDraft,
+  shouldApplyAskResponse,
+  shouldApplyLaunchSuccess,
 } from '../../components/learning-runtime/view-models/session-live-state.js';
 
 const NEW_SESSION_SENTINEL = 'new';
@@ -34,6 +36,12 @@ export default function LearningSessionPage() {
   const { sessionId = '' } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const isLauncherSurface = !sessionId || sessionId === NEW_SESSION_SENTINEL;
+  const activeLaunchRequestKeyRef = useRef(null);
+  const activeRouteSessionIdRef = useRef(isLauncherSurface ? null : sessionId);
+  const isLauncherSurfaceRef = useRef(false);
+  const isMountedRef = useRef(false);
+  const sessionPayloadRef = useRef(null);
   const skipReloadSessionIdRef = useRef(null);
   const [sessionPayload, setSessionPayload] = useState(null);
   const [turnHistory, setTurnHistory] = useState([]);
@@ -47,7 +55,23 @@ export default function LearningSessionPage() {
   const [askMessage, setAskMessage] = useState('');
   const [askStatus, setAskStatus] = useState('idle');
   const [askError, setAskError] = useState(null);
-  const isLauncherSurface = !sessionId || sessionId === NEW_SESSION_SENTINEL;
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    activeRouteSessionIdRef.current = isLauncherSurface ? null : sessionId;
+    isLauncherSurfaceRef.current = isLauncherSurface;
+  }, [isLauncherSurface, sessionId]);
+
+  useEffect(() => {
+    sessionPayloadRef.current = sessionPayload;
+  }, [sessionPayload]);
 
   useEffect(() => {
     let active = true;
@@ -61,6 +85,9 @@ export default function LearningSessionPage() {
         startTransition(() => {
           setSessionPayload(null);
           setTurnHistory([]);
+          setAskMessage('');
+          setAskStatus('idle');
+          setAskError(null);
           setError(null);
           setSurfaceState('ready');
         });
@@ -82,6 +109,11 @@ export default function LearningSessionPage() {
 
       setSurfaceState('loading');
       setError(null);
+      setLaunchStatus('idle');
+      setLaunchError(null);
+      setAskStatus('idle');
+      setAskError(null);
+      setAskMessage('');
 
       try {
         const payload = await getSession(sessionId);
@@ -129,6 +161,8 @@ export default function LearningSessionPage() {
 
     setLaunchStatus('submitting');
     setLaunchError(null);
+    const launchRequestKey = createRequestKey('launch-request');
+    activeLaunchRequestKeyRef.current = launchRequestKey;
 
     try {
       const payload = await createSession(
@@ -138,6 +172,15 @@ export default function LearningSessionPage() {
         },
       );
       const createdSessionId = payload?.session?.sessionId || null;
+      const shouldApplyLaunch = shouldApplyLaunchSuccess({
+        requestKey: launchRequestKey,
+        activeRequestKey: activeLaunchRequestKeyRef.current,
+        isLauncherSurface: isLauncherSurfaceRef.current,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyLaunch) {
+        return;
+      }
 
       startTransition(() => {
         setSessionPayload(payload);
@@ -149,7 +192,12 @@ export default function LearningSessionPage() {
         setError(null);
       });
 
-      if (createdSessionId) {
+      if (createdSessionId && shouldApplyLaunchSuccess({
+        requestKey: launchRequestKey,
+        activeRequestKey: activeLaunchRequestKeyRef.current,
+        isLauncherSurface: isLauncherSurfaceRef.current,
+        isMounted: isMountedRef.current,
+      })) {
         skipReloadSessionIdRef.current = createdSessionId;
         navigate(`/learn/session/${createdSessionId}`, {
           replace: true,
@@ -157,6 +205,16 @@ export default function LearningSessionPage() {
         });
       }
     } catch (requestError) {
+      const shouldApplyLaunch = shouldApplyLaunchSuccess({
+        requestKey: launchRequestKey,
+        activeRequestKey: activeLaunchRequestKeyRef.current,
+        isLauncherSurface: isLauncherSurfaceRef.current,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyLaunch) {
+        return;
+      }
+
       startTransition(() => {
         setLaunchError(requestError);
         setLaunchStatus('idle');
@@ -192,6 +250,15 @@ export default function LearningSessionPage() {
         message: trimmedMessage,
         client_turn_id: clientTurnId,
       });
+      const shouldApplyAsk = shouldApplyAskResponse({
+        requestSessionId: activeSessionId,
+        activeRouteSessionId: activeRouteSessionIdRef.current,
+        currentSessionId: sessionPayloadRef.current?.session?.sessionId ?? null,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyAsk) {
+        return;
+      }
 
       startTransition(() => {
         setSessionPayload((currentPayload) => mergeAskResponseIntoSessionPayload(currentPayload, response));
@@ -204,6 +271,16 @@ export default function LearningSessionPage() {
         setAskStatus('idle');
       });
     } catch (requestError) {
+      const shouldApplyAsk = shouldApplyAskResponse({
+        requestSessionId: activeSessionId,
+        activeRouteSessionId: activeRouteSessionIdRef.current,
+        currentSessionId: sessionPayloadRef.current?.session?.sessionId ?? null,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyAsk) {
+        return;
+      }
+
       startTransition(() => {
         setAskError(requestError);
         setAskStatus('idle');

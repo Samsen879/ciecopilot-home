@@ -57,6 +57,7 @@ const mockFrom = jest.fn((table) => {
       primary_topic_id: 'topic-trig-equations',
       family_id: '9709.trigonometry_manipulation_equations',
       primary_question_type_id: '9709.trigonometry.equations',
+      primary_question_type_release_state: 'released',
       classification_confidence: 0.93,
       candidate_rubric_refs: [
         {

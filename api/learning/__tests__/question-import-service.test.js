@@ -67,6 +67,15 @@ function seedRegistryTypes() {
         release_state: 'released',
       },
     ],
+    [
+      '9709.integration.application',
+      {
+        question_type_id: '9709.integration.application',
+        family_id: '9709.integration_techniques',
+        subject_code: '9709',
+        release_state: 'released',
+      },
+    ],
   ]);
 }
 
@@ -420,7 +429,7 @@ function buildTrigWithoutReleasedRubricInput() {
   });
 }
 
-function buildIntegrationInput(overrides = {}) {
+function buildPromotedIntegrationInput(overrides = {}) {
   const classification = overrides.classification || {};
 
   return {
@@ -461,6 +470,60 @@ function buildIntegrationInput(overrides = {}) {
       ],
       uncertainty_validated: true,
       variant_tags: ['paper:p3'],
+      ...classification,
+    },
+  };
+}
+
+function buildPromotedIntegrationWithoutUncertaintyInput() {
+  return buildPromotedIntegrationInput({
+    classification: {
+      uncertainty_validated: false,
+    },
+  });
+}
+
+function buildUnpromotedIntegrationInput(overrides = {}) {
+  const classification = overrides.classification || {};
+
+  return {
+    subject_code: '9709',
+    prompt_representation: {
+      type: 'text',
+      value: 'Find the volume generated when the region is rotated about the x-axis.',
+    },
+    provenance_summary: {
+      import_source: 'manual_paste',
+    },
+    classification: {
+      family_id: '9709.integration_techniques',
+      primary_question_type_id: '9709.integration.volume_of_revolution',
+      primary_topic_id: 'topic-integration-1',
+      classification_confidence: 0.77,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.integration.volume_of_revolution',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p1'],
+      ...classification,
+    },
+    ...overrides,
+    classification: {
+      family_id: '9709.integration_techniques',
+      primary_question_type_id: '9709.integration.volume_of_revolution',
+      primary_topic_id: 'topic-integration-1',
+      classification_confidence: 0.77,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.integration.volume_of_revolution',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p1'],
       ...classification,
     },
   };
@@ -515,10 +578,44 @@ describe('question import service', () => {
     expect(result.question.release_scope_status).toBe('non_released_fallback');
   });
 
-  test('imported integration question remains fallback-only', async () => {
+  test('imported promoted integration question gets released scope posture when all gates pass', async () => {
     const result = await importQuestion(createClient(), {
       userId: 'student-1',
-      body: buildIntegrationInput(),
+      body: buildPromotedIntegrationInput(),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      fallback_mode: null,
+    });
+    expect(result.question).toMatchObject({
+      family_id: '9709.integration_techniques',
+      primary_question_type_id: '9709.integration.application',
+      release_scope_status: 'released_scoring',
+    });
+  });
+
+  test('promoted integration question still falls back when uncertainty is not validated', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildPromotedIntegrationWithoutUncertaintyInput(),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      fallback_mode: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'unvalidated_uncertainty_posture',
+      classification_confidence: 0.77,
+      learning_signal_posture: 'conservative_fallback',
+    });
+    expect(result.question.release_scope_status).toBe('non_released_fallback');
+  });
+
+  test('imported non-promoted integration question remains fallback-only', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildUnpromotedIntegrationInput(),
     });
 
     expect(result.scoring_scope_posture).toMatchObject({
@@ -530,7 +627,7 @@ describe('question import service', () => {
     });
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
-      primary_question_type_id: '9709.integration.application',
+      primary_question_type_id: '9709.integration.volume_of_revolution',
       release_scope_status: 'non_released_fallback',
     });
   });
@@ -633,7 +730,7 @@ describe('learning question import api', () => {
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .set('Idempotency-Key', 'import-1')
-      .send(buildIntegrationInput());
+      .send(buildPromotedIntegrationInput());
 
     expect(first.status).toBe(200);
     expect(second.status).toBe(409);
@@ -645,7 +742,7 @@ describe('learning question import api', () => {
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
-      .send(buildIntegrationInput());
+      .send(buildPromotedIntegrationWithoutUncertaintyInput());
 
     expect(importRes.status).toBe(200);
     expect(importRes.body.question).toMatchObject({
@@ -696,7 +793,7 @@ describe('learning question import api', () => {
       fallback_posture: {
         fallback_mode: 'non_released_fallback',
         authoritative_scoring_allowed: false,
-        fallback_reason_code: 'non_pilot_question_type',
+        fallback_reason_code: 'unvalidated_uncertainty_posture',
         classification_confidence: 0.77,
         learning_signal_posture: 'conservative_fallback',
       },
@@ -752,7 +849,7 @@ describe('learning question import api', () => {
     expect(askRes.body.fallback_posture).toMatchObject({
       fallback_mode: 'non_released_fallback',
       authoritative_scoring_allowed: false,
-      fallback_reason_code: 'non_pilot_question_type',
+      fallback_reason_code: 'unvalidated_uncertainty_posture',
     });
 
     const workspaceRes = await request(server)

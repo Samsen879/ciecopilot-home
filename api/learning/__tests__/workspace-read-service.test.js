@@ -716,6 +716,7 @@ describe('workspace read service', () => {
         question_context: {
           family_id: '9709.integration_techniques',
           question_type_id: '9709.integration.application',
+          question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709.integration.application.source',
           classification_confidence: 0.77,
@@ -736,7 +737,7 @@ describe('workspace read service', () => {
             alignment_confidence: 0.71,
           },
         ],
-        uncertainty_validated: true,
+        uncertainty_validated: false,
         misconception_tags: ['domain:interval'],
         repair_target_topic_id: 'repair-target-topic',
         repair_target_topic_path: '9709.integration.repair',

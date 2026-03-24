@@ -301,11 +301,11 @@ export async function importQuestion(client, {
     );
     const scoringScopePosture = resolveReleasedScoringPosture({
       questionTypeId: classification.primary_question_type_id,
+      questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
       candidateRubricRefs: classification.candidate_rubric_refs,
       uncertaintyValidated: classification.uncertainty_validated,
       uncertaintyPosture: classification.uncertainty_posture,
       classificationConfidence: classification.classification_confidence,
-      isPilotQuestionType: Boolean(canonicalQuestionType),
     });
 
     const question = await insertImportedQuestion(client, {

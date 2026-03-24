@@ -21,6 +21,10 @@ function buildReleaseScopePosture(input = {}) {
 
   return input.release_scope_posture || resolveReleasedScoringPosture({
     questionTypeId: questionContext.question_type_id,
+    questionTypeReleaseState:
+      questionContext.question_type_release_state
+      ?? questionContext.primary_question_type_release_state
+      ?? null,
     candidateRubricRefs: questionContext.candidate_rubric_refs,
     classificationConfidence: questionContext.classification_confidence,
     uncertaintyValidated: input.uncertainty_validated ?? false,

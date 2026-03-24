@@ -228,6 +228,37 @@ describe('learning runtime session view model', () => {
     });
   });
 
+  test('preserves non-whitelisted workspace topics across launch route handoff', () => {
+    const draft = createSessionLaunchDraft({
+      anchorKind: 'workspace_slot',
+      mode: 'learn_concept',
+      workspaceId: 'workspace-custom-1',
+      slotKey: 'common_traps',
+      topicId: 'topic-custom-sequences',
+      topicPath: '9709/sequences-and-series/recurrence',
+      currentQuestionTypeId: '9709.sequences.recurrence',
+    });
+
+    expect(draft).toEqual(expect.objectContaining({
+      anchorKind: 'workspace_slot',
+      workspaceId: 'workspace-custom-1',
+      slotKey: 'common_traps',
+      topicId: 'topic-custom-sequences',
+      topicPath: '9709/sequences-and-series/recurrence',
+      currentQuestionTypeId: '9709.sequences.recurrence',
+    }));
+
+    expect(buildSessionLaunchPayload(draft)).toEqual(expect.objectContaining({
+      anchor_kind: 'workspace_slot',
+      anchor_ref: {
+        kind: 'workspace_slot',
+        workspace_id: 'workspace-custom-1',
+        slot_key: 'common_traps',
+      },
+      current_question_type_id: '9709.sequences.recurrence',
+    }));
+  });
+
   test('merges ask responses without inventing question ids for questionless sessions', () => {
     const sessionPayload = mergeAskResponseIntoSessionPayload(
       createQuestionlessSessionPayload(),
@@ -388,6 +419,29 @@ describe('learning runtime session view model', () => {
       reviewTaskId: 'review-task-1',
       modeLabel: 'redo variant',
     }));
+  });
+
+  test('launcher view-model includes custom workspace topics that are outside the entry whitelist', () => {
+    const vm = buildSessionViewModel({}, {
+      launcher: {
+        draft: createSessionLaunchDraft({
+          anchorKind: 'workspace_slot',
+          workspaceId: 'workspace-custom-1',
+          slotKey: 'common_traps',
+          topicId: 'topic-custom-sequences',
+          topicPath: '9709/sequences-and-series/recurrence',
+        }),
+      },
+    });
+
+    expect(vm.launcher.draft.topicId).toBe('topic-custom-sequences');
+    expect(vm.launcher.draft.topicPath).toBe('9709/sequences-and-series/recurrence');
+    expect(vm.launcher.topicOptions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        topicId: 'topic-custom-sequences',
+        topicPath: '9709/sequences-and-series/recurrence',
+      }),
+    ]));
   });
 
   test('workspace view-model builds launch payloads for canonical slot residents and cards', () => {

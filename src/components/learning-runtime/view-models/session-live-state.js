@@ -46,15 +46,25 @@ function readFirstValue(source, keys) {
 function findTopicOption(topicId, topicPath) {
   const normalizedTopicId = normalizeNullableString(topicId);
   const normalizedTopicPath = normalizeNullableString(topicPath);
+  const matchedTopic = SESSION_LAUNCH_TOPIC_OPTIONS.find((topic) => (
+    (normalizedTopicId && topic.topicId === normalizedTopicId)
+    || (normalizedTopicPath && topic.topicPath === normalizedTopicPath)
+  ));
 
-  return (
-    SESSION_LAUNCH_TOPIC_OPTIONS.find((topic) => (
-      (normalizedTopicId && topic.topicId === normalizedTopicId)
-      || (normalizedTopicPath && topic.topicPath === normalizedTopicPath)
-    ))
-    || SESSION_LAUNCH_TOPIC_OPTIONS[0]
-    || null
-  );
+  if (matchedTopic) {
+    return matchedTopic;
+  }
+
+  if (normalizedTopicId || normalizedTopicPath) {
+    return {
+      topicId: normalizedTopicId || '',
+      topicPath: normalizedTopicPath || '',
+      title: normalizedTopicPath || normalizedTopicId || 'Selected topic',
+      questionTypeId: null,
+    };
+  }
+
+  return SESSION_LAUNCH_TOPIC_OPTIONS[0] || null;
 }
 
 function defaultModeForAnchor(anchorKind, slotKey) {

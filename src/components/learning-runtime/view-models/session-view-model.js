@@ -17,6 +17,12 @@ function labelForMode(mode) {
   return normalizeText(mode, 'learning session').replace(/_/g, ' ');
 }
 
+function labelForHandoffKind(handoffKind) {
+  return normalizeText(handoffKind, '')
+    .replace(/_/g, ' ')
+    .trim();
+}
+
 function buildTopicOptions(draft) {
   const topicId = normalizeText(draft?.topicId, '');
   const topicPath = normalizeText(draft?.topicPath, '');
@@ -124,6 +130,61 @@ function buildQuestionStateEntry(session) {
   };
 }
 
+function buildSessionLineage(sessionPayload = {}) {
+  const lineage = sessionPayload?.lineage || {};
+  const lineageRef = sessionPayload?.lineageRef || {};
+
+  return {
+    parentSessionId: lineage.parentSessionId ?? lineageRef.parentSessionId ?? null,
+    handoffKind: lineage.handoffKind ?? lineageRef.handoffKind ?? null,
+    summarySnapshot: lineage.summarySnapshot ?? null,
+  };
+}
+
+function buildContinuityViewModel({ handoff, lineage, resumeGuidance }) {
+  const suggestedHandoff = handoff?.suggestedHandoff?.shouldHandoff
+    ? {
+      ...handoff.suggestedHandoff,
+      handoffKindLabel: labelForHandoffKind(handoff.suggestedHandoff.handoffKind),
+      message: normalizeText(
+        handoff.suggestedHandoff.message,
+        'Carry the session summary into the next runtime step.',
+      ),
+    }
+    : null;
+  const normalizedResumeGuidance = resumeGuidance
+    ? {
+      ...resumeGuidance,
+      title: normalizeText(resumeGuidance.title, 'Resume this session'),
+      message: normalizeText(
+        resumeGuidance.message,
+        'Return through the saved anchor and continue from the stored summary.',
+      ),
+      summary: normalizeText(resumeGuidance.summary, ''),
+    }
+    : null;
+  const normalizedLineage = lineage?.parentSessionId || lineage?.handoffKind
+    ? {
+      ...lineage,
+      handoffKindLabel: labelForHandoffKind(lineage.handoffKind),
+      summary:
+        normalizeText(lineage?.summarySnapshot?.recap, '')
+        || normalizeText(lineage?.summarySnapshot?.summary, ''),
+    }
+    : null;
+
+  return {
+    showContinuity: Boolean(
+      normalizedResumeGuidance
+      || suggestedHandoff
+      || normalizedLineage,
+    ),
+    resumeGuidance: normalizedResumeGuidance,
+    suggestedHandoff,
+    lineage: normalizedLineage,
+  };
+}
+
 function buildTimeline(session, latestResponse, turnHistory = []) {
   const entries = buildTurnEntries(turnHistory);
 
@@ -194,6 +255,9 @@ export function buildSessionViewModel(payload = {}, options = {}) {
   const currentQuestionId = sessionPayload.currentQuestionId ?? currentQuestion?.questionId ?? null;
   const currentQuestionTypeId =
     sessionPayload.currentQuestionTypeId ?? currentQuestionType?.questionTypeId ?? null;
+  const lineage = buildSessionLineage(sessionPayload);
+  const handoff = sessionPayload.handoff || null;
+  const resumeGuidance = sessionPayload.resumeGuidance || null;
   const topicPath =
     payload?.canonicalHomeContext?.topicRef?.topicPath
     ?? activeScope.primaryTopicPath
@@ -214,6 +278,9 @@ export function buildSessionViewModel(payload = {}, options = {}) {
     currentQuestionTypeId,
     hasQuestion: Boolean(currentQuestionId),
     topicPath,
+    lineage,
+    handoff,
+    resumeGuidance,
     createdAt: sessionPayload.createdAt ?? null,
     updatedAt: sessionPayload.updatedAt ?? null,
   };
@@ -221,6 +288,11 @@ export function buildSessionViewModel(payload = {}, options = {}) {
   const latestResponse = options.latestResponse || payload.latestResponse || null;
   const launcher = buildLauncherViewModel(options.launcher || {});
   const composer = buildComposerViewModel(options.composer || {}, hasSession);
+  const continuity = buildContinuityViewModel({
+    handoff,
+    lineage,
+    resumeGuidance,
+  });
 
   return {
     hasSession,
@@ -237,9 +309,14 @@ export function buildSessionViewModel(payload = {}, options = {}) {
         latestResponse?.fallbackPosture?.authoritativeScoringAllowed ?? null,
       fallbackReasonCode: latestResponse?.fallbackPosture?.fallbackReasonCode ?? null,
       learningSignalPosture: latestResponse?.fallbackPosture?.learningSignalPosture ?? null,
+      handoffKind:
+        continuity?.suggestedHandoff?.handoffKindLabel
+        || continuity?.lineage?.handoffKindLabel
+        || null,
     },
     latestResponse,
     timeline: hasSession ? buildTimeline(session, latestResponse, options.turnHistory || []) : [],
+    continuity,
     launcher,
     composer,
     timelineUpdating: composer.status === 'submitting',

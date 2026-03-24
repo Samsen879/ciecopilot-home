@@ -250,6 +250,59 @@ function buildSessionPayload(overrides = {}) {
   };
 }
 
+function buildStoredSession(overrides = {}) {
+  return {
+    session_id: overrides.session_id ?? 'session-parent-1',
+    user_id: overrides.user_id ?? 'student-1',
+    subject_code: '9709',
+    session_goal: 'Repair trigonometric equation solving',
+    mode: 'spaced_review',
+    state: 'active',
+    active_scope_bundle: {
+      primary_topic_id: 'topic-trig-equations',
+      primary_topic_path: '9709.trigonometry.equations',
+      secondary_topics_in_scope: [],
+      allowed_prerequisites: [],
+      paper_context: null,
+      mode: 'spaced_review',
+      session_goal: 'Repair trigonometric equation solving',
+      current_anchor_kind: 'review_task',
+      current_anchor_ref: {
+        kind: 'review_task',
+        review_task_id: 'review-task-1',
+      },
+      current_question_ref: null,
+      current_question_type_ref: {
+        kind: 'question_type',
+        question_type_id: '9709.trigonometry.equations',
+      },
+      ...(overrides.active_scope_bundle || {}),
+    },
+    current_anchor_kind: 'review_task',
+    current_anchor_ref: {
+      kind: 'review_task',
+      review_task_id: 'review-task-1',
+    },
+    current_question_id: null,
+    current_question_type_id: '9709.trigonometry.equations',
+    summary_state: {
+      recap: 'Repair the factoring and angle-isolation mistakes before speeding up.',
+      ...(overrides.summary_state || {}),
+    },
+    open_questions: [],
+    key_artifact_refs: [],
+    misconceptions_in_focus: [],
+    lineage_ref: {
+      parent_session_id: null,
+      handoff_kind: null,
+      ...(overrides.lineage_ref || {}),
+    },
+    created_at: '2026-03-21T13:30:00.000Z',
+    updated_at: '2026-03-21T13:30:00.000Z',
+    ...overrides,
+  };
+}
+
 describe('learning session api', () => {
   let server;
 
@@ -307,6 +360,89 @@ describe('learning session api', () => {
       },
     });
     expect(res.body.feature_flags.learning_runtime_enabled).toBe(true);
+    expect(res.body.session.handoff).toMatchObject({
+      supported: true,
+      session_id: res.body.session.session_id,
+    });
+    expect(res.body.session.resume_guidance).toMatchObject({
+      questionless: true,
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.equations',
+    });
+  });
+
+  test('POST /api/learning/sessions persists explicit child-session handoff lineage from a parent session', async () => {
+    clientState.sessions.set('session-parent-1', buildStoredSession({
+      session_id: 'session-parent-1',
+      summary_state: {
+        recap: 'The review thread is too long; continue from a clean concept session.',
+        suggested_handoff_kind: 'explicit_new_session',
+        suggested_handoff_reason_code: 'topic_shift',
+        suggested_handoff_message: 'Carry the recap into a fresh concept session.',
+      },
+    }));
+    clientState.lineage.set('session-parent-1', {
+      lineage_id: 'lineage-session-parent-1',
+      parent_session_id: null,
+      child_session_id: 'session-parent-1',
+      handoff_kind: null,
+      summary_snapshot: {
+        recap: 'The review thread is too long; continue from a clean concept session.',
+      },
+      created_at: '2026-03-21T13:30:00.000Z',
+    });
+
+    const res = await request(server)
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        subject_code: '9709',
+        mode: 'spaced_review',
+        session_goal: 'Resume the review in a clean child session',
+        anchor_kind: 'review_task',
+        anchor_ref: {
+          kind: 'review_task',
+          review_task_id: 'review-task-1',
+        },
+        current_question_id: null,
+        current_question_type_id: '9709.trigonometry.equations',
+        parent_session_id: 'session-parent-1',
+        handoff_kind: 'explicit_new_session',
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.session.lineage_ref).toEqual({
+      parent_session_id: 'session-parent-1',
+      handoff_kind: 'explicit_new_session',
+    });
+    expect(res.body.session.lineage).toMatchObject({
+      parent_session_id: 'session-parent-1',
+      handoff_kind: 'explicit_new_session',
+      summary_snapshot: {
+        recap: 'The review thread is too long; continue from a clean concept session.',
+      },
+    });
+    expect(res.body.session.handoff).toMatchObject({
+      supported: true,
+      lineage: {
+        parent_session_id: 'session-parent-1',
+        handoff_kind: 'explicit_new_session',
+      },
+      explicit_new_session: {
+        supported: true,
+        carry_forward_summary: {
+          recap: 'The review thread is too long; continue from a clean concept session.',
+        },
+      },
+    });
+    expect(res.body.session.resume_guidance).toMatchObject({
+      parent_session_id: 'session-parent-1',
+      handoff_kind: 'explicit_new_session',
+      questionless: true,
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.equations',
+    });
   });
 
   test('POST /api/learning/sessions returns 404 anchor_target_not_found when the anchor object is missing', async () => {
@@ -488,6 +624,86 @@ describe('learning session api', () => {
       kind: 'question_type',
       question_type_id: '9709.trigonometry.equations',
     });
+  });
+
+  test('GET /api/learning/sessions/:id returns suggested handoff metadata and questionless resume guidance', async () => {
+    clientState.sessions.set('session-suggested-1', buildStoredSession({
+      session_id: 'session-suggested-1',
+      mode: 'learn_concept',
+      state: 'handoff_suggested',
+      session_goal: 'Summarise trig identities before returning later',
+      active_scope_bundle: {
+        primary_topic_id: 'topic-trig-identities',
+        primary_topic_path: '9709.trigonometry.identities',
+        mode: 'learn_concept',
+        session_goal: 'Summarise trig identities before returning later',
+        current_anchor_kind: 'concept',
+        current_anchor_ref: {
+          kind: 'concept',
+          topic_id: 'topic-trig-identities',
+          topic_path: '9709.trigonometry.identities',
+        },
+        current_question_ref: null,
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.trigonometry.identities',
+        },
+      },
+      current_anchor_kind: 'concept',
+      current_anchor_ref: {
+        kind: 'concept',
+        topic_id: 'topic-trig-identities',
+        topic_path: '9709.trigonometry.identities',
+      },
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.identities',
+      summary_state: {
+        recap: 'Worked through multiple identities and need a compact restart point.',
+        suggested_handoff_kind: 'internal_compaction',
+        suggested_handoff_reason_code: 'session_turn_limit',
+        suggested_handoff_message: 'Compact the runtime context before the next session.',
+      },
+    }));
+    clientState.lineage.set('session-suggested-1', {
+      lineage_id: 'lineage-session-suggested-1',
+      parent_session_id: null,
+      child_session_id: 'session-suggested-1',
+      handoff_kind: null,
+      summary_snapshot: {
+        recap: 'Worked through multiple identities and need a compact restart point.',
+      },
+      created_at: '2026-03-21T13:30:00.000Z',
+    });
+
+    const res = await request(server)
+      .get('/api/learning/sessions/session-suggested-1')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student');
+
+    expect(res.status).toBe(200);
+    expect(res.body.session.handoff).toMatchObject({
+      supported: true,
+      suggested_handoff: {
+        should_handoff: true,
+        handoff_kind: 'internal_compaction',
+        reason_code: 'session_turn_limit',
+        questionless: true,
+      },
+      internal_compaction: {
+        supported: true,
+        should_handoff: true,
+        summary_snapshot: {
+          recap: 'Worked through multiple identities and need a compact restart point.',
+        },
+      },
+    });
+    expect(res.body.session.resume_guidance).toMatchObject({
+      questionless: true,
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.identities',
+      anchor_kind: 'concept',
+    });
+    expect(res.body.session.active_scope_bundle.current_question_ref).toBeNull();
   });
 
   test('GET /api/learning/sessions/:id returns 404 session_not_found with the frozen envelope', async () => {

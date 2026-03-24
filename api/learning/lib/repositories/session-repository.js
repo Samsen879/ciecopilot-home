@@ -1,15 +1,20 @@
+import {
+  buildLineageSummarySnapshot,
+  normalizeSessionHandoffKind,
+} from '../session-runtime/session-handoff.js';
+
 function buildLineageRef({
   parent_session_id = null,
   handoff_kind = null,
 } = {}) {
   return {
     parent_session_id,
-    handoff_kind,
+    handoff_kind: normalizeSessionHandoffKind(handoff_kind),
   };
 }
 
 function buildLineageSummary(summaryState) {
-  return summaryState ?? {};
+  return buildLineageSummarySnapshot(summaryState);
 }
 
 function hydrateSession(sessionRow, lineageRow) {
@@ -28,7 +33,10 @@ function hydrateSession(sessionRow, lineageRow) {
 }
 
 export async function insertSession(client, input) {
-  const lineage_ref = buildLineageRef();
+  const lineage_ref = buildLineageRef({
+    parent_session_id: input.parent_session_id ?? null,
+    handoff_kind: input.handoff_kind ?? null,
+  });
   const sessionRow = {
     user_id: input.user_id,
     subject_code: input.subject_code,
@@ -58,10 +66,12 @@ export async function insertSession(client, input) {
   }
 
   const lineageRow = {
-    parent_session_id: null,
+    parent_session_id: lineage_ref.parent_session_id,
     child_session_id: insertedSession.session_id,
-    handoff_kind: null,
-    summary_snapshot: buildLineageSummary(insertedSession.summary_state),
+    handoff_kind: lineage_ref.handoff_kind,
+    summary_snapshot: buildLineageSummary(
+      input.lineage_summary_snapshot ?? insertedSession.summary_state,
+    ),
   };
 
   const { data: insertedLineage, error: lineageError } = await client

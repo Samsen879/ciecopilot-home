@@ -1,6 +1,11 @@
 import { insertSession, getSession } from '../repositories/session-repository.js';
 import { resolveCreateSessionAnchor } from './session-anchor-resolution.js';
-import { createSessionHandoffStub } from './session-handoff.js';
+import {
+  buildChildSessionLineage,
+  buildSessionResumeGuidance,
+  createSessionHandoff,
+  normalizeSessionHandoffKind,
+} from './session-handoff.js';
 
 const VALID_SESSION_MODES = new Set([
   'learn_concept',
@@ -205,9 +210,15 @@ function normalizeStoredBundle(session) {
 }
 
 function normalizeSessionResponse(session) {
-  return {
+  const normalized = {
     ...session,
     active_scope_bundle: normalizeStoredBundle(session),
+  };
+
+  return {
+    ...normalized,
+    handoff: createSessionHandoff(normalized),
+    resume_guidance: buildSessionResumeGuidance(normalized),
   };
 }
 
@@ -311,7 +322,27 @@ function validateCreateSessionPayload(body = {}) {
   const currentQuestionId = normalizeNullableString(body.current_question_id);
   const currentQuestionTypeId = normalizeNullableString(body.current_question_type_id);
   const sessionGoal = normalizeNullableString(body.session_goal);
+  const parentSessionId = normalizeNullableString(body.parent_session_id);
+  let handoffKind = normalizeSessionHandoffKind(body.handoff_kind);
   const anchorRef = cloneJson(body.anchor_ref);
+
+  if (normalizeString(body.handoff_kind) && !handoffKind) {
+    throw createLearningError('invalid_payload', {
+      message: 'handoff_kind is invalid.',
+      details: { field: 'handoff_kind' },
+    });
+  }
+
+  if (handoffKind && !parentSessionId) {
+    throw createLearningError('invalid_payload', {
+      message: 'handoff_kind requires parent_session_id.',
+      details: { field: 'handoff_kind' },
+    });
+  }
+
+  if (parentSessionId && !handoffKind) {
+    handoffKind = 'explicit_new_session';
+  }
 
   validateAnchorRef(anchorKind, anchorRef);
 
@@ -365,6 +396,8 @@ function validateCreateSessionPayload(body = {}) {
     anchorRef,
     currentQuestionId,
     currentQuestionTypeId,
+    parentSessionId,
+    handoffKind,
   };
 }
 
@@ -496,6 +529,17 @@ export async function createLearningSession(client, {
   const reservation = reserveCreateSession(cacheKey, normalizedPayload);
 
   try {
+    const parentSession = normalized.parentSessionId
+      ? await getSession(client, {
+        sessionId: normalized.parentSessionId,
+        userId,
+      })
+      : null;
+
+    if (normalized.parentSessionId && !parentSession) {
+      throw createLearningError('session_not_found');
+    }
+
     const resolvedAnchor = await resolveCreateSessionAnchor(client, {
       userId,
       subjectCode: normalized.subjectCode,
@@ -514,6 +558,11 @@ export async function createLearningSession(client, {
       currentQuestionTypeId: resolvedAnchor.currentQuestionTypeId,
       canonicalHome: resolvedAnchor.canonicalHome,
     });
+    const lineage = buildChildSessionLineage({
+      parentSession,
+      parentSessionId: normalized.parentSessionId,
+      handoffKind: normalized.handoffKind,
+    });
 
     const session = await insertSession(client, {
       user_id: userId,
@@ -525,9 +574,10 @@ export async function createLearningSession(client, {
       current_anchor_ref: normalized.anchorRef,
       current_question_id: resolvedAnchor.currentQuestionId,
       current_question_type_id: resolvedAnchor.currentQuestionTypeId,
-      summary_state: {
-        handoff: createSessionHandoffStub(),
-      },
+      summary_state: {},
+      parent_session_id: lineage.parent_session_id,
+      handoff_kind: lineage.handoff_kind,
+      lineage_summary_snapshot: lineage.lineage_summary_snapshot,
       open_questions: [],
       key_artifact_refs: [],
       misconceptions_in_focus: [],

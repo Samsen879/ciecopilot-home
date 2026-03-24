@@ -38,6 +38,13 @@ function normalizeSessionRecord(session = {}) {
   const activeScopeBundle = isPlainObject(session.activeScopeBundle)
     ? session.activeScopeBundle
     : {};
+  const lineage = isPlainObject(session.lineage)
+    ? session.lineage
+    : {
+      parentSessionId: session?.lineageRef?.parentSessionId ?? null,
+      handoffKind: session?.lineageRef?.handoffKind ?? null,
+      summarySnapshot: null,
+    };
   const activeScope = {
     ...activeScopeBundle,
     currentAnchorKind: activeScopeBundle.currentAnchorKind ?? session.currentAnchorKind ?? null,
@@ -51,6 +58,17 @@ function normalizeSessionRecord(session = {}) {
 
   return {
     ...session,
+    lineage,
+    handoff: isPlainObject(session.handoff)
+      ? session.handoff
+      : isPlainObject(session?.summaryState?.handoff)
+        ? session.summaryState.handoff
+        : null,
+    resumeGuidance: isPlainObject(session.resumeGuidance)
+      ? session.resumeGuidance
+      : isPlainObject(session?.summaryState?.resumeGuidance)
+        ? session.summaryState.resumeGuidance
+        : null,
     currentAnchor: session.currentAnchorRef ?? activeScope.currentAnchor,
     currentQuestion: activeScope.currentQuestion,
     currentQuestionType: activeScope.currentQuestionType,

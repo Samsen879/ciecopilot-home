@@ -95,10 +95,6 @@ reactions:
     message: "A worker exited unexpectedly. Reconcile with `ao status -p ciecopilot-home --json`, inspect the task's live PR, CI, and review state on GitHub, and decide whether to restore the worker or continue with a successor worker."
     priority: urgent
   agent-idle:
-    auto: true
-    action: send-to-agent
-    message: "You appear idle. If you are the orchestrator, reconcile live GitHub PR, CI, and review state before trusting stale lifecycle labels, then continue monitoring the execution chain without waiting for human input. If you are a worker and work is still pending, continue through implementation, verification, and PR updates. If blocked, explain the blocker clearly."
-    retries: 2
-    repeatEvery: 8m
-    escalateAfter: 15m
-    escalateTo: orchestrator
+    auto: false
+    action: notify
+    priority: info

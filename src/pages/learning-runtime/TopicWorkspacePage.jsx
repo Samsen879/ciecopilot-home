@@ -4,6 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getWorkspace } from '../../api/learningRuntimeApi.js';
 import WorkspaceShell from '../../components/learning-runtime/WorkspaceShell.jsx';
 import { buildWorkspaceViewModel } from '../../components/learning-runtime/view-models/workspace-view-model.js';
+import { LEARNING_RUNTIME_ROUTE_PATHS } from '../legacy-entry-mode.js';
+
+const LEARNING_SESSION_LAUNCH_PATH = LEARNING_RUNTIME_ROUTE_PATHS[0].replace(':sessionId', 'new');
 
 export default function TopicWorkspacePage() {
   const { topicId = '' } = useParams();
@@ -54,6 +57,18 @@ export default function TopicWorkspacePage() {
     };
   }, [topicId]);
 
+  function handleLaunch(launchPayload) {
+    if (!launchPayload) {
+      return;
+    }
+
+    navigate(LEARNING_SESSION_LAUNCH_PATH, {
+      state: {
+        launchPayload,
+      },
+    });
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -92,7 +107,12 @@ export default function TopicWorkspacePage() {
           </div>
         ) : null}
 
-        {surfaceState === 'ready' && viewModel ? <WorkspaceShell viewModel={viewModel} /> : null}
+        {surfaceState === 'ready' && viewModel ? (
+          <WorkspaceShell
+            viewModel={viewModel}
+            onLaunch={handleLaunch}
+          />
+        ) : null}
       </div>
     </div>
   );

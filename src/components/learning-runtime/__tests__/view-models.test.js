@@ -64,17 +64,45 @@ function createWorkspacePayload() {
       topicId: 'topic-trig-equations',
       topicPath: '9709/trigonometry/equations',
       slotState: {
+        overviewMap: 'stale',
+        coreMethodDerivation: 'missing_content',
         commonTraps: 'active',
         reviewQueue: 'active',
       },
       linkedReferenceSummary: {
-        totalLinkedReferences: 2,
+        totalLinkedReferences: 3,
       },
       updatedAt: '2026-03-22T08:00:00.000Z',
       slots: {
         overviewMap: {
-          workspaceSlotId: null,
-          primaryArtifactRef: null,
+          workspaceSlotId: 'slot-overview-map',
+          primaryArtifactRef: {
+            kind: 'artifact',
+            artifactId: 'artifact-overview',
+          },
+          linkedReferences: [],
+          updatedAt: '2026-03-22T07:58:00.000Z',
+        },
+        coreMethodDerivation: {
+          workspaceSlotId: 'slot-core-derivation',
+          primaryArtifactRef: {
+            kind: 'artifact',
+            artifactId: 'artifact-derivation-missing',
+          },
+          linkedReferences: [
+            {
+              kind: 'artifact',
+              artifactId: 'artifact-formula-linked',
+            },
+          ],
+          updatedAt: '2026-03-22T07:59:00.000Z',
+        },
+        canonicalWorkedExample: {
+          workspaceSlotId: 'slot-worked-example',
+          primaryArtifactRef: {
+            kind: 'artifact',
+            artifactId: 'artifact-worked-example',
+          },
           linkedReferences: [],
           updatedAt: null,
         },
@@ -91,6 +119,12 @@ function createWorkspacePayload() {
             },
           ],
           updatedAt: '2026-03-22T08:00:00.000Z',
+        },
+        myNotes: {
+          workspaceSlotId: 'slot-my-notes',
+          primaryArtifactRef: null,
+          linkedReferences: [],
+          updatedAt: null,
         },
         reviewQueue: {
           workspaceSlotId: 'slot-review-queue',
@@ -192,6 +226,37 @@ describe('learning runtime session view model', () => {
       current_question_id: null,
       current_question_type_id: '9709.trigonometry.identities',
     });
+  });
+
+  test('preserves non-whitelisted workspace topics across launch route handoff', () => {
+    const draft = createSessionLaunchDraft({
+      anchorKind: 'workspace_slot',
+      mode: 'learn_concept',
+      workspaceId: 'workspace-custom-1',
+      slotKey: 'common_traps',
+      topicId: 'topic-custom-sequences',
+      topicPath: '9709/sequences-and-series/recurrence',
+      currentQuestionTypeId: '9709.sequences.recurrence',
+    });
+
+    expect(draft).toEqual(expect.objectContaining({
+      anchorKind: 'workspace_slot',
+      workspaceId: 'workspace-custom-1',
+      slotKey: 'common_traps',
+      topicId: 'topic-custom-sequences',
+      topicPath: '9709/sequences-and-series/recurrence',
+      currentQuestionTypeId: '9709.sequences.recurrence',
+    }));
+
+    expect(buildSessionLaunchPayload(draft)).toEqual(expect.objectContaining({
+      anchor_kind: 'workspace_slot',
+      anchor_ref: {
+        kind: 'workspace_slot',
+        workspace_id: 'workspace-custom-1',
+        slot_key: 'common_traps',
+      },
+      current_question_type_id: '9709.sequences.recurrence',
+    }));
   });
 
   test('merges ask responses without inventing question ids for questionless sessions', () => {
@@ -343,9 +408,103 @@ describe('learning runtime session view model', () => {
         label: 'artifact-linked-1',
       },
     ]);
+    expect(vm.slotList.map((slot) => slot.slotKey)).toEqual([
+      'overview_map',
+      'core_method_derivation',
+      'canonical_worked_example',
+      'common_traps',
+      'my_notes',
+    ]);
     expect(vm.reviewQueue.items[0]).toEqual(expect.objectContaining({
       reviewTaskId: 'review-task-1',
       modeLabel: 'redo variant',
     }));
+  });
+
+  test('launcher view-model includes custom workspace topics that are outside the entry whitelist', () => {
+    const vm = buildSessionViewModel({}, {
+      launcher: {
+        draft: createSessionLaunchDraft({
+          anchorKind: 'workspace_slot',
+          workspaceId: 'workspace-custom-1',
+          slotKey: 'common_traps',
+          topicId: 'topic-custom-sequences',
+          topicPath: '9709/sequences-and-series/recurrence',
+        }),
+      },
+    });
+
+    expect(vm.launcher.draft.topicId).toBe('topic-custom-sequences');
+    expect(vm.launcher.draft.topicPath).toBe('9709/sequences-and-series/recurrence');
+    expect(vm.launcher.topicOptions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        topicId: 'topic-custom-sequences',
+        topicPath: '9709/sequences-and-series/recurrence',
+      }),
+    ]));
+  });
+
+  test('workspace view-model builds launch payloads for canonical slot residents and cards', () => {
+    const vm = buildWorkspaceViewModel(createWorkspacePayload());
+
+    expect(vm.slots.common_traps.slotLaunch).toEqual({
+      ctaLabel: 'Open slot',
+      launchPayload: {
+        anchorKind: 'workspace_slot',
+        mode: 'learn_concept',
+        slotKey: 'common_traps',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+        workspaceId: 'workspace-1',
+      },
+    });
+    expect(vm.slots.common_traps.primaryArtifactCard.launch).toEqual({
+      ctaLabel: 'Open artifact',
+      launchPayload: {
+        anchorKind: 'artifact',
+        artifactId: 'artifact-primary',
+        mode: 'learn_concept',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+      },
+    });
+    expect(vm.slots.common_traps.linkedReferenceCards[0].launch).toEqual({
+      ctaLabel: 'Open artifact',
+      launchPayload: {
+        anchorKind: 'artifact',
+        artifactId: 'artifact-linked-1',
+        mode: 'learn_concept',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+      },
+    });
+  });
+
+  test('workspace view-model surfaces explicit empty, stale, and missing-content states', () => {
+    const vm = buildWorkspaceViewModel(createWorkspacePayload());
+
+    expect(vm.slots.overview_map.surfaceState).toEqual({
+      value: 'stale',
+      label: 'Stale projection',
+      tone: 'warning',
+      message: 'This slot projection may be out of date. Reload to confirm the latest canonical content.',
+    });
+    expect(vm.slots.core_method_derivation.contentState).toEqual({
+      value: 'missing_content',
+      label: 'Missing artifact content',
+      tone: 'warning',
+      message: 'The workspace knows which artifact belongs here, but its rendered content is missing from this projection.',
+    });
+    expect(vm.slots.my_notes.emptyState).toEqual({
+      label: 'Empty slot',
+      message: 'No canonical artifact is pinned to this slot yet.',
+    });
+    expect(vm.artifactInbox).toEqual({
+      populatedSlotCount: 4,
+      emptySlotCount: 1,
+      staleSlotCount: 1,
+      missingContentCount: 1,
+      totalLinkedReferences: 3,
+    });
   });
 });

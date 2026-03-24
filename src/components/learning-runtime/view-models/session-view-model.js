@@ -17,6 +17,30 @@ function labelForMode(mode) {
   return normalizeText(mode, 'learning session').replace(/_/g, ' ');
 }
 
+function buildTopicOptions(draft) {
+  const topicId = normalizeText(draft?.topicId, '');
+  const topicPath = normalizeText(draft?.topicPath, '');
+  const hasDraftTopic = Boolean(topicId || topicPath);
+  const matchesKnownTopic = SESSION_LAUNCH_TOPIC_OPTIONS.some((topic) => (
+    (topicId && topic.topicId === topicId)
+    || (topicPath && topic.topicPath === topicPath)
+  ));
+
+  if (!hasDraftTopic || matchesKnownTopic) {
+    return SESSION_LAUNCH_TOPIC_OPTIONS;
+  }
+
+  return [
+    {
+      topicId,
+      topicPath,
+      title: topicPath || topicId,
+      questionTypeId: draft?.currentQuestionTypeId || null,
+    },
+    ...SESSION_LAUNCH_TOPIC_OPTIONS,
+  ];
+}
+
 function buildAnchorLabel(anchor, topicPath) {
   if (!anchor) {
     return 'Unknown anchor';
@@ -138,7 +162,7 @@ function buildLauncherViewModel(launcher = {}) {
       { value: 'post_mortem_review', label: 'Post-mortem review' },
       { value: 'spaced_review', label: 'Spaced review' },
     ],
-    topicOptions: SESSION_LAUNCH_TOPIC_OPTIONS,
+    topicOptions: buildTopicOptions(draft),
     slotOptions: [
       { value: 'review_queue', label: 'review_queue' },
       { value: 'common_traps', label: 'common_traps' },

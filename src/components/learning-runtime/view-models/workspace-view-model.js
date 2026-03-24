@@ -37,6 +37,11 @@ const SLOT_DEFINITIONS = Object.freeze([
   },
 ]);
 
+const SLOT_EMPTY_STATE = Object.freeze({
+  label: 'Empty slot',
+  message: 'No canonical artifact is pinned to this slot yet.',
+});
+
 function normalizeString(value, fallback = null) {
   if (typeof value !== 'string') {
     return fallback;
@@ -68,6 +73,15 @@ function normalizeRef(ref) {
   };
 }
 
+function buildWorkspaceSummary(workspace = {}) {
+  return {
+    workspaceId: normalizeString(workspace.workspaceId ?? workspace.workspace_id),
+    topicId: normalizeString(workspace.topicId ?? workspace.topic_id),
+    topicPath: normalizeString(workspace.topicPath ?? workspace.topic_path, ''),
+    updatedAt: workspace.updatedAt ?? workspace.updated_at ?? null,
+  };
+}
+
 function normalizeRefList(refs) {
   return (Array.isArray(refs) ? refs : [])
     .map((ref) => normalizeRef(ref))
@@ -87,21 +101,172 @@ function readSlotState(slotState, definition) {
     return null;
   }
 
-  return slotState[definition.camelKey] || slotState[definition.key] || null;
+  return normalizeString(slotState[definition.camelKey] || slotState[definition.key]);
 }
 
-function buildSlotViewModel(definition, slots, slotState) {
+function buildSurfaceState(rawState) {
+  switch (rawState) {
+    case 'stale':
+      return {
+        value: 'stale',
+        label: 'Stale projection',
+        tone: 'warning',
+        message:
+          'This slot projection may be out of date. Reload to confirm the latest canonical content.',
+      };
+    case 'fresh':
+      return {
+        value: 'fresh',
+        label: 'Fresh projection',
+        tone: 'neutral',
+        message: null,
+      };
+    case 'active':
+      return {
+        value: 'active',
+        label: 'Active projection',
+        tone: 'neutral',
+        message: null,
+      };
+    default:
+      return null;
+  }
+}
+
+function buildContentState(rawState) {
+  switch (rawState) {
+    case 'missing_content':
+    case 'missing_artifact_content':
+      return {
+        value: 'missing_content',
+        label: 'Missing artifact content',
+        tone: 'warning',
+        message:
+          'The workspace knows which artifact belongs here, but its rendered content is missing from this projection.',
+      };
+    default:
+      return null;
+  }
+}
+
+function kindLabelForRef(refKind) {
+  switch (refKind) {
+    case 'artifact':
+      return 'Artifact';
+    case 'review_task':
+      return 'Review task';
+    case 'workspace_slot':
+      return 'Workspace slot';
+    case 'question':
+      return 'Question';
+    case 'concept':
+      return 'Concept';
+    default:
+      return labelFromToken(refKind || 'reference');
+  }
+}
+
+function buildUpdatedAtLabel(updatedAt) {
+  return normalizeString(updatedAt) ? `Updated ${updatedAt}` : null;
+}
+
+function buildSlotLaunch(workspace, slotKey) {
+  if (!workspace?.workspaceId || !slotKey) {
+    return null;
+  }
+
+  return {
+    ctaLabel: 'Open slot',
+    launchPayload: {
+      anchorKind: 'workspace_slot',
+      workspaceId: workspace.workspaceId,
+      slotKey,
+      mode: slotKey === 'review_queue' ? 'spaced_review' : 'learn_concept',
+      topicId: workspace.topicId,
+      topicPath: workspace.topicPath,
+    },
+  };
+}
+
+function buildReferenceLaunch(ref, workspace) {
+  if (!ref?.kind) {
+    return null;
+  }
+
+  if (ref.kind === 'artifact' && normalizeString(ref.artifactId ?? ref.artifact_id)) {
+    return {
+      ctaLabel: 'Open artifact',
+      launchPayload: {
+        anchorKind: 'artifact',
+        artifactId: normalizeString(ref.artifactId ?? ref.artifact_id),
+        mode: 'learn_concept',
+        topicId: workspace.topicId,
+        topicPath: workspace.topicPath,
+      },
+    };
+  }
+
+  return null;
+}
+
+function buildCardViewModel(ref, {
+  placementLabel,
+  description,
+  updatedAt,
+  state,
+  workspace,
+} = {}) {
+  if (!ref) {
+    return null;
+  }
+
+  return {
+    title: ref.label,
+    kindLabel: kindLabelForRef(ref.kind),
+    placementLabel,
+    description,
+    updatedAtLabel: buildUpdatedAtLabel(updatedAt),
+    state,
+    launch: buildReferenceLaunch(ref, workspace),
+  };
+}
+
+function buildSlotViewModel(definition, slots, slotState, workspace) {
   const slot = readSlotRecord(slots, definition);
+  const primaryArtifact = normalizeRef(slot.primaryArtifactRef ?? slot.primary_artifact_ref ?? null);
+  const linkedReferences = normalizeRefList(slot.linkedReferences ?? slot.linked_references);
+  const rawState = readSlotState(slotState, definition);
+  const surfaceState = buildSurfaceState(rawState);
+  const contentState = buildContentState(rawState);
+  const updatedAt = slot.updatedAt ?? slot.updated_at ?? null;
 
   return {
     slotKey: definition.key,
     title: definition.title,
     description: definition.description,
     workspaceSlotId: slot.workspaceSlotId ?? slot.workspace_slot_id ?? null,
-    primaryArtifact: normalizeRef(slot.primaryArtifactRef ?? slot.primary_artifact_ref ?? null),
-    linkedReferences: normalizeRefList(slot.linkedReferences ?? slot.linked_references),
-    updatedAt: slot.updatedAt ?? slot.updated_at ?? null,
-    surfaceState: readSlotState(slotState, definition),
+    primaryArtifact,
+    primaryArtifactCard: buildCardViewModel(primaryArtifact, {
+      placementLabel: 'Canonical resident',
+      description: 'Pinned to the canonical slot for this topic.',
+      updatedAt,
+      state: contentState,
+      workspace,
+    }),
+    linkedReferences,
+    linkedReferenceCards: linkedReferences.map((reference) => buildCardViewModel(reference, {
+      placementLabel: 'Linked reference',
+      description: 'Linked from another canonical-home topic.',
+      updatedAt: null,
+      state: null,
+      workspace,
+    })),
+    updatedAt,
+    updatedAtLabel: buildUpdatedAtLabel(updatedAt),
+    surfaceState,
+    contentState,
+    emptyState: primaryArtifact ? null : SLOT_EMPTY_STATE,
+    slotLaunch: buildSlotLaunch(workspace, definition.key),
   };
 }
 
@@ -134,9 +299,10 @@ function buildArtifactInboxViewModel(workspace, slotList) {
     || {};
 
   return {
-    items: [],
-    pinnedSlotCount: slotList.filter((slot) => slot.primaryArtifact).length,
-    openSlotCount: slotList.filter((slot) => !slot.primaryArtifact).length,
+    populatedSlotCount: slotList.filter((slot) => slot.primaryArtifact).length,
+    emptySlotCount: slotList.filter((slot) => !slot.primaryArtifact).length,
+    staleSlotCount: slotList.filter((slot) => slot.surfaceState?.value === 'stale').length,
+    missingContentCount: slotList.filter((slot) => slot.contentState).length,
     totalLinkedReferences:
       linkedReferenceSummary.totalLinkedReferences
       ?? linkedReferenceSummary.total_linked_references
@@ -147,10 +313,11 @@ function buildArtifactInboxViewModel(workspace, slotList) {
 export function buildWorkspaceViewModel(payload = {}) {
   const workspace = payload.workspace || {};
   const slotState = workspace.slotState || workspace.slot_state || {};
+  const workspaceSummary = buildWorkspaceSummary(workspace);
   const stableSlots = Object.fromEntries(
     SLOT_DEFINITIONS.map((definition) => [
       definition.key,
-      buildSlotViewModel(definition, workspace.slots || {}, slotState),
+      buildSlotViewModel(definition, workspace.slots || {}, slotState, workspaceSummary),
     ]),
   );
   const slotList = SLOT_DEFINITIONS
@@ -158,12 +325,7 @@ export function buildWorkspaceViewModel(payload = {}) {
     .map((definition) => stableSlots[definition.key]);
 
   return {
-    workspace: {
-      workspaceId: normalizeString(workspace.workspaceId ?? workspace.workspace_id),
-      topicId: normalizeString(workspace.topicId ?? workspace.topic_id),
-      topicPath: normalizeString(workspace.topicPath ?? workspace.topic_path, ''),
-      updatedAt: workspace.updatedAt ?? workspace.updated_at ?? null,
-    },
+    workspace: workspaceSummary,
     slots: stableSlots,
     slotList,
     artifactInbox: buildArtifactInboxViewModel(workspace, slotList),

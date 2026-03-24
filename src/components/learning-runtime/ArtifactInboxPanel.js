@@ -20,10 +20,13 @@ function renderMetric(label, value) {
 
 export default function ArtifactInboxPanel({ artifactInbox }) {
   const metrics = [
-    ['Pinned stable slots', artifactInbox?.pinnedSlotCount ?? 0],
-    ['Open stable slots', artifactInbox?.openSlotCount ?? 0],
-    ['Linked references in workspace', artifactInbox?.totalLinkedReferences ?? 0],
+    ['Canonical residents', artifactInbox?.populatedSlotCount ?? 0],
+    ['Empty stable slots', artifactInbox?.emptySlotCount ?? 0],
+    ['Stale projections', artifactInbox?.staleSlotCount ?? 0],
+    ['Missing content', artifactInbox?.missingContentCount ?? 0],
+    ['Linked references', artifactInbox?.totalLinkedReferences ?? 0],
   ];
+  const hasCoverage = metrics.some(([, value]) => Number(value) > 0);
 
   return h('section', {
     className: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm',
@@ -35,14 +38,16 @@ export default function ArtifactInboxPanel({ artifactInbox }) {
     h('p', {
       key: 'body',
       className: 'mt-2 text-sm leading-6 text-slate-600',
-    }, 'This compatibility shell keeps inbox state separate from stable-slot truth and only surfaces the current projection summary.'),
+    }, 'Read-only workspace coverage summary. Slot launch actions live above; artifact lifecycle writes stay out of this issue.'),
     h('dl', {
       key: 'metrics',
-      className: 'mt-5 grid gap-3 sm:grid-cols-3',
+      className: 'mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5',
     }, metrics.map(([label, value]) => renderMetric(label, value))),
     h('p', {
-      key: 'empty',
+      key: 'note',
       className: 'mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-600',
-    }, 'No inbox artifacts in this workspace projection.'),
+    }, hasCoverage
+      ? 'Canonical-home coverage is projected here for visibility only; pin, contest, and supersede actions land in later issues.'
+      : 'No canonical slot coverage is projected for this workspace yet.'),
   ]);
 }

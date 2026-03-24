@@ -18,6 +18,7 @@ jest.unstable_mockModule('../../utils/supabase.js', () => ({
 const {
   learningRuntimeApi,
   normalizeAskResponse,
+  normalizeImportQuestionResponse,
   normalizeSessionResponse,
 } = await import('../learningRuntimeApi.js');
 
@@ -125,6 +126,36 @@ function createAskEnvelope() {
   };
 }
 
+function createImportEnvelope() {
+  return {
+    question: {
+      question_id: 'question-import-1',
+      source_kind: 'imported_question',
+      subject_code: '9709',
+      primary_topic_id: 'topic-integration-1',
+      family_id: '9709.integration_techniques',
+      primary_question_type_id: '9709.integration.application',
+      release_scope_status: 'non_released_fallback',
+      prompt_representation: {
+        type: 'text',
+        value: 'Find the value of integral of (2x+1)(x^2+x)^4 dx.',
+      },
+      provenance_summary: {
+        import_source: 'manual_paste',
+      },
+    },
+    scoring_scope_posture: {
+      release_scope_status: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'non_pilot_question_type',
+      classification_confidence: 0.77,
+      learning_signal_posture: 'conservative_fallback',
+    },
+    request_id: 'req-import-1',
+  };
+}
+
 describe('learning runtime api', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
@@ -215,6 +246,30 @@ describe('learning runtime api', () => {
     });
   });
 
+  test('normalizes imported question envelopes and explicit scoring posture', () => {
+    const payload = normalizeImportQuestionResponse(createImportEnvelope());
+
+    expect(payload.question).toEqual(expect.objectContaining({
+      questionId: 'question-import-1',
+      sourceKind: 'imported_question',
+      primaryTopicId: 'topic-integration-1',
+      primaryQuestionTypeId: '9709.integration.application',
+      releaseScopeStatus: 'non_released_fallback',
+    }));
+    expect(payload.question.promptRepresentation).toEqual({
+      type: 'text',
+      value: 'Find the value of integral of (2x+1)(x^2+x)^4 dx.',
+    });
+    expect(payload.scoringScopePosture).toEqual({
+      releaseScopeStatus: 'non_released_fallback',
+      authoritativeScoringAllowed: false,
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'non_pilot_question_type',
+      classificationConfidence: 0.77,
+      learningSignalPosture: 'conservative_fallback',
+    });
+  });
+
   test('createSession posts to the learning runtime route with auth and idempotency headers', async () => {
     global.fetch.mockResolvedValue({
       ok: true,
@@ -291,6 +346,54 @@ describe('learning runtime api', () => {
         questionTypeId: '9709.trigonometry.equations',
       },
     }));
+  });
+
+  test('importQuestion posts imported-question payloads to the shared learning route', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => createImportEnvelope(),
+    });
+
+    const response = await learningRuntimeApi.importQuestion({
+      subject_code: '9709',
+      prompt_representation: {
+        type: 'text',
+        value: 'Find the value of integral of (2x+1)(x^2+x)^4 dx.',
+      },
+      provenance_summary: {
+        import_source: 'manual_paste',
+      },
+      classification: {
+        primary_question_type_id: '9709.integration.application',
+        primary_topic_id: 'topic-integration-1',
+      },
+    }, {
+      idempotencyKey: 'import-question-45',
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch.mock.calls[0][0]).toBe('/api/learning/questions/import');
+
+    const init = global.fetch.mock.calls[0][1];
+    expect(init.method).toBe('POST');
+    expect(init.headers).toMatchObject({
+      Authorization: 'Bearer token-123',
+      'Content-Type': 'application/json',
+      'Idempotency-Key': 'import-question-45',
+    });
+    expect(JSON.parse(init.body)).toMatchObject({
+      subject_code: '9709',
+      prompt_representation: {
+        type: 'text',
+        value: 'Find the value of integral of (2x+1)(x^2+x)^4 dx.',
+      },
+      classification: {
+        primary_question_type_id: '9709.integration.application',
+        primary_topic_id: 'topic-integration-1',
+      },
+    });
+    expect(response.question.questionId).toBe('question-import-1');
+    expect(response.scoringScopePosture.fallbackMode).toBe('non_released_fallback');
   });
 
   test('createSession throws structured learning runtime errors for actionable UI states', async () => {

@@ -578,10 +578,9 @@ export default function WorkspaceShell({
       },
     });
   }
-  const slotList = Array.isArray(localViewModel?.slotList) ? localViewModel.slotList : [];
 
   return h('div', { className: 'grid gap-6' }, [
-    renderWorkspaceHeader(viewModel?.workspace || {}),
+    renderWorkspaceHeader(localViewModel?.workspace || {}),
     feedback
       ? h('section', {
         key: 'feedback',

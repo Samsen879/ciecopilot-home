@@ -25,7 +25,9 @@
     "api:test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "api:test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:community": "node scripts/test-community-api.js",
-    "test:community:dev": "npm run dev & sleep 5 && npm run test:community"
+    "test:community:dev": "npm run dev & sleep 5 && npm run test:community",
+    "ao:start:clean": "bash scripts/ao/start-clean.sh",
+    "ao:start:clean:dry": "bash scripts/ao/start-clean.sh --dry-run"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.53.1",

@@ -23,35 +23,82 @@ projects:
     symlinks:
       - .env
     agentRulesFile: .agent-rules.md
+    orchestratorRules: |
+      Treat live GitHub PR, CI, and review state as canonical whenever AO lifecycle metadata disagrees with GitHub.
+      Before acting on a stale lifecycle state, reconcile with `ao status -p ciecopilot-home --json`, `gh pr checks`, `gh pr view --json mergeable,reviewDecision,isDraft,url`, and `ao review-check ciecopilot-home --dry-run`.
+      Keep worker sessions alive after PR creation while the PR remains open so lifecycle reactions can route CI failures, human review comments, and automated review findings back to the same worker.
+      Do not kill a worker session just because it has opened a PR.
+      Prefer reconciling or continuing the existing worker when PR ownership is still clear.
+      If the repository branch, `agent-orchestrator.yaml`, or `.agent-rules.md` changed, or AO-related stash content was restored, stop and recreate the orchestrator session instead of reusing an older one.
+      Do not instruct agents to run repo-local AO control-plane scripts unless those scripts exist in the current branch.
+      Treat unresolved automated review comments as merge blockers.
+      Do not treat the delivery chain as complete while upstream dependency PRs are still open, downstream issues remain blocked, or worker ownership of an active PR is unclear.
+      When a worker becomes stuck, exits, or loses ownership continuity, inspect first and decide whether to restore that worker or continue through a successor worker that claims the PR.
+      Escalate to a human only for real product decisions, missing credentials, broken environment/setup, or other blockers the system cannot resolve autonomously.
     decomposer:
       enabled: false
       maxDepth: 2
       model: gpt-5-codex
       requireApproval: true
-    reactions:
-      approved-and-green:
-        auto: false
-        action: notify
-        priority: action
-      agent-stuck:
-        threshold: 10m
-        action: notify
-        priority: urgent
+
+notificationRouting:
+  urgent: [desktop]
+  action: [desktop]
+  warning: [desktop]
+  info: [desktop]
 
 reactions:
   ci-failed:
     auto: true
     action: send-to-agent
-    retries: 1
+    message: "CI is failing on your PR. Run `gh pr checks` to inspect the failures, fix them, and push."
+    retries: 2
+    escalateAfter: 2
+    escalateTo: orchestrator
   changes-requested:
     auto: true
     action: send-to-agent
+    message: "There are review comments on your PR. Check `gh pr view --comments` and the inline review threads, address each comment, push fixes, and reply."
     escalateAfter: 30m
+    escalateTo: orchestrator
+  bugbot-comments:
+    auto: true
+    action: send-to-agent
+    message: "Automated review comments are present on your PR, including Codex bot findings when available. Treat unresolved automated review comments as merge blockers, fix them, push, and reply where appropriate."
+    escalateAfter: 30m
+    escalateTo: orchestrator
+  merge-conflicts:
+    auto: true
+    action: send-to-agent
+    message: "Your branch has merge conflicts. Rebase onto `main`, resolve the conflicts, rerun the necessary checks, and push."
+    escalateAfter: 15m
+    escalateTo: orchestrator
   approved-and-green:
-    auto: false
-    action: notify
+    auto: true
+    action: send-to-orchestrator
     priority: action
+    message: "PR is approved and green. Reconcile live GitHub state with `gh pr checks`, `gh pr view --json mergeable,reviewDecision,isDraft,url`, and `ao review-check ciecopilot-home --dry-run`. If the PR is truly release-ready, notify the human and preserve ownership continuity. Do not merge directly."
   agent-stuck:
+    auto: true
     threshold: 10m
-    action: notify
+    action: send-to-orchestrator
+    message: "A worker appears stuck. Reconcile with `ao status -p ciecopilot-home --json`, inspect the worker's live PR, CI, and review state on GitHub, and then decide whether to continue the current worker or hand off to a successor worker."
     priority: urgent
+  agent-needs-input:
+    auto: true
+    action: send-to-orchestrator
+    message: "A worker requested input. Reconcile AO and live GitHub state first, inspect the actual blocker, and resolve it autonomously when possible; escalate to a human only if judgment or environment intervention is required."
+    priority: urgent
+  agent-exited:
+    auto: true
+    action: send-to-orchestrator
+    message: "A worker exited unexpectedly. Reconcile with `ao status -p ciecopilot-home --json`, inspect the task's live PR, CI, and review state on GitHub, and decide whether to restore the worker or continue with a successor worker."
+    priority: urgent
+  agent-idle:
+    auto: true
+    action: send-to-agent
+    message: "You appear idle. If you are the orchestrator, reconcile live GitHub PR, CI, and review state before trusting stale lifecycle labels, then continue monitoring the execution chain without waiting for human input. If you are a worker and work is still pending, continue through implementation, verification, and PR updates. If blocked, explain the blocker clearly."
+    retries: 2
+    repeatEvery: 8m
+    escalateAfter: 15m
+    escalateTo: orchestrator

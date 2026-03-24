@@ -25,7 +25,7 @@ function renderWorkspaceHeader(workspace) {
   ]);
 }
 
-export default function WorkspaceShell({ viewModel }) {
+export default function WorkspaceShell({ onLaunch, viewModel }) {
   const slotList = Array.isArray(viewModel?.slotList) ? viewModel.slotList : [];
 
   return h('div', { className: 'grid gap-6' }, [
@@ -34,6 +34,7 @@ export default function WorkspaceShell({ viewModel }) {
       StableSlotPanel,
       {
         key: slot.slotKey,
+        onLaunch,
         slot,
       },
     ))),

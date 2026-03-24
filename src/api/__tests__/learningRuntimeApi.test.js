@@ -17,9 +17,14 @@ jest.unstable_mockModule('../../utils/supabase.js', () => ({
 
 const {
   learningRuntimeApi,
+  markArtifactContested,
   normalizeAskResponse,
+  normalizeArtifactResponse,
   normalizeImportQuestionResponse,
   normalizeSessionResponse,
+  pinArtifact,
+  supersedeArtifact,
+  unpinArtifact,
 } = await import('../learningRuntimeApi.js');
 
 function createSessionEnvelope() {
@@ -212,6 +217,10 @@ describe('learning runtime api', () => {
       'getWorkspace',
       'importQuestion',
       'listReviewTasks',
+      'markArtifactContested',
+      'pinArtifact',
+      'supersedeArtifact',
+      'unpinArtifact',
       'updateArtifact',
     ].sort());
   });
@@ -525,5 +534,143 @@ describe('learning runtime api', () => {
     );
     expect(payload.topicId).toBe('topic-1');
     expect(payload.items[0].reviewTaskId).toBe('review-queued-1');
+  });
+
+  test('pinArtifact and unpinArtifact send explicit placement intents and normalize slot transitions', async () => {
+    global.fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          artifact: {
+            artifact_id: 'artifact-note-1',
+            artifact_kind: 'free_note',
+            slot_key: 'my_notes',
+            placement_status: 'pinned',
+            lifecycle_status: 'active',
+          },
+          slot_transition: {
+            outcome: 'pinned_to_slot',
+            slot_key: 'my_notes',
+          },
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          artifact: {
+            artifact_id: 'artifact-note-1',
+            artifact_kind: 'free_note',
+            slot_key: 'my_notes',
+            placement_status: 'inbox',
+            lifecycle_status: 'active',
+          },
+          slot_transition: {
+            outcome: 'slot_cleared',
+            slot_key: 'my_notes',
+          },
+        }),
+      });
+
+    const pinned = await pinArtifact('artifact-note-1');
+    const unpinned = await unpinArtifact('artifact-note-1');
+
+    expect(JSON.parse(global.fetch.mock.calls[0][1].body)).toEqual({
+      intent: 'set_placement_status',
+      placement_status: 'pinned',
+    });
+    expect(JSON.parse(global.fetch.mock.calls[1][1].body)).toEqual({
+      intent: 'set_placement_status',
+      placement_status: 'inbox',
+    });
+    expect(pinned.slotTransition).toEqual({
+      outcome: 'pinned_to_slot',
+      slotKey: 'my_notes',
+    });
+    expect(unpinned.slotTransition).toEqual({
+      outcome: 'slot_cleared',
+      slotKey: 'my_notes',
+    });
+  });
+
+  test('markArtifactContested and supersedeArtifact use explicit lifecycle intents', async () => {
+    global.fetch
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          artifact: {
+            artifact_id: 'artifact-contested',
+            artifact_kind: 'misconception_card',
+            slot_key: 'common_traps',
+            trust_status: 'contested',
+            placement_status: 'inbox',
+            lifecycle_status: 'active',
+          },
+          slot_transition: null,
+        }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          artifact: {
+            artifact_id: 'artifact-primary',
+            artifact_kind: 'misconception_card',
+            slot_key: 'common_traps',
+            placement_status: 'archived',
+            lifecycle_status: 'superseded',
+            superseded_by_artifact_id: 'artifact-successor',
+          },
+          slot_transition: {
+            outcome: 'moved_to_successor',
+            slot_key: 'common_traps',
+          },
+        }),
+      });
+
+    const contested = await markArtifactContested('artifact-contested');
+    const superseded = await supersedeArtifact('artifact-primary', {
+      kind: 'artifact',
+      artifact_id: 'artifact-successor',
+    });
+
+    expect(JSON.parse(global.fetch.mock.calls[0][1].body)).toEqual({
+      intent: 'mark_contested',
+    });
+    expect(JSON.parse(global.fetch.mock.calls[1][1].body)).toEqual({
+      intent: 'attach_superseded_by',
+      successor_artifact_ref: {
+        kind: 'artifact',
+        artifact_id: 'artifact-successor',
+      },
+    });
+    expect(contested.artifact.trustStatus).toBe('contested');
+    expect(superseded.artifact.supersededByArtifactId).toBe('artifact-successor');
+    expect(superseded.slotTransition).toEqual({
+      outcome: 'moved_to_successor',
+      slotKey: 'common_traps',
+    });
+  });
+
+  test('normalizeArtifactResponse camelizes artifact lifecycle payloads', () => {
+    const payload = normalizeArtifactResponse({
+      artifact: {
+        artifact_id: 'artifact-primary',
+        slot_key: 'common_traps',
+        superseded_by_artifact_id: 'artifact-successor',
+      },
+      slot_transition: {
+        outcome: 'slot_cleared_pending_confirmation',
+        slot_key: 'common_traps',
+      },
+    });
+
+    expect(payload.artifact).toEqual({
+      artifactId: 'artifact-primary',
+      slotKey: 'common_traps',
+      supersededByArtifactId: 'artifact-successor',
+    });
+    expect(payload.slotTransition).toEqual({
+      outcome: 'slot_cleared_pending_confirmation',
+      slotKey: 'common_traps',
+    });
   });
 });

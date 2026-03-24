@@ -1,4 +1,5 @@
 import React from 'react';
+import ArtifactLifecycleActions from './ArtifactLifecycleActions.js';
 import LinkedReferenceList from './LinkedReferenceList.js';
 import WorkspaceArtifactCard from './WorkspaceArtifactCard.js';
 
@@ -12,13 +13,13 @@ function toneClassName(tone) {
   return 'border-slate-200 bg-slate-50 text-slate-700';
 }
 
-function renderSurfaceState(surfaceState) {
+function renderSurfaceState(surfaceState, key = 'surface-state') {
   if (!surfaceState || !surfaceState.message) {
     return null;
   }
 
   return h('section', {
-    key: 'surface-state',
+    key,
     className: `mt-5 rounded-2xl border px-4 py-3 text-sm ${toneClassName(surfaceState.tone)}`,
   }, [
     h('p', {
@@ -51,8 +52,18 @@ function renderEmptyState(slot) {
   ]);
 }
 
-export default function StableSlotPanel({ onLaunch, slot }) {
+export default function StableSlotPanel({
+  onLaunch,
+  onMarkContested,
+  onPin,
+  onSupersede,
+  onUnpin,
+  pendingArtifactId = null,
+  pendingIntent = null,
+  slot,
+}) {
   const slotLaunch = slot?.slotLaunch || null;
+  const primaryArtifactCard = slot?.primaryArtifactCard || null;
 
   return h('section', {
     className: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm',
@@ -87,12 +98,27 @@ export default function StableSlotPanel({ onLaunch, slot }) {
         : null,
     ].filter(Boolean)),
     renderSurfaceState(slot?.surfaceState),
-    slot?.primaryArtifactCard
-      ? h(WorkspaceArtifactCard, {
+    renderSurfaceState(slot?.transitionState, 'transition-state'),
+    primaryArtifactCard
+      ? h('div', {
+        key: 'primary-card-wrap',
+        className: 'mt-5',
+      }, [
+        h(WorkspaceArtifactCard, {
         key: 'primary-card',
-        card: slot.primaryArtifactCard,
+        card: primaryArtifactCard,
         onLaunch,
-      })
+        }),
+        h(ArtifactLifecycleActions, {
+          key: 'primary-actions',
+          artifact: primaryArtifactCard,
+          pendingAction: pendingArtifactId === primaryArtifactCard.artifactId ? pendingIntent : null,
+          onMarkContested,
+          onPin,
+          onSupersede,
+          onUnpin,
+        }),
+      ])
       : h('div', {
         key: 'empty-card',
       }, renderEmptyState(slot)),

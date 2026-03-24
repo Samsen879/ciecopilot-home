@@ -72,6 +72,52 @@ function createWorkspacePayload() {
       linkedReferenceSummary: {
         totalLinkedReferences: 3,
       },
+      artifactInbox: {
+        items: [
+          {
+            artifactId: 'artifact-successor',
+            artifactKind: 'misconception_card',
+            canonicalHomeTopicId: 'topic-trig-equations',
+            slotKey: 'common_traps',
+            placementStatus: 'inbox',
+            trustStatus: 'grounded',
+            lifecycleStatus: 'active',
+            updatedAt: '2026-03-22T07:56:00.000Z',
+            summary: 'Candidate successor for the canonical misconception slot.',
+          },
+          {
+            artifactId: 'artifact-note-1',
+            artifactKind: 'free_note',
+            canonicalHomeTopicId: 'topic-trig-equations',
+            slotKey: 'my_notes',
+            placementStatus: 'inbox',
+            trustStatus: 'user_confirmed',
+            lifecycleStatus: 'active',
+            updatedAt: '2026-03-22T07:57:00.000Z',
+            title: 'My note candidate',
+          },
+          {
+            artifactId: 'artifact-cross-topic',
+            artifactKind: 'misconception_card',
+            canonicalHomeTopicId: 'topic-trig-identities',
+            slotKey: 'common_traps',
+            placementStatus: 'inbox',
+            trustStatus: 'grounded',
+            lifecycleStatus: 'active',
+            updatedAt: '2026-03-22T07:55:00.000Z',
+          },
+          {
+            artifactId: 'artifact-contested',
+            artifactKind: 'misconception_card',
+            canonicalHomeTopicId: 'topic-trig-equations',
+            slotKey: 'common_traps',
+            placementStatus: 'inbox',
+            trustStatus: 'contested',
+            lifecycleStatus: 'active',
+            updatedAt: '2026-03-22T07:54:00.000Z',
+          },
+        ],
+      },
       updatedAt: '2026-03-22T08:00:00.000Z',
       slots: {
         overviewMap: {
@@ -600,6 +646,25 @@ describe('learning runtime session view model', () => {
       staleSlotCount: 1,
       missingContentCount: 1,
       totalLinkedReferences: 3,
+      items: expect.any(Array),
+    });
+    expect(vm.artifactInbox.items.map((card) => card.artifactId)).toEqual([
+      'artifact-successor',
+      'artifact-note-1',
+      'artifact-cross-topic',
+      'artifact-contested',
+    ]);
+    expect(vm.artifactInbox.items[0].availableActions.canPin).toBe(true);
+    expect(vm.artifactInbox.items[1].availableActions.canPin).toBe(true);
+    expect(vm.artifactInbox.items[2].availableActions.canPin).toBe(false);
+    expect(vm.artifactInbox.items[2].availableActions.pinBlockedReason)
+      .toBe('Secondary-topic artifacts cannot be pinned into this workspace.');
+    expect(vm.artifactInbox.items[3].availableActions.canPin).toBe(false);
+    expect(vm.artifactInbox.items[3].state).toEqual({
+      value: 'contested',
+      label: 'Contested artifact',
+      tone: 'warning',
+      message: 'This artifact is contested and cannot be pinned until the conflict is resolved.',
     });
   });
 });

@@ -77,6 +77,65 @@ describe('ao observation source', () => {
     expect(observation.workers[0].freshness.status).toBe('stale');
   });
 
+  it('accepts top-level ao status arrays and current field names', async () => {
+    mockSpawnSync.mockReturnValueOnce({
+      status: 0,
+      stdout: JSON.stringify([
+        {
+          name: 'cie-32',
+          role: 'worker',
+          branch: 'feat/62',
+          prNumber: 74,
+          issue: '62',
+          status: 'mergeable',
+          lastActivity: '10m ago',
+        },
+        {
+          name: 'cie-orchestrator',
+          role: 'orchestrator',
+          branch: 'runtime-post-pilot-0323-2239',
+          status: 'idle',
+          lastActivity: '27m ago',
+        },
+      ]),
+      stderr: '',
+    });
+
+    const observation = await loadAoProjectObservation({
+      projectId: 'ciecopilot-home',
+      now: '2026-03-24T10:10:00.000Z',
+    });
+
+    expect(observation.orchestrator).toMatchObject({
+      session_name: 'cie-orchestrator',
+      issue_number: null,
+      pr_number: null,
+      lifecycle_state: 'idle',
+      freshness: {
+        status: 'stale',
+        stale_after_ms: 900000,
+      },
+    });
+    expect(observation.workers[0]).toMatchObject({
+      session_name: 'cie-32',
+      branch_name: 'feat/62',
+      pr_number: 74,
+      issue_number: 62,
+      lifecycle_state: 'mergeable',
+      freshness: {
+        status: 'fresh',
+        stale_after_ms: 900000,
+      },
+    });
+    expect(observation.raw_summary).toMatchObject({
+      session_count: 2,
+      orchestrator_count: 1,
+      worker_count: 1,
+      branch_count: 2,
+      pr_count: 1,
+    });
+  });
+
   it('returns a source error when ao status fails', async () => {
     mockSpawnSync.mockReturnValueOnce({
       status: 1,

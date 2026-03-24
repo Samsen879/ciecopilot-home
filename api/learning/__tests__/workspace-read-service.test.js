@@ -654,6 +654,21 @@ describe('workspace read service', () => {
     });
   });
 
+  test('workspace review_queue slot stays tied to active tasks even when queue payload is filtered', async () => {
+    const db = createLearningDb();
+
+    const payload = await getWorkspaceView(db, {
+      userId: 'student-1',
+      topicId: 'topic-1',
+      reviewStatus: 'completed',
+    });
+
+    expect(payload.review_queue.items).toEqual([]);
+    expect(payload.workspace.slots.review_queue.linked_references).toEqual([
+      { kind: 'review_task', review_task_id: 'review-queued-1' },
+    ]);
+  });
+
   test('GET /api/learning/workspaces/:topicId returns stable slots and linked references', async () => {
     const db = createLearningDb();
     mockGetServiceClient.mockReturnValue(db);

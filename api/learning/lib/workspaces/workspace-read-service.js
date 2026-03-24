@@ -189,6 +189,12 @@ export async function getWorkspaceView(
     status: reviewStatus,
     dueBefore: reviewDueBefore,
   });
+  const reviewQueueSlotItems = (reviewStatus || reviewDueBefore)
+    ? (await listReviewTasks(client, {
+      userId,
+      topicId,
+    })).items
+    : reviewQueue.items;
 
   return {
     workspace: {
@@ -200,7 +206,7 @@ export async function getWorkspaceView(
       linked_reference_summary: workspaceProjection.linked_reference_summary ?? {},
       updated_at: workspaceProjection.updated_at ?? null,
       slots: buildStableSlots(workspaceProjection, {
-        reviewQueueItems: reviewQueue.items,
+        reviewQueueItems: reviewQueueSlotItems,
       }),
     },
     review_queue: reviewQueue,

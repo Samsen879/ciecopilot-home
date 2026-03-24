@@ -174,6 +174,7 @@ export function normalizeImportQuestionResponse(payload = {}) {
   const camelized = camelizeKeys(payload);
   return {
     ...camelized,
+    question: camelized.question || null,
     scoringScopePosture: camelized.scoringScopePosture || null,
   };
 }

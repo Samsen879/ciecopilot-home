@@ -36,12 +36,30 @@ const AskAI = () => {
             </div>
 
             <p className="mt-6 max-w-3xl text-base leading-7 text-slate-600">
-              The legacy AskAI page no longer owns canonical learning state. Use a runtime workspace
-              to review stable slots, linked references, and the topic-filtered review queue for the
-              pilot trigonometry slice.
+              The legacy AskAI page no longer owns canonical learning state. Start with a runtime
+              import or workspace entry so the session contract, fallback posture, and canonical
+              topic handoff all stay inside the new learning-runtime flow.
             </p>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-2">
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              <Link
+                to="/learn/session/new?entry=imported_question"
+                className="group rounded-3xl border border-slate-900 bg-slate-900 p-6 text-white transition hover:bg-slate-800"
+              >
+                <p className="text-sm font-medium uppercase tracking-[0.24em] text-slate-300">
+                  Runtime intake
+                </p>
+                <h2 className="mt-3 text-2xl font-semibold">Paste an imported question</h2>
+                <p className="mt-2 text-sm text-slate-200">
+                  Turn pasted content into a durable runtime question, review the returned scoring
+                  posture, and only then enter the session.
+                </p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white">
+                  Open import flow
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </span>
+              </Link>
+
               {LEARNING_RUNTIME_ENTRY_TOPICS.map((topic) => (
                 <Link
                   key={topic.topicId}

@@ -10,7 +10,16 @@ import {
   askInSession,
   createSession,
   getSession,
+  importQuestion,
 } from '../../api/learningRuntimeApi.js';
+import ImportPostureBanner from '../../components/learning-runtime/ImportPostureBanner.jsx';
+import ImportedQuestionIntake, {
+  buildImportQuestionPayload,
+  buildImportedQuestionSessionPayload,
+  canSubmitImportedQuestionDraft,
+  createImportedQuestionDraft,
+  patchImportedQuestionDraft,
+} from '../../components/learning-runtime/ImportedQuestionIntake.jsx';
 import LearningSessionShell from '../../components/learning-runtime/LearningSessionShell.jsx';
 import { buildSessionViewModel } from '../../components/learning-runtime/view-models/session-view-model.js';
 import {
@@ -37,7 +46,11 @@ export default function LearningSessionPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const isLauncherSurface = !sessionId || sessionId === NEW_SESSION_SENTINEL;
+  const launcherEntry = new URLSearchParams(location.search).get('entry');
+  const isImportedQuestionEntry = isLauncherSurface && launcherEntry === 'imported_question';
   const activeLaunchRequestKeyRef = useRef(null);
+  const activeImportRequestKeyRef = useRef(null);
+  const activeImportHandoffRequestKeyRef = useRef(null);
   const activeRouteSessionIdRef = useRef(isLauncherSurface ? null : sessionId);
   const isLauncherSurfaceRef = useRef(false);
   const isMountedRef = useRef(false);
@@ -52,6 +65,12 @@ export default function LearningSessionPage() {
   ));
   const [launchStatus, setLaunchStatus] = useState('idle');
   const [launchError, setLaunchError] = useState(null);
+  const [importDraft, setImportDraft] = useState(() => createImportedQuestionDraft());
+  const [importStatus, setImportStatus] = useState('idle');
+  const [importError, setImportError] = useState(null);
+  const [importResult, setImportResult] = useState(null);
+  const [importHandoffStatus, setImportHandoffStatus] = useState('idle');
+  const [importHandoffError, setImportHandoffError] = useState(null);
   const [askMessage, setAskMessage] = useState('');
   const [askStatus, setAskStatus] = useState('idle');
   const [askError, setAskError] = useState(null);
@@ -154,6 +173,19 @@ export default function LearningSessionPage() {
     setLaunchDraft(createSessionLaunchDraft(location.state.launchPayload));
   }, [isLauncherSurface, location.key, location.state]);
 
+  useEffect(() => {
+    if (!isLauncherSurface) {
+      return;
+    }
+
+    setImportDraft(createImportedQuestionDraft());
+    setImportStatus('idle');
+    setImportError(null);
+    setImportResult(null);
+    setImportHandoffStatus('idle');
+    setImportHandoffError(null);
+  }, [isLauncherSurface, launcherEntry, location.key]);
+
   async function handleLaunch() {
     if (launchStatus === 'submitting') {
       return;
@@ -225,6 +257,129 @@ export default function LearningSessionPage() {
   function handleLaunchFieldChange(patch) {
     setLaunchError(null);
     setLaunchDraft((currentDraft) => patchSessionLaunchDraft(currentDraft, patch));
+  }
+
+  function handleImportDraftChange(patch) {
+    setImportError(null);
+    setImportHandoffError(null);
+    setImportResult(null);
+    setImportDraft((currentDraft) => patchImportedQuestionDraft(currentDraft, patch));
+  }
+
+  async function handleImportQuestion() {
+    if (importStatus === 'submitting') {
+      return;
+    }
+
+    setImportStatus('submitting');
+    setImportError(null);
+    setImportHandoffError(null);
+    const importRequestKey = createRequestKey('import-request');
+    activeImportRequestKeyRef.current = importRequestKey;
+
+    try {
+      const payload = await importQuestion(
+        buildImportQuestionPayload(importDraft),
+        {
+          idempotencyKey: createRequestKey('learning-import'),
+        },
+      );
+
+      if (
+        !isMountedRef.current
+        || !isLauncherSurfaceRef.current
+        || activeImportRequestKeyRef.current !== importRequestKey
+      ) {
+        return;
+      }
+
+      startTransition(() => {
+        setImportResult(payload);
+        setImportStatus('idle');
+      });
+    } catch (requestError) {
+      if (
+        !isMountedRef.current
+        || !isLauncherSurfaceRef.current
+        || activeImportRequestKeyRef.current !== importRequestKey
+      ) {
+        return;
+      }
+
+      startTransition(() => {
+        setImportError(requestError);
+        setImportStatus('idle');
+      });
+    }
+  }
+
+  async function handleImportHandoff() {
+    if (importHandoffStatus === 'submitting') {
+      return;
+    }
+
+    const sessionPayload = buildImportedQuestionSessionPayload({
+      draft: importDraft,
+      importResult,
+    });
+
+    if (!sessionPayload) {
+      setImportHandoffError(new Error('Imported question is missing a durable question ID.'));
+      return;
+    }
+
+    setImportHandoffStatus('submitting');
+    setImportHandoffError(null);
+    const handoffRequestKey = createRequestKey('import-handoff');
+    activeImportHandoffRequestKeyRef.current = handoffRequestKey;
+
+    try {
+      const payload = await createSession(
+        sessionPayload,
+        {
+          idempotencyKey: createRequestKey('learning-import-session'),
+        },
+      );
+      const createdSessionId = payload?.session?.sessionId || null;
+
+      if (
+        !isMountedRef.current
+        || !isLauncherSurfaceRef.current
+        || activeImportHandoffRequestKeyRef.current !== handoffRequestKey
+      ) {
+        return;
+      }
+
+      startTransition(() => {
+        setSessionPayload(payload);
+        setTurnHistory([]);
+        setAskMessage('');
+        setAskError(null);
+        setImportHandoffStatus('idle');
+        setSurfaceState('ready');
+        setError(null);
+      });
+
+      if (createdSessionId) {
+        skipReloadSessionIdRef.current = createdSessionId;
+        navigate(`/learn/session/${createdSessionId}`, {
+          replace: true,
+        });
+      }
+    } catch (requestError) {
+      if (
+        !isMountedRef.current
+        || !isLauncherSurfaceRef.current
+        || activeImportHandoffRequestKeyRef.current !== handoffRequestKey
+      ) {
+        return;
+      }
+
+      startTransition(() => {
+        setImportHandoffError(requestError);
+        setImportHandoffStatus('idle');
+      });
+    }
   }
 
   function handleAskMessageChange(nextMessage) {
@@ -301,6 +456,18 @@ export default function LearningSessionPage() {
       error: askError,
     },
   });
+  const importIntake = {
+    draft: importDraft,
+    status: importStatus,
+    errorMessage: importError?.message || null,
+    canSubmit: canSubmitImportedQuestionDraft(importDraft),
+  };
+  const sessionEntryTitle = isLauncherSurface
+    ? (isImportedQuestionEntry ? 'Import question' : 'Launch session')
+    : 'Session';
+  const sessionEntryBody = isLauncherSurface && isImportedQuestionEntry
+    ? 'Paste a question, review the returned scoring posture, then hand off into a live runtime session anchored to the durable imported question.'
+    : 'Create a live runtime session from a valid anchor payload, then keep the ask loop in the same session contract instead of the legacy AskAI page flow.';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
@@ -319,11 +486,10 @@ export default function LearningSessionPage() {
               Learning Runtime
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
-              {isLauncherSurface ? 'Launch session' : 'Session'}
+              {sessionEntryTitle}
             </h1>
             <p className="mt-2 text-base leading-7 text-slate-600">
-              Create a live runtime session from a valid anchor payload, then keep the ask loop in
-              the same session contract instead of the legacy AskAI page flow.
+              {sessionEntryBody}
             </p>
           </div>
         </div>
@@ -340,7 +506,26 @@ export default function LearningSessionPage() {
           </div>
         ) : null}
 
-        {surfaceState === 'ready' ? (
+        {surfaceState === 'ready' && isImportedQuestionEntry ? (
+          <div className="mb-6 grid gap-6">
+            <ImportedQuestionIntake
+              intake={importIntake}
+              onChange={handleImportDraftChange}
+              onSubmit={handleImportQuestion}
+            />
+            {importResult ? (
+              <ImportPostureBanner
+                question={importResult.question}
+                posture={importResult.scoringScopePosture}
+                handoffStatus={importHandoffStatus}
+                handoffError={importHandoffError?.message || null}
+                onStartSession={handleImportHandoff}
+              />
+            ) : null}
+          </div>
+        ) : null}
+
+        {surfaceState === 'ready' && !isImportedQuestionEntry ? (
           <LearningSessionShell
             viewModel={viewModel}
             onLauncherChange={handleLaunchFieldChange}

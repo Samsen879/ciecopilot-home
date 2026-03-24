@@ -1,33 +1,119 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  startTransition,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getSession } from '../../api/learningRuntimeApi.js';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  askInSession,
+  createSession,
+  getSession,
+} from '../../api/learningRuntimeApi.js';
 import LearningSessionShell from '../../components/learning-runtime/LearningSessionShell.jsx';
 import { buildSessionViewModel } from '../../components/learning-runtime/view-models/session-view-model.js';
+import {
+  buildSessionLaunchPayload,
+  createSessionLaunchDraft,
+  mergeAskResponseIntoSessionPayload,
+  patchSessionLaunchDraft,
+  shouldApplyAskResponse,
+  shouldApplyLaunchSuccess,
+} from '../../components/learning-runtime/view-models/session-live-state.js';
+
+const NEW_SESSION_SENTINEL = 'new';
+
+function createRequestKey(prefix) {
+  if (typeof globalThis.crypto?.randomUUID === 'function') {
+    return `${prefix}-${globalThis.crypto.randomUUID()}`;
+  }
+
+  return `${prefix}-${Date.now()}`;
+}
 
 export default function LearningSessionPage() {
   const { sessionId = '' } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
-  const [viewModel, setViewModel] = useState(null);
+  const isLauncherSurface = !sessionId || sessionId === NEW_SESSION_SENTINEL;
+  const activeLaunchRequestKeyRef = useRef(null);
+  const activeRouteSessionIdRef = useRef(isLauncherSurface ? null : sessionId);
+  const isLauncherSurfaceRef = useRef(false);
+  const isMountedRef = useRef(false);
+  const sessionPayloadRef = useRef(null);
+  const skipReloadSessionIdRef = useRef(null);
+  const [sessionPayload, setSessionPayload] = useState(null);
+  const [turnHistory, setTurnHistory] = useState([]);
   const [surfaceState, setSurfaceState] = useState('loading');
   const [error, setError] = useState(null);
+  const [launchDraft, setLaunchDraft] = useState(() => createSessionLaunchDraft(
+    location.state?.launchPayload || {},
+  ));
+  const [launchStatus, setLaunchStatus] = useState('idle');
+  const [launchError, setLaunchError] = useState(null);
+  const [askMessage, setAskMessage] = useState('');
+  const [askStatus, setAskStatus] = useState('idle');
+  const [askError, setAskError] = useState(null);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    activeRouteSessionIdRef.current = isLauncherSurface ? null : sessionId;
+    isLauncherSurfaceRef.current = isLauncherSurface;
+  }, [isLauncherSurface, sessionId]);
+
+  useEffect(() => {
+    sessionPayloadRef.current = sessionPayload;
+  }, [sessionPayload]);
 
   useEffect(() => {
     let active = true;
 
     async function loadSession() {
-      if (!sessionId) {
+      if (isLauncherSurface) {
         if (!active) {
           return;
         }
 
-        setSurfaceState('error');
-        setError(new Error('sessionId is required'));
+        startTransition(() => {
+          setSessionPayload(null);
+          setTurnHistory([]);
+          setAskMessage('');
+          setAskStatus('idle');
+          setAskError(null);
+          setError(null);
+          setSurfaceState('ready');
+        });
+        return;
+      }
+
+      if (skipReloadSessionIdRef.current === sessionId) {
+        skipReloadSessionIdRef.current = null;
+        if (!active) {
+          return;
+        }
+
+        startTransition(() => {
+          setSurfaceState('ready');
+          setError(null);
+        });
         return;
       }
 
       setSurfaceState('loading');
       setError(null);
+      setLaunchStatus('idle');
+      setLaunchError(null);
+      setAskStatus('idle');
+      setAskError(null);
+      setAskMessage('');
 
       try {
         const payload = await getSession(sessionId);
@@ -35,15 +121,21 @@ export default function LearningSessionPage() {
           return;
         }
 
-        setViewModel(buildSessionViewModel(payload));
-        setSurfaceState('ready');
+        startTransition(() => {
+          setSessionPayload(payload);
+          setTurnHistory([]);
+          setAskError(null);
+          setSurfaceState('ready');
+        });
       } catch (loadError) {
         if (!active) {
           return;
         }
 
-        setError(loadError);
-        setSurfaceState('error');
+        startTransition(() => {
+          setError(loadError);
+          setSurfaceState('error');
+        });
       }
     }
 
@@ -52,7 +144,163 @@ export default function LearningSessionPage() {
     return () => {
       active = false;
     };
-  }, [sessionId]);
+  }, [isLauncherSurface, sessionId]);
+
+  useEffect(() => {
+    if (!isLauncherSurface || !location.state?.launchPayload) {
+      return;
+    }
+
+    setLaunchDraft(createSessionLaunchDraft(location.state.launchPayload));
+  }, [isLauncherSurface, location.key, location.state]);
+
+  async function handleLaunch() {
+    if (launchStatus === 'submitting') {
+      return;
+    }
+
+    setLaunchStatus('submitting');
+    setLaunchError(null);
+    const launchRequestKey = createRequestKey('launch-request');
+    activeLaunchRequestKeyRef.current = launchRequestKey;
+
+    try {
+      const payload = await createSession(
+        buildSessionLaunchPayload(launchDraft),
+        {
+          idempotencyKey: createRequestKey('learning-session'),
+        },
+      );
+      const createdSessionId = payload?.session?.sessionId || null;
+      const shouldApplyLaunch = shouldApplyLaunchSuccess({
+        requestKey: launchRequestKey,
+        activeRequestKey: activeLaunchRequestKeyRef.current,
+        isLauncherSurface: isLauncherSurfaceRef.current,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyLaunch) {
+        return;
+      }
+
+      startTransition(() => {
+        setSessionPayload(payload);
+        setTurnHistory([]);
+        setAskMessage('');
+        setAskError(null);
+        setLaunchStatus('idle');
+        setSurfaceState('ready');
+        setError(null);
+      });
+
+      if (createdSessionId && shouldApplyLaunchSuccess({
+        requestKey: launchRequestKey,
+        activeRequestKey: activeLaunchRequestKeyRef.current,
+        isLauncherSurface: isLauncherSurfaceRef.current,
+        isMounted: isMountedRef.current,
+      })) {
+        skipReloadSessionIdRef.current = createdSessionId;
+        navigate(`/learn/session/${createdSessionId}`, {
+          replace: true,
+          state: { justCreated: true },
+        });
+      }
+    } catch (requestError) {
+      const shouldApplyLaunch = shouldApplyLaunchSuccess({
+        requestKey: launchRequestKey,
+        activeRequestKey: activeLaunchRequestKeyRef.current,
+        isLauncherSurface: isLauncherSurfaceRef.current,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyLaunch) {
+        return;
+      }
+
+      startTransition(() => {
+        setLaunchError(requestError);
+        setLaunchStatus('idle');
+      });
+    }
+  }
+
+  function handleLaunchFieldChange(patch) {
+    setLaunchError(null);
+    setLaunchDraft((currentDraft) => patchSessionLaunchDraft(currentDraft, patch));
+  }
+
+  function handleAskMessageChange(nextMessage) {
+    setAskError(null);
+    setAskMessage(nextMessage);
+  }
+
+  async function handleAsk() {
+    const activeSessionId = sessionPayload?.session?.sessionId || null;
+    const trimmedMessage = askMessage.trim();
+
+    if (!activeSessionId || !trimmedMessage || askStatus === 'submitting') {
+      return;
+    }
+
+    setAskStatus('submitting');
+    setAskError(null);
+
+    const clientTurnId = createRequestKey('local-turn');
+
+    try {
+      const response = await askInSession(activeSessionId, {
+        message: trimmedMessage,
+        client_turn_id: clientTurnId,
+      });
+      const shouldApplyAsk = shouldApplyAskResponse({
+        requestSessionId: activeSessionId,
+        activeRouteSessionId: activeRouteSessionIdRef.current,
+        currentSessionId: sessionPayloadRef.current?.session?.sessionId ?? null,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyAsk) {
+        return;
+      }
+
+      startTransition(() => {
+        setSessionPayload((currentPayload) => mergeAskResponseIntoSessionPayload(currentPayload, response));
+        setTurnHistory((currentHistory) => currentHistory.concat({
+          clientTurnId,
+          userMessage: trimmedMessage,
+          response,
+        }));
+        setAskMessage('');
+        setAskStatus('idle');
+      });
+    } catch (requestError) {
+      const shouldApplyAsk = shouldApplyAskResponse({
+        requestSessionId: activeSessionId,
+        activeRouteSessionId: activeRouteSessionIdRef.current,
+        currentSessionId: sessionPayloadRef.current?.session?.sessionId ?? null,
+        isMounted: isMountedRef.current,
+      });
+      if (!shouldApplyAsk) {
+        return;
+      }
+
+      startTransition(() => {
+        setAskError(requestError);
+        setAskStatus('idle');
+      });
+    }
+  }
+
+  const viewModel = buildSessionViewModel(sessionPayload || {}, {
+    turnHistory,
+    launcher: {
+      draft: launchDraft,
+      status: launchStatus,
+      error: launchError,
+    },
+    composer: {
+      message: askMessage,
+      status: askStatus,
+      error: askError,
+    },
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
@@ -71,10 +319,11 @@ export default function LearningSessionPage() {
               Learning Runtime
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
-              Session
+              {isLauncherSurface ? 'Launch session' : 'Session'}
             </h1>
             <p className="mt-2 text-base leading-7 text-slate-600">
-              Session state now comes from the learning runtime contract instead of the legacy AskAI page flow.
+              Create a live runtime session from a valid anchor payload, then keep the ask loop in
+              the same session contract instead of the legacy AskAI page flow.
             </p>
           </div>
         </div>
@@ -91,7 +340,15 @@ export default function LearningSessionPage() {
           </div>
         ) : null}
 
-        {surfaceState === 'ready' && viewModel ? <LearningSessionShell viewModel={viewModel} /> : null}
+        {surfaceState === 'ready' ? (
+          <LearningSessionShell
+            viewModel={viewModel}
+            onLauncherChange={handleLaunchFieldChange}
+            onLaunch={handleLaunch}
+            onAskChange={handleAskMessageChange}
+            onAsk={handleAsk}
+          />
+        ) : null}
       </div>
     </div>
   );

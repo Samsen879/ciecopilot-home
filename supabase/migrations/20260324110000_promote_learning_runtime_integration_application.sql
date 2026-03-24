@@ -62,7 +62,6 @@ SELECT
   lf.title AS family_title,
   qb.primary_question_type_id,
   lqt.title AS primary_question_type_title,
-  lqt.release_state AS primary_question_type_release_state,
   qb.secondary_question_type_ids,
   qb.variant_tags,
   qb.release_scope_status,
@@ -70,7 +69,8 @@ SELECT
   qb.prompt_representation,
   qb.provenance_summary,
   lqas.classification_confidence,
-  lqas.candidate_rubric_refs
+  lqas.candidate_rubric_refs,
+  lqt.release_state AS primary_question_type_release_state
 FROM public.question_bank qb
 LEFT JOIN public.learning_question_families lf
   ON lf.family_id = qb.family_id

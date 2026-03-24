@@ -161,6 +161,68 @@ function createWorkspacePayload() {
   };
 }
 
+function createContinuitySessionPayload() {
+  const payload = createQuestionlessSessionPayload();
+
+  return {
+    ...payload,
+    session: {
+      ...payload.session,
+      sessionId: 'sess-handoff-1',
+      state: 'handoff_suggested',
+      lineage: {
+        parentSessionId: 'sess-parent-1',
+        handoffKind: 'explicit_new_session',
+        summarySnapshot: {
+          recap: 'Carry forward the compacted recap before opening another full thread.',
+        },
+      },
+      handoff: {
+        supported: true,
+        lineage: {
+          parentSessionId: 'sess-parent-1',
+          handoffKind: 'explicit_new_session',
+          summarySnapshot: {
+            recap: 'Carry forward the compacted recap before opening another full thread.',
+          },
+        },
+        suggestedHandoff: {
+          shouldHandoff: true,
+          handoffKind: 'internal_compaction',
+          reasonCode: 'session_turn_limit',
+          message: 'Compact the runtime context before the next return.',
+          questionless: true,
+        },
+        internalCompaction: {
+          supported: true,
+          shouldHandoff: true,
+          summarySnapshot: {
+            recap: 'Carry forward the compacted recap before opening another full thread.',
+          },
+        },
+        explicitNewSession: {
+          supported: true,
+          recommendedMode: 'learn_concept',
+          carryForwardSummary: {
+            recap: 'Carry forward the compacted recap before opening another full thread.',
+          },
+        },
+      },
+      resumeGuidance: {
+        title: 'Resume this concept session',
+        message: 'Re-enter through the concept anchor without inventing a question id.',
+        summary: 'Carry forward the compacted recap before opening another full thread.',
+        questionless: true,
+        anchorKind: 'concept',
+        currentQuestionId: null,
+        currentQuestionTypeId: '9709.trigonometry.identities',
+        parentSessionId: 'sess-parent-1',
+        handoffKind: 'explicit_new_session',
+      },
+    },
+  };
+}
+
 describe('learning runtime session view model', () => {
   test('preserves questionless runtime state without placeholder ids', () => {
     const vm = buildSessionViewModel(createQuestionlessSessionPayload());
@@ -201,6 +263,39 @@ describe('learning runtime session view model', () => {
       fallbackReasonCode: 'non_pilot_question_type',
       learningSignalPosture: 'conservative_fallback',
     }));
+  });
+
+  test('surfaces lineage handoff metadata and questionless resume guidance for continuity flows', () => {
+    const vm = buildSessionViewModel(createContinuitySessionPayload());
+
+    expect(vm.session.lineage).toEqual(expect.objectContaining({
+      parentSessionId: 'sess-parent-1',
+      handoffKind: 'explicit_new_session',
+    }));
+    expect(vm.session.handoff).toEqual(expect.objectContaining({
+      supported: true,
+      suggestedHandoff: expect.objectContaining({
+        shouldHandoff: true,
+        handoffKind: 'internal_compaction',
+        reasonCode: 'session_turn_limit',
+      }),
+    }));
+    expect(vm.continuity).toEqual(expect.objectContaining({
+      showContinuity: true,
+      resumeGuidance: expect.objectContaining({
+        questionless: true,
+        currentQuestionId: null,
+        currentQuestionTypeId: '9709.trigonometry.identities',
+      }),
+      suggestedHandoff: expect.objectContaining({
+        shouldHandoff: true,
+        handoffKind: 'internal_compaction',
+      }),
+      lineage: expect.objectContaining({
+        parentSessionId: 'sess-parent-1',
+      }),
+    }));
+    expect(vm.timeline.some((entry) => entry.kind === 'question')).toBe(false);
   });
 
   test('builds launch payloads that keep concept sessions questionless', () => {

@@ -59,6 +59,42 @@ function createSessionEnvelope() {
         parent_session_id: null,
         handoff_kind: null,
       },
+      lineage: {
+        parent_session_id: 'sess-parent-1',
+        handoff_kind: 'explicit_new_session',
+        summary_snapshot: {
+          recap: 'Carry the recap into a fresh session.',
+        },
+      },
+      handoff: {
+        supported: true,
+        lineage: {
+          parent_session_id: 'sess-parent-1',
+          handoff_kind: 'explicit_new_session',
+          summary_snapshot: {
+            recap: 'Carry the recap into a fresh session.',
+          },
+        },
+        suggested_handoff: {
+          supported: true,
+          should_handoff: true,
+          handoff_kind: 'internal_compaction',
+          reason_code: 'session_turn_limit',
+          message: 'Compact the current runtime state before the next return.',
+          questionless: true,
+        },
+      },
+      resume_guidance: {
+        title: 'Resume this session',
+        message: 'Re-enter through the review-task anchor without inventing a question.',
+        summary: 'Carry the recap into a fresh session.',
+        questionless: true,
+        anchor_kind: 'review_task',
+        current_question_id: null,
+        current_question_type_id: '9709.trigonometry.equations',
+        parent_session_id: 'sess-parent-1',
+        handoff_kind: 'explicit_new_session',
+      },
       open_questions: [],
       key_artifact_refs: [],
       misconceptions_in_focus: [],
@@ -195,6 +231,22 @@ describe('learning runtime api', () => {
     expect(payload.canonicalHomeContext.topicRef.topicPath).toBe('9709/trigonometry/equations');
     expect(payload.session.currentQuestion).toBeNull();
     expect(payload.session.currentQuestionTypeId).toBe('9709.trigonometry.equations');
+    expect(payload.session.lineage).toEqual(expect.objectContaining({
+      parentSessionId: 'sess-parent-1',
+      handoffKind: 'explicit_new_session',
+    }));
+    expect(payload.session.handoff).toEqual(expect.objectContaining({
+      supported: true,
+      suggestedHandoff: expect.objectContaining({
+        shouldHandoff: true,
+        handoffKind: 'internal_compaction',
+      }),
+    }));
+    expect(payload.session.resumeGuidance).toEqual(expect.objectContaining({
+      questionless: true,
+      parentSessionId: 'sess-parent-1',
+      handoffKind: 'explicit_new_session',
+    }));
   });
 
   test('normalizes fallback posture and typed refs from ask responses', () => {

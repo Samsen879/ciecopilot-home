@@ -51,6 +51,60 @@ function createQuestionlessSessionPayload() {
   };
 }
 
+function createContinuitySessionPayload() {
+  const payload = createQuestionlessSessionPayload();
+
+  return {
+    ...payload,
+    session: {
+      ...payload.session,
+      sessionId: 'sess-handoff-1',
+      state: 'handoff_suggested',
+      lineage: {
+        parentSessionId: 'sess-parent-1',
+        handoffKind: 'explicit_new_session',
+        summarySnapshot: {
+          recap: 'Carry forward the compacted recap before opening another full thread.',
+        },
+      },
+      handoff: {
+        supported: true,
+        suggestedHandoff: {
+          shouldHandoff: true,
+          handoffKind: 'internal_compaction',
+          reasonCode: 'session_turn_limit',
+          message: 'Compact the runtime context before the next return.',
+          questionless: true,
+        },
+        internalCompaction: {
+          supported: true,
+          shouldHandoff: true,
+          summarySnapshot: {
+            recap: 'Carry forward the compacted recap before opening another full thread.',
+          },
+        },
+        explicitNewSession: {
+          supported: true,
+          carryForwardSummary: {
+            recap: 'Carry forward the compacted recap before opening another full thread.',
+          },
+        },
+      },
+      resumeGuidance: {
+        title: 'Resume this concept session',
+        message: 'Re-enter through the concept anchor without inventing a question id.',
+        summary: 'Carry forward the compacted recap before opening another full thread.',
+        questionless: true,
+        anchorKind: 'concept',
+        currentQuestionId: null,
+        currentQuestionTypeId: '9709.trigonometry.identities',
+        parentSessionId: 'sess-parent-1',
+        handoffKind: 'explicit_new_session',
+      },
+    },
+  };
+}
+
 describe('LearningSessionShell', () => {
   test('renders questionless sessions without placeholder question chrome', () => {
     const questionlessSessionVm = buildSessionViewModel(createQuestionlessSessionPayload());
@@ -140,5 +194,20 @@ describe('LearningSessionShell', () => {
     expect(html).toContain('Start with the double-angle identity for sine.');
     expect(html).toContain('Sending follow-up...');
     expect(html).toContain('Session update is still in flight.');
+  });
+
+  test('renders resume guidance and handoff suggestions for questionless continuity states', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(LearningSessionShell, {
+        viewModel: buildSessionViewModel(createContinuitySessionPayload()),
+      }),
+    );
+
+    expect(html).toContain('Resume this concept session');
+    expect(html).toContain('Re-enter through the concept anchor without inventing a question id.');
+    expect(html).toContain('sess-parent-1');
+    expect(html).toContain('internal compaction');
+    expect(html).toContain('session_turn_limit');
+    expect(html).not.toContain('Current question');
   });
 });

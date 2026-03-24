@@ -29,6 +29,28 @@ function buildInsertRow(input = {}) {
   };
 }
 
+function buildUpdateRow(patch = {}) {
+  const row = {};
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'due_at')) {
+    row.due_at = patch.due_at ?? null;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'completion_evidence')) {
+    row.completion_evidence = normalizeObject(patch.completion_evidence);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'status')) {
+    row.status = patch.status;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'updated_at')) {
+    row.updated_at = patch.updated_at;
+  }
+
+  return row;
+}
+
 async function maybeSingle(promise, message) {
   const { data, error } = await promise;
 
@@ -41,10 +63,44 @@ async function maybeSingle(promise, message) {
 
 export function createReviewTaskRepository(client) {
   return {
+    async getReviewTaskById(reviewTaskId) {
+      return getReviewTaskById(client, reviewTaskId);
+    },
+
+    async getReviewTaskProjectionById(reviewTaskId) {
+      return getReviewTaskProjectionById(client, reviewTaskId);
+    },
+
     async insertReviewTask(input) {
       return insertReviewTask(client, input);
     },
+
+    async updateReviewTask(reviewTaskId, patch) {
+      return updateReviewTask(client, reviewTaskId, patch);
+    },
   };
+}
+
+export async function getReviewTaskById(client, reviewTaskId) {
+  return maybeSingle(
+    client
+      .from('learning_review_tasks')
+      .select('*')
+      .eq('review_task_id', reviewTaskId)
+      .maybeSingle(),
+    'Failed to load learning review task',
+  );
+}
+
+export async function getReviewTaskProjectionById(client, reviewTaskId) {
+  return maybeSingle(
+    client
+      .from('learning_review_queue_projection')
+      .select('*')
+      .eq('review_task_id', reviewTaskId)
+      .maybeSingle(),
+    'Failed to load learning review task projection',
+  );
 }
 
 export async function insertReviewTask(client, input = {}) {
@@ -57,5 +113,19 @@ export async function insertReviewTask(client, input = {}) {
       .select('*')
       .single(),
     'Failed to insert learning review task',
+  );
+}
+
+export async function updateReviewTask(client, reviewTaskId, patch = {}) {
+  const row = buildUpdateRow(patch);
+
+  return maybeSingle(
+    client
+      .from('learning_review_tasks')
+      .update(row)
+      .eq('review_task_id', reviewTaskId)
+      .select('*')
+      .single(),
+    'Failed to update learning review task',
   );
 }

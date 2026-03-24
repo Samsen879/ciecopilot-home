@@ -1,9 +1,249 @@
 import { createReviewTaskRepository } from '../repositories/review-task-repository.js';
+import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
+import { LearningHttpError } from '../http/learning-http.js';
 
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+const REVIEW_TASK_INTENTS = new Set(['complete', 'reschedule', 'snooze', 'reopen']);
+const REVIEW_TASK_COMPLETION_OUTCOMES = new Set(['completed', 'partial']);
+const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
+const REOPENABLE_REVIEW_TASK_STATUSES = new Set(['completed', 'partial']);
 
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
+}
+
+function normalizeString(value) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const normalized = String(value).trim();
+  return normalized || null;
+}
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function hasTypedRef(value) {
+  if (!isPlainObject(value) || !normalizeString(value.kind)) {
+    return false;
+  }
+
+  return Object.entries(value).some(([key, refValue]) =>
+    key !== 'kind' && normalizeString(refValue));
+}
+
+function hasCompletionEvidenceSignal(evidence) {
+  if (!isPlainObject(evidence)) {
+    return false;
+  }
+
+  if (normalizeString(evidence.summary) || normalizeString(evidence.note)) {
+    return true;
+  }
+
+  if (hasTypedRef(evidence.artifact_ref) || hasTypedRef(evidence.attempt_ref) || hasTypedRef(evidence.mark_run_ref)) {
+    return true;
+  }
+
+  if (Array.isArray(evidence.evidence_refs) && evidence.evidence_refs.some(hasTypedRef)) {
+    return true;
+  }
+
+  return false;
+}
+
+function clone(value) {
+  return value ? JSON.parse(JSON.stringify(value)) : value;
+}
+
+function buildInvalidPayload(message, details) {
+  return new LearningHttpError(LEARNING_ERROR_CODES.INVALID_PAYLOAD, message, {
+    status: 400,
+    details,
+  });
+}
+
+function buildReviewTaskNotFound() {
+  return new LearningHttpError(
+    LEARNING_ERROR_CODES.REVIEW_TASK_NOT_FOUND,
+    'Review task not found.',
+    {
+      status: 404,
+    },
+  );
+}
+
+function buildReviewTaskConflict(message, details) {
+  return new LearningHttpError(
+    LEARNING_ERROR_CODES.REVIEW_TASK_STATE_CONFLICT,
+    message,
+    {
+      status: 409,
+      details,
+    },
+  );
+}
+
+function buildAuthForbidden(details) {
+  return new LearningHttpError(
+    LEARNING_ERROR_CODES.AUTH_FORBIDDEN,
+    'Authenticated user cannot access this review task.',
+    {
+      status: 403,
+      details,
+    },
+  );
+}
+
+function normalizeIsoTimestamp(value, field) {
+  const normalized = normalizeString(value);
+  if (!normalized) {
+    throw buildInvalidPayload(`${field} is required.`, { field });
+  }
+
+  const parsed = new Date(normalized);
+  if (Number.isNaN(parsed.getTime())) {
+    throw buildInvalidPayload(`${field} must be a valid ISO-8601 timestamp.`, { field });
+  }
+
+  return parsed.toISOString();
+}
+
+function normalizeCompletionEvidence(input = {}) {
+  if (!isPlainObject(input) || !hasCompletionEvidenceSignal(input)) {
+    throw buildInvalidPayload(
+      'completion_evidence must include summary, note, or typed reference evidence.',
+      { field: 'completion_evidence' },
+    );
+  }
+
+  return clone(input);
+}
+
+function validatePatchInput({
+  reviewTaskId,
+  intent,
+  completionOutcome,
+  completionEvidence,
+  dueAt,
+} = {}) {
+  if (!normalizeString(reviewTaskId)) {
+    throw buildInvalidPayload('review_task_id is required.', { field: 'review_task_id' });
+  }
+
+  if (!REVIEW_TASK_INTENTS.has(intent)) {
+    throw buildInvalidPayload('Review-task lifecycle writes must use explicit intents.', {
+      field: 'intent',
+    });
+  }
+
+  if (intent === 'complete' && !REVIEW_TASK_COMPLETION_OUTCOMES.has(completionOutcome)) {
+    throw buildInvalidPayload('completion_outcome must be completed or partial.', {
+      field: 'completion_outcome',
+    });
+  }
+
+  if (intent === 'complete') {
+    normalizeCompletionEvidence(completionEvidence);
+  }
+
+  if ((intent === 'reschedule' || intent === 'snooze') && !normalizeString(dueAt)) {
+    throw buildInvalidPayload('due_at is required for schedule changes.', {
+      field: 'due_at',
+    });
+  }
+}
+
+function buildCompletionEvidence(input, completionOutcome, timestamp) {
+  return {
+    ...normalizeCompletionEvidence(input),
+    outcome: completionOutcome,
+    recorded_at: timestamp,
+  };
+}
+
+function buildSchedulePatch(reviewTask, intent, dueAt, timestamp) {
+  if (!ACTIVE_REVIEW_TASK_STATUSES.has(reviewTask.status)) {
+    throw buildReviewTaskConflict('Only open or partial review tasks can change schedule.', {
+      review_task_id: reviewTask.review_task_id,
+      status: reviewTask.status,
+      intent,
+    });
+  }
+
+  const normalizedDueAt = normalizeIsoTimestamp(dueAt, 'due_at');
+  const nextDueAtMs = new Date(normalizedDueAt).getTime();
+  const nowMs = new Date(timestamp).getTime();
+
+  if (nextDueAtMs <= nowMs) {
+    throw buildInvalidPayload('due_at must be in the future.', {
+      field: 'due_at',
+    });
+  }
+
+  if (intent === 'snooze') {
+    const currentDueAtMs = normalizeString(reviewTask.due_at)
+      ? new Date(reviewTask.due_at).getTime()
+      : null;
+    const minimumDueAtMs = currentDueAtMs && currentDueAtMs > nowMs
+      ? currentDueAtMs
+      : nowMs;
+
+    if (nextDueAtMs <= minimumDueAtMs) {
+      throw buildInvalidPayload('snooze must move due_at later than the current schedule.', {
+        field: 'due_at',
+      });
+    }
+  }
+
+  return {
+    due_at: normalizedDueAt,
+    updated_at: timestamp,
+  };
+}
+
+function buildReopenPatch(reviewTask, timestamp) {
+  if (!REOPENABLE_REVIEW_TASK_STATUSES.has(reviewTask.status)) {
+    throw buildReviewTaskConflict('Only completed or partial review tasks can be reopened.', {
+      review_task_id: reviewTask.review_task_id,
+      status: reviewTask.status,
+    });
+  }
+
+  const existingEvidence = isPlainObject(reviewTask.completion_evidence)
+    ? clone(reviewTask.completion_evidence)
+    : {};
+
+  return {
+    status: 'open',
+    completion_evidence: {
+      ...existingEvidence,
+      reopened_at: timestamp,
+      reopened_from_status: reviewTask.status,
+    },
+    updated_at: timestamp,
+  };
+}
+
+function buildCompletionPatch(reviewTask, completionOutcome, completionEvidence, timestamp) {
+  if (!ACTIVE_REVIEW_TASK_STATUSES.has(reviewTask.status)) {
+    throw buildReviewTaskConflict('Only open or partial review tasks can be completed.', {
+      review_task_id: reviewTask.review_task_id,
+      status: reviewTask.status,
+    });
+  }
+
+  return {
+    status: completionOutcome,
+    completion_evidence: buildCompletionEvidence(
+      completionEvidence,
+      completionOutcome,
+      timestamp,
+    ),
+    updated_at: timestamp,
+  };
 }
 
 function pickTargetKind({ targetQuestionTypeId, familyId } = {}) {
@@ -82,6 +322,63 @@ export function createReviewTaskService({
         },
       ];
     },
+
+    async patchReviewTask({
+      userId,
+      reviewTaskId,
+      intent,
+      completionOutcome = null,
+      completionEvidence = null,
+      dueAt = null,
+    } = {}) {
+      validatePatchInput({
+        reviewTaskId,
+        intent,
+        completionOutcome,
+        completionEvidence,
+        dueAt,
+      });
+
+      if (!reviewTaskRepository?.getReviewTaskById || !reviewTaskRepository?.updateReviewTask) {
+        throw new Error('reviewTaskRepository is required for review-task writes.');
+      }
+
+      const reviewTask = clone(await reviewTaskRepository.getReviewTaskById(reviewTaskId));
+      if (!reviewTask) {
+        throw buildReviewTaskNotFound();
+      }
+
+      if (reviewTask.user_id !== userId) {
+        throw buildAuthForbidden({
+          review_task_id: reviewTask.review_task_id,
+        });
+      }
+
+      const timestamp = now().toISOString();
+      let patch = null;
+
+      if (intent === 'complete') {
+        patch = buildCompletionPatch(
+          reviewTask,
+          completionOutcome,
+          completionEvidence,
+          timestamp,
+        );
+      } else if (intent === 'reopen') {
+        patch = buildReopenPatch(reviewTask, timestamp);
+      } else {
+        patch = buildSchedulePatch(reviewTask, intent, dueAt, timestamp);
+      }
+
+      const updated = await reviewTaskRepository.updateReviewTask(reviewTask.review_task_id, patch);
+      const projection = await reviewTaskRepository.getReviewTaskProjectionById?.(
+        reviewTask.review_task_id,
+      );
+
+      return {
+        review_task: projection || updated,
+      };
+    },
   };
 }
 
@@ -90,4 +387,12 @@ export function createDefaultReviewTaskService(client, options = {}) {
     ...options,
     reviewTaskRepository: createReviewTaskRepository(client),
   });
+}
+
+export async function patchLearningReviewTask({
+  client,
+  ...input
+} = {}) {
+  return createDefaultReviewTaskService(client, input.now ? { now: input.now } : {})
+    .patchReviewTask(input);
 }

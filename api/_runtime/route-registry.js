@@ -75,6 +75,19 @@ const ROUTES = [
     methods: ['GET', 'OPTIONS'],
   },
   {
+    module: 'learning-review-task-id',
+    pathPrefix: '/api/learning/review-tasks/:id',
+    pattern: /^\/api\/learning\/review-tasks\/[^/]+$/,
+    paramExtractor: (path) => {
+      const segments = path.split('/');
+      return { id: segments[4] || null };
+    },
+    importPath: '../learning/review-tasks/[id].js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['PATCH', 'OPTIONS'],
+  },
+  {
     module: 'learning-review-tasks',
     pathPrefix: '/api/learning/review-tasks',
     importPath: '../learning/review-tasks/index.js',

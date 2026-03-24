@@ -53,6 +53,15 @@ describe('learning route registry', () => {
       allowed: true,
     });
 
+    expect(findRoute('/api/learning/review-tasks/review-task-1', 'PATCH')).toMatchObject({
+      route: expect.objectContaining({
+        module: 'learning-review-task-id',
+        importPath: '../learning/review-tasks/[id].js',
+      }),
+      allowed: true,
+      params: { id: 'review-task-1' },
+    });
+
     expect(findRoute('/api/learning/artifacts/artifact-1', 'PATCH')).toMatchObject({
       route: expect.objectContaining({
         module: 'learning-artifact-id',
@@ -74,6 +83,7 @@ describe('learning route registry', () => {
       'learning-sessions',
       'learning-questions-import',
       'learning-workspace-topic',
+      'learning-review-task-id',
       'learning-review-tasks',
       'learning-artifact-id',
     ]);
@@ -87,6 +97,10 @@ describe('learning route registry', () => {
     const sessionAsk = findRoute('/api/learning/sessions/session-1/ask', 'GET');
     expect(sessionAsk.route?.module).toBe('learning-sessions-ask');
     expect(sessionAsk.allowed).toBe(false);
+
+    const reviewTaskPatch = findRoute('/api/learning/review-tasks/review-task-1', 'GET');
+    expect(reviewTaskPatch.route?.module).toBe('learning-review-task-id');
+    expect(reviewTaskPatch.allowed).toBe(false);
   });
 
   test('does not let the create-session route match deeper subtree paths', () => {

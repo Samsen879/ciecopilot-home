@@ -20,7 +20,7 @@ function createQuestionRegistryDb() {
               if (table === 'question_bank') {
                 return {
                   data: {
-                    question_id: 'question-1',
+                    question_id: payload.question_id || 'question-1',
                     ...payload,
                   },
                   error: null,
@@ -59,6 +59,7 @@ describe('question-registry-repository', () => {
     const db = createQuestionRegistryDb();
 
     const importedInput = {
+      question_id: 'question-fixed-1',
       subject_code: '9709',
       prompt_representation: {
         type: 'text',
@@ -114,7 +115,7 @@ describe('question-registry-repository', () => {
     expect(db.inserts[1]).toMatchObject({
       table: 'learning_question_analysis_snapshots',
       payload: {
-        question_id: 'question-1',
+        question_id: 'question-fixed-1',
         primary_topic_id: 'topic-1',
         secondary_topic_ids: ['topic-2'],
         family_id: '9709.trigonometry_manipulation_equations',
@@ -136,12 +137,12 @@ describe('question-registry-repository', () => {
             classification_snapshot_id: 'snapshot-1',
           },
         },
-        filters: [{ column: 'question_id', value: 'question-1' }],
+        filters: [{ column: 'question_id', value: 'question-fixed-1' }],
       },
     ]);
 
     expect(result).toMatchObject({
-      question_id: 'question-1',
+      question_id: 'question-fixed-1',
       source_kind: 'imported_question',
       primary_question_type_id: '9709.trigonometry.equations',
       classification_snapshot_ref: {

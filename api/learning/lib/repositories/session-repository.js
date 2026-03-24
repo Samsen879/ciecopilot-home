@@ -38,6 +38,7 @@ export async function insertSession(client, input) {
     handoff_kind: input.handoff_kind ?? null,
   });
   const sessionRow = {
+    session_id: input.session_id ?? undefined,
     user_id: input.user_id,
     subject_code: input.subject_code,
     session_goal: input.session_goal ?? null,
@@ -54,6 +55,10 @@ export async function insertSession(client, input) {
     misconceptions_in_focus: input.misconceptions_in_focus ?? [],
     lineage_ref,
   };
+
+  if (typeof sessionRow.session_id === 'undefined') {
+    delete sessionRow.session_id;
+  }
 
   const { data: insertedSession, error: sessionError } = await client
     .from('learning_sessions')

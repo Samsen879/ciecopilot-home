@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import http from 'node:http';
 import request from 'supertest';
+import { buildIdempotencyRequestFingerprint } from '../lib/repositories/request-idempotency-repository.js';
 
 process.env.NODE_ENV = 'test';
 process.env.AUTH_LOCAL_TEST_MODE = 'true';
@@ -12,6 +13,8 @@ process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-key';
 
 const clientState = {
   calls: [],
+  idempotencyRows: new Map(),
+  nextIdempotencyId: 1,
   nextQuestionId: 1,
   nextSnapshotId: 1,
   nextSessionId: 1,
@@ -131,6 +134,8 @@ function seedWorkspaceProjections() {
 
 function resetClientState() {
   clientState.calls = [];
+  clientState.idempotencyRows = new Map();
+  clientState.nextIdempotencyId = 1;
   clientState.nextQuestionId = 1;
   clientState.nextSnapshotId = 1;
   clientState.nextSessionId = 1;
@@ -146,6 +151,14 @@ function resetClientState() {
 
 function findFilter(query, field) {
   return query.filters.find((filter) => filter.field === field)?.value ?? null;
+}
+
+function buildIdempotencyKey(userId, requestPath, idempotencyKey) {
+  return `${userId}:${requestPath}:${idempotencyKey}`;
+}
+
+function createNowTimestamp() {
+  return new Date().toISOString();
 }
 
 function createSessionRow(payload) {
@@ -196,6 +209,71 @@ function resolveQuery(query) {
     }
 
     return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_request_idempotency') {
+    const userId = query.operation === 'insert'
+      ? query.payload?.user_id ?? null
+      : findFilter(query, 'user_id');
+    const requestPath = query.operation === 'insert'
+      ? query.payload?.request_path ?? null
+      : findFilter(query, 'request_path');
+    const idempotencyKey = query.operation === 'insert'
+      ? query.payload?.idempotency_key ?? null
+      : findFilter(query, 'idempotency_key');
+    const rowKey = buildIdempotencyKey(userId, requestPath, idempotencyKey);
+
+    if (query.operation === 'insert') {
+      if (clientState.idempotencyRows.has(rowKey)) {
+        return {
+          data: null,
+          error: {
+            code: '23505',
+            message: 'duplicate key value violates unique constraint',
+          },
+        };
+      }
+
+      const now = createNowTimestamp();
+      const row = {
+        request_idempotency_id: `idem-${clientState.nextIdempotencyId++}`,
+        created_at: now,
+        updated_at: now,
+        completed_at: null,
+        ...query.payload,
+      };
+      clientState.idempotencyRows.set(
+        buildIdempotencyKey(row.user_id, row.request_path, row.idempotency_key),
+        row,
+      );
+      return { data: row, error: null };
+    }
+
+    if (query.operation === 'select') {
+      return {
+        data: clientState.idempotencyRows.get(rowKey) || null,
+        error: null,
+      };
+    }
+
+    if (query.operation === 'update') {
+      const current = clientState.idempotencyRows.get(rowKey) || null;
+      const now = createNowTimestamp();
+      const next = current ? {
+        ...current,
+        ...query.payload,
+        updated_at: now,
+      } : null;
+      if (next) {
+        clientState.idempotencyRows.set(rowKey, next);
+      }
+      return { data: next, error: null };
+    }
+
+    if (query.operation === 'delete') {
+      clientState.idempotencyRows.delete(rowKey);
+      return { data: null, error: null };
+    }
   }
 
   if (query.table === 'question_bank' && query.operation === 'insert') {
@@ -314,6 +392,11 @@ class QueryBuilder {
     return this;
   }
 
+  delete() {
+    this.operation = 'delete';
+    return this;
+  }
+
   eq(field, value) {
     this.filters.push({ field, value });
     return this;
@@ -411,6 +494,34 @@ function buildTrigIdentityInput(overrides = {}) {
       uncertainty_validated: true,
       variant_tags: ['paper:p1', 'structure:identity_rewrite'],
       ...classification,
+    },
+  };
+}
+
+function buildNormalizedQuestionImportPayload(overrides = {}) {
+  const input = buildTrigIdentityInput(overrides);
+  const classification = input.classification || {};
+
+  return {
+    source_kind: 'imported_question',
+    subject_code: input.subject_code,
+    prompt_representation: input.prompt_representation,
+    paper_scope: input.paper_scope ?? null,
+    provenance_summary: input.provenance_summary ?? {},
+    classification: {
+      primary_topic_id: classification.primary_topic_id ?? input.primary_topic_id ?? null,
+      secondary_topic_ids: classification.secondary_topic_ids ?? input.secondary_topic_ids ?? [],
+      family_id: classification.family_id ?? input.family_id ?? null,
+      primary_question_type_id:
+        classification.primary_question_type_id ?? input.primary_question_type_id ?? null,
+      secondary_question_type_ids:
+        classification.secondary_question_type_ids ?? input.secondary_question_type_ids ?? [],
+      variant_tags: classification.variant_tags ?? input.variant_tags ?? [],
+      classification_source: classification.classification_source ?? 'imported_question',
+      classification_confidence: classification.classification_confidence ?? null,
+      candidate_rubric_refs: classification.candidate_rubric_refs ?? [],
+      uncertainty_validated: classification.uncertainty_validated ?? false,
+      uncertainty_posture: classification.uncertainty_posture ?? null,
     },
   };
 }
@@ -632,7 +743,7 @@ describe('question import service', () => {
     });
   });
 
-  test('same idempotency key allows only one writer under concurrent replay', async () => {
+  test('same idempotency key allows only one writer under concurrent durable replay', async () => {
     const gate = createDeferred();
     clientState.questionInsertGate = gate;
 
@@ -659,6 +770,7 @@ describe('question import service', () => {
       (call) => call.table === 'question_bank' && call.operation === 'insert',
     );
     expect(questionInsertCallsBeforeRelease).toHaveLength(1);
+    expect(clientState.idempotencyRows.size).toBe(1);
 
     gate.resolve();
     const [first, second] = await Promise.all([firstImport, secondImport]);
@@ -675,6 +787,74 @@ describe('question import service', () => {
           call.table === 'learning_question_analysis_snapshots' && call.operation === 'insert',
       ),
     ).toHaveLength(1);
+    expect(
+      clientState.calls.some(
+        (call) => call.table === 'learning_request_idempotency' && call.operation === 'update',
+      ),
+    ).toBe(true);
+  });
+
+  test('question import recovers a pending durable reservation when the reserved question already exists', async () => {
+    clientState.questions.set('question-recovered-1', {
+      question_id: 'question-recovered-1',
+      source_kind: 'imported_question',
+      subject_code: '9709',
+      paper_scope: null,
+      primary_topic_id: null,
+      secondary_topic_ids: [],
+      family_id: '9709.trigonometry_manipulation_equations',
+      primary_question_type_id: '9709.trigonometry.identities',
+      secondary_question_type_ids: [],
+      variant_tags: ['paper:p1', 'structure:identity_rewrite'],
+      release_scope_status: 'released_scoring',
+      prompt_representation: {
+        type: 'text',
+        value: 'Recovered question',
+      },
+      provenance_summary: {
+        import_source: 'manual_paste',
+      },
+      classification_snapshot_ref: {
+        kind: 'classification_snapshot',
+        classification_snapshot_id: 'snapshot-recovered-1',
+      },
+    });
+    clientState.idempotencyRows.set(
+      buildIdempotencyKey('student-1', '/api/learning/questions/import', 'import-recover-1'),
+      {
+        request_idempotency_id: 'idem-import-recover-1',
+        user_id: 'student-1',
+        request_path: '/api/learning/questions/import',
+        idempotency_key: 'import-recover-1',
+        request_kind: 'import_learning_question',
+        request_fingerprint: buildIdempotencyRequestFingerprint(
+          buildNormalizedQuestionImportPayload(),
+        ),
+        request_payload: buildNormalizedQuestionImportPayload(),
+        status: 'pending',
+        resource_ref: {
+          kind: 'question',
+          question_id: 'question-recovered-1',
+        },
+        response_payload: null,
+        created_at: '2026-03-22T08:50:00.000Z',
+        updated_at: '2026-03-22T08:50:00.000Z',
+        completed_at: null,
+      },
+    );
+
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildTrigIdentityInput(),
+      idempotencyKey: 'import-recover-1',
+    });
+
+    expect(result.question.question_id).toBe('question-recovered-1');
+    expect(
+      clientState.calls.filter(
+        (call) => call.table === 'question_bank' && call.operation === 'insert',
+      ),
+    ).toHaveLength(0);
   });
 });
 

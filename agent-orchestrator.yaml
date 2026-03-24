@@ -26,6 +26,12 @@ projects:
     orchestratorRules: |
       Treat live GitHub PR, CI, and review state as canonical whenever AO lifecycle metadata disagrees with GitHub.
       Before acting on a stale lifecycle state, reconcile with `ao status -p ciecopilot-home --json`, `gh pr checks`, `gh pr view --json mergeable,reviewDecision,isDraft,url`, and `ao review-check ciecopilot-home --dry-run`.
+      For a known PR, prefer repo-local PR-scoped reconciliation via `node scripts/ao-reconcile.js --pr <number> --json --strict` before acting on stale AO lifecycle signals.
+      After reconciliation, use `node scripts/ao-doctor.js --pr <number>` or `node scripts/ao-doctor.js` when local git/worktree or AO-artifact continuity diagnosis is needed.
+      After reconciliation and doctor, use `node scripts/ao-lifecycle.js --pr <number> --trigger <trigger>` when deterministic continue vs restore vs successor reasoning is needed, or when `approved_and_green` should be evaluated for explicit human notification.
+      Treat repo-local doctor output as diagnose-only. It does not replace reconciliation truth and it does not grant release or repair authority.
+      Treat repo-local lifecycle output as decide-only. It does not execute worker restoration, worker handoff, or merge actions.
+      Use project-scoped reconciliation only for operator inspection; it is not the authoritative release gate for phase 1.
       Keep worker sessions alive after PR creation while the PR remains open so lifecycle reactions can route CI failures, human review comments, and automated review findings back to the same worker.
       Do not kill a worker session just because it has opened a PR.
       Prefer reconciling or continuing the existing worker when PR ownership is still clear.
@@ -77,22 +83,22 @@ reactions:
     auto: true
     action: send-to-orchestrator
     priority: action
-    message: "PR is approved and green. Reconcile live GitHub state with `gh pr checks`, `gh pr view --json mergeable,reviewDecision,isDraft,url`, and `ao review-check ciecopilot-home --dry-run`. If the PR is truly release-ready, notify the human and preserve ownership continuity. Do not merge directly."
+    message: "PR is approved and green. Reconcile live GitHub state with `gh pr checks`, `gh pr view --json mergeable,reviewDecision,isDraft,url`, and `ao review-check ciecopilot-home --dry-run`. Run `node scripts/ao-lifecycle.js --pr <number> --trigger approved_and_green` to classify the next step. If the PR is truly release-ready, notify the human and preserve ownership continuity. Do not merge directly."
   agent-stuck:
     auto: true
     threshold: 10m
     action: send-to-orchestrator
-    message: "A worker appears stuck. Reconcile with `ao status -p ciecopilot-home --json`, inspect the worker's live PR, CI, and review state on GitHub, and then decide whether to continue the current worker or hand off to a successor worker."
+    message: "A worker appears stuck. Reconcile with `ao status -p ciecopilot-home --json`, inspect the worker's live PR, CI, and review state on GitHub, then run `node scripts/ao-lifecycle.js --pr <number> --trigger agent_stuck` when the PR is known to decide whether to continue the current worker, restore it, or hand off to a successor."
     priority: urgent
   agent-needs-input:
     auto: true
     action: send-to-orchestrator
-    message: "A worker requested input. Reconcile AO and live GitHub state first, inspect the actual blocker, and resolve it autonomously when possible; escalate to a human only if judgment or environment intervention is required."
+    message: "A worker requested input. Reconcile AO and live GitHub state first, inspect the actual blocker, and run `node scripts/ao-lifecycle.js --pr <number> --trigger agent_needs_input` when the PR is known to classify whether autonomy can continue or whether a human gate is required."
     priority: urgent
   agent-exited:
     auto: true
     action: send-to-orchestrator
-    message: "A worker exited unexpectedly. Reconcile with `ao status -p ciecopilot-home --json`, inspect the task's live PR, CI, and review state on GitHub, and decide whether to restore the worker or continue with a successor worker."
+    message: "A worker exited unexpectedly. Reconcile with `ao status -p ciecopilot-home --json`, inspect the task's live PR, CI, and review state on GitHub, then run `node scripts/ao-lifecycle.js --pr <number> --trigger agent_exited` when the PR is known to decide whether to restore the worker or continue with a successor worker."
     priority: urgent
   agent-idle:
     auto: false

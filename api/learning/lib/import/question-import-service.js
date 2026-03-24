@@ -1,13 +1,24 @@
+import { randomUUID } from 'node:crypto';
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { resolveReleasedScoringPosture } from '../contracts/released-scope.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
   getCanonicalQuestionType,
+  getQuestionById,
   insertImportedQuestion,
 } from '../repositories/question-registry-repository.js';
+import {
+  deleteLearningRequestIdempotencyReservation,
+  finalizeLearningRequestIdempotency,
+  getLearningRequestIdempotency,
+  reserveLearningRequestIdempotency,
+  setLearningRequestIdempotencyResourceRef,
+} from '../repositories/request-idempotency-repository.js';
 import { validateQuestionImportInput } from '../validators/question-import-validator.js';
 
-const IDEMPOTENT_QUESTION_IMPORTS = new Map();
+const IDEMPOTENCY_POLL_ATTEMPTS = 10;
+const IDEMPOTENCY_POLL_INTERVAL_MS = 250;
+const IDEMPOTENCY_ABANDONED_AGE_MS = 5 * 60 * 1000;
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -28,34 +39,6 @@ function cloneJson(value) {
   }
 
   return JSON.parse(JSON.stringify(value));
-}
-
-function canonicalizeJson(value) {
-  if (Array.isArray(value)) {
-    return value.map((entry) => canonicalizeJson(entry));
-  }
-
-  if (isPlainObject(value)) {
-    return Object.keys(value)
-      .sort()
-      .reduce((acc, key) => {
-        acc[key] = canonicalizeJson(value[key]);
-        return acc;
-      }, {});
-  }
-
-  return value ?? null;
-}
-
-function createDeferred() {
-  let resolve;
-  let reject;
-  const promise = new Promise((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-  promise.catch(() => {});
-  return { promise, resolve, reject };
 }
 
 function normalizeStringArray(value) {
@@ -147,22 +130,6 @@ function mergeCanonicalClassification(classification, canonicalQuestionType) {
   };
 }
 
-function idempotencyKeyForQuestionImport(userId, requestPath, headerValue) {
-  const normalizedUserId = normalizeNullableString(userId);
-  const normalizedPath = normalizeNullableString(requestPath) || '/api/learning/questions/import';
-  const normalizedHeaderValue = normalizeNullableString(headerValue);
-
-  if (!normalizedUserId || !normalizedHeaderValue) {
-    return null;
-  }
-
-  return `${normalizedUserId}:${normalizedPath}:${normalizedHeaderValue}`;
-}
-
-function normalizedIdempotencyPayload(payload) {
-  return JSON.stringify(canonicalizeJson(payload));
-}
-
 function createIdempotencyConflictError() {
   return new LearningHttpError(
     LEARNING_ERROR_CODES.IDEMPOTENCY_CONFLICT,
@@ -170,93 +137,182 @@ function createIdempotencyConflictError() {
   );
 }
 
-async function maybeReplayQuestionImport(cacheKey, normalizedPayload) {
-  if (!cacheKey) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isPendingReservationAbandoned(row) {
+  if (row?.status !== 'pending') {
+    return false;
+  }
+
+  const createdAt = Date.parse(row.created_at || '');
+  if (!Number.isFinite(createdAt)) {
+    return false;
+  }
+
+  return (Date.now() - createdAt) >= IDEMPOTENCY_ABANDONED_AGE_MS;
+}
+
+async function buildQuestionImportResponse(client, {
+  question,
+  requestPayload,
+} = {}) {
+  const requestClassification = isPlainObject(requestPayload?.classification)
+    ? requestPayload.classification
+    : {};
+  const canonicalQuestionType = await getCanonicalQuestionType(client, {
+    subjectCode: question?.subject_code ?? requestPayload?.subject_code ?? null,
+    questionTypeId:
+      question?.primary_question_type_id ?? requestClassification.primary_question_type_id ?? null,
+  });
+  const classification = mergeCanonicalClassification(
+    requestClassification,
+    canonicalQuestionType,
+  );
+  const scoringScopePosture = resolveReleasedScoringPosture({
+    questionTypeId:
+      question?.primary_question_type_id ?? classification.primary_question_type_id ?? null,
+    questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
+    candidateRubricRefs: classification.candidate_rubric_refs,
+    uncertaintyValidated: classification.uncertainty_validated,
+    uncertaintyPosture: classification.uncertainty_posture,
+    classificationConfidence: classification.classification_confidence,
+  });
+
+  return {
+    question,
+    scoring_scope_posture: scoringScopePosture,
+  };
+}
+
+async function maybeRecoverQuestionImportResponse(client, { row } = {}) {
+  const questionId = row?.resource_ref?.kind === 'question'
+    ? normalizeNullableString(row.resource_ref.question_id)
+    : null;
+
+  if (!questionId) {
     return null;
   }
 
-  while (true) {
-    const cached = IDEMPOTENT_QUESTION_IMPORTS.get(cacheKey);
-    if (!cached) {
-      return null;
-    }
-
-    if (cached.normalizedPayload !== normalizedPayload) {
-      throw createIdempotencyConflictError();
-    }
-
-    if (cached.state === 'pending') {
-      try {
-        const response = await cached.deferred.promise;
-        return cloneJson(response);
-      } catch (error) {
-        const current = IDEMPOTENT_QUESTION_IMPORTS.get(cacheKey);
-        if (current === cached) {
-          IDEMPOTENT_QUESTION_IMPORTS.delete(cacheKey);
-        }
-        throw error;
-      }
-    }
-
-    return cloneJson(cached.response);
+  const question = await getQuestionById(client, { questionId });
+  if (!question) {
+    return null;
   }
+
+  return buildQuestionImportResponse(client, {
+    question,
+    requestPayload: row.request_payload ?? {},
+  });
 }
 
-function reserveQuestionImport(cacheKey, normalizedPayload) {
-  if (!cacheKey) {
-    return { reservation: null, replay: null };
-  }
+async function resolveQuestionImportReplay(client, {
+  userId,
+  requestPath,
+  idempotencyKey,
+  row,
+} = {}) {
+  let current = row;
 
-  const existing = IDEMPOTENT_QUESTION_IMPORTS.get(cacheKey);
-  if (existing) {
-    if (existing.normalizedPayload !== normalizedPayload) {
-      throw createIdempotencyConflictError();
+  for (let attempt = 0; attempt < IDEMPOTENCY_POLL_ATTEMPTS; attempt += 1) {
+    if (current?.status === 'completed' && isPlainObject(current.response_payload)) {
+      return cloneJson(current.response_payload);
     }
 
-    return {
-      reservation: null,
-      replay: existing,
-    };
+    const recovered = await maybeRecoverQuestionImportResponse(client, { row: current });
+    if (recovered) {
+      await finalizeLearningRequestIdempotency(client, {
+        userId,
+        requestPath,
+        idempotencyKey,
+        responsePayload: recovered,
+      });
+      return recovered;
+    }
+
+    if (attempt < IDEMPOTENCY_POLL_ATTEMPTS - 1) {
+      await sleep(IDEMPOTENCY_POLL_INTERVAL_MS);
+      current = await getLearningRequestIdempotency(client, {
+        userId,
+        requestPath,
+        idempotencyKey,
+      });
+    }
   }
 
-  const reservation = {
-    normalizedPayload,
-    state: 'pending',
-    response: null,
-    deferred: createDeferred(),
-  };
-  IDEMPOTENT_QUESTION_IMPORTS.set(cacheKey, reservation);
+  const latest = await getLearningRequestIdempotency(client, {
+    userId,
+    requestPath,
+    idempotencyKey,
+  });
+
+  if (latest?.status === 'completed' && isPlainObject(latest.response_payload)) {
+    return cloneJson(latest.response_payload);
+  }
+
+  const recovered = await maybeRecoverQuestionImportResponse(client, { row: latest });
+  if (recovered) {
+    await finalizeLearningRequestIdempotency(client, {
+      userId,
+      requestPath,
+      idempotencyKey,
+      responsePayload: recovered,
+    });
+    return recovered;
+  }
+
+  if (latest && isPendingReservationAbandoned(latest)) {
+    await deleteLearningRequestIdempotencyReservation(client, {
+      userId,
+      requestPath,
+      idempotencyKey,
+    });
+    return null;
+  }
+
+  throw new Error('Learning question import request is still pending.');
+}
+
+async function performQuestionImport(client, {
+  normalizedInput,
+  questionId = null,
+} = {}) {
+  const canonicalQuestionType = await getCanonicalQuestionType(client, {
+    subjectCode: normalizedInput.subject_code,
+    questionTypeId: normalizedInput.classification.primary_question_type_id,
+  });
+  const classification = mergeCanonicalClassification(
+    normalizedInput.classification,
+    canonicalQuestionType,
+  );
+  const scoringScopePosture = resolveReleasedScoringPosture({
+    questionTypeId: classification.primary_question_type_id,
+    questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
+    candidateRubricRefs: classification.candidate_rubric_refs,
+    uncertaintyValidated: classification.uncertainty_validated,
+    uncertaintyPosture: classification.uncertainty_posture,
+    classificationConfidence: classification.classification_confidence,
+  });
+
+  const question = await insertImportedQuestion(client, {
+    question_id: questionId,
+    source_kind: normalizedInput.source_kind,
+    subject_code: normalizedInput.subject_code,
+    prompt_representation: normalizedInput.prompt_representation,
+    paper_scope: normalizedInput.paper_scope,
+    provenance_summary: normalizedInput.provenance_summary,
+    release_scope_status: scoringScopePosture.release_scope_status,
+    classification,
+  });
+
   return {
-    reservation,
-    replay: null,
+    question,
+    scoring_scope_posture: scoringScopePosture,
   };
-}
-
-function rememberQuestionImport(cacheKey, reservation, response) {
-  if (!cacheKey || !reservation) {
-    return;
-  }
-
-  const clonedResponse = cloneJson(response);
-  reservation.state = 'fulfilled';
-  reservation.response = clonedResponse;
-  reservation.deferred.resolve(clonedResponse);
-}
-
-function releaseQuestionImportReservation(cacheKey, reservation, error) {
-  if (!cacheKey || !reservation) {
-    return;
-  }
-
-  if (IDEMPOTENT_QUESTION_IMPORTS.get(cacheKey) === reservation) {
-    IDEMPOTENT_QUESTION_IMPORTS.delete(cacheKey);
-  }
-
-  reservation.deferred.reject(error);
 }
 
 export function __resetQuestionImportIdempotencyCache() {
-  IDEMPOTENT_QUESTION_IMPORTS.clear();
+  return undefined;
 }
 
 export async function importQuestion(client, {
@@ -274,59 +330,68 @@ export async function importQuestion(client, {
   }
 
   const normalizedInput = normalizeQuestionImportBody(body);
-  const cacheKey = idempotencyKeyForQuestionImport(
-    normalizedUserId,
-    requestPath,
-    idempotencyKey,
-  );
-  const normalizedPayload = normalizedIdempotencyPayload(normalizedInput);
-  const reserved = reserveQuestionImport(cacheKey, normalizedPayload);
-  if (reserved.replay) {
-    const replay = await maybeReplayQuestionImport(cacheKey, normalizedPayload);
-    if (replay) {
-      return replay;
+  const normalizedIdempotencyKey = normalizeNullableString(idempotencyKey);
+
+  if (!normalizedIdempotencyKey) {
+    return performQuestionImport(client, {
+      normalizedInput,
+    });
+  }
+
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const reservation = await reserveLearningRequestIdempotency(client, {
+      userId: normalizedUserId,
+      requestPath,
+      idempotencyKey: normalizedIdempotencyKey,
+      requestKind: 'import_learning_question',
+      requestPayload: normalizedInput,
+    });
+
+    if (reservation.state === 'conflict') {
+      throw createIdempotencyConflictError();
     }
-  }
 
-  const reservation = reserved.reservation;
+    if (reservation.state === 'replay') {
+      const replay = await resolveQuestionImportReplay(client, {
+        userId: normalizedUserId,
+        requestPath,
+        idempotencyKey: normalizedIdempotencyKey,
+        row: reservation.row,
+      });
 
-  try {
-    const canonicalQuestionType = await getCanonicalQuestionType(client, {
-      subjectCode: normalizedInput.subject_code,
-      questionTypeId: normalizedInput.classification.primary_question_type_id,
-    });
-    const classification = mergeCanonicalClassification(
-      normalizedInput.classification,
-      canonicalQuestionType,
-    );
-    const scoringScopePosture = resolveReleasedScoringPosture({
-      questionTypeId: classification.primary_question_type_id,
-      questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
-      candidateRubricRefs: classification.candidate_rubric_refs,
-      uncertaintyValidated: classification.uncertainty_validated,
-      uncertaintyPosture: classification.uncertainty_posture,
-      classificationConfidence: classification.classification_confidence,
-    });
+      if (replay) {
+        return replay;
+      }
 
-    const question = await insertImportedQuestion(client, {
-      source_kind: normalizedInput.source_kind,
-      subject_code: normalizedInput.subject_code,
-      prompt_representation: normalizedInput.prompt_representation,
-      paper_scope: normalizedInput.paper_scope,
-      provenance_summary: normalizedInput.provenance_summary,
-      release_scope_status: scoringScopePosture.release_scope_status,
-      classification,
+      continue;
+    }
+
+    const questionId = randomUUID();
+
+    await setLearningRequestIdempotencyResourceRef(client, {
+      userId: normalizedUserId,
+      requestPath,
+      idempotencyKey: normalizedIdempotencyKey,
+      resourceRef: {
+        kind: 'question',
+        question_id: questionId,
+      },
     });
 
-    const response = {
-      question,
-      scoring_scope_posture: scoringScopePosture,
-    };
+    const response = await performQuestionImport(client, {
+      normalizedInput,
+      questionId,
+    });
 
-    rememberQuestionImport(cacheKey, reservation, response);
+    await finalizeLearningRequestIdempotency(client, {
+      userId: normalizedUserId,
+      requestPath,
+      idempotencyKey: normalizedIdempotencyKey,
+      responsePayload: response,
+    });
+
     return response;
-  } catch (error) {
-    releaseQuestionImportReservation(cacheKey, reservation, error);
-    throw error;
   }
+
+  throw new Error('Unable to reacquire abandoned question import reservation.');
 }

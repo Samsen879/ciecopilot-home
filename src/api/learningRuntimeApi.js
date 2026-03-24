@@ -272,6 +272,33 @@ export async function updateArtifact(artifactId, payload) {
   }));
 }
 
+export async function pinArtifact(artifactId) {
+  return updateArtifact(artifactId, {
+    intent: 'set_placement_status',
+    placement_status: 'pinned',
+  });
+}
+
+export async function unpinArtifact(artifactId) {
+  return updateArtifact(artifactId, {
+    intent: 'set_placement_status',
+    placement_status: 'inbox',
+  });
+}
+
+export async function markArtifactContested(artifactId) {
+  return updateArtifact(artifactId, {
+    intent: 'mark_contested',
+  });
+}
+
+export async function supersedeArtifact(artifactId, successorArtifactRef) {
+  return updateArtifact(artifactId, {
+    intent: 'attach_superseded_by',
+    successor_artifact_ref: successorArtifactRef,
+  });
+}
+
 export const learningRuntimeApi = {
   createSession,
   getSession,
@@ -279,6 +306,10 @@ export const learningRuntimeApi = {
   importQuestion,
   getWorkspace,
   listReviewTasks,
+  pinArtifact,
+  unpinArtifact,
+  markArtifactContested,
+  supersedeArtifact,
   updateArtifact,
 };
 

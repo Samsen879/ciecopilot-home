@@ -1,5 +1,6 @@
 import {
   LEARNING_RUNTIME_ROUTE_PATHS,
+  LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH,
   getAskAiEntryMode,
   getLearningPathSurfaceMode,
   getStudyHubSurfaceMode,
@@ -28,6 +29,8 @@ describe('legacy runtime entry modes', () => {
     expect(LEARNING_RUNTIME_ROUTE_PATHS).toEqual(expect.arrayContaining([
       '/learn/session/:sessionId',
       '/learn/workspace/:topicId',
+      '/learn/review-queue',
     ]));
+    expect(LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH).toBe('/learn/review-queue');
   });
 });

@@ -193,11 +193,38 @@ function createWorkspacePayload() {
           reviewTaskId: 'review-task-1',
           targetTopicId: 'topic-trig-equations',
           targetTopicPath: '9709/trigonometry/equations',
+          targetQuestionTypeId: '9709.trigonometry.equations',
           targetQuestionTypeTitle: 'Trigonometric equations',
           mode: 'redo_variant',
           status: 'open',
-          dueAt: '2026-03-23T00:00:00.000Z',
+          dueAt: '2026-03-21T00:00:00.000Z',
           estimatedMinutes: 15,
+        },
+        {
+          reviewTaskId: 'review-task-2',
+          targetTopicId: 'topic-trig-equations',
+          targetTopicPath: '9709/trigonometry/equations',
+          targetQuestionTypeId: '9709.trigonometry.equations',
+          targetQuestionTypeTitle: 'Trigonometric equations',
+          mode: 'spaced_review',
+          status: 'open',
+          dueAt: '2026-03-24T00:00:00.000Z',
+          estimatedMinutes: 20,
+        },
+        {
+          reviewTaskId: 'review-task-3',
+          targetTopicId: 'topic-trig-equations',
+          targetTopicPath: '9709/trigonometry/equations',
+          targetQuestionTypeId: '9709.trigonometry.equations',
+          targetQuestionTypeTitle: 'Trigonometric equations',
+          mode: 'redo_variant',
+          status: 'completed',
+          dueAt: '2026-03-20T00:00:00.000Z',
+          estimatedMinutes: 12,
+          completionEvidence: {
+            summary: 'Solved a clean follow-up variant.',
+            outcome: 'completed',
+          },
         },
       ],
     },
@@ -534,7 +561,9 @@ describe('learning runtime session view model', () => {
   });
 
   test('workspace view-model separates canonical slot artifacts from linked references', () => {
-    const vm = buildWorkspaceViewModel(createWorkspacePayload());
+    const vm = buildWorkspaceViewModel(createWorkspacePayload(), {
+      now: '2026-03-22T12:00:00.000Z',
+    });
 
     expect(vm.workspace.topicPath).toBe('9709/trigonometry/equations');
     expect(vm.slots.common_traps.primaryArtifact).toEqual({
@@ -559,7 +588,43 @@ describe('learning runtime session view model', () => {
     expect(vm.reviewQueue.items[0]).toEqual(expect.objectContaining({
       reviewTaskId: 'review-task-1',
       modeLabel: 'redo variant',
+      queueState: expect.objectContaining({
+        value: 'due',
+        label: 'Due',
+      }),
+      launchPayload: {
+        anchorKind: 'review_task',
+        reviewTaskId: 'review-task-1',
+        mode: 'spaced_review',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+        currentQuestionTypeId: '9709.trigonometry.equations',
+      },
     }));
+    expect(vm.reviewQueue.items[1].queueState).toEqual({
+      value: 'deferred',
+      label: 'Deferred',
+      tone: 'neutral',
+    });
+    expect(vm.reviewQueue.items[2]).toEqual(expect.objectContaining({
+      queueState: {
+        value: 'completed',
+        label: 'Completed',
+        tone: 'success',
+      },
+      resultFeedback: {
+        label: 'Completed',
+        summary: 'Solved a clean follow-up variant.',
+      },
+    }));
+    expect(vm.reviewQueue.summary).toEqual({
+      total: 3,
+      due: 1,
+      open: 0,
+      deferred: 1,
+      completed: 1,
+      blocked: 0,
+    });
   });
 
   test('launcher view-model includes custom workspace topics that are outside the entry whitelist', () => {
@@ -586,7 +651,9 @@ describe('learning runtime session view model', () => {
   });
 
   test('workspace view-model builds launch payloads for canonical slot residents and cards', () => {
-    const vm = buildWorkspaceViewModel(createWorkspacePayload());
+    const vm = buildWorkspaceViewModel(createWorkspacePayload(), {
+      now: '2026-03-22T12:00:00.000Z',
+    });
 
     expect(vm.slots.common_traps.slotLaunch).toEqual({
       ctaLabel: 'Open slot',
@@ -622,7 +689,9 @@ describe('learning runtime session view model', () => {
   });
 
   test('workspace view-model surfaces explicit empty, stale, and missing-content states', () => {
-    const vm = buildWorkspaceViewModel(createWorkspacePayload());
+    const vm = buildWorkspaceViewModel(createWorkspacePayload(), {
+      now: '2026-03-22T12:00:00.000Z',
+    });
 
     expect(vm.slots.overview_map.surfaceState).toEqual({
       value: 'stale',
@@ -665,6 +734,21 @@ describe('learning runtime session view model', () => {
       label: 'Contested artifact',
       tone: 'warning',
       message: 'This artifact is contested and cannot be pinned until the conflict is resolved.',
+    });
+  });
+
+  test('builds queue action drafts that preserve canonical launch and scheduling defaults', () => {
+    const vm = buildWorkspaceViewModel(createWorkspacePayload(), {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.reviewQueue.actionDrafts['review-task-1']).toEqual({
+      completionSummary: '',
+      dueAt: '2026-03-23T12:00',
+    });
+    expect(vm.reviewQueue.actionDrafts['review-task-2']).toEqual({
+      completionSummary: '',
+      dueAt: '2026-03-24T00:00',
     });
   });
 });

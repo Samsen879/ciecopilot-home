@@ -454,7 +454,16 @@ function renderWorkspaceHeader(workspace) {
   ]);
 }
 
-export default function WorkspaceShell({ onLaunch, viewModel }) {
+export default function WorkspaceShell({
+  onCompleteReviewTask = () => {},
+  onLaunch = () => {},
+  onOpenGlobalQueue = null,
+  onReviewQueueDraftChange = () => {},
+  onRescheduleReviewTask = () => {},
+  reviewQueueDrafts = {},
+  reviewQueueMutationStateByTaskId = {},
+  viewModel,
+}) {
   const [localViewModel, setLocalViewModel] = React.useState(viewModel);
   const [feedback, setFeedback] = React.useState(null);
   const [pendingMutation, setPendingMutation] = React.useState(null);
@@ -571,7 +580,7 @@ export default function WorkspaceShell({ onLaunch, viewModel }) {
   }
 
   return h('div', { className: 'grid gap-6' }, [
-    renderWorkspaceHeader(viewModel?.workspace || {}),
+    renderWorkspaceHeader(localViewModel?.workspace || {}),
     feedback
       ? h('section', {
         key: 'feedback',
@@ -644,6 +653,13 @@ export default function WorkspaceShell({ onLaunch, viewModel }) {
       h(ReviewQueuePanel, {
         key: 'review-queue',
         reviewQueue: localViewModel?.reviewQueue || {},
+        drafts: reviewQueueDrafts,
+        mutationStateByTaskId: reviewQueueMutationStateByTaskId,
+        onLaunch,
+        onDraftChange: onReviewQueueDraftChange,
+        onComplete: onCompleteReviewTask,
+        onReschedule: onRescheduleReviewTask,
+        onOpenGlobalQueue,
       }),
     ]),
   ]);

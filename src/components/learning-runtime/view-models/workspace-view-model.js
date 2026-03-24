@@ -1,4 +1,5 @@
 import { isCompatibleArtifactKindForSlot } from '../../../../api/learning/lib/contracts/runtime-contract.js';
+import { buildReviewQueueViewModel } from './review-queue-view-model.js';
 
 const SLOT_DEFINITIONS = Object.freeze([
   {
@@ -441,28 +442,6 @@ function buildSlotViewModel(definition, slots, slotState, workspace) {
   };
 }
 
-function buildReviewQueueViewModel(reviewQueue) {
-  const items = Array.isArray(reviewQueue?.items) ? reviewQueue.items : [];
-
-  return {
-    scope: normalizeString(reviewQueue?.scope),
-    topicId: normalizeString(reviewQueue?.topicId ?? reviewQueue?.topic_id),
-    items: items.map((item) => ({
-      ...item,
-      reviewTaskId: normalizeString(item.reviewTaskId ?? item.review_task_id),
-      targetQuestionTypeTitle: normalizeString(
-        item.targetQuestionTypeTitle ?? item.target_question_type_title,
-        null,
-      ),
-      targetTopicPath: normalizeString(item.targetTopicPath ?? item.target_topic_path, null),
-      modeLabel: labelFromToken(item.mode),
-      statusLabel: labelFromToken(item.status),
-      dueAtLabel: normalizeString(item.dueAt ?? item.due_at, 'unscheduled'),
-      estimatedMinutesLabel: `${item.estimatedMinutes ?? item.estimated_minutes ?? 0} min`,
-    })),
-  };
-}
-
 function buildArtifactInboxViewModel(workspace, slotList) {
   const artifactInbox = readArtifactInbox(workspace);
   const linkedReferenceSummary =
@@ -500,7 +479,7 @@ function buildArtifactInboxViewModel(workspace, slotList) {
   };
 }
 
-export function buildWorkspaceViewModel(payload = {}) {
+export function buildWorkspaceViewModel(payload = {}, options = {}) {
   const workspace = payload.workspace || {};
   const slotState = workspace.slotState || workspace.slot_state || {};
   const workspaceSummary = buildWorkspaceSummary(workspace);
@@ -519,7 +498,9 @@ export function buildWorkspaceViewModel(payload = {}) {
     slots: stableSlots,
     slotList,
     artifactInbox: buildArtifactInboxViewModel(workspace, slotList),
-    reviewQueue: buildReviewQueueViewModel(payload.reviewQueue || payload.review_queue || {}),
+    reviewQueue: buildReviewQueueViewModel(payload.reviewQueue || payload.review_queue || {}, {
+      now: options.now,
+    }),
     featureFlags: payload.featureFlags || payload.feature_flags || {},
   };
 }

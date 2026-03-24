@@ -1,8 +1,13 @@
 const META_ENV = typeof import.meta !== 'undefined' ? import.meta.env || {} : {};
 
+export const LEARNING_RUNTIME_SESSION_ROUTE_PATH = '/learn/session/:sessionId';
+export const LEARNING_RUNTIME_WORKSPACE_ROUTE_PATH = '/learn/workspace/:topicId';
+export const LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH = '/learn/review-queue';
+
 export const LEARNING_RUNTIME_ROUTE_PATHS = Object.freeze([
-  '/learn/session/:sessionId',
-  '/learn/workspace/:topicId',
+  LEARNING_RUNTIME_SESSION_ROUTE_PATH,
+  LEARNING_RUNTIME_WORKSPACE_ROUTE_PATH,
+  LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH,
 ]);
 
 export const LEARNING_RUNTIME_ENTRY_TOPICS = Object.freeze([

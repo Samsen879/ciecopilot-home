@@ -1,3 +1,6 @@
+import {
+  buildChildSessionLineage,
+} from '../lib/session-runtime/session-handoff.js';
 import { getSession, insertSession } from '../lib/repositories/session-repository.js';
 
 function createSessionDb() {
@@ -111,6 +114,29 @@ function createSessionDb() {
 }
 
 describe('session-repository', () => {
+  test('buildChildSessionLineage prefers the carried lineage snapshot when the immediate parent summary is empty', () => {
+    const lineage = buildChildSessionLineage({
+      parentSessionId: '11111111-1111-4111-8111-111111111111',
+      handoffKind: 'explicit_new_session',
+      parentSession: {
+        summary_state: {},
+        lineage: {
+          summary_snapshot: {
+            recap: 'Inherited ancestor recap that should survive the next child handoff.',
+          },
+        },
+      },
+    });
+
+    expect(lineage).toEqual({
+      parent_session_id: '11111111-1111-4111-8111-111111111111',
+      handoff_kind: 'explicit_new_session',
+      lineage_summary_snapshot: {
+        recap: 'Inherited ancestor recap that should survive the next child handoff.',
+      },
+    });
+  });
+
   test('insertSession records a lineage stub with parent_session_id = null on create', async () => {
     const db = createSessionDb();
 

@@ -68,6 +68,12 @@ function normalizeNullableString(value) {
   return normalized || null;
 }
 
+function isUuidString(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    normalizeString(value),
+  );
+}
+
 function isPlainObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
@@ -337,6 +343,13 @@ function validateCreateSessionPayload(body = {}) {
     throw createLearningError('invalid_payload', {
       message: 'handoff_kind requires parent_session_id.',
       details: { field: 'handoff_kind' },
+    });
+  }
+
+  if (parentSessionId && !isUuidString(parentSessionId)) {
+    throw createLearningError('invalid_payload', {
+      message: 'parent_session_id must be a UUID.',
+      details: { field: 'parent_session_id' },
     });
   }
 

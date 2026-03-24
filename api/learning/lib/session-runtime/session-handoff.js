@@ -35,6 +35,10 @@ function normalizeSummaryState(summaryState = {}) {
     : {};
 }
 
+function hasOwnKeys(value) {
+  return isPlainObject(value) && Object.keys(value).length > 0;
+}
+
 function questionTypeIdFromBundle(bundle = {}, session = {}) {
   return normalizeNullableString(
     bundle?.current_question_type_ref?.question_type_id
@@ -298,11 +302,16 @@ export function buildChildSessionLineage({
     };
   }
 
+  const normalizedParentSummary = buildLineageSummarySnapshot(
+    parentSession?.summary_state ?? parentSession?.summaryState ?? {},
+  );
+  const inheritedLineageSummary = buildSessionLineage(parentSession).summary_snapshot;
+
   return {
     parent_session_id: normalizedParentSessionId,
     handoff_kind: normalizeSessionHandoffKind(handoffKind) ?? 'explicit_new_session',
-    lineage_summary_snapshot: buildLineageSummarySnapshot(
-      parentSession?.summary_state ?? parentSession?.summaryState ?? {},
-    ),
+    lineage_summary_snapshot: hasOwnKeys(normalizedParentSummary)
+      ? normalizedParentSummary
+      : inheritedLineageSummary,
   };
 }

@@ -19,6 +19,9 @@ const clientState = {
   sessionInsertGate: null,
 };
 
+const PARENT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
+const GRANDPARENT_SESSION_ID = '22222222-2222-4222-8222-222222222222';
+
 function createDeferred() {
   let resolve;
   let reject;
@@ -372,8 +375,8 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions persists explicit child-session handoff lineage from a parent session', async () => {
-    clientState.sessions.set('session-parent-1', buildStoredSession({
-      session_id: 'session-parent-1',
+    clientState.sessions.set(PARENT_SESSION_ID, buildStoredSession({
+      session_id: PARENT_SESSION_ID,
       summary_state: {
         recap: 'The review thread is too long; continue from a clean concept session.',
         suggested_handoff_kind: 'explicit_new_session',
@@ -381,10 +384,10 @@ describe('learning session api', () => {
         suggested_handoff_message: 'Carry the recap into a fresh concept session.',
       },
     }));
-    clientState.lineage.set('session-parent-1', {
-      lineage_id: 'lineage-session-parent-1',
+    clientState.lineage.set(PARENT_SESSION_ID, {
+      lineage_id: `lineage-${PARENT_SESSION_ID}`,
       parent_session_id: null,
-      child_session_id: 'session-parent-1',
+      child_session_id: PARENT_SESSION_ID,
       handoff_kind: null,
       summary_snapshot: {
         recap: 'The review thread is too long; continue from a clean concept session.',
@@ -407,17 +410,17 @@ describe('learning session api', () => {
         },
         current_question_id: null,
         current_question_type_id: '9709.trigonometry.equations',
-        parent_session_id: 'session-parent-1',
+        parent_session_id: PARENT_SESSION_ID,
         handoff_kind: 'explicit_new_session',
       });
 
     expect(res.status).toBe(200);
     expect(res.body.session.lineage_ref).toEqual({
-      parent_session_id: 'session-parent-1',
+      parent_session_id: PARENT_SESSION_ID,
       handoff_kind: 'explicit_new_session',
     });
     expect(res.body.session.lineage).toMatchObject({
-      parent_session_id: 'session-parent-1',
+      parent_session_id: PARENT_SESSION_ID,
       handoff_kind: 'explicit_new_session',
       summary_snapshot: {
         recap: 'The review thread is too long; continue from a clean concept session.',
@@ -426,7 +429,7 @@ describe('learning session api', () => {
     expect(res.body.session.handoff).toMatchObject({
       supported: true,
       lineage: {
-        parent_session_id: 'session-parent-1',
+        parent_session_id: PARENT_SESSION_ID,
         handoff_kind: 'explicit_new_session',
       },
       explicit_new_session: {
@@ -437,11 +440,71 @@ describe('learning session api', () => {
       },
     });
     expect(res.body.session.resume_guidance).toMatchObject({
-      parent_session_id: 'session-parent-1',
+      parent_session_id: PARENT_SESSION_ID,
       handoff_kind: 'explicit_new_session',
       questionless: true,
       current_question_id: null,
       current_question_type_id: '9709.trigonometry.equations',
+    });
+  });
+
+  test('POST /api/learning/sessions preserves the carried lineage recap across multi-hop child sessions', async () => {
+    clientState.sessions.set(PARENT_SESSION_ID, buildStoredSession({
+      session_id: PARENT_SESSION_ID,
+      summary_state: {},
+      lineage_ref: {
+        parent_session_id: GRANDPARENT_SESSION_ID,
+        handoff_kind: 'explicit_new_session',
+      },
+    }));
+    clientState.lineage.set(PARENT_SESSION_ID, {
+      lineage_id: `lineage-${PARENT_SESSION_ID}`,
+      parent_session_id: GRANDPARENT_SESSION_ID,
+      child_session_id: PARENT_SESSION_ID,
+      handoff_kind: 'explicit_new_session',
+      summary_snapshot: {
+        recap: 'Inherited ancestor recap that should survive the next child handoff.',
+      },
+      created_at: '2026-03-21T13:30:00.000Z',
+    });
+
+    const res = await request(server)
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        ...buildSessionPayload(),
+        session_goal: 'Continue the inherited recap in a fresh child session',
+        parent_session_id: PARENT_SESSION_ID,
+        handoff_kind: 'explicit_new_session',
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.session.lineage.summary_snapshot).toEqual({
+      recap: 'Inherited ancestor recap that should survive the next child handoff.',
+    });
+    expect(res.body.session.handoff.explicit_new_session.carry_forward_summary).toEqual({
+      recap: 'Inherited ancestor recap that should survive the next child handoff.',
+    });
+  });
+
+  test('POST /api/learning/sessions returns invalid_payload when parent_session_id is malformed', async () => {
+    const res = await request(server)
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        ...buildSessionPayload(),
+        parent_session_id: 'not-a-uuid',
+        handoff_kind: 'explicit_new_session',
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatchObject({
+      code: 'invalid_payload',
+      details: {
+        field: 'parent_session_id',
+      },
     });
   });
 

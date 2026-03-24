@@ -101,6 +101,7 @@ The design system is automatically imported in `src/index.css`:
 
 ### Using Design Tokens in JavaScript
 
+{% raw %}
 ```javascript
 import { useDesignSystem } from '../hooks/useDesignSystem';
 
@@ -118,6 +119,7 @@ const MyComponent = () => {
   );
 };
 ```
+{% endraw %}
 
 ### Using CSS Classes
 

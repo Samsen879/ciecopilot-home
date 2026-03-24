@@ -20,15 +20,12 @@ export const LEARNING_SIGNAL_POSTURES = Object.freeze({
   CONSERVATIVE_FALLBACK: 'conservative_fallback',
 });
 
-// This cache freezes the pilot slice contract for bootstrap work only.
-// Registry-backed canonical truth lands in later tasks and must supersede direct constant use.
-export const SEEDED_PILOT_QUESTION_TYPE_IDS = Object.freeze([
-  '9709.trigonometry.identities',
-  '9709.trigonometry.equations',
-]);
-
 function normalizeQuestionTypeId(questionTypeId) {
   return typeof questionTypeId === 'string' ? questionTypeId.trim() : '';
+}
+
+function normalizeQuestionTypeReleaseState(value) {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
 }
 
 function normalizeClassificationConfidence(value) {
@@ -74,12 +71,28 @@ function buildFallbackPosture(fallbackReasonCode, classificationConfidence) {
   };
 }
 
-export function isSeededPilotQuestionType(questionTypeId) {
-  return SEEDED_PILOT_QUESTION_TYPE_IDS.includes(normalizeQuestionTypeId(questionTypeId));
+export function isSeededPilotQuestionType(questionTypeId, questionTypeReleaseState = null) {
+  const normalizedQuestionTypeId = normalizeQuestionTypeId(
+    typeof questionTypeId === 'object' && questionTypeId !== null
+      ? questionTypeId.questionTypeId ?? questionTypeId.question_type_id
+      : questionTypeId,
+  );
+  const normalizedReleaseState = normalizeQuestionTypeReleaseState(
+    typeof questionTypeId === 'object' && questionTypeId !== null
+      ? (
+        questionTypeId.questionTypeReleaseState
+        ?? questionTypeId.question_type_release_state
+        ?? questionTypeId.release_state
+      )
+      : questionTypeReleaseState,
+  );
+
+  return Boolean(normalizedQuestionTypeId) && normalizedReleaseState === 'released';
 }
 
 export function resolveReleasedScoringPosture({
   questionTypeId,
+  questionTypeReleaseState = null,
   candidateRubricRefs = [],
   uncertaintyValidated = false,
   uncertaintyPosture = null,
@@ -93,7 +106,7 @@ export function resolveReleasedScoringPosture({
   );
   const pilotQuestionTypeMatch = typeof isPilotQuestionType === 'boolean'
     ? isPilotQuestionType
-    : isSeededPilotQuestionType(normalizedQuestionTypeId);
+    : isSeededPilotQuestionType(normalizedQuestionTypeId, questionTypeReleaseState);
 
   if (!normalizedQuestionTypeId) {
     return buildFallbackPosture(

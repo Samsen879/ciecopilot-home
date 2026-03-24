@@ -5,7 +5,8 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
   'supabase/migrations/20260320111000_create_learning_runtime_core.sql',
   'supabase/migrations/20260320111500_seed_learning_runtime_pilot_registry.sql',
-  'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql'
+  'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
+  'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql'
 ];
 
 function readMigration(relPath) {
@@ -95,6 +96,9 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('9709.trigonometry_manipulation_equations');
     expect(sql).toContain('9709.trigonometry.identities');
     expect(sql).toContain('9709.trigonometry.equations');
+    expect(sql).toContain('9709.integration_techniques');
+    expect(sql).toContain('9709.integration.application');
+    expect(sql).toContain('primary_question_type_release_state');
 
     [
       'user_id',

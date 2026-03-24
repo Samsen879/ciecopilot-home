@@ -7,11 +7,12 @@ Scope: first `9709` runtime pilot slice for session-centric AskAI, workspace ent
 
 - Canonical runtime entry surfaces are `/learn/session/:sessionId` and `/learn/workspace/:topicId`.
 - Legacy AskAI, Study Hub, and Learning Path remain compatibility-only surfaces during this slice.
-- Authoritative scoring remains limited to the seeded trigonometry pilot family and still requires all released-scope gates:
-  - seeded pilot question type
+- Authoritative scoring covers the seeded trigonometry types plus the released `9709.integration.application` slice and still requires all released-scope gates:
+  - registry-backed released question type
   - released rubric ref
+  - classification confidence present
   - validated uncertainty posture
-- Imported or non-pilot questions outside released scope must stay on explicit `non_released_fallback`.
+- Imported or non-promoted questions outside released scope must stay on explicit `non_released_fallback`.
 
 ## Feature-Flag Default
 

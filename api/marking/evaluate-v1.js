@@ -124,7 +124,7 @@ async function loadLearningQuestionContext(supabase, questionId) {
   const { data, error } = await supabase
     .from('learning_question_registry_projection')
     .select(
-      'question_id, primary_topic_id, family_id, primary_question_type_id, classification_confidence, candidate_rubric_refs, release_scope_status',
+      'question_id, primary_topic_id, family_id, primary_question_type_id, primary_question_type_release_state, classification_confidence, candidate_rubric_refs, release_scope_status',
     )
     .eq('question_id', questionId)
     .maybeSingle();
@@ -139,6 +139,7 @@ async function loadLearningQuestionContext(supabase, questionId) {
       primary_topic_id: data.primary_topic_id ?? null,
       family_id: data.family_id ?? null,
       question_type_id: data.primary_question_type_id ?? null,
+      question_type_release_state: data.primary_question_type_release_state ?? null,
       classification_confidence: data.classification_confidence ?? null,
       candidate_rubric_refs: Array.isArray(data.candidate_rubric_refs)
         ? data.candidate_rubric_refs
@@ -150,6 +151,7 @@ async function loadLearningQuestionContext(supabase, questionId) {
       primary_topic_id: null,
       family_id: null,
       question_type_id: null,
+      question_type_release_state: null,
       classification_confidence: null,
       candidate_rubric_refs: [],
       release_scope_status: null,
@@ -339,6 +341,7 @@ export default async function handler(req, res) {
             question_context: {
               family_id: questionContext.family_id,
               question_type_id: questionContext.question_type_id,
+              question_type_release_state: questionContext.question_type_release_state,
               primary_topic_id:
                 questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
               primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,

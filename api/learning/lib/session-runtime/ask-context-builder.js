@@ -281,6 +281,10 @@ export async function buildLearningSessionAskContext(
       questionContext?.primary_question_type_id
       ?? bundle.current_question_type_ref?.question_type_id
       ?? null,
+    questionTypeReleaseState:
+      questionContext?.primary_question_type_release_state
+      ?? questionContext?.question_type_release_state
+      ?? null,
     candidateRubricRefs: normalizeArray(questionContext?.candidate_rubric_refs),
     classificationConfidence: questionContext?.classification_confidence ?? null,
     uncertaintyValidated: false,

@@ -12,7 +12,10 @@ import SelectionListener from './components/SelectionListener';
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { LEARNING_RUNTIME_ROUTE_PATHS } from "./pages/legacy-entry-mode.js";
+import {
+  LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH,
+  LEARNING_RUNTIME_ROUTE_PATHS,
+} from "./pages/legacy-entry-mode.js";
 
 // Lazy loaded components for better performance
 const AskAI = React.lazy(() => import("./pages/AskAI"));
@@ -28,6 +31,7 @@ const CommunityAndRecommendations = React.lazy(() => import('./pages/CommunityAn
 const QuestionDetail = React.lazy(() => import('./pages/QuestionDetail'));
 const LearningSessionPage = React.lazy(() => import('./pages/learning-runtime/LearningSessionPage'));
 const TopicWorkspacePage = React.lazy(() => import('./pages/learning-runtime/TopicWorkspacePage'));
+const ReviewQueuePage = React.lazy(() => import('./pages/learning-runtime/ReviewQueuePage'));
 
 // Subject-specific pages - lazy loaded
 const SubjectSelection = React.lazy(() => import("./pages/SubjectSelection"));
@@ -98,6 +102,7 @@ function ContentWithChatShift() {
               <Route path="/ask-ai" element={<div className="container mx-auto p-4"><AskAI /></div>} />
               <Route path={learningSessionRoutePath} element={<LearningSessionPage />} />
               <Route path={topicWorkspaceRoutePath} element={<TopicWorkspacePage />} />
+              <Route path={LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH} element={<ReviewQueuePage />} />
               {/* Search Page */}
               <Route path="/search" element={<Search />} />
               {/* Smart Tools */}

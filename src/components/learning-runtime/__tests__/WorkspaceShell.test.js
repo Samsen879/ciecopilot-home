@@ -154,11 +154,27 @@ function createWorkspacePayload() {
           reviewTaskId: 'review-task-1',
           targetTopicId: 'topic-trig-equations',
           targetTopicPath: '9709/trigonometry/equations',
+          targetQuestionTypeId: '9709.trigonometry.equations',
           targetQuestionTypeTitle: 'Trigonometric equations',
           mode: 'redo_variant',
           status: 'open',
-          dueAt: '2026-03-23T00:00:00.000Z',
+          dueAt: '2026-03-21T00:00:00.000Z',
           estimatedMinutes: 15,
+        },
+        {
+          reviewTaskId: 'review-task-2',
+          targetTopicId: 'topic-trig-equations',
+          targetTopicPath: '9709/trigonometry/equations',
+          targetQuestionTypeId: '9709.trigonometry.equations',
+          targetQuestionTypeTitle: 'Trigonometric equations',
+          mode: 'spaced_review',
+          status: 'completed',
+          dueAt: '2026-03-26T00:00:00.000Z',
+          estimatedMinutes: 10,
+          completionEvidence: {
+            summary: 'Closed the interval mistake with a fresh variant.',
+            outcome: 'completed',
+          },
         },
       ],
     },
@@ -166,11 +182,24 @@ function createWorkspacePayload() {
 }
 
 describe('WorkspaceShell', () => {
-  test('renders slot cards, linked references, launch CTAs, and explicit slot states', () => {
-    const workspaceVm = buildWorkspaceViewModel(createWorkspacePayload());
+  test('renders slot cards, linked references, launch CTAs, and actionable review queue states', () => {
+    const workspaceVm = buildWorkspaceViewModel(createWorkspacePayload(), {
+      now: '2026-03-22T12:00:00.000Z',
+    });
     const html = renderToStaticMarkup(
       React.createElement(WorkspaceShell, {
         viewModel: workspaceVm,
+        onOpenGlobalQueue: () => {},
+        reviewQueueDrafts: {
+          'review-task-1': {
+            completionSummary: 'Solved one more repair variant.',
+            dueAt: '2026-03-24T09:30',
+          },
+          'review-task-2': {
+            completionSummary: '',
+            dueAt: '2026-03-27T09:30',
+          },
+        },
       }),
     );
 
@@ -195,6 +224,13 @@ describe('WorkspaceShell', () => {
     expect(html).toContain('Unpin before marking contested.');
     expect(html).toContain('Review queue');
     expect(html).toContain('redo variant');
+    expect(html).toContain('Due');
+    expect(html).toContain('Completed');
+    expect(html).toContain('Start spaced review');
+    expect(html).toContain('Mark complete');
+    expect(html).toContain('Reschedule');
+    expect(html).toContain('Open canonical queue');
+    expect(html).toContain('Closed the interval mistake with a fresh variant.');
   });
 
   test('getArtifactSupersedeCandidates keeps successor choices conservative', () => {

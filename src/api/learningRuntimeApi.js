@@ -205,6 +205,14 @@ export function normalizeReviewTaskListResponse(payload = {}) {
   };
 }
 
+export function normalizeReviewTaskResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+  return {
+    ...camelized,
+    reviewTask: camelized.reviewTask || null,
+  };
+}
+
 export function normalizeWorkspaceResponse(payload = {}) {
   const camelized = camelizeKeys(payload);
   return {
@@ -265,6 +273,33 @@ export async function listReviewTasks(params = {}) {
   );
 }
 
+function buildReviewTaskWritePayload(payload = {}) {
+  const intent = payload.intent ?? null;
+  const body = { intent };
+
+  if (intent === 'complete') {
+    body.completion_outcome = payload.completionOutcome ?? payload.completion_outcome ?? null;
+    body.completion_evidence = payload.completionEvidence ?? payload.completion_evidence ?? null;
+    return body;
+  }
+
+  if (intent === 'reschedule' || intent === 'snooze') {
+    body.due_at = payload.dueAt ?? payload.due_at ?? null;
+    return body;
+  }
+
+  return body;
+}
+
+export async function updateReviewTask(reviewTaskId, payload) {
+  return normalizeReviewTaskResponse(
+    await learningRequest(`/review-tasks/${encodeURIComponent(reviewTaskId)}`, {
+      method: 'PATCH',
+      body: buildReviewTaskWritePayload(payload),
+    }),
+  );
+}
+
 export async function updateArtifact(artifactId, payload) {
   return normalizeArtifactResponse(await learningRequest(`/artifacts/${encodeURIComponent(artifactId)}`, {
     method: 'PATCH',
@@ -306,6 +341,7 @@ export const learningRuntimeApi = {
   importQuestion,
   getWorkspace,
   listReviewTasks,
+  updateReviewTask,
   pinArtifact,
   unpinArtifact,
   markArtifactContested,

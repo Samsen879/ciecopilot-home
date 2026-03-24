@@ -21,6 +21,7 @@ const {
   normalizeAskResponse,
   normalizeArtifactResponse,
   normalizeImportQuestionResponse,
+  normalizeReviewTaskResponse,
   normalizeSessionResponse,
   pinArtifact,
   supersedeArtifact,
@@ -197,6 +198,27 @@ function createImportEnvelope() {
   };
 }
 
+function createReviewTaskEnvelope() {
+  return {
+    review_task: {
+      review_task_id: 'review-task-1',
+      target_topic_id: 'topic-trig-equations',
+      target_topic_path: '9709/trigonometry/equations',
+      target_question_type_id: '9709.trigonometry.equations',
+      target_question_type_title: 'Trigonometric equations',
+      mode: 'redo_variant',
+      status: 'completed',
+      due_at: '2026-03-23T00:00:00.000Z',
+      estimated_minutes: 15,
+      completion_evidence: {
+        summary: 'Solved a fresh repair variant.',
+        outcome: 'completed',
+      },
+    },
+    request_id: 'req-review-task-1',
+  };
+}
+
 describe('learning runtime api', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
@@ -221,6 +243,7 @@ describe('learning runtime api', () => {
       'pinArtifact',
       'supersedeArtifact',
       'unpinArtifact',
+      'updateReviewTask',
       'updateArtifact',
     ].sort());
   });
@@ -329,6 +352,21 @@ describe('learning runtime api', () => {
       classificationConfidence: 0.77,
       learningSignalPosture: 'conservative_fallback',
     });
+  });
+
+  test('normalizes review-task write envelopes for actionable queue feedback', () => {
+    const payload = normalizeReviewTaskResponse(createReviewTaskEnvelope());
+
+    expect(payload.reviewTask).toEqual(expect.objectContaining({
+      reviewTaskId: 'review-task-1',
+      targetTopicId: 'topic-trig-equations',
+      targetQuestionTypeTitle: 'Trigonometric equations',
+      status: 'completed',
+      completionEvidence: {
+        summary: 'Solved a fresh repair variant.',
+        outcome: 'completed',
+      },
+    }));
   });
 
   test('createSession posts to the learning runtime route with auth and idempotency headers', async () => {
@@ -672,5 +710,42 @@ describe('learning runtime api', () => {
       outcome: 'slot_cleared_pending_confirmation',
       slotKey: 'common_traps',
     });
+  });
+
+  test('updateReviewTask posts explicit write intents to the runtime queue endpoint', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => createReviewTaskEnvelope(),
+    });
+
+    const payload = await learningRuntimeApi.updateReviewTask('review-task-1', {
+      intent: 'complete',
+      completionOutcome: 'completed',
+      completionEvidence: {
+        summary: 'Solved a fresh repair variant.',
+      },
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/learning/review-tasks/review-task-1',
+      expect.objectContaining({
+        method: 'PATCH',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer token-123',
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify({
+          intent: 'complete',
+          completion_outcome: 'completed',
+          completion_evidence: {
+            summary: 'Solved a fresh repair variant.',
+          },
+        }),
+      }),
+    );
+    expect(payload.reviewTask).toEqual(expect.objectContaining({
+      reviewTaskId: 'review-task-1',
+      status: 'completed',
+    }));
   });
 });

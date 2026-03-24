@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
-  getWorkspace,
+  listReviewTasks,
   updateReviewTask,
 } from '../../api/learningRuntimeApi.js';
-import WorkspaceShell from '../../components/learning-runtime/WorkspaceShell.jsx';
-import { buildReviewQueueActionDrafts } from '../../components/learning-runtime/view-models/review-queue-view-model.js';
-import { buildWorkspaceViewModel } from '../../components/learning-runtime/view-models/workspace-view-model.js';
+import ReviewQueuePanel from '../../components/learning-runtime/ReviewQueuePanel.js';
 import {
-  LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH,
-  LEARNING_RUNTIME_ROUTE_PATHS,
-} from '../legacy-entry-mode.js';
+  buildReviewQueueActionDrafts,
+  buildReviewQueueViewModel,
+} from '../../components/learning-runtime/view-models/review-queue-view-model.js';
+import { LEARNING_RUNTIME_ROUTE_PATHS } from '../legacy-entry-mode.js';
 
 const LEARNING_SESSION_LAUNCH_PATH = LEARNING_RUNTIME_ROUTE_PATHS[0].replace(':sessionId', 'new');
 
@@ -36,87 +35,54 @@ function toIsoTimestamp(value) {
   return Number.isNaN(parsed.getTime()) ? value : parsed.toISOString();
 }
 
-export default function TopicWorkspacePage() {
-  const { topicId = '' } = useParams();
+export default function ReviewQueuePage() {
   const navigate = useNavigate();
-  const [viewModel, setViewModel] = useState(null);
+  const [reviewQueue, setReviewQueue] = useState(null);
   const [surfaceState, setSurfaceState] = useState('loading');
   const [error, setError] = useState(null);
   const [reviewQueueDrafts, setReviewQueueDrafts] = useState({});
   const [reviewQueueMutationStateByTaskId, setReviewQueueMutationStateByTaskId] = useState({});
 
-  function applyWorkspacePayload(payload) {
-    const nextViewModel = buildWorkspaceViewModel(payload);
-    const reviewQueueItems = nextViewModel?.reviewQueue?.items || [];
+  function applyReviewQueuePayload(payload) {
+    const nextViewModel = buildReviewQueueViewModel(payload);
+    const items = nextViewModel?.items || [];
 
-    setViewModel(nextViewModel);
-    setReviewQueueDrafts((currentDrafts) => buildReviewQueueActionDrafts(
-      reviewQueueItems,
-      currentDrafts,
-    ));
-    setReviewQueueMutationStateByTaskId((currentState) => pruneTaskState(
-      reviewQueueItems,
-      currentState,
-    ));
-  }
-
-  async function loadWorkspacePayload(active = true) {
-    if (!topicId) {
-      if (!active) {
-        return;
-      }
-
-      setSurfaceState('error');
-      setError(new Error('topicId is required'));
-      return;
-    }
-
-    setSurfaceState('loading');
-    setError(null);
-
-    try {
-      const payload = await getWorkspace(topicId);
-      if (!active) {
-        return;
-      }
-
-      applyWorkspacePayload(payload);
-      setSurfaceState('ready');
-    } catch (loadError) {
-      if (!active) {
-        return;
-      }
-
-      setError(loadError);
-      setSurfaceState('error');
-    }
+    setReviewQueue(nextViewModel);
+    setReviewQueueDrafts((currentDrafts) => buildReviewQueueActionDrafts(items, currentDrafts));
+    setReviewQueueMutationStateByTaskId((currentState) => pruneTaskState(items, currentState));
   }
 
   useEffect(() => {
     let active = true;
 
-    async function loadWorkspace() {
-      await loadWorkspacePayload(active);
+    async function loadReviewQueue() {
+      setSurfaceState('loading');
+      setError(null);
+
+      try {
+        const payload = await listReviewTasks();
+        if (!active) {
+          return;
+        }
+
+        applyReviewQueuePayload(payload);
+        setSurfaceState('ready');
+      } catch (loadError) {
+        if (!active) {
+          return;
+        }
+
+        setError(loadError);
+        setSurfaceState('error');
+      }
     }
 
-    loadWorkspace();
+    loadReviewQueue();
 
     return () => {
       active = false;
     };
-  }, [topicId]);
-
-  function handleLaunch(launchPayload) {
-    if (!launchPayload) {
-      return;
-    }
-
-    navigate(LEARNING_SESSION_LAUNCH_PATH, {
-      state: {
-        launchPayload,
-      },
-    });
-  }
+  }, []);
 
   function patchReviewQueueMutationState(reviewTaskId, patch) {
     setReviewQueueMutationStateByTaskId((currentState) => ({
@@ -142,6 +108,23 @@ export default function TopicWorkspacePage() {
     });
   }
 
+  function handleLaunch(launchPayload) {
+    if (!launchPayload) {
+      return;
+    }
+
+    navigate(LEARNING_SESSION_LAUNCH_PATH, {
+      state: {
+        launchPayload,
+      },
+    });
+  }
+
+  async function reloadReviewQueue() {
+    const payload = await listReviewTasks();
+    applyReviewQueuePayload(payload);
+  }
+
   async function handleCompleteReviewTask({
     reviewTaskId,
     completionOutcome,
@@ -161,13 +144,12 @@ export default function TopicWorkspacePage() {
           summary: completionSummary.trim(),
         },
       });
-      const payload = await getWorkspace(topicId);
-      applyWorkspacePayload(payload);
+      await reloadReviewQueue();
       patchReviewQueueMutationState(reviewTaskId, {
         pendingIntent: null,
         errorMessage: null,
         feedbackMessage: completionOutcome === 'partial'
-          ? 'Partial result recorded. Reschedule if the repair still needs another pass.'
+          ? 'Partial result recorded. Reschedule if another pass is still due.'
           : 'Review task completed.',
       });
       setReviewQueueDrafts((currentDrafts) => ({
@@ -197,8 +179,7 @@ export default function TopicWorkspacePage() {
         intent: 'reschedule',
         dueAt: toIsoTimestamp(dueAt),
       });
-      const payload = await getWorkspace(topicId);
-      applyWorkspacePayload(payload);
+      await reloadReviewQueue();
       patchReviewQueueMutationState(reviewTaskId, {
         pendingIntent: null,
         errorMessage: null,
@@ -213,7 +194,7 @@ export default function TopicWorkspacePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
+    <div className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-slate-50">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-start gap-3">
           <button
@@ -229,37 +210,37 @@ export default function TopicWorkspacePage() {
               Learning Runtime
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
-              Topic workspace
+              Canonical review queue
             </h1>
-            <p className="mt-2 text-base leading-7 text-slate-600">
-              Workspace projections keep canonical slot residency, linked references, and the
-              topic-filtered review queue separate.
+            <p className="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+              This is the global runtime truth for review tasks. Topic workspaces project filtered
+              slices of the same queue rather than maintaining their own shadow copies.
             </p>
           </div>
         </div>
 
         {surfaceState === 'loading' ? (
           <div className="rounded-3xl border border-slate-200 bg-white p-10 text-sm text-slate-600 shadow-sm">
-            Loading workspace...
+            Loading review queue...
           </div>
         ) : null}
 
         {surfaceState === 'error' ? (
           <div className="rounded-3xl border border-rose-200 bg-rose-50 p-10 text-sm text-rose-700 shadow-sm">
-            {error?.message || 'Failed to load workspace.'}
+            {error?.message || 'Failed to load the review queue.'}
           </div>
         ) : null}
 
-        {surfaceState === 'ready' && viewModel ? (
-          <WorkspaceShell
-            viewModel={viewModel}
+        {surfaceState === 'ready' && reviewQueue ? (
+          <ReviewQueuePanel
+            reviewQueue={reviewQueue}
+            drafts={reviewQueueDrafts}
+            mutationStateByTaskId={reviewQueueMutationStateByTaskId}
             onLaunch={handleLaunch}
-            onOpenGlobalQueue={() => navigate(LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH)}
-            reviewQueueDrafts={reviewQueueDrafts}
-            reviewQueueMutationStateByTaskId={reviewQueueMutationStateByTaskId}
-            onReviewQueueDraftChange={handleReviewQueueDraftChange}
-            onCompleteReviewTask={handleCompleteReviewTask}
-            onRescheduleReviewTask={handleRescheduleReviewTask}
+            onDraftChange={handleReviewQueueDraftChange}
+            onComplete={handleCompleteReviewTask}
+            onReschedule={handleRescheduleReviewTask}
+            onOpenWorkspace={({ topicId }) => navigate(`/learn/workspace/${topicId}`)}
           />
         ) : null}
       </div>

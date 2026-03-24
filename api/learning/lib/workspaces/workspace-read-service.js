@@ -2,6 +2,8 @@ import { STABLE_SLOT_KEYS } from '../contracts/runtime-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import { fetchWorkspaceProjection } from '../repositories/workspace-repository.js';
 
+const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
+
 function normalizeString(value) {
   if (value === null || value === undefined) {
     return null;
@@ -52,14 +54,44 @@ function normalizeLinkedReferences(linkedReferences, primaryArtifactRef) {
   });
 }
 
-function buildStableSlots(workspaceProjection) {
+function buildActiveReviewTaskLinkedReferences(reviewQueueItems) {
+  const seen = new Set();
+
+  return (Array.isArray(reviewQueueItems) ? reviewQueueItems : []).flatMap((item) => {
+    const reviewTaskId = normalizeString(item?.review_task_id);
+    if (
+      !reviewTaskId
+      || !ACTIVE_REVIEW_TASK_STATUSES.has(item?.status)
+      || seen.has(reviewTaskId)
+    ) {
+      return [];
+    }
+
+    seen.add(reviewTaskId);
+    return [{ kind: 'review_task', review_task_id: reviewTaskId }];
+  });
+}
+
+function buildStableSlots(workspaceProjection, { reviewQueueItems = [] } = {}) {
+  const activeReviewTaskRefs = buildActiveReviewTaskLinkedReferences(reviewQueueItems);
+
   return Object.fromEntries(
     STABLE_SLOT_KEYS.map((slotKey) => {
       const slot = workspaceProjection?.slots?.[slotKey] ?? null;
-      const linkedReferences = workspaceProjection?.linked_references?.[slotKey] ?? [];
+      const linkedReferences = slotKey === 'review_queue'
+        ? activeReviewTaskRefs
+        : workspaceProjection?.linked_references?.[slotKey] ?? [];
 
       if (!slot) {
-        return [slotKey, createEmptySlot()];
+        return [
+          slotKey,
+          slotKey === 'review_queue'
+            ? {
+              ...createEmptySlot(),
+              linked_references: activeReviewTaskRefs,
+            }
+            : createEmptySlot(),
+        ];
       }
 
       return [
@@ -151,6 +183,13 @@ export async function getWorkspaceView(
     throw buildWorkspaceNotFound(topicId);
   }
 
+  const reviewQueue = await listReviewTasks(client, {
+    userId,
+    topicId,
+    status: reviewStatus,
+    dueBefore: reviewDueBefore,
+  });
+
   return {
     workspace: {
       workspace_id: workspaceProjection.workspace_id,
@@ -160,13 +199,10 @@ export async function getWorkspaceView(
       slot_state: workspaceProjection.slot_state ?? {},
       linked_reference_summary: workspaceProjection.linked_reference_summary ?? {},
       updated_at: workspaceProjection.updated_at ?? null,
-      slots: buildStableSlots(workspaceProjection),
+      slots: buildStableSlots(workspaceProjection, {
+        reviewQueueItems: reviewQueue.items,
+      }),
     },
-    review_queue: await listReviewTasks(client, {
-      userId,
-      topicId,
-      status: reviewStatus,
-      dueBefore: reviewDueBefore,
-    }),
+    review_queue: reviewQueue,
   };
 }

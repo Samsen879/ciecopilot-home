@@ -11,6 +11,7 @@ const {
   listReviewTasks,
 } = await import('../lib/workspaces/workspace-read-service.js');
 const { applyLearningEffects } = await import('../lib/mastery/mastery-orchestrator.js');
+const { patchLearningReviewTask } = await import('../lib/review/review-task-service.js');
 const { patchLearningArtifact } = await import('../lib/artifacts/artifact-service.js');
 const { default: workspaceHandler } = await import('../workspaces/[topicId].js');
 const { default: reviewTasksHandler } = await import('../review-tasks/index.js');
@@ -341,8 +342,30 @@ function createBoundaryLearningDb() {
       return { data: row, error: null };
     }
 
+    if (query.table === 'learning_review_tasks' && query.operation === 'select') {
+      const reviewTaskId = findFilter(query.filters, 'review_task_id');
+      return { data: state.reviewTasks.get(reviewTaskId) || null, error: null };
+    }
+
+    if (query.table === 'learning_review_tasks' && query.operation === 'update') {
+      const reviewTaskId = findFilter(query.filters, 'review_task_id');
+      const current = state.reviewTasks.get(reviewTaskId) || null;
+      const next = current ? { ...current, ...query.payload } : null;
+
+      if (next) {
+        state.reviewTasks.set(reviewTaskId, next);
+      }
+
+      return { data: next, error: null };
+    }
+
     if (query.table === 'learning_review_queue_projection' && query.operation === 'select') {
-      return { data: listProjectedReviewTasks(query.filters), error: null };
+      const rows = listProjectedReviewTasks(query.filters);
+      if (query.options?.single || query.options?.maybeSingle) {
+        return { data: rows[0] || null, error: null };
+      }
+
+      return { data: rows, error: null };
     }
 
     if (query.table === 'learning_artifacts' && query.operation === 'insert') {
@@ -772,5 +795,122 @@ describe('workspace read service', () => {
       linked_references: [],
       updated_at: '2026-03-22T09:00:00.000Z',
     });
+  });
+
+  test('review-task writes update topic projections and active review-queue references', async () => {
+    const db = createBoundaryLearningDb();
+    const now = () => new Date('2026-03-22T09:00:00.000Z');
+
+    const outcome = await applyLearningEffects(
+      {
+        user_id: 'student-1',
+        question_id: 'question-2',
+        question_context: {
+          family_id: '9709.integration_techniques',
+          question_type_id: '9709.integration.application',
+          primary_topic_id: 'source-topic',
+          primary_topic_path: '9709.integration.application.source',
+          classification_confidence: 0.77,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'integration-v1',
+              release_state: 'released',
+            },
+          ],
+        },
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-2' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-2' },
+        decisions: [
+          {
+            awarded: false,
+            awarded_marks: 0,
+            alignment_confidence: 0.71,
+          },
+        ],
+        uncertainty_validated: true,
+        misconception_tags: ['domain:interval'],
+        repair_target_topic_id: 'repair-target-topic',
+        repair_target_topic_path: '9709.integration.repair',
+        repair_target_question_type_id: '9709.integration.application',
+      },
+      {
+        supabase: db,
+        now,
+      },
+    );
+
+    await patchLearningArtifact({
+      client: db,
+      userId: 'student-1',
+      artifactId: outcome.artifact_candidates[0].artifact_id,
+      intent: 'set_placement_status',
+      placementStatus: 'pinned',
+    });
+
+    const completed = await patchLearningReviewTask({
+      client: db,
+      userId: 'student-1',
+      reviewTaskId: outcome.review_tasks[0].review_task_id,
+      intent: 'complete',
+      completionOutcome: 'completed',
+      completionEvidence: {
+        summary: 'Solved a fresh repair variant.',
+        artifact_ref: {
+          kind: 'artifact',
+          artifact_id: outcome.artifact_candidates[0].artifact_id,
+        },
+      },
+      now,
+    });
+
+    expect(completed.review_task).toMatchObject({
+      review_task_id: outcome.review_tasks[0].review_task_id,
+      status: 'completed',
+      completion_evidence: expect.objectContaining({
+        summary: 'Solved a fresh repair variant.',
+        outcome: 'completed',
+      }),
+    });
+
+    const workspaceAfterComplete = await getWorkspaceView(db, {
+      userId: 'student-1',
+      topicId: 'repair-target-topic',
+    });
+
+    expect(workspaceAfterComplete.review_queue.items[0]).toMatchObject({
+      review_task_id: outcome.review_tasks[0].review_task_id,
+      status: 'completed',
+    });
+    expect(workspaceAfterComplete.workspace.slots.review_queue.linked_references).toEqual([]);
+
+    const reopened = await patchLearningReviewTask({
+      client: db,
+      userId: 'student-1',
+      reviewTaskId: outcome.review_tasks[0].review_task_id,
+      intent: 'reopen',
+      now,
+    });
+
+    expect(reopened.review_task).toMatchObject({
+      review_task_id: outcome.review_tasks[0].review_task_id,
+      status: 'open',
+    });
+
+    const workspaceAfterReopen = await getWorkspaceView(db, {
+      userId: 'student-1',
+      topicId: 'repair-target-topic',
+    });
+
+    expect(workspaceAfterReopen.review_queue.items[0]).toMatchObject({
+      review_task_id: outcome.review_tasks[0].review_task_id,
+      status: 'open',
+    });
+    expect(workspaceAfterReopen.workspace.slots.review_queue.linked_references).toEqual([
+      {
+        kind: 'review_task',
+        review_task_id: outcome.review_tasks[0].review_task_id,
+      },
+    ]);
   });
 });

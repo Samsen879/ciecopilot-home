@@ -1,4 +1,5 @@
 import { applyLearningEffects } from '../lib/mastery/mastery-orchestrator.js';
+import { createReviewTaskService } from '../lib/review/review-task-service.js';
 
 function createSpyService(methodName, implementation) {
   const calls = [];
@@ -8,6 +9,32 @@ function createSpyService(methodName, implementation) {
       calls.push(input);
       return implementation(input);
     },
+  };
+}
+
+function buildStoredReviewTask(overrides = {}) {
+  return {
+    review_task_id: 'review-task-1',
+    user_id: 'student-1',
+    target_kind: 'question_type',
+    target_topic_id: 'topic-1',
+    target_family_id: '9709.trigonometry_manipulation_equations',
+    target_question_type_id: '9709.trigonometry.equations',
+    target_misconception_tags: [],
+    related_artifact_refs: [],
+    source_question_id: 'question-1',
+    source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+    trigger_type: 'marking_outcome',
+    mode: 'redo_variant',
+    due_at: '2026-03-25T00:00:00.000Z',
+    priority: 'normal',
+    estimated_minutes: 15,
+    success_criteria: {},
+    completion_evidence: {},
+    status: 'open',
+    created_at: '2026-03-24T09:00:00.000Z',
+    updated_at: '2026-03-24T09:00:00.000Z',
+    ...overrides,
   };
 }
 
@@ -138,6 +165,181 @@ describe('learning orchestration', () => {
     expect(reviewTaskService.calls[0]).toMatchObject({
       authoritative_scoring_allowed: false,
       repair_target_topic_id: 'repair-target-topic',
+    });
+  });
+});
+
+describe('review task service write semantics', () => {
+  test('complete intent records completion evidence and a governed completion outcome', async () => {
+    let storedTask = buildStoredReviewTask();
+    const reviewTaskRepository = {
+      async getReviewTaskById() {
+        return storedTask;
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        storedTask = {
+          ...storedTask,
+          review_task_id: reviewTaskId,
+          ...patch,
+        };
+        return storedTask;
+      },
+      async getReviewTaskProjectionById() {
+        return storedTask;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent: 'complete',
+      completionOutcome: 'completed',
+      completionEvidence: {
+        summary: 'Solved a fresh interval variant cleanly.',
+        attempt_ref: { kind: 'attempt', attempt_id: 'attempt-2' },
+      },
+    });
+
+    expect(result.review_task).toMatchObject({
+      review_task_id: 'review-task-1',
+      status: 'completed',
+      completion_evidence: {
+        summary: 'Solved a fresh interval variant cleanly.',
+        attempt_ref: { kind: 'attempt', attempt_id: 'attempt-2' },
+        outcome: 'completed',
+        recorded_at: '2026-03-24T10:00:00.000Z',
+      },
+    });
+  });
+
+  test('complete intent rejects evidence-free completion payloads', async () => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask();
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask(),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent: 'complete',
+        completionOutcome: 'completed',
+        completionEvidence: {},
+      }),
+    ).rejects.toMatchObject({
+      code: 'invalid_payload',
+      status: 400,
+      details: { field: 'completion_evidence' },
+    });
+  });
+
+  test('schedule intents validate due_at semantics instead of mutating state generically', async () => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask({
+            due_at: '2026-03-25T00:00:00.000Z',
+          });
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask({
+              due_at: '2026-03-25T00:00:00.000Z',
+            }),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent: 'snooze',
+        dueAt: '2026-03-24T12:00:00.000Z',
+      }),
+    ).rejects.toMatchObject({
+      code: 'invalid_payload',
+      status: 400,
+      details: { field: 'due_at' },
+    });
+  });
+
+  test('write intents enforce task ownership', async () => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask();
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask(),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-2',
+        reviewTaskId: 'review-task-1',
+        intent: 'reschedule',
+        dueAt: '2026-03-25T12:00:00.000Z',
+      }),
+    ).rejects.toMatchObject({
+      code: 'auth_forbidden',
+      status: 403,
+    });
+  });
+
+  test('reopen rejects already-open tasks with a stable conflict code', async () => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask({
+            status: 'open',
+          });
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask({
+              status: 'open',
+            }),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent: 'reopen',
+      }),
+    ).rejects.toMatchObject({
+      code: 'review_task_state_conflict',
+      status: 409,
     });
   });
 });

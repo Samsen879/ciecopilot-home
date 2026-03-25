@@ -48,11 +48,11 @@ const StudyHub = () => {
                         Compatibility Surface
                     </p>
                     <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-slate-950 sm:text-5xl">
-                        Study Hub now hands off into the learning runtime
+                        Study Hub is now a compatibility shell for the learning runtime
                     </h1>
                     <p className="mt-4 text-base leading-7 text-slate-600">
                         Legacy Study Hub is no longer the canonical home for runtime state. Use the
-                        pilot workspace links below to enter the new workspace shell.
+                        runtime workspace links below to enter the canonical workspace shell.
                     </p>
                 </header>
 
@@ -74,8 +74,8 @@ const StudyHub = () => {
                     </div>
 
                     <div className="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-600">
-                        AskAI and Learning Path are retained as compatibility entry points only while
-                        the runtime rollout stays behind the feature flag.
+                        AskAI and Learning Path remain non-canonical compatibility entry points;
+                        the legacy hub returns only if operators trigger an explicit rollback.
                     </div>
                 </main>
             </div>
@@ -85,6 +85,13 @@ const StudyHub = () => {
     return (
         <div className="container mx-auto px-4 py-8">
             <header className="text-center mb-12">
+                <div className="mx-auto mb-6 max-w-3xl rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-left text-sm text-amber-800">
+                    <p className="font-semibold uppercase tracking-[0.16em] text-amber-700">Rollback Mode</p>
+                    <p className="mt-2">
+                        This legacy Study Hub is temporarily restored for operational safety. Treat
+                        learning-runtime workspaces as the canonical home once rollback is cleared.
+                    </p>
+                </div>
                 <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
                     Study Hub
                 </h1>

@@ -1,0 +1,71 @@
+name: AO Operations Gate
+
+on:
+  pull_request:
+    paths:
+      - "scripts/ao/**"
+      - "scripts/ao-*.js"
+      - "tests/ao/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/ao-operations-gate.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/ao/**"
+      - "scripts/ao-*.js"
+      - "tests/ao/**"
+      - "package.json"
+      - "package-lock.json"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ao-operations:
+    name: AO Reconcile/Doctor/Lifecycle
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run AO regression suite
+        run: >
+          node --experimental-vm-modules node_modules/jest/bin/jest.js
+          --runInBand
+          tests/ao/reconciliation-contracts.test.js
+          tests/ao/ao-observation-source.test.js
+          tests/ao/github-observation-source.test.js
+          tests/ao/reconciliation-engine.test.js
+          tests/ao/ao-reconcile-cli.test.js
+          tests/ao/doctor-local-state-source.test.js
+          tests/ao/doctor-engine.test.js
+          tests/ao/doctor-report.test.js
+          tests/ao/ao-doctor-cli.test.js
+          tests/ao/lifecycle-contracts.test.js
+          tests/ao/lifecycle-engine.test.js
+          tests/ao/ao-lifecycle-cli.test.js
+
+      - name: Run AO acceptance coverage
+        run: npm run ao:test:acceptance
+
+      - name: Run AO operator smoke flows
+        run: |
+          npm run ao:smoke
+          npm run ao:smoke -- --scenario approved-and-green-pr
+
+      - name: Check AO CLI help surfaces
+        run: |
+          node scripts/ao-reconcile.js --help
+          node scripts/ao-doctor.js --help
+          node scripts/ao-lifecycle.js --help

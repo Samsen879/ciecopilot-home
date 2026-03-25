@@ -1,8 +1,12 @@
 import { createReviewTaskRepository } from '../repositories/review-task-repository.js';
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
+import {
+  buildReviewTaskSchedulerSeed,
+  mergeReviewTaskPayload,
+  pickReviewTaskMergeCandidate,
+} from './review-scheduler-policy.js';
 
-const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 const REVIEW_TASK_INTENTS = new Set(['complete', 'reschedule', 'snooze', 'reopen']);
 const REVIEW_TASK_COMPLETION_OUTCOMES = new Set(['completed', 'partial']);
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
@@ -198,6 +202,20 @@ function buildSchedulePatch(reviewTask, intent, dueAt, timestamp) {
     }
   }
 
+  const schedulerPolicy = reviewTask?.success_criteria?.scheduler_policy ?? {};
+  if (schedulerPolicy?.route === 'immediate_repair') {
+    const maxDeferralAt = normalizeString(schedulerPolicy.immediate_repair_max_deferral_at);
+    if (maxDeferralAt) {
+      const maxDeferralAtMs = new Date(maxDeferralAt).getTime();
+      if (Number.isFinite(maxDeferralAtMs) && nextDueAtMs > maxDeferralAtMs) {
+        throw buildInvalidPayload(
+          'Immediate-repair tasks cannot move beyond the freshness deferral window.',
+          { field: 'due_at' },
+        );
+      }
+    }
+  }
+
   return {
     due_at: normalizedDueAt,
     updated_at: timestamp,
@@ -259,11 +277,18 @@ function pickTargetKind({ targetQuestionTypeId, familyId } = {}) {
 }
 
 function buildReviewTaskPayload(input = {}, now = new Date()) {
-  const dueAt = new Date(now.getTime() + ONE_DAY_IN_MS).toISOString();
   const targetQuestionTypeId =
     input.repair_target_question_type_id
     || input.question_context?.question_type_id
     || null;
+  const scheduler = buildReviewTaskSchedulerSeed({
+    now,
+    misconceptionTags: input.misconception_tags,
+    triggerType: input.trigger_type,
+    regressionRecovery: input.regression_recovery === true,
+    learnerGoal: input.learner_goal ?? null,
+    fallbackReasonCode: input.fallback_reason_code ?? null,
+  });
   const targetKind = pickTargetKind({
     targetQuestionTypeId,
     familyId: input.question_context?.family_id ?? null,
@@ -288,10 +313,10 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
     related_artifact_refs: normalizeArray(input.related_artifact_refs),
     source_question_id: input.question_id ?? null,
     source_attempt_ref: input.source_attempt_ref ?? null,
-    trigger_type: input.fallback_reason_code || 'non_released_fallback',
-    mode: normalizeArray(input.misconception_tags).length > 0 ? 'trap_fix' : 'redo_variant',
-    due_at: dueAt,
-    priority: 'normal',
+    trigger_type: scheduler.triggerType,
+    mode: scheduler.mode,
+    due_at: scheduler.dueAt,
+    priority: scheduler.priority,
     estimated_minutes: 15,
     success_criteria: {
       posture: 'conservative_fallback',
@@ -300,6 +325,8 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
       local_signal_only: input.marking_result?.marking_summary?.local_signal_only === true,
       ambiguous_part_mapping_count: ambiguousPartMappingCount,
       part_results: partResults,
+      fallback_reason_code: input.fallback_reason_code ?? null,
+      scheduler_policy: scheduler.policy,
     },
     completion_evidence: {},
     status: 'open',
@@ -325,6 +352,29 @@ export function createReviewTaskService({
 
       if (!reviewTaskRepository) {
         return [payload];
+      }
+
+      const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(payload.user_id)
+        ?? [];
+      const mergeCandidate = pickReviewTaskMergeCandidate(activeTasks, payload);
+      if (mergeCandidate?.review_task_id) {
+        const mergedPatch = mergeReviewTaskPayload(
+          mergeCandidate,
+          payload,
+          now().toISOString(),
+        );
+        const merged = await reviewTaskRepository.updateReviewTask(
+          mergeCandidate.review_task_id,
+          mergedPatch,
+        );
+        return [
+          {
+            ...mergeCandidate,
+            ...merged,
+            target_topic_path:
+              payload.target_topic_path ?? mergeCandidate.target_topic_path ?? null,
+          },
+        ];
       }
 
       const stored = await reviewTaskRepository.insertReviewTask(payload);

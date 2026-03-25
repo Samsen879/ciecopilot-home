@@ -264,7 +264,12 @@ function buildPostMortemScoringPosture(reviewTasks = []) {
     release_scope_status: 'non_released_fallback',
     authoritative_scoring_allowed: false,
     fallback_reason_code:
-      normalizeNullableString(conservativeTask.trigger_type) ?? 'non_released_fallback',
+      normalizeNullableString(
+        conservativeTask?.success_criteria?.scheduler_policy?.fallback_reason_code,
+      )
+      ?? normalizeNullableString(conservativeTask?.success_criteria?.fallback_reason_code)
+      ?? normalizeNullableString(conservativeTask.trigger_type)
+      ?? 'non_released_fallback',
   };
 }
 

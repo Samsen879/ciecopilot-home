@@ -105,6 +105,57 @@ function buildQueueState(status, dueAt, now) {
   };
 }
 
+function normalizeSchedulerState(value) {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  return {
+    value: normalizeString(value.value),
+    label: normalizeString(value.label),
+    tone: normalizeString(value.tone, 'neutral'),
+    reasonCode: normalizeString(value.reasonCode ?? value.reason_code),
+    reasonSummary: normalizeString(value.reasonSummary ?? value.reason_summary),
+  };
+}
+
+function normalizeSchedulerPolicy(value) {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  return {
+    route: normalizeString(value.route),
+    freshnessBucket: normalizeString(value.freshnessBucket ?? value.freshness_bucket),
+    dailyRecommendationCap: value.dailyRecommendationCap ?? value.daily_recommendation_cap ?? null,
+    maxHighPriorityOpenPerType:
+      value.maxHighPriorityOpenPerType ?? value.max_high_priority_open_per_type ?? null,
+    immediateRepairMaxDeferralAt:
+      normalizeString(value.immediateRepairMaxDeferralAt ?? value.immediate_repair_max_deferral_at),
+  };
+}
+
+function normalizeSchedulerReasons(value) {
+  return (Array.isArray(value) ? value : []).map((reason) => ({
+    code: normalizeString(reason?.code),
+    summary: normalizeString(reason?.summary),
+  })).filter((reason) => reason.code || reason.summary);
+}
+
+function buildSchedulerExplanation(schedulerState, schedulerReasons, schedulerPolicy) {
+  const primaryReason = schedulerReasons[0] || null;
+  if (!schedulerState && !primaryReason && !schedulerPolicy) {
+    return null;
+  }
+
+  return {
+    summary: primaryReason?.summary || schedulerState?.reasonSummary || null,
+    reasonCode: primaryReason?.code || schedulerState?.reasonCode || null,
+    route: schedulerPolicy?.route || null,
+    freshnessBucket: schedulerPolicy?.freshnessBucket || null,
+  };
+}
+
 function buildResultFeedback(status, completionEvidence) {
   const summary = normalizeString(completionEvidence?.summary ?? completionEvidence?.note);
   const outcome = normalizeString(completionEvidence?.outcome);
@@ -160,6 +211,9 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
   const items = Array.isArray(reviewQueue?.items) ? reviewQueue.items : [];
   const normalizedItems = items.map((item) => {
     const status = normalizeString(item.status, 'open');
+    const schedulerState = normalizeSchedulerState(item.schedulerState ?? item.scheduler_state);
+    const schedulerPolicy = normalizeSchedulerPolicy(item.schedulerPolicy ?? item.scheduler_policy);
+    const schedulerReasons = normalizeSchedulerReasons(item.schedulerReasons ?? item.scheduler_reasons);
 
     return {
       ...item,
@@ -178,7 +232,7 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
       modeLabel: labelFromToken(item.mode),
       status,
       statusLabel: labelFromToken(status),
-      queueState: buildQueueState(status, item.dueAt ?? item.due_at, now),
+      queueState: schedulerState || buildQueueState(status, item.dueAt ?? item.due_at, now),
       dueAt: normalizeString(item.dueAt ?? item.due_at),
       dueAtLabel: formatTimestampLabel(item.dueAt ?? item.due_at),
       estimatedMinutes: item.estimatedMinutes ?? item.estimated_minutes ?? 0,
@@ -187,6 +241,14 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
       resultFeedback: buildResultFeedback(
         status,
         item.completionEvidence ?? item.completion_evidence ?? null,
+      ),
+      schedulerState,
+      schedulerPolicy,
+      schedulerReasons,
+      schedulerExplanation: buildSchedulerExplanation(
+        schedulerState,
+        schedulerReasons,
+        schedulerPolicy,
       ),
       launchPayload: buildLaunchPayload(item),
       workspaceLink: {
@@ -209,6 +271,7 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
     return acc;
   }, {
     total: 0,
+    escalated: 0,
     due: 0,
     open: 0,
     deferred: 0,
@@ -219,6 +282,7 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
   return {
     scope: normalizeString(reviewQueue?.scope),
     topicId: normalizeString(reviewQueue?.topicId ?? reviewQueue?.topic_id),
+    policy: normalizeSchedulerPolicy(reviewQueue?.policy),
     items: normalizedItems,
     summary,
     actionDrafts: buildReviewQueueActionDrafts(normalizedItems, {}, { now }),

@@ -1,6 +1,10 @@
 import { STABLE_SLOT_KEYS } from '../contracts/runtime-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import { fetchWorkspaceProjection } from '../repositories/workspace-repository.js';
+import {
+  deriveReviewQueueProjection,
+  summarizeReviewQueueItems,
+} from '../review/review-scheduler-policy.js';
 
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
 
@@ -117,13 +121,33 @@ function buildWorkspaceNotFound(topicId) {
   });
 }
 
-function applyOptionalFilter(query, methodName, column, value) {
-  const normalizedValue = normalizeString(value);
-  if (!normalizedValue || typeof query?.[methodName] !== 'function') {
-    return query;
-  }
+function filterReviewQueueItems(items, {
+  topicId = null,
+  status = null,
+  dueBefore = null,
+} = {}) {
+  const normalizedTopicId = normalizeString(topicId);
+  const normalizedStatus = normalizeString(status);
+  const normalizedDueBefore = normalizeString(dueBefore);
 
-  return query[methodName](column, normalizedValue);
+  return (Array.isArray(items) ? items : []).filter((item) => {
+    if (normalizedTopicId && item?.target_topic_id !== normalizedTopicId) {
+      return false;
+    }
+
+    if (normalizedStatus && item?.status !== normalizedStatus) {
+      return false;
+    }
+
+    if (normalizedDueBefore) {
+      const itemDueAt = normalizeString(item?.due_at);
+      if (!itemDueAt || itemDueAt > normalizedDueBefore) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 }
 
 export async function listReviewTasks(
@@ -140,10 +164,6 @@ export async function listReviewTasks(
     .select('*')
     .eq('user_id', userId);
 
-  query = applyOptionalFilter(query, 'eq', 'target_topic_id', topicId);
-  query = applyOptionalFilter(query, 'eq', 'status', status);
-  query = applyOptionalFilter(query, 'lte', 'due_at', dueBefore);
-
   if (typeof query?.order === 'function') {
     query = query
       .order('due_at', { ascending: true, nullsFirst: false })
@@ -156,12 +176,21 @@ export async function listReviewTasks(
     throw new Error(`Failed to load learning review queue projection: ${error.message}`);
   }
 
+  const derivedProjection = deriveReviewQueueProjection(Array.isArray(data) ? data : []);
+  const filteredItems = filterReviewQueueItems(derivedProjection.items, {
+    topicId,
+    status,
+    dueBefore,
+  });
+
   return {
     scope: 'global_queue_projection',
     topic_id: normalizeString(topicId),
     status: normalizeString(status),
     due_before: normalizeString(dueBefore),
-    items: Array.isArray(data) ? data : [],
+    policy: derivedProjection.policy,
+    items: filteredItems,
+    summary: summarizeReviewQueueItems(filteredItems),
   };
 }
 

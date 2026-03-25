@@ -10,6 +10,7 @@ import { runDecisionEngine, SCORING_ENGINE_VERSION as ENGINE_VERSION } from './l
 import { resolveUserId, AuthError } from './lib/auth-helper.js';
 import { resolveQuestionId, ValidationError } from './lib/attempt-repository.js';
 import { writeLedger } from './lib/ledger-orchestrator.js';
+import { buildMarkingResult } from './lib/marking-result-contract.js';
 import { applyLearningEffects } from '../learning/lib/mastery/mastery-orchestrator.js';
 
 // ── Feature flag (evaluated per-request so env changes take effect) ──────────
@@ -158,6 +159,19 @@ async function loadLearningQuestionContext(supabase, questionId) {
     };
 }
 
+function getEmptyLearningQuestionContext(questionId) {
+  return {
+    question_id: questionId,
+    primary_topic_id: null,
+    family_id: null,
+    question_type_id: null,
+    question_type_release_state: null,
+    classification_confidence: null,
+    candidate_rubric_refs: [],
+    release_scope_status: null,
+  };
+}
+
 // ── Scoring engine version constant (re-exported from decision engine) ──────
 const SCORING_ENGINE_VERSION = ENGINE_VERSION;
 
@@ -189,6 +203,8 @@ export default async function handler(req, res) {
     const {
       storage_key,
       q_number,
+      part_id = null,
+      subpart_id = null,
       subpart = null,
       student_steps,
       rubric_source_version: requestedVersion = null,
@@ -228,6 +244,19 @@ export default async function handler(req, res) {
         return errorResponse(res, ErrorCodes.QUESTION_NOT_FOUND, qErr.message, { run_id });
       }
       throw qErr;
+    }
+
+    let questionContext = getEmptyLearningQuestionContext(question_id);
+    try {
+      questionContext = await loadLearningQuestionContext(supabase, question_id);
+    } catch (questionContextError) {
+      console.warn(JSON.stringify({
+        event: 'evaluate_v1_learning_question_context_error',
+        run_id,
+        question_id,
+        error: questionContextError?.message || String(questionContextError),
+        ts: new Date().toISOString(),
+      }));
     }
 
     // ── Audit log (structured) ────────────────────────────────────────────
@@ -289,8 +318,19 @@ export default async function handler(req, res) {
     // ── Evidence Ledger write ─────────────────────────────────────────────
     let ledger_write_status = null;
     let learningEffects = null;
+    let markingResult = null;
+    const requestScopedPartId = part_id;
+    const requestScopedSubpartId = subpart_id ?? subpart ?? null;
 
     try {
+      const baseMarkingResult = buildMarkingResult({
+        questionId: question_id,
+        questionTypeId: questionContext.question_type_id,
+        requestPartId: requestScopedPartId,
+        requestSubpartId: requestScopedSubpartId,
+        decisions,
+        rubricPoints: rubric_points,
+      });
       const ledgerResult = await writeLedger({
         supabase,
         user_id,
@@ -314,10 +354,21 @@ export default async function handler(req, res) {
         response_summary: {
           decisions,
           rubric_rows_used,
+          marking_result: baseMarkingResult,
         },
       });
 
       ledger_write_status = ledgerResult.decision_write_status;
+      markingResult = buildMarkingResult({
+        questionId: question_id,
+        attemptId: ledgerResult.attempt_id,
+        markRunId: ledgerResult.mark_run_id,
+        questionTypeId: questionContext.question_type_id,
+        requestPartId: requestScopedPartId,
+        requestSubpartId: requestScopedSubpartId,
+        decisions,
+        rubricPoints: rubric_points,
+      });
 
       console.log(JSON.stringify({
         event: 'evaluate_v1_ledger_write_done',
@@ -332,7 +383,6 @@ export default async function handler(req, res) {
 
       if (ledgerResult.decision_write_status === 'success') {
         try {
-          const questionContext = await loadLearningQuestionContext(supabase, question_id);
           learningEffects = await applyLearningEffects({
             supabase,
             user_id,
@@ -361,6 +411,7 @@ export default async function handler(req, res) {
             },
             source_attempt_context: ledgerResult.attempt_context ?? null,
             decisions,
+            marking_result: markingResult,
             uncertainty_validated: true,
           }, {
             supabase,
@@ -393,6 +444,7 @@ export default async function handler(req, res) {
       rubric_rows_used,
       decisions,
       ledger_write_status,
+      marking_result: markingResult,
     };
 
     if (learningEffects) {

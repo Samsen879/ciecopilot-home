@@ -78,6 +78,10 @@ function normalizeNullableString(value) {
   return normalized || null;
 }
 
+function normalizeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
 function isUuidString(value) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     normalizeString(value),
@@ -123,6 +127,10 @@ function makeTopicRef(topicId, topicPath) {
   return topicId || topicPath
     ? { kind: 'topic', topic_id: topicId ?? null, topic_path: topicPath ?? null }
     : null;
+}
+
+function makeArtifactRef(artifactId) {
+  return artifactId ? { kind: 'artifact', artifact_id: artifactId } : null;
 }
 
 function normalizeSessionBundle({
@@ -210,6 +218,280 @@ function normalizeSessionResponse(session) {
     handoff: createSessionHandoff(normalized),
     resume_guidance: buildSessionResumeGuidance(normalized),
   };
+}
+
+async function loadArtifactForPostMortem(client, artifactId) {
+  const { data, error } = await client
+    .from('learning_artifacts')
+    .select('*')
+    .eq('artifact_id', artifactId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load post-mortem artifact: ${error.message}`);
+  }
+
+  return data ?? null;
+}
+
+async function listUserReviewTaskProjections(client, userId) {
+  const { data, error } = await client
+    .from('learning_review_queue_projection')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    throw new Error(`Failed to load post-mortem review-task projection: ${error.message}`);
+  }
+
+  return Array.isArray(data) ? data : [];
+}
+
+function uniqueStrings(values = []) {
+  return [...new Set(normalizeArray(values).map((value) => normalizeNullableString(value)).filter(Boolean))];
+}
+
+function buildPostMortemScoringPosture(reviewTasks = []) {
+  const conservativeTask = reviewTasks.find((task) =>
+    task?.trigger_type === 'non_released_fallback'
+    || task?.success_criteria?.authoritative_scoring_allowed === false);
+
+  if (!conservativeTask) {
+    return null;
+  }
+
+  return {
+    release_scope_status: 'non_released_fallback',
+    authoritative_scoring_allowed: false,
+    fallback_reason_code:
+      normalizeNullableString(conservativeTask.trigger_type) ?? 'non_released_fallback',
+  };
+}
+
+function selectPostMortemReviewTasks(reviewTasks = [], {
+  topicId = null,
+  questionTypeId = null,
+  currentQuestionId = null,
+} = {}) {
+  const normalizedTasks = normalizeArray(reviewTasks);
+  const sourceQuestionMatches = currentQuestionId
+    ? normalizedTasks.filter((task) => task?.source_question_id === currentQuestionId)
+    : [];
+  const candidateTasks = sourceQuestionMatches.length > 0 ? sourceQuestionMatches : normalizedTasks;
+
+  return candidateTasks.filter((task) => {
+    if (currentQuestionId && task?.source_question_id === currentQuestionId) {
+      return true;
+    }
+
+    if (topicId && task?.target_topic_id !== topicId) {
+      return false;
+    }
+
+    if (questionTypeId && task?.target_question_type_id && task.target_question_type_id !== questionTypeId) {
+      return false;
+    }
+
+    return Boolean(topicId);
+  });
+}
+
+function pickPreferredRepairTask(reviewTasks = []) {
+  return reviewTasks.find((task) => ['open', 'partial'].includes(task?.status))
+    || reviewTasks[0]
+    || null;
+}
+
+function buildPostMortemDiagnosticSummary({ misconceptionTags = [], partResults = [] } = {}) {
+  if (misconceptionTags.length > 0) {
+    return `Focus on ${misconceptionTags.join(', ')} before starting the repair step.`;
+  }
+
+  if (partResults.length > 0) {
+    return 'Use the scored part breakdown before moving into the repair step.';
+  }
+
+  return 'Use the saved scored attempt and misconception evidence before starting repair.';
+}
+
+function buildPostMortemArtifactCandidate(artifact = {}) {
+  return {
+    artifact_id: artifact.artifact_id,
+    artifact_kind: artifact.artifact_kind,
+    canonical_home_topic_id: artifact.canonical_home_topic_id,
+    target_question_type_id: artifact.target_question_type_id ?? null,
+    trust_status: artifact.trust_status ?? null,
+    placement_status: artifact.placement_status ?? null,
+    lifecycle_status: artifact.lifecycle_status ?? null,
+    slot_key: artifact.slot_key ?? null,
+  };
+}
+
+function buildRepairHandoff({
+  currentQuestionId,
+  currentQuestionTypeId,
+  preferredReviewTask,
+  topicId,
+  topicPath,
+} = {}) {
+  if (preferredReviewTask?.review_task_id) {
+    return {
+      title: 'Start the repair session',
+      message: 'Use the projected review task to retry the misconception inside canonical runtime flows.',
+      action_label: 'Launch repair session',
+      launch_payload: {
+        anchor_kind: 'review_task',
+        review_task_id: preferredReviewTask.review_task_id,
+        mode: 'spaced_review',
+        topic_id: preferredReviewTask.target_topic_id ?? topicId ?? null,
+        topic_path: preferredReviewTask.target_topic_path ?? topicPath ?? null,
+        current_question_type_id:
+          preferredReviewTask.target_question_type_id ?? currentQuestionTypeId ?? null,
+      },
+    };
+  }
+
+  if (currentQuestionId) {
+    return {
+      title: 'Retry the source question',
+      message: 'Return to the source question in guided solve once the misconception focus is clear.',
+      action_label: 'Launch guided solve',
+      launch_payload: {
+        anchor_kind: 'question',
+        question_id: currentQuestionId,
+        mode: 'guided_solve',
+        topic_id: topicId ?? null,
+        topic_path: topicPath ?? null,
+        current_question_id: currentQuestionId,
+        current_question_type_id: currentQuestionTypeId ?? null,
+      },
+    };
+  }
+
+  return null;
+}
+
+async function enrichPostMortemSession(client, {
+  userId,
+  session,
+} = {}) {
+  if (session?.mode !== 'post_mortem_review') {
+    return session;
+  }
+
+  const bundle = normalizeStoredBundle(session);
+  const anchorKind = bundle.current_anchor_kind ?? session?.current_anchor_kind ?? null;
+  if (anchorKind !== 'artifact') {
+    return session;
+  }
+
+  const artifactId = normalizeNullableString(
+    bundle.current_anchor_ref?.artifact_id
+    ?? bundle.current_anchor_ref?.artifactId
+    ?? session?.current_anchor_ref?.artifact_id
+    ?? session?.current_anchor_ref?.artifactId,
+  );
+  if (!artifactId) {
+    return session;
+  }
+
+  const artifact = await loadArtifactForPostMortem(client, artifactId);
+  if (!artifact) {
+    return session;
+  }
+
+  const topicId = artifact.canonical_home_topic_id ?? bundle.primary_topic_id ?? null;
+  const topicPath = bundle.primary_topic_path ?? null;
+  const currentQuestionId = normalizeNullableString(session?.current_question_id);
+  const currentQuestionTypeId =
+    normalizeNullableString(artifact.target_question_type_id)
+    ?? normalizeNullableString(session?.current_question_type_id)
+    ?? null;
+  const reviewTasks = selectPostMortemReviewTasks(
+    await listUserReviewTaskProjections(client, userId),
+    {
+      topicId,
+      questionTypeId: currentQuestionTypeId,
+      currentQuestionId,
+    },
+  );
+  const preferredReviewTask = pickPreferredRepairTask(reviewTasks);
+  const misconceptionTags = uniqueStrings([
+    ...normalizeArray(artifact.misconception_tags),
+    ...reviewTasks.flatMap((task) => normalizeArray(task?.target_misconception_tags)),
+  ]);
+  const partResults = normalizeArray(preferredReviewTask?.success_criteria?.part_results).map((part) => ({
+    part_id: part?.part_id ?? null,
+    subpart_id: part?.subpart_id ?? null,
+    score_awarded: Number(part?.score_awarded ?? 0),
+    score_max: Number(part?.score_max ?? 0),
+  }));
+  const scoringPosture = buildPostMortemScoringPosture(reviewTasks);
+  const repairHandoff = buildRepairHandoff({
+    currentQuestionId,
+    currentQuestionTypeId,
+    preferredReviewTask,
+    topicId,
+    topicPath,
+  });
+  const summaryState = {
+    ...(isPlainObject(session?.summary_state) ? cloneJson(session.summary_state) : {}),
+    post_mortem_review: {
+      scoring_posture: scoringPosture,
+      misconception_tags: misconceptionTags,
+      diagnostic_focus: {
+        title: 'Misconception-focused diagnostic',
+        summary: buildPostMortemDiagnosticSummary({
+          misconceptionTags,
+          partResults,
+        }),
+        source_question_id: currentQuestionId,
+        source_attempt_ref: artifact.source_attempt_id
+          ? { kind: 'attempt', attempt_id: artifact.source_attempt_id }
+          : null,
+        source_mark_run_ref: artifact.source_mark_run_id
+          ? { kind: 'mark_run', mark_run_id: artifact.source_mark_run_id }
+          : null,
+        part_results: partResults,
+      },
+      artifact_candidates: [buildPostMortemArtifactCandidate(artifact)],
+      repair_handoff: repairHandoff,
+    },
+  };
+
+  if (repairHandoff?.launch_payload && !summaryState.suggested_handoff_kind) {
+    summaryState.suggested_handoff_kind = 'explicit_new_session';
+    summaryState.suggested_handoff_reason_code = 'post_mortem_repair_ready';
+    summaryState.suggested_handoff_message = repairHandoff.message;
+    summaryState.recommended_mode = repairHandoff.launch_payload.mode;
+    summaryState.recommended_anchor_kind = repairHandoff.launch_payload.anchor_kind;
+    summaryState.recommended_anchor_ref = repairHandoff.launch_payload.anchor_kind === 'review_task'
+      ? {
+        kind: 'review_task',
+        review_task_id: repairHandoff.launch_payload.review_task_id,
+      }
+      : {
+        kind: 'question',
+        question_id: repairHandoff.launch_payload.question_id,
+      };
+  }
+
+  return {
+    ...session,
+    summary_state: summaryState,
+    key_artifact_refs: [makeArtifactRef(artifact.artifact_id)].filter(Boolean),
+    misconceptions_in_focus: misconceptionTags,
+  };
+}
+
+async function enrichSessionForResponse(client, {
+  userId,
+  session,
+} = {}) {
+  return enrichPostMortemSession(client, {
+    userId,
+    session,
+  });
 }
 
 function assertRequiredString(value, field) {
@@ -463,7 +745,12 @@ async function maybeRecoverCreateSessionResponse(client, {
     return null;
   }
 
-  return buildLearningSessionResponse(session);
+  return buildLearningSessionResponse(
+    await enrichSessionForResponse(client, {
+      userId,
+      session,
+    }),
+  );
 }
 
 async function resolveCreateSessionReplay(client, {
@@ -602,7 +889,10 @@ async function performCreateLearningSession(client, {
     misconceptions_in_focus: [],
   });
 
-  return buildLearningSessionResponse(session, {
+  return buildLearningSessionResponse(await enrichSessionForResponse(client, {
+    userId,
+    session,
+  }), {
     anchorKind: normalized.anchorKind,
     anchorRef: normalized.anchorRef,
     canonicalHome: resolvedAnchor.canonicalHome,
@@ -732,5 +1022,8 @@ export async function readLearningSession(client, { userId, sessionId } = {}) {
     throw createLearningError('session_not_found');
   }
 
-  return buildLearningSessionResponse(session);
+  return buildLearningSessionResponse(await enrichSessionForResponse(client, {
+    userId,
+    session,
+  }));
 }

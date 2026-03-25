@@ -259,6 +259,56 @@ export default function LearningSessionPage() {
     setLaunchDraft((currentDraft) => patchSessionLaunchDraft(currentDraft, patch));
   }
 
+  async function handlePostMortemLaunch(launchPayload) {
+    if (!launchPayload || launchStatus === 'submitting') {
+      return;
+    }
+
+    setLaunchStatus('submitting');
+    setLaunchError(null);
+
+    try {
+      const payload = await createSession(
+        buildSessionLaunchPayload(createSessionLaunchDraft(launchPayload)),
+        {
+          idempotencyKey: createRequestKey('learning-session-handoff'),
+        },
+      );
+      const createdSessionId = payload?.session?.sessionId || null;
+
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      startTransition(() => {
+        setSessionPayload(payload);
+        setTurnHistory([]);
+        setAskMessage('');
+        setAskError(null);
+        setLaunchStatus('idle');
+        setSurfaceState('ready');
+        setError(null);
+      });
+
+      if (createdSessionId) {
+        skipReloadSessionIdRef.current = createdSessionId;
+        navigate(`/learn/session/${createdSessionId}`, {
+          replace: true,
+          state: { handoffFromPostMortem: true },
+        });
+      }
+    } catch (requestError) {
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      startTransition(() => {
+        setLaunchError(requestError);
+        setLaunchStatus('idle');
+      });
+    }
+  }
+
   function handleImportDraftChange(patch) {
     setImportError(null);
     setImportHandoffError(null);
@@ -530,6 +580,7 @@ export default function LearningSessionPage() {
             viewModel={viewModel}
             onLauncherChange={handleLaunchFieldChange}
             onLaunch={handleLaunch}
+            onPostMortemLaunch={handlePostMortemLaunch}
             onAskChange={handleAskMessageChange}
             onAsk={handleAsk}
           />

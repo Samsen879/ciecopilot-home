@@ -218,6 +218,7 @@ describe('WorkspaceShell', () => {
     expect(html).toContain('Visible inbox artifacts');
     expect(html).toContain('artifact-successor');
     expect(html).toContain('Pin to slot');
+    expect(html).toContain('Start post-mortem review');
     expect(html).toContain('Unpin');
     expect(html).toContain('Mark contested');
     expect(html).toContain('Supersede');

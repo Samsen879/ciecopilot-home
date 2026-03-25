@@ -1,3 +1,11 @@
+import { randomUUID } from 'node:crypto';
+import {
+  deleteLearningRequestIdempotencyReservation,
+  finalizeLearningRequestIdempotency,
+  getLearningRequestIdempotency,
+  reserveLearningRequestIdempotency,
+  setLearningRequestIdempotencyResourceRef,
+} from '../repositories/request-idempotency-repository.js';
 import { insertSession, getSession } from '../repositories/session-repository.js';
 import { resolveCreateSessionAnchor } from './session-anchor-resolution.js';
 import {
@@ -56,7 +64,9 @@ const LEARNING_ERROR_SPECS = {
   internal_error: { status: 500, message: 'Internal server error.' },
 };
 
-const IDEMPOTENT_CREATE_SESSIONS = new Map();
+const IDEMPOTENCY_POLL_ATTEMPTS = 10;
+const IDEMPOTENCY_POLL_INTERVAL_MS = 250;
+const IDEMPOTENCY_ABANDONED_AGE_MS = 5 * 60 * 1000;
 
 function normalizeString(value) {
   if (value === null || value === undefined) return '';
@@ -83,32 +93,6 @@ function cloneJson(value) {
     return null;
   }
   return JSON.parse(JSON.stringify(value));
-}
-
-function createDeferred() {
-  let resolve;
-  let reject;
-  const promise = new Promise((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-  promise.catch(() => {});
-  return { promise, resolve, reject };
-}
-
-function canonicalizeJson(value) {
-  if (Array.isArray(value)) {
-    return value.map((entry) => canonicalizeJson(entry));
-  }
-  if (isPlainObject(value)) {
-    return Object.keys(value)
-      .sort()
-      .reduce((acc, key) => {
-        acc[key] = canonicalizeJson(value[key]);
-        return acc;
-      }, {});
-  }
-  return value ?? null;
 }
 
 function createLearningError(code, {
@@ -414,82 +398,215 @@ function validateCreateSessionPayload(body = {}) {
   };
 }
 
-function idempotencyKeyForCreateSession(userId, requestPath, headerValue) {
-  const key = normalizeNullableString(headerValue);
-  if (!key) return null;
-  return `${userId}:${requestPath}:${key}`;
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function normalizedIdempotencyPayload(payload) {
-  return JSON.stringify(canonicalizeJson(payload));
-}
-
-async function maybeReplayCreateSession(client, userId, cacheKey, normalizedPayload) {
-  if (!cacheKey) return null;
-  while (true) {
-    const cached = IDEMPOTENT_CREATE_SESSIONS.get(cacheKey);
-    if (!cached) return null;
-
-    if (cached.normalizedPayload !== normalizedPayload) {
-      throw createLearningError('idempotency_conflict');
-    }
-
-    if (cached.state === 'pending') {
-      try {
-        const response = await cached.deferred.promise;
-        return cloneJson(response);
-      } catch (error) {
-        const current = IDEMPOTENT_CREATE_SESSIONS.get(cacheKey);
-        if (current === cached) {
-          IDEMPOTENT_CREATE_SESSIONS.delete(cacheKey);
-        }
-        throw error;
-      }
-    }
-
-    const cachedSessionId = cached.response?.session?.session_id ?? null;
-    if (cachedSessionId) {
-      const session = await getSession(client, {
-        sessionId: cachedSessionId,
-        userId,
-      });
-      if (session) {
-        return cloneJson(cached.response);
-      }
-    }
-
-    if (IDEMPOTENT_CREATE_SESSIONS.get(cacheKey) === cached) {
-      IDEMPOTENT_CREATE_SESSIONS.delete(cacheKey);
-    }
-  }
-}
-
-function reserveCreateSession(cacheKey, normalizedPayload) {
-  if (!cacheKey) return null;
-  const reservation = {
-    normalizedPayload,
-    state: 'pending',
-    response: null,
-    deferred: createDeferred(),
+function buildLearningSessionResponse(session, {
+  anchorKind = session?.current_anchor_kind ?? null,
+  anchorRef = session?.current_anchor_ref ?? null,
+  canonicalHome = null,
+} = {}) {
+  const normalizedSession = normalizeSessionResponse(session);
+  const bundle = normalizedSession.active_scope_bundle;
+  const resolvedCanonicalHome = canonicalHome || {
+    topic_id: bundle.primary_topic_id,
+    topic_path: bundle.primary_topic_path,
   };
-  IDEMPOTENT_CREATE_SESSIONS.set(cacheKey, reservation);
-  return reservation;
+
+  return {
+    session: normalizedSession,
+    anchor_validity: buildAnchorValidity(
+      anchorKind,
+      anchorRef,
+      resolvedCanonicalHome,
+    ),
+    canonical_home_context: buildCanonicalHomeContext(
+      anchorKind,
+      resolvedCanonicalHome,
+    ),
+    feature_flags: featureFlags(),
+  };
 }
 
-function rememberCreateSession(cacheKey, reservation, response) {
-  if (!cacheKey || !reservation) return;
-  const clonedResponse = cloneJson(response);
-  reservation.state = 'fulfilled';
-  reservation.response = clonedResponse;
-  reservation.deferred.resolve(clonedResponse);
-}
-
-function releaseCreateSessionReservation(cacheKey, reservation, error) {
-  if (!cacheKey || !reservation) return;
-  if (IDEMPOTENT_CREATE_SESSIONS.get(cacheKey) === reservation) {
-    IDEMPOTENT_CREATE_SESSIONS.delete(cacheKey);
+function isPendingReservationAbandoned(row) {
+  if (row?.status !== 'pending') {
+    return false;
   }
-  reservation.deferred.reject(error);
+
+  const createdAt = Date.parse(row.created_at || '');
+  if (!Number.isFinite(createdAt)) {
+    return false;
+  }
+
+  return (Date.now() - createdAt) >= IDEMPOTENCY_ABANDONED_AGE_MS;
+}
+
+async function maybeRecoverCreateSessionResponse(client, {
+  userId,
+  row,
+} = {}) {
+  const sessionId = row?.resource_ref?.kind === 'learning_session'
+    ? normalizeNullableString(row.resource_ref.session_id)
+    : null;
+
+  if (!sessionId) {
+    return null;
+  }
+
+  const session = await getSession(client, {
+    sessionId,
+    userId,
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  return buildLearningSessionResponse(session);
+}
+
+async function resolveCreateSessionReplay(client, {
+  userId,
+  requestPath,
+  idempotencyKey,
+  row,
+} = {}) {
+  let current = row;
+
+  for (let attempt = 0; attempt < IDEMPOTENCY_POLL_ATTEMPTS; attempt += 1) {
+    if (current?.status === 'completed' && isPlainObject(current.response_payload)) {
+      return cloneJson(current.response_payload);
+    }
+
+    const recovered = await maybeRecoverCreateSessionResponse(client, {
+      userId,
+      row: current,
+    });
+
+    if (recovered) {
+      await finalizeLearningRequestIdempotency(client, {
+        userId,
+        requestPath,
+        idempotencyKey,
+        responsePayload: recovered,
+      });
+      return recovered;
+    }
+
+    if (attempt < IDEMPOTENCY_POLL_ATTEMPTS - 1) {
+      await sleep(IDEMPOTENCY_POLL_INTERVAL_MS);
+      current = await getLearningRequestIdempotency(client, {
+        userId,
+        requestPath,
+        idempotencyKey,
+      });
+    }
+  }
+
+  const latest = await getLearningRequestIdempotency(client, {
+    userId,
+    requestPath,
+    idempotencyKey,
+  });
+
+  if (latest?.status === 'completed' && isPlainObject(latest.response_payload)) {
+    return cloneJson(latest.response_payload);
+  }
+
+  const recovered = await maybeRecoverCreateSessionResponse(client, {
+    userId,
+    row: latest,
+  });
+  if (recovered) {
+    await finalizeLearningRequestIdempotency(client, {
+      userId,
+      requestPath,
+      idempotencyKey,
+      responsePayload: recovered,
+    });
+    return recovered;
+  }
+
+  if (latest && isPendingReservationAbandoned(latest)) {
+    await deleteLearningRequestIdempotencyReservation(client, {
+      userId,
+      requestPath,
+      idempotencyKey,
+    });
+    return null;
+  }
+
+  throw createLearningError('internal_error', {
+    message: 'Learning session request is still pending.',
+  });
+}
+
+async function performCreateLearningSession(client, {
+  userId,
+  normalized,
+  sessionId = null,
+} = {}) {
+  const parentSession = normalized.parentSessionId
+    ? await getSession(client, {
+      sessionId: normalized.parentSessionId,
+      userId,
+    })
+    : null;
+
+  if (normalized.parentSessionId && !parentSession) {
+    throw createLearningError('session_not_found');
+  }
+
+  const resolvedAnchor = await resolveCreateSessionAnchor(client, {
+    userId,
+    subjectCode: normalized.subjectCode,
+    anchorKind: normalized.anchorKind,
+    anchorRef: normalized.anchorRef,
+    currentQuestionId: normalized.currentQuestionId,
+    currentQuestionTypeId: normalized.currentQuestionTypeId,
+  });
+
+  const activeScopeBundle = normalizeSessionBundle({
+    sessionGoal: normalized.sessionGoal,
+    mode: normalized.mode,
+    anchorKind: normalized.anchorKind,
+    anchorRef: normalized.anchorRef,
+    currentQuestionId: resolvedAnchor.currentQuestionId,
+    currentQuestionTypeId: resolvedAnchor.currentQuestionTypeId,
+    canonicalHome: resolvedAnchor.canonicalHome,
+  });
+  const lineage = buildChildSessionLineage({
+    parentSession,
+    parentSessionId: normalized.parentSessionId,
+    handoffKind: normalized.handoffKind,
+  });
+
+  const session = await insertSession(client, {
+    session_id: sessionId,
+    user_id: userId,
+    subject_code: normalized.subjectCode,
+    session_goal: normalized.sessionGoal,
+    mode: normalized.mode,
+    active_scope_bundle: activeScopeBundle,
+    current_anchor_kind: normalized.anchorKind,
+    current_anchor_ref: normalized.anchorRef,
+    current_question_id: resolvedAnchor.currentQuestionId,
+    current_question_type_id: resolvedAnchor.currentQuestionTypeId,
+    summary_state: {},
+    parent_session_id: lineage.parent_session_id,
+    handoff_kind: lineage.handoff_kind,
+    lineage_summary_snapshot: lineage.lineage_summary_snapshot,
+    open_questions: [],
+    key_artifact_refs: [],
+    misconceptions_in_focus: [],
+  });
+
+  return buildLearningSessionResponse(session, {
+    anchorKind: normalized.anchorKind,
+    anchorRef: normalized.anchorRef,
+    canonicalHome: resolvedAnchor.canonicalHome,
+  });
 }
 
 export function sendLearningError(req, res, code, overrides = {}) {
@@ -527,96 +644,74 @@ export async function createLearningSession(client, {
   idempotencyKey = null,
 } = {}) {
   const normalized = validateCreateSessionPayload(body);
-  const cacheKey = idempotencyKeyForCreateSession(userId, requestPath, idempotencyKey);
-  const normalizedPayload = normalizedIdempotencyPayload(normalized);
-  const replay = await maybeReplayCreateSession(
-    client,
-    userId,
-    cacheKey,
-    normalizedPayload,
-  );
-  if (replay) {
-    return replay;
+  const normalizedIdempotencyKey = normalizeNullableString(idempotencyKey);
+
+  if (!normalizedIdempotencyKey) {
+    return performCreateLearningSession(client, {
+      userId,
+      normalized,
+    });
   }
 
-  const reservation = reserveCreateSession(cacheKey, normalizedPayload);
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const reservation = await reserveLearningRequestIdempotency(client, {
+      userId,
+      requestPath,
+      idempotencyKey: normalizedIdempotencyKey,
+      requestKind: 'create_learning_session',
+      requestPayload: normalized,
+    });
 
-  try {
-    const parentSession = normalized.parentSessionId
-      ? await getSession(client, {
-        sessionId: normalized.parentSessionId,
-        userId,
-      })
-      : null;
-
-    if (normalized.parentSessionId && !parentSession) {
-      throw createLearningError('session_not_found');
+    if (reservation.state === 'conflict') {
+      throw createLearningError('idempotency_conflict');
     }
 
-    const resolvedAnchor = await resolveCreateSessionAnchor(client, {
+    if (reservation.state === 'replay') {
+      const replay = await resolveCreateSessionReplay(client, {
+        userId,
+        requestPath,
+        idempotencyKey: normalizedIdempotencyKey,
+        row: reservation.row,
+      });
+
+      if (replay) {
+        return replay;
+      }
+
+      continue;
+    }
+
+    const sessionId = randomUUID();
+
+    await setLearningRequestIdempotencyResourceRef(client, {
       userId,
-      subjectCode: normalized.subjectCode,
-      anchorKind: normalized.anchorKind,
-      anchorRef: normalized.anchorRef,
-      currentQuestionId: normalized.currentQuestionId,
-      currentQuestionTypeId: normalized.currentQuestionTypeId,
+      requestPath,
+      idempotencyKey: normalizedIdempotencyKey,
+      resourceRef: {
+        kind: 'learning_session',
+        session_id: sessionId,
+      },
     });
 
-    const activeScopeBundle = normalizeSessionBundle({
-      sessionGoal: normalized.sessionGoal,
-      mode: normalized.mode,
-      anchorKind: normalized.anchorKind,
-      anchorRef: normalized.anchorRef,
-      currentQuestionId: resolvedAnchor.currentQuestionId,
-      currentQuestionTypeId: resolvedAnchor.currentQuestionTypeId,
-      canonicalHome: resolvedAnchor.canonicalHome,
-    });
-    const lineage = buildChildSessionLineage({
-      parentSession,
-      parentSessionId: normalized.parentSessionId,
-      handoffKind: normalized.handoffKind,
+    const response = await performCreateLearningSession(client, {
+      userId,
+      normalized,
+      sessionId,
     });
 
-    const session = await insertSession(client, {
-      user_id: userId,
-      subject_code: normalized.subjectCode,
-      session_goal: normalized.sessionGoal,
-      mode: normalized.mode,
-      active_scope_bundle: activeScopeBundle,
-      current_anchor_kind: normalized.anchorKind,
-      current_anchor_ref: normalized.anchorRef,
-      current_question_id: resolvedAnchor.currentQuestionId,
-      current_question_type_id: resolvedAnchor.currentQuestionTypeId,
-      summary_state: {},
-      parent_session_id: lineage.parent_session_id,
-      handoff_kind: lineage.handoff_kind,
-      lineage_summary_snapshot: lineage.lineage_summary_snapshot,
-      open_questions: [],
-      key_artifact_refs: [],
-      misconceptions_in_focus: [],
+    await finalizeLearningRequestIdempotency(client, {
+      userId,
+      requestPath,
+      idempotencyKey: normalizedIdempotencyKey,
+      responsePayload: response,
     });
 
-    const normalizedSession = normalizeSessionResponse(session);
-    const response = {
-      session: normalizedSession,
-      anchor_validity: buildAnchorValidity(
-        normalized.anchorKind,
-        normalized.anchorRef,
-        resolvedAnchor.canonicalHome,
-      ),
-      canonical_home_context: buildCanonicalHomeContext(
-        normalized.anchorKind,
-        resolvedAnchor.canonicalHome,
-      ),
-      feature_flags: featureFlags(),
-    };
-
-    rememberCreateSession(cacheKey, reservation, response);
     return response;
-  } catch (error) {
-    releaseCreateSessionReservation(cacheKey, reservation, error);
-    throw error;
   }
+
+  throw createLearningError('internal_error', {
+    message: 'Unable to reacquire abandoned learning session reservation.',
+  });
 }
 
 export async function readLearningSession(client, { userId, sessionId } = {}) {
@@ -637,26 +732,5 @@ export async function readLearningSession(client, { userId, sessionId } = {}) {
     throw createLearningError('session_not_found');
   }
 
-  const normalizedSession = normalizeSessionResponse(session);
-  const bundle = normalizedSession.active_scope_bundle;
-
-  return {
-    session: normalizedSession,
-    anchor_validity: buildAnchorValidity(
-      normalizedSession.current_anchor_kind,
-      normalizedSession.current_anchor_ref,
-      {
-        topic_id: bundle.primary_topic_id,
-        topic_path: bundle.primary_topic_path,
-      },
-    ),
-    canonical_home_context: buildCanonicalHomeContext(
-      normalizedSession.current_anchor_kind,
-      {
-        topic_id: bundle.primary_topic_id,
-        topic_path: bundle.primary_topic_path,
-      },
-    ),
-    feature_flags: featureFlags(),
-  };
+  return buildLearningSessionResponse(session);
 }

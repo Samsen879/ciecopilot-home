@@ -1,6 +1,7 @@
 import { jest } from '@jest/globals';
 import http from 'node:http';
 import request from 'supertest';
+import { buildIdempotencyRequestFingerprint } from '../lib/repositories/request-idempotency-repository.js';
 
 process.env.NODE_ENV = 'test';
 process.env.AUTH_LOCAL_TEST_MODE = 'true';
@@ -12,6 +13,8 @@ process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-key';
 
 const clientState = {
   calls: [],
+  idempotencyRows: new Map(),
+  nextIdempotencyId: 1,
   nextSessionId: 1,
   reviewTasks: new Map(),
   sessions: new Map(),
@@ -80,6 +83,11 @@ class QueryBuilder {
     return this;
   }
 
+  delete() {
+    this.operation = 'delete';
+    return this;
+  }
+
   eq(field, value) {
     this.filters.push({ field, value });
     return this;
@@ -129,6 +137,14 @@ function findFilter(query, field) {
   return query.filters.find((filter) => filter.field === field)?.value ?? null;
 }
 
+function buildIdempotencyKey(userId, requestPath, idempotencyKey) {
+  return `${userId}:${requestPath}:${idempotencyKey}`;
+}
+
+function createNowTimestamp() {
+  return new Date().toISOString();
+}
+
 function createSessionRow(payload) {
   const sessionId = `session-${clientState.nextSessionId++}`;
   const now = '2026-03-21T13:30:00.000Z';
@@ -165,6 +181,71 @@ function resolveQuery(query) {
     const reviewTaskId = findFilter(query, 'review_task_id');
     const row = clientState.reviewTasks.get(reviewTaskId) || null;
     return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_request_idempotency') {
+    const userId = query.operation === 'insert'
+      ? query.payload?.user_id ?? null
+      : findFilter(query, 'user_id');
+    const requestPath = query.operation === 'insert'
+      ? query.payload?.request_path ?? null
+      : findFilter(query, 'request_path');
+    const idempotencyKey = query.operation === 'insert'
+      ? query.payload?.idempotency_key ?? null
+      : findFilter(query, 'idempotency_key');
+    const rowKey = buildIdempotencyKey(userId, requestPath, idempotencyKey);
+
+    if (query.operation === 'insert') {
+      if (clientState.idempotencyRows.has(rowKey)) {
+        return {
+          data: null,
+          error: {
+            code: '23505',
+            message: 'duplicate key value violates unique constraint',
+          },
+        };
+      }
+
+      const now = createNowTimestamp();
+      const row = {
+        request_idempotency_id: `idem-${clientState.nextIdempotencyId++}`,
+        created_at: now,
+        updated_at: now,
+        completed_at: null,
+        ...query.payload,
+      };
+      clientState.idempotencyRows.set(
+        buildIdempotencyKey(row.user_id, row.request_path, row.idempotency_key),
+        row,
+      );
+      return { data: row, error: null };
+    }
+
+    if (query.operation === 'select') {
+      return {
+        data: clientState.idempotencyRows.get(rowKey) || null,
+        error: null,
+      };
+    }
+
+    if (query.operation === 'update') {
+      const current = clientState.idempotencyRows.get(rowKey) || null;
+      const now = createNowTimestamp();
+      const next = current ? {
+        ...current,
+        ...query.payload,
+        updated_at: now,
+      } : null;
+      if (next) {
+        clientState.idempotencyRows.set(rowKey, next);
+      }
+      return { data: next, error: null };
+    }
+
+    if (query.operation === 'delete') {
+      clientState.idempotencyRows.delete(rowKey);
+      return { data: null, error: null };
+    }
   }
 
   if (query.table === 'learning_sessions' && query.operation === 'insert') {
@@ -253,6 +334,22 @@ function buildSessionPayload(overrides = {}) {
   };
 }
 
+function buildNormalizedSessionIdempotencyPayload(overrides = {}) {
+  const payload = buildSessionPayload(overrides);
+
+  return {
+    subjectCode: payload.subject_code,
+    mode: payload.mode,
+    sessionGoal: payload.session_goal,
+    anchorKind: payload.anchor_kind,
+    anchorRef: payload.anchor_ref,
+    currentQuestionId: payload.current_question_id,
+    currentQuestionTypeId: payload.current_question_type_id,
+    parentSessionId: payload.parent_session_id ?? null,
+    handoffKind: payload.handoff_kind ?? null,
+  };
+}
+
 function buildStoredSession(overrides = {}) {
   return {
     session_id: overrides.session_id ?? 'session-parent-1',
@@ -323,6 +420,8 @@ describe('learning session api', () => {
 
   beforeEach(() => {
     clientState.calls = [];
+    clientState.idempotencyRows = new Map();
+    clientState.nextIdempotencyId = 1;
     clientState.nextSessionId = 1;
     clientState.reviewTasks = new Map([
       ['review-task-1', buildReviewTask()],
@@ -643,6 +742,7 @@ describe('learning session api', () => {
       (call) => call.table === 'learning_sessions' && call.operation === 'insert',
     );
     expect(blockedInsertCalls).toHaveLength(1);
+    expect(clientState.idempotencyRows.size).toBe(1);
 
     gate.resolve();
     const [first, second] = await Promise.all([firstRequest, secondRequest]);
@@ -655,6 +755,65 @@ describe('learning session api', () => {
       (call) => call.table === 'learning_sessions' && call.operation === 'insert',
     );
     expect(insertCalls).toHaveLength(1);
+    expect(
+      clientState.calls.some(
+        (call) => call.table === 'learning_request_idempotency' && call.operation === 'update',
+      ),
+    ).toBe(true);
+  });
+
+  test('POST /api/learning/sessions recovers a pending durable reservation when the reserved session already exists', async () => {
+    clientState.sessions.set('session-recovered-1', buildStoredSession({
+      session_id: 'session-recovered-1',
+    }));
+    clientState.lineage.set('session-recovered-1', {
+      lineage_id: 'lineage-session-recovered-1',
+      parent_session_id: null,
+      child_session_id: 'session-recovered-1',
+      handoff_kind: null,
+      summary_snapshot: {
+        recap: 'Repair the factoring and angle-isolation mistakes before speeding up.',
+      },
+      created_at: '2026-03-21T13:30:00.000Z',
+    });
+    clientState.idempotencyRows.set(
+      buildIdempotencyKey('student-1', '/api/learning/sessions', 'sess-recover-1'),
+      {
+        request_idempotency_id: 'idem-recover-1',
+        user_id: 'student-1',
+        request_path: '/api/learning/sessions',
+        idempotency_key: 'sess-recover-1',
+        request_kind: 'create_learning_session',
+        request_fingerprint: buildIdempotencyRequestFingerprint(
+          buildNormalizedSessionIdempotencyPayload(),
+        ),
+        request_payload: buildNormalizedSessionIdempotencyPayload(),
+        status: 'pending',
+        resource_ref: {
+          kind: 'learning_session',
+          session_id: 'session-recovered-1',
+        },
+        response_payload: null,
+        created_at: '2026-03-21T13:20:00.000Z',
+        updated_at: '2026-03-21T13:20:00.000Z',
+        completed_at: null,
+      },
+    );
+
+    const res = await request(server)
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .set('Idempotency-Key', 'sess-recover-1')
+      .send(buildSessionPayload());
+
+    expect(res.status).toBe(200);
+    expect(res.body.session.session_id).toBe('session-recovered-1');
+    expect(
+      clientState.calls.filter(
+        (call) => call.table === 'learning_sessions' && call.operation === 'insert',
+      ),
+    ).toHaveLength(0);
   });
 
   test('POST /api/learning/sessions/extra segments does not hit create-session', async () => {

@@ -13,6 +13,7 @@ function buildQuestionInsertRow(input) {
   const classification = input.classification || {};
 
   return {
+    question_id: input.question_id ?? undefined,
     source_kind: 'imported_question',
     subject_code: input.subject_code,
     paper_scope: input.paper_scope ?? null,
@@ -81,8 +82,34 @@ export async function getCanonicalQuestionType(client, {
   return data || null;
 }
 
+export async function getQuestionById(client, { questionId } = {}) {
+  const normalizedQuestionId = typeof questionId === 'string' ? questionId.trim() : '';
+
+  if (!normalizedQuestionId) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from('question_bank')
+    .select(
+      'question_id, source_kind, subject_code, paper_scope, primary_topic_id, secondary_topic_ids, family_id, primary_question_type_id, secondary_question_type_ids, variant_tags, release_scope_status, prompt_representation, provenance_summary, classification_snapshot_ref',
+    )
+    .eq('question_id', normalizedQuestionId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load imported question: ${error.message}`);
+  }
+
+  return data || null;
+}
+
 export async function insertImportedQuestion(client, input) {
   const questionRow = buildQuestionInsertRow(input);
+
+  if (typeof questionRow.question_id === 'undefined') {
+    delete questionRow.question_id;
+  }
   const { data: insertedQuestion, error: questionError } = await client
     .from('question_bank')
     .insert(questionRow)

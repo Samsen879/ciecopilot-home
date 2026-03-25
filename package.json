@@ -25,7 +25,18 @@
     "api:test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "api:test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:community": "node scripts/test-community-api.js",
-    "test:community:dev": "npm run dev & sleep 5 && npm run test:community"
+    "test:community:dev": "npm run dev & sleep 5 && npm run test:community",
+    "ao:start:clean": "bash scripts/ao/start-clean.sh",
+    "ao:start:clean:dry": "bash scripts/ao/start-clean.sh --dry-run",
+    "ao:reconcile": "node scripts/ao-reconcile.js",
+    "ao:reconcile:json": "node scripts/ao-reconcile.js --json",
+    "ao:reconcile:strict": "node scripts/ao-reconcile.js --json --strict",
+    "ao:doctor": "node scripts/ao-doctor.js",
+    "ao:doctor:json": "node scripts/ao-doctor.js --json",
+    "ao:doctor:strict": "node scripts/ao-doctor.js --strict",
+    "ao:lifecycle": "node scripts/ao-lifecycle.js",
+    "ao:lifecycle:json": "node scripts/ao-lifecycle.js --json",
+    "ao:lifecycle:strict": "node scripts/ao-lifecycle.js --strict"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.53.1",

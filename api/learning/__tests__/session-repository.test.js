@@ -62,7 +62,7 @@ function createSessionDb() {
               if (table === 'learning_sessions') {
                 return {
                   data: {
-                    session_id: 'session-1',
+                    session_id: payload.session_id || 'session-1',
                     created_at: '2026-03-21T10:00:00.000Z',
                     updated_at: '2026-03-21T10:00:00.000Z',
                     ...payload,
@@ -142,6 +142,7 @@ describe('session-repository', () => {
 
     const payload = {
       user_id: 'user-1',
+      session_id: 'session-fixed-1',
       subject_code: '9709',
       session_goal: 'Practice trig identities',
       mode: 'guided_solve',
@@ -189,7 +190,7 @@ describe('session-repository', () => {
         table: 'learning_session_lineage',
         payload: {
           parent_session_id: null,
-          child_session_id: 'session-1',
+          child_session_id: 'session-fixed-1',
           handoff_kind: null,
           summary_snapshot: { progress: 'started' },
         },
@@ -205,6 +206,7 @@ describe('session-repository', () => {
       parent_session_id: null,
       handoff_kind: null,
     });
+    expect(session.session_id).toBe('session-fixed-1');
   });
 
   test('insertSession persists parent lineage and summary handoff snapshots for explicit child sessions', async () => {

@@ -6,7 +6,8 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320111000_create_learning_runtime_core.sql',
   'supabase/migrations/20260320111500_seed_learning_runtime_pilot_registry.sql',
   'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
-  'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql'
+  'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
+  'supabase/migrations/20260324120000_create_learning_request_idempotency.sql'
 ];
 
 function readMigration(relPath) {
@@ -78,6 +79,7 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('create table if not exists public.learning_question_analysis_snapshots');
     expect(sql).toContain('create table if not exists public.learning_sessions');
     expect(sql).toContain('create table if not exists public.learning_session_lineage');
+    expect(sql).toContain('create table if not exists public.learning_request_idempotency');
     expect(sql).toContain('create table if not exists public.learning_workspaces');
     expect(sql).toContain('create table if not exists public.learning_workspace_slots');
     expect(sql).toContain('create table if not exists public.learning_artifacts');
@@ -87,7 +89,14 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('create table if not exists public.learning_type_masteries');
     expect(sql).toContain('create table if not exists public.learning_reconciliation_runs');
     expect(sql).toContain('unique (user_id, topic_id)');
+    expect(sql).toContain('unique (user_id, request_path, idempotency_key)');
     expect(sql).toContain('unique (workspace_id, slot_key)');
+    expect(sql).toContain('request_fingerprint');
+    expect(sql).toContain('request_payload');
+    expect(sql).toContain('request_kind');
+    expect(sql).toContain('resource_ref');
+    expect(sql).toContain('response_payload');
+    expect(sql).toContain("check (status in ('pending', 'completed'))");
     expect(sql).toContain("check (mode in ('learn_concept', 'guided_solve', 'timed_practice', 'post_mortem_review', 'spaced_review'))");
     expect(sql).toContain("check (state in ('active', 'handoff_suggested', 'handed_off', 'closed'))");
     expect(sql).toContain("check (current_anchor_kind in ('concept', 'question', 'review_task', 'artifact', 'workspace_slot'))");
@@ -187,6 +196,21 @@ describe('learning runtime schema contract', () => {
       'started_at',
       'completed_at'
     ].forEach((token) => expect(reconciliationSql).toContain(token));
+
+    const idempotencySql = extractTableBlock(sql, 'public.learning_request_idempotency');
+    [
+      'user_id',
+      'request_path',
+      'idempotency_key',
+      'request_fingerprint',
+      'request_payload',
+      'request_kind',
+      'status',
+      'resource_ref',
+      'response_payload',
+      'completed_at',
+      'unique (user_id, request_path, idempotency_key)',
+    ].forEach((token) => expect(idempotencySql).toContain(token));
   });
 
   test('question_bank keeps a non-partial storage_key/q_number conflict target for legacy seed paths', () => {

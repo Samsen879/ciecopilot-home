@@ -246,6 +246,43 @@ describe('learning orchestration', () => {
     expect(reconciliationService.calls).toHaveLength(1);
   });
 
+  test('learning effects reject subjects without a runtime-enabled adapter', async () => {
+    const reviewTaskService = createSpyService('generateTasksFromOutcome', async () => []);
+    const artifactService = createSpyService('buildArtifactCandidates', async () => []);
+    const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({
+      reconciliation_run_id: 'recon-unsupported',
+      status: 'completed',
+      derived_state: derivedState,
+    }));
+
+    await expect(applyLearningEffects(
+      {
+        user_id: 'student-1',
+        subject_code: '9702',
+        question_id: 'question-physics-1',
+        question_context: {
+          family_id: '9702.mechanics_dynamics',
+          question_type_id: '9702.mechanics.force_balance',
+          classification_confidence: 0.74,
+        },
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-physics-1' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-physics-1' },
+        uncertainty_validated: false,
+      },
+      {
+        reviewTaskService,
+        artifactService,
+        reconciliationService,
+      },
+    )).rejects.toMatchObject({
+      code: 'subject_adapter_not_enabled',
+    });
+
+    expect(reviewTaskService.calls).toHaveLength(0);
+    expect(artifactService.calls).toHaveLength(0);
+    expect(reconciliationService.calls).toHaveLength(0);
+  });
+
   test('weak-evidence promoted integration creates review tasks without authoritative score effects', async () => {
     const reviewTaskService = createSpyService('generateTasksFromOutcome', async (input) => [
       {

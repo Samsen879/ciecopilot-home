@@ -1,5 +1,7 @@
 const META_ENV = typeof import.meta !== 'undefined' ? import.meta.env || {} : {};
 
+export const LEARNING_RUNTIME_LEGACY_ROLLBACK_ENV_FLAG = 'VITE_LEARNING_RUNTIME_ROLLBACK_TO_LEGACY';
+
 export const LEARNING_RUNTIME_SESSION_ROUTE_PATH = '/learn/session/:sessionId';
 export const LEARNING_RUNTIME_WORKSPACE_ROUTE_PATH = '/learn/workspace/:topicId';
 export const LEARNING_RUNTIME_REVIEW_QUEUE_ROUTE_PATH = '/learn/review-queue';
@@ -23,26 +25,30 @@ export const LEARNING_RUNTIME_ENTRY_TOPICS = Object.freeze([
   },
 ]);
 
+export function isLearningRuntimeLegacyRollbackActive(options = {}, env = META_ENV) {
+  if (typeof options.learningRuntimeRollback === 'boolean') {
+    return options.learningRuntimeRollback;
+  }
+
+  if (typeof options.featureFlags?.learningRuntimeRollback === 'boolean') {
+    return options.featureFlags.learningRuntimeRollback;
+  }
+
+  return env[LEARNING_RUNTIME_LEGACY_ROLLBACK_ENV_FLAG] === 'true';
+}
+
 export function isLearningRuntimeEnabled(options = {}, env = META_ENV) {
-  if (typeof options.learningRuntimeEnabled === 'boolean') {
-    return options.learningRuntimeEnabled;
-  }
-
-  if (typeof options.featureFlags?.learningRuntimeEnabled === 'boolean') {
-    return options.featureFlags.learningRuntimeEnabled;
-  }
-
-  return env.VITE_LEARNING_RUNTIME_ENABLED === 'true';
+  return !isLearningRuntimeLegacyRollbackActive(options, env);
 }
 
-export function getAskAiEntryMode(options = {}) {
-  return isLearningRuntimeEnabled(options) ? 'learning_runtime' : 'legacy_chat';
+export function getAskAiEntryMode(options = {}, env = META_ENV) {
+  return isLearningRuntimeEnabled(options, env) ? 'learning_runtime' : 'legacy_chat';
 }
 
-export function getStudyHubSurfaceMode(options = {}) {
-  return isLearningRuntimeEnabled(options) ? 'compatibility_shell' : 'legacy_hub';
+export function getStudyHubSurfaceMode(options = {}, env = META_ENV) {
+  return isLearningRuntimeEnabled(options, env) ? 'compatibility_shell' : 'legacy_hub';
 }
 
-export function getLearningPathSurfaceMode(options = {}) {
-  return isLearningRuntimeEnabled(options) ? 'compatibility_shell' : 'legacy_path';
+export function getLearningPathSurfaceMode(options = {}, env = META_ENV) {
+  return isLearningRuntimeEnabled(options, env) ? 'compatibility_shell' : 'legacy_path';
 }

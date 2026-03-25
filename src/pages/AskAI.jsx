@@ -30,15 +30,15 @@ const AskAI = () => {
                   Learning Runtime
                 </p>
                 <h1 className="mt-2 text-4xl font-semibold tracking-tight text-slate-950">
-                  AskAI now hands off into runtime workspaces
+                  AskAI is now a runtime-first compatibility entry
                 </h1>
               </div>
             </div>
 
             <p className="mt-6 max-w-3xl text-base leading-7 text-slate-600">
-              The legacy AskAI page no longer owns canonical learning state. Start with a runtime
-              import or workspace entry so the session contract, fallback posture, and canonical
-              topic handoff all stay inside the new learning-runtime flow.
+              Normal learning entry now starts with a runtime import or workspace handoff so the
+              session contract, fallback posture, and canonical topic continuity stay inside the
+              learning-runtime flow by default.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -80,8 +80,8 @@ const AskAI = () => {
             </div>
 
             <p className="mt-8 text-sm text-slate-500">
-              Legacy AskAI remains a compatibility entry only; stable runtime truth now lives on the
-              new session and workspace routes.
+              AskAI remains a compatibility entry only; stable runtime truth lives on the session
+              and workspace routes, and legacy chat is reserved for explicit rollback only.
             </p>
           </div>
         </div>
@@ -107,10 +107,18 @@ const AskAI = () => {
               AI 问答助手
             </h1>
           </div>
-          
+
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
             专门为CIE A Level学生定制的AI学习助手，提供精准的数学、物理和进阶数学答疑
           </p>
+
+          <div className="mx-auto mb-8 max-w-3xl rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-left text-sm text-amber-800">
+            <p className="font-semibold uppercase tracking-[0.16em] text-amber-700">Rollback Mode</p>
+            <p className="mt-2">
+              This legacy chat surface is temporarily restored for operational safety. Canonical
+              runtime state still belongs on the learning-runtime session and workspace routes.
+            </p>
+          </div>
 
           {/* Features Grid */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">

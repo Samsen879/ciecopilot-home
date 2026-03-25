@@ -1,12 +1,12 @@
 # Learning Runtime Pilot Rollout
 
-Date: 2026-03-22
-Scope: first `9709` runtime pilot slice for session-centric AskAI, workspace entry, and legacy entry-point demotion
+Date: 2026-03-25
+Scope: first `9709` runtime pilot slice after runtime-first cutover for session-centric AskAI, workspace entry, and legacy entry-point demotion
 
 ## Rollout Posture
 
 - Canonical runtime entry surfaces are `/learn/session/:sessionId` and `/learn/workspace/:topicId`.
-- Legacy AskAI, Study Hub, and Learning Path remain compatibility-only surfaces during this slice.
+- AskAI, Study Hub, and Learning Path remain compatibility-only surfaces during this slice and no longer gate canonical runtime entry.
 - Authoritative scoring covers the seeded trigonometry types plus the released `9709.integration.application` and `9709.differential_equations.separable` slices and still requires all released-scope gates:
   - registry-backed released question type
   - released rubric ref
@@ -14,45 +14,42 @@ Scope: first `9709` runtime pilot slice for session-centric AskAI, workspace ent
   - validated uncertainty posture
 - Imported or non-promoted questions outside released scope must stay on explicit `non_released_fallback`, including broader `9709.differential_equations.*` cases beyond the promoted separable slice.
 
-## Feature-Flag Default
+## Default Entry Posture
 
-- Frontend flag: `VITE_LEARNING_RUNTIME_ENABLED`
-- Default posture: disabled unless the env var is explicitly set to `true`
-- Disabled behavior:
-  - AskAI stays on `legacy_chat`
-  - Study Hub stays on `legacy_hub`
-  - Learning Path stays on `legacy_path`
-- Enabled behavior:
-  - AskAI becomes a handoff entry into learning-runtime workspace routes
-  - Study Hub becomes a compatibility shell linking into runtime workspaces
-  - Learning Path becomes a compatibility shell linking into runtime workspaces
+- Normal posture: runtime-first by default with no frontend feature flag required for canonical entry.
+- Default behavior:
+  - AskAI resolves to `learning_runtime`
+  - Study Hub resolves to `compatibility_shell`
+  - Learning Path resolves to `compatibility_shell`
+- Retired flag:
+  - `VITE_LEARNING_RUNTIME_ENABLED` no longer controls canonical entry and should be removed from environment configs during cleanup.
 
 ## Migration Order
 
-1. Merge the rollout-hardening branch after the full backend/frontend verification set and Vite build pass.
-2. Leave `VITE_LEARNING_RUNTIME_ENABLED` unset in production by default.
-3. Enable the flag in the target environment when the pilot should route through learning-runtime entry points.
-4. Verify the three entry-point expectations after enabling the flag:
-   - AskAI hands off into runtime entry
+1. Merge the cutover branch after the focused legacy-entry/runtime verification set and Vite build pass.
+2. Remove stale `VITE_LEARNING_RUNTIME_ENABLED` configuration from the deployment target so operators do not mistake it for an active control.
+3. Verify the default entry expectations in the target environment:
+   - AskAI hands off into runtime entry by default
    - Study Hub stays compatibility-only
    - Learning Path stays compatibility-only
-5. Treat `/learn/session/:sessionId` and `/learn/workspace/:topicId` as the only canonical runtime surfaces for the pilot.
+4. Treat `/learn/session/:sessionId` and `/learn/workspace/:topicId` as the only canonical runtime surfaces for the pilot.
 
 ## Legacy Surface Rules After Rollout
 
-- `src/pages/AskAI.jsx`: compatibility entry only under the flag; it must not regain canonical runtime state ownership.
-- `src/pages/StudyHub.jsx`: compatibility shell only under the flag; it must not regain canonical workspace, review-queue, or artifact truth.
-- `src/pages/LearningPath.jsx`: compatibility shell only under the flag; it must not regain canonical runtime truth.
+- `src/pages/AskAI.jsx`: compatibility entry only; it must not regain canonical runtime state ownership.
+- `src/pages/StudyHub.jsx`: compatibility shell only; it must not regain canonical workspace, review-queue, or artifact truth.
+- `src/pages/LearningPath.jsx`: compatibility shell only; it must not regain canonical runtime truth.
 
 ## Rollback Posture
 
-- Primary rollback lever: unset `VITE_LEARNING_RUNTIME_ENABLED` or set it to a non-`true` value.
+- Primary rollback lever: set `VITE_LEARNING_RUNTIME_ROLLBACK_TO_LEGACY=true`.
 - Expected rollback result:
   - AskAI returns to legacy chat entry mode.
   - Study Hub returns to the legacy hub surface.
   - Learning Path returns to the legacy path surface.
 - No legacy surface should be promoted back to canonical runtime truth during rollback; rollback only changes entry routing.
-- If runtime behavior is suspect while the flag is enabled, disable the flag first, then investigate the session/workspace routes separately.
+- If runtime behavior is suspect, set the rollback flag first, confirm legacy entry recovers, and then investigate the session/workspace routes separately.
+- Clearing rollback means removing `VITE_LEARNING_RUNTIME_ROLLBACK_TO_LEGACY` or setting it to a non-`true` value.
 
 ## Verification Record
 

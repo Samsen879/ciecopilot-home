@@ -36,7 +36,7 @@ export default function LearningPath() {
                   Compatibility Surface
                 </p>
                 <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950">
-                  Learning Path is no longer canonical runtime truth
+                  Learning Path is now a compatibility handoff into runtime workspaces
                 </h1>
                 <p className="mt-2 max-w-3xl text-base leading-7 text-slate-600">
                   Topic-level path views remain available for compatibility, but stable slots,
@@ -63,8 +63,8 @@ export default function LearningPath() {
             </div>
 
             <p className="mt-8 text-sm text-slate-500">
-              {subject.fullName} remains available only as a compatibility handoff while the runtime
-              pilot rolls out behind the feature flag.
+              {subject.fullName} remains available only as a compatibility handoff; the legacy path
+              surface returns only if operators trigger explicit rollback.
             </p>
           </div>
         </div>
@@ -75,6 +75,14 @@ export default function LearningPath() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-800">
+          <p className="font-semibold uppercase tracking-[0.16em] text-amber-700">Rollback Mode</p>
+          <p className="mt-2">
+            This topic-level path view is temporarily restored for operational safety. Canonical
+            runtime truth still belongs on the learning-runtime workspace routes.
+          </p>
+        </div>
+
         <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-start gap-3">
             <button

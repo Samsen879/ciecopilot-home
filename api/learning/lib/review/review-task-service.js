@@ -2,10 +2,13 @@ import { createReviewTaskRepository } from '../repositories/review-task-reposito
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
-  buildReviewTaskSchedulerSeed,
   mergeReviewTaskPayload,
   pickReviewTaskMergeCandidate,
 } from './review-scheduler-policy.js';
+import {
+  getSubjectAdapter,
+  resolveSubjectCodeFromRuntimeInput,
+} from '../subjects/subject-adapter-registry.js';
 
 const REVIEW_TASK_INTENTS = new Set(['complete', 'reschedule', 'snooze', 'reopen']);
 const REVIEW_TASK_COMPLETION_OUTCOMES = new Set(['completed', 'partial']);
@@ -281,7 +284,9 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
     input.repair_target_question_type_id
     || input.question_context?.question_type_id
     || null;
-  const scheduler = buildReviewTaskSchedulerSeed({
+  const subjectCode = resolveSubjectCodeFromRuntimeInput(input, input.question_context);
+  const adapter = getSubjectAdapter(subjectCode);
+  const scheduler = adapter.review.buildSchedulerSeed({
     now,
     misconceptionTags: input.misconception_tags,
     triggerType: input.trigger_type,

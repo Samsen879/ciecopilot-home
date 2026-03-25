@@ -1074,6 +1074,30 @@ describe('learning question import api', () => {
     expect(second.body.error.code).toBe('idempotency_conflict');
   });
 
+  test('POST /api/learning/questions/import rejects subjects without a runtime-enabled adapter', async () => {
+    const res = await harness.request
+      .post('/api/learning/questions/import')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        subject_code: '9702',
+        prompt_representation: {
+          type: 'text',
+          value: 'A car accelerates uniformly from rest along a straight road.',
+        },
+        provenance_summary: {
+          import_source: 'manual_paste',
+        },
+        classification: {
+          primary_question_type_id: '9702.mechanics.force_balance',
+          classification_confidence: 0.61,
+        },
+      });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error.code).toBe('subject_adapter_not_enabled');
+  });
+
   test('POST /api/learning/questions/import replays the canonical durable response on same-payload retry after completion', async () => {
     const first = await harness.request
       .post('/api/learning/questions/import')
@@ -1259,12 +1283,21 @@ describe('learning question import api', () => {
       linked_references: [],
       updated_at: '2026-03-22T09:00:00.000Z',
     });
-    expect(workspaceRes.body.review_queue).toEqual({
+    expect(workspaceRes.body.review_queue).toMatchObject({
       scope: 'global_queue_projection',
       topic_id: 'topic-integration-1',
       status: null,
       due_before: null,
       items: [],
+      policy: {
+        daily_recommendation_cap: 3,
+        max_high_priority_open_per_type: 1,
+        immediate_repair_max_deferral_hours: 12,
+      },
+      summary: {
+        total: 0,
+        open: 0,
+      },
     });
   });
 });

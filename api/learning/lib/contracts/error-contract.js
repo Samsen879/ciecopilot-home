@@ -14,6 +14,7 @@ export const LEARNING_ERROR_CODES = Object.freeze({
   REVIEW_TASK_STATE_CONFLICT: 'review_task_state_conflict',
   ARTIFACT_NOT_FOUND: 'artifact_not_found',
   ARTIFACT_STATE_CONFLICT: 'artifact_state_conflict',
+  SUBJECT_ADAPTER_NOT_ENABLED: 'subject_adapter_not_enabled',
   IDEMPOTENCY_CONFLICT: 'idempotency_conflict',
 });
 
@@ -97,6 +98,11 @@ const LEARNING_ERROR_DEFINITIONS = Object.freeze({
   [LEARNING_ERROR_CODES.ARTIFACT_STATE_CONFLICT]: Object.freeze({
     status: 409,
     message: 'The artifact state conflicts with this request.',
+    retryable: false,
+  }),
+  [LEARNING_ERROR_CODES.SUBJECT_ADAPTER_NOT_ENABLED]: Object.freeze({
+    status: 409,
+    message: 'The requested subject adapter is not enabled for the learning runtime.',
     retryable: false,
   }),
   [LEARNING_ERROR_CODES.IDEMPOTENCY_CONFLICT]: Object.freeze({

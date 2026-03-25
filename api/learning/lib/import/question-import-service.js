@@ -1,12 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
-import { resolveReleasedScoringPosture } from '../contracts/released-scope.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
   getCanonicalQuestionType,
   getQuestionById,
   insertImportedQuestion,
 } from '../repositories/question-registry-repository.js';
+import {
+  getSubjectAdapter,
+} from '../subjects/subject-adapter-registry.js';
 import {
   deleteLearningRequestIdempotencyReservation,
   finalizeLearningRequestIdempotency,
@@ -121,15 +123,6 @@ function normalizeQuestionImportBody(body = {}) {
   };
 }
 
-function mergeCanonicalClassification(classification, canonicalQuestionType) {
-  return {
-    ...classification,
-    family_id: canonicalQuestionType?.family_id ?? classification.family_id,
-    primary_question_type_id:
-      canonicalQuestionType?.question_type_id ?? classification.primary_question_type_id,
-  };
-}
-
 function createIdempotencyConflictError() {
   return new LearningHttpError(
     LEARNING_ERROR_CODES.IDEMPOTENCY_CONFLICT,
@@ -161,16 +154,19 @@ async function buildQuestionImportResponse(client, {
   const requestClassification = isPlainObject(requestPayload?.classification)
     ? requestPayload.classification
     : {};
+  const adapter = getSubjectAdapter(
+    question?.subject_code ?? requestPayload?.subject_code ?? null,
+  );
   const canonicalQuestionType = await getCanonicalQuestionType(client, {
     subjectCode: question?.subject_code ?? requestPayload?.subject_code ?? null,
     questionTypeId:
       question?.primary_question_type_id ?? requestClassification.primary_question_type_id ?? null,
   });
-  const classification = mergeCanonicalClassification(
-    requestClassification,
+  const classification = adapter.classification.mergeCanonicalClassification({
+    classification: requestClassification,
     canonicalQuestionType,
-  );
-  const scoringScopePosture = resolveReleasedScoringPosture({
+  });
+  const scoringScopePosture = adapter.marking.resolveReleasedScoringPosture({
     questionTypeId:
       question?.primary_question_type_id ?? classification.primary_question_type_id ?? null,
     questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
@@ -277,15 +273,16 @@ async function performQuestionImport(client, {
   normalizedInput,
   questionId = null,
 } = {}) {
+  const adapter = getSubjectAdapter(normalizedInput.subject_code);
   const canonicalQuestionType = await getCanonicalQuestionType(client, {
     subjectCode: normalizedInput.subject_code,
     questionTypeId: normalizedInput.classification.primary_question_type_id,
   });
-  const classification = mergeCanonicalClassification(
-    normalizedInput.classification,
+  const classification = adapter.classification.mergeCanonicalClassification({
+    classification: normalizedInput.classification,
     canonicalQuestionType,
-  );
-  const scoringScopePosture = resolveReleasedScoringPosture({
+  });
+  const scoringScopePosture = adapter.marking.resolveReleasedScoringPosture({
     questionTypeId: classification.primary_question_type_id,
     questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
     candidateRubricRefs: classification.candidate_rubric_refs,

@@ -374,6 +374,50 @@ describe('v0 compat mode', () => {
 });
 
 describe('learning-runtime orchestration', () => {
+  it('returns part-aware marking_result payloads and passes them into learning orchestration', async () => {
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        subpart: 'a_i',
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.marking_result).toMatchObject({
+      attempt_id: 'att-001',
+      mark_run_id: 'mr-001',
+      marking_summary: {
+        coverage_scope: 'subpart',
+        local_signal_only: true,
+      },
+      part_results: [
+        {
+          part_id: 'a',
+          subpart_id: 'a_i',
+        },
+      ],
+    });
+    expect(mockApplyLearningEffects).toHaveBeenCalledWith(
+      expect.objectContaining({
+        marking_result: expect.objectContaining({
+          marking_summary: expect.objectContaining({
+            coverage_scope: 'subpart',
+          }),
+          part_results: [
+            expect.objectContaining({
+              part_id: 'a',
+              subpart_id: 'a_i',
+            }),
+          ],
+        }),
+      }),
+      expect.any(Object),
+    );
+  });
+
   it('returns released-scope learning effects for a persisted pilot scoring run', async () => {
     mockApplyLearningEffects.mockResolvedValueOnce({
       release_scope_status: 'released_scoring',
@@ -414,6 +458,10 @@ describe('learning-runtime orchestration', () => {
         question_id: 'q-001',
         source_attempt_ref: { kind: 'attempt', attempt_id: 'att-001' },
         source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mr-001' },
+        marking_result: expect.objectContaining({
+          attempt_id: 'att-001',
+          mark_run_id: 'mr-001',
+        }),
       }),
       expect.any(Object),
     );

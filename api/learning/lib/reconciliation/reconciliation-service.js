@@ -22,6 +22,18 @@ function countDerivedObjects(derivedState = {}) {
   }, 0);
 }
 
+function countPartResults(derivedState = {}) {
+  return normalizeArray(derivedState?.marking_result?.part_results).length;
+}
+
+function countLocalSignals(derivedState = {}) {
+  return normalizeArray(derivedState?.local_signals).length;
+}
+
+function countAmbiguousPartMappings(derivedState = {}) {
+  return Number(derivedState?.marking_result?.marking_summary?.ambiguous_rubric_point_result_count ?? 0);
+}
+
 function buildAffectedObjectRefs(derivedState = {}) {
   return [
     ...normalizeArray(derivedState.type_masteries).flatMap((item) =>
@@ -52,6 +64,9 @@ export function createReconciliationService({
         revised_derived_objects: countDerivedObjects(nextDerivedState),
         historical_attempt_count: normalizeArray(historicalSnapshot?.attempts).length,
         historical_mark_run_count: normalizeArray(historicalSnapshot?.mark_runs).length,
+        local_signal_count: countLocalSignals(nextDerivedState),
+        part_result_count: countPartResults(nextDerivedState),
+        ambiguous_part_mapping_count: countAmbiguousPartMappings(nextDerivedState),
       };
 
       let run = null;

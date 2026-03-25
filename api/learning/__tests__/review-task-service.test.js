@@ -39,6 +39,95 @@ function buildStoredReviewTask(overrides = {}) {
 }
 
 describe('learning orchestration', () => {
+  test('part-local released scoring emits local signals instead of whole-question positive mastery', async () => {
+    const reviewTaskService = createSpyService('generateTasksFromOutcome', async () => []);
+    const artifactService = createSpyService('buildArtifactCandidates', async () => []);
+    const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({
+      reconciliation_run_id: 'recon-part-1',
+      status: 'completed',
+      derived_state: derivedState,
+    }));
+
+    const result = await applyLearningEffects(
+      {
+        user_id: 'student-1',
+        question_id: 'question-part-1',
+        question_context: {
+          family_id: '9709.trigonometry_manipulation_equations',
+          question_type_id: '9709.trigonometry.equations',
+          question_type_release_state: 'released',
+          primary_topic_id: 'topic-trig-equations',
+          primary_topic_path: '9709/trigonometry/equations',
+          classification_confidence: 0.93,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'trig-eq-v1',
+              release_state: 'released',
+            },
+          ],
+        },
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-part-1' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-part-1' },
+        decisions: [
+          {
+            awarded: true,
+            awarded_marks: 1,
+            alignment_confidence: 0.94,
+          },
+        ],
+        marking_result: {
+          marking_summary: {
+            coverage_scope: 'subpart',
+            local_signal_only: true,
+            ambiguous_rubric_point_result_count: 0,
+          },
+          part_results: [
+            {
+              part_id: 'a',
+              subpart_id: 'a_i',
+              score_awarded: 1,
+              score_max: 2,
+              rubric_point_results: [
+                {
+                  rubric_id: 'rubric-1',
+                  awarded: true,
+                  awarded_marks: 1,
+                  part_id: 'a',
+                  subpart_id: 'a_i',
+                },
+              ],
+            },
+          ],
+        },
+        uncertainty_validated: true,
+      },
+      {
+        reviewTaskService,
+        artifactService,
+        reconciliationService,
+      },
+    );
+
+    expect(result.mastery_updates).toEqual([]);
+    expect(result.local_signals).toEqual([
+      expect.objectContaining({
+        scope_kind: 'subpart',
+        part_id: 'a',
+        subpart_id: 'a_i',
+        question_type_id: '9709.trigonometry.equations',
+        signal_direction: 'positive',
+      }),
+    ]);
+    expect(reviewTaskService.calls).toHaveLength(0);
+    expect(reconciliationService.calls[0].derivedState.local_signals).toEqual([
+      expect.objectContaining({
+        part_id: 'a',
+        subpart_id: 'a_i',
+      }),
+    ]);
+  });
+
   test('pilot scoring run can create a type-level positive update', async () => {
     const reviewTaskService = createSpyService('generateTasksFromOutcome', async () => []);
     const artifactService = createSpyService('buildArtifactCandidates', async () => []);
@@ -226,6 +315,61 @@ describe('learning orchestration', () => {
     expect(reviewTaskService.calls[0]).toMatchObject({
       authoritative_scoring_allowed: false,
       repair_target_topic_id: 'repair-target-topic',
+    });
+  });
+});
+
+describe('review task service generation', () => {
+  test('fallback review tasks keep explicit part/subpart scope in success criteria', async () => {
+    const service = createReviewTaskService({
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const [task] = await service.generateTasksFromOutcome({
+      user_id: 'student-1',
+      question_id: 'question-1',
+      authoritative_scoring_allowed: false,
+      repair_target_topic_id: 'topic-1',
+      repair_target_topic_path: '9709/trigonometry/equations',
+      question_context: {
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.equations',
+      },
+      marking_result: {
+        marking_summary: {
+          coverage_scope: 'subpart',
+          local_signal_only: true,
+          ambiguous_rubric_point_result_count: 0,
+        },
+        part_results: [
+          {
+            part_id: 'a',
+            subpart_id: 'a_i',
+            score_awarded: 1,
+            score_max: 2,
+          },
+        ],
+      },
+    });
+
+    expect(task).toMatchObject({
+      target_kind: 'question_type',
+      target_question_type_id: '9709.trigonometry.equations',
+      success_criteria: {
+        posture: 'conservative_fallback',
+        authoritative_scoring_allowed: false,
+        coverage_scope: 'subpart',
+        local_signal_only: true,
+        ambiguous_part_mapping_count: 0,
+        part_results: [
+          {
+            part_id: 'a',
+            subpart_id: 'a_i',
+            score_awarded: 1,
+            score_max: 2,
+          },
+        ],
+      },
     });
   });
 });

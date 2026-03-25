@@ -268,6 +268,15 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
     targetQuestionTypeId,
     familyId: input.question_context?.family_id ?? null,
   });
+  const partResults = normalizeArray(input.marking_result?.part_results).map((partResult) => ({
+    part_id: partResult?.part_id ?? null,
+    subpart_id: partResult?.subpart_id ?? null,
+    score_awarded: Number(partResult?.score_awarded ?? 0),
+    score_max: Number(partResult?.score_max ?? 0),
+  }));
+  const ambiguousPartMappingCount = Number(
+    input.marking_result?.marking_summary?.ambiguous_rubric_point_result_count ?? 0,
+  );
 
   return {
     user_id: input.user_id,
@@ -287,6 +296,10 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
     success_criteria: {
       posture: 'conservative_fallback',
       authoritative_scoring_allowed: false,
+      coverage_scope: input.marking_result?.marking_summary?.coverage_scope ?? 'question',
+      local_signal_only: input.marking_result?.marking_summary?.local_signal_only === true,
+      ambiguous_part_mapping_count: ambiguousPartMappingCount,
+      part_results: partResults,
     },
     completion_evidence: {},
     status: 'open',

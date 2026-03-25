@@ -102,4 +102,65 @@ describe('reconciliation-service', () => {
       },
     });
   });
+
+  test('reconciliation preserves local part signals and summarizes ambiguous mappings', async () => {
+    const runs = [];
+    const service = createReconciliationService({
+      reconciliationRepository: {
+        async insertRun(payload) {
+          runs.push(payload);
+          return {
+            reconciliation_run_id: 'recon-2',
+            ...payload,
+          };
+        },
+      },
+    });
+
+    const result = await service.reconcileDerivedState({
+      triggerSource: 'marking_correction',
+      sourceRef: {
+        kind: 'mark_run',
+        mark_run_id: 'mark-run-2',
+      },
+      historical: {},
+      derivedState: {
+        local_signals: [
+          {
+            scope_kind: 'subpart',
+            question_type_id: '9709.trigonometry.equations',
+            part_id: 'a',
+            subpart_id: 'a_i',
+            signal_direction: 'positive',
+          },
+        ],
+        marking_result: {
+          marking_summary: {
+            ambiguous_rubric_point_result_count: 1,
+          },
+          part_results: [
+            {
+              part_id: 'a',
+              subpart_id: 'a_i',
+              score_awarded: 1,
+              score_max: 2,
+            },
+          ],
+        },
+      },
+    });
+
+    expect(result.derived_state.local_signals).toEqual([
+      expect.objectContaining({
+        part_id: 'a',
+        subpart_id: 'a_i',
+      }),
+    ]);
+    expect(runs[0].result_summary).toMatchObject({
+      revised_derived_objects: 1,
+      local_signal_count: 1,
+      part_result_count: 1,
+      ambiguous_part_mapping_count: 1,
+    });
+  });
 });

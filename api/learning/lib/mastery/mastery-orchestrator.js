@@ -31,12 +31,64 @@ function buildReleaseScopePosture(input = {}) {
   });
 }
 
+function getMarkingResult(input = {}) {
+  return input.marking_result && typeof input.marking_result === 'object'
+    ? input.marking_result
+    : null;
+}
+
 function hasPositiveAuthoritativeSignal(decisions = []) {
   return decisions.some((decision) =>
     decision?.awarded === true && Number(decision?.awarded_marks ?? 0) > 0);
 }
 
-function buildMasteryUpdates(input = {}, releaseScopePosture = {}) {
+function hasConservativePartMapping(markingResult = null) {
+  return Boolean(
+    markingResult?.marking_summary?.conservative_part_mapping
+    || Number(markingResult?.marking_summary?.ambiguous_rubric_point_result_count ?? 0) > 0,
+  );
+}
+
+function buildLocalSignals(input = {}, releaseScopePosture = {}) {
+  const questionContext = getQuestionContext(input);
+  const repairTopicId =
+    input.repair_target_topic_id
+    || questionContext.primary_topic_id
+    || input.source_attempt_context?.topic_id
+    || null;
+  const questionTypeId = questionContext.question_type_id ?? null;
+  const familyId = questionContext.family_id ?? null;
+
+  return normalizeArray(getMarkingResult(input)?.part_results)
+    .filter((partResult) => Number(partResult?.score_awarded ?? 0) > 0)
+    .map((partResult) => ({
+      scope_kind: partResult?.subpart_id ? 'subpart' : 'part',
+      topic_id: repairTopicId,
+      family_id: familyId,
+      question_type_id: questionTypeId,
+      part_id: partResult?.part_id ?? null,
+      subpart_id: partResult?.subpart_id ?? null,
+      signal_direction: 'positive',
+      signal_weight: releaseScopePosture.authoritative_scoring_allowed
+        ? 'authoritative_local'
+        : 'conservative_local',
+      release_scope_status: releaseScopePosture.release_scope_status,
+      score_awarded: Number(partResult?.score_awarded ?? 0),
+      score_max: Number(partResult?.score_max ?? 0),
+    }));
+}
+
+function shouldPromoteQuestionType(input = {}, releaseScopePosture = {}) {
+  const markingResult = getMarkingResult(input);
+  return Boolean(
+    releaseScopePosture.authoritative_scoring_allowed
+    && hasPositiveAuthoritativeSignal(input.decisions)
+    && !markingResult?.marking_summary?.local_signal_only
+    && !hasConservativePartMapping(markingResult),
+  );
+}
+
+function buildMasteryUpdates(input = {}, releaseScopePosture = {}, { localSignals = [] } = {}) {
   const questionContext = getQuestionContext(input);
   const questionTypeId = questionContext.question_type_id ?? null;
   const familyId = questionContext.family_id ?? null;
@@ -47,7 +99,7 @@ function buildMasteryUpdates(input = {}, releaseScopePosture = {}) {
     || null;
   const updates = [];
 
-  if (releaseScopePosture.authoritative_scoring_allowed && hasPositiveAuthoritativeSignal(input.decisions)) {
+  if (shouldPromoteQuestionType(input, releaseScopePosture)) {
     updates.push({
       level: 'question_type',
       topic_id: repairTopicId,
@@ -57,7 +109,7 @@ function buildMasteryUpdates(input = {}, releaseScopePosture = {}) {
       signal_weight: 'authoritative',
       release_scope_status: releaseScopePosture.release_scope_status,
     });
-  } else if (familyId && releaseScopePosture.classification_confidence !== null) {
+  } else if (localSignals.length === 0 && familyId && releaseScopePosture.classification_confidence !== null) {
     updates.push({
       level: 'family',
       topic_id: repairTopicId,
@@ -170,7 +222,10 @@ export function createMasteryOrchestrator({
         source_mark_run_ref: sourceMarkRunRef,
         source_session_id: input.source_session_id ?? null,
       };
-      const masteryUpdates = buildMasteryUpdates(input, releaseScopePosture);
+      const localSignals = buildLocalSignals(input, releaseScopePosture);
+      const masteryUpdates = buildMasteryUpdates(input, releaseScopePosture, {
+        localSignals,
+      });
       const reviewTasks = releaseScopePosture.authoritative_scoring_allowed
         ? []
         : await reviewTaskService.generateTasksFromOutcome(reviewTaskInput);
@@ -191,6 +246,8 @@ export function createMasteryOrchestrator({
           review_tasks: reviewTasks,
           artifacts: artifactCandidates,
           error_book_hooks: errorBookHooks,
+          local_signals: localSignals,
+          marking_result: input.marking_result ?? null,
         },
         oldSnapshotRefs: normalizeArray(input.old_snapshot_refs),
         newSnapshotRefs: normalizeArray(
@@ -203,6 +260,7 @@ export function createMasteryOrchestrator({
       return {
         ...releaseScopePosture,
         mastery_updates: masteryUpdates,
+        local_signals: localSignals,
         review_tasks: reviewTasks,
         artifact_candidates: artifactCandidates,
         error_book_hooks: errorBookHooks,

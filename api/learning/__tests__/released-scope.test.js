@@ -22,7 +22,19 @@ test('released scoring membership is registry-backed rather than JS-only type id
   ).toBe(true);
   expect(
     isSeededPilotQuestionType(
+      '9709.differential_equations.separable',
+      'released',
+    ),
+  ).toBe(true);
+  expect(
+    isSeededPilotQuestionType(
       '9709.integration.volume_of_revolution',
+      'validated',
+    ),
+  ).toBe(false);
+  expect(
+    isSeededPilotQuestionType(
+      '9709.differential_equations.modelling',
       'validated',
     ),
   ).toBe(false);
@@ -47,7 +59,7 @@ test('pilot type membership alone does not unlock authoritative scoring', () => 
   });
 });
 
-test('registry-released types still fail closed when no released-family evidence receipt exists', () => {
+test('promoted differential equations separable can unlock authoritative scoring once all gates pass', () => {
   expect(
     resolveReleasedScoringPosture({
       questionTypeId: '9709.differential_equations.separable',
@@ -65,12 +77,12 @@ test('registry-released types still fail closed when no released-family evidence
       classificationConfidence: 0.92,
     }),
   ).toEqual({
-    release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
-    authoritative_scoring_allowed: false,
-    fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
-    fallback_reason_code: FALLBACK_REASON_CODES.MISSING_RELEASED_FAMILY_EVIDENCE,
+    release_scope_status: RELEASE_SCOPE_STATUSES.RELEASED_SCORING,
+    authoritative_scoring_allowed: true,
+    fallback_mode: null,
+    fallback_reason_code: null,
     classification_confidence: 0.92,
-    learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+    learning_signal_posture: LEARNING_SIGNAL_POSTURES.AUTHORITATIVE_SCORING,
   });
 });
 
@@ -177,6 +189,33 @@ test('non-promoted integration question types remain fallback only even with a r
     fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
     fallback_reason_code: FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
     classification_confidence: 0.77,
+    learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+  });
+});
+
+test('non-promoted differential equations question types remain fallback only even with a released rubric', () => {
+  expect(
+    resolveReleasedScoringPosture({
+      questionTypeId: '9709.differential_equations.modelling',
+      questionTypeReleaseState: 'validated',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.differential_equations.modelling',
+          rubric_version_id: 'diff-eq-modelling-v1',
+          scope_level: 'question_type',
+          release_state: 'released',
+        },
+      ],
+      uncertaintyValidated: true,
+      classificationConfidence: 0.78,
+    }),
+  ).toEqual({
+    release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
+    authoritative_scoring_allowed: false,
+    fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
+    fallback_reason_code: FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
+    classification_confidence: 0.78,
     learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
   });
 });

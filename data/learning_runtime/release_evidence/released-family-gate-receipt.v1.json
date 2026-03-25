@@ -1,6 +1,6 @@
 {
   "schema_version": "learning_runtime_released_family_gate_receipt_v1",
-  "generated_at": "2026-03-25T02:46:44.851Z",
+  "generated_at": "2026-03-25T03:10:52.638Z",
   "contract_path": "data/learning_runtime/release_evidence/released-family-gate-contract.v1.json",
   "status": "pass",
   "release_ready": true,
@@ -224,6 +224,101 @@
           }
         }
       ]
+    },
+    {
+      "family_id": "9709.differential_equations",
+      "subject_code": "9709",
+      "title": "Differential equations",
+      "release_state": "released",
+      "released_question_type_ids": [
+        "9709.differential_equations.separable"
+      ],
+      "status": "pass",
+      "blocked_reasons": [],
+      "gates": {
+        "gold_set": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "sample_count": 4,
+          "average_confidence": 0.915,
+          "minimum_sample_count": 4,
+          "minimum_average_confidence": 0.9,
+          "covered_question_type_ids": [
+            "9709.differential_equations.separable"
+          ],
+          "source_refs": [
+            "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1_review_sheet.csv",
+            "docs/reports/learning_runtime_9709_differential_equations_separable_promotion_2026-03-25.md"
+          ],
+          "missing_source_refs": [],
+          "missing_sample_evidence": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.differential_equations.separable",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        },
+        "rubric_coverage": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "covered_question_type_ids": [
+            "9709.differential_equations.separable"
+          ],
+          "source_refs": [
+            "docs/reports/learning_runtime_9709_differential_equations_separable_promotion_2026-03-25.md",
+            "api/learning/__tests__/question-import-service.test.js",
+            "api/learning/__tests__/released-scope.test.js"
+          ],
+          "missing_source_refs": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.differential_equations.separable",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        },
+        "uncertainty_validation": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "case_count": 2,
+          "matched_case_count": 2,
+          "mismatched_cases": [],
+          "pass_question_type_ids": [
+            "9709.differential_equations.separable"
+          ],
+          "fail_closed_question_type_ids": [
+            "9709.differential_equations.separable"
+          ],
+          "source_refs": [
+            "docs/reports/learning_runtime_9709_differential_equations_separable_promotion_2026-03-25.md",
+            "api/learning/__tests__/question-import-service.test.js"
+          ],
+          "missing_source_refs": [],
+          "missing_case_evidence": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.differential_equations.separable",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        }
+      },
+      "question_type_results": [
+        {
+          "question_type_id": "9709.differential_equations.separable",
+          "status": "pass",
+          "blocked_reasons": [],
+          "gates": {
+            "gold_set": "pass",
+            "rubric_coverage": "pass",
+            "uncertainty_validation": "pass"
+          }
+        }
+      ]
     }
   ],
   "question_type_results": [
@@ -252,6 +347,17 @@
     {
       "family_id": "9709.integration_techniques",
       "question_type_id": "9709.integration.application",
+      "status": "pass",
+      "blocked_reasons": [],
+      "gates": {
+        "gold_set": "pass",
+        "rubric_coverage": "pass",
+        "uncertainty_validation": "pass"
+      }
+    },
+    {
+      "family_id": "9709.differential_equations",
+      "question_type_id": "9709.differential_equations.separable",
       "status": "pass",
       "blocked_reasons": [],
       "gates": {

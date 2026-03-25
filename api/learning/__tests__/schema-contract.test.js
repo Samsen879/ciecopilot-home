@@ -7,7 +7,8 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320111500_seed_learning_runtime_pilot_registry.sql',
   'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
   'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
-  'supabase/migrations/20260324120000_create_learning_request_idempotency.sql'
+  'supabase/migrations/20260324120000_create_learning_request_idempotency.sql',
+  'supabase/migrations/20260325110000_promote_learning_runtime_differential_equations_separable.sql'
 ];
 
 function readMigration(relPath) {
@@ -107,6 +108,8 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('9709.trigonometry.equations');
     expect(sql).toContain('9709.integration_techniques');
     expect(sql).toContain('9709.integration.application');
+    expect(sql).toContain('9709.differential_equations');
+    expect(sql).toContain('9709.differential_equations.separable');
     expect(sql).toContain('primary_question_type_release_state');
 
     [

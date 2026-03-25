@@ -911,6 +911,57 @@ describe('learning question import api', () => {
     expect(second.body.error.code).toBe('idempotency_conflict');
   });
 
+  test('POST /api/learning/questions/import replays the canonical durable response on same-payload retry after completion', async () => {
+    const first = await request(server)
+      .post('/api/learning/questions/import')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .set('Idempotency-Key', 'import-replay-1')
+      .send(buildTrigIdentityInput());
+
+    expect(first.status).toBe(200);
+
+    const questionId = first.body.question.question_id;
+    const storedQuestion = clientState.questions.get(questionId);
+    clientState.questions.set(questionId, {
+      ...storedQuestion,
+      family_id: '9709.integration_techniques',
+      primary_question_type_id: '9709.integration.application',
+      release_scope_status: 'non_released_fallback',
+      classification_snapshot_ref: {
+        kind: 'classification_snapshot',
+        classification_snapshot_id: 'snapshot-mutated',
+      },
+    });
+
+    const second = await request(server)
+      .post('/api/learning/questions/import')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .set('Idempotency-Key', 'import-replay-1')
+      .send(buildTrigIdentityInput());
+
+    expect(second.status).toBe(200);
+    expect(second.body.request_id).toEqual(expect.any(String));
+
+    const { request_id: firstRequestId, ...firstBody } = first.body;
+    const { request_id: secondRequestId, ...secondBody } = second.body;
+    expect(firstRequestId).toEqual(expect.any(String));
+    expect(secondRequestId).toEqual(expect.any(String));
+    expect(secondBody).toEqual(firstBody);
+    expect(second.body.question.question_id).toBe(questionId);
+    expect(
+      clientState.calls.filter(
+        (call) => call.table === 'question_bank' && call.operation === 'insert',
+      ),
+    ).toHaveLength(1);
+    expect(
+      clientState.calls.filter(
+        (call) => call.table === 'question_bank' && call.operation === 'select',
+      ),
+    ).toHaveLength(0);
+  });
+
   test('import -> create session -> ask -> workspace read keeps fallback posture and canonical-home consistency', async () => {
     const importRes = await harness.request
       .post('/api/learning/questions/import')

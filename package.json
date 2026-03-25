@@ -36,7 +36,9 @@
     "ao:doctor:strict": "node scripts/ao-doctor.js --strict",
     "ao:lifecycle": "node scripts/ao-lifecycle.js",
     "ao:lifecycle:json": "node scripts/ao-lifecycle.js --json",
-    "ao:lifecycle:strict": "node scripts/ao-lifecycle.js --strict"
+    "ao:lifecycle:strict": "node scripts/ao-lifecycle.js --strict",
+    "ao:test:acceptance": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand tests/ao/ao-lifecycle-acceptance.test.js",
+    "ao:smoke": "node scripts/ao/run-operator-smoke.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.53.1",

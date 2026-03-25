@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import { readAoFixture } from './fixture-support.js';
 
 export const DEFAULT_FRESHNESS_THRESHOLD_MS = 15 * 60 * 1000;
 
@@ -158,6 +159,40 @@ export async function loadAoProjectObservation({
   now = new Date().toISOString(),
   staleAfterMs = DEFAULT_FRESHNESS_THRESHOLD_MS,
 } = {}) {
+  const fixture = readAoFixture('ao-status.json');
+  if (fixture) {
+    let parsed;
+    try {
+      parsed = JSON.parse(fixture.text || '{}');
+    } catch (error) {
+      return buildEmptyObservation(projectId, now, `invalid ao fixture json: ${error.message}`);
+    }
+
+    const sessions = Array.isArray(parsed)
+      ? parsed
+      : (Array.isArray(parsed.sessions) ? parsed.sessions : []);
+    const normalizedSessions = sessions.map((session) => normalizeSession(session, now, staleAfterMs));
+    const orchestrators = normalizedSessions.filter((session) => session.session_role === 'orchestrator');
+    const workers = normalizedSessions.filter((session) => session.session_role === 'worker');
+
+    return {
+      project_id: String(parsed.project?.id ?? parsed.projectId ?? projectId),
+      observed_at: toIsoString(now) ?? new Date().toISOString(),
+      source_ok: true,
+      source_error: null,
+      orchestrator: orchestrators[0] ?? null,
+      workers,
+      raw_summary: {
+        session_count: normalizedSessions.length,
+        orchestrator_count: orchestrators.length,
+        orchestrator_session_names: orchestrators.map((session) => session.session_name),
+        worker_count: workers.length,
+        branch_count: new Set(normalizedSessions.map((session) => session.branch_name).filter(Boolean)).size,
+        pr_count: new Set(normalizedSessions.map((session) => session.pr_number).filter((value) => value != null)).size,
+      },
+    };
+  }
+
   const result = spawnSync('ao', ['status', '-p', projectId, '--json'], {
     encoding: 'utf8',
   });

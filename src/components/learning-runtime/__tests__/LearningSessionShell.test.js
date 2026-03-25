@@ -105,6 +105,103 @@ function createContinuitySessionPayload() {
   };
 }
 
+function createPostMortemSessionPayload() {
+  return {
+    session: {
+      sessionId: 'sess-post-mortem-1',
+      mode: 'post_mortem_review',
+      state: 'handoff_suggested',
+      sessionGoal: 'Review the scored attempt before starting repair',
+      currentQuestionId: 'question-trig-1',
+      currentQuestionTypeId: '9709.trigonometry.equations',
+      currentQuestion: {
+        kind: 'question',
+        questionId: 'question-trig-1',
+      },
+      currentQuestionType: {
+        kind: 'question_type',
+        questionTypeId: '9709.trigonometry.equations',
+      },
+      activeScope: {
+        primaryTopicId: 'topic-trig-equations',
+        primaryTopicPath: '9709/trigonometry/equations',
+        currentAnchorKind: 'artifact',
+        currentAnchor: {
+          kind: 'artifact',
+          artifactId: 'artifact-misconception-1',
+        },
+      },
+      keyArtifactRefs: [
+        {
+          kind: 'artifact',
+          artifactId: 'artifact-misconception-1',
+        },
+      ],
+      misconceptionsInFocus: ['domain:interval', 'sign:inverse'],
+      summaryState: {
+        postMortemReview: {
+          scoringPosture: {
+            releaseScopeStatus: 'non_released_fallback',
+            authoritativeScoringAllowed: false,
+            fallbackReasonCode: 'non_released_fallback',
+          },
+          diagnosticFocus: {
+            title: 'Interval restrictions drove the miss',
+            summary: 'The scored attempt lost marks on the interval restriction and inverse-sign handling.',
+            sourceQuestionId: 'question-trig-1',
+            sourceAttemptRef: {
+              kind: 'attempt',
+              attemptId: 'attempt-trig-1',
+            },
+            sourceMarkRunRef: {
+              kind: 'mark_run',
+              markRunId: 'mark-run-trig-1',
+            },
+          },
+          artifactCandidates: [
+            {
+              artifactId: 'artifact-misconception-1',
+              artifactKind: 'misconception_card',
+              canonicalHomeTopicId: 'topic-trig-equations',
+              targetQuestionTypeId: '9709.trigonometry.equations',
+              trustStatus: 'unverified',
+              placementStatus: 'inbox',
+              lifecycleStatus: 'active',
+              slotKey: 'common_traps',
+            },
+          ],
+          repairHandoff: {
+            title: 'Start the repair session',
+            message: 'Use the projected review task to retry the misconception inside canonical runtime flows.',
+            actionLabel: 'Launch repair session',
+            launchPayload: {
+              anchorKind: 'review_task',
+              reviewTaskId: 'review-task-1',
+              mode: 'spaced_review',
+              topicId: 'topic-trig-equations',
+              topicPath: '9709/trigonometry/equations',
+              currentQuestionTypeId: '9709.trigonometry.equations',
+            },
+          },
+        },
+      },
+      createdAt: '2026-03-22T00:00:00.000Z',
+      updatedAt: '2026-03-22T00:05:00.000Z',
+    },
+    canonicalHomeContext: {
+      sourceAnchorKind: 'artifact',
+      topicRef: {
+        kind: 'topic',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+      },
+    },
+    featureFlags: {
+      learningRuntimeEnabled: true,
+    },
+  };
+}
+
 describe('LearningSessionShell', () => {
   test('renders questionless sessions without placeholder question chrome', () => {
     const questionlessSessionVm = buildSessionViewModel(createQuestionlessSessionPayload());
@@ -209,5 +306,23 @@ describe('LearningSessionShell', () => {
     expect(html).toContain('internal compaction');
     expect(html).toContain('session_turn_limit');
     expect(html).not.toContain('Current question');
+  });
+
+  test('renders a dedicated post-mortem review section with diagnosis, misconception focus, evidence, and repair handoff', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(LearningSessionShell, {
+        viewModel: buildSessionViewModel(createPostMortemSessionPayload()),
+      }),
+    );
+
+    expect(html).toContain('Post-mortem review');
+    expect(html).toContain('Interval restrictions drove the miss');
+    expect(html).toContain('domain interval');
+    expect(html).toContain('sign inverse');
+    expect(html).toContain('attempt-trig-1');
+    expect(html).toContain('mark-run-trig-1');
+    expect(html).toContain('artifact-misconception-1');
+    expect(html).toContain('Launch repair session');
+    expect(html).toContain('Use the projected review task to retry the misconception inside canonical runtime flows.');
   });
 });

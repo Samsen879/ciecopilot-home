@@ -13,13 +13,36 @@ function normalizeText(value, fallback = '') {
   return trimmed || fallback;
 }
 
+function normalizeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function normalizeRefId(ref, key) {
+  if (!ref || typeof ref !== 'object') {
+    return null;
+  }
+
+  return normalizeText(ref[key] ?? ref[key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)], null);
+}
+
 function labelForMode(mode) {
+  if (mode === 'post_mortem_review') {
+    return 'Post-mortem review';
+  }
+
   return normalizeText(mode, 'learning session').replace(/_/g, ' ');
 }
 
 function labelForHandoffKind(handoffKind) {
   return normalizeText(handoffKind, '')
     .replace(/_/g, ' ')
+    .trim();
+}
+
+function labelForFocusTag(tag) {
+  return normalizeText(tag, '')
+    .replace(/[:_]/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -246,6 +269,122 @@ function buildComposerViewModel(composer = {}, hasSession) {
   };
 }
 
+function buildPostMortemArtifactLaunch(candidate, topicPath) {
+  const artifactId = normalizeText(candidate?.artifactId ?? candidate?.artifact_id, null);
+  if (!artifactId) {
+    return null;
+  }
+
+  return {
+    ctaLabel: 'Start post-mortem review',
+    launchPayload: {
+      anchorKind: 'artifact',
+      artifactId,
+      mode: 'post_mortem_review',
+      topicId: normalizeText(candidate?.canonicalHomeTopicId ?? candidate?.canonical_home_topic_id, ''),
+      topicPath: normalizeText(candidate?.canonicalHomeTopicPath ?? candidate?.canonical_home_topic_path, topicPath || ''),
+      currentQuestionTypeId: normalizeText(
+        candidate?.targetQuestionTypeId ?? candidate?.target_question_type_id,
+        '',
+      ),
+    },
+  };
+}
+
+function buildPostMortemViewModel(sessionPayload = {}, session, topicPath) {
+  if (session?.mode !== 'post_mortem_review') {
+    return null;
+  }
+
+  const summaryState = sessionPayload.summaryState || sessionPayload.summary_state || {};
+  const raw = summaryState.postMortemReview || summaryState.post_mortem_review || {};
+  const scoringPosture = raw.scoringPosture || raw.scoring_posture || null;
+  const diagnosticFocus = raw.diagnosticFocus || raw.diagnostic_focus || {};
+  const repairHandoff = raw.repairHandoff || raw.repair_handoff || null;
+  const misconceptionTags = normalizeArray(
+    sessionPayload.misconceptionsInFocus
+    ?? sessionPayload.misconceptions_in_focus
+    ?? raw.misconceptionTags
+    ?? raw.misconception_tags,
+  );
+  const artifactCandidates = normalizeArray(raw.artifactCandidates ?? raw.artifact_candidates)
+    .map((candidate) => {
+      const artifactId = normalizeText(candidate?.artifactId ?? candidate?.artifact_id, null);
+      if (!artifactId) {
+        return null;
+      }
+
+      return {
+        artifactId,
+        artifactKind: normalizeText(candidate?.artifactKind ?? candidate?.artifact_kind, 'artifact'),
+        trustStatus: normalizeText(candidate?.trustStatus ?? candidate?.trust_status, null),
+        placementStatus: normalizeText(candidate?.placementStatus ?? candidate?.placement_status, null),
+        lifecycleStatus: normalizeText(candidate?.lifecycleStatus ?? candidate?.lifecycle_status, null),
+        slotKey: normalizeText(candidate?.slotKey ?? candidate?.slot_key, null),
+        launch: buildPostMortemArtifactLaunch(candidate, topicPath),
+      };
+    })
+    .filter(Boolean);
+  const sourceAttemptId = normalizeRefId(
+    diagnosticFocus.sourceAttemptRef ?? diagnosticFocus.source_attempt_ref,
+    'attemptId',
+  );
+  const sourceMarkRunId = normalizeRefId(
+    diagnosticFocus.sourceMarkRunRef ?? diagnosticFocus.source_mark_run_ref,
+    'markRunId',
+  );
+
+  return {
+    visible: true,
+    title: 'Post-mortem review',
+    summary: normalizeText(
+      diagnosticFocus.summary,
+      'Stay anchored to the scored attempt and the saved runtime evidence before starting repair.',
+    ),
+    scoringPosture: scoringPosture
+      ? {
+        releaseScopeStatus:
+          scoringPosture.releaseScopeStatus ?? scoringPosture.release_scope_status ?? null,
+        authoritativeScoringAllowed:
+          typeof scoringPosture.authoritativeScoringAllowed === 'boolean'
+            ? scoringPosture.authoritativeScoringAllowed
+            : scoringPosture.authoritative_scoring_allowed ?? null,
+        fallbackReasonCode:
+          scoringPosture.fallbackReasonCode ?? scoringPosture.fallback_reason_code ?? null,
+      }
+      : null,
+    diagnosticFocus: {
+      title: normalizeText(diagnosticFocus.title, 'Misconception-focused diagnostic'),
+      summary: normalizeText(diagnosticFocus.summary, ''),
+      sourceQuestionId:
+        normalizeText(diagnosticFocus.sourceQuestionId ?? diagnosticFocus.source_question_id, null)
+        ?? session.currentQuestionId,
+      sourceAttemptId,
+      sourceMarkRunId,
+      partResults: normalizeArray(diagnosticFocus.partResults ?? diagnosticFocus.part_results),
+    },
+    misconceptions: misconceptionTags.map((tag) => ({
+      tag,
+      label: labelForFocusTag(tag),
+    })),
+    artifactCandidates,
+    repairHandoff: repairHandoff
+      ? {
+        title: normalizeText(repairHandoff.title, 'Repair handoff'),
+        message: normalizeText(
+          repairHandoff.message,
+          'Continue into the next repair step through the canonical runtime flow.',
+        ),
+        actionLabel: normalizeText(
+          repairHandoff.actionLabel ?? repairHandoff.action_label,
+          'Launch repair session',
+        ),
+        launchPayload: repairHandoff.launchPayload ?? repairHandoff.launch_payload ?? null,
+      }
+      : null,
+  };
+}
+
 export function buildSessionViewModel(payload = {}, options = {}) {
   const sessionPayload = payload.session || {};
   const activeScope = sessionPayload.activeScope || sessionPayload.activeScopeBundle || {};
@@ -278,6 +417,12 @@ export function buildSessionViewModel(payload = {}, options = {}) {
     currentQuestionTypeId,
     hasQuestion: Boolean(currentQuestionId),
     topicPath,
+    misconceptionsInFocus: normalizeArray(
+      sessionPayload.misconceptionsInFocus ?? sessionPayload.misconceptions_in_focus,
+    ),
+    keyArtifactRefs: normalizeArray(
+      sessionPayload.keyArtifactRefs ?? sessionPayload.key_artifact_refs,
+    ),
     lineage,
     handoff,
     resumeGuidance,
@@ -293,6 +438,7 @@ export function buildSessionViewModel(payload = {}, options = {}) {
     lineage,
     resumeGuidance,
   });
+  const postMortem = buildPostMortemViewModel(sessionPayload, session, topicPath);
 
   return {
     hasSession,
@@ -317,6 +463,7 @@ export function buildSessionViewModel(payload = {}, options = {}) {
     latestResponse,
     timeline: hasSession ? buildTimeline(session, latestResponse, options.turnHistory || []) : [],
     continuity,
+    postMortem,
     launcher,
     composer,
     timelineUpdating: composer.status === 'submitting',

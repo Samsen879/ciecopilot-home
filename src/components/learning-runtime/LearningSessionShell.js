@@ -158,10 +158,154 @@ function renderContinuity(viewModel) {
   ]);
 }
 
+function renderPostMortem(viewModel, onPostMortemLaunch) {
+  const postMortem = viewModel?.postMortem || null;
+  if (!postMortem?.visible) {
+    return null;
+  }
+
+  const scoringPosture = postMortem.scoringPosture || null;
+  const diagnosticFocus = postMortem.diagnosticFocus || {};
+  const evidenceRows = [
+    diagnosticFocus.sourceQuestionId
+      ? `Question: ${diagnosticFocus.sourceQuestionId}`
+      : null,
+    diagnosticFocus.sourceAttemptId
+      ? `Attempt: ${diagnosticFocus.sourceAttemptId}`
+      : null,
+    diagnosticFocus.sourceMarkRunId
+      ? `Mark run: ${diagnosticFocus.sourceMarkRunId}`
+      : null,
+  ].filter(Boolean);
+
+  return h('section', {
+    key: 'post-mortem',
+    className: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm',
+  }, [
+    h('div', { key: 'heading' }, [
+      h('p', {
+        key: 'eyebrow',
+        className: 'text-xs font-semibold uppercase tracking-[0.24em] text-slate-500',
+      }, 'Post-mortem review'),
+      h('h2', {
+        key: 'title',
+        className: 'mt-3 text-2xl font-semibold tracking-tight text-slate-950',
+      }, postMortem.title || 'Post-mortem review'),
+      h('p', {
+        key: 'summary',
+        className: 'mt-2 text-sm leading-6 text-slate-600',
+      }, postMortem.summary),
+    ]),
+    scoringPosture && scoringPosture.authoritativeScoringAllowed === false
+      ? h('div', {
+        key: 'scoring-posture',
+        className: 'mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900',
+      }, [
+        h('p', { key: 'title', className: 'font-semibold' }, 'Conservative post-mortem posture'),
+        h('p', { key: 'body', className: 'mt-1 leading-6' }, [
+          `Release scope: ${scoringPosture.releaseScopeStatus || 'non_released_fallback'}.`,
+          scoringPosture.fallbackReasonCode ? ` Reason: ${scoringPosture.fallbackReasonCode}.` : '',
+        ].join('')),
+      ])
+      : null,
+    h('div', { key: 'diagnostic', className: 'mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4' }, [
+      h('h3', {
+        key: 'title',
+        className: 'text-base font-semibold text-slate-950',
+      }, diagnosticFocus.title || 'Misconception-focused diagnostic'),
+      diagnosticFocus.summary
+        ? h('p', {
+          key: 'body',
+          className: 'mt-2 text-sm leading-6 text-slate-700',
+        }, diagnosticFocus.summary)
+        : null,
+      ...evidenceRows.map((row) => h('p', {
+        key: row,
+        className: 'mt-2 text-sm text-slate-600',
+      }, row)),
+    ].filter(Boolean)),
+    postMortem.misconceptions?.length
+      ? h('div', { key: 'misconceptions', className: 'mt-5' }, [
+        h('p', {
+          key: 'label',
+          className: 'text-sm font-medium text-slate-500',
+        }, 'Misconceptions in focus'),
+        h('div', {
+          key: 'chips',
+          className: 'mt-3 flex flex-wrap gap-2',
+        }, postMortem.misconceptions.map((item) => h('span', {
+          key: item.tag,
+          className: 'rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-sm text-amber-900',
+        }, item.label))),
+      ])
+      : null,
+    postMortem.artifactCandidates?.length
+      ? h('div', { key: 'artifacts', className: 'mt-5 grid gap-3' }, [
+        h('p', {
+          key: 'label',
+          className: 'text-sm font-medium text-slate-500',
+        }, 'Misconception-focused artifacts'),
+        ...postMortem.artifactCandidates.map((candidate) => h('article', {
+          key: candidate.artifactId,
+          className: 'rounded-2xl border border-slate-200 bg-slate-50 p-4',
+        }, [
+          h('div', {
+            key: 'header',
+            className: 'flex flex-wrap items-start justify-between gap-3',
+          }, [
+            h('div', { key: 'copy' }, [
+              h('h3', {
+                key: 'title',
+                className: 'text-base font-semibold text-slate-950',
+              }, candidate.artifactId),
+              h('p', {
+                key: 'meta',
+                className: 'mt-1 text-sm text-slate-600',
+              }, candidate.artifactKind),
+            ]),
+            candidate.launch
+              ? h('button', {
+                key: 'launch',
+                type: 'button',
+                onClick: () => onPostMortemLaunch(candidate.launch.launchPayload),
+                className: 'rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900',
+              }, candidate.launch.ctaLabel || 'Open artifact')
+              : null,
+          ].filter(Boolean)),
+        ])),
+      ])
+      : null,
+    postMortem.repairHandoff
+      ? h('div', {
+        key: 'repair-handoff',
+        className: 'mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4',
+      }, [
+        h('h3', {
+          key: 'title',
+          className: 'text-base font-semibold text-slate-950',
+        }, postMortem.repairHandoff.title || 'Repair handoff'),
+        h('p', {
+          key: 'body',
+          className: 'mt-2 text-sm leading-6 text-slate-700',
+        }, postMortem.repairHandoff.message),
+        postMortem.repairHandoff.launchPayload
+          ? h('button', {
+            key: 'launch',
+            type: 'button',
+            onClick: () => onPostMortemLaunch(postMortem.repairHandoff.launchPayload),
+            className: 'mt-4 rounded-full bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800',
+          }, postMortem.repairHandoff.actionLabel || 'Launch repair session')
+          : null,
+      ])
+      : null,
+  ].filter(Boolean));
+}
+
 export default function LearningSessionShell({
   viewModel,
   onLauncherChange = () => {},
   onLaunch = () => {},
+  onPostMortemLaunch = () => {},
   onAskChange = () => {},
   onAsk = () => {},
 }) {
@@ -183,6 +327,7 @@ export default function LearningSessionShell({
       })
       : null,
     hasSession ? h('div', { key: 'meta' }, renderSessionMeta(session)) : null,
+    hasSession ? renderPostMortem(viewModel, onPostMortemLaunch) : null,
     hasSession ? renderContinuity(viewModel) : null,
     hasSession && session.hasQuestion && session.currentQuestionId
       ? h('section', {

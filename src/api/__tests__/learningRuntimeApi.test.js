@@ -90,6 +90,40 @@ function createSessionEnvelope() {
           questionless: true,
         },
       },
+      summary_state: {
+        post_mortem_review: {
+          scoring_posture: {
+            release_scope_status: 'non_released_fallback',
+            authoritative_scoring_allowed: false,
+            fallback_reason_code: 'non_released_fallback',
+          },
+          diagnostic_focus: {
+            title: 'Misconception-focused diagnostic',
+            source_attempt_ref: {
+              kind: 'attempt',
+              attempt_id: 'attempt-trig-1',
+            },
+            source_mark_run_ref: {
+              kind: 'mark_run',
+              mark_run_id: 'mark-run-trig-1',
+            },
+          },
+          artifact_candidates: [
+            {
+              artifact_id: 'artifact-misconception-1',
+              artifact_kind: 'misconception_card',
+            },
+          ],
+          repair_handoff: {
+            action_label: 'Launch repair session',
+            launch_payload: {
+              anchor_kind: 'review_task',
+              review_task_id: 'review-task-1',
+              mode: 'spaced_review',
+            },
+          },
+        },
+      },
       resume_guidance: {
         title: 'Resume this session',
         message: 'Re-enter through the review-task anchor without inventing a question.',
@@ -279,6 +313,38 @@ describe('learning runtime api', () => {
       parentSessionId: 'sess-parent-1',
       handoffKind: 'explicit_new_session',
     }));
+    expect(payload.session.summaryState.postMortemReview).toEqual({
+      scoringPosture: {
+        releaseScopeStatus: 'non_released_fallback',
+        authoritativeScoringAllowed: false,
+        fallbackReasonCode: 'non_released_fallback',
+      },
+      diagnosticFocus: {
+        title: 'Misconception-focused diagnostic',
+        sourceAttemptRef: {
+          kind: 'attempt',
+          attemptId: 'attempt-trig-1',
+        },
+        sourceMarkRunRef: {
+          kind: 'mark_run',
+          markRunId: 'mark-run-trig-1',
+        },
+      },
+      artifactCandidates: [
+        {
+          artifactId: 'artifact-misconception-1',
+          artifactKind: 'misconception_card',
+        },
+      ],
+      repairHandoff: {
+        actionLabel: 'Launch repair session',
+        launchPayload: {
+          anchorKind: 'review_task',
+          reviewTaskId: 'review-task-1',
+          mode: 'spaced_review',
+        },
+      },
+    });
   });
 
   test('normalizes fallback posture and typed refs from ask responses', () => {

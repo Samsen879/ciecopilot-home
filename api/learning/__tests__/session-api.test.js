@@ -11,6 +11,7 @@ process.env.SUPABASE_ANON_KEY = 'anon-key';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-key';
 
 const clientState = {
+  artifacts: new Map(),
   calls: [],
   idempotencyRows: new Map(),
   nextIdempotencyId: 1,
@@ -176,10 +177,31 @@ function buildResumeProjection(sessionId) {
 }
 
 function resolveQuery(query) {
+  if (query.table === 'learning_artifacts' && query.operation === 'select') {
+    const artifactId = findFilter(query, 'artifact_id');
+    return {
+      data: artifactId ? clientState.artifacts.get(artifactId) || null : null,
+      error: null,
+    };
+  }
+
   if (query.table === 'learning_review_queue_projection' && query.operation === 'select') {
     const reviewTaskId = findFilter(query, 'review_task_id');
-    const row = clientState.reviewTasks.get(reviewTaskId) || null;
-    return { data: row, error: null };
+    const userId = findFilter(query, 'user_id');
+
+    let rows = [...clientState.reviewTasks.values()];
+    if (reviewTaskId) {
+      rows = rows.filter((row) => row.review_task_id === reviewTaskId);
+    }
+    if (userId) {
+      rows = rows.filter((row) => row.user_id === userId);
+    }
+
+    if (query.options?.single || query.options?.maybeSingle) {
+      return { data: rows[0] || null, error: null };
+    }
+
+    return { data: rows, error: null };
   }
 
   if (query.table === 'learning_request_idempotency') {
@@ -402,6 +424,31 @@ function buildStoredSession(overrides = {}) {
   };
 }
 
+function buildArtifact(overrides = {}) {
+  return {
+    artifact_id: 'artifact-misconception-1',
+    artifact_kind: 'misconception_card',
+    canonical_home_topic_id: 'topic-trig-equations',
+    source_session_id: null,
+    source_attempt_id: 'attempt-trig-1',
+    source_mark_run_id: 'mark-run-trig-1',
+    target_family_id: '9709.trigonometry_manipulation_equations',
+    target_question_type_id: '9709.trigonometry.equations',
+    slot_key: 'common_traps',
+    trust_status: 'unverified',
+    placement_status: 'inbox',
+    lifecycle_status: 'active',
+    grounding_refs: [
+      { kind: 'attempt', attempt_id: 'attempt-trig-1' },
+      { kind: 'mark_run', mark_run_id: 'mark-run-trig-1' },
+    ],
+    misconception_tags: ['domain:interval', 'sign:inverse'],
+    created_at: '2026-03-21T13:30:00.000Z',
+    updated_at: '2026-03-21T13:30:00.000Z',
+    ...overrides,
+  };
+}
+
 describe('learning session api', () => {
   let harness;
 
@@ -414,6 +461,9 @@ describe('learning session api', () => {
   });
 
   beforeEach(() => {
+    clientState.artifacts = new Map([
+      ['artifact-misconception-1', buildArtifact()],
+    ]);
     clientState.calls = [];
     clientState.idempotencyRows = new Map();
     clientState.nextIdempotencyId = 1;
@@ -972,6 +1022,138 @@ describe('learning session api', () => {
       anchor_kind: 'concept',
     });
     expect(res.body.session.active_scope_bundle.current_question_ref).toBeNull();
+  });
+
+  test('GET /api/learning/sessions/:id derives explicit post-mortem diagnostics, misconception focus, artifacts, and repair handoff from runtime truth', async () => {
+    clientState.sessions.set('session-post-mortem-1', buildStoredSession({
+      session_id: 'session-post-mortem-1',
+      mode: 'post_mortem_review',
+      state: 'handoff_suggested',
+      session_goal: 'Review the scored attempt before starting repair',
+      active_scope_bundle: {
+        primary_topic_id: 'topic-trig-equations',
+        primary_topic_path: '9709.trigonometry.equations',
+        secondary_topics_in_scope: [],
+        allowed_prerequisites: [],
+        paper_context: null,
+        mode: 'post_mortem_review',
+        session_goal: 'Review the scored attempt before starting repair',
+        current_anchor_kind: 'artifact',
+        current_anchor_ref: {
+          kind: 'artifact',
+          artifact_id: 'artifact-misconception-1',
+        },
+        current_question_ref: {
+          kind: 'question',
+          question_id: 'question-trig-1',
+        },
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.trigonometry.equations',
+        },
+      },
+      current_anchor_kind: 'artifact',
+      current_anchor_ref: {
+        kind: 'artifact',
+        artifact_id: 'artifact-misconception-1',
+      },
+      current_question_id: 'question-trig-1',
+      current_question_type_id: '9709.trigonometry.equations',
+      summary_state: {},
+    }));
+    clientState.lineage.set('session-post-mortem-1', {
+      lineage_id: 'lineage-session-post-mortem-1',
+      parent_session_id: null,
+      child_session_id: 'session-post-mortem-1',
+      handoff_kind: null,
+      summary_snapshot: {},
+      created_at: '2026-03-21T13:30:00.000Z',
+    });
+    clientState.reviewTasks.set('review-task-post-mortem-1', buildReviewTask({
+      review_task_id: 'review-task-post-mortem-1',
+      target_topic_id: 'topic-trig-equations',
+      target_topic_path: '9709.trigonometry.equations',
+      target_question_type_id: '9709.trigonometry.equations',
+      target_misconception_tags: ['domain:interval', 'sign:inverse'],
+      source_question_id: 'question-trig-1',
+      trigger_type: 'non_released_fallback',
+      success_criteria: {
+        authoritative_scoring_allowed: false,
+        part_results: [
+          {
+            part_id: 'b',
+            score_awarded: 0,
+            score_max: 2,
+          },
+        ],
+      },
+      status: 'open',
+    }));
+
+    const res = await harness.request
+      .get('/api/learning/sessions/session-post-mortem-1')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student');
+
+    expect(res.status).toBe(200);
+    expect(res.body.session.misconceptions_in_focus).toEqual([
+      'domain:interval',
+      'sign:inverse',
+    ]);
+    expect(res.body.session.key_artifact_refs).toEqual([
+      {
+        kind: 'artifact',
+        artifact_id: 'artifact-misconception-1',
+      },
+    ]);
+    expect(res.body.session.summary_state.post_mortem_review).toMatchObject({
+      scoring_posture: {
+        release_scope_status: 'non_released_fallback',
+        authoritative_scoring_allowed: false,
+        fallback_reason_code: 'non_released_fallback',
+      },
+      diagnostic_focus: {
+        title: 'Misconception-focused diagnostic',
+        source_question_id: 'question-trig-1',
+        source_attempt_ref: {
+          kind: 'attempt',
+          attempt_id: 'attempt-trig-1',
+        },
+        source_mark_run_ref: {
+          kind: 'mark_run',
+          mark_run_id: 'mark-run-trig-1',
+        },
+      },
+      artifact_candidates: [
+        {
+          artifact_id: 'artifact-misconception-1',
+          artifact_kind: 'misconception_card',
+        },
+      ],
+      repair_handoff: {
+        action_label: 'Launch repair session',
+        launch_payload: {
+          anchor_kind: 'review_task',
+          review_task_id: 'review-task-post-mortem-1',
+          mode: 'spaced_review',
+        },
+      },
+    });
+    expect(res.body.session.handoff).toMatchObject({
+      suggested_handoff: {
+        should_handoff: true,
+        handoff_kind: 'explicit_new_session',
+        reason_code: 'post_mortem_repair_ready',
+      },
+      explicit_new_session: {
+        recommended_mode: 'spaced_review',
+        recommended_anchor_kind: 'review_task',
+        recommended_anchor_ref: {
+          kind: 'review_task',
+          review_task_id: 'review-task-post-mortem-1',
+        },
+      },
+    });
   });
 
   test('GET /api/learning/sessions/:id returns 404 session_not_found with the frozen envelope', async () => {

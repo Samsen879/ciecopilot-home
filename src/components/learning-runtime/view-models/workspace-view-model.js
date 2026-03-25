@@ -220,6 +220,47 @@ function buildReferenceLaunch(ref, workspace) {
   return null;
 }
 
+function defaultArtifactKindForSlot(slotKey) {
+  switch (slotKey) {
+    case 'overview_map':
+      return 'summary_card';
+    case 'core_method_derivation':
+      return 'derivation_card';
+    case 'canonical_worked_example':
+      return 'worked_example_card';
+    case 'common_traps':
+      return 'misconception_card';
+    case 'my_notes':
+      return 'free_note';
+    default:
+      return null;
+  }
+}
+
+function buildArtifactLaunch(record, workspace) {
+  if (!record?.artifactId) {
+    return null;
+  }
+
+  const isPostMortemArtifact = record.artifactKind === 'misconception_card';
+  const launchPayload = {
+    anchorKind: 'artifact',
+    artifactId: record.artifactId,
+    mode: isPostMortemArtifact ? 'post_mortem_review' : 'learn_concept',
+    topicId: workspace.topicId,
+    topicPath: workspace.topicPath,
+  };
+
+  if (record.targetQuestionTypeId) {
+    launchPayload.currentQuestionTypeId = record.targetQuestionTypeId;
+  }
+
+  return {
+    ctaLabel: isPostMortemArtifact ? 'Start post-mortem review' : 'Open artifact',
+    launchPayload,
+  };
+}
+
 function readArtifactInbox(workspace = {}) {
   return workspace.artifactInbox || workspace.artifact_inbox || {};
 }
@@ -246,6 +287,10 @@ function normalizeArtifactRecord(artifact = {}, { source = 'artifact_inbox' } = 
     trustStatus: normalizeString(artifact.trustStatus ?? artifact.trust_status, null),
     lifecycleStatus: normalizeString(artifact.lifecycleStatus ?? artifact.lifecycle_status, 'active'),
     slotKey: normalizeString(artifact.slotKey ?? artifact.slot_key, null),
+    targetQuestionTypeId: normalizeString(
+      artifact.targetQuestionTypeId ?? artifact.target_question_type_id,
+      null,
+    ),
     updatedAt: artifact.updatedAt ?? artifact.updated_at ?? null,
     source,
   };
@@ -355,10 +400,7 @@ function buildArtifactCard(record, {
     description,
     updatedAtLabel: buildUpdatedAtLabel(record.updatedAt),
     state: buildArtifactStatusState(record, fallbackState),
-    launch: buildReferenceLaunch({
-      kind: 'artifact',
-      artifactId: record.artifactId,
-    }, workspace),
+    launch: buildArtifactLaunch(record, workspace),
     availableActions: buildArtifactActionState(record, workspace),
   };
 }
@@ -368,6 +410,7 @@ function buildCardViewModel(ref, {
   description,
   updatedAt,
   state,
+  launch = null,
   workspace,
 } = {}) {
   if (!ref) {
@@ -381,7 +424,7 @@ function buildCardViewModel(ref, {
     description,
     updatedAtLabel: buildUpdatedAtLabel(updatedAt),
     state,
-    launch: buildReferenceLaunch(ref, workspace),
+    launch: launch || buildReferenceLaunch(ref, workspace),
   };
 }
 
@@ -391,6 +434,7 @@ function buildSlotViewModel(definition, slots, slotState, workspace) {
   const primaryArtifactRecord = primaryArtifact
     ? normalizeArtifactRecord({
       artifactId: primaryArtifact.artifactId ?? primaryArtifact.artifact_id,
+      artifactKind: defaultArtifactKindForSlot(definition.key),
       canonicalHomeTopicId: workspace.topicId,
       lifecycleStatus: 'active',
       placementStatus: 'pinned',
@@ -431,6 +475,19 @@ function buildSlotViewModel(definition, slots, slotState, workspace) {
       description: 'Linked from another canonical-home topic.',
       updatedAt: null,
       state: null,
+      launch:
+        definition.key === 'common_traps' && reference.kind === 'artifact'
+          ? {
+            ctaLabel: 'Start post-mortem review',
+            launchPayload: {
+              anchorKind: 'artifact',
+              artifactId: normalizeString(reference.artifactId ?? reference.artifact_id),
+              mode: 'post_mortem_review',
+              topicId: workspace.topicId,
+              topicPath: workspace.topicPath,
+            },
+          }
+          : null,
       workspace,
     })),
     updatedAt,

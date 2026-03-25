@@ -296,6 +296,119 @@ function createContinuitySessionPayload() {
   };
 }
 
+function createPostMortemSessionPayload() {
+  return {
+    session: {
+      sessionId: 'sess-post-mortem-1',
+      mode: 'post_mortem_review',
+      state: 'handoff_suggested',
+      sessionGoal: 'Review the scored attempt before starting repair',
+      currentQuestionId: 'question-trig-1',
+      currentQuestionTypeId: '9709.trigonometry.equations',
+      currentQuestion: {
+        kind: 'question',
+        questionId: 'question-trig-1',
+      },
+      currentQuestionType: {
+        kind: 'question_type',
+        questionTypeId: '9709.trigonometry.equations',
+      },
+      activeScope: {
+        primaryTopicId: 'topic-trig-equations',
+        primaryTopicPath: '9709/trigonometry/equations',
+        currentAnchorKind: 'artifact',
+        currentAnchor: {
+          kind: 'artifact',
+          artifactId: 'artifact-misconception-1',
+        },
+      },
+      keyArtifactRefs: [
+        {
+          kind: 'artifact',
+          artifactId: 'artifact-misconception-1',
+        },
+      ],
+      misconceptionsInFocus: ['domain:interval', 'sign:inverse'],
+      summaryState: {
+        postMortemReview: {
+          scoringPosture: {
+            releaseScopeStatus: 'non_released_fallback',
+            authoritativeScoringAllowed: false,
+            fallbackReasonCode: 'non_released_fallback',
+          },
+          diagnosticFocus: {
+            title: 'Interval restrictions drove the miss',
+            summary: 'The scored attempt lost marks on the interval restriction and inverse-sign handling.',
+            sourceQuestionId: 'question-trig-1',
+            sourceAttemptRef: {
+              kind: 'attempt',
+              attemptId: 'attempt-trig-1',
+            },
+            sourceMarkRunRef: {
+              kind: 'mark_run',
+              markRunId: 'mark-run-trig-1',
+            },
+            partResults: [
+              {
+                partId: 'b',
+                scoreAwarded: 0,
+                scoreMax: 2,
+              },
+            ],
+          },
+          artifactCandidates: [
+            {
+              artifactId: 'artifact-misconception-1',
+              artifactKind: 'misconception_card',
+              canonicalHomeTopicId: 'topic-trig-equations',
+              targetQuestionTypeId: '9709.trigonometry.equations',
+              trustStatus: 'unverified',
+              placementStatus: 'inbox',
+              lifecycleStatus: 'active',
+              slotKey: 'common_traps',
+            },
+          ],
+          repairHandoff: {
+            title: 'Start the repair session',
+            message: 'Use the projected review task to retry the misconception inside canonical runtime flows.',
+            actionLabel: 'Launch repair session',
+            launchPayload: {
+              anchorKind: 'review_task',
+              reviewTaskId: 'review-task-1',
+              mode: 'spaced_review',
+              topicId: 'topic-trig-equations',
+              topicPath: '9709/trigonometry/equations',
+              currentQuestionTypeId: '9709.trigonometry.equations',
+            },
+          },
+        },
+      },
+      handoff: {
+        supported: true,
+        suggestedHandoff: {
+          shouldHandoff: true,
+          handoffKind: 'explicit_new_session',
+          reasonCode: 'post_mortem_repair_ready',
+          message: 'Start the repair session from the projected review task.',
+        },
+      },
+      createdAt: '2026-03-22T00:00:00.000Z',
+      updatedAt: '2026-03-22T00:05:00.000Z',
+    },
+    canonicalHomeContext: {
+      sourceAnchorKind: 'artifact',
+      topicRef: {
+        kind: 'topic',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+      },
+    },
+    featureFlags: {
+      learningRuntimeEnabled: true,
+    },
+  };
+}
+
 describe('learning runtime session view model', () => {
   test('preserves questionless runtime state without placeholder ids', () => {
     const vm = buildSessionViewModel(createQuestionlessSessionPayload());
@@ -369,6 +482,56 @@ describe('learning runtime session view model', () => {
       }),
     }));
     expect(vm.timeline.some((entry) => entry.kind === 'question')).toBe(false);
+  });
+
+  test('builds a dedicated post-mortem surface from diagnostic, misconception, artifact, and repair-handoff data', () => {
+    const vm = buildSessionViewModel(createPostMortemSessionPayload());
+
+    expect(vm.postMortem).toEqual(expect.objectContaining({
+      visible: true,
+      title: 'Post-mortem review',
+      misconceptions: [
+        expect.objectContaining({
+          tag: 'domain:interval',
+          label: 'domain interval',
+        }),
+        expect.objectContaining({
+          tag: 'sign:inverse',
+          label: 'sign inverse',
+        }),
+      ],
+      diagnosticFocus: expect.objectContaining({
+        title: 'Interval restrictions drove the miss',
+        sourceQuestionId: 'question-trig-1',
+        sourceAttemptId: 'attempt-trig-1',
+        sourceMarkRunId: 'mark-run-trig-1',
+      }),
+      scoringPosture: expect.objectContaining({
+        releaseScopeStatus: 'non_released_fallback',
+        authoritativeScoringAllowed: false,
+      }),
+      artifactCandidates: [
+        expect.objectContaining({
+          artifactId: 'artifact-misconception-1',
+          artifactKind: 'misconception_card',
+          launch: expect.objectContaining({
+            launchPayload: expect.objectContaining({
+              anchorKind: 'artifact',
+              artifactId: 'artifact-misconception-1',
+              mode: 'post_mortem_review',
+            }),
+          }),
+        }),
+      ],
+      repairHandoff: expect.objectContaining({
+        actionLabel: 'Launch repair session',
+        launchPayload: expect.objectContaining({
+          anchorKind: 'review_task',
+          reviewTaskId: 'review-task-1',
+          mode: 'spaced_review',
+        }),
+      }),
+    }));
   });
 
   test('builds launch payloads that keep concept sessions questionless', () => {
@@ -667,21 +830,21 @@ describe('learning runtime session view model', () => {
       },
     });
     expect(vm.slots.common_traps.primaryArtifactCard.launch).toEqual({
-      ctaLabel: 'Open artifact',
+      ctaLabel: 'Start post-mortem review',
       launchPayload: {
         anchorKind: 'artifact',
         artifactId: 'artifact-primary',
-        mode: 'learn_concept',
+        mode: 'post_mortem_review',
         topicId: 'topic-trig-equations',
         topicPath: '9709/trigonometry/equations',
       },
     });
     expect(vm.slots.common_traps.linkedReferenceCards[0].launch).toEqual({
-      ctaLabel: 'Open artifact',
+      ctaLabel: 'Start post-mortem review',
       launchPayload: {
         anchorKind: 'artifact',
         artifactId: 'artifact-linked-1',
-        mode: 'learn_concept',
+        mode: 'post_mortem_review',
         topicId: 'topic-trig-equations',
         topicPath: '9709/trigonometry/equations',
       },

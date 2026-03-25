@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
-import http from 'node:http';
-import request from 'supertest';
 import { buildIdempotencyRequestFingerprint } from '../lib/repositories/request-idempotency-repository.js';
+import { createLoopbackHttpTestClient } from './loopback-test-client.js';
 
 process.env.NODE_ENV = 'test';
 process.env.AUTH_LOCAL_TEST_MODE = 'true';
@@ -404,18 +403,14 @@ function buildStoredSession(overrides = {}) {
 }
 
 describe('learning session api', () => {
-  let server;
+  let harness;
 
-  beforeAll(() => {
-    server = http.createServer(apiHandler);
+  beforeAll(async () => {
+    harness = await createLoopbackHttpTestClient(apiHandler);
   });
 
-  afterAll((done) => {
-    if (!server || !server.listening) {
-      done();
-      return;
-    }
-    server.close(done);
+  afterAll(async () => {
+    await harness?.close();
   });
 
   beforeEach(() => {
@@ -437,7 +432,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns persisted active_scope_bundle and typed anchor', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -494,7 +489,7 @@ describe('learning session api', () => {
       created_at: '2026-03-21T13:30:00.000Z',
     });
 
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -567,7 +562,7 @@ describe('learning session api', () => {
       created_at: '2026-03-21T13:30:00.000Z',
     });
 
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -588,7 +583,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns invalid_payload when parent_session_id is malformed', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -608,7 +603,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns 404 anchor_target_not_found when the anchor object is missing', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -630,7 +625,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns 403 auth_forbidden when the anchor belongs to another user', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -646,7 +641,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns 400 invalid_payload for malformed anchor refs', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -661,7 +656,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns 400 invalid_anchor_kind for unknown anchors', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -678,7 +673,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns 409 unsupported_mode_for_anchor for illegal create combinations', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -691,14 +686,14 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions returns 409 idempotency_conflict on conflicting replay', async () => {
-    const first = await request(server)
+    const first = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .set('Idempotency-Key', 'sess-create-1')
       .send(buildSessionPayload());
 
-    const second = await request(server)
+    const second = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -716,14 +711,14 @@ describe('learning session api', () => {
     const gate = createDeferred();
     clientState.sessionInsertGate = gate;
 
-    const firstRequest = dispatch(request(server)
+    const firstRequest = dispatch(harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .set('Idempotency-Key', 'sess-race-1')
       .send(buildSessionPayload()));
 
-    const secondRequest = dispatch(request(server)
+    const secondRequest = dispatch(harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -800,7 +795,7 @@ describe('learning session api', () => {
       },
     );
 
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -817,7 +812,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions/extra segments does not hit create-session', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions/session-1/extra')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -828,14 +823,14 @@ describe('learning session api', () => {
   });
 
   test('GET /api/learning/sessions/:id resolves the dynamic route', async () => {
-    const created = await request(server)
+    const created = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .send(buildSessionPayload());
 
     const sessionId = created.body.session.session_id;
-    const res = await request(server)
+    const res = await harness.request
       .get(`/api/learning/sessions/${sessionId}`)
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student');
@@ -897,7 +892,7 @@ describe('learning session api', () => {
       created_at: '2026-03-21T13:30:00.000Z',
     });
 
-    const res = await request(server)
+    const res = await harness.request
       .get('/api/learning/sessions/session-suggested-1')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student');
@@ -929,7 +924,7 @@ describe('learning session api', () => {
   });
 
   test('GET /api/learning/sessions/:id returns 404 session_not_found with the frozen envelope', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .get('/api/learning/sessions/missing-session')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student');

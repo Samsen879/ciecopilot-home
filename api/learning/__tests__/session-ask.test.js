@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import http from 'node:http';
-import request from 'supertest';
+import { createLoopbackHttpTestClient } from './loopback-test-client.js';
 
 process.env.NODE_ENV = 'test';
 process.env.AUTH_LOCAL_TEST_MODE = 'true';
@@ -122,18 +121,14 @@ function buildStoredSession(overrides = {}) {
 }
 
 describe('learning session ask api', () => {
-  let server;
+  let harness;
 
-  beforeAll(() => {
-    server = http.createServer(apiHandler);
+  beforeAll(async () => {
+    harness = await createLoopbackHttpTestClient(apiHandler);
   });
 
-  afterAll((done) => {
-    if (!server || !server.listening) {
-      done();
-      return;
-    }
-    server.close(done);
+  afterAll(async () => {
+    await harness?.close();
   });
 
   beforeEach(() => {
@@ -174,7 +169,7 @@ describe('learning session ask api', () => {
       ],
     });
 
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions/sess-1/ask')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -214,7 +209,7 @@ describe('learning session ask api', () => {
   test('POST /api/learning/sessions/:id/ask maps unknown ask failures to internal_error with 500', async () => {
     mockAskWithinLearningSession.mockRejectedValue(new Error('workspace projection crashed'));
 
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions/sess-1/ask')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -241,7 +236,7 @@ describe('learning session ask api', () => {
     error.details = { state: 'completed' };
     mockAskWithinLearningSession.mockRejectedValue(error);
 
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/sessions/sess-1/ask')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')

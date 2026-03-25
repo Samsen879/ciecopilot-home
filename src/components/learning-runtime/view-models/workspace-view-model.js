@@ -181,6 +181,10 @@ function buildUpdatedAtLabel(updatedAt) {
   return normalizeString(updatedAt) ? `Updated ${updatedAt}` : null;
 }
 
+function buildVisitLabel(updatedAt) {
+  return normalizeString(updatedAt) ? `Last runtime visit ${updatedAt}` : null;
+}
+
 function buildSlotLaunch(workspace, slotKey) {
   if (!workspace?.workspaceId || !slotKey) {
     return null;
@@ -536,6 +540,249 @@ function buildArtifactInboxViewModel(workspace, slotList) {
   };
 }
 
+function buildLaunchPayloadFromAnchor({
+  anchorKind,
+  anchorRef,
+  currentQuestionTypeId = null,
+  mode = 'learn_concept',
+  workspace,
+} = {}) {
+  const resolvedAnchorKind = normalizeString(anchorKind ?? anchorRef?.kind);
+  if (!resolvedAnchorKind) {
+    return null;
+  }
+
+  const launchPayload = {
+    anchorKind: resolvedAnchorKind,
+    mode: normalizeString(mode, 'learn_concept'),
+    topicId: workspace?.topicId || '',
+    topicPath: workspace?.topicPath || '',
+  };
+
+  if (currentQuestionTypeId) {
+    launchPayload.currentQuestionTypeId = currentQuestionTypeId;
+  }
+
+  switch (resolvedAnchorKind) {
+    case 'artifact': {
+      const artifactId = normalizeString(anchorRef?.artifactId ?? anchorRef?.artifact_id);
+      return artifactId
+        ? {
+          ...launchPayload,
+          artifactId,
+        }
+        : null;
+    }
+    case 'review_task': {
+      const reviewTaskId = normalizeString(anchorRef?.reviewTaskId ?? anchorRef?.review_task_id);
+      return reviewTaskId
+        ? {
+          ...launchPayload,
+          reviewTaskId,
+        }
+        : null;
+    }
+    case 'workspace_slot': {
+      const workspaceId = normalizeString(anchorRef?.workspaceId ?? anchorRef?.workspace_id, workspace?.workspaceId || '');
+      const slotKey = normalizeString(anchorRef?.slotKey ?? anchorRef?.slot_key);
+      return workspaceId && slotKey
+        ? {
+          ...launchPayload,
+          workspaceId,
+          slotKey,
+        }
+        : null;
+    }
+    case 'concept': {
+      return {
+        ...launchPayload,
+        topicId: normalizeString(anchorRef?.topicId ?? anchorRef?.topic_id, workspace?.topicId || ''),
+        topicPath: normalizeString(anchorRef?.topicPath ?? anchorRef?.topic_path, workspace?.topicPath || ''),
+      };
+    }
+    default:
+      return null;
+  }
+}
+
+function buildReviewQueueSignal(reviewQueue) {
+  const escalatedCount = reviewQueue?.summary?.escalated ?? 0;
+  const leadItem = (Array.isArray(reviewQueue?.items) ? reviewQueue.items : [])
+    .find((item) => item?.queueState?.value === 'escalated' && item?.canLaunch);
+
+  if (!escalatedCount || !leadItem?.launchPayload) {
+    return null;
+  }
+
+  return {
+    key: 'review_queue',
+    label: 'Escalated review ready',
+    summary: `${escalatedCount} escalated review task${escalatedCount === 1 ? ' is' : 's are'} ready in the canonical queue.`,
+    ctaLabel: 'Start spaced review',
+    launchPayload: leadItem.launchPayload,
+    tone: 'danger',
+  };
+}
+
+function buildSlotSignal(slot, {
+  label,
+  summary,
+} = {}) {
+  if (!slot?.slotLaunch?.launchPayload) {
+    return null;
+  }
+
+  return {
+    key: slot.slotKey,
+    label,
+    summary,
+    ctaLabel: `Open ${slot.title.toLowerCase()}`,
+    launchPayload: slot.slotLaunch.launchPayload,
+    tone: 'warning',
+  };
+}
+
+function buildRevisitSignals(slotList, reviewQueue) {
+  const signals = [];
+  const reviewSignal = buildReviewQueueSignal(reviewQueue);
+  if (reviewSignal) {
+    signals.push(reviewSignal);
+  }
+
+  const staleSlot = slotList.find((slot) => slot?.surfaceState?.value === 'stale');
+  if (staleSlot) {
+    signals.push(buildSlotSignal(staleSlot, {
+      label: 'Stale slot',
+      summary: staleSlot.surfaceState?.message,
+    }));
+  }
+
+  const missingContentSlot = slotList.find((slot) => slot?.contentState?.value === 'missing_content');
+  if (missingContentSlot) {
+    signals.push(buildSlotSignal(missingContentSlot, {
+      label: 'Missing content',
+      summary: missingContentSlot.contentState?.message,
+    }));
+  }
+
+  return signals.filter(Boolean);
+}
+
+function buildRevisitContinuation(revisit, workspace) {
+  const lastSession = revisit?.lastSession || revisit?.last_session || {};
+  const resumeGuidance = lastSession?.resumeGuidance || lastSession?.resume_guidance || null;
+
+  if (!resumeGuidance) {
+    return null;
+  }
+
+  const launchPayload = buildLaunchPayloadFromAnchor({
+    anchorKind: resumeGuidance.anchorKind ?? resumeGuidance.anchor_kind,
+    anchorRef: resumeGuidance.anchorRef ?? resumeGuidance.anchor_ref,
+    currentQuestionTypeId:
+      normalizeString(resumeGuidance.currentQuestionTypeId ?? resumeGuidance.current_question_type_id),
+    mode: normalizeString(lastSession.mode, 'learn_concept'),
+    workspace,
+  });
+
+  if (!launchPayload) {
+    return null;
+  }
+
+  return {
+    title: normalizeString(resumeGuidance.title, 'Continue runtime'),
+    summary: normalizeString(resumeGuidance.summary, ''),
+    detail: normalizeString(resumeGuidance.message, ''),
+    ctaLabel: 'Continue runtime',
+    launchPayload,
+  };
+}
+
+function buildRevisitChanges(revisit = {}) {
+  const changesSinceLastVisit = revisit?.changesSinceLastVisit || revisit?.changes_since_last_visit || {};
+  const slotUpdates = Array.isArray(changesSinceLastVisit.slotUpdates ?? changesSinceLastVisit.slot_updates)
+    ? (changesSinceLastVisit.slotUpdates ?? changesSinceLastVisit.slot_updates)
+    : [];
+  const reviewUpdates = Array.isArray(changesSinceLastVisit.reviewUpdates ?? changesSinceLastVisit.review_updates)
+    ? (changesSinceLastVisit.reviewUpdates ?? changesSinceLastVisit.review_updates)
+    : [];
+
+  return [
+    ...slotUpdates.map((entry) => {
+      const slotKey = normalizeString(entry?.slotKey ?? entry?.slot_key, 'slot');
+      const slotTitle = SLOT_DEFINITION_BY_KEY[slotKey]?.title || labelFromToken(slotKey, 'slot');
+      return {
+        key: `slot:${slotKey}`,
+        label: `${slotTitle} slot updated`,
+        summary: 'Canonical slot content changed after your previous runtime visit.',
+      };
+    }),
+    ...reviewUpdates.map((entry) => {
+      const status = normalizeString(entry?.status, 'updated');
+      const completionEvidence = entry?.completionEvidence ?? entry?.completion_evidence ?? {};
+      return {
+        key: `review:${normalizeString(entry?.reviewTaskId ?? entry?.review_task_id, 'unknown')}`,
+        label: status === 'completed'
+          ? 'Review task completed'
+          : status === 'partial'
+            ? 'Review task partially completed'
+            : 'Review task updated',
+        summary:
+          normalizeString(completionEvidence?.summary)
+          || `${normalizeString(entry?.targetQuestionTypeTitle ?? entry?.target_question_type_title, 'Review task')} changed after your previous runtime visit.`,
+      };
+    }),
+  ];
+}
+
+function buildRevisitNextStep(slotList, reviewQueue) {
+  const recommendedReview = (Array.isArray(reviewQueue?.items) ? reviewQueue.items : [])
+    .find((item) => item?.queueState?.value === 'escalated' && item?.canLaunch);
+
+  if (recommendedReview?.launchPayload) {
+    const escalatedCount = reviewQueue?.summary?.escalated ?? 0;
+    return {
+      title: 'Recommended next step',
+      summary: `${escalatedCount} escalated review task${escalatedCount === 1 ? ' is' : 's are'} ready in the canonical queue.`,
+      ctaLabel: 'Start spaced review',
+      launchPayload: recommendedReview.launchPayload,
+    };
+  }
+
+  const staleSlot = slotList.find((slot) => slot?.surfaceState?.value === 'stale' && slot?.slotLaunch?.launchPayload);
+  if (staleSlot) {
+    return {
+      title: 'Recommended next step',
+      summary: staleSlot.surfaceState?.message,
+      ctaLabel: `Open ${staleSlot.title.toLowerCase()}`,
+      launchPayload: staleSlot.slotLaunch.launchPayload,
+    };
+  }
+
+  return null;
+}
+
+function buildRevisitViewModel(revisit = {}, workspace, slotList, reviewQueue) {
+  const progressSummary = `${slotList.filter((slot) => slot?.primaryArtifact).length} of ${slotList.length} canonical slots populated and ${(reviewQueue?.summary?.completed ?? 0)} review outcome${(reviewQueue?.summary?.completed ?? 0) === 1 ? '' : 's'} completed.`;
+  const changes = buildRevisitChanges(revisit);
+  const continuation = buildRevisitContinuation(revisit, workspace);
+  const nextStep = buildRevisitNextStep(slotList, reviewQueue);
+  const signals = buildRevisitSignals(slotList, reviewQueue);
+  const lastVisitAt = normalizeString(revisit?.lastVisitAt ?? revisit?.last_visit_at);
+  const available = Boolean(lastVisitAt || continuation || nextStep || changes.length > 0 || signals.length > 0);
+
+  return {
+    available,
+    headline: 'Return with continuity',
+    lastVisitLabel: buildVisitLabel(lastVisitAt),
+    progressSummary,
+    continuation,
+    changes,
+    nextStep,
+    signals,
+  };
+}
+
 export function buildWorkspaceViewModel(payload = {}, options = {}) {
   const workspace = payload.workspace || {};
   const slotState = workspace.slotState || workspace.slot_state || {};
@@ -549,16 +796,18 @@ export function buildWorkspaceViewModel(payload = {}, options = {}) {
   const slotList = SLOT_DEFINITIONS
     .filter((definition) => definition.key !== 'review_queue')
     .map((definition) => stableSlots[definition.key]);
+  const reviewQueue = buildReviewQueueViewModel(payload.reviewQueue || payload.review_queue || {}, {
+    now: options.now,
+  });
 
   return {
     workspace: workspaceSummary,
     slots: stableSlots,
     slotList,
     artifactInbox: buildArtifactInboxViewModel(workspace, slotList),
-    reviewQueue: buildReviewQueueViewModel(payload.reviewQueue || payload.review_queue || {}, {
-      now: options.now,
-    }),
+    reviewQueue,
     featureFlags: payload.featureFlags || payload.feature_flags || {},
+    revisit: buildRevisitViewModel(payload.revisit || {}, workspaceSummary, slotList, reviewQueue),
   };
 }
 

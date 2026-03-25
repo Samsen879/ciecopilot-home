@@ -190,6 +190,46 @@ function createWorkspacePayload() {
         },
       ],
     },
+    revisit: {
+      lastVisitAt: '2026-03-22T07:55:00.000Z',
+      lastSession: {
+        sessionId: 'session-topic-1-current',
+        mode: 'post_mortem_review',
+        state: 'active',
+        updatedAt: '2026-03-22T07:55:00.000Z',
+        resumeGuidance: {
+          title: 'Continue interval repair',
+          message: 'Resume from the misconception artifact anchored to this workspace.',
+          summary: 'Carry the misconception recap into the next pass.',
+          anchorKind: 'artifact',
+          anchorRef: {
+            kind: 'artifact',
+            artifactId: 'artifact-primary',
+          },
+          currentQuestionTypeId: '9709.trigonometry.equations',
+        },
+      },
+      changesSinceLastVisit: {
+        slotUpdates: [
+          {
+            slotKey: 'common_traps',
+            updatedAt: '2026-03-22T08:00:00.000Z',
+          },
+        ],
+        reviewUpdates: [
+          {
+            reviewTaskId: 'review-task-2',
+            status: 'completed',
+            updatedAt: '2026-03-22T08:04:00.000Z',
+            targetQuestionTypeTitle: 'Trigonometric equations',
+            completionEvidence: {
+              summary: 'Closed the interval mistake with a fresh variant.',
+              outcome: 'completed',
+            },
+          },
+        ],
+      },
+    },
   };
 }
 
@@ -215,6 +255,17 @@ describe('WorkspaceShell', () => {
       }),
     );
 
+    expect(html).toContain('Return with continuity');
+    expect(html).toContain('Last runtime visit 2026-03-22T07:55:00.000Z');
+    expect(html).toContain('4 of 5 canonical slots populated and 1 review outcome completed.');
+    expect(html).toContain('Continue interval repair');
+    expect(html).toContain('Carry the misconception recap into the next pass.');
+    expect(html).toContain('Recommended next step');
+    expect(html).toContain('1 escalated review task is ready in the canonical queue.');
+    expect(html).toContain('Common traps slot updated');
+    expect(html).toContain('Review task completed');
+    expect(html).toContain('Open overview map');
+    expect(html).toContain('Open core method derivation');
     expect(html).toContain('Canonical resident');
     expect(html).toContain('Common traps');
     expect(html).toContain('artifact-primary');

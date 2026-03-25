@@ -27,8 +27,12 @@ function toneClassName(tone) {
     return 'border-amber-200 bg-amber-50 text-amber-900';
   }
 
-  if (tone === 'error') {
+  if (tone === 'error' || tone === 'danger') {
     return 'border-rose-200 bg-rose-50 text-rose-700';
+  }
+
+  if (tone === 'success') {
+    return 'border-emerald-200 bg-emerald-50 text-emerald-800';
   }
 
   return 'border-slate-200 bg-slate-50 text-slate-700';
@@ -454,6 +458,161 @@ function renderWorkspaceHeader(workspace) {
   ]);
 }
 
+function renderRevisitAction(action, onLaunch, key = 'action') {
+  if (!action?.launchPayload || typeof onLaunch !== 'function') {
+    return null;
+  }
+
+  return h('button', {
+    key,
+    type: 'button',
+    onClick: () => onLaunch(action.launchPayload),
+    className: 'rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-900 hover:text-slate-900',
+  }, action.ctaLabel || 'Continue');
+}
+
+function renderRevisitSection(revisit, onLaunch) {
+  if (!revisit?.available) {
+    return null;
+  }
+
+  return h('section', {
+    key: 'revisit',
+    className: 'rounded-3xl border border-slate-200 bg-white p-6 shadow-sm',
+  }, [
+    h('div', {
+      key: 'header',
+      className: 'flex flex-wrap items-start justify-between gap-4',
+    }, [
+      h('div', { key: 'copy' }, [
+        h('p', {
+          key: 'eyebrow',
+          className: 'text-sm font-medium uppercase tracking-[0.24em] text-slate-500',
+        }, revisit.headline || 'Return with continuity'),
+        revisit.lastVisitLabel
+          ? h('p', {
+            key: 'last-visit',
+            className: 'mt-3 text-sm font-semibold text-slate-900',
+          }, revisit.lastVisitLabel)
+          : null,
+        revisit.progressSummary
+          ? h('p', {
+            key: 'progress',
+            className: 'mt-2 text-sm leading-6 text-slate-600',
+          }, revisit.progressSummary)
+          : null,
+      ].filter(Boolean)),
+      revisit.continuation
+        ? renderRevisitAction(revisit.continuation, onLaunch, 'continuation-action')
+        : null,
+    ].filter(Boolean)),
+    h('div', {
+      key: 'body',
+      className: 'mt-6 grid gap-4 lg:grid-cols-[1.3fr_0.9fr]',
+    }, [
+      h('div', {
+        key: 'continuity-column',
+        className: 'grid gap-4',
+      }, [
+        revisit.continuation
+          ? h('section', {
+            key: 'continuation',
+            className: 'rounded-2xl border border-slate-200 bg-slate-50 p-5',
+          }, [
+            h('p', {
+              key: 'title',
+              className: 'text-base font-semibold text-slate-950',
+            }, revisit.continuation.title),
+            revisit.continuation.summary
+              ? h('p', {
+                key: 'summary',
+                className: 'mt-2 text-sm font-medium text-slate-900',
+              }, revisit.continuation.summary)
+              : null,
+            revisit.continuation.detail
+              ? h('p', {
+                key: 'detail',
+                className: 'mt-2 text-sm leading-6 text-slate-600',
+              }, revisit.continuation.detail)
+              : null,
+          ].filter(Boolean))
+          : null,
+        revisit.changes?.length
+          ? h('section', {
+            key: 'changes',
+            className: 'rounded-2xl border border-slate-200 bg-slate-50 p-5',
+          }, [
+            h('p', {
+              key: 'title',
+              className: 'text-base font-semibold text-slate-950',
+            }, 'What changed'),
+            h('ul', {
+              key: 'items',
+              className: 'mt-4 space-y-3',
+            }, revisit.changes.map((change) => h('li', {
+              key: change.key,
+              className: 'rounded-2xl border border-slate-200 bg-white px-4 py-3',
+            }, [
+              h('p', {
+                key: 'label',
+                className: 'text-sm font-semibold text-slate-900',
+              }, change.label),
+              h('p', {
+                key: 'summary',
+                className: 'mt-1 text-sm leading-6 text-slate-600',
+              }, change.summary),
+            ]))),
+          ])
+          : null,
+      ].filter(Boolean)),
+      h('div', {
+        key: 'actions-column',
+        className: 'grid gap-4',
+      }, [
+        revisit.nextStep
+          ? h('section', {
+            key: 'next-step',
+            className: 'rounded-2xl border border-slate-200 bg-slate-50 p-5',
+          }, [
+            h('p', {
+              key: 'title',
+              className: 'text-base font-semibold text-slate-950',
+            }, revisit.nextStep.title),
+            revisit.nextStep.summary
+              ? h('p', {
+                key: 'summary',
+                className: 'mt-2 text-sm leading-6 text-slate-600',
+              }, revisit.nextStep.summary)
+              : null,
+            renderRevisitAction(revisit.nextStep, onLaunch, 'next-step-action'),
+          ].filter(Boolean))
+          : null,
+        revisit.signals?.length
+          ? h('div', {
+            key: 'signals',
+            className: 'grid gap-3',
+          }, revisit.signals.map((signal) => h('section', {
+            key: signal.key,
+            className: `rounded-2xl border px-4 py-4 ${toneClassName(signal.tone)}`,
+          }, [
+            h('p', {
+              key: 'label',
+              className: 'text-sm font-semibold',
+            }, signal.label),
+            signal.summary
+              ? h('p', {
+                key: 'summary',
+                className: 'mt-2 text-sm leading-6',
+              }, signal.summary)
+              : null,
+            renderRevisitAction(signal, onLaunch, `${signal.key}-action`),
+          ].filter(Boolean))))
+          : null,
+      ].filter(Boolean)),
+    ]),
+  ]);
+}
+
 export default function WorkspaceShell({
   onCompleteReviewTask = () => {},
   onLaunch = () => {},
@@ -581,6 +740,7 @@ export default function WorkspaceShell({
 
   return h('div', { className: 'grid gap-6' }, [
     renderWorkspaceHeader(localViewModel?.workspace || {}),
+    renderRevisitSection(localViewModel?.revisit || null, onLaunch),
     feedback
       ? h('section', {
         key: 'feedback',

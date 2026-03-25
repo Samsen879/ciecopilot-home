@@ -195,6 +195,7 @@ describe('reconciliation engine', () => {
         severity: 'ambiguous',
       }),
     ]));
+    expect(report.findings.map((finding) => finding.code)).not.toContain('multiple_candidate_workers');
   });
 
   it('aggregates mixed PR states in project mode', () => {

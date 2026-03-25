@@ -240,6 +240,7 @@ describe('ao lifecycle acceptance', () => {
         }),
       ]),
     });
+    expect(JSON.parse(stdout.join('')).findings.map((finding) => finding.code)).not.toContain('multiple_candidate_workers');
   });
 
   it('keeps worker continuity and CI hold classification under realistic ci_failed inputs', async () => {

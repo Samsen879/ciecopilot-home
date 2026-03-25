@@ -218,7 +218,7 @@ function buildPrFindings(pr, ownership, releaseReadiness) {
     }));
   }
 
-  if (ownership.status === 'ambiguous') {
+  if (ownership.status === 'ambiguous' && (ownership.candidate_sessions?.length ?? 0) > 1) {
     findings.push(createFinding({
       code: 'multiple_candidate_workers',
       severity: 'ambiguous',

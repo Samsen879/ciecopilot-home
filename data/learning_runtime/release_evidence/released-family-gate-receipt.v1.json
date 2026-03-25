@@ -1,0 +1,264 @@
+{
+  "schema_version": "learning_runtime_released_family_gate_receipt_v1",
+  "generated_at": "2026-03-25T02:45:14.944Z",
+  "contract_path": "data/learning_runtime/release_evidence/released-family-gate-contract.v1.json",
+  "status": "pass",
+  "release_ready": true,
+  "family_results": [
+    {
+      "family_id": "9709.trigonometry_manipulation_equations",
+      "subject_code": "9709",
+      "title": "Trigonometric manipulation / equations",
+      "release_state": "released",
+      "released_question_type_ids": [
+        "9709.trigonometry.identities",
+        "9709.trigonometry.equations"
+      ],
+      "status": "pass",
+      "blocked_reasons": [],
+      "gates": {
+        "gold_set": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "sample_count": 4,
+          "average_confidence": 0.93,
+          "minimum_sample_count": 4,
+          "minimum_average_confidence": 0.9,
+          "covered_question_type_ids": [
+            "9709.trigonometry.identities",
+            "9709.trigonometry.equations"
+          ],
+          "source_refs": [
+            "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1_review_sheet.csv",
+            "data/golden_set/sampling_manifest_realflow_20260216.json"
+          ],
+          "missing_source_refs": [],
+          "missing_sample_evidence": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.trigonometry.identities",
+              "status": "pass",
+              "blocked_reasons": []
+            },
+            {
+              "question_type_id": "9709.trigonometry.equations",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        },
+        "rubric_coverage": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "covered_question_type_ids": [
+            "9709.trigonometry.identities",
+            "9709.trigonometry.equations"
+          ],
+          "source_refs": [
+            "docs/superpowers/specs/2026-03-20-prd-learning-runtime-contract-design.md",
+            "api/learning/__tests__/question-import-service.test.js",
+            "api/learning/__tests__/review-task-service.test.js"
+          ],
+          "missing_source_refs": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.trigonometry.identities",
+              "status": "pass",
+              "blocked_reasons": []
+            },
+            {
+              "question_type_id": "9709.trigonometry.equations",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        },
+        "uncertainty_validation": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "case_count": 4,
+          "matched_case_count": 4,
+          "mismatched_cases": [],
+          "pass_question_type_ids": [
+            "9709.trigonometry.identities",
+            "9709.trigonometry.equations"
+          ],
+          "fail_closed_question_type_ids": [
+            "9709.trigonometry.identities",
+            "9709.trigonometry.equations"
+          ],
+          "source_refs": [
+            "docs/superpowers/runbooks/2026-03-20-learning-runtime-pilot-rollout.md",
+            "api/learning/__tests__/question-import-service.test.js"
+          ],
+          "missing_source_refs": [],
+          "missing_case_evidence": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.trigonometry.identities",
+              "status": "pass",
+              "blocked_reasons": []
+            },
+            {
+              "question_type_id": "9709.trigonometry.equations",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        }
+      },
+      "question_type_results": [
+        {
+          "question_type_id": "9709.trigonometry.identities",
+          "status": "pass",
+          "blocked_reasons": [],
+          "gates": {
+            "gold_set": "pass",
+            "rubric_coverage": "pass",
+            "uncertainty_validation": "pass"
+          }
+        },
+        {
+          "question_type_id": "9709.trigonometry.equations",
+          "status": "pass",
+          "blocked_reasons": [],
+          "gates": {
+            "gold_set": "pass",
+            "rubric_coverage": "pass",
+            "uncertainty_validation": "pass"
+          }
+        }
+      ]
+    },
+    {
+      "family_id": "9709.integration_techniques",
+      "subject_code": "9709",
+      "title": "Integration techniques",
+      "release_state": "released",
+      "released_question_type_ids": [
+        "9709.integration.application"
+      ],
+      "status": "pass",
+      "blocked_reasons": [],
+      "gates": {
+        "gold_set": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "sample_count": 3,
+          "average_confidence": 0.91,
+          "minimum_sample_count": 3,
+          "minimum_average_confidence": 0.9,
+          "covered_question_type_ids": [
+            "9709.integration.application"
+          ],
+          "source_refs": [
+            "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1_review_sheet.csv",
+            "docs/reports/learning_runtime_9709_integration_application_promotion_2026-03-24.md"
+          ],
+          "missing_source_refs": [],
+          "missing_sample_evidence": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.integration.application",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        },
+        "rubric_coverage": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "covered_question_type_ids": [
+            "9709.integration.application"
+          ],
+          "source_refs": [
+            "docs/reports/learning_runtime_9709_integration_application_promotion_2026-03-24.md",
+            "api/learning/__tests__/question-import-service.test.js",
+            "api/learning/__tests__/review-task-service.test.js"
+          ],
+          "missing_source_refs": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.integration.application",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        },
+        "uncertainty_validation": {
+          "status": "pass",
+          "blocked_reasons": [],
+          "case_count": 2,
+          "matched_case_count": 2,
+          "mismatched_cases": [],
+          "pass_question_type_ids": [
+            "9709.integration.application"
+          ],
+          "fail_closed_question_type_ids": [
+            "9709.integration.application"
+          ],
+          "source_refs": [
+            "docs/reports/learning_runtime_9709_integration_application_promotion_2026-03-24.md",
+            "api/learning/__tests__/question-import-service.test.js"
+          ],
+          "missing_source_refs": [],
+          "missing_case_evidence": [],
+          "question_type_results": [
+            {
+              "question_type_id": "9709.integration.application",
+              "status": "pass",
+              "blocked_reasons": []
+            }
+          ]
+        }
+      },
+      "question_type_results": [
+        {
+          "question_type_id": "9709.integration.application",
+          "status": "pass",
+          "blocked_reasons": [],
+          "gates": {
+            "gold_set": "pass",
+            "rubric_coverage": "pass",
+            "uncertainty_validation": "pass"
+          }
+        }
+      ]
+    }
+  ],
+  "question_type_results": [
+    {
+      "family_id": "9709.trigonometry_manipulation_equations",
+      "question_type_id": "9709.trigonometry.identities",
+      "status": "pass",
+      "blocked_reasons": [],
+      "gates": {
+        "gold_set": "pass",
+        "rubric_coverage": "pass",
+        "uncertainty_validation": "pass"
+      }
+    },
+    {
+      "family_id": "9709.trigonometry_manipulation_equations",
+      "question_type_id": "9709.trigonometry.equations",
+      "status": "pass",
+      "blocked_reasons": [],
+      "gates": {
+        "gold_set": "pass",
+        "rubric_coverage": "pass",
+        "uncertainty_validation": "pass"
+      }
+    },
+    {
+      "family_id": "9709.integration_techniques",
+      "question_type_id": "9709.integration.application",
+      "status": "pass",
+      "blocked_reasons": [],
+      "gates": {
+        "gold_set": "pass",
+        "rubric_coverage": "pass",
+        "uncertainty_validation": "pass"
+      }
+    }
+  ]
+}

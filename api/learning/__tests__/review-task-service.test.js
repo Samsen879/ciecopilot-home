@@ -320,6 +320,114 @@ describe('learning orchestration', () => {
 });
 
 describe('review task service generation', () => {
+  test('fallback review tasks now route through immediate repair with explicit scheduler policy', async () => {
+    const service = createReviewTaskService({
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const [task] = await service.generateTasksFromOutcome({
+      user_id: 'student-1',
+      question_id: 'question-1',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_released_fallback',
+      repair_target_topic_id: 'topic-1',
+      repair_target_topic_path: '9709/trigonometry/equations',
+      misconception_tags: ['domain:interval'],
+      question_context: {
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.equations',
+      },
+      marking_result: {
+        marking_summary: {
+          coverage_scope: 'question',
+          local_signal_only: true,
+        },
+      },
+    });
+
+    expect(task).toMatchObject({
+      trigger_type: 'immediate_repair',
+      mode: 'trap_fix',
+      due_at: '2026-03-24T10:00:00.000Z',
+      priority: 'high',
+      success_criteria: {
+        scheduler_policy: expect.objectContaining({
+          route: 'immediate_repair',
+          freshness_bucket: 'fresh',
+          fallback_reason_code: 'non_released_fallback',
+          immediate_repair_max_deferral_at: '2026-03-24T22:00:00.000Z',
+        }),
+      },
+    });
+  });
+
+  test('fallback review tasks fold into an existing active repair task instead of growing the queue', async () => {
+    let storedTask = buildStoredReviewTask({
+      review_task_id: 'review-task-existing',
+      trigger_type: 'immediate_repair',
+      mode: 'trap_fix',
+      priority: 'high',
+      due_at: '2026-03-24T10:00:00.000Z',
+      target_misconception_tags: ['domain:interval'],
+      success_criteria: {
+        scheduler_policy: {
+          route: 'immediate_repair',
+          freshness_bucket: 'fresh',
+          immediate_repair_max_deferral_at: '2026-03-24T22:00:00.000Z',
+        },
+      },
+    });
+    const reviewTaskRepository = {
+      insertCalls: [],
+      updateCalls: [],
+      async listReviewTaskProjectionsByUser() {
+        return [storedTask];
+      },
+      async insertReviewTask(input) {
+        this.insertCalls.push(input);
+        return input;
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        this.updateCalls.push({ reviewTaskId, patch });
+        storedTask = {
+          ...storedTask,
+          ...patch,
+        };
+        return storedTask;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const [task] = await service.generateTasksFromOutcome({
+      user_id: 'student-1',
+      question_id: 'question-1',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_released_fallback',
+      repair_target_topic_id: 'topic-1',
+      repair_target_topic_path: '9709/trigonometry/equations',
+      misconception_tags: ['domain:interval', 'identity:rewrite'],
+      question_context: {
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    });
+
+    expect(reviewTaskRepository.insertCalls).toEqual([]);
+    expect(reviewTaskRepository.updateCalls).toHaveLength(1);
+    expect(task).toMatchObject({
+      review_task_id: 'review-task-existing',
+      target_misconception_tags: ['domain:interval', 'identity:rewrite'],
+      success_criteria: {
+        scheduler_policy: expect.objectContaining({
+          route: 'immediate_repair',
+        }),
+      },
+    });
+  });
+
   test('fallback review tasks keep explicit part/subpart scope in success criteria', async () => {
     const service = createReviewTaskService({
       now: () => new Date('2026-03-24T10:00:00.000Z'),
@@ -479,6 +587,49 @@ describe('review task service write semantics', () => {
         reviewTaskId: 'review-task-1',
         intent: 'snooze',
         dueAt: '2026-03-24T12:00:00.000Z',
+      }),
+    ).rejects.toMatchObject({
+      code: 'invalid_payload',
+      status: 400,
+      details: { field: 'due_at' },
+    });
+  });
+
+  test('immediate-repair tasks cannot be deferred beyond the freshness window', async () => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask({
+            trigger_type: 'immediate_repair',
+            mode: 'trap_fix',
+            priority: 'high',
+            due_at: '2026-03-24T10:00:00.000Z',
+            success_criteria: {
+              scheduler_policy: {
+                route: 'immediate_repair',
+                freshness_bucket: 'fresh',
+                immediate_repair_max_deferral_at: '2026-03-24T22:00:00.000Z',
+              },
+            },
+          });
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask(),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent: 'reschedule',
+        dueAt: '2026-03-25T12:00:00.000Z',
       }),
     ).rejects.toMatchObject({
       code: 'invalid_payload',

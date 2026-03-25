@@ -187,6 +187,10 @@ function createWorkspacePayload() {
     },
     reviewQueue: {
       scope: 'global_queue_projection',
+      policy: {
+        dailyRecommendationCap: 3,
+        maxHighPriorityOpenPerType: 1,
+      },
       topicId: 'topic-trig-equations',
       items: [
         {
@@ -199,6 +203,22 @@ function createWorkspacePayload() {
           status: 'open',
           dueAt: '2026-03-21T00:00:00.000Z',
           estimatedMinutes: 15,
+          schedulerState: {
+            value: 'escalated',
+            label: 'Escalated',
+            tone: 'danger',
+            reasonCode: 'fresh_immediate_repair',
+          },
+          schedulerPolicy: {
+            route: 'immediate_repair',
+            freshnessBucket: 'fresh',
+          },
+          schedulerReasons: [
+            {
+              code: 'fresh_immediate_repair',
+              summary: 'Fresh repair evidence should be retried before it is spaced.',
+            },
+          ],
         },
         {
           reviewTaskId: 'review-task-2',
@@ -210,6 +230,22 @@ function createWorkspacePayload() {
           status: 'open',
           dueAt: '2026-03-24T00:00:00.000Z',
           estimatedMinutes: 20,
+          schedulerState: {
+            value: 'deferred',
+            label: 'Deferred',
+            tone: 'neutral',
+            reasonCode: 'freshness_window',
+          },
+          schedulerPolicy: {
+            route: 'spaced_review',
+            freshnessBucket: 'cooling',
+          },
+          schedulerReasons: [
+            {
+              code: 'freshness_window',
+              summary: 'Deferred until the next spaced-review freshness window opens.',
+            },
+          ],
         },
         {
           reviewTaskId: 'review-task-3',
@@ -752,8 +788,11 @@ describe('learning runtime session view model', () => {
       reviewTaskId: 'review-task-1',
       modeLabel: 'redo variant',
       queueState: expect.objectContaining({
-        value: 'due',
-        label: 'Due',
+        value: 'escalated',
+        label: 'Escalated',
+      }),
+      schedulerExplanation: expect.objectContaining({
+        summary: 'Fresh repair evidence should be retried before it is spaced.',
       }),
       launchPayload: {
         anchorKind: 'review_task',
@@ -768,6 +807,8 @@ describe('learning runtime session view model', () => {
       value: 'deferred',
       label: 'Deferred',
       tone: 'neutral',
+      reasonCode: 'freshness_window',
+      reasonSummary: null,
     });
     expect(vm.reviewQueue.items[2]).toEqual(expect.objectContaining({
       queueState: {
@@ -782,7 +823,8 @@ describe('learning runtime session view model', () => {
     }));
     expect(vm.reviewQueue.summary).toEqual({
       total: 3,
-      due: 1,
+      escalated: 1,
+      due: 0,
       open: 0,
       deferred: 1,
       completed: 1,

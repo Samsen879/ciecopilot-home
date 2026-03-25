@@ -109,6 +109,96 @@ function createLearningDb() {
       created_at: '2026-03-22T08:15:00.000Z',
       updated_at: '2026-03-22T08:15:00.000Z',
     },
+    {
+      review_task_id: 'review-overload-1',
+      user_id: 'student-1',
+      target_kind: 'question_type',
+      target_topic_id: 'topic-3',
+      target_topic_path: '9709/trigonometry/functions',
+      target_family_id: '9709.trigonometry_manipulation_equations',
+      target_family_title: 'Trigonometric manipulation / equations',
+      target_question_type_id: '9709.trigonometry.functions',
+      target_question_type_title: 'Trigonometric functions',
+      target_misconception_tags: [],
+      related_artifact_refs: [],
+      source_question_id: 'question-3',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-3' },
+      trigger_type: 'immediate_repair',
+      mode: 'trap_fix',
+      due_at: '2026-03-22T07:00:00.000Z',
+      priority: 'high',
+      estimated_minutes: 12,
+      success_criteria: {
+        scheduler_policy: {
+          route: 'immediate_repair',
+          freshness_bucket: 'fresh',
+        },
+      },
+      completion_evidence: {},
+      status: 'open',
+      created_at: '2026-03-22T08:05:00.000Z',
+      updated_at: '2026-03-22T08:05:00.000Z',
+    },
+    {
+      review_task_id: 'review-overload-2',
+      user_id: 'student-1',
+      target_kind: 'question_type',
+      target_topic_id: 'topic-4',
+      target_topic_path: '9709/trigonometry/mixed',
+      target_family_id: '9709.trigonometry_manipulation_equations',
+      target_family_title: 'Trigonometric manipulation / equations',
+      target_question_type_id: '9709.trigonometry.mixed',
+      target_question_type_title: 'Mixed trigonometric practice',
+      target_misconception_tags: [],
+      related_artifact_refs: [],
+      source_question_id: 'question-4',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-4' },
+      trigger_type: 'regression_recovery',
+      mode: 'redo_variant',
+      due_at: '2026-03-22T07:30:00.000Z',
+      priority: 'urgent',
+      estimated_minutes: 20,
+      success_criteria: {
+        scheduler_policy: {
+          route: 'regression_recovery',
+          freshness_bucket: 'stale',
+        },
+      },
+      completion_evidence: {},
+      status: 'open',
+      created_at: '2026-03-22T08:07:00.000Z',
+      updated_at: '2026-03-22T08:07:00.000Z',
+    },
+    {
+      review_task_id: 'review-overload-3',
+      user_id: 'student-1',
+      target_kind: 'question_type',
+      target_topic_id: 'topic-5',
+      target_topic_path: '9709/trigonometry/revision',
+      target_family_id: '9709.trigonometry_manipulation_equations',
+      target_family_title: 'Trigonometric manipulation / equations',
+      target_question_type_id: '9709.trigonometry.revision',
+      target_question_type_title: 'Revision sprint',
+      target_misconception_tags: [],
+      related_artifact_refs: [],
+      source_question_id: 'question-5',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-5' },
+      trigger_type: 'exam_polish',
+      mode: 'timed_check',
+      due_at: '2026-03-22T07:45:00.000Z',
+      priority: 'high',
+      estimated_minutes: 18,
+      success_criteria: {
+        scheduler_policy: {
+          route: 'exam_polish',
+          freshness_bucket: 'cooling',
+        },
+      },
+      completion_evidence: {},
+      status: 'open',
+      created_at: '2026-03-22T08:08:00.000Z',
+      updated_at: '2026-03-22T08:08:00.000Z',
+    },
   ];
 
   class QueryBuilder {
@@ -647,10 +737,20 @@ describe('workspace read service', () => {
 
     expect(payload.scope).toBe('global_queue_projection');
     expect(payload.topic_id).toBe('topic-1');
+    expect(payload.policy).toEqual(expect.objectContaining({
+      daily_recommendation_cap: 3,
+      max_high_priority_open_per_type: 1,
+    }));
     expect(payload.items).toHaveLength(1);
     expect(payload.items[0]).toMatchObject({
       review_task_id: 'review-queued-1',
       target_topic_id: 'topic-1',
+      scheduler_state: {
+        value: 'blocked',
+        label: 'Blocked',
+        tone: 'danger',
+        reason_code: 'daily_recommendation_cap',
+      },
     });
   });
 

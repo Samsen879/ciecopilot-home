@@ -160,6 +160,18 @@ function createWorkspacePayload() {
           status: 'open',
           dueAt: '2026-03-21T00:00:00.000Z',
           estimatedMinutes: 15,
+          schedulerState: {
+            value: 'escalated',
+            label: 'Escalated',
+            tone: 'danger',
+            reasonCode: 'fresh_immediate_repair',
+          },
+          schedulerReasons: [
+            {
+              code: 'fresh_immediate_repair',
+              summary: 'Fresh repair evidence should be retried before it is spaced.',
+            },
+          ],
         },
         {
           reviewTaskId: 'review-task-2',
@@ -225,8 +237,9 @@ describe('WorkspaceShell', () => {
     expect(html).toContain('Unpin before marking contested.');
     expect(html).toContain('Review queue');
     expect(html).toContain('redo variant');
-    expect(html).toContain('Due');
+    expect(html).toContain('Escalated');
     expect(html).toContain('Completed');
+    expect(html).toContain('Fresh repair evidence should be retried before it is spaced.');
     expect(html).toContain('Start spaced review');
     expect(html).toContain('Mark complete');
     expect(html).toContain('Reschedule');

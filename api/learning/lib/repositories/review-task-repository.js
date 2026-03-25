@@ -48,6 +48,30 @@ function buildUpdateRow(patch = {}) {
     row.updated_at = patch.updated_at;
   }
 
+  if (Object.prototype.hasOwnProperty.call(patch, 'trigger_type')) {
+    row.trigger_type = patch.trigger_type;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'mode')) {
+    row.mode = patch.mode;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'priority')) {
+    row.priority = patch.priority;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'success_criteria')) {
+    row.success_criteria = normalizeObject(patch.success_criteria);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'target_misconception_tags')) {
+    row.target_misconception_tags = normalizeArray(patch.target_misconception_tags);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(patch, 'related_artifact_refs')) {
+    row.related_artifact_refs = normalizeArray(patch.related_artifact_refs);
+  }
+
   return row;
 }
 
@@ -77,6 +101,10 @@ export function createReviewTaskRepository(client) {
 
     async updateReviewTask(reviewTaskId, patch) {
       return updateReviewTask(client, reviewTaskId, patch);
+    },
+
+    async listReviewTaskProjectionsByUser(userId) {
+      return listReviewTaskProjectionsByUser(client, userId);
     },
   };
 }
@@ -128,4 +156,19 @@ export async function updateReviewTask(client, reviewTaskId, patch = {}) {
       .single(),
     'Failed to update learning review task',
   );
+}
+
+export async function listReviewTaskProjectionsByUser(client, userId) {
+  const { data, error } = await client
+    .from('learning_review_queue_projection')
+    .select('*')
+    .eq('user_id', userId)
+    .order('due_at', { ascending: true, nullsFirst: false })
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load learning review-task projections: ${error.message}`);
+  }
+
+  return Array.isArray(data) ? data : [];
 }

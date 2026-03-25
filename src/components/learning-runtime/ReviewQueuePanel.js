@@ -87,6 +87,12 @@ function renderReviewItem(item, {
       key: 'meta',
       className: 'mt-3 text-sm text-slate-600',
     }, `Due ${item.dueAtLabel} · ${item.estimatedMinutesLabel}`),
+    item.schedulerExplanation?.summary
+      ? h('div', {
+        key: 'scheduler-summary',
+        className: 'mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800',
+      }, item.schedulerExplanation.summary)
+      : null,
     item.resultFeedback?.summary
       ? h('div', {
         key: 'result-summary',
@@ -149,8 +155,9 @@ export default function ReviewQueuePanel({
     ].filter(Boolean)),
     h('div', {
       key: 'summary',
-      className: 'mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5',
+      className: 'mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-6',
     }, [
+      renderSummaryChip('escalated', 'Escalated', summary.escalated ?? 0),
       renderSummaryChip('due', 'Due', summary.due ?? 0),
       renderSummaryChip('deferred', 'Deferred', summary.deferred ?? 0),
       renderSummaryChip('open', 'Open', summary.open ?? 0),

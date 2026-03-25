@@ -8,10 +8,14 @@ jest.unstable_mockModule('node:child_process', () => ({
   spawnSync: mockSpawnSync,
 }));
 
-jest.unstable_mockModule('node:fs', () => ({
-  existsSync: mockExistsSync,
-  statSync: mockStatSync,
-}));
+jest.unstable_mockModule('node:fs', async () => {
+  const actual = await jest.requireActual('node:fs');
+  return {
+    ...actual,
+    existsSync: mockExistsSync,
+    statSync: mockStatSync,
+  };
+});
 
 const { loadDoctorLocalState } = await import('../../scripts/ao/lib/doctor-local-state-source.js');
 

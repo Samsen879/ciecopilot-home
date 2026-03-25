@@ -7,6 +7,10 @@ on:
       - "api/learning/**"
       - "src/**"
       - "scripts/rag/**"
+      - "scripts/ao/**"
+      - "scripts/ao-*.js"
+      - "tests/ao/**"
+      - ".github/workflows/ao-operations-gate.yml"
       - "data/eval/**"
       - ".github/workflows/rag-s1-metric-gate.yml"
   push:
@@ -37,21 +41,56 @@ jobs:
       CHAT_MODEL: ${{ secrets.CHAT_MODEL || 'qwen-plus' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine execution scope
+        id: scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git fetch --no-tags origin "${{ github.base_ref }}"
+          changed_files="$(git diff --name-only "origin/${{ github.base_ref }}"...HEAD)"
+          {
+            echo "changed_files<<EOF"
+            printf '%s\n' "$changed_files"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          if printf '%s\n' "$changed_files" | grep -Eq '^(api/rag/|api/learning/|src/|scripts/rag/|data/eval/)'; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=noop" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: No-op for AO-only PR scope
+        if: steps.scope.outputs.mode == 'noop'
+        run: |
+          echo "AO-only PR detected; S1 Metric Gate is not applicable to this diff."
+          printf '%s\n' "${{ steps.scope.outputs.changed_files }}"
 
       - name: Setup Node
+        if: steps.scope.outputs.mode == 'full'
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
       - name: Install dependencies
+        if: steps.scope.outputs.mode == 'full'
         run: npm ci
 
       - name: Run S1 metric gate (required)
+        if: steps.scope.outputs.mode == 'full'
         run: node scripts/rag/run_s1_metric_gate.js
 
       - name: Upload metric artifacts
-        if: always()
+        if: always() && steps.scope.outputs.mode == 'full'
         uses: actions/upload-artifact@v4
         with:
           name: rag-s1-metric-artifacts

@@ -11,6 +11,7 @@ const RECONCILIATION_FINDING_SOURCE_AREAS = {
   stale_orchestrator_session: 'ao',
   stale_worker_session: 'ao',
   multiple_candidate_workers: 'ao',
+  ao_github_branch_disagreement: 'cross_source',
   orphan_open_pr: 'cross_source',
   review_blocked: 'github',
   ci_blocked: 'github',
@@ -131,7 +132,13 @@ function mapReconciliationSuggestionIds(code) {
   if (['review_blocked', 'ci_blocked', 'merge_conflict_blocked'].includes(code)) {
     return ['human_review'];
   }
-  if (['orphan_open_pr', 'multiple_candidate_workers', 'release_readiness_ambiguous', 'mergeability_unknown'].includes(code)) {
+  if ([
+    'orphan_open_pr',
+    'multiple_candidate_workers',
+    'ao_github_branch_disagreement',
+    'release_readiness_ambiguous',
+    'mergeability_unknown',
+  ].includes(code)) {
     return ['reconcile_scope', 'human_review'];
   }
   return ['reconcile_scope'];

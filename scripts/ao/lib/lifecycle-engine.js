@@ -11,6 +11,7 @@ const RECONCILIATION_FINDING_SOURCE_AREAS = {
   stale_orchestrator_session: 'ao',
   stale_worker_session: 'ao',
   multiple_candidate_workers: 'ao',
+  ao_github_branch_disagreement: 'cross_source',
   orphan_open_pr: 'cross_source',
   review_blocked: 'github',
   ci_blocked: 'github',
@@ -18,6 +19,15 @@ const RECONCILIATION_FINDING_SOURCE_AREAS = {
   mergeability_unknown: 'github',
   release_readiness_ambiguous: 'cross_source',
 };
+
+function deriveDoctorControlStatus(doctorReport) {
+  const doctorFindings = (doctorReport?.findings ?? []).filter((finding) => finding.origin === 'doctor');
+
+  if (doctorFindings.some((finding) => finding.severity === 'blocker')) return 'blocked';
+  if (doctorFindings.some((finding) => finding.severity === 'ambiguous')) return 'ambiguous';
+  if (doctorFindings.some((finding) => finding.severity === 'warning')) return 'warning';
+  return 'healthy';
+}
 
 function deriveInputHealth(sourceHealth) {
   if (!sourceHealth) return 'failed';
@@ -78,7 +88,7 @@ function preserveDoctorFindings(doctorReport) {
 function buildRoutingDecision({
   scope,
   assessment,
-  doctorReport,
+  doctorControlStatus,
   sourceHealth,
 }) {
   if (Object.values(sourceHealth).some((state) => state === 'failed')) {
@@ -121,7 +131,7 @@ function buildRoutingDecision({
     };
   }
 
-  if (doctorReport?.top_status === 'blocked') {
+  if (doctorControlStatus === 'blocked') {
     return {
       action: 'hold_for_human',
       owner_session: assessment.ownership?.owner_session ?? null,
@@ -131,7 +141,7 @@ function buildRoutingDecision({
     };
   }
 
-  if (doctorReport?.top_status === 'ambiguous') {
+  if (doctorControlStatus === 'ambiguous') {
     return {
       action: 'hold_for_human',
       owner_session: assessment.ownership?.owner_session ?? null,
@@ -183,7 +193,7 @@ function buildReleaseDecision({
   scope,
   assessment,
   reconciliationReport,
-  doctorReport,
+  doctorControlStatus,
   sourceHealth,
 }) {
   if (scope?.mode === 'project') {
@@ -210,7 +220,7 @@ function buildReleaseDecision({
     };
   }
 
-  if (doctorReport?.top_status === 'blocked') {
+  if (doctorControlStatus === 'blocked') {
     return {
       disposition: 'no_release_action',
       basis: ['doctor_blocks_control'],
@@ -218,7 +228,7 @@ function buildReleaseDecision({
     };
   }
 
-  if (doctorReport?.top_status === 'ambiguous') {
+  if (doctorControlStatus === 'ambiguous') {
     return {
       disposition: 'human_gate',
       basis: ['doctor_ambiguous'],
@@ -608,18 +618,19 @@ export function buildLifecycleReport({
   doctorReport,
 } = {}) {
   const sourceHealth = deriveLifecycleSourceHealth(reconciliationReport, doctorReport);
+  const doctorControlStatus = deriveDoctorControlStatus(doctorReport);
   const assessment = selectSingleAssessment(scope, reconciliationReport);
   const routingDecision = buildRoutingDecision({
     scope,
     assessment,
-    doctorReport,
+    doctorControlStatus,
     sourceHealth,
   });
   const releaseDecision = buildReleaseDecision({
     scope,
     assessment,
     reconciliationReport,
-    doctorReport,
+    doctorControlStatus,
     sourceHealth,
   });
   const findings = [

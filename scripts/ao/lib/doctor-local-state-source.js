@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { createDoctorLocalState } from './doctor-contracts.js';
+import { readAoFixture } from './fixture-support.js';
 
 const DEFAULT_UNTRACKED_SAMPLE_LIMIT = 5;
 const DEFAULT_GIT_PROBE_TIMEOUT_MS = 5000;
@@ -98,6 +99,16 @@ export async function loadDoctorLocalState({
   untrackedSampleLimit = DEFAULT_UNTRACKED_SAMPLE_LIMIT,
   gitProbeTimeoutMs = DEFAULT_GIT_PROBE_TIMEOUT_MS,
 } = {}) {
+  const fixture = readAoFixture('doctor-local-state.json');
+  if (fixture) {
+    const parsed = JSON.parse(fixture.text || '{}');
+    return createDoctorLocalState({
+      cwd,
+      ...parsed,
+      cwd: parsed?.cwd ?? cwd,
+    });
+  }
+
   const repoRootResult = runGit(['rev-parse', '--show-toplevel'], cwd, gitProbeTimeoutMs);
   if (repoRootResult.status !== 0) {
     return createDoctorLocalState({

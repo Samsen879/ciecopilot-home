@@ -1,4 +1,8 @@
 import { spawnSync } from 'node:child_process';
+import {
+  readAoFixture,
+  sanitizeFixtureToken,
+} from './fixture-support.js';
 
 const PR_JSON_FIELDS = 'number,state,headRefName,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url';
 
@@ -111,6 +115,15 @@ function extractBranchHints(scope) {
 }
 
 function fetchPrObservationByNumber(prNumber, now) {
+  const fixture = readAoFixture(
+    ['github', `pr-${prNumber}.json`],
+    `github-pr-${prNumber}.json`,
+  );
+  if (fixture) {
+    const parsed = JSON.parse(fixture.text || 'null');
+    return normalizePrObservation(parsed ?? {}, now);
+  }
+
   const result = spawnSync('gh', [
     'pr',
     'view',
@@ -131,6 +144,16 @@ function fetchPrObservationByNumber(prNumber, now) {
 }
 
 function fetchPrObservationsByBranch(branchName, now) {
+  const fixture = readAoFixture(
+    ['github', `branch-${sanitizeFixtureToken(branchName)}.json`],
+    `github-branch-${sanitizeFixtureToken(branchName)}.json`,
+  );
+  if (fixture) {
+    const parsed = JSON.parse(fixture.text || '[]');
+    const items = Array.isArray(parsed) ? parsed : [parsed];
+    return items.map((item) => normalizePrObservation(item, now));
+  }
+
   const result = spawnSync('gh', [
     'pr',
     'list',

@@ -161,6 +161,43 @@ describe('reconciliation engine', () => {
     expect(report.pr_assessments[0].ownership.status).toBe('ambiguous');
   });
 
+  it('treats AO and GitHub branch disagreement as ambiguous cross-source ownership', () => {
+    const scope = createPrScope(44);
+    const report = reconcileObservations({
+      scope,
+      aoObservation: buildAoObservation({
+        workers: [
+          buildAoWorker({
+            branch_name: 'feat/issue-44-stale',
+          }),
+        ],
+      }),
+      githubObservation: buildGitHubObservation(scope, [
+        buildGitHubPr({
+          head_branch: 'feat/issue-44',
+        }),
+      ]),
+    });
+
+    expect(report.pr_assessments[0].ownership).toMatchObject({
+      status: 'ambiguous',
+      reason: 'branch_mismatch_with_github',
+      owner_session: 'cie-44',
+      owner_branch_name: 'feat/issue-44-stale',
+    });
+    expect(report.pr_assessments[0].release_readiness).toMatchObject({
+      status: 'ambiguous',
+      basis: expect.arrayContaining(['branch_mismatch_with_github']),
+    });
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'ao_github_branch_disagreement',
+        severity: 'ambiguous',
+      }),
+    ]));
+    expect(report.findings.map((finding) => finding.code)).not.toContain('multiple_candidate_workers');
+  });
+
   it('aggregates mixed PR states in project mode', () => {
     const scope = createProjectScope({
       prNumbers: [40, 41],

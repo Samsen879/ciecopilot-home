@@ -48,12 +48,31 @@ function resolveOwnership(pr, workers) {
   }
 
   const [worker] = winningMatches;
+  if (
+    directMatches.length === 1
+    && worker.branch_name
+    && pr.head_branch
+    && worker.branch_name !== pr.head_branch
+  ) {
+    return {
+      status: 'ambiguous',
+      pr_number: pr.pr_number,
+      branch_name: pr.head_branch ?? null,
+      owner_session: worker.session_name,
+      owner_branch_name: worker.branch_name ?? null,
+      candidate_sessions: [worker.session_name],
+      candidate_linkage_basis: uniqueStrings(worker.linkage_basis ?? []),
+      reason: 'branch_mismatch_with_github',
+    };
+  }
+
   if (worker.freshness?.status === 'stale') {
     return {
       status: 'stale',
       pr_number: pr.pr_number,
       branch_name: pr.head_branch ?? null,
       owner_session: worker.session_name,
+      owner_branch_name: worker.branch_name ?? null,
       candidate_sessions: [worker.session_name],
       candidate_linkage_basis: uniqueStrings(worker.linkage_basis ?? []),
       reason: 'stale_worker_session',
@@ -66,6 +85,7 @@ function resolveOwnership(pr, workers) {
       pr_number: pr.pr_number,
       branch_name: pr.head_branch ?? null,
       owner_session: worker.session_name,
+      owner_branch_name: worker.branch_name ?? null,
       candidate_sessions: [worker.session_name],
       candidate_linkage_basis: uniqueStrings(worker.linkage_basis ?? []),
       reason: 'unknown_worker_freshness',
@@ -77,6 +97,7 @@ function resolveOwnership(pr, workers) {
     pr_number: pr.pr_number,
     branch_name: pr.head_branch ?? null,
     owner_session: worker.session_name,
+    owner_branch_name: worker.branch_name ?? null,
     candidate_sessions: [worker.session_name],
     candidate_linkage_basis: uniqueStrings(worker.linkage_basis ?? []),
     reason: null,
@@ -126,9 +147,11 @@ function deriveReleaseReadiness(pr, ownership) {
       status: 'blocked',
       blockers,
       warnings,
-      basis: ['blocking_github_or_ownership_signal'],
+      basis: [...blockers],
     };
   }
+
+  const ambiguityBasis = [];
 
   if (
     ownership.status === 'ambiguous' ||
@@ -140,12 +163,21 @@ function deriveReleaseReadiness(pr, ownership) {
     pr.ci_status === 'unknown' ||
     pr.mergeability === 'unknown'
   ) {
+    if (ownership.reason === 'branch_mismatch_with_github') ambiguityBasis.push('branch_mismatch_with_github');
+    if (ownership.status === 'ambiguous' && ownership.reason !== 'branch_mismatch_with_github') ambiguityBasis.push('ownership_ambiguous');
+    if (ownership.status === 'unknown') ambiguityBasis.push('ownership_unknown');
+    if (ownership.status === 'stale') ambiguityBasis.push('ownership_stale');
+    if (pr.review_status === 'pending') ambiguityBasis.push('review_pending');
+    if (pr.review_status === 'unknown') ambiguityBasis.push('review_unknown');
+    if (pr.ci_status === 'pending') ambiguityBasis.push('ci_pending');
+    if (pr.ci_status === 'unknown') ambiguityBasis.push('ci_unknown');
+    if (pr.mergeability === 'unknown') ambiguityBasis.push('mergeability_unknown');
     if (ownership.status === 'stale') warnings.push('stale_worker_session');
     return {
       status: 'ambiguous',
       blockers,
       warnings,
-      basis: ['missing_clear_release_signal'],
+      basis: ambiguityBasis.length ? ambiguityBasis : ['fallback_ambiguous'],
     };
   }
 
@@ -186,7 +218,7 @@ function buildPrFindings(pr, ownership, releaseReadiness) {
     }));
   }
 
-  if (ownership.status === 'ambiguous') {
+  if (ownership.status === 'ambiguous' && (ownership.candidate_sessions?.length ?? 0) > 1) {
     findings.push(createFinding({
       code: 'multiple_candidate_workers',
       severity: 'ambiguous',
@@ -200,6 +232,34 @@ function buildPrFindings(pr, ownership, releaseReadiness) {
         id: sessionName,
         summary: 'Matched winning ownership tier',
       })),
+    }));
+  }
+
+  if (ownership.reason === 'branch_mismatch_with_github') {
+    findings.push(createFinding({
+      code: 'ao_github_branch_disagreement',
+      severity: 'ambiguous',
+      subject_type: 'ownership',
+      subject_id: pr.pr_number,
+      summary: `PR #${pr.pr_number} AO ownership branch disagrees with GitHub`,
+      details: [
+        `ao_branch: ${ownership.owner_branch_name ?? 'unknown'}`,
+        `github_branch: ${pr.head_branch ?? 'unknown'}`,
+      ],
+      evidence_refs: [
+        {
+          source: 'ao',
+          kind: 'session',
+          id: ownership.owner_session,
+          summary: 'Matched worker branch differs from GitHub head branch',
+        },
+        {
+          source: 'github',
+          kind: 'pr',
+          id: pr.pr_number,
+          summary: 'GitHub head branch is canonical for PR truth',
+        },
+      ].filter((ref) => ref.id != null),
     }));
   }
 

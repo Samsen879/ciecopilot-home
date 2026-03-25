@@ -912,7 +912,7 @@ describe('learning question import api', () => {
   });
 
   test('POST /api/learning/questions/import replays the canonical durable response on same-payload retry after completion', async () => {
-    const first = await request(server)
+    const first = await harness.request
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -934,7 +934,7 @@ describe('learning question import api', () => {
       },
     });
 
-    const second = await request(server)
+    const second = await harness.request
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')

@@ -708,7 +708,7 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions replays the canonical durable response on same-payload retry after completion', async () => {
-    const first = await request(server)
+    const first = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -735,7 +735,7 @@ describe('learning session api', () => {
       },
     });
 
-    const second = await request(server)
+    const second = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')

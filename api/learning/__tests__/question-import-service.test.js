@@ -639,6 +639,52 @@ function buildUnpromotedIntegrationInput(overrides = {}) {
   };
 }
 
+function buildReleasedDifferentialEquationsInput(overrides = {}) {
+  const classification = overrides.classification || {};
+
+  return {
+    subject_code: '9709',
+    prompt_representation: {
+      type: 'text',
+      value: 'Solve the differential equation dy/dx = 2xy.',
+    },
+    provenance_summary: {
+      import_source: 'manual_paste',
+    },
+    classification: {
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.separable',
+      classification_confidence: 0.82,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.differential_equations.separable',
+          rubric_version_id: 'diff-eq-v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p3'],
+      ...classification,
+    },
+    ...overrides,
+    classification: {
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.separable',
+      classification_confidence: 0.82,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.differential_equations.separable',
+          rubric_version_id: 'diff-eq-v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p3'],
+      ...classification,
+    },
+  };
+}
+
 describe('question import service', () => {
   beforeEach(() => {
     resetClientState();
@@ -738,6 +784,33 @@ describe('question import service', () => {
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
       primary_question_type_id: '9709.integration.volume_of_revolution',
+      release_scope_status: 'non_released_fallback',
+    });
+  });
+
+  test('registry-released types without released-family evidence stay fallback-only on import', async () => {
+    clientState.registryTypes.set('9709.differential_equations.separable', {
+      question_type_id: '9709.differential_equations.separable',
+      family_id: '9709.differential_equations',
+      subject_code: '9709',
+      release_state: 'released',
+    });
+
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildReleasedDifferentialEquationsInput(),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      fallback_mode: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'missing_released_family_evidence',
+      classification_confidence: 0.82,
+      learning_signal_posture: 'conservative_fallback',
+    });
+    expect(result.question).toMatchObject({
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.separable',
       release_scope_status: 'non_released_fallback',
     });
   });

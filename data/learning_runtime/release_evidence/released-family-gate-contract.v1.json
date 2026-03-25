@@ -1,0 +1,283 @@
+{
+  "schema_version": "learning_runtime_released_family_gate_contract_v1",
+  "generated_at": "2026-03-25T00:00:00.000Z",
+  "families": [
+    {
+      "family_id": "9709.trigonometry_manipulation_equations",
+      "subject_code": "9709",
+      "title": "Trigonometric manipulation / equations",
+      "release_state": "released",
+      "released_question_type_ids": [
+        "9709.trigonometry.identities",
+        "9709.trigonometry.equations"
+      ],
+      "gold_set": {
+        "minimum_sample_count": 4,
+        "minimum_average_confidence": 0.9,
+        "source_refs": [
+          "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1_review_sheet.csv",
+          "data/golden_set/sampling_manifest_realflow_20260216.json"
+        ],
+        "samples": [
+          {
+            "sample_id": "trig-identities-m24-p1-q04",
+            "question_type_id": "9709.trigonometry.identities",
+            "storage_key": "9709/m24_qp_12/questions/q04.png",
+            "classification_confidence": 0.94
+          },
+          {
+            "sample_id": "trig-identities-s17-p1-q03",
+            "question_type_id": "9709.trigonometry.identities",
+            "storage_key": "9709/s17_qp_11/questions/q03.png",
+            "classification_confidence": 0.92
+          },
+          {
+            "sample_id": "trig-equations-s16-p1-q02",
+            "question_type_id": "9709.trigonometry.equations",
+            "storage_key": "9709/s16_qp_11/questions/q02.png",
+            "classification_confidence": 0.95
+          },
+          {
+            "sample_id": "trig-equations-m19-p3-q03",
+            "question_type_id": "9709.trigonometry.equations",
+            "storage_key": "9709/m19_qp_32/questions/q03.png",
+            "classification_confidence": 0.91
+          }
+        ]
+      },
+      "rubric_coverage": {
+        "source_refs": [
+          "docs/superpowers/specs/2026-03-20-prd-learning-runtime-contract-design.md",
+          "api/learning/__tests__/question-import-service.test.js",
+          "api/learning/__tests__/review-task-service.test.js"
+        ],
+        "entries": [
+          {
+            "question_type_id": "9709.trigonometry.identities",
+            "released_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.trigonometry.identities",
+                "rubric_version_id": "trig-identities-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ]
+          },
+          {
+            "question_type_id": "9709.trigonometry.equations",
+            "released_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.trigonometry.equations",
+                "rubric_version_id": "trig-equations-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ]
+          }
+        ]
+      },
+      "uncertainty_validation": {
+        "source_refs": [
+          "docs/superpowers/runbooks/2026-03-20-learning-runtime-pilot-rollout.md",
+          "api/learning/__tests__/question-import-service.test.js"
+        ],
+        "cases": [
+          {
+            "case_id": "trig-identities-pass",
+            "question_type_id": "9709.trigonometry.identities",
+            "question_type_release_state": "released",
+            "classification_confidence": 0.94,
+            "candidate_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.trigonometry.identities",
+                "rubric_version_id": "trig-identities-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ],
+            "uncertainty_validated": true,
+            "expected": {
+              "release_scope_status": "released_scoring",
+              "authoritative_scoring_allowed": true,
+              "fallback_reason_code": null
+            }
+          },
+          {
+            "case_id": "trig-identities-fail-closed",
+            "question_type_id": "9709.trigonometry.identities",
+            "question_type_release_state": "released",
+            "classification_confidence": 0.94,
+            "candidate_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.trigonometry.identities",
+                "rubric_version_id": "trig-identities-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ],
+            "uncertainty_validated": false,
+            "expected": {
+              "release_scope_status": "non_released_fallback",
+              "authoritative_scoring_allowed": false,
+              "fallback_reason_code": "unvalidated_uncertainty_posture"
+            }
+          },
+          {
+            "case_id": "trig-equations-pass",
+            "question_type_id": "9709.trigonometry.equations",
+            "question_type_release_state": "released",
+            "classification_confidence": 0.91,
+            "candidate_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.trigonometry.equations",
+                "rubric_version_id": "trig-equations-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ],
+            "uncertainty_validated": true,
+            "expected": {
+              "release_scope_status": "released_scoring",
+              "authoritative_scoring_allowed": true,
+              "fallback_reason_code": null
+            }
+          },
+          {
+            "case_id": "trig-equations-fail-closed",
+            "question_type_id": "9709.trigonometry.equations",
+            "question_type_release_state": "released",
+            "classification_confidence": 0.91,
+            "candidate_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.trigonometry.equations",
+                "rubric_version_id": "trig-equations-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ],
+            "uncertainty_validated": false,
+            "expected": {
+              "release_scope_status": "non_released_fallback",
+              "authoritative_scoring_allowed": false,
+              "fallback_reason_code": "unvalidated_uncertainty_posture"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "family_id": "9709.integration_techniques",
+      "subject_code": "9709",
+      "title": "Integration techniques",
+      "release_state": "released",
+      "released_question_type_ids": [
+        "9709.integration.application"
+      ],
+      "gold_set": {
+        "minimum_sample_count": 3,
+        "minimum_average_confidence": 0.9,
+        "source_refs": [
+          "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1_review_sheet.csv",
+          "docs/reports/learning_runtime_9709_integration_application_promotion_2026-03-24.md"
+        ],
+        "samples": [
+          {
+            "sample_id": "integration-application-m18-p1-q01",
+            "question_type_id": "9709.integration.application",
+            "storage_key": "9709/m18_qp_12/questions/q01.png",
+            "classification_confidence": 0.9
+          },
+          {
+            "sample_id": "integration-application-s16-p3-q03",
+            "question_type_id": "9709.integration.application",
+            "storage_key": "9709/s16_qp_32/questions/q03.png",
+            "classification_confidence": 0.92
+          },
+          {
+            "sample_id": "integration-application-s24-p3-q06",
+            "question_type_id": "9709.integration.application",
+            "storage_key": "9709/s24_qp_32/questions/q06.png",
+            "classification_confidence": 0.91
+          }
+        ]
+      },
+      "rubric_coverage": {
+        "source_refs": [
+          "docs/reports/learning_runtime_9709_integration_application_promotion_2026-03-24.md",
+          "api/learning/__tests__/question-import-service.test.js",
+          "api/learning/__tests__/review-task-service.test.js"
+        ],
+        "entries": [
+          {
+            "question_type_id": "9709.integration.application",
+            "released_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.integration.application",
+                "rubric_version_id": "integration-application-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ]
+          }
+        ]
+      },
+      "uncertainty_validation": {
+        "source_refs": [
+          "docs/reports/learning_runtime_9709_integration_application_promotion_2026-03-24.md",
+          "api/learning/__tests__/question-import-service.test.js"
+        ],
+        "cases": [
+          {
+            "case_id": "integration-application-pass",
+            "question_type_id": "9709.integration.application",
+            "question_type_release_state": "released",
+            "classification_confidence": 0.89,
+            "candidate_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.integration.application",
+                "rubric_version_id": "integration-application-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ],
+            "uncertainty_validated": true,
+            "expected": {
+              "release_scope_status": "released_scoring",
+              "authoritative_scoring_allowed": true,
+              "fallback_reason_code": null
+            }
+          },
+          {
+            "case_id": "integration-application-fail-closed",
+            "question_type_id": "9709.integration.application",
+            "question_type_release_state": "released",
+            "classification_confidence": 0.89,
+            "candidate_rubric_refs": [
+              {
+                "kind": "rubric_release",
+                "rubric_set_id": "9709.integration.application",
+                "rubric_version_id": "integration-application-v1",
+                "scope_level": "question_type",
+                "release_state": "released"
+              }
+            ],
+            "uncertainty_validated": false,
+            "expected": {
+              "release_scope_status": "non_released_fallback",
+              "authoritative_scoring_allowed": false,
+              "fallback_reason_code": "unvalidated_uncertainty_posture"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

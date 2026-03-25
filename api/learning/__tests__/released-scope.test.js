@@ -47,6 +47,33 @@ test('pilot type membership alone does not unlock authoritative scoring', () => 
   });
 });
 
+test('registry-released types still fail closed when no released-family evidence receipt exists', () => {
+  expect(
+    resolveReleasedScoringPosture({
+      questionTypeId: '9709.differential_equations.separable',
+      questionTypeReleaseState: 'released',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.differential_equations.separable',
+          rubric_version_id: 'diff-eq-v1',
+          scope_level: 'question_type',
+          release_state: 'released',
+        },
+      ],
+      uncertaintyValidated: true,
+      classificationConfidence: 0.92,
+    }),
+  ).toEqual({
+    release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
+    authoritative_scoring_allowed: false,
+    fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
+    fallback_reason_code: FALLBACK_REASON_CODES.MISSING_RELEASED_FAMILY_EVIDENCE,
+    classification_confidence: 0.92,
+    learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+  });
+});
+
 test('pilot type with a released rubric and validated uncertainty unlocks authoritative scoring', () => {
   expect(
     resolveReleasedScoringPosture({

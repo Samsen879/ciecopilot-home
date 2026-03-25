@@ -707,6 +707,57 @@ describe('learning session api', () => {
     expect(second.body.error.code).toBe('idempotency_conflict');
   });
 
+  test('POST /api/learning/sessions replays the canonical durable response on same-payload retry after completion', async () => {
+    const first = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .set('Idempotency-Key', 'sess-replay-1')
+      .send(buildSessionPayload());
+
+    expect(first.status).toBe(200);
+
+    const sessionId = first.body.session.session_id;
+    const storedSession = clientState.sessions.get(sessionId);
+    clientState.sessions.set(sessionId, {
+      ...storedSession,
+      session_goal: 'Mutated after completion',
+      summary_state: {
+        recap: 'mutated replay state',
+      },
+      active_scope_bundle: {
+        ...storedSession.active_scope_bundle,
+        session_goal: 'Mutated after completion',
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.integration.application',
+        },
+      },
+    });
+
+    const second = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .set('Idempotency-Key', 'sess-replay-1')
+      .send(buildSessionPayload());
+
+    expect(second.status).toBe(200);
+    expect(second.body).toEqual(first.body);
+    expect(second.body.session.session_id).toBe(sessionId);
+    expect(
+      clientState.calls.filter(
+        (call) => call.table === 'learning_sessions' && call.operation === 'insert',
+      ),
+    ).toHaveLength(1);
+    expect(
+      clientState.calls.filter(
+        (call) =>
+          call.table === 'learning_session_resume_projection' && call.operation === 'select',
+      ),
+    ).toHaveLength(0);
+  });
+
   test('POST /api/learning/sessions reserves the idempotency key before async create work', async () => {
     const gate = createDeferred();
     clientState.sessionInsertGate = gate;

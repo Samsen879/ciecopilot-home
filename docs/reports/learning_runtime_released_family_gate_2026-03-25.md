@@ -2,7 +2,7 @@
 
 - status: `pass`
 - release_ready: `true`
-- generated_at: `2026-03-25T03:10:52.638Z`
+- generated_at: `2026-03-25T03:27:49.198Z`
 - contract_path: `data/learning_runtime/release_evidence/released-family-gate-contract.v1.json`
 
 ## 9709.trigonometry_manipulation_equations

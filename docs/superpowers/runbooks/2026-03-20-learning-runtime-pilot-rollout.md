@@ -56,9 +56,20 @@ Scope: first `9709` runtime pilot slice for session-centric AskAI, workspace ent
 
 ## Verification Record
 
-Use the Task 13 verification set with `--verbose` for Jest in this repo:
+Canonical learning-runtime verification in this repo should use `npm test -- --runInBand ...`.
+Do not use Jest's short `-v` flag here; the current wrapper accepts long-form flags such as `--verbose`, but the canonical closeout recipes below do not require verbosity flags at all.
 
 ```bash
-npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js api/rag/__tests__/ask-service.test.js src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js --verbose
+# Pure unit, repository, and schema verification
+npm test -- --runInBand api/learning/__tests__/schema-contract.test.js api/learning/__tests__/request-idempotency-repository.test.js api/learning/__tests__/session-repository.test.js api/learning/__tests__/question-registry-repository.test.js
+
+# Handler and API verification
+npm test -- --runInBand api/learning/__tests__/session-api.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-ask.test.js
+
+# Full learning-runtime slice verification
+npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js api/rag/__tests__/ask-service.test.js src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js
 npm run build
 ```
+
+Learning-runtime handler suites now bind their test server on `127.0.0.1` instead of relying on `supertest`'s default wildcard bind.
+If a local sandbox blocks loopback listens too, treat that as an environment-limited handler run and report the pure-suite results separately instead of misclassifying the failure as a product regression.

@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
-import http from 'node:http';
-import request from 'supertest';
 import { buildIdempotencyRequestFingerprint } from '../lib/repositories/request-idempotency-repository.js';
+import { createLoopbackHttpTestClient } from './loopback-test-client.js';
 
 process.env.NODE_ENV = 'test';
 process.env.AUTH_LOCAL_TEST_MODE = 'true';
@@ -859,19 +858,14 @@ describe('question import service', () => {
 });
 
 describe('learning question import api', () => {
-  let server;
+  let harness;
 
-  beforeAll(() => {
-    server = http.createServer(apiHandler);
+  beforeAll(async () => {
+    harness = await createLoopbackHttpTestClient(apiHandler);
   });
 
-  afterAll((done) => {
-    if (!server || !server.listening) {
-      done();
-      return;
-    }
-
-    server.close(done);
+  afterAll(async () => {
+    await harness?.close();
   });
 
   beforeEach(() => {
@@ -881,7 +875,7 @@ describe('learning question import api', () => {
   });
 
   test('POST /api/learning/questions/import returns a durable question and scoring posture metadata', async () => {
-    const res = await request(server)
+    const res = await harness.request
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -898,14 +892,14 @@ describe('learning question import api', () => {
   });
 
   test('POST /api/learning/questions/import returns 409 idempotency_conflict on conflicting replay', async () => {
-    const first = await request(server)
+    const first = await harness.request
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .set('Idempotency-Key', 'import-1')
       .send(buildTrigIdentityInput());
 
-    const second = await request(server)
+    const second = await harness.request
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -918,7 +912,7 @@ describe('learning question import api', () => {
   });
 
   test('import -> create session -> ask -> workspace read keeps fallback posture and canonical-home consistency', async () => {
-    const importRes = await request(server)
+    const importRes = await harness.request
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -932,7 +926,7 @@ describe('learning question import api', () => {
     });
 
     const questionId = importRes.body.question.question_id;
-    const createSessionRes = await request(server)
+    const createSessionRes = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -996,7 +990,7 @@ describe('learning question import api', () => {
       ],
     });
 
-    const askRes = await request(server)
+    const askRes = await harness.request
       .post(`/api/learning/sessions/${sessionId}/ask`)
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
@@ -1032,7 +1026,7 @@ describe('learning question import api', () => {
       fallback_reason_code: 'unvalidated_uncertainty_posture',
     });
 
-    const workspaceRes = await request(server)
+    const workspaceRes = await harness.request
       .get('/api/learning/workspaces/topic-integration-1')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student');

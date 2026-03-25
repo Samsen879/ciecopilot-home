@@ -165,7 +165,7 @@ test('seeded pilot question-type membership is trigonometry only', () => {
 
 - [ ] **Step 2: Run the focused contract tests and verify they fail**
 
-Run: `npm test -- --runInBand api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/released-scope.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/released-scope.test.js --verbose`
 Expected: FAIL because the contract modules do not exist yet.
 
 - [ ] **Step 3: Implement the shared contract modules with a single ownership boundary**
@@ -179,7 +179,7 @@ Expected: FAIL because the contract modules do not exist yet.
 
 - [ ] **Step 4: Re-run the focused contract tests and verify they pass**
 
-Run: `npm test -- --runInBand api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/released-scope.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/released-scope.test.js --verbose`
 Expected: PASS for all three suites.
 
 - [ ] **Step 5: Commit**
@@ -292,7 +292,7 @@ test('learning http helper emits the frozen error envelope', () => {
 
 - [ ] **Step 2: Run the validator/helper suites and verify they fail**
 
-Run: `npm test -- --runInBand api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-validator.test.js api/learning/__tests__/learning-http.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-validator.test.js api/learning/__tests__/learning-http.test.js --verbose`
 Expected: FAIL because the validator and helper files do not exist yet.
 
 - [ ] **Step 3: Implement the validators and HTTP helpers**
@@ -312,7 +312,7 @@ export function validateQuestionImportInput(input) {
 
 - [ ] **Step 4: Re-run the validator/helper suites and verify they pass**
 
-Run: `npm test -- --runInBand api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-validator.test.js api/learning/__tests__/learning-http.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-validator.test.js api/learning/__tests__/learning-http.test.js --verbose`
 Expected: PASS with coverage for `concept`, `question`, `review_task`, `artifact`, and `workspace_slot` create-time rules, including questionless entry and the `workspace_slot.review_queue` exception.
 
 - [ ] **Step 5: Commit**
@@ -455,7 +455,7 @@ test('learning runtime migrations declare every frozen canonical table', () => {
 
 - [ ] **Step 2: Run the schema contract test and verify it fails**
 
-Run: `npm test -- --runInBand api/learning/__tests__/schema-contract.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/schema-contract.test.js --verbose`
 Expected: FAIL because the learning-runtime migrations do not exist yet.
 
 - [ ] **Step 3: Implement the migrations with the full canonical table set**
@@ -576,7 +576,7 @@ on conflict (question_type_id) do nothing;
 
 - [ ] **Step 4: Re-run the schema contract test and verify it passes**
 
-Run: `npm test -- --runInBand api/learning/__tests__/schema-contract.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/schema-contract.test.js --verbose`
 Expected: PASS with question-bank widening, canonical registry seed data, relational invariants, and all canonical runtime tables present in the migrations.
 
 - [ ] **Step 5: Commit**
@@ -619,7 +619,7 @@ test('fetchWorkspaceProjection returns slot payloads and linked references separ
 
 - [ ] **Step 2: Run the repository tests and verify they fail**
 
-Run: `npm test -- --runInBand api/learning/__tests__/question-registry-repository.test.js api/learning/__tests__/session-repository.test.js api/learning/__tests__/workspace-repository.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/question-registry-repository.test.js api/learning/__tests__/session-repository.test.js api/learning/__tests__/workspace-repository.test.js --verbose`
 Expected: FAIL because the repository files do not exist yet.
 
 - [ ] **Step 3: Implement the repositories with one responsibility per file**
@@ -640,7 +640,7 @@ export async function fetchWorkspaceProjection(client, input) {
 
 - [ ] **Step 4: Re-run the repository tests and verify they pass**
 
-Run: `npm test -- --runInBand api/learning/__tests__/question-registry-repository.test.js api/learning/__tests__/session-repository.test.js api/learning/__tests__/workspace-repository.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/question-registry-repository.test.js api/learning/__tests__/session-repository.test.js api/learning/__tests__/workspace-repository.test.js --verbose`
 Expected: PASS with question-registry, snapshot, session-lineage, slot, and linked-reference coverage.
 
 - [ ] **Step 5: Commit**
@@ -746,7 +746,7 @@ test('route registry reserves every frozen /api/learning endpoint before backend
 
 - [ ] **Step 2: Run the session API suite and verify it fails**
 
-Run: `npm test -- --runInBand api/learning/__tests__/session-api.test.js api/_runtime/__tests__/route-registry-learning.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/session-api.test.js api/_runtime/__tests__/route-registry-learning.test.js --verbose`
 Expected: FAIL because the route registry and handlers do not exist yet.
 
 - [ ] **Step 3: Implement the route registration, dynamic matcher, and session skeleton**
@@ -796,7 +796,7 @@ Expected: FAIL because the route registry and handlers do not exist yet.
 
 - [ ] **Step 4: Re-run the session API suite and verify it passes**
 
-Run: `npm test -- --runInBand api/learning/__tests__/session-api.test.js api/_runtime/__tests__/route-registry-learning.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/session-api.test.js api/_runtime/__tests__/route-registry-learning.test.js --verbose`
 Expected: PASS with typed anchor, anchor-validity summary, canonical-home context, feature-flag metadata, `invalid_payload`, `invalid_anchor_kind`, `unsupported_mode_for_anchor`, `idempotency_conflict`, missing-anchor, forbidden-anchor, and `session_not_found` error mapping, dynamic `GET /sessions/:id` coverage, and canonical typed-ref `active_scope_bundle` coverage.
 
 - [ ] **Step 5: Commit**
@@ -859,7 +859,7 @@ test('POST /api/learning/questions/import returns 409 idempotency_conflict on co
 
 - [ ] **Step 2: Run the import suite and verify it fails**
 
-Run: `npm test -- --runInBand api/learning/__tests__/question-import-service.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/question-import-service.test.js --verbose`
 Expected: FAIL until pilot family classification and posture logic exist.
 
 - [ ] **Step 3: Implement import service and consume the canonical pilot registry**
@@ -877,7 +877,7 @@ export async function resolveReleasedScoringPosture(deps, analysisSnapshot) {
 
 - [ ] **Step 4: Re-run the import suite and verify it passes**
 
-Run: `npm test -- --runInBand api/learning/__tests__/question-import-service.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/question-import-service.test.js --verbose`
 Expected: PASS with registry-backed pilot/fallback posture assertions, released-rubric gating, import-handler response coverage, and import idempotency coverage green.
 
 - [ ] **Step 5: Commit**
@@ -931,7 +931,7 @@ test('POST /api/learning/sessions/:id/ask returns the frozen session-ask respons
 
 - [ ] **Step 2: Run the session ask suites and verify they fail**
 
-Run: `npm test -- --runInBand api/learning/__tests__/session-ask.test.js api/rag/__tests__/ask-service.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/session-ask.test.js api/rag/__tests__/ask-service.test.js --verbose`
 Expected: FAIL because the session wrapper and fallback contract are not wired in yet.
 
 - [ ] **Step 3: Implement the ask wrapper and current `ask-service` bridge**
@@ -944,7 +944,7 @@ export async function askWithinLearningSession(deps, { session, message }) {
 
 - [ ] **Step 4: Re-run the session ask suites and verify they pass**
 
-Run: `npm test -- --runInBand api/learning/__tests__/session-ask.test.js api/rag/__tests__/ask-service.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/session-ask.test.js api/rag/__tests__/ask-service.test.js --verbose`
 Expected: PASS with explicit fallback posture, frozen session-ask response fields, and no fake question ids.
 
 - [ ] **Step 5: Commit**
@@ -1029,7 +1029,7 @@ test('superseding a pinned artifact moves the pin to the successor or clears the
 
 - [ ] **Step 2: Run the orchestration suites and verify they fail**
 
-Run: `npm test -- --runInBand api/learning/__tests__/artifact-api.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/marking/__tests__/evaluate-v1.test.js api/error-book/error-book.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/artifact-api.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/marking/__tests__/evaluate-v1.test.js api/error-book/error-book.test.js --verbose`
 Expected: FAIL until orchestration and reconciliation behavior exists.
 
 - [ ] **Step 3: Implement the minimal orchestration services**
@@ -1044,7 +1044,7 @@ export async function applyLearningEffects(input) {
 
 - [ ] **Step 4: Re-run the orchestration suites and verify they pass**
 
-Run: `npm test -- --runInBand api/learning/__tests__/artifact-api.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/marking/__tests__/evaluate-v1.test.js api/error-book/error-book.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/artifact-api.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/marking/__tests__/evaluate-v1.test.js api/error-book/error-book.test.js --verbose`
 Expected: PASS with released-scope, artifact lifecycle success/conflict paths, explicit write intents, misconception-card homing, supersede pin migration semantics, reconciliation assertions, and legacy-marking/error-book regressions green.
 
 - [ ] **Step 5: Commit**
@@ -1100,7 +1100,7 @@ test('evidence context exposes learning-runtime anchor and workspace state for p
 
 - [ ] **Step 2: Run the workspace/read-model suite and verify it fails**
 
-Run: `npm test -- --runInBand api/learning/__tests__/workspace-read-service.test.js api/evidence/__tests__/context.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/workspace-read-service.test.js api/evidence/__tests__/context.test.js --verbose`
 Expected: FAIL because projection services and handlers are not complete.
 
 - [ ] **Step 3: Implement workspace and review-task read services**
@@ -1113,7 +1113,7 @@ export async function getWorkspaceView(client, { userId, topicId }) {
 
 - [ ] **Step 4: Re-run the workspace/read-model suite and verify it passes**
 
-Run: `npm test -- --runInBand api/learning/__tests__/workspace-read-service.test.js api/evidence/__tests__/context.test.js -v`
+Run: `npm test -- --runInBand api/learning/__tests__/workspace-read-service.test.js api/evidence/__tests__/context.test.js --verbose`
 Expected: PASS with canonical-home, linked-reference, workspace handler, review-queue handler, and evidence-context assertions green.
 
 - [ ] **Step 5: Commit**
@@ -1173,7 +1173,7 @@ test('LearningSessionShell renders questionless sessions without placeholder que
 
 - [ ] **Step 2: Run the client/view-model suites and verify they fail**
 
-Run: `npm test -- --runInBand src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/view-models.test.js -v`
+Run: `npm test -- --runInBand src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/view-models.test.js --verbose`
 Expected: FAIL because the browser client and view-model files do not exist yet.
 
 - [ ] **Step 3: Implement the client and session shell**
@@ -1195,7 +1195,7 @@ export const learningRuntimeApi = {
 
 - [ ] **Step 4: Re-run the client/view-model suites and verify they pass**
 
-Run: `npm test -- --runInBand src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/view-models.test.js -v`
+Run: `npm test -- --runInBand src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/view-models.test.js --verbose`
 Expected: PASS with the shared browser-client contract, including imported-question entry, typed refs, fallback posture, questionless-session state normalized in the view-model, and shell-level questionless rendering coverage.
 
 - [ ] **Step 5: Commit**
@@ -1249,7 +1249,7 @@ test('legacy surfaces demote to compatibility entry modes and App exposes runtim
 
 - [ ] **Step 2: Run the workspace view-model suite and verify it fails**
 
-Run: `npm test -- --runInBand src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js -v`
+Run: `npm test -- --runInBand src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js --verbose`
 Expected: FAIL until workspace view-model and UI wiring are implemented.
 
 - [ ] **Step 3: Implement workspace UI and route demotion**
@@ -1261,7 +1261,7 @@ Expected: FAIL until workspace view-model and UI wiring are implemented.
 
 - [ ] **Step 4: Re-run the workspace view-model suite and a production build**
 
-Run: `npm test -- --runInBand src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js -v && npm run build`
+Run: `npm test -- --runInBand src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js --verbose && npm run build`
 Expected: PASS for the shell/page verification suites and a successful Vite production build.
 
 - [ ] **Step 5: Commit**
@@ -1306,7 +1306,7 @@ test('marking effect -> review task -> workspace projection -> artifact patch ke
 
 - [ ] **Step 2: Run the full learning API suite and verify any new scenario tests fail**
 
-Run: `npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js -v`
+Run: `npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js --verbose`
 Expected: FAIL only on the new end-to-end boundary cases you just added.
 
 - [ ] **Step 3: Implement the minimal glue fixes needed for end-to-end consistency**
@@ -1317,7 +1317,7 @@ Expected: FAIL only on the new end-to-end boundary cases you just added.
 
 - [ ] **Step 4: Re-run the full learning API suite and verify it passes**
 
-Run: `npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js -v`
+Run: `npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js --verbose`
 Expected: PASS across the full learning runtime API boundary suite.
 
 - [ ] **Step 5: Commit**
@@ -1361,12 +1361,12 @@ test('legacy learning path stays a compatibility shell under the runtime feature
 
 - [ ] **Step 2: Run the final smoke checks and verify the new assertions fail**
 
-Run: `npm test -- --runInBand api/rag/__tests__/ask-service.test.js src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js -v`
+Run: `npm test -- --runInBand api/rag/__tests__/ask-service.test.js src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js --verbose`
 Expected: FAIL only on the new smoke assertions.
 
 - [ ] **Step 3: Implement the final glue and run the full verification set**
 
-Run: `npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js api/rag/__tests__/ask-service.test.js src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js -v && npm run build`
+Run: `npm test -- --runInBand api/_runtime/__tests__/route-registry-learning.test.js api/evidence/__tests__/context.test.js api/learning/__tests__/runtime-contract.test.js api/learning/__tests__/error-contract.test.js api/learning/__tests__/learning-http.test.js api/learning/__tests__/session-validator.test.js api/learning/__tests__/question-import-service.test.js api/learning/__tests__/session-api.test.js api/learning/__tests__/session-ask.test.js api/learning/__tests__/workspace-read-service.test.js api/learning/__tests__/review-task-service.test.js api/learning/__tests__/artifact-api.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/reconciliation-service.test.js api/learning/__tests__/released-scope.test.js api/rag/__tests__/ask-service.test.js src/api/__tests__/learningRuntimeApi.test.js src/components/learning-runtime/__tests__/LearningSessionShell.test.js src/components/learning-runtime/__tests__/WorkspaceShell.test.js src/pages/__tests__/legacy-entry-mode.test.js src/components/learning-runtime/__tests__/view-models.test.js --verbose && npm run build`
 Expected: all test suites PASS and Vite build completes successfully.
 
 - [ ] **Step 4: Record rollout and migration notes**

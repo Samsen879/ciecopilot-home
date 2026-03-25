@@ -201,6 +201,109 @@ function createLearningDb() {
     },
   ];
 
+  const sessionRows = [
+    {
+      session_id: 'session-topic-2-later',
+      user_id: 'student-1',
+      subject_code: '9709',
+      session_goal: 'Refresh trig identities',
+      mode: 'learn_concept',
+      state: 'active',
+      active_scope_bundle: {
+        primary_topic_id: 'topic-2',
+        primary_topic_path: '9709/trigonometry/identities',
+        mode: 'learn_concept',
+        current_anchor_kind: 'concept',
+        current_anchor_ref: {
+          kind: 'concept',
+          topic_id: 'topic-2',
+          topic_path: '9709/trigonometry/identities',
+        },
+        current_question_ref: null,
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.trigonometry.identities',
+        },
+      },
+      current_anchor_kind: 'concept',
+      current_anchor_ref: {
+        kind: 'concept',
+        topic_id: 'topic-2',
+        topic_path: '9709/trigonometry/identities',
+      },
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.identities',
+      summary_state: {
+        resume_title: 'Resume identities review',
+        resume_message: 'Return to the concept anchor for identities.',
+        resume_summary: 'Carry the identities recap into the next pass.',
+      },
+      open_questions: [],
+      key_artifact_refs: [],
+      misconceptions_in_focus: [],
+      lineage_ref: {
+        parent_session_id: null,
+        handoff_kind: null,
+      },
+      created_at: '2026-03-22T08:20:00.000Z',
+      updated_at: '2026-03-22T08:30:00.000Z',
+      parent_session_id: null,
+      handoff_kind: null,
+      summary_snapshot: {
+        recap: 'Identity recap.',
+      },
+    },
+    {
+      session_id: 'session-topic-1-current',
+      user_id: 'student-1',
+      subject_code: '9709',
+      session_goal: 'Close the interval misconception',
+      mode: 'post_mortem_review',
+      state: 'active',
+      active_scope_bundle: {
+        primary_topic_id: 'topic-1',
+        primary_topic_path: '9709/trigonometry/equations',
+        mode: 'post_mortem_review',
+        current_anchor_kind: 'artifact',
+        current_anchor_ref: {
+          kind: 'artifact',
+          artifact_id: 'artifact-primary',
+        },
+        current_question_ref: null,
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.trigonometry.equations',
+        },
+      },
+      current_anchor_kind: 'artifact',
+      current_anchor_ref: {
+        kind: 'artifact',
+        artifact_id: 'artifact-primary',
+      },
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.equations',
+      summary_state: {
+        resume_title: 'Continue interval repair',
+        resume_message: 'Resume from the misconception artifact anchored to this workspace.',
+        resume_summary: 'Carry the misconception recap into the next pass.',
+      },
+      open_questions: [],
+      key_artifact_refs: [],
+      misconceptions_in_focus: ['domain:interval'],
+      lineage_ref: {
+        parent_session_id: 'session-parent-1',
+        handoff_kind: 'explicit_new_session',
+      },
+      created_at: '2026-03-22T07:30:00.000Z',
+      updated_at: '2026-03-22T07:55:00.000Z',
+      parent_session_id: 'session-parent-1',
+      handoff_kind: 'explicit_new_session',
+      summary_snapshot: {
+        recap: 'Prior interval repair recap.',
+      },
+    },
+  ];
+
   class QueryBuilder {
     constructor(table) {
       this.table = table;
@@ -260,6 +363,18 @@ function createLearningDb() {
         orders: [...this.orders],
         single: false,
       });
+
+      if (this.table === 'learning_session_resume_projection') {
+        let rows = [...sessionRows];
+
+        for (const filter of this.filters) {
+          if (filter.type === 'eq') {
+            rows = rows.filter((row) => row[filter.column] === filter.value);
+          }
+        }
+
+        return Promise.resolve({ data: rows, error: null }).then(resolve, reject);
+      }
 
       if (this.table !== 'learning_review_queue_projection') {
         return Promise.reject(new Error(`Unexpected list table: ${this.table}`)).then(resolve, reject);
@@ -569,6 +684,10 @@ function createBoundaryLearningDb() {
       return { data: deriveWorkspaceProjection(userId, topicId), error: null };
     }
 
+    if (query.table === 'learning_session_resume_projection' && query.operation === 'select') {
+      return { data: [], error: null };
+    }
+
     throw new Error(`Unhandled learning query: ${query.table}:${query.operation}`);
   }
 
@@ -725,6 +844,44 @@ describe('workspace read service', () => {
     ]);
     expect(payload.review_queue.items).toHaveLength(1);
     expect(payload.review_queue.items[0].review_task_id).toBe('review-queued-1');
+  });
+
+  test('workspace revisit payload keeps last-session continuity separate from slot and queue changes', async () => {
+    const db = createLearningDb();
+
+    const payload = await getWorkspaceView(db, {
+      userId: 'student-1',
+      topicId: 'topic-1',
+    });
+
+    expect(payload.revisit.last_visit_at).toBe('2026-03-22T07:55:00.000Z');
+    expect(payload.revisit.last_session).toMatchObject({
+      session_id: 'session-topic-1-current',
+      mode: 'post_mortem_review',
+      updated_at: '2026-03-22T07:55:00.000Z',
+      resume_guidance: {
+        title: 'Continue interval repair',
+        summary: 'Carry the misconception recap into the next pass.',
+        anchor_kind: 'artifact',
+        anchor_ref: {
+          kind: 'artifact',
+          artifact_id: 'artifact-primary',
+        },
+      },
+    });
+    expect(payload.revisit.changes_since_last_visit.slot_updates).toEqual([
+      {
+        slot_key: 'common_traps',
+        updated_at: '2026-03-22T08:00:00.000Z',
+      },
+    ]);
+    expect(payload.revisit.changes_since_last_visit.review_updates).toEqual([
+      expect.objectContaining({
+        review_task_id: 'review-queued-1',
+        status: 'open',
+        updated_at: '2026-03-22T08:10:00.000Z',
+      }),
+    ]);
   });
 
   test('review queue endpoint returns global truth with optional topic filter', async () => {

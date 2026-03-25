@@ -264,6 +264,46 @@ function createWorkspacePayload() {
         },
       ],
     },
+    revisit: {
+      lastVisitAt: '2026-03-22T07:55:00.000Z',
+      lastSession: {
+        sessionId: 'session-topic-1-current',
+        mode: 'post_mortem_review',
+        state: 'active',
+        updatedAt: '2026-03-22T07:55:00.000Z',
+        resumeGuidance: {
+          title: 'Continue interval repair',
+          message: 'Resume from the misconception artifact anchored to this workspace.',
+          summary: 'Carry the misconception recap into the next pass.',
+          anchorKind: 'artifact',
+          anchorRef: {
+            kind: 'artifact',
+            artifactId: 'artifact-primary',
+          },
+          currentQuestionTypeId: '9709.trigonometry.equations',
+        },
+      },
+      changesSinceLastVisit: {
+        slotUpdates: [
+          {
+            slotKey: 'common_traps',
+            updatedAt: '2026-03-22T08:00:00.000Z',
+          },
+        ],
+        reviewUpdates: [
+          {
+            reviewTaskId: 'review-task-3',
+            status: 'completed',
+            updatedAt: '2026-03-22T08:04:00.000Z',
+            targetQuestionTypeTitle: 'Trigonometric equations',
+            completionEvidence: {
+              summary: 'Solved a clean follow-up variant.',
+              outcome: 'completed',
+            },
+          },
+        ],
+      },
+    },
     featureFlags: {
       learningRuntimeEnabled: true,
     },
@@ -830,6 +870,71 @@ describe('learning runtime session view model', () => {
       completed: 1,
       blocked: 0,
     });
+  });
+
+  test('workspace revisit model surfaces continuity, changes, and next-step entry points', () => {
+    const vm = buildWorkspaceViewModel(createWorkspacePayload(), {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.revisit.lastVisitLabel).toBe('Last runtime visit 2026-03-22T07:55:00.000Z');
+    expect(vm.revisit.progressSummary).toBe('4 of 5 canonical slots populated and 1 review outcome completed.');
+    expect(vm.revisit.continuation).toEqual(expect.objectContaining({
+      title: 'Continue interval repair',
+      summary: 'Carry the misconception recap into the next pass.',
+      detail: 'Resume from the misconception artifact anchored to this workspace.',
+      ctaLabel: 'Continue runtime',
+      launchPayload: {
+        anchorKind: 'artifact',
+        artifactId: 'artifact-primary',
+        mode: 'post_mortem_review',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+        currentQuestionTypeId: '9709.trigonometry.equations',
+      },
+    }));
+    expect(vm.revisit.changes).toEqual([
+      {
+        key: 'slot:common_traps',
+        label: 'Common traps slot updated',
+        summary: 'Canonical slot content changed after your previous runtime visit.',
+      },
+      {
+        key: 'review:review-task-3',
+        label: 'Review task completed',
+        summary: 'Solved a clean follow-up variant.',
+      },
+    ]);
+    expect(vm.revisit.nextStep).toEqual(expect.objectContaining({
+      title: 'Recommended next step',
+      summary: '1 escalated review task is ready in the canonical queue.',
+      ctaLabel: 'Start spaced review',
+      launchPayload: {
+        anchorKind: 'review_task',
+        reviewTaskId: 'review-task-1',
+        mode: 'spaced_review',
+        topicId: 'topic-trig-equations',
+        topicPath: '9709/trigonometry/equations',
+        currentQuestionTypeId: '9709.trigonometry.equations',
+      },
+    }));
+    expect(vm.revisit.signals).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        key: 'review_queue',
+        label: 'Escalated review ready',
+        ctaLabel: 'Start spaced review',
+      }),
+      expect.objectContaining({
+        key: 'overview_map',
+        label: 'Stale slot',
+        ctaLabel: 'Open overview map',
+      }),
+      expect.objectContaining({
+        key: 'core_method_derivation',
+        label: 'Missing content',
+        ctaLabel: 'Open core method derivation',
+      }),
+    ]));
   });
 
   test('launcher view-model includes custom workspace topics that are outside the entry whitelist', () => {

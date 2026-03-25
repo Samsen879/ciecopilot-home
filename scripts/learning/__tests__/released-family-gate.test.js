@@ -15,6 +15,7 @@ describe('released family gate', () => {
     });
 
     expect(result.family_results.map((entry) => entry.family_id).sort()).toEqual([
+      '9709.differential_equations',
       '9709.integration_techniques',
       '9709.trigonometry_manipulation_equations',
     ]);
@@ -39,6 +40,18 @@ describe('released family gate', () => {
     ).toMatchObject({
       status: 'pass',
       released_question_type_ids: ['9709.integration.application'],
+      gates: {
+        gold_set: { status: 'pass' },
+        rubric_coverage: { status: 'pass' },
+        uncertainty_validation: { status: 'pass' },
+      },
+    });
+
+    expect(
+      result.family_results.find((entry) => entry.family_id === '9709.differential_equations'),
+    ).toMatchObject({
+      status: 'pass',
+      released_question_type_ids: ['9709.differential_equations.separable'],
       gates: {
         gold_set: { status: 'pass' },
         rubric_coverage: { status: 'pass' },
@@ -75,6 +88,7 @@ describe('released family gate', () => {
       expect(markdown).toContain('# Learning Runtime Released Family Gate');
       expect(markdown).toContain('9709.trigonometry_manipulation_equations');
       expect(markdown).toContain('9709.integration_techniques');
+      expect(markdown).toContain('9709.differential_equations');
     } finally {
       fs.rmSync(path.join(process.cwd(), outJson), { force: true });
       fs.rmSync(path.join(process.cwd(), outMd), { force: true });

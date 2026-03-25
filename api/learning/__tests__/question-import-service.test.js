@@ -78,6 +78,15 @@ function seedRegistryTypes() {
         release_state: 'released',
       },
     ],
+    [
+      '9709.differential_equations.separable',
+      {
+        question_type_id: '9709.differential_equations.separable',
+        family_id: '9709.differential_equations',
+        subject_code: '9709',
+        release_state: 'released',
+      },
+    ],
   ]);
 }
 
@@ -639,7 +648,7 @@ function buildUnpromotedIntegrationInput(overrides = {}) {
   };
 }
 
-function buildReleasedDifferentialEquationsInput(overrides = {}) {
+function buildPromotedDifferentialEquationsInput(overrides = {}) {
   const classification = overrides.classification || {};
 
   return {
@@ -654,7 +663,7 @@ function buildReleasedDifferentialEquationsInput(overrides = {}) {
     classification: {
       family_id: '9709.differential_equations',
       primary_question_type_id: '9709.differential_equations.separable',
-      classification_confidence: 0.82,
+      classification_confidence: 0.91,
       candidate_rubric_refs: [
         buildReleasedRubricRef({
           rubric_set_id: '9709.differential_equations.separable',
@@ -670,11 +679,65 @@ function buildReleasedDifferentialEquationsInput(overrides = {}) {
     classification: {
       family_id: '9709.differential_equations',
       primary_question_type_id: '9709.differential_equations.separable',
-      classification_confidence: 0.82,
+      classification_confidence: 0.91,
       candidate_rubric_refs: [
         buildReleasedRubricRef({
           rubric_set_id: '9709.differential_equations.separable',
           rubric_version_id: 'diff-eq-v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p3'],
+      ...classification,
+    },
+  };
+}
+
+function buildPromotedDifferentialEquationsWithoutUncertaintyInput() {
+  return buildPromotedDifferentialEquationsInput({
+    classification: {
+      uncertainty_validated: false,
+    },
+  });
+}
+
+function buildUnpromotedDifferentialEquationsInput(overrides = {}) {
+  const classification = overrides.classification || {};
+
+  return {
+    subject_code: '9709',
+    prompt_representation: {
+      type: 'text',
+      value: 'A population changes at a rate proportional to the remaining capacity.',
+    },
+    provenance_summary: {
+      import_source: 'manual_paste',
+    },
+    classification: {
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.modelling',
+      classification_confidence: 0.78,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.differential_equations.modelling',
+          rubric_version_id: 'diff-eq-modelling-v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p3'],
+      ...classification,
+    },
+    ...overrides,
+    classification: {
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.modelling',
+      classification_confidence: 0.78,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.differential_equations.modelling',
+          rubric_version_id: 'diff-eq-modelling-v1',
           release_state: 'released',
         }),
       ],
@@ -788,29 +851,56 @@ describe('question import service', () => {
     });
   });
 
-  test('registry-released types without released-family evidence stay fallback-only on import', async () => {
-    clientState.registryTypes.set('9709.differential_equations.separable', {
-      question_type_id: '9709.differential_equations.separable',
-      family_id: '9709.differential_equations',
-      subject_code: '9709',
-      release_state: 'released',
-    });
-
+  test('imported promoted differential equations question gets released scope posture when all gates pass', async () => {
     const result = await importQuestion(createClient(), {
       userId: 'student-1',
-      body: buildReleasedDifferentialEquationsInput(),
+      body: buildPromotedDifferentialEquationsInput(),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      fallback_mode: null,
+    });
+    expect(result.question).toMatchObject({
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.separable',
+      release_scope_status: 'released_scoring',
+    });
+  });
+
+  test('promoted differential equations question still falls back when uncertainty is not validated', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildPromotedDifferentialEquationsWithoutUncertaintyInput(),
     });
 
     expect(result.scoring_scope_posture).toMatchObject({
       fallback_mode: 'non_released_fallback',
       authoritative_scoring_allowed: false,
-      fallback_reason_code: 'missing_released_family_evidence',
-      classification_confidence: 0.82,
+      fallback_reason_code: 'unvalidated_uncertainty_posture',
+      classification_confidence: 0.91,
+      learning_signal_posture: 'conservative_fallback',
+    });
+    expect(result.question.release_scope_status).toBe('non_released_fallback');
+  });
+
+  test('imported non-promoted differential equations question remains fallback-only', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildUnpromotedDifferentialEquationsInput(),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      fallback_mode: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_pilot_question_type',
+      classification_confidence: 0.78,
       learning_signal_posture: 'conservative_fallback',
     });
     expect(result.question).toMatchObject({
       family_id: '9709.differential_equations',
-      primary_question_type_id: '9709.differential_equations.separable',
+      primary_question_type_id: '9709.differential_equations.modelling',
       release_scope_status: 'non_released_fallback',
     });
   });

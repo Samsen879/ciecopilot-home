@@ -1,0 +1,136 @@
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+
+const mockRunReconciliation = jest.fn();
+const mockLoadDoctorLocalState = jest.fn();
+const mockBuildDoctorReport = jest.fn();
+
+jest.unstable_mockModule('../../scripts/ao/lib/reconciliation-runner.js', () => ({
+  DEFAULT_PROJECT_ID: 'ciecopilot-home',
+  runReconciliation: mockRunReconciliation,
+}));
+
+jest.unstable_mockModule('../../scripts/ao/lib/doctor-local-state-source.js', () => ({
+  loadDoctorLocalState: mockLoadDoctorLocalState,
+}));
+
+jest.unstable_mockModule('../../scripts/ao/lib/doctor-engine.js', () => ({
+  buildDoctorReport: mockBuildDoctorReport,
+}));
+
+const { runDoctor } = await import('../../scripts/ao/lib/doctor-runner.js');
+
+describe('doctor runner', () => {
+  beforeEach(() => {
+    mockRunReconciliation.mockReset();
+    mockLoadDoctorLocalState.mockReset();
+    mockBuildDoctorReport.mockReset();
+  });
+
+  it('runs project mode through the shared doctor pipeline', async () => {
+    mockRunReconciliation.mockResolvedValue({
+      report: {
+        top_status: 'warning',
+        findings: [],
+      },
+    });
+    mockLoadDoctorLocalState.mockResolvedValue({
+      cwd: '/home/samsen/code/ciecopilot-home',
+      current_branch: 'runtime-post-pilot-0323-2239',
+    });
+    mockBuildDoctorReport.mockReturnValue({
+      top_status: 'warning',
+      findings: [],
+      suggestions: [],
+    });
+
+    const result = await runDoctor({
+      projectId: 'ciecopilot-home',
+      prNumber: null,
+      cwd: '/home/samsen/code/ciecopilot-home',
+    });
+
+    expect(mockRunReconciliation).toHaveBeenCalledWith({
+      projectId: 'ciecopilot-home',
+      prNumber: null,
+    });
+    expect(mockLoadDoctorLocalState).toHaveBeenCalledWith({
+      cwd: '/home/samsen/code/ciecopilot-home',
+    });
+    expect(mockBuildDoctorReport).toHaveBeenCalledWith({
+      scope: {
+        mode: 'project',
+        project_id: 'ciecopilot-home',
+        pr_number: null,
+        authoritative_for_release: false,
+        diagnose_only: true,
+      },
+      reconciliationReport: {
+        top_status: 'warning',
+        findings: [],
+      },
+      localState: {
+        cwd: '/home/samsen/code/ciecopilot-home',
+        current_branch: 'runtime-post-pilot-0323-2239',
+      },
+    });
+    expect(result).toEqual({
+      scope: {
+        mode: 'project',
+        project_id: 'ciecopilot-home',
+        pr_number: null,
+        authoritative_for_release: false,
+        diagnose_only: true,
+      },
+      reconciliationReport: {
+        top_status: 'warning',
+        findings: [],
+      },
+      localState: {
+        cwd: '/home/samsen/code/ciecopilot-home',
+        current_branch: 'runtime-post-pilot-0323-2239',
+      },
+      report: {
+        top_status: 'warning',
+        findings: [],
+        suggestions: [],
+      },
+    });
+  });
+
+  it('runs PR mode through the shared doctor pipeline', async () => {
+    mockRunReconciliation.mockResolvedValue({
+      report: {
+        top_status: 'healthy',
+        findings: [],
+      },
+    });
+    mockLoadDoctorLocalState.mockResolvedValue({
+      cwd: '/home/samsen/code/ciecopilot-home',
+      current_branch: 'feat/issue-44',
+    });
+    mockBuildDoctorReport.mockReturnValue({
+      top_status: 'healthy',
+      findings: [],
+      suggestions: [],
+    });
+
+    const result = await runDoctor({
+      projectId: 'ciecopilot-home',
+      prNumber: 44,
+      cwd: '/home/samsen/code/ciecopilot-home',
+    });
+
+    expect(mockRunReconciliation).toHaveBeenCalledWith({
+      projectId: 'ciecopilot-home',
+      prNumber: 44,
+    });
+    expect(result.scope).toEqual({
+      mode: 'pr',
+      project_id: 'ciecopilot-home',
+      pr_number: 44,
+      authoritative_for_release: false,
+      diagnose_only: true,
+    });
+    expect(result.report.top_status).toBe('healthy');
+  });
+});

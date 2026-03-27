@@ -2,6 +2,7 @@
 
 ## Project Status
 
+- `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.
 - `learning_runtime_9709_differential_equations_separable_promotion_2026-03-25.md` - evidence-first justification for promoting `9709.differential_equations.separable` into released runtime scoring while keeping broader differential-equations scope conservative.

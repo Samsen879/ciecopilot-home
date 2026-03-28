@@ -1,6 +1,12 @@
 export const SCHEMA_VERSION = 'ao.reconciliation.v1alpha1';
 export const REPORT_FORMAT = 'ao_reconciliation_report';
 
+export {
+  GATE_BLOCKER_CODES,
+  GATE_NAMES,
+  GATE_STATES,
+} from './gate-model.js';
+
 export const ACTION_CLASSES = [
   'continue_observe',
   'inspect_worker',

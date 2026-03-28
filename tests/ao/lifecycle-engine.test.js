@@ -3,6 +3,7 @@ import {
   createLifecyclePrScope,
   createLifecycleProjectScope,
 } from '../../scripts/ao/lib/lifecycle-contracts.js';
+import { createGateSnapshot } from '../../scripts/ao/lib/gate-model.js';
 import { buildLifecycleReport } from '../../scripts/ao/lib/lifecycle-engine.js';
 
 function buildReconciliationReport(overrides = {}) {
@@ -123,6 +124,58 @@ describe('lifecycle engine', () => {
     expect(report.release_decision.disposition).toBe('await_ci');
   });
 
+  it('prefers typed CI blocker data over narrative basis strings', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'ci_failed',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          ownership: {
+            status: 'clear',
+            owner_session: 'cie-44',
+            candidate_sessions: ['cie-44'],
+          },
+          release_readiness: {
+            status: 'blocked',
+            basis: ['legacy_basis_should_not_drive_routing'],
+            blocker_codes: ['ci_blocked'],
+            gates: createGateSnapshot({
+              ownership: {
+                state: 'open',
+              },
+              review: {
+                state: 'open',
+              },
+              ci: {
+                state: 'blocked',
+                blocker_codes: ['ci_blocked'],
+              },
+              mergeability: {
+                state: 'open',
+              },
+              release: {
+                state: 'blocked',
+                blocker_codes: ['ci_blocked'],
+              },
+            }),
+          },
+        }],
+      }),
+      doctorReport: buildDoctorReport(),
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_ci',
+      authoritative: true,
+    });
+  });
+
   it('routes stale ownership to restore the previous worker', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({
@@ -214,6 +267,58 @@ describe('lifecycle engine', () => {
     expect(report.top_status).toBe('human_gate');
     expect(report.routing_decision.action).toBe('hold_for_human');
     expect(report.findings.map((finding) => finding.code)).toContain('ownership_control_ambiguous');
+  });
+
+  it('waits on mergeability when typed gates show mergeability remains ambiguous', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'merge_conflicts',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          ownership: {
+            status: 'clear',
+            owner_session: 'cie-44',
+            candidate_sessions: ['cie-44'],
+          },
+          release_readiness: {
+            status: 'ambiguous',
+            basis: ['fallback_ambiguous'],
+            blocker_codes: [],
+            gates: createGateSnapshot({
+              ownership: {
+                state: 'open',
+              },
+              review: {
+                state: 'open',
+              },
+              ci: {
+                state: 'open',
+              },
+              mergeability: {
+                state: 'ambiguous',
+                reason_codes: ['mergeability_unknown'],
+              },
+              release: {
+                state: 'ambiguous',
+                reason_codes: ['mergeability_unknown'],
+              },
+            }),
+          },
+        }],
+      }),
+      doctorReport: buildDoctorReport(),
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_mergeability',
+      authoritative: true,
+    });
   });
 
   it('holds when doctor blocks local control', () => {

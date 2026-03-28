@@ -62,6 +62,19 @@ cd /home/samsen/code/ciecopilot-home
 npm run ao:reconcile:strict -- --pr <number>
 ```
 
+Or use the explicit PR wrapper:
+
+```bash
+cd /home/samsen/code/ciecopilot-home
+npm run ao:reconcile:strict:pr -- <number>
+```
+
+Important:
+
+- `ao:reconcile:strict` is only valid once `--pr <number>` is forwarded through npm
+- `ao:reconcile:strict:pr` exists to make that strict-wrapper contract obvious
+- phase 1 still does not support strict project-mode reconciliation
+
 ## Scope Model
 
 ### PR-scoped mode
@@ -181,6 +194,12 @@ Run:
 
 ```bash
 node scripts/ao-reconcile.js --pr <number> --json --strict
+```
+
+Equivalent npm wrapper:
+
+```bash
+npm run ao:reconcile:strict:pr -- <number>
 ```
 
 Read:

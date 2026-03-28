@@ -71,7 +71,24 @@ cd /home/samsen/code/ciecopilot-home
 node scripts/ao-lifecycle.js --pr <number> --trigger approved_and_green --json --strict
 ```
 
+Equivalent npm wrappers:
+
+```bash
+cd /home/samsen/code/ciecopilot-home
+npm run ao:lifecycle:strict -- --pr <number> --trigger approved_and_green
+```
+
+```bash
+cd /home/samsen/code/ciecopilot-home
+npm run ao:lifecycle:strict:pr -- <number> --trigger approved_and_green
+```
+
 Strict mode is still decide-only. It does not create repair or merge authority.
+
+Wrapper note:
+
+- `ao:lifecycle:strict` remains valid in project mode and in PR mode when you forward `--pr <number>`
+- `ao:lifecycle:strict:pr` exists to make the PR-scoped strict form explicit without changing lifecycle's underlying strict contract
 
 ## Phase Relationship
 

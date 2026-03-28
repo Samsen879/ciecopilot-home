@@ -4,6 +4,11 @@ import {
   createLifecycleAction,
   createLifecycleFinding,
 } from './lifecycle-contracts.js';
+import {
+  collectGateBlockerCodes,
+  createGateSnapshot,
+  getGate,
+} from './gate-model.js';
 
 const RECONCILIATION_FINDING_SOURCE_AREAS = {
   no_orchestrator_session: 'ao',
@@ -19,6 +24,13 @@ const RECONCILIATION_FINDING_SOURCE_AREAS = {
   mergeability_unknown: 'github',
   release_readiness_ambiguous: 'cross_source',
 };
+
+function uniqueStrings(values) {
+  return [...new Set((values ?? [])
+    .filter((value) => value != null)
+    .map((value) => String(value))
+    .filter((value) => value !== ''))];
+}
 
 function deriveDoctorControlStatus(doctorReport) {
   const doctorFindings = (doctorReport?.findings ?? []).filter((finding) => finding.origin === 'doctor');
@@ -50,6 +62,58 @@ function selectSingleAssessment(scope, reconciliationReport) {
   const assessments = reconciliationReport?.pr_assessments ?? [];
   if (scope?.mode === 'pr') return assessments[0] ?? null;
   if (assessments.length === 1) return assessments[0];
+  return null;
+}
+
+function extractTypedReleaseData(assessment) {
+  const releaseReadiness = assessment?.release_readiness ?? {};
+  const gates = createGateSnapshot(releaseReadiness.gates ?? {});
+  const blockerCodes = uniqueStrings([
+    ...(releaseReadiness.blocker_codes ?? []),
+    ...(releaseReadiness.blockers ?? []),
+    ...collectGateBlockerCodes(gates),
+  ]);
+  const reasonCodes = uniqueStrings(Object.values(gates).flatMap((gate) => gate.reason_codes ?? []));
+
+  return {
+    gates,
+    blockerCodes,
+    reasonCodes,
+    hasTypedGates: Object.keys(gates).length > 0,
+  };
+}
+
+function resolveTypedReleaseDisposition(assessment) {
+  const { gates, blockerCodes, reasonCodes, hasTypedGates } = extractTypedReleaseData(assessment);
+  if (!hasTypedGates) return null;
+
+  const ciGate = getGate(gates, 'ci');
+  if (ciGate?.state === 'blocked' || ciGate?.state === 'pending' || blockerCodes.includes('ci_blocked')) {
+    return {
+      disposition: 'await_ci',
+      basis: blockerCodes.includes('ci_blocked') ? blockerCodes : reasonCodes,
+      authoritative: true,
+    };
+  }
+
+  const reviewGate = getGate(gates, 'review');
+  if (reviewGate?.state === 'blocked' || reviewGate?.state === 'pending' || blockerCodes.includes('review_blocked')) {
+    return {
+      disposition: 'await_review',
+      basis: blockerCodes.includes('review_blocked') ? blockerCodes : reasonCodes,
+      authoritative: true,
+    };
+  }
+
+  const mergeabilityGate = getGate(gates, 'mergeability');
+  if (mergeabilityGate?.state === 'blocked' || mergeabilityGate?.state === 'ambiguous' || blockerCodes.includes('merge_conflict_blocked')) {
+    return {
+      disposition: 'await_mergeability',
+      basis: blockerCodes.includes('merge_conflict_blocked') ? blockerCodes : reasonCodes,
+      authoritative: true,
+    };
+  }
+
   return null;
 }
 
@@ -238,6 +302,7 @@ function buildReleaseDecision({
 
   const releaseStatus = assessment.release_readiness?.status ?? 'unknown';
   const basis = assessment.release_readiness?.basis ?? [];
+  const typedReleaseDecision = resolveTypedReleaseDisposition(assessment);
 
   if (
     releaseStatus === 'ready'
@@ -249,6 +314,10 @@ function buildReleaseDecision({
       basis: ['ready_for_human_notification'],
       authoritative: true,
     };
+  }
+
+  if (typedReleaseDecision) {
+    return typedReleaseDecision;
   }
 
   if (releaseStatus === 'blocked') {

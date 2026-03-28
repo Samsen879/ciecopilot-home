@@ -87,6 +87,39 @@ function resolveTypedReleaseDisposition(assessment) {
   const { gates, blockerCodes, reasonCodes, hasTypedGates } = extractTypedReleaseData(assessment);
   if (!hasTypedGates) return null;
 
+  const releaseGate = getGate(gates, 'release');
+  if (releaseGate?.state === 'blocked' || blockerCodes.length) {
+    if (blockerCodes.includes('ci_blocked')) {
+      return {
+        disposition: 'await_ci',
+        basis: blockerCodes,
+        authoritative: true,
+      };
+    }
+
+    if (blockerCodes.includes('review_blocked')) {
+      return {
+        disposition: 'await_review',
+        basis: blockerCodes,
+        authoritative: true,
+      };
+    }
+
+    if (blockerCodes.includes('merge_conflict_blocked')) {
+      return {
+        disposition: 'await_mergeability',
+        basis: blockerCodes,
+        authoritative: true,
+      };
+    }
+
+    return {
+      disposition: 'no_release_action',
+      basis: blockerCodes.length ? blockerCodes : (releaseGate?.reason_codes ?? reasonCodes),
+      authoritative: false,
+    };
+  }
+
   const ciGate = getGate(gates, 'ci');
   if (ciGate?.state === 'blocked' || ciGate?.state === 'pending' || blockerCodes.includes('ci_blocked')) {
     return {

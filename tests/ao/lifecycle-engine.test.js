@@ -176,6 +176,61 @@ describe('lifecycle engine', () => {
     });
   });
 
+  it('does not let pending CI override an already blocked typed release gate', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'ci_failed',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          ownership: {
+            status: 'clear',
+            owner_session: 'cie-44',
+            candidate_sessions: ['cie-44'],
+          },
+          release_readiness: {
+            status: 'blocked',
+            basis: ['legacy_basis_should_not_drive_routing'],
+            blocker_codes: ['merge_conflict_blocked'],
+            gates: createGateSnapshot({
+              ownership: {
+                state: 'open',
+              },
+              review: {
+                state: 'open',
+              },
+              ci: {
+                state: 'pending',
+                reason_codes: ['ci_pending'],
+              },
+              mergeability: {
+                state: 'blocked',
+                blocker_codes: ['merge_conflict_blocked'],
+              },
+              release: {
+                state: 'blocked',
+                blocker_codes: ['merge_conflict_blocked'],
+                reason_codes: ['ci_pending'],
+              },
+            }),
+          },
+        }],
+      }),
+      doctorReport: buildDoctorReport(),
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_mergeability',
+      basis: ['merge_conflict_blocked'],
+      authoritative: true,
+    });
+  });
+
   it('routes stale ownership to restore the previous worker', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({

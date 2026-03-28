@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-03-28T18:25:58.730Z",
+  "stage": "rag_s2_release_decision",
+  "release_mode": "advisory_only",
+  "s1_default_production_route_must_remain": "b_simplified_retrieval_s1_v1",
+  "effective_default_production_route": "b_simplified_retrieval_s1_v1",
+  "checks": {
+    "advisory_gate_present": true,
+    "advisory_gate_pass": false,
+    "s1_contract_gate_present": true,
+    "s1_contract_gate_pass": true,
+    "s1_metric_gate_present": true,
+    "s1_metric_gate_pass": true,
+    "s1_metric_gate_mode_required_fail_closed": true,
+    "workflow_invariant_present": true,
+    "workflow_invariant_pass": false,
+    "workflow_contract_advisory_only": true
+  },
+  "decision": "stay_advisory_only",
+  "release_ready": false,
+  "advisory_candidate_ready": false,
+  "default_route_promotion_ready": false,
+  "legacy_release_posture": "hold_s2_keep_s1_default",
+  "blocker_categories": [
+    "release_evidence",
+    "release_policy"
+  ],
+  "blockers": [
+    {
+      "category": "release_evidence",
+      "code": "release_eval_summary_missing",
+      "message": "release eval summary missing"
+    },
+    {
+      "category": "release_policy",
+      "code": "s2_advisory_workflow_missing",
+      "message": "the S2 advisory workflow file is missing, so the non-blocking release contract cannot be verified"
+    },
+    {
+      "category": "release_policy",
+      "code": "s2_advisory_workflow_not_non_blocking",
+      "message": "the S2 advisory workflow no longer proves a non-blocking advisory-only release posture"
+    }
+  ],
+  "blocking_reasons": [
+    "release eval summary missing",
+    "the S2 advisory workflow file is missing, so the non-blocking release contract cannot be verified",
+    "the S2 advisory workflow no longer proves a non-blocking advisory-only release posture"
+  ],
+  "next_actions": [
+    "keep S1 as default production path",
+    "refresh missing or failing release-authority inputs before reconsidering default-route promotion"
+  ],
+  "inputs": {
+    "advisory_gate": "runs/backend/rag_s2_advisory_gate_summary.json",
+    "s1_contract_gate": "runs/backend/rag_s1_contract_gate_summary.json",
+    "s1_metric_gate": "runs/backend/rag_s1_metric_gate_summary.json",
+    "workflow_invariant": "runs/backend/rag_s2_workflow_invariant_check.json"
+  },
+  "evidence": {
+    "advisory_gate_status": "fail",
+    "advisory_gate_generated_at": "2026-03-28T18:25:00.063Z",
+    "s1_contract_gate_all_green": true,
+    "s1_contract_gate_generated_at": "2026-03-28T18:22:54.292Z",
+    "s1_metric_gate_status": "pass",
+    "s1_metric_gate_mode": "required_fail_closed",
+    "s1_metric_gate_generated_at": "2026-03-28T18:24:04.714Z",
+    "workflow_invariant_status": "fail",
+    "workflow_invariant_advisory_only": true
+  }
+}

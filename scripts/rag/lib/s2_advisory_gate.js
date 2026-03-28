@@ -145,7 +145,13 @@ export function buildS2ReleaseDecision({
     workflow_invariant_pass: workflowInvariant?.status === 'pass',
     workflow_contract_advisory_only: workflowInvariant?.gate?.advisory_only === true,
   };
-  const releaseReady = Object.values(checks).every(Boolean);
+  const advisoryCandidateReady =
+    checks.advisory_gate_pass &&
+    checks.s1_contract_gate_pass &&
+    checks.s1_metric_gate_pass &&
+    checks.s1_metric_gate_mode_required_fail_closed &&
+    checks.workflow_invariant_pass;
+  const releaseReady = advisoryCandidateReady;
   const blockers = [];
 
   if (!checks.advisory_gate_present) {
@@ -256,15 +262,11 @@ export function buildS2ReleaseDecision({
   }
 
   const defaultRoutePromotionReady =
-    checks.advisory_gate_pass &&
-    checks.s1_contract_gate_pass &&
-    checks.s1_metric_gate_pass &&
-    checks.s1_metric_gate_mode_required_fail_closed &&
-    checks.workflow_invariant_pass &&
+    advisoryCandidateReady &&
     checks.workflow_contract_advisory_only === false;
 
   const decision = defaultRoutePromotionReady ? 'promote' : 'stay_advisory_only';
-  const legacyReleasePosture = releaseReady ? 'go_s2_advisory_candidate' : 'hold_s2_keep_s1_default';
+  const legacyReleasePosture = advisoryCandidateReady ? 'go_s2_advisory_candidate' : 'hold_s2_keep_s1_default';
 
   return {
     generated_at: new Date().toISOString(),
@@ -276,7 +278,7 @@ export function buildS2ReleaseDecision({
     checks,
     decision,
     release_ready: releaseReady,
-    advisory_candidate_ready: releaseReady,
+    advisory_candidate_ready: advisoryCandidateReady,
     default_route_promotion_ready: defaultRoutePromotionReady,
     legacy_release_posture: legacyReleasePosture,
     blocker_categories: collectBlockerCategories(blockers),

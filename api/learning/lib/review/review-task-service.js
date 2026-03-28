@@ -294,6 +294,9 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
     learnerGoal: input.learner_goal ?? null,
     fallbackReasonCode: input.fallback_reason_code ?? null,
   });
+  if (!scheduler) {
+    return null;
+  }
   const targetKind = pickTargetKind({
     targetQuestionTypeId,
     familyId: input.question_context?.family_id ?? null,
@@ -354,6 +357,9 @@ export function createReviewTaskService({
       }
 
       const payload = buildReviewTaskPayload(input, now());
+      if (!payload) {
+        return [];
+      }
 
       if (!reviewTaskRepository) {
         return [payload];

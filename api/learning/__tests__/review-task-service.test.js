@@ -246,16 +246,15 @@ describe('learning orchestration', () => {
     expect(reconciliationService.calls).toHaveLength(1);
   });
 
-  test('learning effects reject subjects without a runtime-enabled adapter', async () => {
-    const reviewTaskService = createSpyService('generateTasksFromOutcome', async () => []);
+  test('learning effects fail closed for 9702 without reusing math mastery defaults', async () => {
     const artifactService = createSpyService('buildArtifactCandidates', async () => []);
     const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({
-      reconciliation_run_id: 'recon-unsupported',
+      reconciliation_run_id: 'recon-9702',
       status: 'completed',
       derived_state: derivedState,
     }));
 
-    await expect(applyLearningEffects(
+    const result = await applyLearningEffects(
       {
         user_id: 'student-1',
         subject_code: '9702',
@@ -263,24 +262,51 @@ describe('learning orchestration', () => {
         question_context: {
           family_id: '9702.mechanics_dynamics',
           question_type_id: '9702.mechanics.force_balance',
+          question_type_release_state: 'released',
           classification_confidence: 0.74,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: '9702.mechanics.force_balance.v1',
+              release_state: 'released',
+            },
+          ],
         },
         source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-physics-1' },
         source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-physics-1' },
-        uncertainty_validated: false,
+        decisions: [
+          {
+            awarded: true,
+            awarded_marks: 3,
+            alignment_confidence: 0.93,
+          },
+        ],
+        uncertainty_validated: true,
       },
       {
-        reviewTaskService,
         artifactService,
         reconciliationService,
       },
-    )).rejects.toMatchObject({
-      code: 'subject_adapter_not_enabled',
-    });
+    );
 
-    expect(reviewTaskService.calls).toHaveLength(0);
-    expect(artifactService.calls).toHaveLength(0);
-    expect(reconciliationService.calls).toHaveLength(0);
+    expect(result).toMatchObject({
+      release_scope_status: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+      learning_signal_posture: 'conservative_fallback',
+      mastery_updates: [],
+      local_signals: [],
+      review_tasks: [],
+    });
+    expect(artifactService.calls).toHaveLength(1);
+    expect(reconciliationService.calls).toHaveLength(1);
+    expect(reconciliationService.calls[0].derivedState).toMatchObject({
+      family_masteries: [],
+      type_masteries: [],
+      review_tasks: [],
+      local_signals: [],
+    });
   });
 
   test('weak-evidence promoted integration creates review tasks without authoritative score effects', async () => {

@@ -1,8 +1,15 @@
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { resolveReleasedScoringPosture as resolveCoreReleasedScoringPosture } from '../contracts/released-scope.js';
+import {
+  FALLBACK_REASON_CODES,
+  buildFallbackPosture,
+} from '../contracts/released-scope-core.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import { buildReviewTaskSchedulerSeed } from '../review/review-scheduler-policy.js';
-import { createSubjectAdapter } from './subject-adapter-contract.js';
+import {
+  SUBJECT_ADAPTER_CAPABILITY_POSTURES,
+  createSubjectAdapter,
+} from './subject-adapter-contract.js';
 
 function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : '';
@@ -44,12 +51,6 @@ function createSubjectAdapterNotEnabledError(subjectCode, selectionState = 'unre
   );
 }
 
-function createDisabledArea(subjectCode, selectionState) {
-  return () => {
-    throw createSubjectAdapterNotEnabledError(subjectCode, selectionState);
-  };
-}
-
 function mergeCanonicalClassification({ classification = {}, canonicalQuestionType = null } = {}) {
   return {
     ...classification,
@@ -57,6 +58,13 @@ function mergeCanonicalClassification({ classification = {}, canonicalQuestionTy
     primary_question_type_id:
       canonicalQuestionType?.question_type_id ?? classification.primary_question_type_id ?? null,
   };
+}
+
+function buildCapabilityFallbackPosture(classificationConfidence = null) {
+  return buildFallbackPosture(
+    FALLBACK_REASON_CODES.SUBJECT_ADAPTER_CAPABILITY_NOT_ENABLED,
+    classificationConfidence,
+  );
 }
 
 function hasPositiveAuthoritativeSignal(decisions = []) {
@@ -151,6 +159,13 @@ function build9709MasteryProjection({ input = {}, questionContext = {}, releaseS
   };
 }
 
+function buildFallbackOnlyMasteryProjection() {
+  return {
+    localSignals: [],
+    masteryUpdates: [],
+  };
+}
+
 export const SUBJECT_ADAPTER_DECISION = Object.freeze({
   current_runtime_subject: '9709',
   selected_next_subject: '9702',
@@ -167,6 +182,12 @@ const SUBJECT_ADAPTERS = new Map([
         display_name: 'Mathematics',
         runtime_enabled: true,
         selection_state: 'current_runtime',
+        capability_posture: {
+          classification: SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED,
+          marking: SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED,
+          mastery: SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED,
+          review: SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED,
+        },
       },
       classification: {
         mergeCanonicalClassification,
@@ -188,20 +209,27 @@ const SUBJECT_ADAPTERS = new Map([
       meta: {
         subject_code: '9702',
         display_name: 'Physics',
-        runtime_enabled: false,
+        runtime_enabled: true,
         selection_state: 'selected_next',
+        capability_posture: {
+          classification: SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED,
+          marking: SUBJECT_ADAPTER_CAPABILITY_POSTURES.FALLBACK_ONLY,
+          mastery: SUBJECT_ADAPTER_CAPABILITY_POSTURES.FALLBACK_ONLY,
+          review: SUBJECT_ADAPTER_CAPABILITY_POSTURES.FALLBACK_ONLY,
+        },
       },
       classification: {
-        mergeCanonicalClassification: createDisabledArea('9702', 'selected_next'),
+        mergeCanonicalClassification,
       },
       marking: {
-        resolveReleasedScoringPosture: createDisabledArea('9702', 'selected_next'),
+        resolveReleasedScoringPosture: ({ classificationConfidence = null } = {}) =>
+          buildCapabilityFallbackPosture(classificationConfidence),
       },
       mastery: {
-        buildMasteryProjection: createDisabledArea('9702', 'selected_next'),
+        buildMasteryProjection: () => buildFallbackOnlyMasteryProjection(),
       },
       review: {
-        buildSchedulerSeed: createDisabledArea('9702', 'selected_next'),
+        buildSchedulerSeed: () => null,
       },
     }),
   ],
@@ -239,4 +267,14 @@ export function getSubjectAdapter(subjectCode, { allowDisabled = false } = {}) {
   }
 
   return adapter;
+}
+
+export function getSubjectCapabilityPosture(
+  subjectCode,
+  capability,
+  { allowDisabled = false } = {},
+) {
+  const adapter = getSubjectAdapter(subjectCode, { allowDisabled });
+  return adapter.meta.capability_posture?.[capability]
+    ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
 }

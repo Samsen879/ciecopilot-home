@@ -1,10 +1,12 @@
 import {
   RUNTIME_CORE_OWNERSHIP,
+  SUBJECT_ADAPTER_CAPABILITY_POSTURES,
   SUBJECT_ADAPTER_OWNERSHIP,
 } from '../lib/subjects/subject-adapter-contract.js';
 import {
   SUBJECT_ADAPTER_DECISION,
   getSubjectAdapter,
+  getSubjectCapabilityPosture,
 } from '../lib/subjects/subject-adapter-registry.js';
 
 describe('subject adapter registry', () => {
@@ -33,9 +35,9 @@ describe('subject adapter registry', () => {
     });
   });
 
-  test('9709 is runtime-enabled and 9702 is the selected next subject', () => {
+  test('9709 is fully supported and 9702 is registered through a fallback-only boundary', () => {
     const currentAdapter = getSubjectAdapter('9709');
-    const selectedNextAdapter = getSubjectAdapter('9702', { allowDisabled: true });
+    const selectedNextAdapter = getSubjectAdapter('9702');
 
     expect(currentAdapter.meta).toMatchObject({
       subject_code: '9709',
@@ -52,12 +54,48 @@ describe('subject adapter registry', () => {
     });
     expect(selectedNextAdapter.meta).toMatchObject({
       subject_code: '9702',
-      runtime_enabled: false,
+      runtime_enabled: true,
       selection_state: 'selected_next',
     });
+    expect(getSubjectCapabilityPosture('9709', 'classification'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED);
+    expect(getSubjectCapabilityPosture('9709', 'marking'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED);
+    expect(getSubjectCapabilityPosture('9709', 'mastery'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED);
+    expect(getSubjectCapabilityPosture('9709', 'review'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED);
+    expect(getSubjectCapabilityPosture('9702', 'classification'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED);
+    expect(getSubjectCapabilityPosture('9702', 'marking'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.FALLBACK_ONLY);
+    expect(getSubjectCapabilityPosture('9702', 'mastery'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.FALLBACK_ONLY);
+    expect(getSubjectCapabilityPosture('9702', 'review'))
+      .toBe(SUBJECT_ADAPTER_CAPABILITY_POSTURES.FALLBACK_ONLY);
   });
 
-  test('disabled next-subject adapters fail explicitly instead of falling back to math defaults', () => {
-    expect(() => getSubjectAdapter('9702')).toThrow(/not enabled/i);
+  test('9702 marking fails closed with explicit fallback posture instead of math scoring', () => {
+    const selectedNextAdapter = getSubjectAdapter('9702');
+
+    expect(selectedNextAdapter.marking.resolveReleasedScoringPosture({
+      questionTypeId: '9702.mechanics.force_balance',
+      questionTypeReleaseState: 'released',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_version_id: '9702.mechanics.force_balance.v1',
+          release_state: 'released',
+        },
+      ],
+      uncertaintyValidated: true,
+      classificationConfidence: 0.91,
+    })).toMatchObject({
+      authoritative_scoring_allowed: false,
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+      classification_confidence: 0.91,
+      learning_signal_posture: 'conservative_fallback',
+    });
   });
 });

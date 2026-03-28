@@ -748,6 +748,52 @@ function buildUnpromotedDifferentialEquationsInput(overrides = {}) {
   };
 }
 
+function buildPhysicsFallbackOnlyInput(overrides = {}) {
+  const classification = overrides.classification || {};
+
+  return {
+    subject_code: '9702',
+    prompt_representation: {
+      type: 'text',
+      value: 'A car accelerates uniformly from rest along a straight road.',
+    },
+    provenance_summary: {
+      import_source: 'manual_paste',
+    },
+    classification: {
+      family_id: '9702.mechanics_dynamics',
+      primary_question_type_id: '9702.mechanics.force_balance',
+      classification_confidence: 0.61,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9702.mechanics.force_balance',
+          rubric_version_id: '9702.mechanics.force_balance.v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p1'],
+      ...classification,
+    },
+    ...overrides,
+    classification: {
+      family_id: '9702.mechanics_dynamics',
+      primary_question_type_id: '9702.mechanics.force_balance',
+      classification_confidence: 0.61,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9702.mechanics.force_balance',
+          rubric_version_id: '9702.mechanics.force_balance.v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p1'],
+      ...classification,
+    },
+  };
+}
+
 describe('question import service', () => {
   beforeEach(() => {
     resetClientState();
@@ -903,6 +949,35 @@ describe('question import service', () => {
       primary_question_type_id: '9709.differential_equations.modelling',
       release_scope_status: 'non_released_fallback',
     });
+  });
+
+  test('imported physics question gets an explicit fallback-only posture instead of math scoring defaults', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildPhysicsFallbackOnlyInput(),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      fallback_mode: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+      classification_confidence: 0.61,
+      learning_signal_posture: 'conservative_fallback',
+    });
+    expect(result.question).toMatchObject({
+      subject_code: '9702',
+      family_id: '9702.mechanics_dynamics',
+      primary_question_type_id: '9702.mechanics.force_balance',
+      release_scope_status: 'non_released_fallback',
+    });
+    expect(
+      clientState.calls.some(
+        (call) =>
+          call.table === 'learning_question_types'
+          && findFilter(call, 'subject_code') === '9702'
+          && findFilter(call, 'question_type_id') === '9702.mechanics.force_balance',
+      ),
+    ).toBe(true);
   });
 
   test('same idempotency key allows only one writer under concurrent durable replay', async () => {
@@ -1074,28 +1149,25 @@ describe('learning question import api', () => {
     expect(second.body.error.code).toBe('idempotency_conflict');
   });
 
-  test('POST /api/learning/questions/import rejects subjects without a runtime-enabled adapter', async () => {
+  test('POST /api/learning/questions/import returns explicit fallback posture for the selected next subject', async () => {
     const res = await harness.request
       .post('/api/learning/questions/import')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
-      .send({
-        subject_code: '9702',
-        prompt_representation: {
-          type: 'text',
-          value: 'A car accelerates uniformly from rest along a straight road.',
-        },
-        provenance_summary: {
-          import_source: 'manual_paste',
-        },
-        classification: {
-          primary_question_type_id: '9702.mechanics.force_balance',
-          classification_confidence: 0.61,
-        },
-      });
+      .send(buildPhysicsFallbackOnlyInput());
 
-    expect(res.status).toBe(409);
-    expect(res.body.error.code).toBe('subject_adapter_not_enabled');
+    expect(res.status).toBe(200);
+    expect(res.body.question).toMatchObject({
+      subject_code: '9702',
+      primary_question_type_id: '9702.mechanics.force_balance',
+      release_scope_status: 'non_released_fallback',
+    });
+    expect(res.body.scoring_scope_posture).toMatchObject({
+      authoritative_scoring_allowed: false,
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+      learning_signal_posture: 'conservative_fallback',
+    });
   });
 
   test('POST /api/learning/questions/import replays the canonical durable response on same-payload retry after completion', async () => {

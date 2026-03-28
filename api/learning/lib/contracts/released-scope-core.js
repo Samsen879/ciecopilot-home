@@ -14,6 +14,7 @@ export const FALLBACK_REASON_CODES = Object.freeze({
   MISSING_RELEASED_RUBRIC: 'missing_released_rubric',
   MISSING_CLASSIFICATION_CONFIDENCE: 'missing_classification_confidence',
   UNVALIDATED_UNCERTAINTY_POSTURE: 'unvalidated_uncertainty_posture',
+  SUBJECT_ADAPTER_CAPABILITY_NOT_ENABLED: 'subject_adapter_capability_not_enabled',
 });
 
 export const LEARNING_SIGNAL_POSTURES = Object.freeze({

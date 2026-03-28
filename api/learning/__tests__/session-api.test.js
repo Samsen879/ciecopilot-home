@@ -573,6 +573,49 @@ describe('learning session api', () => {
     });
   });
 
+  test('POST/GET sessions tolerate unknown subject codes by omitting runtime posture metadata', async () => {
+    clientState.reviewTasks.set('review-task-unregistered-1', buildReviewTask({
+      review_task_id: 'review-task-unregistered-1',
+      target_topic_id: 'topic-unregistered-1',
+      target_topic_path: '9231.experimental.reading',
+      target_family_id: '9231.experimental_runtime',
+      target_family_title: 'Experimental runtime',
+      target_question_type_id: '9231.experimental.reading',
+      target_question_type_title: 'Experimental reading',
+    }));
+
+    const created = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildSessionPayload({
+        subject_code: '9231',
+        session_goal: 'Resume an imported unsupported subject session',
+        anchor_ref: {
+          kind: 'review_task',
+          review_task_id: 'review-task-unregistered-1',
+        },
+        current_question_type_id: '9231.experimental.reading',
+      }));
+
+    expect(created.status).toBe(200);
+    expect(created.body.session.subject_code).toBe('9231');
+    expect(created.body.runtime_posture).toBeNull();
+    expect(clientState.sessions.get(created.body.session.session_id)).toMatchObject({
+      session_id: created.body.session.session_id,
+      subject_code: '9231',
+    });
+
+    const resumed = await harness.request
+      .get(`/api/learning/sessions/${created.body.session.session_id}`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student');
+
+    expect(resumed.status).toBe(200);
+    expect(resumed.body.session.subject_code).toBe('9231');
+    expect(resumed.body.runtime_posture).toBeNull();
+  });
+
   test('POST /api/learning/sessions persists explicit child-session handoff lineage from a parent session', async () => {
     clientState.sessions.set(PARENT_SESSION_ID, buildStoredSession({
       session_id: PARENT_SESSION_ID,

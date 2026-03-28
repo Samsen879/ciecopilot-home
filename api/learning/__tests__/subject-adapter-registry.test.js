@@ -6,6 +6,7 @@ import {
 import {
   SUBJECT_ADAPTER_DECISION,
   buildSubjectRuntimePosture,
+  buildSubjectRuntimePostureOrNull,
   getSubjectAdapter,
   getSubjectCapabilityPosture,
 } from '../lib/subjects/subject-adapter-registry.js';
@@ -113,6 +114,14 @@ describe('subject adapter registry', () => {
       learning_signal_posture: 'conservative_fallback',
       supported_capabilities: ['classification'],
       fallback_capabilities: ['marking', 'mastery', 'review'],
+    });
+  });
+
+  test('optional runtime posture metadata returns null for unregistered subjects', () => {
+    expect(buildSubjectRuntimePostureOrNull('9231')).toBeNull();
+    expect(buildSubjectRuntimePostureOrNull('9702')).toMatchObject({
+      subject_code: '9702',
+      read_only: true,
     });
   });
 });

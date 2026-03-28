@@ -6,7 +6,7 @@ import {
   summarizeReviewQueueItems,
 } from '../review/review-scheduler-policy.js';
 import {
-  buildSubjectRuntimePosture,
+  buildSubjectRuntimePostureOrNull,
   resolveSubjectCodeFromRuntimeInput,
 } from '../subjects/subject-adapter-registry.js';
 import {
@@ -298,7 +298,7 @@ function buildWorkspaceRuntimePosture(workspaceProjection = null) {
     },
   });
 
-  return subjectCode ? buildSubjectRuntimePosture(subjectCode) : null;
+  return buildSubjectRuntimePostureOrNull(subjectCode);
 }
 
 function filterReviewQueueItems(items, {

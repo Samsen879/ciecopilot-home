@@ -334,3 +334,20 @@ export function buildSubjectRuntimePosture(subjectCode, { allowDisabled = false 
     summary: buildRuntimePostureSummary(readOnly),
   };
 }
+
+export function buildSubjectRuntimePostureOrNull(subjectCode) {
+  const normalizedSubjectCode = normalizeSubjectCode(subjectCode);
+
+  if (!normalizedSubjectCode) {
+    return null;
+  }
+
+  try {
+    return buildSubjectRuntimePosture(normalizedSubjectCode, { allowDisabled: true });
+  } catch (error) {
+    if (error?.code === LEARNING_ERROR_CODES.SUBJECT_ADAPTER_NOT_ENABLED) {
+      return null;
+    }
+    throw error;
+  }
+}

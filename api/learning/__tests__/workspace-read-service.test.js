@@ -1042,6 +1042,44 @@ describe('workspace read service', () => {
     });
   });
 
+  test('workspace reads ignore runtime posture metadata for unregistered subject prefixes', async () => {
+    const db = createLearningDb({
+      workspaceProjection: {
+        workspace_id: 'workspace-unregistered-1',
+        user_id: 'student-1',
+        topic_id: 'topic-unregistered-1',
+        topic_path: '9231.experimental.reading',
+        slot_state: {
+          common_traps: 'idle',
+          review_queue: 'idle',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T08:00:00.000Z',
+        slots: [],
+      },
+      reviewTaskRows: [],
+      sessionRows: [],
+    });
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      query: { topicId: 'topic-unregistered-1' },
+    });
+    const res = createRes();
+
+    await workspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.workspace).toMatchObject({
+      workspace_id: 'workspace-unregistered-1',
+      topic_id: 'topic-unregistered-1',
+      topic_path: '9231.experimental.reading',
+    });
+    expect(res.body.runtime_posture).toBeNull();
+  });
+
   test('GET /api/learning/review-tasks returns global truth with optional topic filter', async () => {
     const db = createLearningDb();
     mockGetServiceClient.mockReturnValue(db);

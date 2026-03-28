@@ -7,7 +7,7 @@ import {
   setLearningRequestIdempotencyResourceRef,
 } from '../repositories/request-idempotency-repository.js';
 import { insertSession, getSession } from '../repositories/session-repository.js';
-import { buildSubjectRuntimePosture } from '../subjects/subject-adapter-registry.js';
+import { buildSubjectRuntimePostureOrNull } from '../subjects/subject-adapter-registry.js';
 import { resolveCreateSessionAnchor } from './session-anchor-resolution.js';
 import {
   buildChildSessionLineage,
@@ -705,7 +705,7 @@ function buildLearningSessionResponse(session, {
 
   return {
     session: normalizedSession,
-    runtime_posture: subjectCode ? buildSubjectRuntimePosture(subjectCode) : null,
+    runtime_posture: buildSubjectRuntimePostureOrNull(subjectCode),
     anchor_validity: buildAnchorValidity(
       anchorKind,
       anchorRef,

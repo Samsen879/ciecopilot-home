@@ -166,6 +166,21 @@ function buildFallbackOnlyMasteryProjection() {
   };
 }
 
+const SUBJECT_ADAPTER_RUNTIME_CAPABILITIES = Object.freeze([
+  'classification',
+  'marking',
+  'mastery',
+  'review',
+]);
+
+function buildRuntimePostureSummary(readOnly) {
+  if (!readOnly) {
+    return null;
+  }
+
+  return 'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.';
+}
+
 export const SUBJECT_ADAPTER_DECISION = Object.freeze({
   current_runtime_subject: '9709',
   selected_next_subject: '9702',
@@ -277,4 +292,45 @@ export function getSubjectCapabilityPosture(
   const adapter = getSubjectAdapter(subjectCode, { allowDisabled });
   return adapter.meta.capability_posture?.[capability]
     ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
+}
+
+export function buildSubjectRuntimePosture(subjectCode, { allowDisabled = false } = {}) {
+  const adapter = getSubjectAdapter(subjectCode, { allowDisabled });
+  const supportedCapabilities = [];
+  const fallbackCapabilities = [];
+
+  for (const capability of SUBJECT_ADAPTER_RUNTIME_CAPABILITIES) {
+    const posture = adapter.meta.capability_posture?.[capability]
+      ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
+
+    if (posture === SUBJECT_ADAPTER_CAPABILITY_POSTURES.FALLBACK_ONLY) {
+      fallbackCapabilities.push(capability);
+    } else {
+      supportedCapabilities.push(capability);
+    }
+  }
+
+  const readOnly = fallbackCapabilities.length > 0;
+  const fallbackPosture = readOnly
+    ? buildFallbackPosture(FALLBACK_REASON_CODES.SUBJECT_ADAPTER_CAPABILITY_NOT_ENABLED, null)
+    : {
+      release_scope_status: null,
+      authoritative_scoring_allowed: null,
+      fallback_mode: null,
+      fallback_reason_code: null,
+      classification_confidence: null,
+      learning_signal_posture: null,
+    };
+
+  return {
+    subject_code: adapter.meta.subject_code,
+    display_name: adapter.meta.display_name ?? adapter.meta.subject_code,
+    selection_state: adapter.meta.selection_state ?? null,
+    runtime_enabled: adapter.meta.runtime_enabled,
+    read_only: readOnly,
+    ...fallbackPosture,
+    supported_capabilities: supportedCapabilities,
+    fallback_capabilities: fallbackCapabilities,
+    summary: buildRuntimePostureSummary(readOnly),
+  };
 }

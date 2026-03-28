@@ -385,6 +385,37 @@ function buildPostMortemViewModel(sessionPayload = {}, session, topicPath) {
   };
 }
 
+function buildRuntimePostureViewModel(runtimePosture = null) {
+  if (!runtimePosture || typeof runtimePosture !== 'object') {
+    return null;
+  }
+
+  return {
+    subjectCode: normalizeText(runtimePosture.subjectCode ?? runtimePosture.subject_code, null),
+    readOnly:
+      typeof runtimePosture.readOnly === 'boolean'
+        ? runtimePosture.readOnly
+        : runtimePosture.read_only ?? false,
+    authoritativeScoringAllowed:
+      typeof runtimePosture.authoritativeScoringAllowed === 'boolean'
+        ? runtimePosture.authoritativeScoringAllowed
+        : runtimePosture.authoritative_scoring_allowed ?? null,
+    fallbackMode: normalizeText(runtimePosture.fallbackMode ?? runtimePosture.fallback_mode, null),
+    fallbackReasonCode: normalizeText(
+      runtimePosture.fallbackReasonCode ?? runtimePosture.fallback_reason_code,
+      null,
+    ),
+    learningSignalPosture: normalizeText(
+      runtimePosture.learningSignalPosture ?? runtimePosture.learning_signal_posture,
+      null,
+    ),
+    fallbackCapabilities: normalizeArray(
+      runtimePosture.fallbackCapabilities ?? runtimePosture.fallback_capabilities,
+    ).map((capability) => normalizeText(capability, '')).filter(Boolean),
+    summary: normalizeText(runtimePosture.summary, null),
+  };
+}
+
 export function buildSessionViewModel(payload = {}, options = {}) {
   const sessionPayload = payload.session || {};
   const activeScope = sessionPayload.activeScope || sessionPayload.activeScopeBundle || {};
@@ -431,6 +462,9 @@ export function buildSessionViewModel(payload = {}, options = {}) {
   };
   const hasSession = Boolean(session.sessionId);
   const latestResponse = options.latestResponse || payload.latestResponse || null;
+  const runtimePosture = buildRuntimePostureViewModel(
+    payload.runtimePosture || payload.runtime_posture || null,
+  );
   const launcher = buildLauncherViewModel(options.launcher || {});
   const composer = buildComposerViewModel(options.composer || {}, hasSession);
   const continuity = buildContinuityViewModel({
@@ -450,11 +484,21 @@ export function buildSessionViewModel(payload = {}, options = {}) {
         ? buildAnchorLabel(currentAnchor, topicPath)
         : 'Choose a valid anchor and mode to start a runtime session.',
       topicPath: hasSession ? topicPath : launcher.draft.topicPath,
-      fallbackMode: latestResponse?.fallbackPosture?.fallbackMode ?? null,
+      fallbackMode: latestResponse?.fallbackPosture?.fallbackMode ?? runtimePosture?.fallbackMode ?? null,
       authoritativeScoringAllowed:
-        latestResponse?.fallbackPosture?.authoritativeScoringAllowed ?? null,
-      fallbackReasonCode: latestResponse?.fallbackPosture?.fallbackReasonCode ?? null,
-      learningSignalPosture: latestResponse?.fallbackPosture?.learningSignalPosture ?? null,
+        latestResponse?.fallbackPosture?.authoritativeScoringAllowed
+        ?? runtimePosture?.authoritativeScoringAllowed
+        ?? null,
+      fallbackReasonCode:
+        latestResponse?.fallbackPosture?.fallbackReasonCode
+        ?? runtimePosture?.fallbackReasonCode
+        ?? null,
+      learningSignalPosture:
+        latestResponse?.fallbackPosture?.learningSignalPosture
+        ?? runtimePosture?.learningSignalPosture
+        ?? null,
+      runtimeSummary: runtimePosture?.summary ?? null,
+      fallbackCapabilities: runtimePosture?.fallbackCapabilities ?? [],
       handoffKind:
         continuity?.suggestedHandoff?.handoffKindLabel
         || continuity?.lineage?.handoffKindLabel
@@ -466,6 +510,7 @@ export function buildSessionViewModel(payload = {}, options = {}) {
     postMortem,
     launcher,
     composer,
+    runtimePosture,
     timelineUpdating: composer.status === 'submitting',
     featureFlags: payload.featureFlags || {},
   };

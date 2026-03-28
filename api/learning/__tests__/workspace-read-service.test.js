@@ -16,9 +16,9 @@ const { patchLearningArtifact } = await import('../lib/artifacts/artifact-servic
 const { default: workspaceHandler } = await import('../workspaces/[topicId].js');
 const { default: reviewTasksHandler } = await import('../review-tasks/index.js');
 
-function createLearningDb() {
+function createLearningDb(overrides = {}) {
   const queries = [];
-  const workspaceProjection = {
+  const workspaceProjection = overrides.workspaceProjection ?? {
     workspace_id: 'workspace-1',
     user_id: 'student-1',
     topic_id: 'topic-1',
@@ -58,7 +58,7 @@ function createLearningDb() {
     ],
   };
 
-  const reviewTaskRows = [
+  const reviewTaskRows = overrides.reviewTaskRows ?? [
     {
       review_task_id: 'review-queued-1',
       user_id: 'student-1',
@@ -201,7 +201,7 @@ function createLearningDb() {
     },
   ];
 
-  const sessionRows = [
+  const sessionRows = overrides.sessionRows ?? [
     {
       session_id: 'session-topic-2-later',
       user_id: 'student-1',
@@ -943,6 +943,103 @@ describe('workspace read service', () => {
       linked_references: [{ kind: 'artifact', artifact_id: 'artifact-linked-1' }],
     });
     expect(res.body.review_queue.scope).toBe('global_queue_projection');
+  });
+
+  test('second-subject workspace reads surface an explicit read-only runtime posture', async () => {
+    const db = createLearningDb({
+      workspaceProjection: {
+        workspace_id: 'workspace-physics-1',
+        user_id: 'student-1',
+        topic_id: 'topic-physics-1',
+        topic_path: '9702.mechanics.force_balance',
+        slot_state: {
+          common_traps: 'idle',
+          review_queue: 'idle',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T08:00:00.000Z',
+        slots: [],
+      },
+      reviewTaskRows: [],
+      sessionRows: [
+        {
+          session_id: 'session-physics-1',
+          user_id: 'student-1',
+          subject_code: '9702',
+          session_goal: 'Read force-balance repair notes',
+          mode: 'learn_concept',
+          state: 'active',
+          active_scope_bundle: {
+            primary_topic_id: 'topic-physics-1',
+            primary_topic_path: '9702.mechanics.force_balance',
+            mode: 'learn_concept',
+            current_anchor_kind: 'concept',
+            current_anchor_ref: {
+              kind: 'concept',
+              topic_id: 'topic-physics-1',
+              topic_path: '9702.mechanics.force_balance',
+            },
+            current_question_ref: null,
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9702.mechanics.force_balance',
+            },
+          },
+          current_anchor_kind: 'concept',
+          current_anchor_ref: {
+            kind: 'concept',
+            topic_id: 'topic-physics-1',
+            topic_path: '9702.mechanics.force_balance',
+          },
+          current_question_id: null,
+          current_question_type_id: '9702.mechanics.force_balance',
+          summary_state: {
+            resume_title: 'Resume mechanics read-through',
+            resume_message: 'Continue from the stored concept anchor without unlocking scoring.',
+            resume_summary: 'Keep the force-balance explanation anchored to the saved runtime state.',
+          },
+          open_questions: [],
+          key_artifact_refs: [],
+          misconceptions_in_focus: [],
+          lineage_ref: {
+            parent_session_id: null,
+            handoff_kind: null,
+          },
+          created_at: '2026-03-22T08:20:00.000Z',
+          updated_at: '2026-03-22T08:30:00.000Z',
+          parent_session_id: null,
+          handoff_kind: null,
+          summary_snapshot: {
+            recap: 'Force-balance recap.',
+          },
+        },
+      ],
+    });
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      query: { topicId: 'topic-physics-1' },
+    });
+    const res = createRes();
+
+    await workspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.runtime_posture).toMatchObject({
+      subject_code: '9702',
+      read_only: true,
+      authoritative_scoring_allowed: false,
+      release_scope_status: 'non_released_fallback',
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+      fallback_capabilities: ['marking', 'mastery', 'review'],
+    });
+    expect(res.body.revisit.last_session).toMatchObject({
+      session_id: 'session-physics-1',
+      current_question_type_id: '9702.mechanics.force_balance',
+    });
   });
 
   test('GET /api/learning/review-tasks returns global truth with optional topic filter', async () => {

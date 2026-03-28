@@ -518,6 +518,61 @@ describe('learning session api', () => {
     });
   });
 
+  test('POST/GET second-subject sessions keep an explicit read-only runtime posture', async () => {
+    clientState.reviewTasks.set('review-task-physics-1', buildReviewTask({
+      review_task_id: 'review-task-physics-1',
+      target_topic_id: 'topic-physics-mechanics',
+      target_topic_path: '9702.mechanics.force_balance',
+      target_family_id: '9702.mechanics_dynamics',
+      target_family_title: 'Mechanics dynamics',
+      target_question_type_id: '9702.mechanics.force_balance',
+      target_question_type_title: 'Force balance',
+      source_question_id: 'question-physics-1',
+    }));
+
+    const created = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildSessionPayload({
+        subject_code: '9702',
+        session_goal: 'Review force balance misconceptions',
+        anchor_ref: {
+          kind: 'review_task',
+          review_task_id: 'review-task-physics-1',
+        },
+        current_question_type_id: '9702.mechanics.force_balance',
+      }));
+
+    expect(created.status).toBe(200);
+    expect(created.body.session.subject_code).toBe('9702');
+    expect(created.body.session.active_scope_bundle.primary_topic_path).toBe('9702.mechanics.force_balance');
+    expect(created.body.runtime_posture).toMatchObject({
+      subject_code: '9702',
+      read_only: true,
+      authoritative_scoring_allowed: false,
+      release_scope_status: 'non_released_fallback',
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+      supported_capabilities: ['classification'],
+      fallback_capabilities: ['marking', 'mastery', 'review'],
+    });
+
+    const resumed = await harness.request
+      .get(`/api/learning/sessions/${created.body.session.session_id}`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student');
+
+    expect(resumed.status).toBe(200);
+    expect(resumed.body.session.subject_code).toBe('9702');
+    expect(resumed.body.runtime_posture).toMatchObject({
+      subject_code: '9702',
+      read_only: true,
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+    });
+  });
+
   test('POST /api/learning/sessions persists explicit child-session handoff lineage from a parent session', async () => {
     clientState.sessions.set(PARENT_SESSION_ID, buildStoredSession({
       session_id: PARENT_SESSION_ID,

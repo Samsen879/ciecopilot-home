@@ -6,6 +6,10 @@ import {
   summarizeReviewQueueItems,
 } from '../review/review-scheduler-policy.js';
 import {
+  buildSubjectRuntimePosture,
+  resolveSubjectCodeFromRuntimeInput,
+} from '../subjects/subject-adapter-registry.js';
+import {
   buildSessionResumeGuidance,
   createSessionHandoff,
 } from '../session-runtime/session-handoff.js';
@@ -287,6 +291,16 @@ function buildWorkspaceRevisit({
   };
 }
 
+function buildWorkspaceRuntimePosture(workspaceProjection = null) {
+  const subjectCode = resolveSubjectCodeFromRuntimeInput({
+    question_context: {
+      primary_topic_path: workspaceProjection?.topic_path ?? null,
+    },
+  });
+
+  return subjectCode ? buildSubjectRuntimePosture(subjectCode) : null;
+}
+
 function filterReviewQueueItems(items, {
   topicId = null,
   status = null,
@@ -415,6 +429,7 @@ export async function getWorkspaceView(
         reviewQueueItems: reviewQueueSlotItems,
       }),
     },
+    runtime_posture: buildWorkspaceRuntimePosture(workspaceProjection),
     review_queue: reviewQueue,
     revisit: buildWorkspaceRevisit({
       lastSession,

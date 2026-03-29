@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-03-28T18:24:31.984Z",
+  "stage": "rag_s2_preflight",
+  "defaults_frozen": {
+    "retrieval_version": "b_simplified_retrieval_s1_v1",
+    "s2_mode": "augmentation_only",
+    "s2_v1_strategy": "multi_hop_retrieval_with_prereq_expansion",
+    "s2_fallback_rate_gate_max": 0.2,
+    "required_gates_unchanged": [
+      "S1 Contract Gate",
+      "S1 Metric Gate (Required)"
+    ]
+  },
+  "baseline_snapshots": {
+    "s1_contract_gate": {
+      "path": "runs/backend/rag_s1_contract_gate_summary.json",
+      "exists": true,
+      "all_green": true,
+      "status": "pass",
+      "generated_at": "2026-03-28T18:22:54.292Z"
+    },
+    "s1_metric_gate": {
+      "path": "runs/backend/rag_s1_metric_gate_summary.json",
+      "exists": true,
+      "status": "pass",
+      "gate_mode": "required_fail_closed",
+      "benchmark_profile": "title_lookup_boundary_smoke_v1",
+      "generated_at": "2026-03-28T18:24:04.714Z"
+    },
+    "s1_3_s2_go_no_go_decision": {
+      "path": "runs/backend/rag_s1_3_s2_go_no_go_decision.json",
+      "exists": false,
+      "decision": null,
+      "all_hard_gates_passed": false,
+      "principal_failure_domain": null,
+      "generated_at": null
+    }
+  },
+  "fixed_artifact_paths": {
+    "preflight": "runs/backend/rag_s2_preflight.json",
+    "dataset": "data/eval/rag_s2_augmentation_eval_v1.json",
+    "manifest": "data/eval/rag_s2_augmentation_eval_v1_manifest.json",
+    "route_classifier_model": "runs/backend/rag_s2_route_classifier_model.json",
+    "route_classifier_eval": "runs/backend/rag_s2_route_classifier_eval.json",
+    "readiness_profile": "runs/backend/rag_s2_readiness_profile.json",
+    "eval_summary": "runs/backend/rag_s2_augmentation_eval_summary.json",
+    "eval_report": "docs/reports/rag_s2_augmentation_eval_report.md",
+    "advisory_gate_summary": "runs/backend/rag_s2_advisory_gate_summary.json",
+    "release_decision": "runs/backend/rag_s2_release_decision.json",
+    "release_decision_report": "docs/reports/rag_s2_release_decision_report.md",
+    "workflow_invariant": "runs/backend/rag_s2_workflow_invariant_check.json",
+    "route_share_ramp_experiment": "runs/backend/rag_s2_route_share_ramp_experiment.json",
+    "requirements": "codex-spec-mode/rag-s2-augmentation-routing-and-evaluation/requirements.md",
+    "design": "codex-spec-mode/rag-s2-augmentation-routing-and-evaluation/design.md",
+    "tasks": "codex-spec-mode/rag-s2-augmentation-routing-and-evaluation/tasks.md"
+  },
+  "guardrails": {
+    "openai_api_key_must_not_be_required": true,
+    "frontend_integration_out_of_scope": true,
+    "migration_sql_change_out_of_scope": true
+  },
+  "checklist": {
+    "has_required_gate_baseline": true,
+    "has_s1_3_go_no_go_baseline": false,
+    "s1_contract_gate_green": true,
+    "s1_metric_gate_pass": true,
+    "s1_3_go_candidate": false,
+    "artifact_paths_frozen": true
+  }
+}

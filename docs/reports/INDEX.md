@@ -14,6 +14,7 @@
 - `rag_request_telemetry_audit_report.md` - fixed-path Phase C request telemetry audit report covering route share, fallback clusters, knowledge-hole groups, latency/cost hotspots, rollout exposure, and ranked next actions.
 - `rag_s2_augmentation_eval_report.md` - canonical fresh `S2` augmentation evaluation report from the standard rerun path.
 - `rag_s2_release_eval_report.md` - canonical release-authority `S2` evaluation report used by the advisory gate and release decision.
+- `rag_s2_release_decision_report.md` - current explicit default-route decision showing either `promote` or `stay_advisory_only` plus blocker categories.
 - `rag_s2_augmentation_eval_probe10_report.md` - first fixed-sample `10`-case diagnostic rerun under corrected chat-enabled release conditions.
 - `rag_s2_augmentation_eval_probe10_timeout90_report.md` - clean no-fallback `10`-case diagnostic rerun showing the release scorer still trends slightly negative.
 - `rag_s2_release_eval_smoke_report.md` - first live smoke report from the new release-eval runner and contract path.

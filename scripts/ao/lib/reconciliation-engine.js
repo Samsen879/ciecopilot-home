@@ -4,6 +4,11 @@ import {
   createFinding,
   createProjectSummary,
 } from './reconciliation-contracts.js';
+import {
+  collectGateBlockerCodes,
+  createGate,
+  createGateSnapshot,
+} from './gate-model.js';
 
 function deriveSourceHealth(observation) {
   if (!observation?.source_ok) return 'failed';
@@ -14,6 +19,212 @@ function deriveSourceHealth(observation) {
 
 function uniqueStrings(values) {
   return [...new Set((values ?? []).filter(Boolean).map((value) => String(value)))];
+}
+
+function createNotApplicableGate(name, reasonCode) {
+  return createGate({
+    name,
+    state: 'not_applicable',
+    reason_codes: [reasonCode],
+  });
+}
+
+function deriveOwnershipGate(ownership) {
+  switch (ownership?.status) {
+    case 'clear':
+      return createGate({
+        name: 'ownership',
+        state: 'open',
+      });
+    case 'stale':
+      return createGate({
+        name: 'ownership',
+        state: 'pending',
+        reason_codes: ['ownership_stale'],
+      });
+    case 'orphaned':
+      return createGate({
+        name: 'ownership',
+        state: 'blocked',
+        blocker_codes: ['orphan_open_pr'],
+        reason_codes: ['ownership_orphaned'],
+      });
+    case 'ambiguous':
+      return createGate({
+        name: 'ownership',
+        state: 'ambiguous',
+        reason_codes: [ownership.reason === 'branch_mismatch_with_github' ? 'branch_mismatch_with_github' : 'ownership_ambiguous'],
+      });
+    case 'unknown':
+    default:
+      return createGate({
+        name: 'ownership',
+        state: 'ambiguous',
+        reason_codes: ['ownership_unknown'],
+      });
+  }
+}
+
+function deriveReviewGate(pr) {
+  if (pr.review_status === 'changes_requested') {
+    return createGate({
+      name: 'review',
+      state: 'blocked',
+      blocker_codes: ['review_blocked'],
+    });
+  }
+
+  if (pr.review_status === 'approved') {
+    return createGate({
+      name: 'review',
+      state: 'open',
+    });
+  }
+
+  if (pr.review_status === 'pending') {
+    return createGate({
+      name: 'review',
+      state: 'pending',
+      reason_codes: ['review_pending'],
+    });
+  }
+
+  return createGate({
+    name: 'review',
+    state: 'ambiguous',
+    reason_codes: ['review_unknown'],
+  });
+}
+
+function deriveCiGate(pr) {
+  if (pr.ci_status === 'failing') {
+    return createGate({
+      name: 'ci',
+      state: 'blocked',
+      blocker_codes: ['ci_blocked'],
+    });
+  }
+
+  if (pr.ci_status === 'passing') {
+    return createGate({
+      name: 'ci',
+      state: 'open',
+    });
+  }
+
+  if (pr.ci_status === 'pending') {
+    return createGate({
+      name: 'ci',
+      state: 'pending',
+      reason_codes: ['ci_pending'],
+    });
+  }
+
+  return createGate({
+    name: 'ci',
+    state: 'ambiguous',
+    reason_codes: ['ci_unknown'],
+  });
+}
+
+function deriveMergeabilityGate(pr) {
+  if (pr.mergeability === 'conflicting') {
+    return createGate({
+      name: 'mergeability',
+      state: 'blocked',
+      blocker_codes: ['merge_conflict_blocked'],
+    });
+  }
+
+  if (pr.mergeability === 'mergeable') {
+    return createGate({
+      name: 'mergeability',
+      state: 'open',
+    });
+  }
+
+  return createGate({
+    name: 'mergeability',
+    state: 'ambiguous',
+    reason_codes: ['mergeability_unknown'],
+  });
+}
+
+function buildReleaseReadinessGates(pr, ownership) {
+  if (!pr || pr.state !== 'OPEN') {
+    return createGateSnapshot({
+      ownership: createNotApplicableGate('ownership', 'pr_not_open'),
+      review: createNotApplicableGate('review', 'pr_not_open'),
+      ci: createNotApplicableGate('ci', 'pr_not_open'),
+      mergeability: createNotApplicableGate('mergeability', 'pr_not_open'),
+      release: createNotApplicableGate('release', 'pr_not_open'),
+    });
+  }
+
+  if (pr.is_draft === true) {
+    return createGateSnapshot({
+      ownership: createNotApplicableGate('ownership', 'draft_pr'),
+      review: createNotApplicableGate('review', 'draft_pr'),
+      ci: createNotApplicableGate('ci', 'draft_pr'),
+      mergeability: createNotApplicableGate('mergeability', 'draft_pr'),
+      release: createNotApplicableGate('release', 'draft_pr'),
+    });
+  }
+
+  const ownershipGate = deriveOwnershipGate(ownership);
+  const reviewGate = deriveReviewGate(pr);
+  const ciGate = deriveCiGate(pr);
+  const mergeabilityGate = deriveMergeabilityGate(pr);
+  const prereleaseGates = createGateSnapshot({
+    ownership: ownershipGate,
+    review: reviewGate,
+    ci: ciGate,
+    mergeability: mergeabilityGate,
+  });
+  const blockerCodes = collectGateBlockerCodes(prereleaseGates);
+  const pendingReasonCodes = uniqueStrings(
+    Object.values(prereleaseGates)
+      .filter((gate) => gate.state === 'pending')
+      .flatMap((gate) => gate.reason_codes ?? []),
+  );
+  const ambiguousReasonCodes = uniqueStrings(
+    Object.values(prereleaseGates)
+      .filter((gate) => gate.state === 'ambiguous')
+      .flatMap((gate) => gate.reason_codes ?? []),
+  );
+
+  let releaseGate;
+  if (blockerCodes.length) {
+    releaseGate = createGate({
+      name: 'release',
+      state: 'blocked',
+      blocker_codes: blockerCodes,
+      reason_codes: ownershipGate.state === 'blocked' ? ['ownership_orphaned'] : [],
+    });
+  } else if (pendingReasonCodes.length) {
+    releaseGate = createGate({
+      name: 'release',
+      state: 'pending',
+      reason_codes: pendingReasonCodes,
+    });
+  } else if (ambiguousReasonCodes.length) {
+    releaseGate = createGate({
+      name: 'release',
+      state: 'ambiguous',
+      reason_codes: ambiguousReasonCodes,
+    });
+  } else {
+    releaseGate = createGate({
+      name: 'release',
+      state: 'open',
+      reason_codes: ['all_release_signals_clear'],
+    });
+  }
+
+  return createGateSnapshot({
+    ...prereleaseGates,
+    release: releaseGate,
+  });
 }
 
 function resolveOwnership(pr, workers) {
@@ -105,16 +316,19 @@ function resolveOwnership(pr, workers) {
 }
 
 function deriveReleaseReadiness(pr, ownership) {
-  const blockers = [];
   const warnings = [];
-  const basis = [];
+  const gates = buildReleaseReadinessGates(pr, ownership);
+  const blockerCodes = collectGateBlockerCodes(gates);
+  const releaseGate = gates.release;
 
   if (!pr || pr.state !== 'OPEN') {
     return {
       status: 'not_applicable',
-      blockers,
+      blockers: blockerCodes,
+      blocker_codes: blockerCodes,
       warnings,
       basis: ['pr_not_open'],
+      gates,
     };
   }
 
@@ -122,84 +336,56 @@ function deriveReleaseReadiness(pr, ownership) {
     warnings.push('draft_pr_not_releasable');
     return {
       status: 'not_applicable',
-      blockers,
+      blockers: blockerCodes,
+      blocker_codes: blockerCodes,
       warnings,
       basis: ['draft_pr'],
+      gates,
     };
   }
 
-  if (ownership.status === 'orphaned') {
-    blockers.push('orphan_open_pr');
+  if (ownership.status === 'stale') warnings.push('stale_worker_session');
+
+  if (releaseGate?.state === 'blocked') {
     return {
       status: 'blocked',
-      blockers,
+      blockers: blockerCodes,
+      blocker_codes: blockerCodes,
       warnings,
-      basis: ['ownership_orphaned'],
+      basis: blockerCodes.includes('orphan_open_pr') ? ['ownership_orphaned'] : [...blockerCodes],
+      gates,
     };
   }
 
-  if (pr.review_status === 'changes_requested') blockers.push('review_blocked');
-  if (pr.ci_status === 'failing') blockers.push('ci_blocked');
-  if (pr.mergeability === 'conflicting') blockers.push('merge_conflict_blocked');
-
-  if (blockers.length) {
-    return {
-      status: 'blocked',
-      blockers,
-      warnings,
-      basis: [...blockers],
-    };
-  }
-
-  const ambiguityBasis = [];
-
-  if (
-    ownership.status === 'ambiguous' ||
-    ownership.status === 'unknown' ||
-    ownership.status === 'stale' ||
-    pr.review_status === 'pending' ||
-    pr.review_status === 'unknown' ||
-    pr.ci_status === 'pending' ||
-    pr.ci_status === 'unknown' ||
-    pr.mergeability === 'unknown'
-  ) {
-    if (ownership.reason === 'branch_mismatch_with_github') ambiguityBasis.push('branch_mismatch_with_github');
-    if (ownership.status === 'ambiguous' && ownership.reason !== 'branch_mismatch_with_github') ambiguityBasis.push('ownership_ambiguous');
-    if (ownership.status === 'unknown') ambiguityBasis.push('ownership_unknown');
-    if (ownership.status === 'stale') ambiguityBasis.push('ownership_stale');
-    if (pr.review_status === 'pending') ambiguityBasis.push('review_pending');
-    if (pr.review_status === 'unknown') ambiguityBasis.push('review_unknown');
-    if (pr.ci_status === 'pending') ambiguityBasis.push('ci_pending');
-    if (pr.ci_status === 'unknown') ambiguityBasis.push('ci_unknown');
-    if (pr.mergeability === 'unknown') ambiguityBasis.push('mergeability_unknown');
-    if (ownership.status === 'stale') warnings.push('stale_worker_session');
+  if (releaseGate?.state === 'pending' || releaseGate?.state === 'ambiguous') {
     return {
       status: 'ambiguous',
-      blockers,
+      blockers: blockerCodes,
+      blocker_codes: blockerCodes,
       warnings,
-      basis: ambiguityBasis.length ? ambiguityBasis : ['fallback_ambiguous'],
+      basis: releaseGate.reason_codes?.length ? [...releaseGate.reason_codes] : ['fallback_ambiguous'],
+      gates,
     };
   }
 
-  if (
-    ownership.status === 'clear' &&
-    pr.review_status === 'approved' &&
-    pr.ci_status === 'passing' &&
-    pr.mergeability === 'mergeable'
-  ) {
+  if (releaseGate?.state === 'open') {
     return {
       status: 'ready',
-      blockers,
+      blockers: blockerCodes,
+      blocker_codes: blockerCodes,
       warnings,
       basis: ['all_release_signals_clear'],
+      gates,
     };
   }
 
   return {
     status: 'ambiguous',
-    blockers,
+    blockers: blockerCodes,
+    blocker_codes: blockerCodes,
     warnings,
     basis: ['fallback_ambiguous'],
+    gates,
   };
 }
 

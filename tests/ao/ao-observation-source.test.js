@@ -1,4 +1,6 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { afterAll, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockSpawnSync = jest.fn();
 
@@ -7,10 +9,93 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 const { loadAoProjectObservation } = await import('../../scripts/ao/lib/ao-observation-source.js');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const OBSERVATION_FIXTURE_ROOT = path.join(__dirname, 'fixtures', 'observation-source');
+const ORIGINAL_AO_FIXTURE_ROOT = process.env.AO_FIXTURE_ROOT;
+
+function useObservationFixture(name) {
+  process.env.AO_FIXTURE_ROOT = path.join(OBSERVATION_FIXTURE_ROOT, name);
+}
 
 describe('ao observation source', () => {
   beforeEach(() => {
     mockSpawnSync.mockReset();
+    delete process.env.AO_FIXTURE_ROOT;
+  });
+
+  afterAll(() => {
+    if (ORIGINAL_AO_FIXTURE_ROOT == null) {
+      delete process.env.AO_FIXTURE_ROOT;
+      return;
+    }
+
+    process.env.AO_FIXTURE_ROOT = ORIGINAL_AO_FIXTURE_ROOT;
+  });
+
+  it('normalizes top-level array fixtures from captured AO payloads', async () => {
+    useObservationFixture('top-level-array');
+
+    const observation = await loadAoProjectObservation({
+      projectId: 'ciecopilot-home',
+      now: '2026-03-29T10:00:00.000Z',
+    });
+
+    expect(mockSpawnSync).not.toHaveBeenCalled();
+    expect(observation.orchestrator).toMatchObject({
+      session_name: 'cie-orchestrator',
+      lifecycle_state: 'observing',
+    });
+    expect(observation.workers).toEqual([
+      expect.objectContaining({
+        session_name: 'cie-44',
+        pr_number: 87,
+        issue_number: 87,
+        branch_name: 'feat/87',
+      }),
+    ]);
+  });
+
+  it('normalizes object payload fixtures with sessions arrays', async () => {
+    useObservationFixture('object-with-sessions');
+
+    const observation = await loadAoProjectObservation({
+      projectId: 'fallback-project',
+      now: '2026-03-29T10:00:00.000Z',
+    });
+
+    expect(mockSpawnSync).not.toHaveBeenCalled();
+    expect(observation.project_id).toBe('ciecopilot-home');
+    expect(observation.raw_summary).toMatchObject({
+      session_count: 2,
+      orchestrator_count: 1,
+      worker_count: 1,
+    });
+    expect(observation.workers[0]).toMatchObject({
+      session_name: 'cie-87',
+      pr_number: 87,
+      freshness: {
+        status: 'fresh',
+        stale_after_ms: 900000,
+      },
+    });
+  });
+
+  it('surfaces malformed AO payload shapes as explicit source failures', async () => {
+    useObservationFixture('malformed-payload');
+
+    const observation = await loadAoProjectObservation({
+      projectId: 'ciecopilot-home',
+      now: '2026-03-29T10:00:00.000Z',
+    });
+
+    expect(mockSpawnSync).not.toHaveBeenCalled();
+    expect(observation).toMatchObject({
+      project_id: 'ciecopilot-home',
+      source_ok: false,
+      orchestrator: null,
+      workers: [],
+    });
+    expect(observation.source_error).toMatch(/invalid ao fixture payload/i);
   });
 
   it('normalizes orchestrator and worker sessions from ao status json', async () => {

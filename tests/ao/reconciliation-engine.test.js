@@ -3,6 +3,7 @@ import {
   createPrScope,
   createProjectScope,
 } from '../../scripts/ao/lib/reconciliation-contracts.js';
+import { createGateSnapshot } from '../../scripts/ao/lib/gate-model.js';
 import { reconcileObservations } from '../../scripts/ao/lib/reconciliation-engine.js';
 
 function buildAoWorker(overrides = {}) {
@@ -111,7 +112,31 @@ describe('reconciliation engine', () => {
     });
 
     expect(report.pr_assessments[0].ownership.status).toBe('orphaned');
-    expect(report.pr_assessments[0].release_readiness.status).toBe('blocked');
+    expect(report.pr_assessments[0].release_readiness).toMatchObject({
+      status: 'blocked',
+      blocker_codes: ['orphan_open_pr'],
+      gates: createGateSnapshot({
+        ownership: {
+          state: 'blocked',
+          blocker_codes: ['orphan_open_pr'],
+          reason_codes: ['ownership_orphaned'],
+        },
+        review: {
+          state: 'open',
+        },
+        ci: {
+          state: 'open',
+        },
+        mergeability: {
+          state: 'open',
+        },
+        release: {
+          state: 'blocked',
+          blocker_codes: ['orphan_open_pr'],
+          reason_codes: ['ownership_orphaned'],
+        },
+      }),
+    });
     expect(report.top_status).toBe('blocked');
   });
 
@@ -138,8 +163,65 @@ describe('reconciliation engine', () => {
       ]),
     });
 
-    expect(report.pr_assessments[0].release_readiness.status).toBe('ambiguous');
+    expect(report.pr_assessments[0].release_readiness).toMatchObject({
+      status: 'ambiguous',
+      blocker_codes: [],
+      gates: createGateSnapshot({
+        ownership: {
+          state: 'open',
+        },
+        review: {
+          state: 'open',
+        },
+        ci: {
+          state: 'open',
+        },
+        mergeability: {
+          state: 'ambiguous',
+          reason_codes: ['mergeability_unknown'],
+        },
+        release: {
+          state: 'ambiguous',
+          reason_codes: ['mergeability_unknown'],
+        },
+      }),
+    });
     expect(report.automation_disposition).toBe('human_gate');
+  });
+
+  it('emits typed gate snapshots and blocker codes for CI-blocked PRs', () => {
+    const scope = createPrScope(44);
+    const report = reconcileObservations({
+      scope,
+      aoObservation: buildAoObservation({ workers: [buildAoWorker()] }),
+      githubObservation: buildGitHubObservation(scope, [
+        buildGitHubPr({ ci_status: 'failing' }),
+      ]),
+    });
+
+    expect(report.pr_assessments[0].release_readiness).toMatchObject({
+      status: 'blocked',
+      blocker_codes: ['ci_blocked'],
+      gates: createGateSnapshot({
+        ownership: {
+          state: 'open',
+        },
+        review: {
+          state: 'open',
+        },
+        ci: {
+          state: 'blocked',
+          blocker_codes: ['ci_blocked'],
+        },
+        mergeability: {
+          state: 'open',
+        },
+        release: {
+          state: 'blocked',
+          blocker_codes: ['ci_blocked'],
+        },
+      }),
+    });
   });
 
   it('treats multiple worker matches at the winning linkage tier as ambiguous ownership', () => {

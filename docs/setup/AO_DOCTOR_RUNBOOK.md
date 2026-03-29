@@ -65,7 +65,19 @@ cd /home/samsen/code/ciecopilot-home
 node scripts/ao-doctor.js --pr <number> --json --strict
 ```
 
+Or use the explicit PR wrapper:
+
+```bash
+cd /home/samsen/code/ciecopilot-home
+npm run ao:doctor:strict:pr -- <number>
+```
+
 Strict mode is still diagnose-only. It does not create release authority.
+
+Wrapper note:
+
+- `ao:doctor:strict` remains valid in project mode
+- `ao:doctor:strict:pr` exists only to make PR-scoped strict usage explicit
 
 ## Reconciliation vs Doctor
 

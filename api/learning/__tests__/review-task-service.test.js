@@ -634,6 +634,48 @@ describe('review task service write semantics', () => {
     });
   });
 
+  test('patch response keeps scheduler derivation absent when no projection row is available', async () => {
+    let storedTask = buildStoredReviewTask();
+    const reviewTaskRepository = {
+      async getReviewTaskById() {
+        return storedTask;
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        storedTask = {
+          ...storedTask,
+          review_task_id: reviewTaskId,
+          ...patch,
+        };
+        return storedTask;
+      },
+      async getReviewTaskProjectionById() {
+        return null;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent: 'complete',
+      completionOutcome: 'completed',
+      completionEvidence: {
+        summary: 'Solved a fresh interval variant cleanly.',
+        attempt_ref: { kind: 'attempt', attempt_id: 'attempt-2' },
+      },
+    });
+
+    expect(result.review_task.scheduler_state).toBeUndefined();
+    expect(result.review_task.scheduler_reasons).toBeUndefined();
+    expect(result.review_task.explanation).toMatchObject({
+      posture: 'conservative_fallback',
+      summary: expect.any(String),
+    });
+  });
+
   test('complete intent rejects evidence-free completion payloads', async () => {
     const service = createReviewTaskService({
       reviewTaskRepository: {

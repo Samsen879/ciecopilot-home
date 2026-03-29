@@ -2,6 +2,7 @@ import { createReviewTaskRepository } from '../repositories/review-task-reposito
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
+  buildReviewTaskExplainability,
   buildReviewTaskExplainabilitySeed,
   mergeReviewTaskPayload,
   normalizeSchedulerProjectionItem,
@@ -357,6 +358,13 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
   };
 }
 
+function attachReviewTaskExplainability(task = {}) {
+  return {
+    ...task,
+    explanation: buildReviewTaskExplainability(task),
+  };
+}
+
 export function createReviewTaskService({
   reviewTaskRepository = null,
   now = () => new Date(),
@@ -465,7 +473,9 @@ export function createReviewTaskService({
       );
 
       return {
-        review_task: normalizeSchedulerProjectionItem(projection || updated),
+        review_task: projection
+          ? normalizeSchedulerProjectionItem(projection)
+          : attachReviewTaskExplainability(updated),
       };
     },
   };

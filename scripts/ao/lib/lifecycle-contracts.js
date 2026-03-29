@@ -1,6 +1,12 @@
 export const LIFECYCLE_SCHEMA_VERSION = 'ao.lifecycle.v1alpha1';
 export const LIFECYCLE_REPORT_FORMAT = 'ao_lifecycle_report';
 
+export {
+  GATE_BLOCKER_CODES,
+  GATE_NAMES,
+  GATE_STATES,
+} from './gate-model.js';
+
 export const LIFECYCLE_TRIGGERS = [
   'manual',
   'ci_failed',

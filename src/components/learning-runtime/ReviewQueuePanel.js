@@ -39,6 +39,15 @@ function renderSummaryChip(key, label, value) {
   ]);
 }
 
+function formatFreshnessLabel(explanation) {
+  const bucket = explanation?.freshness?.bucket;
+  if (!bucket) {
+    return null;
+  }
+
+  return `${bucket.slice(0, 1).toUpperCase()}${bucket.slice(1)} evidence`;
+}
+
 function renderReviewItem(item, {
   drafts = {},
   mutationStateByTaskId = {},
@@ -98,6 +107,62 @@ function renderReviewItem(item, {
         key: 'result-summary',
         className: 'mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800',
       }, item.resultFeedback.summary)
+      : null,
+    item.explanation?.summary
+      ? h('div', {
+        key: 'explanation-summary',
+        className: 'mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700',
+      }, [
+        h('p', {
+          key: 'title',
+          className: 'font-semibold text-slate-900',
+        }, 'Why this task exists'),
+        h('p', {
+          key: 'summary',
+          className: 'mt-1 leading-6',
+        }, item.explanation.summary),
+        h('dl', {
+          key: 'meta',
+          className: 'mt-3 grid gap-2 sm:grid-cols-3',
+        }, [
+          item.explanation?.attemptHistory?.attemptCount
+            ? h('div', { key: 'attempts' }, [
+              h('dt', {
+                key: 'label',
+                className: 'text-xs font-semibold uppercase tracking-[0.16em] text-slate-500',
+              }, 'Attempt history'),
+              h('dd', {
+                key: 'value',
+                className: 'mt-1 text-sm font-medium text-slate-900',
+              }, `${item.explanation.attemptHistory.attemptCount} attempts`),
+            ])
+            : null,
+          formatFreshnessLabel(item.explanation)
+            ? h('div', { key: 'freshness' }, [
+              h('dt', {
+                key: 'label',
+                className: 'text-xs font-semibold uppercase tracking-[0.16em] text-slate-500',
+              }, 'Freshness'),
+              h('dd', {
+                key: 'value',
+                className: 'mt-1 text-sm font-medium text-slate-900',
+              }, formatFreshnessLabel(item.explanation)),
+            ])
+            : null,
+          item.explanation?.posture
+            ? h('div', { key: 'posture' }, [
+              h('dt', {
+                key: 'label',
+                className: 'text-xs font-semibold uppercase tracking-[0.16em] text-slate-500',
+              }, 'Posture'),
+              h('dd', {
+                key: 'value',
+                className: 'mt-1 text-sm font-medium text-slate-900',
+              }, item.explanation.posture.replace(/_/g, ' ')),
+            ])
+            : null,
+        ].filter(Boolean)),
+      ])
       : null,
     h(ReviewTaskActionBar, {
       key: 'actions',

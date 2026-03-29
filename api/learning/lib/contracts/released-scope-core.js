@@ -62,6 +62,124 @@ function hasValidatedUncertaintyPosture(value) {
   return value.status === 'validated';
 }
 
+function buildExplanationFactor(code, status, summary, value = null) {
+  return {
+    code,
+    status,
+    summary,
+    ...(value !== null && value !== undefined ? { value } : {}),
+  };
+}
+
+function summarizeFallbackReason(fallbackReasonCode) {
+  switch (fallbackReasonCode) {
+    case FALLBACK_REASON_CODES.MISSING_QUESTION_TYPE:
+      return 'the question type is still missing';
+    case FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE:
+      return 'the question type is outside the released authoritative slice';
+    case FALLBACK_REASON_CODES.MISSING_RELEASED_FAMILY_EVIDENCE:
+      return 'released family evidence is still missing';
+    case FALLBACK_REASON_CODES.MISSING_RELEASED_RUBRIC:
+      return 'a released rubric is still missing';
+    case FALLBACK_REASON_CODES.MISSING_CLASSIFICATION_CONFIDENCE:
+      return 'classification confidence is still missing';
+    case FALLBACK_REASON_CODES.UNVALIDATED_UNCERTAINTY_POSTURE:
+      return 'validated uncertainty posture is still missing';
+    case FALLBACK_REASON_CODES.SUBJECT_ADAPTER_CAPABILITY_NOT_ENABLED:
+      return 'the current subject remains in a conservative read-only posture';
+    default:
+      return 'the released-scoring gate is still unresolved';
+  }
+}
+
+function buildReleasedScopeExplanation({
+  posture = {},
+  questionTypeId = null,
+  questionTypeReleaseState = null,
+  candidateRubricRefs = [],
+  classificationConfidence = null,
+  uncertaintyValidated = false,
+  uncertaintyPosture = null,
+  releasedFamilyEvidenceOk = null,
+} = {}) {
+  const normalizedQuestionTypeId = normalizeQuestionTypeId(questionTypeId);
+  const normalizedReleaseState = normalizeQuestionTypeReleaseState(questionTypeReleaseState);
+  const normalizedClassification = normalizeClassificationConfidence(
+    classificationConfidence ?? posture.classification_confidence,
+  );
+  const releasedQuestionTypeMet = Boolean(normalizedQuestionTypeId) && normalizedReleaseState === 'released';
+  const releasedRubricMet = hasReleasedRubricRef(candidateRubricRefs);
+  const uncertaintyValidationMet = hasValidatedUncertaintyPosture(
+    uncertaintyPosture ?? uncertaintyValidated,
+  );
+  const factors = [
+    buildExplanationFactor(
+      'released_question_type',
+      releasedQuestionTypeMet ? 'met' : 'missing',
+      releasedQuestionTypeMet
+        ? `Released question type ${normalizedQuestionTypeId} is available.`
+        : 'A released question type is required before authoritative scoring can apply.',
+      normalizedQuestionTypeId || null,
+    ),
+    releasedFamilyEvidenceOk === null
+      ? null
+      : buildExplanationFactor(
+        'released_family_evidence',
+        releasedFamilyEvidenceOk ? 'met' : 'missing',
+        releasedFamilyEvidenceOk
+          ? 'Released family evidence is available for this question type.'
+          : 'Released family evidence is still missing for this question type.',
+      ),
+    buildExplanationFactor(
+      'released_rubric',
+      releasedRubricMet ? 'met' : 'missing',
+      releasedRubricMet
+        ? 'A released rubric is available for this question type.'
+        : 'A released rubric is required before authoritative scoring can apply.',
+    ),
+    buildExplanationFactor(
+      'classification_confidence',
+      normalizedClassification !== null ? 'met' : 'missing',
+      normalizedClassification !== null
+        ? `Classification confidence ${normalizedClassification} is available.`
+        : 'Classification confidence is still required before authoritative scoring can apply.',
+      normalizedClassification,
+    ),
+    buildExplanationFactor(
+      'uncertainty_validation',
+      uncertaintyValidationMet ? 'met' : 'missing',
+      uncertaintyValidationMet
+        ? 'Validated uncertainty posture is available.'
+        : 'Validated uncertainty posture is still required before authoritative scoring can apply.',
+    ),
+  ].filter(Boolean);
+
+  if (posture.authoritative_scoring_allowed) {
+    return {
+      posture: 'released_authoritative',
+      summary:
+        'Released authoritative scoring is active because the released question-type, family, rubric, confidence, and uncertainty gates are satisfied.',
+      factors,
+    };
+  }
+
+  return {
+    posture: 'conservative_fallback',
+    summary: `Fallback remains active because ${summarizeFallbackReason(posture.fallback_reason_code)}.`,
+    factors,
+  };
+}
+
+export function withReleasedScopeExplanation(posture, context = {}) {
+  return {
+    ...posture,
+    explanation: buildReleasedScopeExplanation({
+      posture,
+      ...context,
+    }),
+  };
+}
+
 export function buildFallbackPosture(fallbackReasonCode, classificationConfidence) {
   return {
     release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
@@ -70,6 +188,11 @@ export function buildFallbackPosture(fallbackReasonCode, classificationConfidenc
     fallback_reason_code: fallbackReasonCode,
     classification_confidence: classificationConfidence,
     learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+    explanation: {
+      posture: 'conservative_fallback',
+      summary: `Fallback remains active because ${summarizeFallbackReason(fallbackReasonCode)}.`,
+      factors: [],
+    },
   };
 }
 
@@ -111,46 +234,103 @@ export function resolveInlineReleasedScoringPosture({
     : isSeededPilotQuestionType(normalizedQuestionType, questionTypeReleaseState);
 
   if (!normalizedQuestionType) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.MISSING_QUESTION_TYPE,
-      normalizedClassification,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.MISSING_QUESTION_TYPE,
+        normalizedClassification,
+      ),
+      {
+        questionTypeId: normalizedQuestionType,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassification,
+      },
     );
   }
 
   if (!pilotQuestionTypeMatch) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
-      normalizedClassification,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
+        normalizedClassification,
+      ),
+      {
+        questionTypeId: normalizedQuestionType,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassification,
+      },
     );
   }
 
   if (!hasReleasedRubricRef(candidateRubricRefs)) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.MISSING_RELEASED_RUBRIC,
-      normalizedClassification,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.MISSING_RELEASED_RUBRIC,
+        normalizedClassification,
+      ),
+      {
+        questionTypeId: normalizedQuestionType,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassification,
+      },
     );
   }
 
   if (normalizedClassification === null) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.MISSING_CLASSIFICATION_CONFIDENCE,
-      normalizedClassification,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.MISSING_CLASSIFICATION_CONFIDENCE,
+        normalizedClassification,
+      ),
+      {
+        questionTypeId: normalizedQuestionType,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassification,
+      },
     );
   }
 
   if (!validatedUncertainty) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.UNVALIDATED_UNCERTAINTY_POSTURE,
-      normalizedClassification,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.UNVALIDATED_UNCERTAINTY_POSTURE,
+        normalizedClassification,
+      ),
+      {
+        questionTypeId: normalizedQuestionType,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassification,
+      },
     );
   }
 
-  return {
+  return withReleasedScopeExplanation({
     release_scope_status: RELEASE_SCOPE_STATUSES.RELEASED_SCORING,
     authoritative_scoring_allowed: true,
     fallback_mode: null,
     fallback_reason_code: null,
     classification_confidence: normalizedClassification,
     learning_signal_posture: LEARNING_SIGNAL_POSTURES.AUTHORITATIVE_SCORING,
-  };
+  }, {
+    questionTypeId: normalizedQuestionType,
+    questionTypeReleaseState,
+    candidateRubricRefs,
+    uncertaintyValidated,
+    uncertaintyPosture,
+    classificationConfidence: normalizedClassification,
+  });
 }

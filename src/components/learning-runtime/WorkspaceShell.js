@@ -467,6 +467,7 @@ function renderRuntimePosture(runtimePosture = null) {
     && runtimePosture.fallbackCapabilities.length > 0
     ? `Conservative capabilities: ${runtimePosture.fallbackCapabilities.join(', ')}.`
     : null;
+  const explanation = runtimePosture?.explanation || null;
 
   return h('section', {
     key: 'runtime-posture',
@@ -492,11 +493,25 @@ function renderRuntimePosture(runtimePosture = null) {
         ? ` Learning signal posture: ${runtimePosture.learningSignalPosture}.`
         : '',
     ].join('')),
+    explanation?.summary
+      ? h('p', {
+        key: 'explanation-summary',
+        className: 'mt-2 text-sm leading-6 text-amber-900',
+      }, explanation.summary)
+      : null,
     capabilityCopy
       ? h('p', {
         key: 'capabilities',
         className: 'mt-2 text-sm leading-6 text-amber-900',
       }, capabilityCopy)
+      : null,
+    Array.isArray(explanation?.factors) && explanation.factors.length > 0
+      ? h('ul', {
+        key: 'factors',
+        className: 'mt-3 list-disc space-y-1 pl-5 text-sm leading-6 text-amber-900',
+      }, explanation.factors.map((factor) => h('li', {
+        key: `${factor.code}:${factor.status}`,
+      }, factor.summary || `${factor.code}: ${factor.status}`)))
       : null,
   ]);
 }

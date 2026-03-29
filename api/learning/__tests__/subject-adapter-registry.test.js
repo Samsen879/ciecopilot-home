@@ -114,6 +114,32 @@ describe('subject adapter registry', () => {
       learning_signal_posture: 'conservative_fallback',
       supported_capabilities: ['classification'],
       fallback_capabilities: ['marking', 'mastery', 'review'],
+      explanation: {
+        posture: 'read_only_fallback',
+        summary: expect.stringContaining('read-only'),
+        factors: expect.arrayContaining([
+          expect.objectContaining({
+            code: 'selection_state',
+            status: 'selected_next',
+          }),
+          expect.objectContaining({
+            code: 'classification',
+            status: 'supported',
+          }),
+          expect.objectContaining({
+            code: 'marking',
+            status: 'fallback_only',
+          }),
+          expect.objectContaining({
+            code: 'mastery',
+            status: 'fallback_only',
+          }),
+          expect.objectContaining({
+            code: 'review',
+            status: 'fallback_only',
+          }),
+        ]),
+      },
     });
   });
 

@@ -22,6 +22,12 @@ function renderPill(label, value) {
 
 export default function SessionHeader({ header, session }) {
   const hasSession = Boolean(session?.sessionId);
+  const postureExplanation = header?.postureExplanation || null;
+  const postureBannerVisible = Boolean(
+    header?.fallbackMode
+    || postureExplanation?.summary
+    || header?.authoritativeScoringAllowed === true,
+  );
   const pills = [
     renderPill('Anchor', header?.anchorKind),
     renderPill('Topic', header?.topicPath),
@@ -48,17 +54,30 @@ export default function SessionHeader({ header, session }) {
           : 'Launch the first interactive runtime session from a valid anchor payload, then keep the ask loop inside the same session.'),
       ]),
       h('div', { key: 'pills', className: 'flex flex-wrap gap-3' }, pills),
-      header?.fallbackMode
+      postureBannerVisible
         ? h('div', {
           key: 'fallback-banner',
           className: 'rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900',
         }, [
-          h('p', { key: 'title', className: 'font-semibold' }, 'Runtime fallback is active'),
+          h('p', {
+            key: 'title',
+            className: 'font-semibold',
+          }, header?.fallbackMode ? 'Runtime fallback is active' : 'Runtime posture is explicit'),
           h('p', { key: 'body', className: 'mt-1 leading-6' }, [
-            `Fallback mode: ${header.fallbackMode}.`,
+            header?.fallbackMode
+              ? `Fallback mode: ${header.fallbackMode}.`
+              : header?.authoritativeScoringAllowed === true
+                ? 'Authoritative scoring is enabled for this posture.'
+                : '',
             header?.fallbackReasonCode ? ` Reason: ${header.fallbackReasonCode}.` : '',
             header?.learningSignalPosture ? ` Learning signal posture: ${header.learningSignalPosture}.` : '',
           ].join('')),
+          postureExplanation?.summary
+            ? h('p', {
+              key: 'explanation-summary',
+              className: 'mt-1 leading-6',
+            }, postureExplanation.summary)
+            : null,
           header?.runtimeSummary
             ? h('p', {
               key: 'summary',
@@ -70,6 +89,15 @@ export default function SessionHeader({ header, session }) {
               key: 'capabilities',
               className: 'mt-1 leading-6',
             }, `Conservative capabilities: ${header.fallbackCapabilities.join(', ')}.`)
+            : null,
+          postureExplanation?.factors?.length
+            ? h('ul', {
+              key: 'explanation-factors',
+              className: 'mt-2 list-disc space-y-1 pl-5',
+            }, postureExplanation.factors.map((factor) => h('li', {
+              key: `${factor.code}:${factor.status}`,
+              className: 'leading-6',
+            }, factor.summary || `${factor.code}: ${factor.status}`)))
             : null,
         ])
         : null,

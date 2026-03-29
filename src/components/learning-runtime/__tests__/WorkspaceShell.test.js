@@ -172,6 +172,17 @@ function createWorkspacePayload() {
               summary: 'Fresh repair evidence should be retried before it is spaced.',
             },
           ],
+          explanation: {
+            summary: 'Queued from interval-repair evidence while authoritative mastery stays conservative.',
+            posture: 'conservative_fallback',
+            freshness: {
+              bucket: 'fresh',
+              route: 'immediate_repair',
+            },
+            attemptHistory: {
+              attemptCount: 2,
+            },
+          },
         },
         {
           reviewTaskId: 'review-task-2',
@@ -362,6 +373,10 @@ describe('WorkspaceShell', () => {
     expect(html).toContain('Escalated');
     expect(html).toContain('Completed');
     expect(html).toContain('Fresh repair evidence should be retried before it is spaced.');
+    expect(html).toContain('Queued from interval-repair evidence while authoritative mastery stays conservative.');
+    expect(html).toContain('Attempt history');
+    expect(html).toContain('2 attempts');
+    expect(html).toContain('Fresh evidence');
     expect(html).toContain('Start spaced review');
     expect(html).toContain('Mark complete');
     expect(html).toContain('Reschedule');
@@ -380,6 +395,10 @@ describe('WorkspaceShell', () => {
 
     expect(html).toContain('Read-only second-subject runtime slice');
     expect(html).toContain('subject_adapter_capability_not_enabled');
+    expect(html).toContain('Read-only');
+    expect(html).toContain('marking');
+    expect(html).toContain('mastery');
+    expect(html).toContain('review');
     expect(html).toContain('9702/mechanics/force-balance');
   });
 

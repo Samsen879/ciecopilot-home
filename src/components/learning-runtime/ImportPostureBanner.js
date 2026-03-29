@@ -16,6 +16,29 @@ function renderDetail(label, value) {
   ]);
 }
 
+function renderExplanationFactor(factor) {
+  if (!factor) {
+    return null;
+  }
+
+  const code = factor.code || 'factor';
+  const summary = factor.summary || factor.status || code;
+
+  return h('li', {
+    key: code,
+    className: 'rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-amber-950',
+  }, [
+    h('p', {
+      key: 'code',
+      className: 'font-medium text-amber-800',
+    }, code),
+    h('p', {
+      key: 'summary',
+      className: 'mt-1 leading-6',
+    }, summary),
+  ]);
+}
+
 export default function ImportPostureBanner({
   question,
   posture,
@@ -31,6 +54,7 @@ export default function ImportPostureBanner({
   const releaseScopeStatus = posture?.releaseScopeStatus
     ?? question?.releaseScopeStatus
     ?? null;
+  const explanation = posture?.explanation || null;
 
   return h('section', {
     className: 'rounded-3xl border border-amber-200 bg-amber-50 p-6 shadow-sm',
@@ -58,6 +82,27 @@ export default function ImportPostureBanner({
       renderDetail('Learning signal posture', posture?.learningSignalPosture),
       renderDetail('Classification confidence', posture?.classificationConfidence),
     ].filter(Boolean)),
+    explanation?.summary
+      ? h('div', {
+        key: 'explanation',
+        className: 'mt-6 rounded-2xl border border-amber-200 bg-white px-4 py-4 text-sm text-amber-950',
+      }, [
+        h('p', {
+          key: 'title',
+          className: 'font-medium text-amber-800',
+        }, 'Why this posture is active'),
+        h('p', {
+          key: 'summary',
+          className: 'mt-2 leading-6',
+        }, explanation.summary),
+      ])
+      : null,
+    Array.isArray(explanation?.factors) && explanation.factors.length > 0
+      ? h('ul', {
+        key: 'factors',
+        className: 'mt-4 grid gap-3',
+      }, explanation.factors.map(renderExplanationFactor).filter(Boolean))
+      : null,
     handoffError
       ? h('div', {
         key: 'error',

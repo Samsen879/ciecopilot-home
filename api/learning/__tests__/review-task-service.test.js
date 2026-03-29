@@ -395,6 +395,7 @@ describe('review task service generation', () => {
       fallback_reason_code: 'non_released_fallback',
       repair_target_topic_id: 'topic-1',
       repair_target_topic_path: '9709/trigonometry/equations',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
       misconception_tags: ['domain:interval'],
       question_context: {
         family_id: '9709.trigonometry_manipulation_equations',
@@ -421,6 +422,23 @@ describe('review task service generation', () => {
           immediate_repair_max_deferral_at: '2026-03-24T22:00:00.000Z',
         }),
       },
+      explanation: {
+        posture: 'conservative_fallback',
+        summary: 'Queued from interval-repair evidence while authoritative mastery stays conservative.',
+        freshness: {
+          bucket: 'fresh',
+          route: 'immediate_repair',
+        },
+        attempt_history: {
+          attempt_count: 1,
+          latest_source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+        },
+        evidence: {
+          source_question_id: 'question-1',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+          misconception_tags: ['domain:interval'],
+        },
+      },
     });
   });
 
@@ -437,6 +455,14 @@ describe('review task service generation', () => {
           route: 'immediate_repair',
           freshness_bucket: 'fresh',
           immediate_repair_max_deferral_at: '2026-03-24T22:00:00.000Z',
+        },
+        explainability: {
+          attempt_history: {
+            attempt_count: 1,
+            latest_source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-existing' },
+            source_attempt_refs: [{ kind: 'attempt', attempt_id: 'attempt-existing' }],
+            source_question_ids: ['question-existing'],
+          },
         },
       },
     });
@@ -471,6 +497,7 @@ describe('review task service generation', () => {
       fallback_reason_code: 'non_released_fallback',
       repair_target_topic_id: 'topic-1',
       repair_target_topic_path: '9709/trigonometry/equations',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
       misconception_tags: ['domain:interval', 'identity:rewrite'],
       question_context: {
         family_id: '9709.trigonometry_manipulation_equations',
@@ -487,6 +514,21 @@ describe('review task service generation', () => {
         scheduler_policy: expect.objectContaining({
           route: 'immediate_repair',
         }),
+        explainability: {
+          attempt_history: {
+            attempt_count: 2,
+            latest_source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+            source_attempt_refs: expect.arrayContaining([
+              { kind: 'attempt', attempt_id: 'attempt-existing' },
+              { kind: 'attempt', attempt_id: 'attempt-1' },
+            ]),
+          },
+        },
+      },
+      explanation: {
+        attempt_history: {
+          attempt_count: 2,
+        },
       },
     });
   });

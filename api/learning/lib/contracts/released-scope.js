@@ -9,6 +9,7 @@ import {
   normalizeClassificationConfidence,
   normalizeQuestionTypeId,
   resolveInlineReleasedScoringPosture,
+  withReleasedScopeExplanation,
 } from './released-scope-core.js';
 
 export {
@@ -37,16 +38,36 @@ export function resolveReleasedScoringPosture({
     : isSeededPilotQuestionType(normalizedQuestionTypeId, questionTypeReleaseState);
 
   if (!normalizedQuestionTypeId) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.MISSING_QUESTION_TYPE,
-      normalizedClassificationConfidence,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.MISSING_QUESTION_TYPE,
+        normalizedClassificationConfidence,
+      ),
+      {
+        questionTypeId: normalizedQuestionTypeId,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassificationConfidence,
+      },
     );
   }
 
   if (!pilotQuestionTypeMatch) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
-      normalizedClassificationConfidence,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
+        normalizedClassificationConfidence,
+      ),
+      {
+        questionTypeId: normalizedQuestionTypeId,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassificationConfidence,
+      },
     );
   }
 
@@ -55,13 +76,24 @@ export function resolveReleasedScoringPosture({
   });
 
   if (!releasedFamilyEvidence.ok) {
-    return buildFallbackPosture(
-      FALLBACK_REASON_CODES.MISSING_RELEASED_FAMILY_EVIDENCE,
-      normalizedClassificationConfidence,
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.MISSING_RELEASED_FAMILY_EVIDENCE,
+        normalizedClassificationConfidence,
+      ),
+      {
+        questionTypeId: normalizedQuestionTypeId,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassificationConfidence,
+        releasedFamilyEvidenceOk: false,
+      },
     );
   }
 
-  return resolveInlineReleasedScoringPosture({
+  return withReleasedScopeExplanation(resolveInlineReleasedScoringPosture({
     questionTypeId: normalizedQuestionTypeId,
     questionTypeReleaseState,
     candidateRubricRefs,
@@ -69,5 +101,13 @@ export function resolveReleasedScoringPosture({
     uncertaintyPosture,
     classificationConfidence: normalizedClassificationConfidence,
     isPilotQuestionType: pilotQuestionTypeMatch,
+  }), {
+    questionTypeId: normalizedQuestionTypeId,
+    questionTypeReleaseState,
+    candidateRubricRefs,
+    uncertaintyValidated,
+    uncertaintyPosture,
+    classificationConfidence: normalizedClassificationConfidence,
+    releasedFamilyEvidenceOk: true,
   });
 }

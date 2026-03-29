@@ -73,12 +73,28 @@ function createLearningDb(overrides = {}) {
       related_artifact_refs: [],
       source_question_id: 'question-1',
       source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
-      trigger_type: 'marking_outcome',
-      mode: 'redo_variant',
+      trigger_type: 'immediate_repair',
+      mode: 'trap_fix',
       due_at: '2026-03-23T00:00:00.000Z',
       priority: 'high',
       estimated_minutes: 15,
-      success_criteria: {},
+      success_criteria: {
+        scheduler_policy: {
+          route: 'immediate_repair',
+          freshness_bucket: 'fresh',
+        },
+        explainability: {
+          attempt_history: {
+            attempt_count: 2,
+            latest_source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1b' },
+            source_attempt_refs: [
+              { kind: 'attempt', attempt_id: 'attempt-1' },
+              { kind: 'attempt', attempt_id: 'attempt-1b' },
+            ],
+            source_question_ids: ['question-1', 'question-1b'],
+          },
+        },
+      },
       completion_evidence: {},
       status: 'open',
       created_at: '2026-03-22T08:10:00.000Z',
@@ -903,10 +919,27 @@ describe('workspace read service', () => {
       review_task_id: 'review-queued-1',
       target_topic_id: 'topic-1',
       scheduler_state: {
-        value: 'blocked',
-        label: 'Blocked',
+        value: 'escalated',
+        label: 'Escalated',
         tone: 'danger',
-        reason_code: 'daily_recommendation_cap',
+        reason_code: 'fresh_immediate_repair',
+      },
+      explanation: {
+        posture: 'conservative_fallback',
+        freshness: {
+          bucket: 'fresh',
+          route: 'immediate_repair',
+          scheduler_state: 'escalated',
+        },
+        attempt_history: {
+          attempt_count: 2,
+          latest_source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1b' },
+        },
+        evidence: {
+          source_question_id: 'question-1',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+          misconception_tags: ['domain:interval'],
+        },
       },
     });
   });

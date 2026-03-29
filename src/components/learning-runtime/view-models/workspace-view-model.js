@@ -95,6 +95,27 @@ function normalizeCapabilityList(values) {
     .filter(Boolean);
 }
 
+function normalizeExplanationFactors(value) {
+  return (Array.isArray(value) ? value : []).map((factor) => ({
+    code: normalizeString(factor?.code),
+    status: normalizeString(factor?.status),
+    summary: normalizeString(factor?.summary),
+    value: factor?.value ?? null,
+  })).filter((factor) => factor.code || factor.summary);
+}
+
+function buildExplanationViewModel(explanation = null) {
+  if (!explanation || typeof explanation !== 'object') {
+    return null;
+  }
+
+  return {
+    posture: normalizeString(explanation.posture),
+    summary: normalizeString(explanation.summary),
+    factors: normalizeExplanationFactors(explanation.factors),
+  };
+}
+
 function buildRuntimePostureViewModel(runtimePosture = null) {
   if (!runtimePosture || typeof runtimePosture !== 'object') {
     return null;
@@ -126,6 +147,7 @@ function buildRuntimePostureViewModel(runtimePosture = null) {
       runtimePosture.fallbackCapabilities ?? runtimePosture.fallback_capabilities,
     ),
     summary: normalizeString(runtimePosture.summary),
+    explanation: buildExplanationViewModel(runtimePosture.explanation),
   };
 }
 

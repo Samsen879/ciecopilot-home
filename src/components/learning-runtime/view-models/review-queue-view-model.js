@@ -142,6 +142,94 @@ function normalizeSchedulerReasons(value) {
   })).filter((reason) => reason.code || reason.summary);
 }
 
+function normalizeExplanationFactors(value) {
+  return (Array.isArray(value) ? value : []).map((factor) => ({
+    code: normalizeString(factor?.code),
+    status: normalizeString(factor?.status),
+    summary: normalizeString(factor?.summary),
+    value: factor?.value ?? null,
+  })).filter((factor) => factor.code || factor.summary);
+}
+
+function normalizeReviewTaskExplanation(value) {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  const attemptHistory = value.attemptHistory ?? value.attempt_history ?? {};
+  const evidence = value.evidence ?? {};
+  const freshness = value.freshness ?? {};
+
+  return {
+    summary: normalizeString(value.summary),
+    posture: normalizeString(value.posture),
+    postureReasonCode: normalizeString(
+      value.postureReasonCode ?? value.posture_reason_code,
+    ),
+    creationReasonCodes: (Array.isArray(value.creationReasonCodes ?? value.creation_reason_codes)
+      ? (value.creationReasonCodes ?? value.creation_reason_codes)
+      : []).map((code) => normalizeString(code)).filter(Boolean),
+    factors: normalizeExplanationFactors(value.factors),
+    attemptHistory: {
+      attemptCount:
+        attemptHistory.attemptCount
+        ?? attemptHistory.attempt_count
+        ?? 0,
+      latestSourceAttemptRef:
+        attemptHistory.latestSourceAttemptRef
+        ?? attemptHistory.latest_source_attempt_ref
+        ?? null,
+      sourceAttemptRefs:
+        Array.isArray(attemptHistory.sourceAttemptRefs ?? attemptHistory.source_attempt_refs)
+          ? (attemptHistory.sourceAttemptRefs ?? attemptHistory.source_attempt_refs)
+          : [],
+      sourceQuestionIds:
+        Array.isArray(attemptHistory.sourceQuestionIds ?? attemptHistory.source_question_ids)
+          ? (attemptHistory.sourceQuestionIds ?? attemptHistory.source_question_ids)
+          : [],
+    },
+    evidence: {
+      sourceQuestionId: normalizeString(
+        evidence.sourceQuestionId ?? evidence.source_question_id,
+      ),
+      sourceAttemptRef:
+        evidence.sourceAttemptRef
+        ?? evidence.source_attempt_ref
+        ?? null,
+      misconceptionTags: (Array.isArray(
+        evidence.misconceptionTags ?? evidence.misconception_tags,
+      )
+        ? (evidence.misconceptionTags ?? evidence.misconception_tags)
+        : []).map((tag) => normalizeString(tag)).filter(Boolean),
+      coverageScope: normalizeString(
+        evidence.coverageScope ?? evidence.coverage_scope,
+      ),
+      localSignalOnly:
+        typeof evidence.localSignalOnly === 'boolean'
+          ? evidence.localSignalOnly
+          : evidence.local_signal_only === true,
+      ambiguousPartMappingCount:
+        evidence.ambiguousPartMappingCount
+        ?? evidence.ambiguous_part_mapping_count
+        ?? 0,
+      partResults: Array.isArray(evidence.partResults ?? evidence.part_results)
+        ? (evidence.partResults ?? evidence.part_results)
+        : [],
+    },
+    freshness: {
+      bucket: normalizeString(freshness.bucket),
+      route: normalizeString(freshness.route),
+      dueAt: normalizeString(freshness.dueAt ?? freshness.due_at),
+      schedulerState: normalizeString(
+        freshness.schedulerState ?? freshness.scheduler_state,
+      ),
+      reasonCodes: (Array.isArray(freshness.reasonCodes ?? freshness.reason_codes)
+        ? (freshness.reasonCodes ?? freshness.reason_codes)
+        : []).map((code) => normalizeString(code)).filter(Boolean),
+    },
+  };
+}
+
 function buildSchedulerExplanation(schedulerState, schedulerReasons, schedulerPolicy) {
   const primaryReason = schedulerReasons[0] || null;
   if (!schedulerState && !primaryReason && !schedulerPolicy) {
@@ -250,6 +338,7 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
         schedulerReasons,
         schedulerPolicy,
       ),
+      explanation: normalizeReviewTaskExplanation(item.explanation),
       launchPayload: buildLaunchPayload(item),
       workspaceLink: {
         topicId: normalizeString(item.targetTopicId ?? item.target_topic_id, ''),

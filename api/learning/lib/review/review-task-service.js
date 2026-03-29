@@ -2,7 +2,9 @@ import { createReviewTaskRepository } from '../repositories/review-task-reposito
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
+  buildReviewTaskExplainabilitySeed,
   mergeReviewTaskPayload,
+  normalizeSchedulerProjectionItem,
   pickReviewTaskMergeCandidate,
 } from './review-scheduler-policy.js';
 import {
@@ -310,6 +312,18 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
   const ambiguousPartMappingCount = Number(
     input.marking_result?.marking_summary?.ambiguous_rubric_point_result_count ?? 0,
   );
+  const schedulerPolicy = scheduler.policy;
+  const explainability = buildReviewTaskExplainabilitySeed({
+    sourceQuestionId: input.question_id ?? null,
+    sourceAttemptRef: input.source_attempt_ref ?? null,
+    targetMisconceptionTags: input.misconception_tags,
+    fallbackReasonCode: input.fallback_reason_code ?? null,
+    schedulerPolicy,
+    coverageScope: input.marking_result?.marking_summary?.coverage_scope ?? 'question',
+    localSignalOnly: input.marking_result?.marking_summary?.local_signal_only === true,
+    partResults,
+    ambiguousPartMappingCount,
+  });
 
   return {
     user_id: input.user_id,
@@ -334,7 +348,8 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
       ambiguous_part_mapping_count: ambiguousPartMappingCount,
       part_results: partResults,
       fallback_reason_code: input.fallback_reason_code ?? null,
-      scheduler_policy: scheduler.policy,
+      scheduler_policy: schedulerPolicy,
+      explainability,
     },
     completion_evidence: {},
     status: 'open',
@@ -362,7 +377,7 @@ export function createReviewTaskService({
       }
 
       if (!reviewTaskRepository) {
-        return [payload];
+        return [normalizeSchedulerProjectionItem(payload)];
       }
 
       const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(payload.user_id)
@@ -379,21 +394,21 @@ export function createReviewTaskService({
           mergedPatch,
         );
         return [
-          {
+          normalizeSchedulerProjectionItem({
             ...mergeCandidate,
             ...merged,
             target_topic_path:
               payload.target_topic_path ?? mergeCandidate.target_topic_path ?? null,
-          },
+          }),
         ];
       }
 
       const stored = await reviewTaskRepository.insertReviewTask(payload);
       return [
-        {
+        normalizeSchedulerProjectionItem({
           ...stored,
           target_topic_path: payload.target_topic_path,
-        },
+        }),
       ];
     },
 
@@ -450,7 +465,7 @@ export function createReviewTaskService({
       );
 
       return {
-        review_task: projection || updated,
+        review_task: normalizeSchedulerProjectionItem(projection || updated),
       };
     },
   };

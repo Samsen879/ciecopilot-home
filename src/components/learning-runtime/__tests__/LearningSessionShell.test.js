@@ -103,6 +103,28 @@ function createReadOnlyPhysicsSessionPayload() {
       fallbackCapabilities: ['marking', 'mastery', 'review'],
       summary:
         'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.',
+      explanation: {
+        posture: 'read_only_fallback',
+        summary:
+          'Physics stays read-only in the current runtime slice, so mastery and review automation remain conservative.',
+        factors: [
+          {
+            code: 'selection_state',
+            status: 'selected_next',
+            summary: 'Physics is selected next, not the current runtime subject.',
+          },
+          {
+            code: 'marking',
+            status: 'fallback_only',
+            summary: 'Marking remains conservative in this slice.',
+          },
+          {
+            code: 'mastery',
+            status: 'fallback_only',
+            summary: 'Mastery remains conservative in this slice.',
+          },
+        ],
+      },
     },
     featureFlags: {
       learningRuntimeEnabled: true,
@@ -286,6 +308,9 @@ describe('LearningSessionShell', () => {
 
     expect(html).toContain('Runtime fallback is active');
     expect(html).toContain('subject_adapter_capability_not_enabled');
+    expect(html).toContain('Physics stays read-only in the current runtime slice');
+    expect(html).toContain('Physics is selected next, not the current runtime subject.');
+    expect(html).toContain('Marking remains conservative in this slice.');
     expect(html).toContain('9702/mechanics/force-balance');
     expect(html).toContain('Read-only second-subject runtime slice');
   });

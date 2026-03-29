@@ -17,6 +17,27 @@ function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function normalizeExplanationFactors(value) {
+  return normalizeArray(value).map((factor) => ({
+    code: normalizeText(factor?.code, null),
+    status: normalizeText(factor?.status, null),
+    summary: normalizeText(factor?.summary, null),
+    value: factor?.value ?? null,
+  })).filter((factor) => factor.code || factor.summary);
+}
+
+function buildExplanationViewModel(explanation = null) {
+  if (!explanation || typeof explanation !== 'object') {
+    return null;
+  }
+
+  return {
+    posture: normalizeText(explanation.posture, null),
+    summary: normalizeText(explanation.summary, null),
+    factors: normalizeExplanationFactors(explanation.factors),
+  };
+}
+
 function normalizeRefId(ref, key) {
   if (!ref || typeof ref !== 'object') {
     return null;
@@ -351,6 +372,7 @@ function buildPostMortemViewModel(sessionPayload = {}, session, topicPath) {
             : scoringPosture.authoritative_scoring_allowed ?? null,
         fallbackReasonCode:
           scoringPosture.fallbackReasonCode ?? scoringPosture.fallback_reason_code ?? null,
+        explanation: buildExplanationViewModel(scoringPosture.explanation),
       }
       : null,
     diagnosticFocus: {
@@ -413,6 +435,7 @@ function buildRuntimePostureViewModel(runtimePosture = null) {
       runtimePosture.fallbackCapabilities ?? runtimePosture.fallback_capabilities,
     ).map((capability) => normalizeText(capability, '')).filter(Boolean),
     summary: normalizeText(runtimePosture.summary, null),
+    explanation: buildExplanationViewModel(runtimePosture.explanation),
   };
 }
 
@@ -499,6 +522,10 @@ export function buildSessionViewModel(payload = {}, options = {}) {
         ?? null,
       runtimeSummary: runtimePosture?.summary ?? null,
       fallbackCapabilities: runtimePosture?.fallbackCapabilities ?? [],
+      postureExplanation:
+        latestResponse?.fallbackPosture?.explanation
+        ?? runtimePosture?.explanation
+        ?? null,
       handoffKind:
         continuity?.suggestedHandoff?.handoffKindLabel
         || continuity?.lineage?.handoffKindLabel

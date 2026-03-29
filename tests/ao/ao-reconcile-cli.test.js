@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockLoadAoProjectObservation = jest.fn();
@@ -247,5 +248,16 @@ describe('ao reconcile cli', () => {
     expect(result.exitCode).toBe(4);
     expect(mockLoadAoProjectObservation).not.toHaveBeenCalled();
     expect(stderr.join('')).toContain('Strict mode requires --pr <number>');
+  });
+
+  it('documents strict npm wrapper expectations in package scripts', () => {
+    const packageJson = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
+
+    expect(packageJson.scripts['ao:reconcile:strict']).toBe('node scripts/ao-reconcile.js --json --strict');
+    expect(packageJson.scripts['ao:reconcile:strict:pr']).toBe('node scripts/ao-reconcile.js --json --strict --pr');
+    expect(packageJson.scripts['ao:doctor:strict']).toBe('node scripts/ao-doctor.js --strict');
+    expect(packageJson.scripts['ao:doctor:strict:pr']).toBe('node scripts/ao-doctor.js --json --strict --pr');
+    expect(packageJson.scripts['ao:lifecycle:strict']).toBe('node scripts/ao-lifecycle.js --strict');
+    expect(packageJson.scripts['ao:lifecycle:strict:pr']).toBe('node scripts/ao-lifecycle.js --json --strict --pr');
   });
 });

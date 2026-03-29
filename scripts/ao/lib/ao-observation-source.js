@@ -3,6 +3,10 @@ import { readAoFixture } from './fixture-support.js';
 
 export const DEFAULT_FRESHNESS_THRESHOLD_MS = 15 * 60 * 1000;
 
+function isRecord(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
+}
+
 function toIsoString(value) {
   if (!value) return null;
   const date = new Date(value);
@@ -105,31 +109,32 @@ function classifyFreshness(lastSeenAt, now, staleAfterMs = DEFAULT_FRESHNESS_THR
 }
 
 function normalizeSession(session, now, staleAfterMs) {
-  const lastSeenAt = session.updatedAt
-    ?? session.lastSeenAt
-    ?? session.observedAt
-    ?? parseRelativeLastActivity(session.lastActivity, now)
+  const normalizedSession = isRecord(session) ? session : {};
+  const lastSeenAt = normalizedSession.updatedAt
+    ?? normalizedSession.lastSeenAt
+    ?? normalizedSession.observedAt
+    ?? parseRelativeLastActivity(normalizedSession.lastActivity, now)
     ?? null;
-  const issueNumber = session.issueNumber ?? session.issue ?? null;
-  const lifecycleState = session.lifecycleState ?? session.status ?? null;
+  const issueNumber = normalizedSession.issueNumber ?? normalizedSession.issue ?? null;
+  const lifecycleState = normalizedSession.lifecycleState ?? normalizedSession.status ?? null;
   const linkageBasis = [];
-  if (session.prNumber != null) linkageBasis.push('session_pr_number');
-  if (session.branch != null) linkageBasis.push('session_branch');
+  if (normalizedSession.prNumber != null) linkageBasis.push('session_pr_number');
+  if (normalizedSession.branch != null) linkageBasis.push('session_branch');
   if (issueNumber != null) linkageBasis.push('issue_metadata');
   if (!linkageBasis.length) linkageBasis.push('unknown');
 
   return {
-    session_name: String(session.name ?? session.sessionName ?? 'unknown-session'),
-    session_runtime_id: session.id != null ? String(session.id) : String(session.name ?? session.sessionName ?? 'unknown-session'),
-    session_role: session.role === 'orchestrator' || session.role === 'worker' ? session.role : 'unknown',
+    session_name: String(normalizedSession.name ?? normalizedSession.sessionName ?? 'unknown-session'),
+    session_runtime_id: normalizedSession.id != null ? String(normalizedSession.id) : String(normalizedSession.name ?? normalizedSession.sessionName ?? 'unknown-session'),
+    session_role: normalizedSession.role === 'orchestrator' || normalizedSession.role === 'worker' ? normalizedSession.role : 'unknown',
     issue_number: normalizeInteger(issueNumber),
-    branch_name: session.branch != null ? String(session.branch) : null,
-    pr_number: normalizeInteger(session.prNumber),
+    branch_name: normalizedSession.branch != null ? String(normalizedSession.branch) : null,
+    pr_number: normalizeInteger(normalizedSession.prNumber),
     lifecycle_state: lifecycleState != null ? String(lifecycleState) : null,
-    agent_label: session.agent != null ? String(session.agent) : null,
-    observed_owner_hint: session.ownerHint != null ? String(session.ownerHint) : null,
+    agent_label: normalizedSession.agent != null ? String(normalizedSession.agent) : null,
+    observed_owner_hint: normalizedSession.ownerHint != null ? String(normalizedSession.ownerHint) : null,
     linkage_basis: linkageBasis,
-    worktree_path: session.worktreePath != null ? String(session.worktreePath) : null,
+    worktree_path: normalizedSession.worktreePath != null ? String(normalizedSession.worktreePath) : null,
     last_seen_at: toIsoString(lastSeenAt),
     freshness: classifyFreshness(lastSeenAt, now, staleAfterMs),
   };
@@ -154,6 +159,60 @@ function buildEmptyObservation(projectId, now, sourceError = null) {
   };
 }
 
+function normalizeAoPayload(parsed, errorPrefix) {
+  if (Array.isArray(parsed)) {
+    return {
+      project_id: null,
+      sessions: parsed,
+    };
+  }
+
+  if (isRecord(parsed) && Array.isArray(parsed.sessions)) {
+    return {
+      project_id: parsed.project?.id ?? parsed.projectId ?? null,
+      sessions: parsed.sessions,
+    };
+  }
+
+  throw new Error(`${errorPrefix} payload: expected a top-level array or an object with a sessions array`);
+}
+
+function buildObservationFromPayload({
+  parsed,
+  projectId,
+  now,
+  staleAfterMs,
+  errorPrefix,
+} = {}) {
+  let normalizedPayload;
+  try {
+    normalizedPayload = normalizeAoPayload(parsed, errorPrefix);
+  } catch (error) {
+    return buildEmptyObservation(projectId, now, error.message);
+  }
+
+  const normalizedSessions = normalizedPayload.sessions.map((session) => normalizeSession(session, now, staleAfterMs));
+  const orchestrators = normalizedSessions.filter((session) => session.session_role === 'orchestrator');
+  const workers = normalizedSessions.filter((session) => session.session_role === 'worker');
+
+  return {
+    project_id: String(normalizedPayload.project_id ?? projectId),
+    observed_at: toIsoString(now) ?? new Date().toISOString(),
+    source_ok: true,
+    source_error: null,
+    orchestrator: orchestrators[0] ?? null,
+    workers,
+    raw_summary: {
+      session_count: normalizedSessions.length,
+      orchestrator_count: orchestrators.length,
+      orchestrator_session_names: orchestrators.map((session) => session.session_name),
+      worker_count: workers.length,
+      branch_count: new Set(normalizedSessions.map((session) => session.branch_name).filter(Boolean)).size,
+      pr_count: new Set(normalizedSessions.map((session) => session.pr_number).filter((value) => value != null)).size,
+    },
+  };
+}
+
 export async function loadAoProjectObservation({
   projectId,
   now = new Date().toISOString(),
@@ -168,29 +227,13 @@ export async function loadAoProjectObservation({
       return buildEmptyObservation(projectId, now, `invalid ao fixture json: ${error.message}`);
     }
 
-    const sessions = Array.isArray(parsed)
-      ? parsed
-      : (Array.isArray(parsed.sessions) ? parsed.sessions : []);
-    const normalizedSessions = sessions.map((session) => normalizeSession(session, now, staleAfterMs));
-    const orchestrators = normalizedSessions.filter((session) => session.session_role === 'orchestrator');
-    const workers = normalizedSessions.filter((session) => session.session_role === 'worker');
-
-    return {
-      project_id: String(parsed.project?.id ?? parsed.projectId ?? projectId),
-      observed_at: toIsoString(now) ?? new Date().toISOString(),
-      source_ok: true,
-      source_error: null,
-      orchestrator: orchestrators[0] ?? null,
-      workers,
-      raw_summary: {
-        session_count: normalizedSessions.length,
-        orchestrator_count: orchestrators.length,
-        orchestrator_session_names: orchestrators.map((session) => session.session_name),
-        worker_count: workers.length,
-        branch_count: new Set(normalizedSessions.map((session) => session.branch_name).filter(Boolean)).size,
-        pr_count: new Set(normalizedSessions.map((session) => session.pr_number).filter((value) => value != null)).size,
-      },
-    };
+    return buildObservationFromPayload({
+      parsed,
+      projectId,
+      now,
+      staleAfterMs,
+      errorPrefix: 'invalid ao fixture',
+    });
   }
 
   const result = spawnSync('ao', ['status', '-p', projectId, '--json'], {
@@ -209,27 +252,11 @@ export async function loadAoProjectObservation({
     return buildEmptyObservation(projectId, now, `invalid ao json: ${error.message}`);
   }
 
-  const sessions = Array.isArray(parsed)
-    ? parsed
-    : (Array.isArray(parsed.sessions) ? parsed.sessions : []);
-  const normalizedSessions = sessions.map((session) => normalizeSession(session, now, staleAfterMs));
-  const orchestrators = normalizedSessions.filter((session) => session.session_role === 'orchestrator');
-  const workers = normalizedSessions.filter((session) => session.session_role === 'worker');
-
-  return {
-    project_id: String(parsed.project?.id ?? parsed.projectId ?? projectId),
-    observed_at: toIsoString(now) ?? new Date().toISOString(),
-    source_ok: true,
-    source_error: null,
-    orchestrator: orchestrators[0] ?? null,
-    workers,
-    raw_summary: {
-      session_count: normalizedSessions.length,
-      orchestrator_count: orchestrators.length,
-      orchestrator_session_names: orchestrators.map((session) => session.session_name),
-      worker_count: workers.length,
-      branch_count: new Set(normalizedSessions.map((session) => session.branch_name).filter(Boolean)).size,
-      pr_count: new Set(normalizedSessions.map((session) => session.pr_number).filter((value) => value != null)).size,
-    },
-  };
+  return buildObservationFromPayload({
+    parsed,
+    projectId,
+    now,
+    staleAfterMs,
+    errorPrefix: 'invalid ao',
+  });
 }

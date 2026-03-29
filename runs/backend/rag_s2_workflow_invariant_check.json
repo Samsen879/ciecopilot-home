@@ -1,0 +1,103 @@
+{
+  "generated_at": "2026-03-28T18:22:46.232Z",
+  "stage": "rag_s2_workflow_invariant_check",
+  "run_config": {
+    "script": "scripts/rag/run_s2_workflow_invariant_check.js",
+    "required_invariants": [
+      "S1 Contract Gate workflow/job names unchanged",
+      "S1 Metric Gate (Required) workflow/job names unchanged",
+      "S1 gate artifact paths unchanged",
+      "S2 advisory workflow exists and remains non-blocking by job naming"
+    ]
+  },
+  "inputs": {
+    "s1_contract_workflow": ".github/workflows/rag-s1-contract-gate.yml",
+    "s1_metric_workflow": ".github/workflows/rag-s1-metric-gate.yml",
+    "s2_advisory_workflow": ".github/workflows/rag-s2-advisory-gate.yml"
+  },
+  "checks": [
+    {
+      "id": "s1_contract_workflow_present",
+      "ok": true,
+      "details": {
+        "path": ".github/workflows/rag-s1-contract-gate.yml",
+        "exists": true
+      }
+    },
+    {
+      "id": "s1_contract_workflow_name_unchanged",
+      "ok": true,
+      "details": {
+        "expected": "name: RAG S1 Contract Gate"
+      }
+    },
+    {
+      "id": "s1_contract_job_name_unchanged",
+      "ok": true,
+      "details": {
+        "expected": "name: S1 Contract Gate"
+      }
+    },
+    {
+      "id": "s1_contract_artifact_path_unchanged",
+      "ok": true,
+      "details": {
+        "expected": "runs/backend/rag_s1_contract_gate_summary.json"
+      }
+    },
+    {
+      "id": "s1_metric_workflow_present",
+      "ok": true,
+      "details": {
+        "path": ".github/workflows/rag-s1-metric-gate.yml",
+        "exists": true
+      }
+    },
+    {
+      "id": "s1_metric_workflow_name_unchanged",
+      "ok": true,
+      "details": {
+        "expected": "name: RAG S1 Metric Gate"
+      }
+    },
+    {
+      "id": "s1_metric_job_name_unchanged",
+      "ok": true,
+      "details": {
+        "expected": "name: S1 Metric Gate (Required)"
+      }
+    },
+    {
+      "id": "s1_metric_artifact_path_unchanged",
+      "ok": true,
+      "details": {
+        "expected": "runs/backend/rag_s1_metric_gate_summary.json"
+      }
+    },
+    {
+      "id": "s2_advisory_workflow_present",
+      "ok": false,
+      "details": {
+        "path": ".github/workflows/rag-s2-advisory-gate.yml",
+        "exists": false
+      }
+    },
+    {
+      "id": "s2_advisory_job_name_is_non_required",
+      "ok": false,
+      "details": {
+        "expected": "name: S2 Advisory Gate (Non-Blocking)"
+      }
+    }
+  ],
+  "status": "fail",
+  "blocked_reasons": [
+    "s2_advisory_workflow_present",
+    "s2_advisory_job_name_is_non_required"
+  ],
+  "gate": {
+    "checkpoint": "S2_WORKFLOW_GOVERNANCE",
+    "self_check_passed": false,
+    "advisory_only": true
+  }
+}

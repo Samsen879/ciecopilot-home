@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-03-28T18:25:00.063Z",
+  "stage": "rag_s2_advisory_gate",
+  "advisory_mode": true,
+  "thresholds": {
+    "topic_leakage_rate_eq": 0,
+    "evidence_traceability_rate_min": 0.95,
+    "fallback_rate_max": 0.2,
+    "target_slice_quality_vs_s1_gt": 0
+  },
+  "input_checks": {
+    "release_eval_summary_present": false,
+    "release_eval_summary_status": null,
+    "release_eval_summary_status_pass": false
+  },
+  "metrics": {
+    "topic_leakage_rate": 1,
+    "evidence_traceability_rate": 0,
+    "fallback_rate": 1,
+    "target_slice_quality_vs_s1": -1,
+    "readiness_guard_block_rate": 0
+  },
+  "threshold_checks": {
+    "topic_leakage_rate": false,
+    "evidence_traceability_rate": false,
+    "fallback_rate": false,
+    "target_slice_quality_vs_s1": false
+  },
+  "route_counts": {},
+  "readiness_guard_block_count": 0,
+  "readiness_guard_reason_counts": {},
+  "readiness_effective_depth_source_counts": {},
+  "fallback_reason_counts": {},
+  "dependency_status_counts": {},
+  "top_failing_cases": [],
+  "status": "fail",
+  "blocker_categories": [
+    "release_evidence"
+  ],
+  "blockers": [
+    {
+      "category": "release_evidence",
+      "code": "release_eval_summary_missing",
+      "message": "release eval summary missing"
+    }
+  ],
+  "blocking_reasons": [
+    "release eval summary missing"
+  ],
+  "inputs": {
+    "s2_augmentation_eval_summary": "runs/backend/rag_s2_augmentation_eval_summary.json"
+  }
+}

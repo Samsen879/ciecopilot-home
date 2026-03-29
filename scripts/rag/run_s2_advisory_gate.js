@@ -12,15 +12,13 @@ function toRel(filePath) {
   return path.relative(ROOT, filePath).replace(/\\/g, '/');
 }
 
-function readJson(filePath) {
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Required artifact missing: ${filePath}`);
-  }
+function readJsonIfExists(filePath) {
+  if (!fs.existsSync(filePath)) return null;
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
 function main() {
-  const evalSummary = readJson(S2_EVAL_SUMMARY_FILE);
+  const evalSummary = readJsonIfExists(S2_EVAL_SUMMARY_FILE);
   const gateSummary = buildS2AdvisoryGateSummary({ evalSummary });
   const output = {
     ...gateSummary,

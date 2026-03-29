@@ -12,6 +12,7 @@ const INPUTS = Object.freeze({
   eval_summary: 'runs/backend/rag_s2_augmentation_eval_summary.json',
   advisory_gate: 'runs/backend/rag_s2_advisory_gate_summary.json',
   release_decision: 'runs/backend/rag_s2_release_decision.json',
+  release_decision_report: 'docs/reports/rag_s2_release_decision_report.md',
   workflow_invariant: 'runs/backend/rag_s2_workflow_invariant_check.json',
   s1_contract_gate: 'runs/backend/rag_s1_contract_gate_summary.json',
   s1_metric_gate: 'runs/backend/rag_s1_metric_gate_summary.json',
@@ -91,13 +92,18 @@ function main() {
     c2_checkpoint_passed: c2?.status === 'pass',
     c3_checkpoint_passed: c3?.status === 'pass',
     release_decision_advisory_ready:
-      releaseDecision?.release_mode === 'advisory_only' && releaseDecision?.release_ready === true,
+      releaseDecision?.decision === 'stay_advisory_only' &&
+      releaseDecision?.release_mode === 'advisory_only' &&
+      releaseDecision?.release_ready === true,
+    release_decision_explicit:
+      releaseDecision?.decision === 'promote' || releaseDecision?.decision === 'stay_advisory_only',
     traceability_artifacts_present:
       exists(INPUTS.s2_runbook) &&
       exists(INPUTS.s2_eval_report) &&
       exists(INPUTS.eval_summary) &&
       exists(INPUTS.advisory_gate) &&
       exists(INPUTS.release_decision) &&
+      exists(INPUTS.release_decision_report) &&
       exists(INPUTS.workflow_invariant),
     runbook_has_kill_switch_instructions:
       String(runbookText || '').includes('RAG_S2_ROUTE_KILL_SWITCH=true') &&
@@ -127,6 +133,9 @@ function main() {
   }
   if (!checks.openai_not_required_for_s2) {
     blockedReasons.push('openai_forced_dependency_detected');
+  }
+  if (!checks.release_decision_explicit) {
+    blockedReasons.push('release_decision_not_explicit');
   }
   if (!checks.s1_required_gates_unchanged) {
     blockedReasons.push('s1_required_gates_changed_or_polluted');

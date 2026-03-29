@@ -2,34 +2,39 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildS2ReleaseDecision } from './lib/s2_advisory_gate.js';
+import {
+  buildS2ReleaseDecision,
+  renderS2ReleaseDecisionReport,
+} from './lib/s2_advisory_gate.js';
 
 const ROOT = process.cwd();
 const ADVISORY_GATE_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s2_advisory_gate_summary.json');
 const S1_CONTRACT_GATE_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s1_contract_gate_summary.json');
 const S1_METRIC_GATE_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s1_metric_gate_summary.json');
-const OUT_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s2_release_decision.json');
+const WORKFLOW_INVARIANT_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s2_workflow_invariant_check.json');
+const OUT_JSON = path.join(ROOT, 'runs', 'backend', 'rag_s2_release_decision.json');
+const OUT_REPORT = path.join(ROOT, 'docs', 'reports', 'rag_s2_release_decision_report.md');
 
 function toRel(filePath) {
   return path.relative(ROOT, filePath).replace(/\\/g, '/');
 }
 
-function readJson(filePath) {
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Required artifact missing: ${filePath}`);
-  }
+function readJsonIfExists(filePath) {
+  if (!fs.existsSync(filePath)) return null;
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
 function main() {
-  const advisoryGateSummary = readJson(ADVISORY_GATE_FILE);
-  const s1ContractGate = readJson(S1_CONTRACT_GATE_FILE);
-  const s1MetricGate = readJson(S1_METRIC_GATE_FILE);
+  const advisoryGateSummary = readJsonIfExists(ADVISORY_GATE_FILE);
+  const s1ContractGate = readJsonIfExists(S1_CONTRACT_GATE_FILE);
+  const s1MetricGate = readJsonIfExists(S1_METRIC_GATE_FILE);
+  const workflowInvariant = readJsonIfExists(WORKFLOW_INVARIANT_FILE);
 
   const decision = buildS2ReleaseDecision({
     advisoryGateSummary,
     s1ContractGate,
     s1MetricGate,
+    workflowInvariant,
   });
   const output = {
     ...decision,
@@ -37,6 +42,7 @@ function main() {
       advisory_gate: toRel(ADVISORY_GATE_FILE),
       s1_contract_gate: toRel(S1_CONTRACT_GATE_FILE),
       s1_metric_gate: toRel(S1_METRIC_GATE_FILE),
+      workflow_invariant: toRel(WORKFLOW_INVARIANT_FILE),
     },
     evidence: {
       advisory_gate_status: advisoryGateSummary?.status || null,
@@ -46,12 +52,25 @@ function main() {
       s1_metric_gate_status: s1MetricGate?.status || null,
       s1_metric_gate_mode: s1MetricGate?.gate_mode || null,
       s1_metric_gate_generated_at: s1MetricGate?.generated_at || null,
+      workflow_invariant_status: workflowInvariant?.status || null,
+      workflow_invariant_advisory_only: workflowInvariant?.gate?.advisory_only === true,
     },
   };
+  const report = renderS2ReleaseDecisionReport({
+    decisionPayload: output,
+    sourcePaths: {
+      advisoryGate: output.inputs.advisory_gate,
+      s1ContractGate: output.inputs.s1_contract_gate,
+      s1MetricGate: output.inputs.s1_metric_gate,
+      workflowInvariant: output.inputs.workflow_invariant,
+    },
+  });
 
-  fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
-  fs.writeFileSync(OUT_FILE, `${JSON.stringify(output, null, 2)}\n`, 'utf8');
-  process.stdout.write(`${OUT_FILE}\n`);
+  fs.mkdirSync(path.dirname(OUT_JSON), { recursive: true });
+  fs.mkdirSync(path.dirname(OUT_REPORT), { recursive: true });
+  fs.writeFileSync(OUT_JSON, `${JSON.stringify(output, null, 2)}\n`, 'utf8');
+  fs.writeFileSync(OUT_REPORT, report, 'utf8');
+  process.stdout.write(`${OUT_JSON}\n${OUT_REPORT}\n`);
 }
 
 main();

@@ -252,6 +252,147 @@ describe('ao controller loop', () => {
         }),
       }),
     ]));
+    expect(repository.listAuditEntries().filter((entry) => entry.entity_kind === 'action')).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          operation: 'proposed',
+          actor: 'shadow_controller',
+        }),
+      ]),
+    );
+  });
+
+  it('assist mode executes only explicit class A actions and keeps higher-risk actions gated', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'assist');
+
+    const lifecycleReport = {
+      top_status: 'continue',
+      routing_decision: {
+        action: 'continue_current_worker',
+      },
+      release_decision: {
+        disposition: 'notify_human_ready',
+      },
+      actions: [
+        {
+          id: 'continue_worker',
+          action_class: 'continue_worker',
+          summary: 'Continue the current worker owner.',
+          commands: ['ao status -p ciecopilot-home --json'],
+          rationale: 'Ownership continuity is clear enough to continue the current worker.',
+        },
+        {
+          id: 'restore_worker',
+          action_class: 'restore_worker',
+          summary: 'Restore the previously identified worker.',
+          commands: ['ao status -p ciecopilot-home --json', 'node scripts/ao-reconcile.js --pr 92 --json --strict'],
+          rationale: 'The prior owner is still identifiable, but continuity is stale.',
+        },
+        {
+          id: 'hold_ci',
+          action_class: 'hold',
+          summary: 'Hold until CI is green.',
+          commands: ['gh pr checks 92'],
+          rationale: 'Required CI state is not yet ready.',
+        },
+      ],
+    };
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-29T06:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        resolveLifecycleReport: async () => lifecycleReport,
+      },
+    });
+
+    expect(result).toMatchObject({
+      mode: 'assist',
+      proposed_action_count: 3,
+      executed_action_count: 1,
+      blocked_action_count: 2,
+      task_results: [
+        expect.objectContaining({
+          proposed_action_count: 3,
+          executed_action_count: 1,
+          blocked_action_count: 2,
+        }),
+      ],
+    });
+
+    expect(repository.getSnapshot().state.actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        action_kind: 'continue_worker',
+        status: 'executed',
+        payload: expect.objectContaining({
+          action_model: expect.objectContaining({
+            risk_class: 'class_a',
+          }),
+        }),
+      }),
+      expect.objectContaining({
+        action_kind: 'restore_worker',
+        status: 'blocked',
+        payload: expect.objectContaining({
+          action_model: expect.objectContaining({
+            risk_class: 'class_c',
+          }),
+          execution: expect.objectContaining({
+            outcome: 'blocked',
+          }),
+        }),
+      }),
+      expect.objectContaining({
+        action_kind: 'hold_ci',
+        status: 'blocked',
+        payload: expect.objectContaining({
+          action_model: expect.objectContaining({
+            risk_class: 'class_b',
+          }),
+          execution: expect.objectContaining({
+            outcome: 'blocked',
+          }),
+        }),
+      }),
+    ]));
   });
 
   it('blocks when another active lease already exists for the same controller', async () => {

@@ -64,7 +64,7 @@ function parseArgs(argv) {
     };
   }
 
-  if (options.mode != null && !['observe', 'shadow'].includes(options.mode)) {
+  if (options.mode != null && !['observe', 'shadow', 'assist'].includes(options.mode)) {
     return {
       ok: false,
       error: 'Invalid value for --mode',
@@ -91,7 +91,7 @@ function renderHelp() {
     'Options:',
     '  --project <project_id>      AO project id. Default: ciecopilot-home',
     '  --controller <id>           Controller id. Default: default',
-    '  --mode <observe|shadow>     Override the durable controller mode',
+    '  --mode <observe|shadow|assist> Override the durable controller mode',
     '  --issue <number>            Limit one loop to a specific issue-backed task',
     '  --json                      Print machine-readable JSON output',
     '  -h, --help                  Show help',
@@ -107,6 +107,8 @@ function renderHumanSummary(result) {
     `processed_tasks: ${result.processed_task_count}`,
     `ingested_observations: ${result.ingested_observation_count}`,
     `proposed_actions: ${result.proposed_action_count}`,
+    `executed_actions: ${result.executed_action_count ?? 0}`,
+    `blocked_actions: ${result.blocked_action_count ?? 0}`,
     `task_results: ${taskSummaries.length ? taskSummaries.join(', ') : 'none'}`,
   ].join('\n');
 }

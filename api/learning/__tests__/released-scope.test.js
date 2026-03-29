@@ -49,7 +49,7 @@ test('pilot type membership alone does not unlock authoritative scoring', () => 
       uncertaintyValidated: false,
       classificationConfidence: 0.81,
     }),
-  ).toEqual({
+  ).toMatchObject({
     release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
     authoritative_scoring_allowed: false,
     fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
@@ -76,7 +76,7 @@ test('promoted differential equations separable can unlock authoritative scoring
       uncertaintyValidated: true,
       classificationConfidence: 0.92,
     }),
-  ).toEqual({
+  ).toMatchObject({
     release_scope_status: RELEASE_SCOPE_STATUSES.RELEASED_SCORING,
     authoritative_scoring_allowed: true,
     fallback_mode: null,
@@ -103,7 +103,7 @@ test('pilot type with a released rubric and validated uncertainty unlocks author
       uncertaintyValidated: true,
       classificationConfidence: 0.94,
     }),
-  ).toEqual({
+  ).toMatchObject({
     release_scope_status: RELEASE_SCOPE_STATUSES.RELEASED_SCORING,
     authoritative_scoring_allowed: true,
     fallback_mode: null,
@@ -129,7 +129,7 @@ test('pilot type with released rubric still falls back when classification confi
       ],
       uncertaintyValidated: true,
     }),
-  ).toEqual({
+  ).toMatchObject({
     release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
     authoritative_scoring_allowed: false,
     fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
@@ -156,7 +156,7 @@ test('promoted integration application can unlock authoritative scoring once all
       uncertaintyValidated: true,
       classificationConfidence: 0.89,
     }),
-  ).toEqual({
+  ).toMatchObject({
     release_scope_status: RELEASE_SCOPE_STATUSES.RELEASED_SCORING,
     authoritative_scoring_allowed: true,
     fallback_mode: null,
@@ -183,7 +183,7 @@ test('non-promoted integration question types remain fallback only even with a r
       uncertaintyValidated: true,
       classificationConfidence: 0.77,
     }),
-  ).toEqual({
+  ).toMatchObject({
     release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
     authoritative_scoring_allowed: false,
     fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
@@ -210,12 +210,89 @@ test('non-promoted differential equations question types remain fallback only ev
       uncertaintyValidated: true,
       classificationConfidence: 0.78,
     }),
-  ).toEqual({
+  ).toMatchObject({
     release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
     authoritative_scoring_allowed: false,
     fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
     fallback_reason_code: FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
     classification_confidence: 0.78,
     learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+  });
+});
+
+test('released-scope posture exposes factorized explainability for fallback and authoritative states', () => {
+  const fallback = resolveReleasedScoringPosture({
+    questionTypeId: '9709.integration.application',
+    questionTypeReleaseState: 'released',
+    candidateRubricRefs: [
+      {
+        kind: 'rubric_release',
+        rubric_set_id: '9709.integration.application',
+        rubric_version_id: 'integration-application-v1',
+        scope_level: 'question_type',
+        release_state: 'released',
+      },
+    ],
+    uncertaintyValidated: false,
+    classificationConfidence: 0.78,
+  });
+  const authoritative = resolveReleasedScoringPosture({
+    questionTypeId: '9709.integration.application',
+    questionTypeReleaseState: 'released',
+    candidateRubricRefs: [
+      {
+        kind: 'rubric_release',
+        rubric_set_id: '9709.integration.application',
+        rubric_version_id: 'integration-application-v1',
+        scope_level: 'question_type',
+        release_state: 'released',
+      },
+    ],
+    uncertaintyValidated: true,
+    classificationConfidence: 0.89,
+  });
+
+  expect(fallback).toMatchObject({
+    fallback_reason_code: 'unvalidated_uncertainty_posture',
+    explanation: {
+      posture: 'conservative_fallback',
+      summary: expect.stringContaining('uncertainty'),
+      factors: expect.arrayContaining([
+        expect.objectContaining({
+          code: 'released_question_type',
+          status: 'met',
+        }),
+        expect.objectContaining({
+          code: 'released_family_evidence',
+          status: 'met',
+        }),
+        expect.objectContaining({
+          code: 'released_rubric',
+          status: 'met',
+        }),
+        expect.objectContaining({
+          code: 'classification_confidence',
+          status: 'met',
+          value: 0.78,
+        }),
+        expect.objectContaining({
+          code: 'uncertainty_validation',
+          status: 'missing',
+        }),
+      ]),
+    },
+  });
+  expect(authoritative).toMatchObject({
+    authoritative_scoring_allowed: true,
+    explanation: {
+      posture: 'released_authoritative',
+      summary: expect.stringContaining('authoritative'),
+      factors: expect.arrayContaining([
+        expect.objectContaining({
+          code: 'uncertainty_validation',
+          status: 'met',
+        }),
+      ]),
+    },
   });
 });

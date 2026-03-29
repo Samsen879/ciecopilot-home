@@ -166,6 +166,291 @@ function buildStoredPolicy(policy = {}, fallbackReasonCode = null) {
   };
 }
 
+function uniqueStrings(values = []) {
+  const seen = new Set();
+  return normalizeArray(values).filter((value) => {
+    const normalized = normalizeString(value);
+    if (!normalized || seen.has(normalized)) {
+      return false;
+    }
+
+    seen.add(normalized);
+    return true;
+  });
+}
+
+function uniqueTypedRefs(refs = []) {
+  const seen = new Set();
+  return normalizeArray(refs).flatMap((ref) => {
+    const normalized = normalizeObject(ref);
+    const kind = normalizeString(normalized.kind);
+    if (!kind) {
+      return [];
+    }
+
+    const refKey = JSON.stringify(normalized);
+    if (seen.has(refKey)) {
+      return [];
+    }
+
+    seen.add(refKey);
+    return [clone(normalized)];
+  });
+}
+
+function labelFromMisconceptionTag(tag) {
+  const normalized = normalizeString(tag);
+  if (!normalized) {
+    return null;
+  }
+
+  const lastToken = normalized.split(':').pop() || normalized;
+  return lastToken.replace(/_/g, ' ');
+}
+
+function summarizeExplainability(task = {}, explainability = {}) {
+  const misconceptionTags = normalizeArray(
+    explainability?.evidence?.misconception_tags ?? task?.target_misconception_tags,
+  );
+  const misconceptionLabel = labelFromMisconceptionTag(misconceptionTags[0]);
+  const evidenceLabel = misconceptionLabel
+    ? `${misconceptionLabel}-repair`
+    : normalizeString(explainability?.evidence?.coverage_scope)
+      ? `${normalizeString(explainability.evidence.coverage_scope)}-level`
+      : 'runtime';
+
+  return `Queued from ${evidenceLabel} evidence while authoritative mastery stays conservative.`;
+}
+
+export function buildReviewTaskExplainabilitySeed({
+  sourceQuestionId = null,
+  sourceAttemptRef = null,
+  targetMisconceptionTags = [],
+  fallbackReasonCode = null,
+  schedulerPolicy = {},
+  coverageScope = 'question',
+  localSignalOnly = false,
+  partResults = [],
+  ambiguousPartMappingCount = 0,
+} = {}) {
+  const sourceAttemptRefs = uniqueTypedRefs(sourceAttemptRef ? [sourceAttemptRef] : []);
+  const sourceQuestionIds = uniqueStrings(sourceQuestionId ? [sourceQuestionId] : []);
+
+  return {
+    posture: 'conservative_fallback',
+    posture_reason_code: fallbackReasonCode ?? null,
+    creation_reason_codes: uniqueStrings([
+      fallbackReasonCode,
+      normalizeArray(targetMisconceptionTags).length > 0 ? 'misconception_tag_trigger' : null,
+      localSignalOnly ? 'local_signal_only' : null,
+    ]),
+    attempt_history: {
+      attempt_count: Math.max(sourceAttemptRefs.length, sourceQuestionIds.length),
+      latest_source_attempt_ref: sourceAttemptRef ?? null,
+      source_attempt_refs: sourceAttemptRefs,
+      source_question_ids: sourceQuestionIds,
+    },
+    evidence: {
+      source_question_id: sourceQuestionId ?? null,
+      source_attempt_ref: sourceAttemptRef ?? null,
+      misconception_tags: normalizeArray(targetMisconceptionTags),
+      coverage_scope: coverageScope ?? null,
+      local_signal_only: localSignalOnly === true,
+      ambiguous_part_mapping_count: Number(ambiguousPartMappingCount ?? 0),
+      part_results: normalizeArray(partResults),
+    },
+    freshness: {
+      route: normalizeString(schedulerPolicy?.route),
+      bucket: normalizeString(schedulerPolicy?.freshness_bucket),
+    },
+  };
+}
+
+function mergeReviewTaskExplainability(existingTask = {}, candidateTask = {}) {
+  const existingExplainability = normalizeObject(
+    normalizeObject(existingTask?.success_criteria)?.explainability,
+  );
+  const candidateExplainability = normalizeObject(
+    normalizeObject(candidateTask?.success_criteria)?.explainability,
+  );
+  const existingAttemptHistory = normalizeObject(existingExplainability.attempt_history);
+  const candidateAttemptHistory = normalizeObject(candidateExplainability.attempt_history);
+  const existingEvidence = normalizeObject(existingExplainability.evidence);
+  const candidateEvidence = normalizeObject(candidateExplainability.evidence);
+  const existingFreshness = normalizeObject(existingExplainability.freshness);
+  const candidateFreshness = normalizeObject(candidateExplainability.freshness);
+  const sourceAttemptRefs = uniqueTypedRefs([
+    ...normalizeArray(existingAttemptHistory.source_attempt_refs),
+    existingAttemptHistory.latest_source_attempt_ref,
+    existingEvidence.source_attempt_ref,
+    ...normalizeArray(candidateAttemptHistory.source_attempt_refs),
+    candidateAttemptHistory.latest_source_attempt_ref,
+    candidateEvidence.source_attempt_ref,
+  ]);
+  const latestSourceAttemptRef =
+    candidateAttemptHistory.latest_source_attempt_ref
+    ?? candidateEvidence.source_attempt_ref
+    ?? existingAttemptHistory.latest_source_attempt_ref
+    ?? existingEvidence.source_attempt_ref
+    ?? null;
+  const sourceQuestionIds = uniqueStrings([
+    ...normalizeArray(existingAttemptHistory.source_question_ids),
+    existingEvidence.source_question_id,
+    ...normalizeArray(candidateAttemptHistory.source_question_ids),
+    candidateEvidence.source_question_id,
+  ]);
+
+  return {
+    posture: candidateExplainability.posture ?? existingExplainability.posture ?? 'conservative_fallback',
+    posture_reason_code:
+      candidateExplainability.posture_reason_code
+      ?? existingExplainability.posture_reason_code
+      ?? null,
+    creation_reason_codes: uniqueStrings([
+      ...normalizeArray(existingExplainability.creation_reason_codes),
+      ...normalizeArray(candidateExplainability.creation_reason_codes),
+    ]),
+    attempt_history: {
+      attempt_count:
+        Math.max(
+          sourceAttemptRefs.length,
+          sourceQuestionIds.length,
+          Number(existingAttemptHistory.attempt_count ?? 0),
+          Number(candidateAttemptHistory.attempt_count ?? 0),
+        ),
+      latest_source_attempt_ref: latestSourceAttemptRef,
+      source_attempt_refs: sourceAttemptRefs,
+      source_question_ids: sourceQuestionIds,
+    },
+    evidence: {
+      ...existingEvidence,
+      ...candidateEvidence,
+      source_question_id:
+        candidateEvidence.source_question_id ?? existingEvidence.source_question_id ?? null,
+      source_attempt_ref: latestSourceAttemptRef,
+      misconception_tags: uniqueStrings([
+        ...normalizeArray(existingEvidence.misconception_tags),
+        ...normalizeArray(candidateEvidence.misconception_tags),
+      ]),
+      part_results:
+        normalizeArray(candidateEvidence.part_results).length > 0
+          ? normalizeArray(candidateEvidence.part_results)
+          : normalizeArray(existingEvidence.part_results),
+      ambiguous_part_mapping_count:
+        candidateEvidence.ambiguous_part_mapping_count
+        ?? existingEvidence.ambiguous_part_mapping_count
+        ?? 0,
+      coverage_scope: candidateEvidence.coverage_scope ?? existingEvidence.coverage_scope ?? null,
+      local_signal_only:
+        candidateEvidence.local_signal_only
+        ?? existingEvidence.local_signal_only
+        ?? false,
+    },
+    freshness: {
+      ...existingFreshness,
+      ...candidateFreshness,
+      route: candidateFreshness.route ?? existingFreshness.route ?? null,
+      bucket: candidateFreshness.bucket ?? existingFreshness.bucket ?? null,
+    },
+  };
+}
+
+export function buildReviewTaskExplainability(task = {}) {
+  const successCriteria = normalizeObject(task?.success_criteria);
+  const storedExplainability = normalizeObject(successCriteria.explainability);
+  const attemptHistory = normalizeObject(storedExplainability.attempt_history);
+  const evidence = normalizeObject(storedExplainability.evidence);
+  const freshness = normalizeObject(storedExplainability.freshness);
+  const schedulerState = normalizeObject(task?.scheduler_state);
+  const schedulerReasons = normalizeArray(task?.scheduler_reasons);
+  const explanation = {
+    posture: normalizeString(storedExplainability.posture, 'conservative_fallback'),
+    posture_reason_code:
+      normalizeString(
+        storedExplainability.posture_reason_code,
+        successCriteria.fallback_reason_code ?? null,
+      ),
+    creation_reason_codes: uniqueStrings(storedExplainability.creation_reason_codes),
+    attempt_history: {
+      attempt_count:
+        Number(
+          attemptHistory.attempt_count
+          ?? uniqueTypedRefs([
+            ...normalizeArray(attemptHistory.source_attempt_refs),
+            attemptHistory.latest_source_attempt_ref,
+            evidence.source_attempt_ref ?? task?.source_attempt_ref,
+          ]).length,
+        ) || 0,
+      latest_source_attempt_ref:
+        attemptHistory.latest_source_attempt_ref
+        ?? evidence.source_attempt_ref
+        ?? task?.source_attempt_ref
+        ?? null,
+      source_attempt_refs: uniqueTypedRefs([
+        ...normalizeArray(attemptHistory.source_attempt_refs),
+        attemptHistory.latest_source_attempt_ref,
+        evidence.source_attempt_ref,
+        task?.source_attempt_ref,
+      ]),
+      source_question_ids: uniqueStrings([
+        ...normalizeArray(attemptHistory.source_question_ids),
+        evidence.source_question_id,
+        task?.source_question_id,
+      ]),
+    },
+    evidence: {
+      source_question_id: normalizeString(
+        evidence.source_question_id,
+        task?.source_question_id ?? null,
+      ),
+      source_attempt_ref:
+        evidence.source_attempt_ref
+        ?? task?.source_attempt_ref
+        ?? null,
+      misconception_tags: uniqueStrings(
+        evidence.misconception_tags ?? task?.target_misconception_tags,
+      ),
+      coverage_scope: normalizeString(
+        evidence.coverage_scope,
+        successCriteria.coverage_scope ?? null,
+      ),
+      local_signal_only:
+        typeof evidence.local_signal_only === 'boolean'
+          ? evidence.local_signal_only
+          : successCriteria.local_signal_only === true,
+      ambiguous_part_mapping_count:
+        evidence.ambiguous_part_mapping_count
+        ?? successCriteria.ambiguous_part_mapping_count
+        ?? 0,
+      part_results: normalizeArray(
+        evidence.part_results ?? successCriteria.part_results,
+      ),
+    },
+    freshness: {
+      route: normalizeString(
+        freshness.route,
+        task?.scheduler_policy?.route ?? normalizeRoute(task),
+      ),
+      bucket: normalizeString(
+        freshness.bucket,
+        task?.scheduler_policy?.freshness_bucket ?? null,
+      ),
+      due_at: normalizeString(task?.due_at),
+      scheduler_state: normalizeString(task?.scheduler_state?.value),
+      reason_codes: uniqueStrings(
+        schedulerReasons.map((reason) => reason?.code),
+      ),
+    },
+    summary: normalizeString(storedExplainability.summary),
+  };
+
+  if (!explanation.summary) {
+    explanation.summary = summarizeExplainability(task, explanation);
+  }
+
+  return explanation;
+}
+
 export function buildReviewTaskSchedulerSeed({
   now = new Date(),
   misconceptionTags = [],
@@ -334,6 +619,7 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
       scheduler_policy: schedulerPolicy,
       scheduler_state: buildSchedulerStateFromTask(task, { now: nowDate.toISOString() }),
       scheduler_reasons: [],
+      explanation: null,
     };
   });
 
@@ -419,6 +705,13 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
       ? buildReason(task.scheduler_state.reason_code, task.scheduler_state.reason_summary)
       : null;
     task.scheduler_reasons = reason ? [reason] : [];
+    task.explanation = buildReviewTaskExplainability(task);
+  }
+
+  for (const task of items) {
+    if (!task.explanation) {
+      task.explanation = buildReviewTaskExplainability(task);
+    }
   }
 
   return {
@@ -520,6 +813,7 @@ export function mergeReviewTaskPayload(existingTask = {}, candidateTask = {}, ti
       ...existingSuccessCriteria,
       ...candidateSuccessCriteria,
       scheduler_policy: mergedSchedulerPolicy,
+      explainability: mergeReviewTaskExplainability(existingTask, candidateTask),
     },
     updated_at: timestamp,
   };
@@ -535,5 +829,11 @@ export function normalizeSchedulerProjectionItem(item = {}) {
     scheduler_policy: schedulerPolicy,
     scheduler_state: schedulerState,
     scheduler_reasons: schedulerReasons,
+    explanation: buildReviewTaskExplainability({
+      ...item,
+      scheduler_policy: schedulerPolicy,
+      scheduler_state: schedulerState,
+      scheduler_reasons: schedulerReasons,
+    }),
   };
 }

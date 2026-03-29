@@ -181,6 +181,42 @@ function buildRuntimePostureSummary(readOnly) {
   return 'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.';
 }
 
+function buildRuntimePostureExplanation({
+  adapter,
+  supportedCapabilities = [],
+  fallbackCapabilities = [],
+} = {}) {
+  const readOnly = Array.isArray(fallbackCapabilities) && fallbackCapabilities.length > 0;
+  if (!readOnly || !adapter) {
+    return null;
+  }
+
+  const displayName = adapter.meta.display_name ?? adapter.meta.subject_code ?? 'This subject';
+  return {
+    posture: 'read_only_fallback',
+    summary:
+      `${displayName} is read-only in the current runtime slice, so mastery and review automation remain conservative.`,
+    factors: [
+      {
+        code: 'selection_state',
+        status: adapter.meta.selection_state ?? 'unknown',
+        summary:
+          `${displayName} is ${String(adapter.meta.selection_state ?? 'unknown').replace(/_/g, ' ')} instead of the current runtime subject.`,
+      },
+      ...supportedCapabilities.map((capability) => ({
+        code: capability,
+        status: 'supported',
+        summary: `${capability.replace(/_/g, ' ')} remains enabled in this slice.`,
+      })),
+      ...fallbackCapabilities.map((capability) => ({
+        code: capability,
+        status: 'fallback_only',
+        summary: `${capability.replace(/_/g, ' ')} remains conservative in this slice.`,
+      })),
+    ],
+  };
+}
+
 export const SUBJECT_ADAPTER_DECISION = Object.freeze({
   current_runtime_subject: '9709',
   selected_next_subject: '9702',
@@ -332,6 +368,11 @@ export function buildSubjectRuntimePosture(subjectCode, { allowDisabled = false 
     supported_capabilities: supportedCapabilities,
     fallback_capabilities: fallbackCapabilities,
     summary: buildRuntimePostureSummary(readOnly),
+    explanation: buildRuntimePostureExplanation({
+      adapter,
+      supportedCapabilities,
+      fallbackCapabilities,
+    }),
   };
 }
 

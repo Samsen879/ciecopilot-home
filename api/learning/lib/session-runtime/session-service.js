@@ -7,6 +7,7 @@ import {
   setLearningRequestIdempotencyResourceRef,
 } from '../repositories/request-idempotency-repository.js';
 import { insertSession, getSession } from '../repositories/session-repository.js';
+import { buildSubjectRuntimePostureOrNull } from '../subjects/subject-adapter-registry.js';
 import { resolveCreateSessionAnchor } from './session-anchor-resolution.js';
 import {
   buildChildSessionLineage,
@@ -696,6 +697,7 @@ function buildLearningSessionResponse(session, {
 } = {}) {
   const normalizedSession = normalizeSessionResponse(session);
   const bundle = normalizedSession.active_scope_bundle;
+  const subjectCode = normalizeNullableString(normalizedSession.subject_code);
   const resolvedCanonicalHome = canonicalHome || {
     topic_id: bundle.primary_topic_id,
     topic_path: bundle.primary_topic_path,
@@ -703,6 +705,7 @@ function buildLearningSessionResponse(session, {
 
   return {
     session: normalizedSession,
+    runtime_posture: buildSubjectRuntimePostureOrNull(subjectCode),
     anchor_validity: buildAnchorValidity(
       anchorKind,
       anchorRef,

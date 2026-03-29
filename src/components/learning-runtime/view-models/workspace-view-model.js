@@ -89,6 +89,46 @@ function buildWorkspaceSummary(workspace = {}) {
   };
 }
 
+function normalizeCapabilityList(values) {
+  return (Array.isArray(values) ? values : [])
+    .map((value) => normalizeString(value))
+    .filter(Boolean);
+}
+
+function buildRuntimePostureViewModel(runtimePosture = null) {
+  if (!runtimePosture || typeof runtimePosture !== 'object') {
+    return null;
+  }
+
+  return {
+    subjectCode: normalizeString(runtimePosture.subjectCode ?? runtimePosture.subject_code),
+    displayName: normalizeString(runtimePosture.displayName ?? runtimePosture.display_name),
+    selectionState: normalizeString(runtimePosture.selectionState ?? runtimePosture.selection_state),
+    readOnly:
+      typeof runtimePosture.readOnly === 'boolean'
+        ? runtimePosture.readOnly
+        : runtimePosture.read_only ?? false,
+    authoritativeScoringAllowed:
+      typeof runtimePosture.authoritativeScoringAllowed === 'boolean'
+        ? runtimePosture.authoritativeScoringAllowed
+        : runtimePosture.authoritative_scoring_allowed ?? null,
+    releaseScopeStatus: normalizeString(
+      runtimePosture.releaseScopeStatus ?? runtimePosture.release_scope_status,
+    ),
+    fallbackMode: normalizeString(runtimePosture.fallbackMode ?? runtimePosture.fallback_mode),
+    fallbackReasonCode: normalizeString(
+      runtimePosture.fallbackReasonCode ?? runtimePosture.fallback_reason_code,
+    ),
+    learningSignalPosture: normalizeString(
+      runtimePosture.learningSignalPosture ?? runtimePosture.learning_signal_posture,
+    ),
+    fallbackCapabilities: normalizeCapabilityList(
+      runtimePosture.fallbackCapabilities ?? runtimePosture.fallback_capabilities,
+    ),
+    summary: normalizeString(runtimePosture.summary),
+  };
+}
+
 function normalizeRefList(refs) {
   return (Array.isArray(refs) ? refs : [])
     .map((ref) => normalizeRef(ref))
@@ -787,6 +827,9 @@ export function buildWorkspaceViewModel(payload = {}, options = {}) {
   const workspace = payload.workspace || {};
   const slotState = workspace.slotState || workspace.slot_state || {};
   const workspaceSummary = buildWorkspaceSummary(workspace);
+  const runtimePosture = buildRuntimePostureViewModel(
+    payload.runtimePosture || payload.runtime_posture || null,
+  );
   const stableSlots = Object.fromEntries(
     SLOT_DEFINITIONS.map((definition) => [
       definition.key,
@@ -802,6 +845,7 @@ export function buildWorkspaceViewModel(payload = {}, options = {}) {
 
   return {
     workspace: workspaceSummary,
+    runtimePosture,
     slots: stableSlots,
     slotList,
     artifactInbox: buildArtifactInboxViewModel(workspace, slotList),

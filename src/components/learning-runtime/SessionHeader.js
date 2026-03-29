@@ -59,6 +59,18 @@ export default function SessionHeader({ header, session }) {
             header?.fallbackReasonCode ? ` Reason: ${header.fallbackReasonCode}.` : '',
             header?.learningSignalPosture ? ` Learning signal posture: ${header.learningSignalPosture}.` : '',
           ].join('')),
+          header?.runtimeSummary
+            ? h('p', {
+              key: 'summary',
+              className: 'mt-1 leading-6',
+            }, header.runtimeSummary)
+            : null,
+          Array.isArray(header?.fallbackCapabilities) && header.fallbackCapabilities.length > 0
+            ? h('p', {
+              key: 'capabilities',
+              className: 'mt-1 leading-6',
+            }, `Conservative capabilities: ${header.fallbackCapabilities.join(', ')}.`)
+            : null,
         ])
         : null,
     ]),

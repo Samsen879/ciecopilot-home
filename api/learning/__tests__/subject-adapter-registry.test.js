@@ -5,6 +5,8 @@ import {
 } from '../lib/subjects/subject-adapter-contract.js';
 import {
   SUBJECT_ADAPTER_DECISION,
+  buildSubjectRuntimePosture,
+  buildSubjectRuntimePostureOrNull,
   getSubjectAdapter,
   getSubjectCapabilityPosture,
 } from '../lib/subjects/subject-adapter-registry.js';
@@ -96,6 +98,30 @@ describe('subject adapter registry', () => {
       fallback_reason_code: 'subject_adapter_capability_not_enabled',
       classification_confidence: 0.91,
       learning_signal_posture: 'conservative_fallback',
+    });
+  });
+
+  test('9702 runtime posture is explicitly read-only for session and workspace surfaces', () => {
+    expect(buildSubjectRuntimePosture('9702')).toMatchObject({
+      subject_code: '9702',
+      display_name: 'Physics',
+      selection_state: 'selected_next',
+      read_only: true,
+      authoritative_scoring_allowed: false,
+      release_scope_status: 'non_released_fallback',
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'subject_adapter_capability_not_enabled',
+      learning_signal_posture: 'conservative_fallback',
+      supported_capabilities: ['classification'],
+      fallback_capabilities: ['marking', 'mastery', 'review'],
+    });
+  });
+
+  test('optional runtime posture metadata returns null for unregistered subjects', () => {
+    expect(buildSubjectRuntimePostureOrNull('9231')).toBeNull();
+    expect(buildSubjectRuntimePostureOrNull('9702')).toMatchObject({
+      subject_code: '9702',
+      read_only: true,
     });
   });
 });

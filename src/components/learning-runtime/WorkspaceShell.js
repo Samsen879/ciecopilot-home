@@ -458,6 +458,49 @@ function renderWorkspaceHeader(workspace) {
   ]);
 }
 
+function renderRuntimePosture(runtimePosture = null) {
+  if (!runtimePosture?.fallbackMode) {
+    return null;
+  }
+
+  const capabilityCopy = Array.isArray(runtimePosture?.fallbackCapabilities)
+    && runtimePosture.fallbackCapabilities.length > 0
+    ? `Conservative capabilities: ${runtimePosture.fallbackCapabilities.join(', ')}.`
+    : null;
+
+  return h('section', {
+    key: 'runtime-posture',
+    className: 'rounded-3xl border border-amber-200 bg-amber-50 p-6 shadow-sm',
+  }, [
+    h('p', {
+      key: 'eyebrow',
+      className: 'text-sm font-medium uppercase tracking-[0.24em] text-amber-900',
+    }, 'Runtime posture'),
+    h('h2', {
+      key: 'title',
+      className: 'mt-3 text-2xl font-semibold tracking-tight text-amber-950',
+    }, runtimePosture.summary || 'Runtime fallback is active'),
+    h('p', {
+      key: 'body',
+      className: 'mt-3 text-sm leading-6 text-amber-900',
+    }, [
+      `Fallback mode: ${runtimePosture.fallbackMode}.`,
+      runtimePosture.fallbackReasonCode
+        ? ` Reason: ${runtimePosture.fallbackReasonCode}.`
+        : '',
+      runtimePosture.learningSignalPosture
+        ? ` Learning signal posture: ${runtimePosture.learningSignalPosture}.`
+        : '',
+    ].join('')),
+    capabilityCopy
+      ? h('p', {
+        key: 'capabilities',
+        className: 'mt-2 text-sm leading-6 text-amber-900',
+      }, capabilityCopy)
+      : null,
+  ]);
+}
+
 function renderRevisitAction(action, onLaunch, key = 'action') {
   if (!action?.launchPayload || typeof onLaunch !== 'function') {
     return null;
@@ -740,6 +783,7 @@ export default function WorkspaceShell({
 
   return h('div', { className: 'grid gap-6' }, [
     renderWorkspaceHeader(localViewModel?.workspace || {}),
+    renderRuntimePosture(localViewModel?.runtimePosture || null),
     renderRevisitSection(localViewModel?.revisit || null, onLaunch),
     feedback
       ? h('section', {

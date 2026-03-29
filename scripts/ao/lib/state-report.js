@@ -19,6 +19,8 @@ export function renderAoStateHumanSummary(report) {
     `actions: ${report.summary.action_count}`,
     `active_overrides: ${report.summary.active_override_count}`,
     `controller_modes: ${formatList(report.summary.controller_modes)}`,
+    `observations: ${report.summary.observation_count}`,
+    `controller_cursors: ${report.summary.controller_cursor_count}`,
     `audit_entries: ${report.summary.audit_entry_count}`,
     `recent_audit: ${formatList(recentAudit)}`,
   ].join('\n');

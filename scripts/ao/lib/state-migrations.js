@@ -73,6 +73,8 @@ function buildMigratedState({
     'actions',
     'overrides',
     'controller_modes',
+    'observations',
+    'controller_cursors',
   ]) {
     if (Array.isArray(existingState?.[collectionKey])) {
       state[collectionKey] = cloneJsonValue(existingState[collectionKey]);

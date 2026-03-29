@@ -64,6 +64,8 @@ export async function loadAoStateReport({
       active_override_count: snapshot.state.overrides.filter((override) => override.status === 'active').length,
       controller_mode_count: snapshot.state.controller_modes.length,
       controller_modes: summarizeControllerModes(snapshot.state.controller_modes),
+      observation_count: snapshot.state.observations.length,
+      controller_cursor_count: snapshot.state.controller_cursors.length,
       audit_entry_count: auditEntries.length,
     },
     audit: {

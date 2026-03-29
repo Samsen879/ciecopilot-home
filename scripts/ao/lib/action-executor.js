@@ -1,0 +1,437 @@
+import { createActionRecord } from './state-contracts.js';
+
+export const ASSIST_ACTION_MODEL_SCHEMA_VERSION = 'ao.control-plane.action-model.v1alpha1';
+export const ASSIST_ACTION_MODEL_FORMAT = 'ao_control_plane_action_model';
+export const ACTION_RISK_CLASSES = ['class_a', 'class_b', 'class_c'];
+
+function resolveNow(now) {
+  if (typeof now === 'function') return resolveNow(now());
+  if (typeof now === 'string' && now.trim() !== '') return now.trim();
+  return new Date().toISOString();
+}
+
+function isPlainObject(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function cloneJsonValue(value) {
+  if (value == null) return value;
+  return JSON.parse(JSON.stringify(value));
+}
+
+function toStringArray(values) {
+  return (values ?? []).map((value) => String(value));
+}
+
+function toNullablePositiveInteger(value) {
+  if (value == null) return null;
+  const normalized = Number(value);
+  if (!Number.isInteger(normalized) || normalized <= 0) return null;
+  return normalized;
+}
+
+function buildTaskActivePrecondition(task) {
+  return {
+    code: 'task_active',
+    description: 'Managed task must remain active.',
+    satisfied: task?.status === 'active',
+  };
+}
+
+function buildPrScopePrecondition(prNumber) {
+  return {
+    code: 'pr_scope_required',
+    description: 'Action requires one bound PR scope.',
+    satisfied: Number.isInteger(toNullablePositiveInteger(prNumber)),
+  };
+}
+
+const ACTION_POLICIES = {
+  continue_worker: {
+    riskClass: 'class_a',
+    phase4AssistExecutable: true,
+    nonExecutableReason: 'class_a_allowlist',
+    buildPreconditions: ({ task }) => [
+      buildTaskActivePrecondition(task),
+    ],
+  },
+  notify_human_ready: {
+    riskClass: 'class_a',
+    phase4AssistExecutable: true,
+    nonExecutableReason: 'class_a_allowlist',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
+  hold_ci: {
+    riskClass: 'class_b',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'advisory_hold_non_executable',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
+  hold_review: {
+    riskClass: 'class_b',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'advisory_hold_non_executable',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
+  hold_mergeability: {
+    riskClass: 'class_b',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'advisory_hold_non_executable',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
+  hold_local_control: {
+    riskClass: 'class_b',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'advisory_hold_non_executable',
+    buildPreconditions: ({ task }) => [
+      buildTaskActivePrecondition(task),
+    ],
+  },
+  human_gate: {
+    riskClass: 'class_b',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'explicit_human_gate_required',
+    buildPreconditions: ({ task }) => [
+      buildTaskActivePrecondition(task),
+    ],
+  },
+  restore_worker: {
+    riskClass: 'class_c',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'runtime_ownership_change_forbidden',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
+  handoff_worker: {
+    riskClass: 'class_c',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'runtime_ownership_change_forbidden',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
+};
+
+function resolveActionPolicy(actionKind) {
+  return ACTION_POLICIES[actionKind] ?? {
+    riskClass: 'class_c',
+    phase4AssistExecutable: false,
+    nonExecutableReason: 'unclassified_action_forbidden',
+    buildPreconditions: ({ task }) => [
+      buildTaskActivePrecondition(task),
+    ],
+  };
+}
+
+function buildExecutionDecision({
+  phase4AssistExecutable,
+  preconditions,
+  nonExecutableReason,
+} = {}) {
+  const preconditionsSatisfied = preconditions.every((item) => item.satisfied === true);
+  if (!phase4AssistExecutable) {
+    return {
+      executable: false,
+      reason: nonExecutableReason,
+    };
+  }
+
+  return {
+    executable: preconditionsSatisfied,
+    reason: preconditionsSatisfied ? 'class_a_allowlist' : 'preconditions_unsatisfied',
+  };
+}
+
+export function buildAssistActionModel({
+  controllerId,
+  task,
+  prNumber = null,
+  derivedTrigger = 'manual',
+  lifecycleTopStatus = null,
+  action,
+} = {}) {
+  const policy = resolveActionPolicy(action?.id);
+  const normalizedPrNumber = toNullablePositiveInteger(prNumber);
+  const preconditions = policy.buildPreconditions({
+    controllerId,
+    task,
+    prNumber: normalizedPrNumber,
+    action,
+  });
+  const phase4Assist = buildExecutionDecision({
+    phase4AssistExecutable: policy.phase4AssistExecutable,
+    preconditions,
+    nonExecutableReason: policy.nonExecutableReason,
+  });
+
+  return {
+    schema_version: ASSIST_ACTION_MODEL_SCHEMA_VERSION,
+    format: ASSIST_ACTION_MODEL_FORMAT,
+    controller_id: controllerId == null ? null : String(controllerId),
+    task_id: task?.task_id ?? null,
+    pr_number: normalizedPrNumber,
+    action_kind: String(action?.id),
+    action_class: String(action?.action_class ?? action?.id ?? 'unknown'),
+    summary: String(action?.summary ?? ''),
+    commands: toStringArray(action?.commands),
+    rationale: String(action?.rationale ?? ''),
+    derived_trigger: String(derivedTrigger ?? 'manual'),
+    lifecycle_top_status: lifecycleTopStatus == null ? null : String(lifecycleTopStatus),
+    risk_class: policy.riskClass,
+    preconditions,
+    phase4_assist: phase4Assist,
+  };
+}
+
+function buildFallbackActionModel(record, controllerId, task) {
+  return buildAssistActionModel({
+    controllerId,
+    task,
+    prNumber: record?.payload?.pr_number ?? null,
+    derivedTrigger: record?.payload?.derived_trigger ?? 'manual',
+    lifecycleTopStatus: record?.payload?.top_status ?? null,
+    action: {
+      id: record?.action_kind,
+      action_class: record?.payload?.action_class ?? record?.action_kind,
+      summary: record?.reason ?? `Action ${record?.action_kind ?? 'unknown'}`,
+      commands: record?.payload?.commands ?? [],
+      rationale: record?.payload?.rationale ?? '',
+    },
+  });
+}
+
+function isExpiredOverride(override, timestamp) {
+  if (override?.status !== 'active' || !override?.expires_at) return false;
+  const expiresAt = new Date(override.expires_at);
+  const now = new Date(timestamp);
+  if (Number.isNaN(expiresAt.getTime()) || Number.isNaN(now.getTime())) return false;
+  return expiresAt.getTime() <= now.getTime();
+}
+
+function matchesOverrideScope(override, { controllerId, taskId, prNumber } = {}) {
+  switch (override?.scope_kind) {
+    case 'global':
+      return true;
+    case 'task':
+      return override.scope_id === taskId;
+    case 'controller':
+      return override.scope_id === controllerId;
+    case 'pr':
+      return override.scope_id === (prNumber == null ? null : String(prNumber));
+    default:
+      return false;
+  }
+}
+
+function normalizeActionKindsFromOverride(value) {
+  if (typeof value === 'string' && value.trim() !== '') return [value.trim()];
+  if (Array.isArray(value)) return value.map((item) => String(item));
+  if (!isPlainObject(value)) return [];
+
+  const explicitKind = typeof value.action_kind === 'string' ? [value.action_kind] : [];
+  const explicitKinds = Array.isArray(value.action_kinds)
+    ? value.action_kinds.map((item) => String(item))
+    : [];
+  return [...explicitKind, ...explicitKinds];
+}
+
+function resolveOverrideBlockReason(override, actionKind) {
+  if (override?.override_kind === 'hold_autonomy') {
+    const enabled = !isPlainObject(override.value) || override.value.enabled !== false;
+    return enabled ? 'override_hold_autonomy' : null;
+  }
+
+  if (override?.override_kind === 'block_action_kind') {
+    const actionKinds = normalizeActionKindsFromOverride(override.value);
+    return actionKinds.includes(actionKind) ? 'override_block_action_kind' : null;
+  }
+
+  return null;
+}
+
+function resolveBlockingOverrides(repository, {
+  controllerId,
+  task,
+  actionKind,
+  prNumber,
+  timestamp,
+} = {}) {
+  const snapshot = repository.getSnapshot();
+
+  return snapshot.state.overrides
+    .filter((override) => override.status === 'active')
+    .filter((override) => !isExpiredOverride(override, timestamp))
+    .filter((override) => matchesOverrideScope(override, {
+      controllerId,
+      taskId: task?.task_id ?? null,
+      prNumber,
+    }))
+    .map((override) => ({
+      override,
+      reason: resolveOverrideBlockReason(override, actionKind),
+    }))
+    .filter((entry) => entry.reason != null);
+}
+
+function buildBlockedActionRecord(record, model, timestamp, {
+  reason,
+  matchedOverrideIds = [],
+  structural = false,
+} = {}) {
+  return createActionRecord({
+    ...record,
+    status: structural ? 'blocked' : record.status,
+    updated_at: timestamp,
+    payload: {
+      ...(isPlainObject(record?.payload) ? record.payload : {}),
+      action_model: cloneJsonValue(model),
+      execution: {
+        outcome: 'blocked',
+        reason,
+        blocked_at: timestamp,
+        executor: 'assist_controller',
+        matched_override_ids: matchedOverrideIds,
+      },
+    },
+  });
+}
+
+function buildExecutedActionRecord(record, model, timestamp) {
+  return createActionRecord({
+    ...record,
+    status: 'executed',
+    updated_at: timestamp,
+    payload: {
+      ...(isPlainObject(record?.payload) ? record.payload : {}),
+      action_model: cloneJsonValue(model),
+      execution: {
+        outcome: 'executed',
+        reason: 'class_a_assist_execution',
+        executed_at: timestamp,
+        executor: 'assist_controller',
+      },
+    },
+  });
+}
+
+export async function executeAssistActions({
+  repository,
+  controllerId,
+  task,
+  actionIds = [],
+  now = new Date().toISOString(),
+} = {}) {
+  const timestamp = resolveNow(now);
+  const uniqueActionIds = [...new Set((actionIds ?? []).map((value) => String(value)))];
+  const executedActionIds = [];
+  const blockedActionIds = [];
+
+  for (const actionId of uniqueActionIds) {
+    const record = repository.getSnapshot().state.actions.find((item) => item.action_id === actionId);
+    if (!record || record.status !== 'proposed') {
+      continue;
+    }
+
+    const model = isPlainObject(record.payload?.action_model)
+      ? cloneJsonValue(record.payload.action_model)
+      : buildFallbackActionModel(record, controllerId, task);
+
+    const blockingOverrides = resolveBlockingOverrides(repository, {
+      controllerId,
+      task,
+      actionKind: record.action_kind,
+      prNumber: toNullablePositiveInteger(model.pr_number),
+      timestamp,
+    });
+
+    if (blockingOverrides.length > 0) {
+      const blockedRecord = buildBlockedActionRecord(record, model, timestamp, {
+        reason: blockingOverrides[0].reason,
+        matchedOverrideIds: blockingOverrides.map((entry) => entry.override.override_id),
+        structural: false,
+      });
+      repository.upsertAction(blockedRecord);
+      repository.appendAuditEntry({
+        entityKind: 'action',
+        entityId: record.action_id,
+        operation: 'execution_blocked',
+        actor: 'assist_controller',
+        summary: `Blocked assist execution for ${record.action_id}.`,
+        details: {
+          action_id: record.action_id,
+          action_kind: record.action_kind,
+          reason: blockingOverrides[0].reason,
+          matched_override_ids: blockingOverrides.map((entry) => entry.override.override_id),
+        },
+        recordedAt: timestamp,
+      });
+      blockedActionIds.push(record.action_id);
+      continue;
+    }
+
+    if (model.phase4_assist?.executable !== true) {
+      const blockedRecord = buildBlockedActionRecord(record, model, timestamp, {
+        reason: model.phase4_assist?.reason ?? 'phase4_assist_not_executable',
+        matchedOverrideIds: [],
+        structural: true,
+      });
+      repository.upsertAction(blockedRecord);
+      repository.appendAuditEntry({
+        entityKind: 'action',
+        entityId: record.action_id,
+        operation: 'execution_blocked',
+        actor: 'assist_controller',
+        summary: `Blocked assist execution for ${record.action_id}.`,
+        details: {
+          action_id: record.action_id,
+          action_kind: record.action_kind,
+          reason: model.phase4_assist?.reason ?? 'phase4_assist_not_executable',
+          risk_class: model.risk_class,
+        },
+        recordedAt: timestamp,
+      });
+      blockedActionIds.push(record.action_id);
+      continue;
+    }
+
+    const executedRecord = buildExecutedActionRecord(record, model, timestamp);
+    repository.upsertAction(executedRecord);
+    repository.appendAuditEntry({
+      entityKind: 'action',
+      entityId: record.action_id,
+      operation: 'executed',
+      actor: 'assist_controller',
+      summary: `Executed assist action ${record.action_id}.`,
+      details: {
+        action_id: record.action_id,
+        action_kind: record.action_kind,
+        risk_class: model.risk_class,
+        task_id: task?.task_id ?? null,
+        controller_id: controllerId,
+        pr_number: model.pr_number ?? null,
+      },
+      recordedAt: timestamp,
+    });
+    executedActionIds.push(record.action_id);
+  }
+
+  return {
+    executedActionIds,
+    blockedActionIds,
+  };
+}

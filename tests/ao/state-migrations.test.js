@@ -36,6 +36,19 @@ afterEach(() => {
 });
 
 describe('ao state migrations', () => {
+  it('rejects project ids that could escape the repo-local control-plane root', () => {
+    const repoRoot = createTempRepo();
+
+    expect(() => resolveControlPlanePaths({
+      repoRoot,
+      projectId: '../../escape',
+    })).toThrow(/projectId/i);
+    expect(() => resolveControlPlanePaths({
+      repoRoot,
+      projectId: 'nested/project',
+    })).toThrow(/projectId/i);
+  });
+
   it('bootstraps a fresh repo-local control-plane schema', () => {
     const repoRoot = createTempRepo();
 

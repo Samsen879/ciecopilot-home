@@ -15,6 +15,15 @@ function createDefaultIo() {
   };
 }
 
+function readOptionValue(argv, index, optionName) {
+  const value = argv[index + 1] ?? null;
+  if (value == null || value.startsWith('-')) {
+    throw new Error(`Missing value for ${optionName}`);
+  }
+
+  return value;
+}
+
 function parseArgs(argv) {
   const options = {
     projectId: DEFAULT_PROJECT_ID,
@@ -26,7 +35,14 @@ function parseArgs(argv) {
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === '--project') {
-      options.projectId = argv[index + 1] ?? null;
+      try {
+        options.projectId = readOptionValue(argv, index, '--project');
+      } catch (error) {
+        return {
+          ok: false,
+          error: error.message,
+        };
+      }
       index += 1;
     } else if (arg === '--audit-limit') {
       const value = argv[index + 1] ?? null;

@@ -106,4 +106,17 @@ describe('ao state cli', () => {
     expect(stderr.join('')).toContain('Invalid value for --audit-limit');
     expect(stderr.join('')).toContain('Unknown argument: --bogus');
   });
+
+  it('rejects --project when the next token is another flag', async () => {
+    const stderr = [];
+
+    const result = await runCli(['--project', '--json'], {
+      writeStdout: () => {},
+      writeStderr: (text) => stderr.push(text),
+    });
+
+    expect(result.exitCode).toBe(4);
+    expect(mockLoadAoStateReport).not.toHaveBeenCalled();
+    expect(stderr.join('')).toContain('Missing value for --project');
+  });
 });

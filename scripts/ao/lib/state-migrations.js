@@ -31,6 +31,19 @@ function cloneJsonValue(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function normalizeProjectId(projectId) {
+  if (typeof projectId !== 'string') {
+    throw new Error('Invalid projectId');
+  }
+
+  const normalizedProjectId = projectId.trim();
+  if (!/^[A-Za-z0-9._-]+$/.test(normalizedProjectId)) {
+    throw new Error('Invalid projectId');
+  }
+
+  return normalizedProjectId;
+}
+
 function buildDefaultControllerMode(now) {
   return createControllerModeRecord({
     controller_id: CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
@@ -78,7 +91,7 @@ export function resolveControlPlanePaths({
   projectId,
 } = {}) {
   const normalizedRepoRoot = path.resolve(String(repoRoot));
-  const normalizedProjectId = String(projectId).trim();
+  const normalizedProjectId = normalizeProjectId(projectId);
   const stateRoot = path.join(normalizedRepoRoot, '.ao-control-plane', normalizedProjectId);
 
   return {

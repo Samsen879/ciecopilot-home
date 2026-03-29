@@ -7,8 +7,10 @@ import {
   createControlPlaneSchema,
   createControllerLease,
   createControllerModeRecord,
+  createControllerCursorRecord,
   createEmptyControlPlaneState,
   createManagedTask,
+  createObservationRecord,
   createOverrideRecord,
   createOwnershipLease,
   createPrBinding,
@@ -88,6 +90,8 @@ export function createStateRepository({
     nextState.actions = sortCollectionByKey(nextState.actions, 'action_id');
     nextState.overrides = sortCollectionByKey(nextState.overrides, 'override_id');
     nextState.controller_modes = sortCollectionByKey(nextState.controller_modes, 'controller_id');
+    nextState.observations = sortCollectionByKey(nextState.observations, 'observation_id');
+    nextState.controller_cursors = sortCollectionByKey(nextState.controller_cursors, 'cursor_id');
 
     return {
       bootstrapped: true,
@@ -251,6 +255,28 @@ export function createStateRepository({
         record,
         normalize: createControllerModeRecord,
         summary: `Persisted controller mode ${record?.controller_id}.`,
+      });
+    },
+
+    upsertObservation(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'observations',
+        identityKey: 'observation_id',
+        entityKind: 'observation',
+        record,
+        normalize: createObservationRecord,
+        summary: `Persisted observation ${record?.observation_id}.`,
+      });
+    },
+
+    upsertControllerCursor(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'controller_cursors',
+        identityKey: 'cursor_id',
+        entityKind: 'controller_cursor',
+        record,
+        normalize: createControllerCursorRecord,
+        summary: `Persisted controller cursor ${record?.cursor_id}.`,
       });
     },
   };

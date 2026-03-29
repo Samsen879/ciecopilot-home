@@ -231,6 +231,8 @@ describe('ao state contracts', () => {
       actions: [],
       overrides: [],
       controller_modes: [],
+      observations: [],
+      controller_cursors: [],
     });
 
     expect(createControlPlaneAuditEntry({

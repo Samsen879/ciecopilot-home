@@ -15,6 +15,7 @@ export const ACTION_STATUSES = ['proposed', 'blocked', 'executed', 'cancelled'];
 export const OVERRIDE_SCOPE_KINDS = ['global', 'task', 'pr', 'controller'];
 export const OVERRIDE_STATUSES = ['active', 'cleared', 'expired'];
 export const CONTROLLER_MODES = ['off', 'observe', 'shadow', 'assist'];
+export const OBSERVATION_SOURCE_KINDS = ['ao_poll', 'github_poll'];
 
 function isPlainObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
@@ -138,6 +139,8 @@ export function createEmptyControlPlaneState({
     actions: [],
     overrides: [],
     controller_modes: [],
+    observations: [],
+    controller_cursors: [],
   };
 }
 
@@ -306,6 +309,48 @@ export function createControllerModeRecord({
     updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
     updated_by: normalizeOptionalString(updated_by),
     reason: normalizeOptionalString(reason),
+  };
+}
+
+export function createObservationRecord({
+  observation_id,
+  task_id,
+  source_kind,
+  cursor,
+  observed_at,
+  recorded_at,
+  summary = null,
+  payload = {},
+} = {}) {
+  return {
+    observation_id: normalizeRequiredString(observation_id, 'observation_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    source_kind: normalizeEnum(source_kind, 'source_kind', OBSERVATION_SOURCE_KINDS),
+    cursor: normalizeRequiredString(cursor, 'cursor'),
+    observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
+    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
+    summary: normalizeOptionalString(summary),
+    payload: cloneJsonValue(payload ?? {}),
+  };
+}
+
+export function createControllerCursorRecord({
+  cursor_id,
+  controller_id,
+  task_id,
+  source_kind,
+  last_cursor,
+  observed_at,
+  updated_at,
+} = {}) {
+  return {
+    cursor_id: normalizeRequiredString(cursor_id, 'cursor_id'),
+    controller_id: normalizeRequiredString(controller_id, 'controller_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    source_kind: normalizeEnum(source_kind, 'source_kind', OBSERVATION_SOURCE_KINDS),
+    last_cursor: normalizeRequiredString(last_cursor, 'last_cursor'),
+    observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
   };
 }
 

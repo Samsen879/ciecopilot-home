@@ -1,0 +1,177 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+import { afterEach, describe, expect, it } from '@jest/globals';
+
+import { resolveControlPlanePaths } from '../../scripts/ao/lib/state-migrations.js';
+import { runManageCommand } from '../../scripts/ao/lib/manage-runner.js';
+
+const PROJECT_ID = 'ciecopilot-home';
+const tempDirs = [];
+
+function createTempRepo() {
+  const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-manage-runner-'));
+  fs.mkdirSync(path.join(repoRoot, '.git'));
+  tempDirs.push(repoRoot);
+  return repoRoot;
+}
+
+function readState(repoRoot) {
+  const paths = resolveControlPlanePaths({
+    repoRoot,
+    projectId: PROJECT_ID,
+  });
+  return JSON.parse(fs.readFileSync(paths.statePath, 'utf8'));
+}
+
+afterEach(() => {
+  while (tempDirs.length) {
+    fs.rmSync(tempDirs.pop(), { recursive: true, force: true });
+  }
+});
+
+describe('ao manage runner', () => {
+  it('enrolls a managed task with durable PR, branch, worktree, and ownership bindings', async () => {
+    const repoRoot = createTempRepo();
+
+    const result = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 89,
+      title: 'Managed-task enrollment and shadow controller loop',
+      branchName: 'feat/89',
+      worktreePath: '/tmp/cie-50',
+      prNumber: 109,
+      ownerSessionName: 'cie-50',
+      ownerSessionId: 'cie-50',
+      now: '2026-03-29T06:20:00.000Z',
+    });
+
+    expect(result.task).toMatchObject({
+      task_id: 'issue-89',
+      issue_number: 89,
+      status: 'active',
+      branch_name: 'feat/89',
+      worktree_path: '/tmp/cie-50',
+    });
+    expect(result.prBinding).toMatchObject({
+      task_id: 'issue-89',
+      pr_number: 109,
+      status: 'bound',
+    });
+    expect(result.ownershipLease).toMatchObject({
+      task_id: 'issue-89',
+      owner_session_name: 'cie-50',
+      status: 'active',
+    });
+
+    const state = readState(repoRoot);
+    expect(state.managed_tasks).toHaveLength(1);
+    expect(state.pr_bindings).toHaveLength(1);
+    expect(state.ownership_leases).toHaveLength(1);
+  });
+
+  it('adopts a paused task back into active management and refreshes its bindings', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 89,
+      title: 'Managed-task enrollment and shadow controller loop',
+      branchName: 'feat/issue-89',
+      worktreePath: '/tmp/cie-50',
+      now: '2026-03-29T06:20:00.000Z',
+    });
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 89,
+      now: '2026-03-29T06:21:00.000Z',
+      reason: 'operator_pause',
+    });
+
+    const result = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'adopt',
+      issueNumber: 89,
+      branchName: 'feat/89',
+      worktreePath: '/tmp/cie-50b',
+      prNumber: 110,
+      ownerSessionName: 'cie-50',
+      ownerSessionId: 'cie-50',
+      now: '2026-03-29T06:22:00.000Z',
+    });
+
+    expect(result.task).toMatchObject({
+      task_id: 'issue-89',
+      status: 'active',
+      branch_name: 'feat/89',
+      worktree_path: '/tmp/cie-50b',
+    });
+    expect(result.prBinding).toMatchObject({
+      pr_number: 110,
+      status: 'bound',
+    });
+    expect(result.ownershipLease).toMatchObject({
+      owner_session_name: 'cie-50',
+      status: 'active',
+    });
+  });
+
+  it('unmanages and retires a task without deleting its durable bindings', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 89,
+      title: 'Managed-task enrollment and shadow controller loop',
+      branchName: 'feat/89',
+      worktreePath: '/tmp/cie-50',
+      prNumber: 109,
+      ownerSessionName: 'cie-50',
+      ownerSessionId: 'cie-50',
+      now: '2026-03-29T06:20:00.000Z',
+    });
+
+    const unmanaged = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 89,
+      now: '2026-03-29T06:21:00.000Z',
+      reason: 'operator_pause',
+    });
+    const retired = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'retire',
+      issueNumber: 89,
+      now: '2026-03-29T06:22:00.000Z',
+      reason: 'work_complete',
+    });
+
+    expect(unmanaged.task).toMatchObject({
+      task_id: 'issue-89',
+      status: 'paused',
+    });
+    expect(unmanaged.releasedOwnershipLeaseIds).toEqual(['ownership-issue-89-cie-50']);
+    expect(retired.task).toMatchObject({
+      task_id: 'issue-89',
+      status: 'retired',
+    });
+    expect(retired.releasedPrBindingIds).toEqual(['binding-issue-89-pr-109']);
+
+    const state = readState(repoRoot);
+    expect(state.managed_tasks[0].status).toBe('retired');
+    expect(state.pr_bindings[0].status).toBe('released');
+    expect(state.ownership_leases[0].status).toBe('released');
+  });
+});

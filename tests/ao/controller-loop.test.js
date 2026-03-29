@@ -1,0 +1,255 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
+
+import {
+  createControllerModeRecord,
+  createManagedTask,
+  createPrBinding,
+} from '../../scripts/ao/lib/state-contracts.js';
+import { runControllerLoop } from '../../scripts/ao/lib/controller-loop.js';
+import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
+
+const PROJECT_ID = 'ciecopilot-home';
+const tempDirs = [];
+
+function createTempRepo() {
+  const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-controller-loop-'));
+  tempDirs.push(repoRoot);
+  return repoRoot;
+}
+
+function seedActiveTask(repository, mode) {
+  repository.upsertManagedTask(createManagedTask({
+    task_id: 'issue-92',
+    issue_number: 92,
+    title: 'CI failed parity scenario',
+    branch_name: 'feat/issue-92',
+    worktree_path: '/tmp/cie-92',
+    status: 'active',
+    created_at: '2026-03-29T06:40:00.000Z',
+    updated_at: '2026-03-29T06:40:00.000Z',
+  }));
+  repository.upsertPrBinding(createPrBinding({
+    binding_id: 'binding-issue-92-pr-92',
+    task_id: 'issue-92',
+    pr_number: 92,
+    branch_name: 'feat/issue-92',
+    base_branch: 'main',
+    status: 'bound',
+    created_at: '2026-03-29T06:40:00.000Z',
+    updated_at: '2026-03-29T06:40:00.000Z',
+  }));
+  repository.upsertControllerMode(createControllerModeRecord({
+    controller_id: 'default',
+    mode,
+    updated_at: '2026-03-29T06:40:00.000Z',
+    updated_by: 'operator',
+    reason: 'Issue #89 test setup',
+  }));
+}
+
+afterEach(() => {
+  while (tempDirs.length) {
+    fs.rmSync(tempDirs.pop(), { recursive: true, force: true });
+  }
+});
+
+describe('ao controller loop', () => {
+  it('observe mode persists observations without proposing actions', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+    const resolveLifecycleReport = jest.fn();
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-29T06:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'pending',
+              ci_status: 'pending',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        resolveLifecycleReport,
+      },
+    });
+
+    expect(resolveLifecycleReport).not.toHaveBeenCalled();
+    expect(result).toMatchObject({
+      mode: 'observe',
+      processed_task_count: 1,
+      ingested_observation_count: 2,
+      proposed_action_count: 0,
+      task_results: [
+        expect.objectContaining({
+          task_id: 'issue-92',
+          derived_trigger: 'manual',
+          new_observation_count: 2,
+          proposed_action_count: 0,
+        }),
+      ],
+    });
+
+    const snapshot = repository.getSnapshot().state;
+    expect(snapshot.observations).toHaveLength(2);
+    expect(snapshot.actions).toEqual([]);
+    expect(snapshot.controller_leases).toEqual([
+      expect.objectContaining({
+        controller_id: 'default',
+        status: 'released',
+      }),
+    ]);
+  });
+
+  it('shadow mode records proposed lifecycle actions without executing them', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'shadow');
+
+    const lifecycleReport = {
+      top_status: 'hold',
+      routing_decision: {
+        action: 'continue_current_worker',
+      },
+      release_decision: {
+        disposition: 'await_ci',
+      },
+      actions: [
+        {
+          id: 'continue_worker',
+          action_class: 'continue_worker',
+          summary: 'Continue the current worker owner.',
+          commands: ['ao status -p ciecopilot-home --json'],
+          rationale: 'Ownership continuity is clear enough to continue the current worker.',
+        },
+        {
+          id: 'hold_ci',
+          action_class: 'hold',
+          summary: 'Hold until CI is green.',
+          commands: ['gh pr checks 92'],
+          rationale: 'Required CI state is not yet ready.',
+        },
+      ],
+    };
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-29T06:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'pending',
+              ci_status: 'failing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        resolveLifecycleReport: async ({ derivedTrigger }) => {
+          expect(derivedTrigger).toBe('ci_failed');
+          return lifecycleReport;
+        },
+      },
+    });
+
+    expect(result).toMatchObject({
+      mode: 'shadow',
+      processed_task_count: 1,
+      ingested_observation_count: 2,
+      proposed_action_count: 2,
+      task_results: [
+        expect.objectContaining({
+          task_id: 'issue-92',
+          derived_trigger: 'ci_failed',
+          proposed_action_count: 2,
+          lifecycle_top_status: 'hold',
+        }),
+      ],
+    });
+
+    const snapshot = repository.getSnapshot().state;
+    expect(snapshot.actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        action_kind: 'continue_worker',
+        status: 'proposed',
+        requested_by: 'shadow_controller',
+        payload: expect.objectContaining({
+          action_class: 'continue_worker',
+          commands: ['ao status -p ciecopilot-home --json'],
+        }),
+      }),
+      expect.objectContaining({
+        task_id: 'issue-92',
+        action_kind: 'hold_ci',
+        status: 'proposed',
+        requested_by: 'shadow_controller',
+        payload: expect.objectContaining({
+          action_class: 'hold',
+          commands: ['gh pr checks 92'],
+        }),
+      }),
+    ]));
+  });
+});

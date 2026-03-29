@@ -233,6 +233,77 @@ function createWorkspacePayload() {
   };
 }
 
+function createReadOnlyPhysicsWorkspacePayload() {
+  return {
+    workspace: {
+      workspaceId: 'workspace-physics-1',
+      userId: 'student-1',
+      topicId: 'topic-physics-force-balance',
+      topicPath: '9702/mechanics/force-balance',
+      slotState: {
+        commonTraps: 'idle',
+        reviewQueue: 'idle',
+      },
+      linkedReferenceSummary: {
+        totalLinkedReferences: 0,
+      },
+      artifactInbox: {
+        items: [],
+      },
+      updatedAt: '2026-03-22T08:00:00.000Z',
+      slots: {
+        commonTraps: {
+          workspaceSlotId: null,
+          primaryArtifactRef: null,
+          linkedReferences: [],
+          updatedAt: null,
+        },
+        reviewQueue: {
+          workspaceSlotId: null,
+          primaryArtifactRef: null,
+          linkedReferences: [],
+          updatedAt: null,
+        },
+      },
+    },
+    reviewQueue: {
+      scope: 'global_queue_projection',
+      topicId: 'topic-physics-force-balance',
+      items: [],
+      summary: {
+        total: 0,
+        escalated: 0,
+        due: 0,
+        open: 0,
+        deferred: 0,
+        completed: 0,
+        blocked: 0,
+      },
+    },
+    runtimePosture: {
+      subjectCode: '9702',
+      displayName: 'Physics',
+      selectionState: 'selected_next',
+      readOnly: true,
+      authoritativeScoringAllowed: false,
+      releaseScopeStatus: 'non_released_fallback',
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'subject_adapter_capability_not_enabled',
+      learningSignalPosture: 'conservative_fallback',
+      fallbackCapabilities: ['marking', 'mastery', 'review'],
+      summary:
+        'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.',
+    },
+    revisit: {
+      lastVisitAt: null,
+      changesSinceLastVisit: {
+        slotUpdates: [],
+        reviewUpdates: [],
+      },
+    },
+  };
+}
+
 describe('WorkspaceShell', () => {
   test('renders slot cards, linked references, launch CTAs, and actionable review queue states', () => {
     const workspaceVm = buildWorkspaceViewModel(createWorkspacePayload(), {
@@ -296,6 +367,20 @@ describe('WorkspaceShell', () => {
     expect(html).toContain('Reschedule');
     expect(html).toContain('Open canonical queue');
     expect(html).toContain('Closed the interval mistake with a fresh variant.');
+  });
+
+  test('renders a read-only second-subject runtime posture banner', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(WorkspaceShell, {
+        viewModel: buildWorkspaceViewModel(createReadOnlyPhysicsWorkspacePayload(), {
+          now: '2026-03-22T12:00:00.000Z',
+        }),
+      }),
+    );
+
+    expect(html).toContain('Read-only second-subject runtime slice');
+    expect(html).toContain('subject_adapter_capability_not_enabled');
+    expect(html).toContain('9702/mechanics/force-balance');
   });
 
   test('getArtifactSupersedeCandidates keeps successor choices conservative', () => {

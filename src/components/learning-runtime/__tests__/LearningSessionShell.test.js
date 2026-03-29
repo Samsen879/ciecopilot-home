@@ -51,6 +51,65 @@ function createQuestionlessSessionPayload() {
   };
 }
 
+function createReadOnlyPhysicsSessionPayload() {
+  return {
+    session: {
+      sessionId: 'sess-physics-1',
+      subjectCode: '9702',
+      mode: 'learn_concept',
+      state: 'active',
+      sessionGoal: 'Read force-balance repair notes',
+      currentQuestion: null,
+      currentQuestionId: null,
+      currentQuestionTypeId: '9702.mechanics.force_balance',
+      currentQuestionType: {
+        kind: 'question_type',
+        questionTypeId: '9702.mechanics.force_balance',
+      },
+      activeScope: {
+        primaryTopicId: 'topic-physics-force-balance',
+        primaryTopicPath: '9702/mechanics/force-balance',
+        currentAnchorKind: 'concept',
+        currentAnchor: {
+          kind: 'concept',
+          topicId: 'topic-physics-force-balance',
+          topicPath: '9702/mechanics/force-balance',
+        },
+      },
+      createdAt: '2026-03-22T00:00:00.000Z',
+      updatedAt: '2026-03-22T00:05:00.000Z',
+      openQuestions: [],
+      keyArtifactRefs: [],
+      misconceptionsInFocus: [],
+    },
+    canonicalHomeContext: {
+      sourceAnchorKind: 'concept',
+      topicRef: {
+        kind: 'topic',
+        topicId: 'topic-physics-force-balance',
+        topicPath: '9702/mechanics/force-balance',
+      },
+    },
+    runtimePosture: {
+      subjectCode: '9702',
+      displayName: 'Physics',
+      selectionState: 'selected_next',
+      readOnly: true,
+      authoritativeScoringAllowed: false,
+      releaseScopeStatus: 'non_released_fallback',
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'subject_adapter_capability_not_enabled',
+      learningSignalPosture: 'conservative_fallback',
+      fallbackCapabilities: ['marking', 'mastery', 'review'],
+      summary:
+        'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.',
+    },
+    featureFlags: {
+      learningRuntimeEnabled: true,
+    },
+  };
+}
+
 function createContinuitySessionPayload() {
   const payload = createQuestionlessSessionPayload();
 
@@ -216,6 +275,19 @@ describe('LearningSessionShell', () => {
     expect(html).toContain('9709/trigonometry/identities');
     expect(html).not.toContain('Current question');
     expect(html).not.toContain('placeholder-question-id');
+  });
+
+  test('renders a read-only second-subject fallback banner before any ask turn exists', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(LearningSessionShell, {
+        viewModel: buildSessionViewModel(createReadOnlyPhysicsSessionPayload()),
+      }),
+    );
+
+    expect(html).toContain('Runtime fallback is active');
+    expect(html).toContain('subject_adapter_capability_not_enabled');
+    expect(html).toContain('9702/mechanics/force-balance');
+    expect(html).toContain('Read-only second-subject runtime slice');
   });
 
   test('renders launcher loading and request-error states before a session exists', () => {

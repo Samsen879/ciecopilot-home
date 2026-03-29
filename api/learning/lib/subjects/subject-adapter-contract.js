@@ -6,10 +6,41 @@ function freezeArea(area = {}) {
   return Object.freeze({ ...area });
 }
 
+const SUBJECT_ADAPTER_CAPABILITY_KEYS = Object.freeze([
+  'classification',
+  'marking',
+  'mastery',
+  'review',
+]);
+
+export const SUBJECT_ADAPTER_CAPABILITY_POSTURES = Object.freeze({
+  SUPPORTED: 'supported',
+  FALLBACK_ONLY: 'fallback_only',
+});
+
 function assertFunction(path, value) {
   if (typeof value !== 'function') {
     throw new TypeError(`${path} must be a function.`);
   }
+}
+
+function normalizeCapabilityPosture(capabilityPosture = {}) {
+  if (!capabilityPosture || typeof capabilityPosture !== 'object' || Array.isArray(capabilityPosture)) {
+    throw new TypeError('meta.capability_posture must be an object.');
+  }
+
+  const normalized = {};
+
+  for (const key of SUBJECT_ADAPTER_CAPABILITY_KEYS) {
+    const posture = capabilityPosture[key] ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
+    if (!Object.values(SUBJECT_ADAPTER_CAPABILITY_POSTURES).includes(posture)) {
+      throw new TypeError(`meta.capability_posture.${key} is invalid.`);
+    }
+
+    normalized[key] = posture;
+  }
+
+  return Object.freeze(normalized);
 }
 
 function assertMeta(meta = {}) {
@@ -24,6 +55,8 @@ function assertMeta(meta = {}) {
   if (typeof meta.runtime_enabled !== 'boolean') {
     throw new TypeError('meta.runtime_enabled must be a boolean.');
   }
+
+  normalizeCapabilityPosture(meta.capability_posture ?? {});
 }
 
 export const RUNTIME_CORE_OWNERSHIP = freezeList([
@@ -66,7 +99,10 @@ export function createSubjectAdapter(definition = {}) {
   assertFunction('review.buildSchedulerSeed', review.buildSchedulerSeed);
 
   return Object.freeze({
-    meta: Object.freeze({ ...meta }),
+    meta: Object.freeze({
+      ...meta,
+      capability_posture: normalizeCapabilityPosture(meta.capability_posture ?? {}),
+    }),
     classification: freezeArea(classification),
     marking: freezeArea(marking),
     mastery: freezeArea(mastery),

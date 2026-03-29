@@ -5,6 +5,7 @@ import { createArtifactService } from '../artifacts/artifact-service.js';
 import { createArtifactRepository } from '../repositories/artifact-repository.js';
 import { createReconciliationService } from '../reconciliation/reconciliation-service.js';
 import { createDefaultReconciliationService } from '../reconciliation/reconciliation-service.js';
+import { SUBJECT_ADAPTER_CAPABILITY_POSTURES } from '../subjects/subject-adapter-contract.js';
 import {
   getSubjectAdapter,
   resolveSubjectCodeFromRuntimeInput,
@@ -137,7 +138,10 @@ export function createMasteryOrchestrator({
       });
       const localSignals = masteryProjection.localSignals;
       const masteryUpdates = masteryProjection.masteryUpdates;
+      const reviewCapabilityPosture = adapter.meta.capability_posture?.review
+        ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
       const reviewTasks = releaseScopePosture.authoritative_scoring_allowed
+        || reviewCapabilityPosture !== SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED
         ? []
         : await reviewTaskService.generateTasksFromOutcome(reviewTaskInput);
       const artifactCandidates = await artifactService.buildArtifactCandidates(artifactInput);

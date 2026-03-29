@@ -56,6 +56,66 @@ function createQuestionlessSessionPayload() {
   };
 }
 
+function createReadOnlyPhysicsSessionPayload() {
+  return {
+    session: {
+      sessionId: 'sess-physics-1',
+      subjectCode: '9702',
+      mode: 'learn_concept',
+      state: 'active',
+      sessionGoal: 'Read force-balance repair notes',
+      currentQuestion: null,
+      currentQuestionId: null,
+      currentQuestionTypeId: '9702.mechanics.force_balance',
+      currentQuestionType: {
+        kind: 'question_type',
+        questionTypeId: '9702.mechanics.force_balance',
+      },
+      activeScope: {
+        primaryTopicId: 'topic-physics-force-balance',
+        primaryTopicPath: '9702/mechanics/force-balance',
+        currentAnchorKind: 'concept',
+        currentAnchor: {
+          kind: 'concept',
+          topicId: 'topic-physics-force-balance',
+          topicPath: '9702/mechanics/force-balance',
+        },
+      },
+      openQuestions: [],
+      keyArtifactRefs: [],
+      misconceptionsInFocus: [],
+      createdAt: '2026-03-22T00:00:00.000Z',
+      updatedAt: '2026-03-22T00:05:00.000Z',
+    },
+    canonicalHomeContext: {
+      sourceAnchorKind: 'concept',
+      topicRef: {
+        kind: 'topic',
+        topicId: 'topic-physics-force-balance',
+        topicPath: '9702/mechanics/force-balance',
+      },
+    },
+    runtimePosture: {
+      subjectCode: '9702',
+      displayName: 'Physics',
+      selectionState: 'selected_next',
+      readOnly: true,
+      authoritativeScoringAllowed: false,
+      releaseScopeStatus: 'non_released_fallback',
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'subject_adapter_capability_not_enabled',
+      learningSignalPosture: 'conservative_fallback',
+      supportedCapabilities: ['classification'],
+      fallbackCapabilities: ['marking', 'mastery', 'review'],
+      summary:
+        'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.',
+    },
+    featureFlags: {
+      learningRuntimeEnabled: true,
+    },
+  };
+}
+
 function createWorkspacePayload() {
   return {
     workspace: {
@@ -306,6 +366,78 @@ function createWorkspacePayload() {
     },
     featureFlags: {
       learningRuntimeEnabled: true,
+    },
+  };
+}
+
+function createReadOnlyPhysicsWorkspacePayload() {
+  return {
+    workspace: {
+      workspaceId: 'workspace-physics-1',
+      userId: 'student-1',
+      topicId: 'topic-physics-force-balance',
+      topicPath: '9702/mechanics/force-balance',
+      slotState: {
+        commonTraps: 'idle',
+        reviewQueue: 'idle',
+      },
+      linkedReferenceSummary: {
+        totalLinkedReferences: 0,
+      },
+      artifactInbox: {
+        items: [],
+      },
+      updatedAt: '2026-03-22T08:00:00.000Z',
+      slots: {
+        commonTraps: {
+          workspaceSlotId: null,
+          primaryArtifactRef: null,
+          linkedReferences: [],
+          updatedAt: null,
+        },
+        reviewQueue: {
+          workspaceSlotId: null,
+          primaryArtifactRef: null,
+          linkedReferences: [],
+          updatedAt: null,
+        },
+      },
+    },
+    reviewQueue: {
+      scope: 'global_queue_projection',
+      topicId: 'topic-physics-force-balance',
+      items: [],
+      summary: {
+        total: 0,
+        escalated: 0,
+        due: 0,
+        open: 0,
+        deferred: 0,
+        completed: 0,
+        blocked: 0,
+      },
+    },
+    runtimePosture: {
+      subjectCode: '9702',
+      displayName: 'Physics',
+      selectionState: 'selected_next',
+      readOnly: true,
+      authoritativeScoringAllowed: false,
+      releaseScopeStatus: 'non_released_fallback',
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'subject_adapter_capability_not_enabled',
+      learningSignalPosture: 'conservative_fallback',
+      supportedCapabilities: ['classification'],
+      fallbackCapabilities: ['marking', 'mastery', 'review'],
+      summary:
+        'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.',
+    },
+    revisit: {
+      lastVisitAt: null,
+      changesSinceLastVisit: {
+        slotUpdates: [],
+        reviewUpdates: [],
+      },
     },
   };
 }
@@ -753,6 +885,19 @@ describe('learning runtime session view model', () => {
     }));
   });
 
+  test('session view-model exposes read-only runtime posture before any ask turn exists', () => {
+    const vm = buildSessionViewModel(createReadOnlyPhysicsSessionPayload());
+
+    expect(vm.header).toEqual(expect.objectContaining({
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'subject_adapter_capability_not_enabled',
+      learningSignalPosture: 'conservative_fallback',
+      runtimeSummary:
+        'Read-only second-subject runtime slice: scoring, mastery, and review automation stay conservative.',
+      fallbackCapabilities: ['marking', 'mastery', 'review'],
+    }));
+  });
+
   test('ignores stale launch completions after the launcher route stops being active', () => {
     expect(shouldApplyLaunchSuccess({
       requestKey: 'launch-1',
@@ -870,6 +1015,20 @@ describe('learning runtime session view model', () => {
       completed: 1,
       blocked: 0,
     });
+  });
+
+  test('workspace view-model exposes read-only runtime posture for second-subject topics', () => {
+    const vm = buildWorkspaceViewModel(createReadOnlyPhysicsWorkspacePayload(), {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.runtimePosture).toEqual(expect.objectContaining({
+      subjectCode: '9702',
+      readOnly: true,
+      fallbackMode: 'non_released_fallback',
+      fallbackReasonCode: 'subject_adapter_capability_not_enabled',
+      fallbackCapabilities: ['marking', 'mastery', 'review'],
+    }));
   });
 
   test('workspace revisit model surfaces continuity, changes, and next-step entry points', () => {

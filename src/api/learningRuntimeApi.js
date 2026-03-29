@@ -157,6 +157,7 @@ export function normalizeSessionResponse(payload = {}) {
   return {
     ...camelized,
     session: normalizeSessionRecord(camelized.session || {}),
+    runtimePosture: camelized.runtimePosture || null,
     anchorValidity: camelized.anchorValidity || null,
     canonicalHomeContext: camelized.canonicalHomeContext || null,
     featureFlags: camelized.featureFlags || {},
@@ -218,6 +219,7 @@ export function normalizeWorkspaceResponse(payload = {}) {
   return {
     ...camelized,
     workspace: camelized.workspace || null,
+    runtimePosture: camelized.runtimePosture || null,
     reviewQueue: normalizeReviewTaskListResponse(camelized.reviewQueue || {}),
   };
 }

@@ -31,30 +31,37 @@ function parseArgs(argv) {
     help: false,
   };
 
-  for (let index = 0; index < argv.length; index += 1) {
-    const arg = argv[index];
-    if (arg === '--project') {
-      options.projectId = readOptionValue(argv, index, '--project');
-      index += 1;
-    } else if (arg === '--controller') {
-      options.controllerId = readOptionValue(argv, index, '--controller');
-      index += 1;
-    } else if (arg === '--mode') {
-      options.mode = readOptionValue(argv, index, '--mode');
-      index += 1;
-    } else if (arg === '--issue') {
-      options.issueNumber = Number(readOptionValue(argv, index, '--issue'));
-      index += 1;
-    } else if (arg === '--json') {
-      options.json = true;
-    } else if (arg === '--help' || arg === '-h') {
-      options.help = true;
-    } else {
-      return {
-        ok: false,
-        error: `Unknown argument: ${arg}`,
-      };
+  try {
+    for (let index = 0; index < argv.length; index += 1) {
+      const arg = argv[index];
+      if (arg === '--project') {
+        options.projectId = readOptionValue(argv, index, '--project');
+        index += 1;
+      } else if (arg === '--controller') {
+        options.controllerId = readOptionValue(argv, index, '--controller');
+        index += 1;
+      } else if (arg === '--mode') {
+        options.mode = readOptionValue(argv, index, '--mode');
+        index += 1;
+      } else if (arg === '--issue') {
+        options.issueNumber = Number(readOptionValue(argv, index, '--issue'));
+        index += 1;
+      } else if (arg === '--json') {
+        options.json = true;
+      } else if (arg === '--help' || arg === '-h') {
+        options.help = true;
+      } else {
+        return {
+          ok: false,
+          error: `Unknown argument: ${arg}`,
+        };
+      }
     }
+  } catch (error) {
+    return {
+      ok: false,
+      error: error.message,
+    };
   }
 
   if (options.mode != null && !['observe', 'shadow'].includes(options.mode)) {

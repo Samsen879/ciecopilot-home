@@ -60,4 +60,17 @@ describe('ao controller cli', () => {
     expect(stderr.join('')).toContain('Invalid value for --mode');
     expect(stderr.join('')).toContain('Invalid value for --issue');
   });
+
+  it('treats missing flag values as normal parse errors', async () => {
+    const stderr = [];
+
+    const result = await runCli(['--mode'], {
+      writeStdout: () => {},
+      writeStderr: (text) => stderr.push(text),
+    });
+
+    expect(result.exitCode).toBe(4);
+    expect(mockRunControllerLoop).not.toHaveBeenCalled();
+    expect(stderr.join('')).toContain('Missing value for --mode');
+  });
 });

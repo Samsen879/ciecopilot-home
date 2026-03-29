@@ -237,6 +237,18 @@ function resolveLoopMode(repository, controllerId, mode, now) {
   return currentMode;
 }
 
+function assertNoActiveControllerLease(repository, controllerId) {
+  const activeLease = repository.getSnapshot().state.controller_leases.find((lease) => (
+    lease.controller_id === controllerId && lease.status === 'active'
+  ));
+
+  if (activeLease) {
+    throw new Error(
+      `Controller ${controllerId} already has an active lease held by ${activeLease.holder_id}.`,
+    );
+  }
+}
+
 export async function runControllerLoop({
   repoRoot,
   cwd = repoRoot,
@@ -263,6 +275,7 @@ export async function runControllerLoop({
     projectId,
   });
   const resolvedMode = resolveLoopMode(repository, controllerId, mode, timestamp);
+  assertNoActiveControllerLease(repository, controllerId);
   const holderId = process.env.AO_SESSION_NAME ?? process.env.AO_SESSION_ID ?? 'controller-loop';
   const holderType = process.env.AO_CALLER_TYPE ?? 'session';
   const leaseId = buildControllerLeaseId({

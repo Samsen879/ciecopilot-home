@@ -1,0 +1,342 @@
+{
+  "generated_at": "2026-03-28T18:24:04.714Z",
+  "source": "runs/backend/rag_live_benchmark_latest.json",
+  "status": "pass",
+  "orchestration_status": "fail",
+  "stage_failures": [
+    {
+      "stage": "stability",
+      "command": [
+        "/home/samsen/.nvm/versions/node/v22.22.1/bin/node",
+        "scripts/rag/run_live_stability_summary.js"
+      ],
+      "exit_code": 1,
+      "signal": null,
+      "artifact": "runs/backend/rag_live_benchmark_stability.json"
+    }
+  ],
+  "threshold_checks": {
+    "topic_leakage_rate": true,
+    "answer_correctness_f1": true,
+    "evidence_traceability_rate": true,
+    "latency_p95_ms": true,
+    "cost_avg_usd_per_req": true
+  },
+  "execution_checks": {
+    "round_completed": true,
+    "case_timeout_count": true,
+    "network_failure_rate": true,
+    "hard_watchdog": true
+  },
+  "metrics": {
+    "topic_leakage_rate": 0,
+    "answer_correctness_f1": 1,
+    "evidence_traceability_rate": 1,
+    "latency_p95_ms": 2942,
+    "cost_avg_usd_per_req": 0.000001
+  },
+  "total_requests": 20,
+  "dataset_total_cases": 20,
+  "benchmark_profile": "title_lookup_boundary_smoke_v1",
+  "gold_label_source": "curriculum_nodes.title",
+  "strata": {
+    "difficulty": {
+      "easy": 40,
+      "medium": 40,
+      "hard": 40
+    },
+    "question_type": {
+      "boundary": 24,
+      "concept": 96
+    },
+    "subject_code": {
+      "9231": 4,
+      "9700": 3,
+      "9701": 2,
+      "9702": 4,
+      "9709": 107
+    }
+  },
+  "run_config": {
+    "limit": 20,
+    "start_index_requested": 0,
+    "start_index_base": 1,
+    "case_id": null,
+    "round_timeout_ms": 180000,
+    "per_request_timeout_ms": 15000,
+    "case_timeout_ms": 12000,
+    "heartbeat_interval_ms": 30000,
+    "max_retries": 2,
+    "retry_backoff_ms": [
+      200,
+      500
+    ],
+    "case_timeout_count_threshold": 3,
+    "network_failure_rate_threshold": 0.02,
+    "dataset_original_total_cases": 120,
+    "selected_total_cases": 20,
+    "selected_case_ids": [
+      "live-001",
+      "live-002",
+      "live-003",
+      "live-004",
+      "live-005",
+      "live-006",
+      "live-007",
+      "live-008",
+      "live-009",
+      "live-010",
+      "live-011",
+      "live-012",
+      "live-013",
+      "live-014",
+      "live-015",
+      "live-016",
+      "live-017",
+      "live-018",
+      "live-019",
+      "live-020"
+    ]
+  },
+  "round_timeout_ms": 180000,
+  "per_request_timeout_ms": 15000,
+  "case_timeout_ms": 12000,
+  "slowest_cases_top_k": [
+    {
+      "case_id": "live-001",
+      "case_index": 1,
+      "elapsed_ms": 5186,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-014",
+      "case_index": 14,
+      "elapsed_ms": 2942,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-009",
+      "case_index": 9,
+      "elapsed_ms": 1919,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-016",
+      "case_index": 16,
+      "elapsed_ms": 1898,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-002",
+      "case_index": 2,
+      "elapsed_ms": 1723,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-012",
+      "case_index": 12,
+      "elapsed_ms": 1694,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-004",
+      "case_index": 4,
+      "elapsed_ms": 1688,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-020",
+      "case_index": 20,
+      "elapsed_ms": 1673,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-010",
+      "case_index": 10,
+      "elapsed_ms": 1669,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    },
+    {
+      "case_id": "live-007",
+      "case_index": 7,
+      "elapsed_ms": 1652,
+      "attempts": 1,
+      "final_status": "success",
+      "phase": null
+    }
+  ],
+  "error_breakdown": {
+    "NONE": 20
+  },
+  "failures_file": "runs/backend/rag_live_benchmark_failures.jsonl",
+  "f1_audit": {
+    "metric_semantics": "macro average of per-request token F1",
+    "tp_tokens_total": 42,
+    "fp_tokens_total": 0,
+    "fn_tokens_total": 0
+  },
+  "traceability_audit": {
+    "metric_semantics": "evidence-level source_ref resolvability rate",
+    "total_evidence_count": 69,
+    "resolvable_evidence_count": 69,
+    "unresolvable_evidence_count": 0,
+    "requests_with_unresolvable_source_ref": 0,
+    "requests_without_evidence": 0
+  },
+  "leakage_audit": {
+    "metric_semantics": "request-level leakage rate",
+    "leakage_request_count": 0,
+    "reason_counts": {
+      "NONE": 20
+    }
+  },
+  "uncertain_audit": {
+    "reason_counts": {
+      "NONE": 20
+    }
+  },
+  "retrieval_audit": {
+    "retrieval_version_counts": {
+      "b_simplified_retrieval_s1_v1": 20
+    }
+  },
+  "cost_audit": {
+    "formula_version": "rag_s1_cost_v1",
+    "price_table_version": "rag_s1_default_pricing_v1",
+    "price_table_version_counts": {
+      "rag_s1_default_pricing_v1": 20
+    },
+    "cache_saving_usd_total": 0,
+    "rerank_or_extra_calls_cost_usd_total": 0,
+    "token_totals": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "embedding_tokens": 220
+    },
+    "call_counts": {
+      "embedding_calls": 20,
+      "chat_calls": 0,
+      "rerank_calls": 0,
+      "extra_calls": 0
+    },
+    "component_cost_totals_usd": {
+      "chat_prompt": 0,
+      "chat_completion": 0,
+      "embedding": 0.00002,
+      "rerank_or_extra_calls": 0,
+      "cache_saving": 0
+    }
+  },
+  "execution": {
+    "request_timeout_ms": 15000,
+    "case_timeout_ms": 12000,
+    "round_timeout_ms": 180000,
+    "heartbeat_interval_ms": 30000,
+    "max_retries": 2,
+    "completed_cases": 20,
+    "round_completed": true,
+    "round_aborted": false,
+    "fatal_error": null,
+    "success_count": 20,
+    "failed_case_count": 0,
+    "case_timeout_count": 0,
+    "network_failure_rate": 0,
+    "hard_watchdog_triggered": false
+  },
+  "orchestration": {
+    "generated_at": "2026-03-28T18:24:04.692Z",
+    "fast_smoke": true,
+    "advisory_mode": false,
+    "latest_source": "runs/backend/rag_live_benchmark_latest.json",
+    "latest_status": "pass",
+    "stage_results": [
+      {
+        "stage": "build_live_benchmark_set",
+        "command": [
+          "/home/samsen/.nvm/versions/node/v22.22.1/bin/node",
+          "scripts/rag/build_live_benchmark_set.js"
+        ],
+        "exit_code": 0,
+        "signal": null
+      },
+      {
+        "stage": "round1",
+        "command": [
+          "/home/samsen/.nvm/versions/node/v22.22.1/bin/node",
+          "scripts/rag/run_live_benchmark.js",
+          "--limit",
+          "20",
+          "--round-timeout-ms",
+          "180000"
+        ],
+        "exit_code": 0,
+        "signal": null,
+        "artifacts": {
+          "json": "runs/backend/rag_live_benchmark_round1.json",
+          "md": "docs/reports/rag_live_benchmark_round1.md",
+          "failures": "runs/backend/rag_live_benchmark_round1_failures.jsonl"
+        }
+      },
+      {
+        "stage": "round2",
+        "command": [
+          "/home/samsen/.nvm/versions/node/v22.22.1/bin/node",
+          "scripts/rag/run_live_benchmark.js",
+          "--limit",
+          "20",
+          "--round-timeout-ms",
+          "180000"
+        ],
+        "exit_code": 0,
+        "signal": null,
+        "artifacts": {
+          "json": "runs/backend/rag_live_benchmark_round2.json",
+          "md": "docs/reports/rag_live_benchmark_round2.md",
+          "failures": "runs/backend/rag_live_benchmark_round2_failures.jsonl"
+        }
+      },
+      {
+        "stage": "stability",
+        "command": [
+          "/home/samsen/.nvm/versions/node/v22.22.1/bin/node",
+          "scripts/rag/run_live_stability_summary.js"
+        ],
+        "exit_code": 1,
+        "signal": null,
+        "artifact": "runs/backend/rag_live_benchmark_stability.json"
+      },
+      {
+        "stage": "summary",
+        "command": [
+          "/home/samsen/.nvm/versions/node/v22.22.1/bin/node",
+          "scripts/rag/run_s1_metric_gate_summary.js"
+        ],
+        "exit_code": 0,
+        "signal": null,
+        "artifact": "runs/backend/rag_s1_metric_gate_summary.json"
+      }
+    ]
+  },
+  "required_gate_upgrade_eligible": false,
+  "stability_source": "runs/backend/rag_live_benchmark_stability.json",
+  "gate_mode": "required_fail_closed",
+  "workflow_source": ".github/workflows/rag-s1-metric-gate.yml"
+}

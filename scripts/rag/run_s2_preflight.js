@@ -43,6 +43,8 @@ function main() {
     eval_report: 'docs/reports/rag_s2_augmentation_eval_report.md',
     advisory_gate_summary: 'runs/backend/rag_s2_advisory_gate_summary.json',
     release_decision: 'runs/backend/rag_s2_release_decision.json',
+    release_decision_report: 'docs/reports/rag_s2_release_decision_report.md',
+    workflow_invariant: 'runs/backend/rag_s2_workflow_invariant_check.json',
     route_share_ramp_experiment: 'runs/backend/rag_s2_route_share_ramp_experiment.json',
     requirements: 'codex-spec-mode/rag-s2-augmentation-routing-and-evaluation/requirements.md',
     design: 'codex-spec-mode/rag-s2-augmentation-routing-and-evaluation/design.md',

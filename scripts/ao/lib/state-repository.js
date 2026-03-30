@@ -174,6 +174,32 @@ export function createStateRepository({
       return readSnapshot();
     },
 
+    appendAuditEntry({
+      entityKind,
+      entityId,
+      operation,
+      actor,
+      summary,
+      details = {},
+      recordedAt = null,
+    } = {}) {
+      ensureBootstrapped();
+      appendControlPlaneAuditEntry({
+        auditPath: paths.auditPath,
+        entry: createControlPlaneAuditEntry({
+          audit_id: auditIdGenerator(),
+          project_id: projectId,
+          recorded_at: resolveNow(recordedAt ?? clock),
+          entity_kind: entityKind,
+          entity_id: entityId,
+          operation,
+          actor,
+          summary,
+          details,
+        }),
+      });
+    },
+
     listAuditEntries({ limit = null } = {}) {
       return readControlPlaneAuditEntries({
         auditPath: paths.auditPath,

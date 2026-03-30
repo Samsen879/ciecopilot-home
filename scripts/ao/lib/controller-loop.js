@@ -24,13 +24,17 @@ import {
 } from './lifecycle-contracts.js';
 import { buildLifecycleReport as buildLifecycleReportModel } from './lifecycle-engine.js';
 import {
+  buildAssistActionModel,
+  executeAssistActions,
+} from './action-executor.js';
+import {
   createPrScope,
   createProjectScope,
 } from './reconciliation-contracts.js';
 import { reconcileObservations as reconcileObservationModels } from './reconciliation-engine.js';
 
 export const DEFAULT_PROJECT_ID = 'ciecopilot-home';
-export const CONTROLLER_MUTATION_MODES = ['observe', 'shadow'];
+export const CONTROLLER_MUTATION_MODES = ['observe', 'shadow', 'assist'];
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -106,6 +110,7 @@ async function persistShadowActions({
   repository,
   task,
   controllerId,
+  mode = 'shadow',
   derivedTrigger,
   lifecycleReport,
   prNumber,
@@ -126,21 +131,34 @@ async function persistShadowActions({
     })),
   });
   const fingerprint = await hashText(signature);
-  const snapshot = repository.getSnapshot();
+  const knownActionIds = new Set(repository.getSnapshot().state.actions.map((record) => record.action_id));
   const createdActionIds = [];
+  const actionIds = [];
+  const requestedBy = mode === 'assist' ? 'assist_controller' : 'shadow_controller';
 
   for (const action of lifecycleReport.actions) {
     const actionId = `proposal-${task.task_id}-${action.id}-${fingerprint.slice(0, 12)}`;
-    if (snapshot.state.actions.some((record) => record.action_id === actionId)) {
+    actionIds.push(actionId);
+    if (knownActionIds.has(actionId)) {
       continue;
     }
+    knownActionIds.add(actionId);
+
+    const actionModel = buildAssistActionModel({
+      controllerId,
+      task,
+      prNumber,
+      derivedTrigger,
+      lifecycleTopStatus: lifecycleReport.top_status ?? null,
+      action,
+    });
 
     repository.upsertAction(createActionRecord({
       action_id: actionId,
       task_id: task.task_id,
       action_kind: action.id,
       status: 'proposed',
-      requested_by: 'shadow_controller',
+      requested_by: requestedBy,
       reason: action.summary,
       created_at: now,
       updated_at: now,
@@ -155,14 +173,32 @@ async function persistShadowActions({
         action_class: action.action_class,
         commands: action.commands,
         rationale: action.rationale,
+        action_model: actionModel,
       },
     }));
+    repository.appendAuditEntry({
+      entityKind: 'action',
+      entityId: actionId,
+      operation: 'proposed',
+      actor: requestedBy,
+      summary: `Recorded proposed action ${actionId}.`,
+      details: {
+        action_id: actionId,
+        action_kind: action.id,
+        task_id: task.task_id,
+        controller_id: controllerId,
+        pr_number: prNumber,
+        risk_class: actionModel.risk_class,
+      },
+      recordedAt: now,
+    });
     createdActionIds.push(actionId);
   }
 
   return {
     count: createdActionIds.length,
-    actionIds: createdActionIds,
+    actionIds,
+    createdActionIds,
   };
 }
 
@@ -231,7 +267,7 @@ function resolveLoopMode(repository, controllerId, mode, now) {
   const snapshot = repository.getSnapshot();
   const currentMode = snapshot.state.controller_modes.find((record) => record.controller_id === controllerId)?.mode ?? 'off';
   if (!CONTROLLER_MUTATION_MODES.includes(currentMode)) {
-    throw new Error(`Controller ${controllerId} must be set to observe or shadow`);
+    throw new Error(`Controller ${controllerId} must be set to observe, shadow, or assist`);
   }
 
   return currentMode;
@@ -306,6 +342,8 @@ export async function runControllerLoop({
   const taskResults = [];
   let ingestedObservationCount = 0;
   let proposedActionCount = 0;
+  let executedActionCount = 0;
+  let blockedActionCount = 0;
 
   try {
     for (const task of activeTasks) {
@@ -332,8 +370,10 @@ export async function runControllerLoop({
 
       let lifecycleTopStatus = null;
       let proposedActionIds = [];
+      let executedActionIds = [];
+      let blockedActionIds = [];
 
-      if (resolvedMode === 'shadow') {
+      if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
         const prNumber = resolveLifecyclePrNumber(prBindings, ingestResult.matchedPrs);
         const resolvedLifecycle = services.resolveLifecycleReport
           ? await services.resolveLifecycleReport({
@@ -361,6 +401,7 @@ export async function runControllerLoop({
           repository,
           task,
           controllerId,
+          mode: resolvedMode,
           derivedTrigger,
           lifecycleReport,
           prNumber,
@@ -368,6 +409,20 @@ export async function runControllerLoop({
         });
         proposedActionIds = proposalResult.actionIds;
         proposedActionCount += proposalResult.count;
+
+        if (resolvedMode === 'assist') {
+          const executionResult = await executeAssistActions({
+            repository,
+            controllerId,
+            task,
+            actionIds: proposalResult.actionIds,
+            now: timestamp,
+          });
+          executedActionIds = executionResult.executedActionIds;
+          blockedActionIds = executionResult.blockedActionIds;
+          executedActionCount += executedActionIds.length;
+          blockedActionCount += blockedActionIds.length;
+        }
       }
 
       taskResults.push({
@@ -377,6 +432,10 @@ export async function runControllerLoop({
         new_observation_count: ingestResult.ingested_count,
         proposed_action_count: proposedActionIds.length,
         proposed_action_ids: proposedActionIds,
+        executed_action_count: executedActionIds.length,
+        executed_action_ids: executedActionIds,
+        blocked_action_count: blockedActionIds.length,
+        blocked_action_ids: blockedActionIds,
         lifecycle_top_status: lifecycleTopStatus,
       });
     }
@@ -401,6 +460,8 @@ export async function runControllerLoop({
     processed_task_count: taskResults.length,
     ingested_observation_count: ingestedObservationCount,
     proposed_action_count: proposedActionCount,
+    executed_action_count: executedActionCount,
+    blocked_action_count: blockedActionCount,
     task_results: taskResults,
   };
 }

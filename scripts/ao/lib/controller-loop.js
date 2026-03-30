@@ -72,6 +72,56 @@ function resolveLifecyclePrNumber(prBindings = [], matchedPrs = []) {
   return prNumbers.length === 1 ? prNumbers[0] : null;
 }
 
+function compareDeliveryEventOrder(left, right) {
+  const leftObservedAt = String(left?.observed_at ?? '');
+  const rightObservedAt = String(right?.observed_at ?? '');
+  if (leftObservedAt !== rightObservedAt) {
+    return leftObservedAt.localeCompare(rightObservedAt);
+  }
+  return String(left?.event_id ?? '').localeCompare(String(right?.event_id ?? ''));
+}
+
+function isDeliveryEventCurrentForPr(event, pr) {
+  if (!pr || event?.pr_number !== pr.pr_number) return false;
+
+  const payload = event.payload ?? {};
+  const currentHeadSha = pr.head_sha ?? null;
+  const eventHeadSha = event.event_family === 'review_comment'
+    ? (payload.commit_oid ?? payload.head_sha ?? null)
+    : (payload.head_sha ?? null);
+
+  if (!currentHeadSha || !eventHeadSha) return true;
+  return eventHeadSha === currentHeadSha;
+}
+
+function selectCurrentDeliveryEvents({
+  matchedPrs = [],
+  deliveryEvents = [],
+} = {}) {
+  const latestByFamily = new Map();
+
+  for (const pr of matchedPrs ?? []) {
+    const prEvents = (deliveryEvents ?? [])
+      .filter((event) => isDeliveryEventCurrentForPr(event, pr))
+      .sort(compareDeliveryEventOrder);
+    const latestReviewCommentEvent = prEvents
+      .filter((event) => event.event_family === 'review_comment')
+      .at(-1) ?? null;
+
+    for (const family of ['pr', 'check', 'review']) {
+      const latestEvent = prEvents.filter((event) => event.event_family === family).at(-1) ?? null;
+      if (!latestEvent) continue;
+      latestByFamily.set(`${pr.pr_number}:${family}`, latestEvent);
+    }
+
+    if (latestReviewCommentEvent) {
+      latestByFamily.set(`${pr.pr_number}:review_comment`, latestReviewCommentEvent);
+    }
+  }
+
+  return [...latestByFamily.values()].sort(compareDeliveryEventOrder);
+}
+
 export function deriveLifecycleTriggerForTask({
   matchedAoWorkers = [],
   matchedPrs = [],
@@ -84,20 +134,10 @@ export function deriveLifecycleTriggerForTask({
     return 'agent_exited';
   }
 
-  const prMap = new Map((matchedPrs ?? []).map((pr) => [pr.pr_number, pr]));
-  const activeDeliveryTriggers = new Set((deliveryEvents ?? [])
-    .filter((event) => {
-      const pr = prMap.get(event.pr_number);
-      if (!pr) return false;
-      const payload = event.payload ?? {};
-      if (event.event_family === 'review_comment' && payload.commit_oid && pr.head_sha) {
-        return payload.commit_oid === pr.head_sha;
-      }
-      if (payload.head_sha && pr.head_sha) {
-        return payload.head_sha === pr.head_sha;
-      }
-      return true;
-    })
+  const activeDeliveryTriggers = new Set(selectCurrentDeliveryEvents({
+    matchedPrs,
+    deliveryEvents,
+  })
     .map((event) => event.lifecycle_trigger)
     .filter((trigger) => typeof trigger === 'string' && trigger !== '' && trigger !== 'manual'));
 

@@ -368,6 +368,105 @@ describe('ao controller loop', () => {
     ]));
   });
 
+  it('ignores superseded failing delivery events once a later approved-and-green state is observed on the same head', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+
+    const firstResult = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-30T09:00:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-30T09:00:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-30T08:59:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-30T09:00:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'changes_requested',
+              ci_status: 'failing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+      },
+    });
+
+    const secondResult = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-30T09:05:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-30T09:05:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-30T09:04:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-30T09:05:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+      },
+    });
+
+    expect(firstResult.task_results[0]).toMatchObject({
+      derived_trigger: 'changes_requested',
+      new_delivery_event_count: 3,
+    });
+    expect(secondResult.task_results[0]).toMatchObject({
+      derived_trigger: 'approved_and_green',
+      new_delivery_event_count: 3,
+    });
+  });
+
   it('produces deterministic delivery envelopes and routing decisions for the same seeded state', async () => {
     const createRepositoryAndRun = async () => {
       const repository = createStateRepository({

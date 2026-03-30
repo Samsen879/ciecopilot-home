@@ -6,6 +6,7 @@ import {
   createControllerModeRecord,
   createPolicyDecisionRecord,
 } from './state-contracts.js';
+import { createCheckpointStore } from './checkpoint-store.js';
 import { createStateRepository } from './state-repository.js';
 import {
   buildControllerLeaseId,
@@ -473,6 +474,10 @@ export async function runControllerLoop({
     repoRoot,
     projectId,
   });
+  const checkpointStore = createCheckpointStore({
+    repository,
+    now: () => timestamp,
+  });
   await services.ensureRuntimePreflights({
     repository,
     cwd,
@@ -610,6 +615,31 @@ export async function runControllerLoop({
           executedActionCount += executedActionIds.length;
           blockedActionCount += blockedActionIds.length;
         }
+      }
+
+      try {
+        checkpointStore.captureCheckpoint({
+          taskId: task.task_id,
+          controllerId,
+          derivedTrigger,
+          lifecycleTopStatus,
+          observedAt: timestamp,
+          actionIds: [...proposedActionIds, ...executedActionIds],
+          reason: 'controller_loop_checkpoint',
+          createdBy: 'ao_controller',
+        });
+      } catch (error) {
+        repository.appendAuditEntry({
+          entityKind: 'checkpoint',
+          entityId: task.task_id,
+          operation: 'skip',
+          actor: 'ao_controller',
+          summary: `Skipped checkpoint for ${task.task_id}.`,
+          details: {
+            error: error.message,
+          },
+          recordedAt: timestamp,
+        });
       }
 
       taskResults.push({

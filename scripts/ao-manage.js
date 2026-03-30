@@ -103,7 +103,7 @@ function parseArgs(argv) {
     };
   }
 
-  if (!['enroll', 'adopt', 'unmanage', 'retire'].includes(options.command)) {
+  if (!['enroll', 'adopt', 'resume', 'unmanage', 'retire'].includes(options.command)) {
     return {
       ok: false,
       error: `Unsupported command: ${options.command ?? 'none'}`,
@@ -144,6 +144,7 @@ function renderHelp() {
     'Commands:',
     '  enroll      Explicitly enroll one managed task',
     '  adopt       Re-activate a paused managed task and refresh bindings',
+    '  resume      Re-activate work from the latest valid checkpoint',
     '  unmanage    Pause active management while preserving bindings',
     '  retire      Retire the managed task and release active bindings',
     '',
@@ -170,6 +171,7 @@ function renderHumanSummary(result) {
     `task: ${result.task.task_id} status=${result.task.status}`,
     `pr_binding: ${result.prBinding ? `${result.prBinding.pr_number}/${result.prBinding.status}` : 'none'}`,
     `ownership_lease: ${result.ownershipLease ? `${result.ownershipLease.owner_session_name}/${result.ownershipLease.status}` : 'none'}`,
+    `resume_checkpoint: ${result.resume ? `${result.resume.checkpoint_id}/${result.resume.state}` : 'none'}`,
     `released_ownership_leases: ${result.releasedOwnershipLeaseIds.length ? result.releasedOwnershipLeaseIds.join(', ') : 'none'}`,
     `released_pr_bindings: ${result.releasedPrBindingIds.length ? result.releasedPrBindingIds.join(', ') : 'none'}`,
   ].join('\n');

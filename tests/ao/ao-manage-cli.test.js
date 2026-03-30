@@ -83,6 +83,32 @@ describe('ao manage cli', () => {
     });
   });
 
+  it('accepts resume as an explicit command without requiring branch or worktree flags', async () => {
+    const result = await runCli([
+      'resume',
+      '--issue',
+      '110',
+      '--owner-session',
+      'cie-57',
+      '--owner-session-id',
+      'cie-57',
+      '--json',
+    ], {
+      writeStdout: () => {},
+      writeStderr: () => {},
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(mockRunManageCommand).toHaveBeenCalledWith(expect.objectContaining({
+      projectId: 'ciecopilot-home',
+      command: 'resume',
+      issueNumber: 110,
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      cwd: process.cwd(),
+    }));
+  });
+
   it('rejects unsupported commands and invalid numeric arguments', async () => {
     const stderr = [];
 

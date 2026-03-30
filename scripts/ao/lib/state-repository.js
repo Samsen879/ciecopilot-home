@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import {
   CONTROL_PLANE_LATEST_VERSION,
   createActionRecord,
+  createCheckpointRecord,
   createControlPlaneAuditEntry,
   createControlPlaneSchema,
   createControllerLease,
@@ -117,6 +118,7 @@ export function createStateRepository({
     nextState.credential_provenances = sortCollectionByKey(nextState.credential_provenances, 'provenance_id');
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
     nextState.runtime_preflights = sortCollectionByKey(nextState.runtime_preflights, 'runtime_ref');
+    nextState.checkpoints = sortCollectionByKey(nextState.checkpoints, 'checkpoint_id');
 
     return {
       bootstrapped: true,
@@ -434,7 +436,7 @@ export function createStateRepository({
           state: nextState,
           entityKind: 'runtime_preflight',
           entityId: normalizedRecord.runtime_ref,
-          summary: `Persisted runtime preflight ${normalizedRecord.runtime_ref}.`,
+        summary: `Persisted runtime preflight ${normalizedRecord.runtime_ref}.`,
           details: normalizedRecord,
         });
         snapshot = {
@@ -445,6 +447,17 @@ export function createStateRepository({
       }
 
       return sortCollectionByKey(ensuredRecords, 'runtime_ref');
+    },
+
+    upsertCheckpoint(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'checkpoints',
+        identityKey: 'checkpoint_id',
+        entityKind: 'checkpoint',
+        record,
+        normalize: createCheckpointRecord,
+        summary: `Persisted checkpoint ${record?.checkpoint_id}.`,
+      });
     },
   };
 }

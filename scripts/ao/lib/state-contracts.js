@@ -7,8 +7,10 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 5;
+export const CONTROL_PLANE_LATEST_VERSION = 6;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
+export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
+export const CHECKPOINT_FORMAT = 'ao_checkpoint';
 
 export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
 export const PR_BINDING_STATUSES = ['bound', 'released', 'closed'];
@@ -92,6 +94,14 @@ function normalizeEnum(value, fieldName, allowedValues) {
   return normalized;
 }
 
+function normalizeStringArray(values, fieldName) {
+  if (!Array.isArray(values)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  return values.map((value, index) => normalizeRequiredString(value, `${fieldName}[${index}]`));
+}
+
 function normalizeMetadata(value = {}) {
   if (value == null) return {};
   if (!isPlainObject(value)) {
@@ -167,6 +177,7 @@ export function createEmptyControlPlaneState({
     credential_provenances: [],
     task_specs: [],
     runtime_preflights: [],
+    checkpoints: [],
   };
 }
 
@@ -534,6 +545,163 @@ export function createRuntimePreflightRecord({
     observed_at: normalizeIsoTimestamp(normalizedSnapshot.observed_at, 'observed_at'),
     recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
     replay_key: normalizeRequiredString(normalizedSnapshot.replay_key, 'replay_key'),
+    snapshot: normalizedSnapshot,
+  };
+}
+
+function normalizeCheckpointPrBinding(value) {
+  if (value == null) return null;
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid checkpoint pr_binding');
+  }
+
+  return {
+    binding_id: normalizeRequiredString(value.binding_id, 'pr_binding.binding_id'),
+    pr_number: normalizePositiveInteger(value.pr_number, 'pr_binding.pr_number'),
+    branch_name: normalizeOptionalString(value.branch_name),
+    base_branch: normalizeOptionalString(value.base_branch),
+    updated_at: normalizeIsoTimestamp(value.updated_at, 'pr_binding.updated_at'),
+    status: normalizeRequiredString(value.status, 'pr_binding.status'),
+  };
+}
+
+function normalizeCheckpointTaskRef(value = {}) {
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid task_ref');
+  }
+
+  return {
+    task_id: normalizeRequiredString(value.task_id, 'task_ref.task_id'),
+    issue_number: normalizePositiveInteger(value.issue_number, 'task_ref.issue_number', {
+      nullable: true,
+    }),
+    title: normalizeRequiredString(value.title, 'task_ref.title'),
+    branch_name: normalizeOptionalString(value.branch_name),
+    worktree_path: normalizeOptionalString(value.worktree_path),
+    updated_at: normalizeIsoTimestamp(value.updated_at, 'task_ref.updated_at'),
+    pr_binding: normalizeCheckpointPrBinding(value.pr_binding),
+  };
+}
+
+function normalizeCheckpointTaskSpecRef(value) {
+  if (value == null) return null;
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid verification_ref.task_spec');
+  }
+
+  return {
+    task_id: normalizeRequiredString(value.task_id, 'verification_ref.task_spec.task_id'),
+    updated_at: normalizeIsoTimestamp(value.updated_at, 'verification_ref.task_spec.updated_at'),
+    state: normalizeRequiredString(value.state, 'verification_ref.task_spec.state'),
+    snapshot_schema_version: normalizeRequiredString(
+      value.snapshot_schema_version,
+      'verification_ref.task_spec.snapshot_schema_version',
+    ),
+  };
+}
+
+function normalizeCheckpointRuntimePreflightRef(value) {
+  if (value == null) return null;
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid verification_ref.runtime_preflight');
+  }
+
+  return {
+    runtime_ref: normalizeRequiredString(
+      value.runtime_ref,
+      'verification_ref.runtime_preflight.runtime_ref',
+    ),
+    recorded_at: normalizeIsoTimestamp(
+      value.recorded_at,
+      'verification_ref.runtime_preflight.recorded_at',
+    ),
+    replay_key: normalizeRequiredString(
+      value.replay_key,
+      'verification_ref.runtime_preflight.replay_key',
+    ),
+    status: normalizeRequiredString(value.status, 'verification_ref.runtime_preflight.status'),
+    snapshot_schema_version: normalizeRequiredString(
+      value.snapshot_schema_version,
+      'verification_ref.runtime_preflight.snapshot_schema_version',
+    ),
+  };
+}
+
+function normalizeCheckpointVerificationRef(value = {}) {
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid verification_ref');
+  }
+
+  return {
+    task_spec: normalizeCheckpointTaskSpecRef(value.task_spec),
+    runtime_preflight: normalizeCheckpointRuntimePreflightRef(value.runtime_preflight),
+  };
+}
+
+function normalizeCheckpointExecutionRef(value = {}) {
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid execution_ref');
+  }
+
+  return {
+    controller_id: normalizeRequiredString(value.controller_id, 'execution_ref.controller_id'),
+    controller_mode: normalizeEnum(value.controller_mode, 'execution_ref.controller_mode', CONTROLLER_MODES),
+    controller_mode_updated_at: normalizeIsoTimestamp(
+      value.controller_mode_updated_at,
+      'execution_ref.controller_mode_updated_at',
+    ),
+    derived_trigger: normalizeOptionalString(value.derived_trigger),
+    lifecycle_top_status: normalizeOptionalString(value.lifecycle_top_status),
+    observed_at: normalizeIsoTimestamp(value.observed_at, 'execution_ref.observed_at'),
+    action_ids: normalizeStringArray(value.action_ids ?? [], 'execution_ref.action_ids'),
+  };
+}
+
+export function createCheckpointSnapshot({
+  schema_version = CHECKPOINT_SCHEMA_VERSION,
+  format = CHECKPOINT_FORMAT,
+  task_ref,
+  verification_ref,
+  execution_ref,
+} = {}) {
+  return {
+    schema_version: normalizeRequiredString(schema_version, 'schema_version'),
+    format: normalizeRequiredString(format, 'format'),
+    task_ref: normalizeCheckpointTaskRef(task_ref),
+    verification_ref: normalizeCheckpointVerificationRef(verification_ref),
+    execution_ref: normalizeCheckpointExecutionRef(execution_ref),
+  };
+}
+
+export function createCheckpointRecord({
+  checkpoint_id,
+  task_id,
+  recorded_at,
+  snapshot,
+  created_by = null,
+  reason = null,
+  metadata = {},
+} = {}) {
+  const normalizedSnapshot = createCheckpointSnapshot({
+    schema_version: snapshot?.schema_version,
+    format: snapshot?.format,
+    task_ref: snapshot?.task_ref,
+    verification_ref: snapshot?.verification_ref,
+    execution_ref: snapshot?.execution_ref,
+  });
+  const normalizedTaskId = normalizeRequiredString(task_id, 'task_id');
+
+  if (normalizedTaskId !== normalizedSnapshot.task_ref.task_id) {
+    throw new Error('Checkpoint task_id must match snapshot.task_ref.task_id');
+  }
+
+  return {
+    checkpoint_id: normalizeRequiredString(checkpoint_id, 'checkpoint_id'),
+    task_id: normalizedTaskId,
+    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
+    created_by: normalizeOptionalString(created_by),
+    reason: normalizeOptionalString(reason),
+    metadata: normalizeMetadata(metadata),
     snapshot: normalizedSnapshot,
   };
 }

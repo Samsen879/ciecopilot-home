@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import * as fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -34,6 +35,8 @@ function parseArgs(argv) {
     branchName: null,
     worktreePath: null,
     prNumber: null,
+    taskSpecFile: null,
+    taskSpecBody: null,
     ownerSessionName: process.env.AO_SESSION_NAME ?? null,
     ownerSessionId: process.env.AO_SESSION_ID ?? null,
     reason: null,
@@ -68,6 +71,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === '--pr') {
       options.prNumber = Number(readOptionValue(argv, index, '--pr'));
+      index += 1;
+    } else if (arg === '--task-spec-file') {
+      options.taskSpecFile = readOptionValue(argv, index, '--task-spec-file');
       index += 1;
     } else if (arg === '--owner-session') {
       options.ownerSessionName = readOptionValue(argv, index, '--owner-session');
@@ -148,6 +154,7 @@ function renderHelp() {
     '  --title <text>              Managed task title',
     '  --branch <name>             Durable branch binding',
     '  --worktree <path>           Durable worktree binding',
+    '  --task-spec-file <path>     Markdown issue/template input used to build TaskSpec v1',
     '  --pr <number>               Durable PR binding',
     '  --owner-session <name>      Ownership session name',
     '  --owner-session-id <id>     Ownership session id',
@@ -197,6 +204,10 @@ export async function runCli(argv, io = createDefaultIo()) {
   }
 
   try {
+    if (options.taskSpecFile) {
+      options.taskSpecBody = fs.readFileSync(path.resolve(options.taskSpecFile), 'utf8');
+    }
+
     const result = await runManageCommand({
       repoRoot,
       cwd: process.cwd(),
@@ -208,6 +219,7 @@ export async function runCli(argv, io = createDefaultIo()) {
       branchName: options.branchName,
       worktreePath: options.worktreePath,
       prNumber: options.prNumber,
+      taskSpecBody: options.taskSpecBody,
       ownerSessionName: options.ownerSessionName,
       ownerSessionId: options.ownerSessionId,
       reason: options.reason,

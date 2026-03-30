@@ -66,11 +66,60 @@ describe('ao manage runner', () => {
       owner_session_name: 'cie-50',
       status: 'active',
     });
+    expect(result.taskSpec).toMatchObject({
+      task_id: 'issue-89',
+      state: 'invalid',
+      snapshot: {
+        schema_version: 'ao.task-spec.v1alpha1',
+        valid: false,
+      },
+    });
 
     const state = readState(repoRoot);
     expect(state.managed_tasks).toHaveLength(1);
     expect(state.pr_bindings).toHaveLength(1);
     expect(state.ownership_leases).toHaveLength(1);
+    expect(state.task_specs).toHaveLength(1);
+  });
+
+  it('persists a valid task spec when enroll receives issue/template input', async () => {
+    const repoRoot = createTempRepo();
+
+    const result = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 105,
+      title: 'feat(ao): add TaskSpec v1, admission normalization, and migration/backfill',
+      branchName: 'feat/105',
+      worktreePath: '/tmp/cie-52',
+      taskSpecBody: [
+        '## Problem Type',
+        'issue_delivery',
+        '',
+        '## Acceptance Contract',
+        '- fixture-backed tests exist',
+        '',
+        '## Runtime Ref',
+        'runtime.github_local',
+        '',
+        '## Policy Ref',
+        'policy.operator_gated',
+        '',
+        '## Human Gates',
+        '- operator_enroll',
+      ].join('\n'),
+      now: '2026-03-29T06:20:00.000Z',
+    });
+
+    expect(result.taskSpec).toMatchObject({
+      task_id: 'issue-105',
+      state: 'valid',
+      snapshot: {
+        schema_version: 'ao.task-spec.v1alpha1',
+        valid: true,
+      },
+    });
   });
 
   it('adopts a paused task back into active management and refreshes its bindings', async () => {

@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 const mockRunReconciliation = jest.fn();
 const mockLoadDoctorLocalState = jest.fn();
 const mockBuildDoctorReport = jest.fn();
+const mockFindRepoRoot = jest.fn();
+const mockCreateStateRepository = jest.fn();
 
 jest.unstable_mockModule('../../scripts/ao/lib/reconciliation-runner.js', () => ({
   DEFAULT_PROJECT_ID: 'ciecopilot-home',
@@ -17,6 +19,14 @@ jest.unstable_mockModule('../../scripts/ao/lib/doctor-engine.js', () => ({
   buildDoctorReport: mockBuildDoctorReport,
 }));
 
+jest.unstable_mockModule('../../scripts/ao/lib/repo-root.js', () => ({
+  findRepoRoot: mockFindRepoRoot,
+}));
+
+jest.unstable_mockModule('../../scripts/ao/lib/state-repository.js', () => ({
+  createStateRepository: mockCreateStateRepository,
+}));
+
 const { runDoctor } = await import('../../scripts/ao/lib/doctor-runner.js');
 
 describe('doctor runner', () => {
@@ -24,6 +34,22 @@ describe('doctor runner', () => {
     mockRunReconciliation.mockReset();
     mockLoadDoctorLocalState.mockReset();
     mockBuildDoctorReport.mockReset();
+    mockFindRepoRoot.mockReset();
+    mockCreateStateRepository.mockReset();
+    mockFindRepoRoot.mockReturnValue('/home/samsen/code/ciecopilot-home');
+    mockCreateStateRepository.mockReturnValue({
+      getSnapshot: () => ({
+        bootstrapped: true,
+        schema: {
+          current_version: 2,
+          latest_version: 2,
+        },
+        state: {
+          managed_tasks: [],
+          task_specs: [],
+        },
+      }),
+    });
   });
 
   it('runs project mode through the shared doctor pipeline', async () => {
@@ -72,6 +98,17 @@ describe('doctor runner', () => {
         cwd: '/home/samsen/code/ciecopilot-home',
         current_branch: 'runtime-post-pilot-0323-2239',
       },
+      controlPlaneSnapshot: {
+        bootstrapped: true,
+        schema: {
+          current_version: 2,
+          latest_version: 2,
+        },
+        state: {
+          managed_tasks: [],
+          task_specs: [],
+        },
+      },
     });
     expect(result).toEqual({
       scope: {
@@ -88,6 +125,17 @@ describe('doctor runner', () => {
       localState: {
         cwd: '/home/samsen/code/ciecopilot-home',
         current_branch: 'runtime-post-pilot-0323-2239',
+      },
+      controlPlaneSnapshot: {
+        bootstrapped: true,
+        schema: {
+          current_version: 2,
+          latest_version: 2,
+        },
+        state: {
+          managed_tasks: [],
+          task_specs: [],
+        },
       },
       report: {
         top_status: 'warning',

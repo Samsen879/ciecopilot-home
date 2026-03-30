@@ -12,6 +12,7 @@ import {
   createOverrideRecord,
   createOwnershipLease,
   createPrBinding,
+  createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 
@@ -68,6 +69,7 @@ describe('ao state repository', () => {
       actions: [],
       overrides: [],
       controller_modes: [],
+      task_specs: [],
     });
     expect(repository.listAuditEntries()).toEqual([]);
     expect(fs.existsSync(path.join(repoRoot, '.ao-control-plane'))).toBe(false);
@@ -86,6 +88,7 @@ describe('ao state repository', () => {
         '2026-03-29T04:55:00.000Z',
         '2026-03-29T04:56:00.000Z',
         '2026-03-29T04:57:00.000Z',
+        '2026-03-29T04:58:00.000Z',
       ),
       auditIdGenerator: createIdGenerator('audit'),
     });
@@ -159,6 +162,25 @@ describe('ao state repository', () => {
       updated_by: 'operator',
       reason: 'Phase-4 foundation is inspect-only.',
     }));
+    repository.upsertTaskSpec(createTaskSpecRecord({
+      task_id: 'task-1',
+      source_kind: 'github_issue',
+      source_issue_number: 88,
+      created_at: '2026-03-29T04:57:00.000Z',
+      updated_at: '2026-03-29T04:57:00.000Z',
+      snapshot: {
+        schema_version: 'ao.task-spec.v1alpha1',
+        valid: true,
+        findings: [],
+        spec: {
+          problem_type: 'issue_delivery',
+          acceptance_contract: ['fixture-backed tests exist'],
+          runtime_ref: 'runtime.github_local',
+          policy_ref: 'policy.operator_gated',
+          human_gates: ['operator_enroll'],
+        },
+      },
+    }));
 
     const snapshot = repository.getSnapshot();
     const auditEntries = repository.listAuditEntries();
@@ -172,9 +194,11 @@ describe('ao state repository', () => {
       actions: [expect.objectContaining({ action_id: 'action-1', action_kind: 'notify_human_ready' })],
       overrides: [expect.objectContaining({ override_id: 'override-1', override_kind: 'hold_autonomy' })],
       controller_modes: [expect.objectContaining({ controller_id: 'default', mode: 'observe' })],
+      task_specs: [expect.objectContaining({ task_id: 'task-1', state: 'valid' })],
     });
     expect(auditEntries.map((entry) => `${entry.entity_kind}:${entry.operation}:${entry.entity_id}`)).toEqual([
       'schema:bootstrap:v1',
+      'schema:migrate:v2',
       'managed_task:upsert:task-1',
       'pr_binding:upsert:binding-1',
       'ownership_lease:upsert:ownership-1',
@@ -182,6 +206,7 @@ describe('ao state repository', () => {
       'action:upsert:action-1',
       'override:upsert:override-1',
       'controller_mode:upsert:default',
+      'task_spec:upsert:task-1',
     ]);
   });
 

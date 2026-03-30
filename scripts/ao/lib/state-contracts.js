@@ -1,10 +1,12 @@
+import { createTaskSpecSnapshot } from './task-spec.js';
+
 export const CONTROL_PLANE_SCHEMA_VERSION = 'ao.control-plane.schema.v1alpha1';
 export const CONTROL_PLANE_SCHEMA_FORMAT = 'ao_control_plane_schema';
 export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alpha1';
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 1;
+export const CONTROL_PLANE_LATEST_VERSION = 2;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 
 export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
@@ -16,6 +18,7 @@ export const OVERRIDE_SCOPE_KINDS = ['global', 'task', 'pr', 'controller'];
 export const OVERRIDE_STATUSES = ['active', 'cleared', 'expired'];
 export const CONTROLLER_MODES = ['off', 'observe', 'shadow', 'assist'];
 export const OBSERVATION_SOURCE_KINDS = ['ao_poll', 'github_poll'];
+export const TASK_SPEC_RECORD_STATES = ['valid', 'invalid'];
 
 function isPlainObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
@@ -141,6 +144,7 @@ export function createEmptyControlPlaneState({
     controller_modes: [],
     observations: [],
     controller_cursors: [],
+    task_specs: [],
   };
 }
 
@@ -351,6 +355,36 @@ export function createControllerCursorRecord({
     last_cursor: normalizeRequiredString(last_cursor, 'last_cursor'),
     observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
     updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+  };
+}
+
+export function createTaskSpecRecord({
+  task_id,
+  source_kind,
+  source_issue_number = null,
+  created_at,
+  updated_at,
+  snapshot,
+} = {}) {
+  const normalizedSnapshot = createTaskSpecSnapshot({
+    schema_version: snapshot?.schema_version,
+    problem_type: snapshot?.spec?.problem_type,
+    acceptance_contract: snapshot?.spec?.acceptance_contract,
+    runtime_ref: snapshot?.spec?.runtime_ref,
+    policy_ref: snapshot?.spec?.policy_ref,
+    human_gates: snapshot?.spec?.human_gates,
+  });
+
+  return {
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    source_kind: normalizeRequiredString(source_kind, 'source_kind'),
+    source_issue_number: normalizePositiveInteger(source_issue_number, 'source_issue_number', {
+      nullable: true,
+    }),
+    state: normalizedSnapshot.valid ? 'valid' : 'invalid',
+    created_at: normalizeIsoTimestamp(created_at, 'created_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    snapshot: normalizedSnapshot,
   };
 }
 

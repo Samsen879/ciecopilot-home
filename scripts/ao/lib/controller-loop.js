@@ -393,13 +393,14 @@ async function resolveLifecycleReportForTask({
       : createDoctorProjectScope({ projectId }),
     reconciliationReport,
     localState,
+    controlPlaneSnapshot: deps.controlPlaneSnapshot ?? null,
   });
   const lifecycleReport = deps.buildLifecycleReport({
-    scope: prNumber != null
-      ? createLifecyclePrScope({ projectId, prNumber, trigger: derivedTrigger })
-      : createLifecycleProjectScope({ projectId, trigger: derivedTrigger }),
-    reconciliationReport,
-    doctorReport,
+        scope: prNumber != null
+          ? createLifecyclePrScope({ projectId, prNumber, trigger: derivedTrigger })
+          : createLifecycleProjectScope({ projectId, trigger: derivedTrigger }),
+        reconciliationReport,
+        doctorReport,
   });
 
   return {
@@ -577,7 +578,10 @@ export async function runControllerLoop({
               githubObservation,
               cwd,
               projectId,
-              deps: services,
+              deps: {
+                ...services,
+                controlPlaneSnapshot: repository.getSnapshot(),
+              },
             });
         const lifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
         lifecycleTopStatus = lifecycleReport.top_status ?? null;

@@ -5,6 +5,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from '@jest/globals';
 
 import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js';
+import { createHandoffProtocol } from '../../scripts/ao/lib/handoff-protocol.js';
 import {
   createControllerModeRecord,
   createManagedTask,
@@ -139,7 +140,7 @@ describe('ao state runner', () => {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
-      audit_entry_count: 9,
+      audit_entry_count: 10,
     });
     expect(report.audit.recent_entries).toEqual([
       expect.objectContaining({
@@ -247,6 +248,128 @@ describe('ao state runner', () => {
       expect.objectContaining({
         task_id: 'issue-110',
         state: 'valid',
+      }),
+    ]);
+  });
+
+  it('includes successor handoff inspection state in the operator-visible AO state report', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-03-31T10:00:00.000Z',
+        '2026-03-31T10:01:00.000Z',
+        '2026-03-31T10:02:00.000Z',
+        '2026-03-31T10:03:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-117',
+      issue_number: 117,
+      title: 'feat(ao): add successor handoff and authority transfer protocol',
+      branch_name: 'feat/117',
+      worktree_path: '/tmp/cie-58',
+      status: 'active',
+      created_at: '2026-03-31T10:00:00.000Z',
+      updated_at: '2026-03-31T10:00:00.000Z',
+    }));
+    repository.upsertPrBinding(createPrBinding({
+      binding_id: 'binding-issue-117-pr-117',
+      task_id: 'issue-117',
+      pr_number: 117,
+      branch_name: 'feat/117',
+      base_branch: 'main',
+      status: 'bound',
+      created_at: '2026-03-31T10:00:00.000Z',
+      updated_at: '2026-03-31T10:00:00.000Z',
+    }));
+    repository.upsertTaskSpec(createTaskSpecRecord({
+      task_id: 'issue-117',
+      source_kind: 'github_issue',
+      source_issue_number: 117,
+      created_at: '2026-03-31T10:00:00.000Z',
+      updated_at: '2026-03-31T10:00:00.000Z',
+      snapshot: {
+        schema_version: 'ao.task-spec.v1alpha1',
+        spec: {
+          problem_type: 'issue_delivery',
+          acceptance_contract: ['successor handoff protocol exists'],
+          runtime_ref: 'runtime.github_local',
+          policy_ref: 'policy.operator_gated',
+          human_gates: ['operator_handoff'],
+        },
+      },
+    }));
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: '2026-03-31T10:01:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    createCheckpointStore({
+      repository,
+      now: () => '2026-03-31T10:02:00.000Z',
+    }).captureCheckpoint({
+      taskId: 'issue-117',
+      controllerId: 'default',
+      derivedTrigger: 'agent_exited',
+      observedAt: '2026-03-31T10:02:00.000Z',
+      actionIds: [],
+    });
+
+    const handoffProtocol = createHandoffProtocol({
+      repository,
+      now: () => '2026-03-31T10:03:00.000Z',
+    });
+    const request = handoffProtocol.requestHandoff({
+      taskId: 'issue-117',
+      requestedBySessionName: 'operator-1',
+      requestedBySessionId: 'operator-1',
+      operatorSessionName: 'operator-1',
+      operatorSessionId: 'operator-1',
+      successorSessionName: 'cie-59',
+      successorSessionId: 'cie-59',
+      reason: 'owner_stale',
+    });
+    const claim = handoffProtocol.claimHandoff({
+      requestId: request.request_id,
+      successorSessionName: 'cie-59',
+      successorSessionId: 'cie-59',
+      reason: 'continue_issue_117',
+    });
+    handoffProtocol.acceptHandoff({
+      requestId: request.request_id,
+      claimId: claim.claim_id,
+      operatorSessionName: 'operator-1',
+      operatorSessionId: 'operator-1',
+      reason: 'approved_successor',
+      grantExpiresAt: '2026-03-31T10:20:00.000Z',
+    });
+
+    const report = await loadAoStateReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+      auditLimit: 2,
+    });
+
+    expect(report.summary).toMatchObject({
+      handoff_request_count: 1,
+      handoff_claim_count: 1,
+      handoff_decision_count: 1,
+      handoff_transfer_count: 0,
+      active_handoff_count: 1,
+    });
+    expect(report.handoffs.inspections).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-117',
+        request_id: request.request_id,
+        top_status: 'accepted',
       }),
     ]);
   });

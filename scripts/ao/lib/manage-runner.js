@@ -1,4 +1,5 @@
 import { createCheckpointStore } from './checkpoint-store.js';
+import { createHandoffProtocol } from './handoff-protocol.js';
 import { normalizeIssueIntake } from './issue-intake.js';
 import { createStateRepository } from './state-repository.js';
 import { createTaskSpecRecord } from './state-contracts.js';
@@ -49,6 +50,16 @@ function releaseActiveOwnershipLeases(repository, taskId, now, reason) {
 }
 
 function releaseConflictingOwnershipLeases(repository, taskId, ownerSessionName, now) {
+  return releaseConflictingOwnershipLeasesWithReason(
+    repository,
+    taskId,
+    ownerSessionName,
+    now,
+    'ownership_replaced',
+  );
+}
+
+function releaseConflictingOwnershipLeasesWithReason(repository, taskId, ownerSessionName, now, reason) {
   const snapshot = repository.getSnapshot();
   const activeLeases = snapshot.state.ownership_leases.filter(
     (lease) => lease.task_id === taskId && lease.status === 'active' && lease.owner_session_name !== ownerSessionName,
@@ -59,11 +70,17 @@ function releaseConflictingOwnershipLeases(repository, taskId, ownerSessionName,
       intent: 'release',
       existingLease: lease,
       now,
-      reason: 'ownership_replaced',
+      reason,
     }));
   }
 
   return activeLeases.map((lease) => lease.lease_id);
+}
+
+function latestTaskOwnershipLease(snapshot, taskId) {
+  return [...snapshot.state.ownership_leases]
+    .filter((lease) => lease.task_id === taskId)
+    .sort((left, right) => String(right?.acquired_at ?? '').localeCompare(String(left?.acquired_at ?? '')))[0] ?? null;
 }
 
 function releaseBoundPrBindings(repository, taskId, now, reason) {
@@ -127,6 +144,10 @@ export async function runManageCommand({
     projectId,
   });
   const checkpointStore = createCheckpointStore({
+    repository,
+    now: () => timestamp,
+  });
+  const handoffProtocol = createHandoffProtocol({
     repository,
     now: () => timestamp,
   });
@@ -208,11 +229,49 @@ export async function runManageCommand({
 
   let prBinding = null;
   let ownershipLease = null;
+  let handoffTransfer = null;
   let releasedOwnershipLeaseIds = [];
   let releasedPrBindingIds = [];
 
   if (ownerSessionName && ['enroll', 'adopt', 'resume'].includes(command)) {
-    releasedOwnershipLeaseIds = releaseConflictingOwnershipLeases(repository, task.task_id, ownerSessionName, timestamp);
+    if (command === 'resume') {
+      const resumeSnapshot = repository.getSnapshot();
+      const activeOwnershipLeases = resumeSnapshot.state.ownership_leases.filter(
+        (lease) => lease.task_id === task.task_id && lease.status === 'active',
+      );
+      const latestOwnershipLease = latestTaskOwnershipLease(resumeSnapshot, task.task_id);
+      const sameOwnerResume = latestOwnershipLease?.owner_session_name === ownerSessionName
+        || activeOwnershipLeases.some((lease) => lease.owner_session_name === ownerSessionName);
+      const acceptedHandoff = sameOwnerResume
+        ? null
+        : handoffProtocol.resolveAcceptedHandoff({
+            taskId: task.task_id,
+            successorSessionName: ownerSessionName,
+          });
+
+      if (activeOwnershipLeases.length > 1) {
+        throw new Error(`Cannot resume ${task.task_id} with conflicting active owners`);
+      }
+      if (!sameOwnerResume && !acceptedHandoff) {
+        throw new Error(`Cannot resume ${task.task_id} without an accepted handoff`);
+      }
+      if (acceptedHandoff?.reason_codes?.includes('conflicting_active_owner')) {
+        throw new Error(`Cannot resume ${task.task_id} with conflicting active owners`);
+      }
+
+      releasedOwnershipLeaseIds = acceptedHandoff
+        ? releaseConflictingOwnershipLeasesWithReason(
+            repository,
+            task.task_id,
+            ownerSessionName,
+            timestamp,
+            'accepted_handoff_transfer',
+          )
+        : releaseConflictingOwnershipLeases(repository, task.task_id, ownerSessionName, timestamp);
+    } else {
+      releasedOwnershipLeaseIds = releaseConflictingOwnershipLeases(repository, task.task_id, ownerSessionName, timestamp);
+    }
+
     const postReleaseSnapshot = repository.getSnapshot();
     const existingOwnershipLease = postReleaseSnapshot.state.ownership_leases.find(
       (lease) => lease.lease_id === buildOwnershipLeaseId({
@@ -237,6 +296,18 @@ export async function runManageCommand({
         ownerSessionId,
       });
       repository.upsertOwnershipLease(ownershipLease);
+    }
+
+    if (command === 'resume') {
+      handoffTransfer = handoffProtocol.completeAcceptedHandoff({
+        taskId: task.task_id,
+        successorSessionName: ownerSessionName,
+        successorSessionId: ownerSessionId,
+        successorOwnershipLeaseId: ownershipLease.lease_id,
+        successorOwnershipLease: ownershipLease,
+        transferredBy: 'manage_runner',
+        reason: 'accepted_handoff_resume',
+      });
     }
   }
 
@@ -291,6 +362,7 @@ export async function runManageCommand({
     taskSpec,
     prBinding,
     ownershipLease,
+    handoffTransfer,
     resume: resumeCheckpoint == null ? null : {
       checkpoint_id: resumeCheckpoint.checkpoint_id,
       state: resumeCheckpoint.state,

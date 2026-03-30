@@ -21,6 +21,10 @@ import {
   createCredentialProvenanceRecord,
   createDeliveryEventRecord,
   createEmptyControlPlaneState,
+  createHandoffClaimRecord,
+  createHandoffDecisionRecord,
+  createHandoffRequestRecord,
+  createHandoffTransferRecord,
   createManagedTask,
   createOverrideRecord,
   createOwnershipLease,
@@ -45,7 +49,7 @@ describe('ao state contracts', () => {
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
     expect(POLICY_DECISIONS).toEqual(['allow', 'deny', 'downgrade']);
     expect(CREDENTIAL_PROVENANCE_TRUST_DECISIONS).toEqual(['trusted', 'untrusted']);
-    expect(CONTROL_PLANE_LATEST_VERSION).toBe(6);
+    expect(CONTROL_PLANE_LATEST_VERSION).toBe(7);
   });
 
   it('creates durable managed-task, binding, lease, action, override, and controller-mode records', () => {
@@ -387,6 +391,112 @@ describe('ao state contracts', () => {
         author_login: 'chatgpt-codex-connector',
       },
     });
+
+    expect(createHandoffRequestRecord({
+      request_id: 'handoff-task-1-1',
+      task_id: 'task-1',
+      status: 'open',
+      created_at: NOW,
+      updated_at: NOW,
+      requested_by_session_name: 'operator-1',
+      requested_by_session_id: 'operator-1',
+      operator_session_name: 'operator-1',
+      operator_session_id: 'operator-1',
+      successor_session_name: 'cie-59',
+      successor_session_id: 'cie-59',
+      reason: 'owner_stale',
+      expires_at: '2026-03-29T05:10:00.000Z',
+      selected_claim_id: null,
+      accepted_decision_id: null,
+      completed_transfer_id: null,
+      reason_codes: [],
+      lineage: {
+        checkpoint_id: 'checkpoint-task-1',
+        checkpoint_recorded_at: NOW,
+        checkpoint_state: 'valid',
+        prior_ownership_lease_id: 'lease-1',
+        prior_owner_session_name: 'cie-48',
+        prior_owner_session_id: 'session-48',
+        prior_ownership_status: 'expired',
+        pr_binding_id: 'binding-1',
+        pr_number: 101,
+      },
+    })).toMatchObject({
+      schema_version: 'ao.handoff-request.v1alpha1',
+      format: 'ao_handoff_request',
+      request_id: 'handoff-task-1-1',
+      task_id: 'task-1',
+      status: 'open',
+      successor_session_name: 'cie-59',
+      lineage: {
+        checkpoint_id: 'checkpoint-task-1',
+        prior_ownership_lease_id: 'lease-1',
+      },
+    });
+
+    expect(createHandoffClaimRecord({
+      claim_id: 'claim-handoff-task-1-1',
+      request_id: 'handoff-task-1-1',
+      task_id: 'task-1',
+      status: 'pending',
+      created_at: NOW,
+      updated_at: NOW,
+      successor_session_name: 'cie-59',
+      successor_session_id: 'cie-59',
+    })).toMatchObject({
+      schema_version: 'ao.handoff-claim.v1alpha1',
+      format: 'ao_handoff_claim',
+      claim_id: 'claim-handoff-task-1-1',
+      status: 'pending',
+      successor_session_name: 'cie-59',
+    });
+
+    expect(createHandoffDecisionRecord({
+      decision_id: 'decision-handoff-task-1-1',
+      request_id: 'handoff-task-1-1',
+      claim_id: 'claim-handoff-task-1-1',
+      task_id: 'task-1',
+      outcome: 'accept',
+      decided_at: NOW,
+      operator_session_name: 'operator-1',
+      operator_session_id: 'operator-1',
+      successor_session_name: 'cie-59',
+      successor_session_id: 'cie-59',
+      grant_expires_at: '2026-03-29T05:00:00.000Z',
+      reason: 'approved_successor',
+    })).toMatchObject({
+      schema_version: 'ao.handoff-decision.v1alpha1',
+      format: 'ao_handoff_decision',
+      decision_id: 'decision-handoff-task-1-1',
+      outcome: 'accept',
+      operator_session_name: 'operator-1',
+      successor_session_name: 'cie-59',
+    });
+
+    expect(createHandoffTransferRecord({
+      transfer_id: 'transfer-handoff-task-1-1',
+      request_id: 'handoff-task-1-1',
+      claim_id: 'claim-handoff-task-1-1',
+      decision_id: 'decision-handoff-task-1-1',
+      task_id: 'task-1',
+      checkpoint_id: 'checkpoint-task-1',
+      previous_ownership_lease_id: 'lease-1',
+      previous_owner_session_name: 'cie-48',
+      previous_owner_session_id: 'session-48',
+      successor_ownership_lease_id: 'lease-2',
+      successor_session_name: 'cie-59',
+      successor_session_id: 'cie-59',
+      transferred_at: NOW,
+      transferred_by: 'manage_runner',
+      reason: 'accepted_handoff_resume',
+    })).toMatchObject({
+      schema_version: 'ao.handoff-transfer.v1alpha1',
+      format: 'ao_handoff_transfer',
+      transfer_id: 'transfer-handoff-task-1-1',
+      request_id: 'handoff-task-1-1',
+      successor_session_name: 'cie-59',
+      successor_ownership_lease_id: 'lease-2',
+    });
   });
 
   it('creates empty schema, state, and audit envelopes for repo-local bootstrap', () => {
@@ -445,6 +555,10 @@ describe('ao state contracts', () => {
       task_specs: [],
       runtime_preflights: [],
       checkpoints: [],
+      handoff_requests: [],
+      handoff_claims: [],
+      handoff_decisions: [],
+      handoff_transfers: [],
     });
 
     expect(createControlPlaneAuditEntry({

@@ -1,4 +1,5 @@
 import { createCheckpointStore } from './checkpoint-store.js';
+import { createHandoffProtocol } from './handoff-protocol.js';
 import * as fs from 'node:fs';
 import path from 'node:path';
 
@@ -49,9 +50,15 @@ export async function loadAoStateReport({
   const checkpointInspections = createCheckpointStore({
     repository,
   }).inspectAllCheckpoints();
+  const handoffInspections = createHandoffProtocol({
+    repository,
+  }).inspectAllHandoffs();
   const validCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'valid').length;
   const staleCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'stale').length;
   const invalidCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'invalid').length;
+  const activeHandoffCount = handoffInspections.filter((inspection) => (
+    ['open', 'pending_decision', 'accepted'].includes(inspection.top_status)
+  )).length;
 
   return {
     schema_version: AO_STATE_SCHEMA_VERSION,
@@ -77,10 +84,18 @@ export async function loadAoStateReport({
       valid_checkpoint_count: validCheckpointCount,
       stale_checkpoint_count: staleCheckpointCount,
       invalid_checkpoint_count: invalidCheckpointCount,
+      handoff_request_count: snapshot.state.handoff_requests.length,
+      handoff_claim_count: snapshot.state.handoff_claims.length,
+      handoff_decision_count: snapshot.state.handoff_decisions.length,
+      handoff_transfer_count: snapshot.state.handoff_transfers.length,
+      active_handoff_count: activeHandoffCount,
       audit_entry_count: auditEntries.length,
     },
     checkpoints: {
       inspections: checkpointInspections,
+    },
+    handoffs: {
+      inspections: handoffInspections,
     },
     audit: {
       recent_entries: recentEntries,

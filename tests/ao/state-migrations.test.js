@@ -73,8 +73,8 @@ describe('ao state migrations', () => {
 
     expect(readJson(paths.schemaPath)).toMatchObject({
       project_id: PROJECT_ID,
-      current_version: 6,
-      latest_version: 6,
+      current_version: 7,
+      latest_version: 7,
       applied_migrations: [
         {
           version: 1,
@@ -106,6 +106,11 @@ describe('ao state migrations', () => {
           key: '0006_checkpoint_v1',
           applied_at: FIXED_NOW,
         },
+        {
+          version: 7,
+          key: '0007_handoff_protocol_v1',
+          applied_at: FIXED_NOW,
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
@@ -116,6 +121,10 @@ describe('ao state migrations', () => {
       task_specs: [],
       runtime_preflights: [],
       checkpoints: [],
+      handoff_requests: [],
+      handoff_claims: [],
+      handoff_decisions: [],
+      handoff_transfers: [],
       controller_modes: [
         {
           controller_id: 'default',
@@ -162,6 +171,12 @@ describe('ao state migrations', () => {
         operation: 'migrate',
         summary: 'Applied control-plane checkpoint migration.',
       }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v7',
+        operation: 'migrate',
+        summary: 'Applied control-plane handoff-protocol migration.',
+      }),
     ]);
   });
 
@@ -188,7 +203,7 @@ describe('ao state migrations', () => {
       migrated: false,
     });
     expect(readJson(paths.schemaPath).updated_at).toBe(FIXED_NOW);
-    expect(readAuditEntries(paths.auditPath)).toHaveLength(6);
+    expect(readAuditEntries(paths.auditPath)).toHaveLength(7);
   });
 
   it('upgrades a stale schema version and backfills invalid task specs for enrolled tasks', () => {
@@ -204,7 +219,7 @@ describe('ao state migrations', () => {
       format: 'ao_control_plane_schema',
       project_id: PROJECT_ID,
       current_version: 1,
-      latest_version: 6,
+      latest_version: 7,
       created_at: '2026-03-29T03:00:00.000Z',
       updated_at: '2026-03-29T03:00:00.000Z',
       applied_migrations: [
@@ -264,7 +279,7 @@ describe('ao state migrations', () => {
       migrated: true,
     });
     expect(readJson(paths.schemaPath)).toMatchObject({
-      current_version: 6,
+      current_version: 7,
       applied_migrations: [
         {
           version: 1,
@@ -290,6 +305,10 @@ describe('ao state migrations', () => {
           version: 6,
           key: '0006_checkpoint_v1',
         },
+        {
+          version: 7,
+          key: '0007_handoff_protocol_v1',
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
@@ -298,6 +317,10 @@ describe('ao state migrations', () => {
       credential_provenances: [],
       runtime_preflights: [],
       checkpoints: [],
+      handoff_requests: [],
+      handoff_claims: [],
+      handoff_decisions: [],
+      handoff_transfers: [],
       task_specs: [
         {
           task_id: 'issue-105',

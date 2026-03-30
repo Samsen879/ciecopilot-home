@@ -1,3 +1,6 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockSpawnSync = jest.fn();
@@ -7,10 +10,13 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 const { loadGitHubObservationSet } = await import('../../scripts/ao/lib/github-observation-source.js');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ORIGINAL_FIXTURE_ROOT = process.env.AO_FIXTURE_ROOT;
 
 describe('github observation source', () => {
   beforeEach(() => {
     mockSpawnSync.mockReset();
+    process.env.AO_FIXTURE_ROOT = ORIGINAL_FIXTURE_ROOT;
   });
 
   it('loads a single explicit PR in PR-scoped mode', async () => {
@@ -88,6 +94,31 @@ describe('github observation source', () => {
     expect(mockSpawnSync).toHaveBeenCalledTimes(2);
     expect(mockSpawnSync.mock.calls[0][1]).toContain('40');
     expect(mockSpawnSync.mock.calls[1][1]).toContain('41');
+  });
+
+  it('keeps explicit PR fixture observations when branch hints are already covered', async () => {
+    process.env.AO_FIXTURE_ROOT = path.join(__dirname, 'fixtures', 'acceptance', 'ci-failed-pr');
+
+    const set = await loadGitHubObservationSet({
+      scope: {
+        mode: 'project',
+        selected_pr_numbers: [92],
+        selection_basis: ['managed_task_pr_binding'],
+        selection_notes: ['branch:feat/issue-92'],
+      },
+      now: '2026-03-29T06:51:00.000Z',
+    });
+
+    expect(set.source_ok).toBe(true);
+    expect(set.source_error).toBeNull();
+    expect(set.prs).toEqual([
+      expect.objectContaining({
+        pr_number: 92,
+        head_branch: 'feat/issue-92',
+        ci_status: 'failing',
+      }),
+    ]);
+    expect(mockSpawnSync).not.toHaveBeenCalled();
   });
 
   it('resolves AO-linked project PRs from worker branch hints when PR numbers are absent', async () => {

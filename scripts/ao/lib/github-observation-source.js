@@ -143,6 +143,10 @@ function extractBranchHints(scope) {
   return [...new Set(branchHints)].sort((left, right) => left.localeCompare(right));
 }
 
+function branchHintAlreadyCovered(observationMap, branchName) {
+  return [...observationMap.values()].some((observation) => observation.head_branch === branchName);
+}
+
 function fetchPrObservationByNumber(prNumber, now) {
   const fixture = readAoFixture(
     ['github', `pr-${prNumber}.json`],
@@ -223,6 +227,9 @@ export async function loadGitHubObservationSet({
     }
 
     for (const branchName of branchHints) {
+      if (branchHintAlreadyCovered(observationMap, branchName)) {
+        continue;
+      }
       const observations = fetchPrObservationsByBranch(branchName, now);
       for (const observation of observations) {
         observationMap.set(observation.pr_number, observation);

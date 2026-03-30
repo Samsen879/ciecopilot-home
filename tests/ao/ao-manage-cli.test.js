@@ -1,6 +1,10 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockRunManageCommand = jest.fn();
+const tempDirs = [];
 
 jest.unstable_mockModule('../../scripts/ao/lib/manage-runner.js', () => ({
   DEFAULT_PROJECT_ID: 'ciecopilot-home',
@@ -25,8 +29,18 @@ describe('ao manage cli', () => {
     process.env.AO_SESSION_ID = 'cie-50';
   });
 
+  afterEach(() => {
+    while (tempDirs.length) {
+      fs.rmSync(tempDirs.pop(), { recursive: true, force: true });
+    }
+  });
+
   it('parses enroll arguments and forwards them to the manage runner', async () => {
     const stdout = [];
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-manage-cli-'));
+    tempDirs.push(tempRoot);
+    const taskSpecPath = path.join(tempRoot, 'task-spec.md');
+    fs.writeFileSync(taskSpecPath, '## Problem Type\nissue_delivery\n', 'utf8');
 
     const result = await runCli([
       'enroll',
@@ -38,6 +52,8 @@ describe('ao manage cli', () => {
       'feat/89',
       '--worktree',
       '/tmp/cie-50',
+      '--task-spec-file',
+      taskSpecPath,
       '--pr',
       '109',
       '--json',
@@ -54,6 +70,7 @@ describe('ao manage cli', () => {
       title: 'Managed-task enrollment and shadow controller loop',
       branchName: 'feat/89',
       worktreePath: '/tmp/cie-50',
+      taskSpecBody: '## Problem Type\nissue_delivery\n',
       prNumber: 109,
       ownerSessionName: 'cie-50',
       ownerSessionId: 'cie-50',

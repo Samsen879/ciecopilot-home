@@ -14,6 +14,7 @@ import {
   createOverrideRecord,
   createOwnershipLease,
   createPrBinding,
+  createTaskSpecRecord,
 } from './state-contracts.js';
 import { appendControlPlaneAuditEntry, readControlPlaneAuditEntries } from './state-audit.js';
 import {
@@ -92,6 +93,7 @@ export function createStateRepository({
     nextState.controller_modes = sortCollectionByKey(nextState.controller_modes, 'controller_id');
     nextState.observations = sortCollectionByKey(nextState.observations, 'observation_id');
     nextState.controller_cursors = sortCollectionByKey(nextState.controller_cursors, 'cursor_id');
+    nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
 
     return {
       bootstrapped: true,
@@ -303,6 +305,17 @@ export function createStateRepository({
         record,
         normalize: createControllerCursorRecord,
         summary: `Persisted controller cursor ${record?.cursor_id}.`,
+      });
+    },
+
+    upsertTaskSpec(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'task_specs',
+        identityKey: 'task_id',
+        entityKind: 'task_spec',
+        record,
+        normalize: createTaskSpecRecord,
+        summary: `Persisted task spec ${record?.task_id}.`,
       });
     },
   };

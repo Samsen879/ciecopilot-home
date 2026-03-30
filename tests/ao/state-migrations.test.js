@@ -73,18 +73,24 @@ describe('ao state migrations', () => {
 
     expect(readJson(paths.schemaPath)).toMatchObject({
       project_id: PROJECT_ID,
-      current_version: 1,
-      latest_version: 1,
+      current_version: 2,
+      latest_version: 2,
       applied_migrations: [
         {
           version: 1,
           key: '0001_bootstrap_control_plane_v1',
           applied_at: FIXED_NOW,
         },
+        {
+          version: 2,
+          key: '0002_task_spec_v1',
+          applied_at: FIXED_NOW,
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
       project_id: PROJECT_ID,
+      task_specs: [],
       controller_modes: [
         {
           controller_id: 'default',
@@ -100,6 +106,12 @@ describe('ao state migrations', () => {
         entity_id: 'v1',
         operation: 'bootstrap',
         summary: 'Applied control-plane bootstrap migration.',
+      }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v2',
+        operation: 'migrate',
+        summary: 'Applied control-plane task-spec migration.',
       }),
     ]);
   });
@@ -127,10 +139,10 @@ describe('ao state migrations', () => {
       migrated: false,
     });
     expect(readJson(paths.schemaPath).updated_at).toBe(FIXED_NOW);
-    expect(readAuditEntries(paths.auditPath)).toHaveLength(1);
+    expect(readAuditEntries(paths.auditPath)).toHaveLength(2);
   });
 
-  it('upgrades a stale schema version to the current bootstrap migration', () => {
+  it('upgrades a stale schema version and backfills invalid task specs for enrolled tasks', () => {
     const repoRoot = createTempRepo();
     const paths = resolveControlPlanePaths({
       repoRoot,
@@ -142,11 +154,53 @@ describe('ao state migrations', () => {
       schema_version: 'ao.control-plane.schema.v1alpha1',
       format: 'ao_control_plane_schema',
       project_id: PROJECT_ID,
-      current_version: 0,
-      latest_version: 1,
+      current_version: 1,
+      latest_version: 2,
       created_at: '2026-03-29T03:00:00.000Z',
       updated_at: '2026-03-29T03:00:00.000Z',
-      applied_migrations: [],
+      applied_migrations: [
+        {
+          version: 1,
+          key: '0001_bootstrap_control_plane_v1',
+          applied_at: '2026-03-29T03:00:00.000Z',
+        },
+      ],
+    }, null, 2)}\n`, 'utf8');
+    fs.writeFileSync(paths.statePath, `${JSON.stringify({
+      schema_version: 'ao.control-plane.state.v1alpha1',
+      format: 'ao_control_plane_state',
+      project_id: PROJECT_ID,
+      created_at: '2026-03-29T03:00:00.000Z',
+      updated_at: '2026-03-29T03:00:00.000Z',
+      managed_tasks: [
+        {
+          task_id: 'issue-105',
+          issue_number: 105,
+          title: 'feat(ao): add TaskSpec v1, admission normalization, and migration/backfill',
+          branch_name: 'feat/105',
+          worktree_path: '/tmp/cie-52',
+          status: 'active',
+          created_at: '2026-03-29T03:00:00.000Z',
+          updated_at: '2026-03-29T03:00:00.000Z',
+          metadata: {},
+        },
+      ],
+      pr_bindings: [],
+      ownership_leases: [],
+      controller_leases: [],
+      actions: [],
+      overrides: [],
+      controller_modes: [
+        {
+          controller_id: 'default',
+          mode: 'off',
+          updated_at: '2026-03-29T03:00:00.000Z',
+          updated_by: 'bootstrap',
+          reason: 'Initialized repo-local AO control-plane state.',
+        },
+      ],
+      observations: [],
+      controller_cursors: [],
     }, null, 2)}\n`, 'utf8');
 
     const result = bootstrapControlPlaneState({
@@ -160,19 +214,31 @@ describe('ao state migrations', () => {
       migrated: true,
     });
     expect(readJson(paths.schemaPath)).toMatchObject({
-      current_version: 1,
+      current_version: 2,
       applied_migrations: [
         {
           version: 1,
           key: '0001_bootstrap_control_plane_v1',
         },
+        {
+          version: 2,
+          key: '0002_task_spec_v1',
+        },
       ],
     });
-    expect(readJson(paths.statePath).controller_modes).toEqual([
-      expect.objectContaining({
-        controller_id: 'default',
-        mode: 'off',
-      }),
-    ]);
+    expect(readJson(paths.statePath)).toMatchObject({
+      task_specs: [
+        {
+          task_id: 'issue-105',
+          state: 'invalid',
+          source_kind: 'migration_backfill',
+          source_issue_number: 105,
+          snapshot: {
+            schema_version: 'ao.task-spec.v1alpha1',
+            valid: false,
+          },
+        },
+      ],
+    });
   });
 });

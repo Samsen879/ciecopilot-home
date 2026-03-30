@@ -7,7 +7,9 @@ import {
   createControlPlaneSchema,
   createControllerModeRecord,
   createEmptyControlPlaneState,
+  createTaskSpecRecord,
 } from './state-contracts.js';
+import { normalizeIssueIntake } from './issue-intake.js';
 import { appendControlPlaneAuditEntry } from './state-audit.js';
 import {
   ensureDirectory,
@@ -19,6 +21,16 @@ export const CONTROL_PLANE_BOOTSTRAP_MIGRATION = {
   version: 1,
   key: '0001_bootstrap_control_plane_v1',
 };
+
+export const CONTROL_PLANE_TASK_SPEC_MIGRATION = {
+  version: 2,
+  key: '0002_task_spec_v1',
+};
+
+const CONTROL_PLANE_MIGRATIONS = [
+  CONTROL_PLANE_BOOTSTRAP_MIGRATION,
+  CONTROL_PLANE_TASK_SPEC_MIGRATION,
+];
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -54,7 +66,7 @@ function buildDefaultControllerMode(now) {
   });
 }
 
-function buildMigratedState({
+function buildBootstrapState({
   projectId,
   now,
   existingState,
@@ -75,6 +87,7 @@ function buildMigratedState({
     'controller_modes',
     'observations',
     'controller_cursors',
+    'task_specs',
   ]) {
     if (Array.isArray(existingState?.[collectionKey])) {
       state[collectionKey] = cloneJsonValue(existingState[collectionKey]);
@@ -86,6 +99,82 @@ function buildMigratedState({
   }
 
   return state;
+}
+
+function backfillTaskSpecs({
+  state,
+  now,
+} = {}) {
+  const nextState = buildBootstrapState({
+    projectId: state?.project_id,
+    now,
+    existingState: state,
+  });
+
+  const existingTaskIds = new Set((nextState.task_specs ?? []).map((record) => record?.task_id));
+  for (const task of nextState.managed_tasks ?? []) {
+    if (!task?.task_id || existingTaskIds.has(task.task_id)) continue;
+
+    const { task_spec_snapshot: taskSpecSnapshot } = normalizeIssueIntake({
+      issueNumber: task.issue_number ?? null,
+      title: task.title ?? null,
+      body: task?.metadata?.task_spec_body ?? task?.metadata?.issue_body ?? '',
+      sourceKind: 'migration_backfill',
+    });
+    nextState.task_specs.push(createTaskSpecRecord({
+      task_id: task.task_id,
+      source_kind: 'migration_backfill',
+      source_issue_number: task.issue_number ?? null,
+      created_at: now,
+      updated_at: now,
+      snapshot: taskSpecSnapshot,
+    }));
+  }
+
+  nextState.updated_at = now;
+  return nextState;
+}
+
+function applyMigration({
+  migration,
+  projectId,
+  now,
+  state,
+} = {}) {
+  if (migration.version === CONTROL_PLANE_BOOTSTRAP_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
+  if (migration.version === CONTROL_PLANE_TASK_SPEC_MIGRATION.version) {
+    return backfillTaskSpecs({
+      state: buildBootstrapState({
+        projectId,
+        now,
+        existingState: state,
+      }),
+      now,
+    });
+  }
+
+  throw new Error(`Unsupported migration version ${migration.version}`);
+}
+
+function buildAuditSummary(migration) {
+  if (migration.version === CONTROL_PLANE_BOOTSTRAP_MIGRATION.version) {
+    return {
+      operation: 'bootstrap',
+      summary: 'Applied control-plane bootstrap migration.',
+    };
+  }
+
+  return {
+    operation: 'migrate',
+    summary: 'Applied control-plane task-spec migration.',
+  };
 }
 
 export function resolveControlPlanePaths({
@@ -126,12 +215,16 @@ export function bootstrapControlPlaneState({
 
   const existingSchema = readControlPlaneSchema({ schemaPath: paths.schemaPath });
   const existingState = readControlPlaneState({ statePath: paths.statePath });
-  const currentVersion = Number(existingSchema?.current_version ?? 0);
-  const isCurrent = currentVersion >= CONTROL_PLANE_LATEST_VERSION
-    && existingSchema != null
-    && existingState != null;
+  const timestamp = resolveNow(now);
+  const effectiveCurrentVersion = existingSchema != null && existingState != null
+    ? Number(existingSchema.current_version ?? 0)
+    : 0;
 
-  if (isCurrent) {
+  if (
+    existingSchema != null
+    && existingState != null
+    && effectiveCurrentVersion >= CONTROL_PLANE_LATEST_VERSION
+  ) {
     return {
       bootstrapped: true,
       migrated: false,
@@ -141,54 +234,66 @@ export function bootstrapControlPlaneState({
     };
   }
 
-  const timestamp = resolveNow(now);
-  const appliedMigration = {
-    version: CONTROL_PLANE_BOOTSTRAP_MIGRATION.version,
-    key: CONTROL_PLANE_BOOTSTRAP_MIGRATION.key,
-    applied_at: timestamp,
-  };
-  const nextState = buildMigratedState({
-    projectId,
-    now: timestamp,
-    existingState,
-  });
+  let nextState = existingState;
   const priorMigrations = Array.isArray(existingSchema?.applied_migrations)
     ? existingSchema.applied_migrations.filter(
-        (migration) => Number(migration?.version) !== CONTROL_PLANE_BOOTSTRAP_MIGRATION.version,
+        (migration) => Number(migration?.version) <= effectiveCurrentVersion,
       )
     : [];
+  const newAppliedMigrations = [];
+
+  for (const migration of CONTROL_PLANE_MIGRATIONS) {
+    if (migration.version <= effectiveCurrentVersion) continue;
+    nextState = applyMigration({
+      migration,
+      projectId,
+      now: timestamp,
+      state: nextState,
+    });
+    newAppliedMigrations.push({
+      version: migration.version,
+      key: migration.key,
+      applied_at: timestamp,
+    });
+  }
+
   const nextSchema = createControlPlaneSchema({
     project_id: projectId,
     current_version: CONTROL_PLANE_LATEST_VERSION,
     latest_version: CONTROL_PLANE_LATEST_VERSION,
     created_at: existingSchema?.created_at ?? timestamp,
     updated_at: timestamp,
-    applied_migrations: [...priorMigrations, appliedMigration],
+    applied_migrations: [...priorMigrations, ...newAppliedMigrations],
   });
 
   writeJsonFileAtomic(paths.schemaPath, nextSchema);
   writeJsonFileAtomic(paths.statePath, nextState);
-  appendControlPlaneAuditEntry({
-    auditPath: paths.auditPath,
-    entry: createControlPlaneAuditEntry({
-      audit_id: `migration-${CONTROL_PLANE_BOOTSTRAP_MIGRATION.version}`,
-      project_id: projectId,
-      recorded_at: timestamp,
-      entity_kind: 'schema',
-      entity_id: `v${CONTROL_PLANE_BOOTSTRAP_MIGRATION.version}`,
-      operation: 'bootstrap',
-      actor: 'bootstrap',
-      summary: 'Applied control-plane bootstrap migration.',
-      details: {
-        migration_key: CONTROL_PLANE_BOOTSTRAP_MIGRATION.key,
-        migration_version: CONTROL_PLANE_BOOTSTRAP_MIGRATION.version,
-      },
-    }),
-  });
+
+  for (const migration of CONTROL_PLANE_MIGRATIONS) {
+    if (migration.version <= effectiveCurrentVersion) continue;
+    const audit = buildAuditSummary(migration);
+    appendControlPlaneAuditEntry({
+      auditPath: paths.auditPath,
+      entry: createControlPlaneAuditEntry({
+        audit_id: `migration-${migration.version}`,
+        project_id: projectId,
+        recorded_at: timestamp,
+        entity_kind: 'schema',
+        entity_id: `v${migration.version}`,
+        operation: audit.operation,
+        actor: 'bootstrap',
+        summary: audit.summary,
+        details: {
+          migration_key: migration.key,
+          migration_version: migration.version,
+        },
+      }),
+    });
+  }
 
   return {
     bootstrapped: true,
-    migrated: true,
+    migrated: newAppliedMigrations.length > 0,
     state_root: paths.stateRoot,
     schema: nextSchema,
     state: nextState,

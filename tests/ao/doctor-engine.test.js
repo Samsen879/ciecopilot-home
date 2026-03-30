@@ -4,6 +4,7 @@ import {
   createDoctorPrScope,
   createDoctorProjectScope,
 } from '../../scripts/ao/lib/doctor-contracts.js';
+import { CONTROL_PLANE_LATEST_VERSION } from '../../scripts/ao/lib/state-contracts.js';
 import { buildDoctorReport } from '../../scripts/ao/lib/doctor-engine.js';
 
 function buildReconciliationReport(overrides = {}) {
@@ -58,6 +59,21 @@ function buildLocalState(overrides = {}) {
     git_error: null,
     ...overrides,
   });
+}
+
+function buildControlPlaneSnapshot(overrides = {}) {
+  return {
+    bootstrapped: true,
+    schema: {
+      current_version: CONTROL_PLANE_LATEST_VERSION,
+      latest_version: CONTROL_PLANE_LATEST_VERSION,
+    },
+    state: {
+      managed_tasks: [],
+      task_specs: [],
+    },
+    ...overrides,
+  };
 }
 
 describe('doctor engine', () => {
@@ -231,6 +247,56 @@ describe('doctor engine', () => {
       expect.objectContaining({
         code: 'ao_artifact_scope_conflict',
         severity: 'warning',
+      }),
+    ]));
+  });
+
+  it('blocks when a managed task is missing durable task spec state', () => {
+    const report = buildDoctorReport({
+      scope: createDoctorProjectScope({ projectId: 'ciecopilot-home' }),
+      reconciliationReport: buildReconciliationReport(),
+      localState: buildLocalState(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot({
+        state: {
+          managed_tasks: [
+            {
+              task_id: 'issue-105',
+              issue_number: 105,
+              title: 'feat(ao): add TaskSpec v1, admission normalization, and migration/backfill',
+            },
+          ],
+          task_specs: [],
+        },
+      }),
+    });
+
+    expect(report.top_status).toBe('blocked');
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'task_spec_missing',
+        severity: 'blocker',
+        origin: 'doctor',
+      }),
+    ]));
+  });
+
+  it('surfaces stale control-plane task spec schema versions as explicit findings', () => {
+    const report = buildDoctorReport({
+      scope: createDoctorProjectScope({ projectId: 'ciecopilot-home' }),
+      reconciliationReport: buildReconciliationReport(),
+      localState: buildLocalState(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot({
+        schema: {
+          current_version: CONTROL_PLANE_LATEST_VERSION - 1,
+          latest_version: CONTROL_PLANE_LATEST_VERSION,
+        },
+      }),
+    });
+
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'task_spec_state_schema_stale',
+        origin: 'doctor',
       }),
     ]));
   });

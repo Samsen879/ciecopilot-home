@@ -4,6 +4,8 @@ import {
   createDoctorFinding,
   createDoctorSuggestion,
 } from './doctor-contracts.js';
+import { CONTROL_PLANE_LATEST_VERSION } from './state-contracts.js';
+import { TASK_SPEC_SCHEMA_VERSION } from './task-spec.js';
 
 const RECONCILIATION_FINDING_SOURCE_AREAS = {
   no_orchestrator_session: 'ao',
@@ -179,7 +181,96 @@ function deriveExpectedTarget(scope, reconciliationReport) {
   };
 }
 
-function buildDoctorOnlyFindings({ scope, reconciliationReport, localState, sourceHealth, projectId }) {
+function buildTaskSpecFindings({ controlPlaneSnapshot, projectId }) {
+  const findings = [];
+  if (!controlPlaneSnapshot?.bootstrapped) return findings;
+
+  const currentVersion = Number(controlPlaneSnapshot?.schema?.current_version ?? 0);
+  if (currentVersion < CONTROL_PLANE_LATEST_VERSION) {
+    findings.push(createDoctorFinding({
+      code: 'task_spec_state_schema_stale',
+      severity: 'warning',
+      origin: 'doctor',
+      source_area: 'control_plane',
+      subject_type: 'project',
+      subject_id: projectId,
+      summary: 'Control-plane TaskSpec state is on an older schema version.',
+      details: [`current_version: ${currentVersion}`, `latest_version: ${CONTROL_PLANE_LATEST_VERSION}`],
+      evidence_refs: [],
+      suggestion_ids: ['human_review'],
+    }));
+  }
+
+  const taskSpecsByTaskId = new Map((controlPlaneSnapshot?.state?.task_specs ?? []).map((record) => [record?.task_id, record]));
+  for (const task of controlPlaneSnapshot?.state?.managed_tasks ?? []) {
+    const taskSpecRecord = taskSpecsByTaskId.get(task?.task_id);
+
+    if (!taskSpecRecord) {
+      findings.push(createDoctorFinding({
+        code: 'task_spec_missing',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: task?.task_id ?? projectId,
+        summary: 'Managed task is missing durable TaskSpec state.',
+        details: [task?.title ?? task?.task_id ?? 'unknown-task'],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+      continue;
+    }
+
+    if (taskSpecRecord?.snapshot?.schema_version !== TASK_SPEC_SCHEMA_VERSION) {
+      findings.push(createDoctorFinding({
+        code: 'task_spec_mixed_version',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: task?.task_id ?? projectId,
+        summary: 'Managed task has a mixed-version TaskSpec snapshot.',
+        details: [
+          `snapshot_schema_version: ${taskSpecRecord?.snapshot?.schema_version ?? 'missing'}`,
+          `expected_schema_version: ${TASK_SPEC_SCHEMA_VERSION}`,
+        ],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+      continue;
+    }
+
+    if (
+      taskSpecRecord?.state !== 'valid'
+      || taskSpecRecord?.snapshot?.valid === false
+      || (taskSpecRecord?.snapshot?.findings?.length ?? 0) > 0
+    ) {
+      findings.push(createDoctorFinding({
+        code: 'task_spec_invalid',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: task?.task_id ?? projectId,
+        summary: 'Managed task has invalid TaskSpec state.',
+        details: (taskSpecRecord?.snapshot?.findings ?? []).map((finding) => finding.code),
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+    }
+  }
+
+  return findings;
+}
+
+function buildDoctorOnlyFindings({
+  scope,
+  reconciliationReport,
+  localState,
+  sourceHealth,
+  projectId,
+  controlPlaneSnapshot,
+}) {
   const findings = [];
 
   if (sourceHealth.git === 'failed') {
@@ -370,7 +461,13 @@ function buildDoctorOnlyFindings({ scope, reconciliationReport, localState, sour
     }
   }
 
-  return findings;
+  return [
+    ...findings,
+    ...buildTaskSpecFindings({
+      controlPlaneSnapshot,
+      projectId,
+    }),
+  ];
 }
 
 function buildSuggestions(findings, scope) {
@@ -407,6 +504,7 @@ export function buildDoctorReport({
   scope,
   reconciliationReport,
   localState,
+  controlPlaneSnapshot = null,
 } = {}) {
   const projectId = scope?.project_id ?? reconciliationReport?.project_id ?? 'unknown-project';
   const sourceHealth = deriveSourceHealth(reconciliationReport, localState);
@@ -417,6 +515,7 @@ export function buildDoctorReport({
     localState,
     sourceHealth,
     projectId,
+    controlPlaneSnapshot,
   });
   const findings = [...reconciliationFindings, ...doctorFindings];
   const suggestions = buildSuggestions(findings, scope);

@@ -19,6 +19,7 @@ import {
   createOverrideRecord,
   createOwnershipLease,
   createPrBinding,
+  createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 
 const NOW = '2026-03-29T04:40:00.000Z';
@@ -181,6 +182,45 @@ describe('ao state contracts', () => {
       updated_by: 'operator',
       reason: 'Phase-4 foundation is read-only.',
     });
+
+    expect(createTaskSpecRecord({
+      task_id: 'task-1',
+      source_kind: 'github_issue',
+      source_issue_number: 88,
+      created_at: NOW,
+      updated_at: NOW,
+      snapshot: {
+        schema_version: 'ao.task-spec.v1alpha1',
+        valid: true,
+        findings: [],
+        spec: {
+          problem_type: 'issue_delivery',
+          acceptance_contract: ['fixture-backed tests exist'],
+          runtime_ref: 'runtime.github_local',
+          policy_ref: 'policy.operator_gated',
+          human_gates: ['operator_enroll'],
+        },
+      },
+    })).toEqual({
+      task_id: 'task-1',
+      source_kind: 'github_issue',
+      source_issue_number: 88,
+      state: 'valid',
+      created_at: NOW,
+      updated_at: NOW,
+      snapshot: {
+        schema_version: 'ao.task-spec.v1alpha1',
+        valid: true,
+        findings: [],
+        spec: {
+          problem_type: 'issue_delivery',
+          acceptance_contract: ['fixture-backed tests exist'],
+          runtime_ref: 'runtime.github_local',
+          policy_ref: 'policy.operator_gated',
+          human_gates: ['operator_enroll'],
+        },
+      },
+    });
   });
 
   it('creates empty schema, state, and audit envelopes for repo-local bootstrap', () => {
@@ -233,6 +273,7 @@ describe('ao state contracts', () => {
       controller_modes: [],
       observations: [],
       controller_cursors: [],
+      task_specs: [],
     });
 
     expect(createControlPlaneAuditEntry({

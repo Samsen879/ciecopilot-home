@@ -1,4 +1,6 @@
+import { normalizeIssueIntake } from './issue-intake.js';
 import { createStateRepository } from './state-repository.js';
+import { createTaskSpecRecord } from './state-contracts.js';
 import {
   buildOwnershipLeaseId,
   buildPrBindingId,
@@ -109,6 +111,8 @@ export async function runManageCommand({
   baseBranch = 'main',
   ownerSessionName = null,
   ownerSessionId = null,
+  taskSpecBody = null,
+  taskSpecSourceKind = 'github_issue',
   reason = null,
   now = new Date().toISOString(),
 } = {}) {
@@ -139,6 +143,34 @@ export async function runManageCommand({
     worktreePath,
   });
   repository.upsertManagedTask(task);
+
+  let taskSpec = null;
+  if (['enroll', 'adopt'].includes(command)) {
+    const postTaskSnapshot = repository.getSnapshot();
+    const existingTaskSpec = postTaskSnapshot.state.task_specs.find(
+      (record) => record.task_id === task.task_id,
+    ) ?? null;
+
+    if (existingTaskSpec && taskSpecBody == null) {
+      taskSpec = existingTaskSpec;
+    } else {
+      const { task_spec_snapshot: taskSpecSnapshot } = normalizeIssueIntake({
+        issueNumber: task.issue_number,
+        title: resolvedTitle,
+        body: taskSpecBody ?? '',
+        sourceKind: taskSpecSourceKind,
+      });
+      taskSpec = createTaskSpecRecord({
+        task_id: task.task_id,
+        source_kind: taskSpecSourceKind,
+        source_issue_number: task.issue_number,
+        created_at: existingTaskSpec?.created_at ?? timestamp,
+        updated_at: timestamp,
+        snapshot: taskSpecSnapshot,
+      });
+      repository.upsertTaskSpec(taskSpec);
+    }
+  }
 
   let prBinding = null;
   let ownershipLease = null;
@@ -222,6 +254,7 @@ export async function runManageCommand({
     cwd,
     command,
     task,
+    taskSpec,
     prBinding,
     ownershipLease,
     releasedOwnershipLeaseIds,

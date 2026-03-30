@@ -337,6 +337,14 @@ function buildReleaseDecision({
   const basis = assessment.release_readiness?.basis ?? [];
   const typedReleaseDecision = resolveTypedReleaseDisposition(assessment);
 
+  if (scope?.trigger === 'bugbot_comments') {
+    return {
+      disposition: 'await_review',
+      basis: ['bugbot_comments'],
+      authoritative: true,
+    };
+  }
+
   if (
     releaseStatus === 'ready'
     && reconciliationReport?.top_status === 'healthy'

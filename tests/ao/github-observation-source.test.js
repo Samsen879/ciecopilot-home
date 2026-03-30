@@ -157,4 +157,56 @@ describe('github observation source', () => {
     expect(set.source_ok).toBe(false);
     expect(set.source_error).toMatch(/gh auth missing/);
   });
+
+  it('normalizes review-comment metadata for protocolized delivery ingest', async () => {
+    mockSpawnSync.mockReturnValueOnce({
+      status: 0,
+      stdout: JSON.stringify({
+        number: 106,
+        state: 'OPEN',
+        headRefName: 'feat/106',
+        headRefOid: 'abc123',
+        reviewDecision: 'APPROVED',
+        mergeStateStatus: 'CLEAN',
+        isDraft: false,
+        statusCheckRollup: [
+          { status: 'COMPLETED', conclusion: 'SUCCESS' },
+        ],
+        reviews: [
+          {
+            id: 'review-1',
+            state: 'COMMENTED',
+            author: { login: 'chatgpt-codex-connector' },
+            submittedAt: '2026-03-30T08:52:11Z',
+            commit: { oid: 'abc123' },
+          },
+        ],
+      }),
+      stderr: '',
+    });
+
+    const set = await loadGitHubObservationSet({
+      scope: {
+        mode: 'pr',
+        selected_pr_numbers: [106],
+        selection_basis: ['explicit_pr'],
+      },
+      now: '2026-03-30T08:53:00.000Z',
+    });
+
+    expect(set.prs[0]).toMatchObject({
+      pr_number: 106,
+      head_sha: 'abc123',
+      review_status: 'approved',
+      reviews: [
+        {
+          review_id: 'review-1',
+          state: 'commented',
+          author_login: 'chatgpt-codex-connector',
+          submitted_at: '2026-03-30T08:52:11.000Z',
+          commit_oid: 'abc123',
+        },
+      ],
+    });
+  });
 });

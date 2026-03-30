@@ -19,6 +19,7 @@ import { buildDoctorReport as buildDoctorReportModel } from './doctor-engine.js'
 import { loadDoctorLocalState } from './doctor-local-state-source.js';
 import { loadGitHubObservationSet } from './github-observation-source.js';
 import {
+  LIFECYCLE_DELIVERY_TRIGGER_PRIORITY,
   createLifecyclePrScope,
   createLifecycleProjectScope,
 } from './lifecycle-contracts.js';
@@ -71,15 +72,79 @@ function resolveLifecyclePrNumber(prBindings = [], matchedPrs = []) {
   return prNumbers.length === 1 ? prNumbers[0] : null;
 }
 
+function compareDeliveryEventOrder(left, right) {
+  const leftObservedAt = String(left?.observed_at ?? '');
+  const rightObservedAt = String(right?.observed_at ?? '');
+  if (leftObservedAt !== rightObservedAt) {
+    return leftObservedAt.localeCompare(rightObservedAt);
+  }
+  return String(left?.event_id ?? '').localeCompare(String(right?.event_id ?? ''));
+}
+
+function isDeliveryEventCurrentForPr(event, pr) {
+  if (!pr || event?.pr_number !== pr.pr_number) return false;
+
+  const payload = event.payload ?? {};
+  const currentHeadSha = pr.head_sha ?? null;
+  const eventHeadSha = event.event_family === 'review_comment'
+    ? (payload.commit_oid ?? payload.head_sha ?? null)
+    : (payload.head_sha ?? null);
+
+  if (!currentHeadSha || !eventHeadSha) return true;
+  return eventHeadSha === currentHeadSha;
+}
+
+function selectCurrentDeliveryEvents({
+  matchedPrs = [],
+  deliveryEvents = [],
+} = {}) {
+  const latestByFamily = new Map();
+
+  for (const pr of matchedPrs ?? []) {
+    const prEvents = (deliveryEvents ?? [])
+      .filter((event) => isDeliveryEventCurrentForPr(event, pr))
+      .sort(compareDeliveryEventOrder);
+    const latestReviewCommentEvent = prEvents
+      .filter((event) => event.event_family === 'review_comment')
+      .at(-1) ?? null;
+
+    for (const family of ['pr', 'check', 'review']) {
+      const latestEvent = prEvents.filter((event) => event.event_family === family).at(-1) ?? null;
+      if (!latestEvent) continue;
+      latestByFamily.set(`${pr.pr_number}:${family}`, latestEvent);
+    }
+
+    if (latestReviewCommentEvent) {
+      latestByFamily.set(`${pr.pr_number}:review_comment`, latestReviewCommentEvent);
+    }
+  }
+
+  return [...latestByFamily.values()].sort(compareDeliveryEventOrder);
+}
+
 export function deriveLifecycleTriggerForTask({
   matchedAoWorkers = [],
   matchedPrs = [],
+  deliveryEvents = [],
 } = {}) {
   if (
     matchedAoWorkers.length === 0
     || matchedAoWorkers.some((worker) => worker.freshness?.status === 'stale')
   ) {
     return 'agent_exited';
+  }
+
+  const activeDeliveryTriggers = new Set(selectCurrentDeliveryEvents({
+    matchedPrs,
+    deliveryEvents,
+  })
+    .map((event) => event.lifecycle_trigger)
+    .filter((trigger) => typeof trigger === 'string' && trigger !== '' && trigger !== 'manual'));
+
+  for (const trigger of LIFECYCLE_DELIVERY_TRIGGER_PRIORITY) {
+    if (activeDeliveryTriggers.has(trigger)) {
+      return trigger;
+    }
   }
 
   if (matchedPrs.some((pr) => pr.review_status === 'changes_requested')) {
@@ -341,6 +406,7 @@ export async function runControllerLoop({
   ));
   const taskResults = [];
   let ingestedObservationCount = 0;
+  let deliveryEventCount = 0;
   let proposedActionCount = 0;
   let executedActionCount = 0;
   let blockedActionCount = 0;
@@ -363,9 +429,11 @@ export async function runControllerLoop({
         now: timestamp,
       });
       ingestedObservationCount += ingestResult.ingested_count;
+      deliveryEventCount += ingestResult.delivery_event_count ?? 0;
       const derivedTrigger = deriveLifecycleTriggerForTask({
         matchedAoWorkers: ingestResult.matchedAoWorkers,
         matchedPrs: ingestResult.matchedPrs,
+        deliveryEvents: ingestResult.deliveryEvents,
       });
 
       let lifecycleTopStatus = null;
@@ -430,6 +498,7 @@ export async function runControllerLoop({
         issue_number: task.issue_number,
         derived_trigger: derivedTrigger,
         new_observation_count: ingestResult.ingested_count,
+        new_delivery_event_count: ingestResult.delivery_event_count ?? 0,
         proposed_action_count: proposedActionIds.length,
         proposed_action_ids: proposedActionIds,
         executed_action_count: executedActionIds.length,
@@ -459,6 +528,7 @@ export async function runControllerLoop({
     managed_task_count: activeTasks.length,
     processed_task_count: taskResults.length,
     ingested_observation_count: ingestedObservationCount,
+    delivery_event_count: deliveryEventCount,
     proposed_action_count: proposedActionCount,
     executed_action_count: executedActionCount,
     blocked_action_count: blockedActionCount,

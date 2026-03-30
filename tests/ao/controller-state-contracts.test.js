@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import {
   createControllerCursorRecord,
+  createDeliveryEventRecord,
   createEmptyControlPlaneState,
   createObservationRecord,
   OBSERVATION_SOURCE_KINDS,
@@ -56,9 +57,37 @@ describe('ao controller state contracts', () => {
       observed_at: NOW,
       updated_at: NOW,
     });
+
+    expect(createDeliveryEventRecord({
+      event_id: 'delivery-1',
+      task_id: 'issue-89',
+      pr_number: 109,
+      source_kind: 'github_poll',
+      event_family: 'check',
+      event_type: 'check_state',
+      dedupe_key: 'github_poll:check:109:abc123:failing',
+      lifecycle_trigger: 'ci_failed',
+      controller_action_hint: 'hold_ci',
+      observed_at: NOW,
+      recorded_at: NOW,
+      lineage: {
+        source_observation_id: 'issue-89:github_poll:cursor-1',
+        source_cursor: 'cursor-1',
+      },
+      payload: {
+        head_sha: 'abc123',
+        ci_status: 'failing',
+      },
+    })).toEqual(expect.objectContaining({
+      event_id: 'delivery-1',
+      task_id: 'issue-89',
+      event_family: 'check',
+      lifecycle_trigger: 'ci_failed',
+      controller_action_hint: 'hold_ci',
+    }));
   });
 
-  it('extends empty control-plane state with observation and cursor collections', () => {
+  it('extends empty control-plane state with observation, delivery-event, and cursor collections', () => {
     expect(createEmptyControlPlaneState({
       project_id: 'ciecopilot-home',
       created_at: NOW,
@@ -66,6 +95,7 @@ describe('ao controller state contracts', () => {
     })).toMatchObject({
       project_id: 'ciecopilot-home',
       observations: [],
+      delivery_events: [],
       controller_cursors: [],
     });
   });

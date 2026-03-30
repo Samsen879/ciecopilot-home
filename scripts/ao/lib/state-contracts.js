@@ -6,7 +6,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 2;
+export const CONTROL_PLANE_LATEST_VERSION = 3;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 
 export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
@@ -19,6 +19,7 @@ export const OVERRIDE_STATUSES = ['active', 'cleared', 'expired'];
 export const CONTROLLER_MODES = ['off', 'observe', 'shadow', 'assist'];
 export const OBSERVATION_SOURCE_KINDS = ['ao_poll', 'github_poll'];
 export const TASK_SPEC_RECORD_STATES = ['valid', 'invalid'];
+export const DELIVERY_EVENT_FAMILIES = ['pr', 'check', 'review', 'review_comment'];
 
 function isPlainObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
@@ -97,6 +98,20 @@ function normalizeMetadata(value = {}) {
   return cloneJsonValue(value);
 }
 
+function normalizeLineage(value = {}) {
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid lineage');
+  }
+
+  return {
+    source_observation_id: normalizeRequiredString(
+      value.source_observation_id,
+      'lineage.source_observation_id',
+    ),
+    source_cursor: normalizeRequiredString(value.source_cursor, 'lineage.source_cursor'),
+  };
+}
+
 export function createControlPlaneSchema({
   project_id,
   current_version,
@@ -143,6 +158,7 @@ export function createEmptyControlPlaneState({
     overrides: [],
     controller_modes: [],
     observations: [],
+    delivery_events: [],
     controller_cursors: [],
     task_specs: [],
   };
@@ -334,6 +350,38 @@ export function createObservationRecord({
     observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
     recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
     summary: normalizeOptionalString(summary),
+    payload: cloneJsonValue(payload ?? {}),
+  };
+}
+
+export function createDeliveryEventRecord({
+  event_id,
+  task_id,
+  pr_number = null,
+  source_kind,
+  event_family,
+  event_type,
+  dedupe_key,
+  lifecycle_trigger = null,
+  controller_action_hint = null,
+  observed_at,
+  recorded_at,
+  lineage = {},
+  payload = {},
+} = {}) {
+  return {
+    event_id: normalizeRequiredString(event_id, 'event_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    pr_number: normalizePositiveInteger(pr_number, 'pr_number', { nullable: true }),
+    source_kind: normalizeRequiredString(source_kind, 'source_kind'),
+    event_family: normalizeEnum(event_family, 'event_family', DELIVERY_EVENT_FAMILIES),
+    event_type: normalizeRequiredString(event_type, 'event_type'),
+    dedupe_key: normalizeRequiredString(dedupe_key, 'dedupe_key'),
+    lifecycle_trigger: normalizeOptionalString(lifecycle_trigger),
+    controller_action_hint: normalizeOptionalString(controller_action_hint),
+    observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
+    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
+    lineage: normalizeLineage(lineage),
     payload: cloneJsonValue(payload ?? {}),
   };
 }

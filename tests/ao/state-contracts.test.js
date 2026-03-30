@@ -4,6 +4,7 @@ import {
   ACTION_STATUSES,
   CONTROLLER_LEASE_STATUSES,
   CONTROLLER_MODES,
+  DELIVERY_EVENT_FAMILIES,
   MANAGED_TASK_STATUSES,
   OVERRIDE_SCOPE_KINDS,
   OVERRIDE_STATUSES,
@@ -14,6 +15,7 @@ import {
   createControlPlaneSchema,
   createControllerLease,
   createControllerModeRecord,
+  createDeliveryEventRecord,
   createEmptyControlPlaneState,
   createManagedTask,
   createOverrideRecord,
@@ -31,6 +33,7 @@ describe('ao state contracts', () => {
     expect(OWNERSHIP_LEASE_STATUSES).toEqual(['active', 'released', 'expired']);
     expect(CONTROLLER_LEASE_STATUSES).toEqual(['active', 'released', 'expired']);
     expect(ACTION_STATUSES).toEqual(['proposed', 'blocked', 'executed', 'cancelled']);
+    expect(DELIVERY_EVENT_FAMILIES).toEqual(['pr', 'check', 'review', 'review_comment']);
     expect(OVERRIDE_SCOPE_KINDS).toEqual(['global', 'task', 'pr', 'controller']);
     expect(OVERRIDE_STATUSES).toEqual(['active', 'cleared', 'expired']);
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
@@ -221,6 +224,52 @@ describe('ao state contracts', () => {
         },
       },
     });
+
+    expect(createDeliveryEventRecord({
+      event_id: 'delivery-1',
+      task_id: 'task-1',
+      pr_number: 101,
+      source_kind: 'github_poll',
+      event_family: 'review_comment',
+      event_type: 'review_comment_state',
+      dedupe_key: 'github_poll:review_comment:101:review-1',
+      lifecycle_trigger: 'bugbot_comments',
+      controller_action_hint: 'hold_review',
+      observed_at: NOW,
+      recorded_at: NOW,
+      lineage: {
+        source_observation_id: 'obs-1',
+        source_cursor: 'cursor-1',
+      },
+      payload: {
+        head_sha: 'abc123',
+        review_id: 'review-1',
+        review_state: 'commented',
+        author_login: 'chatgpt-codex-connector',
+      },
+    })).toEqual({
+      event_id: 'delivery-1',
+      task_id: 'task-1',
+      pr_number: 101,
+      source_kind: 'github_poll',
+      event_family: 'review_comment',
+      event_type: 'review_comment_state',
+      dedupe_key: 'github_poll:review_comment:101:review-1',
+      lifecycle_trigger: 'bugbot_comments',
+      controller_action_hint: 'hold_review',
+      observed_at: NOW,
+      recorded_at: NOW,
+      lineage: {
+        source_observation_id: 'obs-1',
+        source_cursor: 'cursor-1',
+      },
+      payload: {
+        head_sha: 'abc123',
+        review_id: 'review-1',
+        review_state: 'commented',
+        author_login: 'chatgpt-codex-connector',
+      },
+    });
   });
 
   it('creates empty schema, state, and audit envelopes for repo-local bootstrap', () => {
@@ -272,6 +321,7 @@ describe('ao state contracts', () => {
       overrides: [],
       controller_modes: [],
       observations: [],
+      delivery_events: [],
       controller_cursors: [],
       task_specs: [],
     });

@@ -8,6 +8,7 @@ import {
   createControllerLease,
   createControllerModeRecord,
   createControllerCursorRecord,
+  createDeliveryEventRecord,
   createEmptyControlPlaneState,
   createManagedTask,
   createObservationRecord,
@@ -92,6 +93,7 @@ export function createStateRepository({
     nextState.overrides = sortCollectionByKey(nextState.overrides, 'override_id');
     nextState.controller_modes = sortCollectionByKey(nextState.controller_modes, 'controller_id');
     nextState.observations = sortCollectionByKey(nextState.observations, 'observation_id');
+    nextState.delivery_events = sortCollectionByKey(nextState.delivery_events, 'event_id');
     nextState.controller_cursors = sortCollectionByKey(nextState.controller_cursors, 'cursor_id');
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
 
@@ -294,6 +296,17 @@ export function createStateRepository({
         record,
         normalize: createObservationRecord,
         summary: `Persisted observation ${record?.observation_id}.`,
+      });
+    },
+
+    upsertDeliveryEvent(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'delivery_events',
+        identityKey: 'event_id',
+        entityKind: 'delivery_event',
+        record,
+        normalize: createDeliveryEventRecord,
+        summary: `Persisted delivery event ${record?.event_id}.`,
       });
     },
 

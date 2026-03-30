@@ -459,6 +459,30 @@ describe('lifecycle engine', () => {
     ]));
   });
 
+  it('treats bugbot review comments as a deterministic review hold', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'bugbot_comments',
+      }),
+      reconciliationReport: buildReconciliationReport(),
+      doctorReport: buildDoctorReport(),
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_review',
+      authoritative: true,
+    });
+    expect(report.actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'hold_review',
+        action_class: 'hold',
+      }),
+    ]));
+  });
+
   it('treats failed inputs as source failure', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({

@@ -218,11 +218,13 @@ describe('ao controller loop', () => {
       mode: 'shadow',
       processed_task_count: 1,
       ingested_observation_count: 2,
+      delivery_event_count: 3,
       proposed_action_count: 2,
       task_results: [
         expect.objectContaining({
           task_id: 'issue-92',
           derived_trigger: 'ci_failed',
+          new_delivery_event_count: 3,
           proposed_action_count: 2,
           lifecycle_top_status: 'hold',
         }),
@@ -230,6 +232,11 @@ describe('ao controller loop', () => {
     });
 
     const snapshot = repository.getSnapshot().state;
+    expect(snapshot.delivery_events.map((record) => record.event_family)).toEqual(expect.arrayContaining([
+      'check',
+      'pr',
+      'review',
+    ]));
     expect(snapshot.actions).toEqual(expect.arrayContaining([
       expect.objectContaining({
         task_id: 'issue-92',
@@ -260,6 +267,286 @@ describe('ao controller loop', () => {
         }),
       ]),
     );
+  });
+
+  it('derives bugbot comment follow-up from protocolized review-comment delivery events', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'shadow');
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-30T08:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-30T08:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-30T08:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-30T08:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+              reviews: [
+                {
+                  review_id: 'review-comment-1',
+                  state: 'commented',
+                  author_login: 'chatgpt-codex-connector',
+                  submitted_at: '2026-03-30T08:40:50.000Z',
+                  commit_oid: 'abc123',
+                },
+              ],
+            },
+          ],
+        }),
+        resolveLifecycleReport: async ({ derivedTrigger }) => {
+          expect(derivedTrigger).toBe('bugbot_comments');
+          return {
+            top_status: 'hold',
+            routing_decision: {
+              action: 'continue_current_worker',
+            },
+            release_decision: {
+              disposition: 'await_review',
+            },
+            actions: [
+              {
+                id: 'hold_review',
+                action_class: 'hold',
+                summary: 'Hold until review is resolved.',
+                commands: ['gh pr view 92 --json reviewDecision,url'],
+                rationale: 'Automated review comments remain unresolved for this head SHA.',
+              },
+            ],
+          };
+        },
+      },
+    });
+
+    expect(result).toMatchObject({
+      delivery_event_count: 4,
+      task_results: [
+        expect.objectContaining({
+          derived_trigger: 'bugbot_comments',
+          new_delivery_event_count: 4,
+        }),
+      ],
+    });
+    expect(repository.getSnapshot().state.delivery_events).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        event_family: 'review_comment',
+        lifecycle_trigger: 'bugbot_comments',
+        payload: expect.objectContaining({
+          review_id: 'review-comment-1',
+          commit_oid: 'abc123',
+        }),
+      }),
+    ]));
+  });
+
+  it('ignores superseded failing delivery events once a later approved-and-green state is observed on the same head', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+
+    const firstResult = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-30T09:00:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-30T09:00:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-30T08:59:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-30T09:00:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'changes_requested',
+              ci_status: 'failing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+      },
+    });
+
+    const secondResult = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-30T09:05:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-30T09:05:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-30T09:04:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-30T09:05:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+      },
+    });
+
+    expect(firstResult.task_results[0]).toMatchObject({
+      derived_trigger: 'changes_requested',
+      new_delivery_event_count: 3,
+    });
+    expect(secondResult.task_results[0]).toMatchObject({
+      derived_trigger: 'approved_and_green',
+      new_delivery_event_count: 3,
+    });
+  });
+
+  it('produces deterministic delivery envelopes and routing decisions for the same seeded state', async () => {
+    const createRepositoryAndRun = async () => {
+      const repository = createStateRepository({
+        repoRoot: createTempRepo(),
+        projectId: PROJECT_ID,
+      });
+      seedActiveTask(repository, 'shadow');
+
+      const result = await runControllerLoop({
+        repoRoot: repository.getSnapshot().paths.repoRoot,
+        cwd: repository.getSnapshot().paths.repoRoot,
+        projectId: PROJECT_ID,
+        controllerId: 'default',
+        now: '2026-03-30T08:45:00.000Z',
+        deps: {
+          loadAoProjectObservation: async () => ({
+            observed_at: '2026-03-30T08:45:00.000Z',
+            workers: [
+              {
+                session_name: 'cie-92',
+                session_runtime_id: 'cie-92',
+                issue_number: 92,
+                branch_name: 'feat/issue-92',
+                pr_number: 92,
+                lifecycle_state: 'idle',
+                last_seen_at: '2026-03-30T08:44:45.000Z',
+                freshness: { status: 'fresh' },
+              },
+            ],
+          }),
+          loadGitHubObservationSet: async () => ({
+            observed_at: '2026-03-30T08:45:00.000Z',
+            prs: [
+              {
+                pr_number: 92,
+                state: 'OPEN',
+                head_branch: 'feat/issue-92',
+                head_sha: 'abc123',
+                review_status: 'changes_requested',
+                ci_status: 'failing',
+                mergeability: 'mergeable',
+                is_draft: false,
+                url: 'https://example.test/pr/92',
+              },
+            ],
+          }),
+          resolveLifecycleReport: async ({ derivedTrigger }) => ({
+            top_status: 'hold',
+            routing_decision: {
+              action: 'continue_current_worker',
+            },
+            release_decision: {
+              disposition: 'await_ci',
+            },
+            actions: [
+              {
+                id: `hold-${derivedTrigger}`,
+                action_class: 'hold',
+                summary: `Hold on ${derivedTrigger}.`,
+                commands: ['gh pr checks 92'],
+                rationale: 'Deterministic shadow routing must be stable for identical state.',
+              },
+            ],
+          }),
+        },
+      });
+
+      return {
+        result,
+        deliveryEvents: repository.getSnapshot().state.delivery_events,
+        actions: repository.getSnapshot().state.actions,
+      };
+    };
+
+    const left = await createRepositoryAndRun();
+    const right = await createRepositoryAndRun();
+
+    expect(left.result.task_results).toEqual(right.result.task_results);
+    expect(left.deliveryEvents).toEqual(right.deliveryEvents);
+    expect(left.actions).toEqual(right.actions);
   });
 
   it('assist mode executes only explicit class A actions and keeps higher-risk actions gated', async () => {

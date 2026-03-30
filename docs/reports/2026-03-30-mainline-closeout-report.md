@@ -19,6 +19,7 @@
 - 写出了本地分支独有内容的正式分类表
 - 在新主线基线中补上 `.worktrees/` 的 `.gitignore` 小补丁
 - 已将第一阶段收口结果提交为 `6c77527` `chore(closeout): record mainline recovery classification`
+- 已将根工作区从旧分支切走，并切到新的本地基线分支 `baseline/origin-main-20260330`
 
 ## 已验证结果
 
@@ -50,6 +51,11 @@ npm test -- --runInBand src/pages/__tests__/legacy-entry-mode.test.js src/api/__
 
 而不应该再被视为后续新功能开发的默认工作区。
 
+补充说明：
+
+- 本地 `main` 分支本身也不是干净同步的正式主线副本
+- 因此根工作区没有切到本地 `main`，而是切到一个直接跟踪 `origin/main` 的新分支：`baseline/origin-main-20260330`
+
 ### 2. 绝大多数旧分支独有提交不应该回灌
 
 当前分类结论是：
@@ -77,9 +83,9 @@ npm test -- --runInBand src/pages/__tests__/legacy-entry-mode.test.js src/api/__
 
 如果继续按低风险方式推进，下一步顺序应该是：
 
-1. 把本次 worktree 中的 `.gitignore` 小补丁和分类/收口报告整理成一个小提交
-2. 把 `runtime-post-pilot-0323-2239` 正式标记为只读历史分支
-3. 后续所有新任务统一从最新 `origin/main` 新开短分支
+1. 把 `closeout/mainline-recovery-20260330` 推送并按需要发 PR
+2. 把 `runtime-post-pilot-0323-2239` 继续保留为只读历史分支，不再接收新开发
+3. 后续所有新任务统一从最新 `origin/main` 或 `baseline/origin-main-20260330` 新开短分支
 4. 对 `e3d6914` 这批归档 WIP 单独做一次“是否要拆题重做”的评审
 
 ## 还没有做的事
@@ -89,6 +95,5 @@ npm test -- --runInBand src/pages/__tests__/legacy-entry-mode.test.js src/api/__
 - 没有删除任何旧分支
 - 没有把任何大块 AO phase-4 WIP 带入主线
 - 没有发 PR
-- 没有把根工作区从旧分支切走
 
 这些动作都可以在后续单独决定，不影响当前“收口第一阶段已安全完成”这个事实。

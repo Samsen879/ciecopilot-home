@@ -2,6 +2,8 @@
 
 ## Project Status
 
+- `2026-03-30-mainline-closeout-report.md` - first-phase closeout report covering safe archival of the divergent local branch, creation of the new mainline recovery worktree, and current recommended next steps.
+- `2026-03-30-local-branch-closeout-classification.md` - classification table for the local-only branch commits and archived WIP, showing what should be re-landed, archived only, or left retired.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.

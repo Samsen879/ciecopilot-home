@@ -20,10 +20,14 @@ function loadControlPlaneSnapshot({
   const repoRoot = findRepoRoot(cwd);
   if (!repoRoot) return null;
 
-  return createStateRepository({
+  const repository = createStateRepository({
     repoRoot,
     projectId,
-  }).getSnapshot();
+  });
+  repository.ensureRuntimePreflights({
+    cwd,
+  });
+  return repository.getSnapshot();
 }
 
 export async function runDoctor({

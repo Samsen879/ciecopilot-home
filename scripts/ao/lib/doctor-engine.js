@@ -4,6 +4,7 @@ import {
   createDoctorFinding,
   createDoctorSuggestion,
 } from './doctor-contracts.js';
+import { RUNTIME_PREFLIGHT_SCHEMA_VERSION } from './runtime-contracts.js';
 import { CONTROL_PLANE_LATEST_VERSION } from './state-contracts.js';
 import { TASK_SPEC_SCHEMA_VERSION } from './task-spec.js';
 
@@ -263,6 +264,103 @@ function buildTaskSpecFindings({ controlPlaneSnapshot, projectId }) {
   return findings;
 }
 
+function buildRuntimePreflightFindings({ controlPlaneSnapshot, projectId }) {
+  const findings = [];
+  if (!controlPlaneSnapshot?.bootstrapped) return findings;
+
+  const taskSpecsByTaskId = new Map(
+    (controlPlaneSnapshot?.state?.task_specs ?? []).map((record) => [record?.task_id, record]),
+  );
+  const runtimePreflightsByRef = new Map(
+    (controlPlaneSnapshot?.state?.runtime_preflights ?? []).map((record) => [record?.runtime_ref, record]),
+  );
+
+  for (const task of controlPlaneSnapshot?.state?.managed_tasks ?? []) {
+    const taskSpecRecord = taskSpecsByTaskId.get(task?.task_id);
+    if (
+      !taskSpecRecord
+      || taskSpecRecord?.state !== 'valid'
+      || taskSpecRecord?.snapshot?.schema_version !== TASK_SPEC_SCHEMA_VERSION
+    ) {
+      continue;
+    }
+
+    const runtimeRef = taskSpecRecord?.snapshot?.spec?.runtime_ref ?? null;
+    if (!runtimeRef) continue;
+
+    const runtimePreflightRecord = runtimePreflightsByRef.get(runtimeRef);
+    if (!runtimePreflightRecord) {
+      findings.push(createDoctorFinding({
+        code: 'runtime_preflight_missing',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: task?.task_id ?? projectId,
+        summary: 'Managed task is missing durable runtime preflight state.',
+        details: [`runtime_ref: ${runtimeRef}`],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+      continue;
+    }
+
+    if (runtimePreflightRecord?.snapshot?.schema_version !== RUNTIME_PREFLIGHT_SCHEMA_VERSION) {
+      findings.push(createDoctorFinding({
+        code: 'runtime_preflight_mixed_version',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: task?.task_id ?? projectId,
+        summary: 'Managed task has a mixed-version runtime preflight snapshot.',
+        details: [
+          `snapshot_schema_version: ${runtimePreflightRecord?.snapshot?.schema_version ?? 'missing'}`,
+          `expected_schema_version: ${RUNTIME_PREFLIGHT_SCHEMA_VERSION}`,
+        ],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+      continue;
+    }
+
+    if (runtimePreflightRecord.status === 'unsupported_provider') {
+      findings.push(createDoctorFinding({
+        code: 'runtime_preflight_unsupported_provider',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: task?.task_id ?? projectId,
+        summary: 'Managed task runtime preflight resolved to an unsupported provider.',
+        details: [`runtime_ref: ${runtimeRef}`],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+      continue;
+    }
+
+    if (runtimePreflightRecord.status === 'missing_dependency') {
+      findings.push(createDoctorFinding({
+        code: 'runtime_preflight_missing_dependency',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: task?.task_id ?? projectId,
+        summary: 'Managed task runtime preflight is blocked by missing bootstrap requirements.',
+        details: (runtimePreflightRecord?.snapshot?.checks ?? [])
+          .filter((item) => item?.status === 'missing')
+          .map((item) => item.requirement_id),
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+    }
+  }
+
+  return findings;
+}
+
 function buildDoctorOnlyFindings({
   scope,
   reconciliationReport,
@@ -464,6 +562,10 @@ function buildDoctorOnlyFindings({
   return [
     ...findings,
     ...buildTaskSpecFindings({
+      controlPlaneSnapshot,
+      projectId,
+    }),
+    ...buildRuntimePreflightFindings({
       controlPlaneSnapshot,
       projectId,
     }),

@@ -73,8 +73,8 @@ describe('ao state migrations', () => {
 
     expect(readJson(paths.schemaPath)).toMatchObject({
       project_id: PROJECT_ID,
-      current_version: 4,
-      latest_version: 4,
+      current_version: 5,
+      latest_version: 5,
       applied_migrations: [
         {
           version: 1,
@@ -96,6 +96,11 @@ describe('ao state migrations', () => {
           key: '0004_policy_engine_v1',
           applied_at: FIXED_NOW,
         },
+        {
+          version: 5,
+          key: '0005_runtime_preflight_v1',
+          applied_at: FIXED_NOW,
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
@@ -104,6 +109,7 @@ describe('ao state migrations', () => {
       policy_decisions: [],
       credential_provenances: [],
       task_specs: [],
+      runtime_preflights: [],
       controller_modes: [
         {
           controller_id: 'default',
@@ -138,6 +144,12 @@ describe('ao state migrations', () => {
         operation: 'migrate',
         summary: 'Applied control-plane policy-engine migration.',
       }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v5',
+        operation: 'migrate',
+        summary: 'Applied control-plane runtime-preflight migration.',
+      }),
     ]);
   });
 
@@ -164,7 +176,7 @@ describe('ao state migrations', () => {
       migrated: false,
     });
     expect(readJson(paths.schemaPath).updated_at).toBe(FIXED_NOW);
-    expect(readAuditEntries(paths.auditPath)).toHaveLength(4);
+    expect(readAuditEntries(paths.auditPath)).toHaveLength(5);
   });
 
   it('upgrades a stale schema version and backfills invalid task specs for enrolled tasks', () => {
@@ -180,7 +192,7 @@ describe('ao state migrations', () => {
       format: 'ao_control_plane_schema',
       project_id: PROJECT_ID,
       current_version: 1,
-      latest_version: 4,
+      latest_version: 5,
       created_at: '2026-03-29T03:00:00.000Z',
       updated_at: '2026-03-29T03:00:00.000Z',
       applied_migrations: [
@@ -240,7 +252,7 @@ describe('ao state migrations', () => {
       migrated: true,
     });
     expect(readJson(paths.schemaPath)).toMatchObject({
-      current_version: 4,
+      current_version: 5,
       applied_migrations: [
         {
           version: 1,
@@ -258,12 +270,17 @@ describe('ao state migrations', () => {
           version: 4,
           key: '0004_policy_engine_v1',
         },
+        {
+          version: 5,
+          key: '0005_runtime_preflight_v1',
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
       delivery_events: [],
       policy_decisions: [],
       credential_provenances: [],
+      runtime_preflights: [],
       task_specs: [
         {
           task_id: 'issue-105',

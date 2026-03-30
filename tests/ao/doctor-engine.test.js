@@ -71,6 +71,7 @@ function buildControlPlaneSnapshot(overrides = {}) {
     state: {
       managed_tasks: [],
       task_specs: [],
+      runtime_preflights: [],
     },
     ...overrides,
   };
@@ -296,6 +297,107 @@ describe('doctor engine', () => {
     expect(report.findings).toEqual(expect.arrayContaining([
       expect.objectContaining({
         code: 'task_spec_state_schema_stale',
+        origin: 'doctor',
+      }),
+    ]));
+  });
+
+  it('blocks when a managed task runtime ref has no durable preflight state', () => {
+    const report = buildDoctorReport({
+      scope: createDoctorProjectScope({ projectId: 'ciecopilot-home' }),
+      reconciliationReport: buildReconciliationReport(),
+      localState: buildLocalState(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot({
+        state: {
+          managed_tasks: [
+            {
+              task_id: 'issue-108',
+              issue_number: 108,
+              title: 'feat(ao): add runtime-provider contract and bootstrap preflight',
+            },
+          ],
+          task_specs: [
+            {
+              task_id: 'issue-108',
+              state: 'valid',
+              snapshot: {
+                schema_version: 'ao.task-spec.v1alpha1',
+                valid: true,
+                findings: [],
+                spec: {
+                  problem_type: 'issue_delivery',
+                  acceptance_contract: ['runtime preflight is durable'],
+                  runtime_ref: 'runtime.github_local',
+                  policy_ref: 'policy.operator_gated',
+                  human_gates: ['operator_enroll'],
+                },
+              },
+            },
+          ],
+          runtime_preflights: [],
+        },
+      }),
+    });
+
+    expect(report.top_status).toBe('blocked');
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'runtime_preflight_missing',
+        severity: 'blocker',
+        origin: 'doctor',
+      }),
+    ]));
+  });
+
+  it('surfaces mixed-version runtime preflight snapshots as explicit findings', () => {
+    const report = buildDoctorReport({
+      scope: createDoctorProjectScope({ projectId: 'ciecopilot-home' }),
+      reconciliationReport: buildReconciliationReport(),
+      localState: buildLocalState(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot({
+        state: {
+          managed_tasks: [
+            {
+              task_id: 'issue-108',
+              issue_number: 108,
+              title: 'feat(ao): add runtime-provider contract and bootstrap preflight',
+            },
+          ],
+          task_specs: [
+            {
+              task_id: 'issue-108',
+              state: 'valid',
+              snapshot: {
+                schema_version: 'ao.task-spec.v1alpha1',
+                valid: true,
+                findings: [],
+                spec: {
+                  problem_type: 'issue_delivery',
+                  acceptance_contract: ['runtime preflight is durable'],
+                  runtime_ref: 'runtime.github_local',
+                  policy_ref: 'policy.operator_gated',
+                  human_gates: ['operator_enroll'],
+                },
+              },
+            },
+          ],
+          runtime_preflights: [
+            {
+              runtime_ref: 'runtime.github_local',
+              status: 'clean',
+              snapshot: {
+                schema_version: 'ao.runtime-preflight.v0',
+                runtime_ref: 'runtime.github_local',
+              },
+            },
+          ],
+        },
+      }),
+    });
+
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'runtime_preflight_mixed_version',
         origin: 'doctor',
       }),
     ]));

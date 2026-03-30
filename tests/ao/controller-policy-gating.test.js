@@ -9,8 +9,11 @@ import {
   createCredentialProvenanceRecord,
   createManagedTask,
   createPrBinding,
+  createRuntimePreflightRecord,
+  createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { runControllerLoop } from '../../scripts/ao/lib/controller-loop.js';
+import { runRuntimeBootstrapPreflight } from '../../scripts/ao/lib/runtime-preflight.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 
 const PROJECT_ID = 'ciecopilot-home';
@@ -60,6 +63,44 @@ function seedGitHubCredential(repository) {
     scope: 'github.com',
     created_at: '2026-03-30T10:10:00.000Z',
     updated_at: '2026-03-30T10:10:00.000Z',
+  }));
+}
+
+function seedCleanRuntimePreflight(repository, {
+  taskId = 'issue-107',
+  issueNumber = 107,
+  runtimeRef = 'runtime.github_local',
+} = {}) {
+  repository.upsertTaskSpec(createTaskSpecRecord({
+    task_id: taskId,
+    source_kind: 'github_issue',
+    source_issue_number: issueNumber,
+    created_at: '2026-03-30T10:10:00.000Z',
+    updated_at: '2026-03-30T10:10:00.000Z',
+    snapshot: {
+      schema_version: 'ao.task-spec.v1alpha1',
+      spec: {
+        problem_type: 'issue_delivery',
+        acceptance_contract: ['Assist only executes after clean runtime preflight.'],
+        runtime_ref: runtimeRef,
+        policy_ref: 'policy.operator_gated',
+        human_gates: ['operator_review'],
+      },
+    },
+  }));
+
+  repository.upsertRuntimePreflight(createRuntimePreflightRecord({
+    recorded_at: '2026-03-30T10:10:00.000Z',
+    snapshot: runRuntimeBootstrapPreflight({
+      runtimeRef,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      now: '2026-03-30T10:10:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    }),
   }));
 }
 
@@ -268,6 +309,7 @@ describe('ao controller policy gating', () => {
       projectId: PROJECT_ID,
     });
     seedActiveTask(repository, 'assist');
+    seedCleanRuntimePreflight(repository);
 
     const result = await runControllerLoop({
       repoRoot: repository.getSnapshot().paths.repoRoot,
@@ -335,6 +377,7 @@ describe('ao controller policy gating', () => {
             },
           ],
         }),
+        ensureRuntimePreflights: () => repository.getSnapshot().state.runtime_preflights,
       },
     });
 

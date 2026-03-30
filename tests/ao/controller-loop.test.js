@@ -9,8 +9,11 @@ import {
   createControllerModeRecord,
   createManagedTask,
   createPrBinding,
+  createRuntimePreflightRecord,
+  createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { runControllerLoop } from '../../scripts/ao/lib/controller-loop.js';
+import { runRuntimeBootstrapPreflight } from '../../scripts/ao/lib/runtime-preflight.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 
 const PROJECT_ID = 'ciecopilot-home';
@@ -49,6 +52,44 @@ function seedActiveTask(repository, mode) {
     updated_at: '2026-03-29T06:40:00.000Z',
     updated_by: 'operator',
     reason: 'Issue #89 test setup',
+  }));
+}
+
+function seedCleanRuntimePreflight(repository, {
+  taskId = 'issue-92',
+  issueNumber = 92,
+  runtimeRef = 'runtime.github_local',
+} = {}) {
+  repository.upsertTaskSpec(createTaskSpecRecord({
+    task_id: taskId,
+    source_kind: 'github_issue',
+    source_issue_number: issueNumber,
+    created_at: '2026-03-29T06:40:00.000Z',
+    updated_at: '2026-03-29T06:40:00.000Z',
+    snapshot: {
+      schema_version: 'ao.task-spec.v1alpha1',
+      spec: {
+        problem_type: 'issue_delivery',
+        acceptance_contract: ['Assist only executes after clean runtime preflight.'],
+        runtime_ref: runtimeRef,
+        policy_ref: 'policy.operator_gated',
+        human_gates: ['operator_review'],
+      },
+    },
+  }));
+
+  repository.upsertRuntimePreflight(createRuntimePreflightRecord({
+    recorded_at: '2026-03-29T06:40:00.000Z',
+    snapshot: runRuntimeBootstrapPreflight({
+      runtimeRef,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      now: '2026-03-29T06:40:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    }),
   }));
 }
 
@@ -555,6 +596,7 @@ describe('ao controller loop', () => {
       projectId: PROJECT_ID,
     });
     seedActiveTask(repository, 'assist');
+    seedCleanRuntimePreflight(repository);
 
     const lifecycleReport = {
       top_status: 'continue',
@@ -585,6 +627,13 @@ describe('ao controller loop', () => {
           summary: 'Hold until CI is green.',
           commands: ['gh pr checks 92'],
           rationale: 'Required CI state is not yet ready.',
+        },
+        {
+          id: 'notify_human_ready',
+          action_class: 'notify_human',
+          summary: 'Notify the human that the PR appears ready.',
+          commands: ['terraform plan'],
+          rationale: 'This should be blocked by policy because terraform is not an allowlisted tool.',
         },
       ],
     };
@@ -628,19 +677,22 @@ describe('ao controller loop', () => {
           ],
         }),
         resolveLifecycleReport: async () => lifecycleReport,
+        ensureRuntimePreflights: () => repository.getSnapshot().state.runtime_preflights,
       },
     });
 
     expect(result).toMatchObject({
       mode: 'assist',
-      proposed_action_count: 3,
+      proposed_action_count: 4,
       executed_action_count: 1,
       blocked_action_count: 2,
+      policy_blocked_action_count: 1,
       task_results: [
         expect.objectContaining({
-          proposed_action_count: 3,
+          proposed_action_count: 4,
           executed_action_count: 1,
           blocked_action_count: 2,
+          policy_blocked_action_count: 1,
         }),
       ],
     });
@@ -679,7 +731,116 @@ describe('ao controller loop', () => {
           }),
         }),
       }),
+      expect.objectContaining({
+        action_kind: 'notify_human_ready',
+        status: 'blocked',
+        payload: expect.objectContaining({
+          policy: expect.objectContaining({
+            decision: 'deny',
+          }),
+        }),
+      }),
     ]));
+  });
+
+  it('assist mode blocks class A actions until runtime preflight has passed', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'assist');
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-29T06:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        resolveLifecycleReport: async () => ({
+          top_status: 'continue',
+          routing_decision: {
+            action: 'continue_current_worker',
+          },
+          release_decision: {
+            disposition: 'continue_current_worker',
+          },
+          actions: [
+            {
+              id: 'continue_worker',
+              action_class: 'continue_worker',
+              summary: 'Continue the current worker owner.',
+              commands: ['ao status -p ciecopilot-home --json'],
+              rationale: 'Ownership continuity is clear enough to continue the current worker.',
+            },
+          ],
+        }),
+      },
+    });
+
+    expect(result).toMatchObject({
+      mode: 'assist',
+      proposed_action_count: 1,
+      executed_action_count: 0,
+      blocked_action_count: 1,
+      task_results: [
+        expect.objectContaining({
+          proposed_action_count: 1,
+          executed_action_count: 0,
+          blocked_action_count: 1,
+        }),
+      ],
+    });
+
+    expect(repository.getSnapshot().state.actions).toEqual([
+      expect.objectContaining({
+        action_kind: 'continue_worker',
+        status: 'blocked',
+        payload: expect.objectContaining({
+          action_model: expect.objectContaining({
+            phase4_assist: expect.objectContaining({
+              executable: false,
+              reason: 'runtime_preflight_clean',
+            }),
+          }),
+          execution: expect.objectContaining({
+            outcome: 'blocked',
+            reason: 'runtime_preflight_clean',
+          }),
+        }),
+      }),
+    ]);
   });
 
   it('blocks when another active lease already exists for the same controller', async () => {

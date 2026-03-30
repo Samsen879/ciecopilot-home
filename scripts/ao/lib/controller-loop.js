@@ -72,6 +72,19 @@ function buildGitHubScope(task, prBindings = []) {
   });
 }
 
+function resolveTaskRuntimePreflight(snapshot, task) {
+  const taskSpec = snapshot.state.task_specs.find((record) => record.task_id === task.task_id) ?? null;
+  const runtimeRef = taskSpec?.snapshot?.spec?.runtime_ref ?? null;
+  const runtimePreflight = runtimeRef == null
+    ? null
+    : (snapshot.state.runtime_preflights.find((record) => record.runtime_ref === runtimeRef) ?? null);
+  return {
+    taskSpec,
+    runtimeRef,
+    runtimePreflight,
+  };
+}
+
 function resolveLifecyclePrNumber(prBindings = [], matchedPrs = []) {
   const prNumbers = uniquePrNumbers(prBindings, matchedPrs);
   return prNumbers.length === 1 ? prNumbers[0] : null;
@@ -196,6 +209,7 @@ async function persistShadowActions({
   const downgradedActionIds = [];
   const requestedBy = mode === 'assist' ? 'assist_controller' : 'shadow_controller';
   const credentialProvenances = snapshot.credential_provenances ?? [];
+  const { runtimeRef, runtimePreflight } = resolveTaskRuntimePreflight({ state: snapshot }, task);
 
   for (const action of lifecycleReport.actions) {
     const actionModel = buildAssistActionModel({
@@ -204,6 +218,8 @@ async function persistShadowActions({
       prNumber,
       derivedTrigger,
       lifecycleTopStatus: lifecycleReport.top_status ?? null,
+      runtimeRef,
+      runtimePreflight,
       action,
     });
     const policyInput = buildPolicyInputForAction({
@@ -298,6 +314,7 @@ async function persistShadowActions({
         commands: action.commands,
         rationale: action.rationale,
         action_model: actionModel,
+        runtime_preflight: actionModel.runtime_preflight,
         policy_decision_id: policyDecisionId,
         policy: {
           decision: policyResult.decision,
@@ -445,6 +462,10 @@ export async function runControllerLoop({
     buildDoctorReport: buildDoctorReportModel,
     buildLifecycleReport: buildLifecycleReportModel,
     resolveLifecycleReport: null,
+    ensureRuntimePreflights: ({ repository: activeRepository, cwd: activeCwd, now: activeNow }) => activeRepository.ensureRuntimePreflights({
+      cwd: activeCwd,
+      now: activeNow,
+    }),
     ...deps,
   };
   const timestamp = resolveNow(now);
@@ -452,7 +473,8 @@ export async function runControllerLoop({
     repoRoot,
     projectId,
   });
-  repository.ensureRuntimePreflights({
+  await services.ensureRuntimePreflights({
+    repository,
     cwd,
     now: timestamp,
   });

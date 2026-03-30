@@ -62,6 +62,12 @@ describe('ao action executor', () => {
       prNumber: 101,
       derivedTrigger: 'approved_and_green',
       lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
       action: {
         id: 'notify_human_ready',
         action_class: 'notify_human',
@@ -75,6 +81,10 @@ describe('ao action executor', () => {
       action_kind: 'notify_human_ready',
       action_class: 'notify_human',
       risk_class: 'class_a',
+      runtime_preflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+      },
       phase4_assist: {
         executable: true,
         reason: 'class_a_allowlist',
@@ -88,6 +98,47 @@ describe('ao action executor', () => {
       expect.objectContaining({
         code: 'pr_scope_required',
         satisfied: true,
+      }),
+    ]));
+
+    const missingPreflightModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: {
+        task_id: 'issue-90',
+        status: 'active',
+      },
+      derivedTrigger: 'manual',
+      lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'missing_dependency',
+        replay_key: 'runtime_preflight:missing',
+      },
+      action: {
+        id: 'continue_worker',
+        action_class: 'continue_worker',
+        summary: 'Continue the current worker owner.',
+        commands: ['ao status -p ciecopilot-home --json'],
+        rationale: 'Ownership continuity is clear enough to continue the current worker.',
+      },
+    });
+
+    expect(missingPreflightModel).toMatchObject({
+      action_kind: 'continue_worker',
+      runtime_preflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'missing_dependency',
+      },
+      phase4_assist: {
+        executable: false,
+        reason: 'runtime_preflight_clean',
+      },
+    });
+    expect(missingPreflightModel.preconditions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'runtime_preflight_clean',
+        satisfied: false,
       }),
     ]));
 
@@ -133,6 +184,12 @@ describe('ao action executor', () => {
       prNumber: 101,
       derivedTrigger: 'manual',
       lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
       action: {
         id: 'continue_worker',
         action_class: 'continue_worker',
@@ -153,6 +210,11 @@ describe('ao action executor', () => {
       updated_at: '2026-03-29T07:11:00.000Z',
       payload: {
         action_model: actionModel,
+        policy_decision_id: 'policy-1',
+        policy: {
+          decision: 'allow',
+          policy_version: 'ao.policy.v1',
+        },
       },
     }));
 
@@ -193,6 +255,76 @@ describe('ao action executor', () => {
     ]));
   });
 
+  it('blocks assist execution when durable policy attribution is missing', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+    seedActiveTask(repository);
+
+    const actionModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      prNumber: 101,
+      derivedTrigger: 'manual',
+      lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'continue_worker',
+        action_class: 'continue_worker',
+        summary: 'Continue the current worker owner.',
+        commands: ['ao status -p ciecopilot-home --json'],
+        rationale: 'Ownership continuity is clear enough to continue the current worker.',
+      },
+    });
+
+    repository.upsertAction(createActionRecord({
+      action_id: 'action-1',
+      task_id: 'issue-90',
+      action_kind: 'continue_worker',
+      status: 'proposed',
+      requested_by: 'shadow_controller',
+      reason: 'Continue the current worker owner.',
+      created_at: '2026-03-29T07:11:00.000Z',
+      updated_at: '2026-03-29T07:11:00.000Z',
+      payload: {
+        action_model: actionModel,
+      },
+    }));
+
+    const result = await executeAssistActions({
+      repository,
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      actionIds: ['action-1'],
+      now: '2026-03-29T07:12:00.000Z',
+    });
+
+    expect(result).toEqual({
+      executedActionIds: [],
+      blockedActionIds: ['action-1'],
+    });
+
+    expect(repository.getSnapshot().state.actions).toEqual([
+      expect.objectContaining({
+        action_id: 'action-1',
+        status: 'blocked',
+        payload: expect.objectContaining({
+          execution: expect.objectContaining({
+            outcome: 'blocked',
+            reason: 'policy_allow_required',
+          }),
+        }),
+      }),
+    ]);
+  });
+
   it('honors active autonomy-hold overrides without executing class A actions', async () => {
     const repository = createStateRepository({
       repoRoot: createTempRepo(),
@@ -221,6 +353,12 @@ describe('ao action executor', () => {
       prNumber: 101,
       derivedTrigger: 'approved_and_green',
       lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
       action: {
         id: 'notify_human_ready',
         action_class: 'notify_human',
@@ -241,6 +379,11 @@ describe('ao action executor', () => {
       updated_at: '2026-03-29T07:11:00.000Z',
       payload: {
         action_model: actionModel,
+        policy_decision_id: 'policy-1',
+        policy: {
+          decision: 'allow',
+          policy_version: 'ao.policy.v1',
+        },
       },
     }));
 

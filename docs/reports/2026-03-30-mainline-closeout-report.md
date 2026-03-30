@@ -20,6 +20,7 @@
 - 在新主线基线中补上 `.worktrees/` 的 `.gitignore` 小补丁
 - 已将第一阶段收口结果提交为 `6c77527` `chore(closeout): record mainline recovery classification`
 - 已将根工作区从旧分支切走，并切到新的本地基线分支 `baseline/origin-main-20260330`
+- 已将旧本地分支重命名为 `retired/runtime-post-pilot-0323-2239`
 
 ## 已验证结果
 
@@ -50,6 +51,10 @@ npm test -- --runInBand src/pages/__tests__/legacy-entry-mode.test.js src/api/__
 - 取证分支
 
 而不应该再被视为后续新功能开发的默认工作区。
+
+当前本地仓库里，这个状态已经通过分支重命名固化为：
+
+- `retired/runtime-post-pilot-0323-2239`
 
 补充说明：
 
@@ -84,7 +89,7 @@ npm test -- --runInBand src/pages/__tests__/legacy-entry-mode.test.js src/api/__
 如果继续按低风险方式推进，下一步顺序应该是：
 
 1. 把 `closeout/mainline-recovery-20260330` 推送并按需要发 PR
-2. 把 `runtime-post-pilot-0323-2239` 继续保留为只读历史分支，不再接收新开发
+2. 继续保持 `retired/runtime-post-pilot-0323-2239` 为只读历史分支，不再接收新开发
 3. 后续所有新任务统一从最新 `origin/main` 或 `baseline/origin-main-20260330` 新开短分支
 4. 对 `e3d6914` 这批归档 WIP 单独做一次“是否要拆题重做”的评审
 

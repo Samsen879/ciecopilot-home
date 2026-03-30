@@ -1,3 +1,4 @@
+import { createCheckpointStore } from './checkpoint-store.js';
 import { normalizeIssueIntake } from './issue-intake.js';
 import { createStateRepository } from './state-repository.js';
 import { createTaskSpecRecord } from './state-contracts.js';
@@ -16,6 +17,10 @@ function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
   if (typeof now === 'string' && now.trim() !== '') return now.trim();
   return new Date().toISOString();
+}
+
+function isPlainObject(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
 }
 
 function matchesTaskIdentity(task, { taskId = null, issueNumber = null } = {}) {
@@ -121,6 +126,10 @@ export async function runManageCommand({
     repoRoot,
     projectId,
   });
+  const checkpointStore = createCheckpointStore({
+    repository,
+    now: () => timestamp,
+  });
   const snapshot = repository.getSnapshot();
   const existingTask = snapshot.state.managed_tasks.find((task) => matchesTaskIdentity(task, {
     taskId,
@@ -130,22 +139,47 @@ export async function runManageCommand({
     taskId,
     issueNumber,
   });
-  const resolvedTitle = title ?? existingTask?.title ?? (issueNumber != null ? `Issue #${issueNumber}` : resolvedTaskId);
+  const resumeCheckpoint = command === 'resume'
+    ? checkpointStore.loadCheckpointForResume({
+        taskId: resolvedTaskId,
+      })
+    : null;
+  const checkpointTaskRef = resumeCheckpoint?.record?.snapshot?.task_ref ?? null;
+  const checkpointPrBinding = checkpointTaskRef?.pr_binding ?? null;
+  const resolvedIssueNumber = issueNumber ?? existingTask?.issue_number ?? checkpointTaskRef?.issue_number ?? null;
+  const resolvedTitle = title ?? checkpointTaskRef?.title ?? existingTask?.title ?? (resolvedIssueNumber != null ? `Issue #${resolvedIssueNumber}` : resolvedTaskId);
+  const resolvedBranchName = branchName ?? checkpointTaskRef?.branch_name ?? existingTask?.branch_name ?? null;
+  const resolvedWorktreePath = worktreePath ?? checkpointTaskRef?.worktree_path ?? existingTask?.worktree_path ?? null;
+  const resolvedPrNumber = prNumber ?? checkpointPrBinding?.pr_number ?? null;
+  const resolvedBaseBranch = baseBranch ?? checkpointPrBinding?.base_branch ?? 'main';
+  const nextMetadata = command === 'resume'
+    ? {
+        ...(isPlainObject(existingTask?.metadata) ? existingTask.metadata : {}),
+        resume: {
+          last_resume_checkpoint_id: resumeCheckpoint?.checkpoint_id ?? null,
+          resume_kind: 'explicit_checkpoint',
+          resumed_at: timestamp,
+          checkpoint_recorded_at: resumeCheckpoint?.record?.recorded_at ?? null,
+          runtime_preflight_replay_key: resumeCheckpoint?.record?.snapshot?.verification_ref?.runtime_preflight?.replay_key ?? null,
+        },
+      }
+    : existingTask?.metadata ?? null;
 
   const task = transitionManagedTask({
-    intent: command,
+    intent: command === 'resume' ? 'adopt' : command,
     existingTask,
     now: timestamp,
     taskId: resolvedTaskId,
-    issueNumber,
+    issueNumber: resolvedIssueNumber,
     title: resolvedTitle,
-    branchName,
-    worktreePath,
+    branchName: resolvedBranchName,
+    worktreePath: resolvedWorktreePath,
+    metadata: nextMetadata,
   });
   repository.upsertManagedTask(task);
 
   let taskSpec = null;
-  if (['enroll', 'adopt'].includes(command)) {
+  if (['enroll', 'adopt', 'resume'].includes(command)) {
     const postTaskSnapshot = repository.getSnapshot();
     const existingTaskSpec = postTaskSnapshot.state.task_specs.find(
       (record) => record.task_id === task.task_id,
@@ -177,7 +211,7 @@ export async function runManageCommand({
   let releasedOwnershipLeaseIds = [];
   let releasedPrBindingIds = [];
 
-  if (ownerSessionName && ['enroll', 'adopt'].includes(command)) {
+  if (ownerSessionName && ['enroll', 'adopt', 'resume'].includes(command)) {
     releasedOwnershipLeaseIds = releaseConflictingOwnershipLeases(repository, task.task_id, ownerSessionName, timestamp);
     const postReleaseSnapshot = repository.getSnapshot();
     const existingOwnershipLease = postReleaseSnapshot.state.ownership_leases.find(
@@ -206,13 +240,13 @@ export async function runManageCommand({
     }
   }
 
-  if (prNumber != null) {
-    releasedPrBindingIds = releaseConflictingPrBindings(repository, task.task_id, prNumber, timestamp);
+  if (resolvedPrNumber != null) {
+    releasedPrBindingIds = releaseConflictingPrBindings(repository, task.task_id, resolvedPrNumber, timestamp);
     const postReleaseSnapshot = repository.getSnapshot();
     const existingBinding = postReleaseSnapshot.state.pr_bindings.find(
       (binding) => binding.binding_id === buildPrBindingId({
         taskId: task.task_id,
-        prNumber,
+        prNumber: resolvedPrNumber,
       }),
     ) ?? null;
 
@@ -222,12 +256,12 @@ export async function runManageCommand({
       now: timestamp,
       bindingId: buildPrBindingId({
         taskId: task.task_id,
-        prNumber,
+        prNumber: resolvedPrNumber,
       }),
       taskId: task.task_id,
-      prNumber,
-      branchName: branchName ?? task.branch_name,
-      baseBranch,
+      prNumber: resolvedPrNumber,
+      branchName: resolvedBranchName ?? task.branch_name,
+      baseBranch: resolvedBaseBranch,
     });
     repository.upsertPrBinding(prBinding);
   }
@@ -257,6 +291,11 @@ export async function runManageCommand({
     taskSpec,
     prBinding,
     ownershipLease,
+    resume: resumeCheckpoint == null ? null : {
+      checkpoint_id: resumeCheckpoint.checkpoint_id,
+      state: resumeCheckpoint.state,
+      reason_codes: resumeCheckpoint.reason_codes,
+    },
     releasedOwnershipLeaseIds,
     releasedPrBindingIds,
   };

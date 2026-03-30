@@ -42,12 +42,18 @@ export const CONTROL_PLANE_RUNTIME_PREFLIGHT_MIGRATION = {
   key: '0005_runtime_preflight_v1',
 };
 
+export const CONTROL_PLANE_CHECKPOINT_MIGRATION = {
+  version: 6,
+  key: '0006_checkpoint_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
   CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION,
   CONTROL_PLANE_POLICY_ENGINE_MIGRATION,
   CONTROL_PLANE_RUNTIME_PREFLIGHT_MIGRATION,
+  CONTROL_PLANE_CHECKPOINT_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -110,6 +116,7 @@ function buildBootstrapState({
     'credential_provenances',
     'task_specs',
     'runtime_preflights',
+    'checkpoints',
   ]) {
     if (Array.isArray(existingState?.[collectionKey])) {
       state[collectionKey] = cloneJsonValue(existingState[collectionKey]);
@@ -206,6 +213,14 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_CHECKPOINT_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -235,6 +250,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane runtime-preflight migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_CHECKPOINT_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane checkpoint migration.',
     };
   }
 

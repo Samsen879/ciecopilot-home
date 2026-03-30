@@ -4,10 +4,13 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from '@jest/globals';
 
+import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js';
 import {
   createControllerModeRecord,
   createManagedTask,
   createOverrideRecord,
+  createPrBinding,
+  createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 import { loadAoStateReport } from '../../scripts/ao/lib/state-runner.js';
@@ -136,7 +139,7 @@ describe('ao state runner', () => {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
-      audit_entry_count: 8,
+      audit_entry_count: 9,
     });
     expect(report.audit.recent_entries).toEqual([
       expect.objectContaining({
@@ -146,6 +149,104 @@ describe('ao state runner', () => {
       expect.objectContaining({
         entity_kind: 'controller_mode',
         entity_id: 'default',
+      }),
+    ]);
+  });
+
+  it('includes checkpoint inspection state in the operator-visible AO state report', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-03-30T10:00:00.000Z',
+        '2026-03-30T10:01:00.000Z',
+        '2026-03-30T10:02:00.000Z',
+        '2026-03-30T10:03:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-110',
+      issue_number: 110,
+      title: 'feat(ao): add checkpoint schema and explicit resume',
+      branch_name: 'feat/110',
+      worktree_path: '/tmp/cie-57',
+      status: 'active',
+      created_at: '2026-03-30T10:00:00.000Z',
+      updated_at: '2026-03-30T10:00:00.000Z',
+    }));
+    repository.upsertPrBinding(createPrBinding({
+      binding_id: 'binding-issue-110-pr-110',
+      task_id: 'issue-110',
+      pr_number: 110,
+      branch_name: 'feat/110',
+      base_branch: 'main',
+      status: 'bound',
+      created_at: '2026-03-30T10:00:00.000Z',
+      updated_at: '2026-03-30T10:00:00.000Z',
+    }));
+    repository.upsertControllerMode(createControllerModeRecord({
+      controller_id: 'default',
+      mode: 'observe',
+      updated_at: '2026-03-30T10:01:00.000Z',
+      updated_by: 'operator',
+      reason: 'Checkpoint inspection setup',
+    }));
+    repository.upsertTaskSpec(createTaskSpecRecord({
+      task_id: 'issue-110',
+      source_kind: 'github_issue',
+      source_issue_number: 110,
+      created_at: '2026-03-30T10:01:00.000Z',
+      updated_at: '2026-03-30T10:01:00.000Z',
+      snapshot: {
+        schema_version: 'ao.task-spec.v1alpha1',
+        spec: {
+          problem_type: 'issue_delivery',
+          acceptance_contract: ['checkpoint-backed resume exists'],
+          runtime_ref: 'runtime.github_local',
+          policy_ref: 'policy.operator_gated',
+          human_gates: ['operator_resume'],
+        },
+      },
+    }));
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: '2026-03-30T10:02:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    createCheckpointStore({
+      repository,
+      now: () => '2026-03-30T10:03:00.000Z',
+    }).captureCheckpoint({
+      taskId: 'issue-110',
+      controllerId: 'default',
+      derivedTrigger: 'manual',
+      observedAt: '2026-03-30T10:03:00.000Z',
+      actionIds: [],
+    });
+
+    const report = await loadAoStateReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+      auditLimit: 2,
+    });
+
+    expect(report.summary).toMatchObject({
+      checkpoint_count: 1,
+      valid_checkpoint_count: 1,
+      stale_checkpoint_count: 0,
+      invalid_checkpoint_count: 0,
+    });
+    expect(report.checkpoints.inspections).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-110',
+        state: 'valid',
       }),
     ]);
   });

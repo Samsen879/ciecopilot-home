@@ -1,3 +1,4 @@
+import { createCheckpointStore } from './checkpoint-store.js';
 import * as fs from 'node:fs';
 import path from 'node:path';
 
@@ -45,6 +46,12 @@ export async function loadAoStateReport({
   const snapshot = repository.getSnapshot();
   const auditEntries = repository.listAuditEntries();
   const recentEntries = auditLimit == null ? auditEntries : auditEntries.slice(-auditLimit);
+  const checkpointInspections = createCheckpointStore({
+    repository,
+  }).inspectAllCheckpoints();
+  const validCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'valid').length;
+  const staleCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'stale').length;
+  const invalidCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'invalid').length;
 
   return {
     schema_version: AO_STATE_SCHEMA_VERSION,
@@ -66,7 +73,14 @@ export async function loadAoStateReport({
       controller_modes: summarizeControllerModes(snapshot.state.controller_modes),
       observation_count: snapshot.state.observations.length,
       controller_cursor_count: snapshot.state.controller_cursors.length,
+      checkpoint_count: checkpointInspections.length,
+      valid_checkpoint_count: validCheckpointCount,
+      stale_checkpoint_count: staleCheckpointCount,
+      invalid_checkpoint_count: invalidCheckpointCount,
       audit_entry_count: auditEntries.length,
+    },
+    checkpoints: {
+      inspections: checkpointInspections,
     },
     audit: {
       recent_entries: recentEntries,

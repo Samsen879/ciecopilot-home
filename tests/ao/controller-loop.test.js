@@ -106,6 +106,7 @@ describe('ao controller loop', () => {
       projectId: PROJECT_ID,
     });
     seedActiveTask(repository, 'observe');
+    seedCleanRuntimePreflight(repository);
     const resolveLifecycleReport = jest.fn();
 
     const result = await runControllerLoop({
@@ -115,6 +116,15 @@ describe('ao controller loop', () => {
       controllerId: 'default',
       now: '2026-03-29T06:41:00.000Z',
       deps: {
+        ensureRuntimePreflights: ({ repository: activeRepository, cwd, now }) => activeRepository.ensureRuntimePreflights({
+          cwd,
+          now,
+          probes: {
+            commandExists: () => true,
+            pathExists: () => true,
+            capability: () => true,
+          },
+        }),
         loadAoProjectObservation: async () => ({
           observed_at: '2026-03-29T06:41:00.000Z',
           workers: [
@@ -169,6 +179,29 @@ describe('ao controller loop', () => {
     const snapshot = repository.getSnapshot().state;
     expect(snapshot.observations).toHaveLength(2);
     expect(snapshot.actions).toEqual([]);
+    expect(snapshot.checkpoints).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        snapshot: expect.objectContaining({
+          schema_version: 'ao.checkpoint.v1alpha1',
+          verification_ref: expect.objectContaining({
+            task_spec: expect.objectContaining({
+              task_id: 'issue-92',
+              state: 'valid',
+            }),
+            runtime_preflight: expect.objectContaining({
+              runtime_ref: 'runtime.github_local',
+              status: 'clean',
+            }),
+          }),
+          execution_ref: expect.objectContaining({
+            controller_id: 'default',
+            controller_mode: 'observe',
+            derived_trigger: 'manual',
+          }),
+        }),
+      }),
+    ]);
     expect(snapshot.controller_leases).toEqual([
       expect.objectContaining({
         controller_id: 'default',

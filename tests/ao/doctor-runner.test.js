@@ -44,13 +44,14 @@ describe('doctor runner', () => {
       getSnapshot: () => ({
         bootstrapped: true,
         schema: {
-          current_version: 5,
-          latest_version: 5,
+          current_version: 6,
+          latest_version: 6,
         },
         state: {
           managed_tasks: [],
           task_specs: [],
           runtime_preflights: [],
+          checkpoints: [],
         },
       }),
     });
@@ -108,13 +109,14 @@ describe('doctor runner', () => {
       controlPlaneSnapshot: {
         bootstrapped: true,
         schema: {
-          current_version: 5,
-          latest_version: 5,
+          current_version: 6,
+          latest_version: 6,
         },
         state: {
           managed_tasks: [],
           task_specs: [],
           runtime_preflights: [],
+          checkpoints: [],
         },
       },
     });
@@ -137,13 +139,14 @@ describe('doctor runner', () => {
       controlPlaneSnapshot: {
         bootstrapped: true,
         schema: {
-          current_version: 5,
-          latest_version: 5,
+          current_version: 6,
+          latest_version: 6,
         },
         state: {
           managed_tasks: [],
           task_specs: [],
           runtime_preflights: [],
+          checkpoints: [],
         },
       },
       report: {

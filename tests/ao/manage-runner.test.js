@@ -4,8 +4,10 @@ import path from 'node:path';
 
 import { afterEach, describe, expect, it } from '@jest/globals';
 
+import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js';
 import { resolveControlPlanePaths } from '../../scripts/ao/lib/state-migrations.js';
 import { runManageCommand } from '../../scripts/ao/lib/manage-runner.js';
+import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 
 const PROJECT_ID = 'ciecopilot-home';
 const tempDirs = [];
@@ -171,6 +173,186 @@ describe('ao manage runner', () => {
       owner_session_name: 'cie-50',
       status: 'active',
     });
+  });
+
+  it('resumes a paused task from an explicit checkpoint instead of treating it as a new enrollment', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 110,
+      title: 'feat(ao): add checkpoint schema and explicit resume',
+      branchName: 'feat/110',
+      worktreePath: '/tmp/cie-57',
+      prNumber: 120,
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      taskSpecBody: [
+        '## Problem Type',
+        'issue_delivery',
+        '',
+        '## Acceptance Contract',
+        '- checkpoint-backed resume exists',
+        '',
+        '## Runtime Ref',
+        'runtime.github_local',
+        '',
+        '## Policy Ref',
+        'policy.operator_gated',
+        '',
+        '## Human Gates',
+        '- operator_resume',
+      ].join('\n'),
+      now: '2026-03-30T10:00:00.000Z',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: '2026-03-30T10:01:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    const checkpointStore = createCheckpointStore({
+      repository,
+      now: () => '2026-03-30T10:02:00.000Z',
+    });
+    const checkpoint = checkpointStore.captureCheckpoint({
+      taskId: 'issue-110',
+      controllerId: 'default',
+      derivedTrigger: 'manual',
+      observedAt: '2026-03-30T10:02:00.000Z',
+      actionIds: ['proposal-issue-110-continue'],
+    });
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 110,
+      now: '2026-03-30T10:03:00.000Z',
+      reason: 'worker_exited',
+    });
+
+    const result = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 110,
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-30T10:04:00.000Z',
+    });
+
+    expect(result.task).toMatchObject({
+      task_id: 'issue-110',
+      status: 'active',
+      branch_name: 'feat/110',
+      worktree_path: '/tmp/cie-57',
+      metadata: expect.objectContaining({
+        resume: expect.objectContaining({
+          last_resume_checkpoint_id: checkpoint.checkpoint_id,
+          resume_kind: 'explicit_checkpoint',
+          resumed_at: '2026-03-30T10:04:00.000Z',
+        }),
+      }),
+    });
+    expect(result.prBinding).toMatchObject({
+      pr_number: 120,
+      status: 'bound',
+    });
+    expect(result.ownershipLease).toMatchObject({
+      owner_session_name: 'cie-57',
+      status: 'active',
+    });
+    expect(result.resume).toMatchObject({
+      checkpoint_id: checkpoint.checkpoint_id,
+      state: 'valid',
+    });
+  });
+
+  it('fails closed when explicit resume sees a stale checkpoint', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 110,
+      title: 'feat(ao): add checkpoint schema and explicit resume',
+      branchName: 'feat/110',
+      worktreePath: '/tmp/cie-57',
+      taskSpecBody: [
+        '## Problem Type',
+        'issue_delivery',
+        '',
+        '## Acceptance Contract',
+        '- checkpoint-backed resume exists',
+        '',
+        '## Runtime Ref',
+        'runtime.github_local',
+        '',
+        '## Policy Ref',
+        'policy.operator_gated',
+        '',
+        '## Human Gates',
+        '- operator_resume',
+      ].join('\n'),
+      now: '2026-03-30T10:00:00.000Z',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: '2026-03-30T10:01:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    const checkpointStore = createCheckpointStore({
+      repository,
+      now: () => '2026-03-30T10:02:00.000Z',
+    });
+    checkpointStore.captureCheckpoint({
+      taskId: 'issue-110',
+      controllerId: 'default',
+      derivedTrigger: 'manual',
+      observedAt: '2026-03-30T10:02:00.000Z',
+      actionIds: [],
+    });
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'adopt',
+      issueNumber: 110,
+      branchName: 'feat/110b',
+      worktreePath: '/tmp/cie-57b',
+      now: '2026-03-30T10:03:00.000Z',
+    });
+
+    await expect(runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 110,
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-30T10:04:00.000Z',
+    })).rejects.toThrow(/stale checkpoint/i);
   });
 
   it('unmanages and retires a task without deleting its durable bindings', async () => {

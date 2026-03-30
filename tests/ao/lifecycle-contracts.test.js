@@ -5,6 +5,7 @@ import {
   LIFECYCLE_TRIGGERS,
   LIFECYCLE_TOP_STATUSES,
   LIFECYCLE_STRICT_EXIT_CODES,
+  LIFECYCLE_DELIVERY_TRIGGER_PRIORITY,
   normalizeLifecycleTrigger,
   createLifecycleProjectScope,
   createLifecyclePrScope,
@@ -44,6 +45,13 @@ describe('lifecycle contracts', () => {
       source_failure: 34,
       invalid_usage: 35,
     });
+    expect(LIFECYCLE_DELIVERY_TRIGGER_PRIORITY).toEqual([
+      'changes_requested',
+      'ci_failed',
+      'bugbot_comments',
+      'merge_conflicts',
+      'approved_and_green',
+    ]);
   });
 
   it('normalizes supported lifecycle triggers', () => {

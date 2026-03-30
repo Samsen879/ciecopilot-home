@@ -19,6 +19,14 @@ export const LIFECYCLE_TRIGGERS = [
   'agent_exited',
 ];
 
+export const LIFECYCLE_DELIVERY_TRIGGER_PRIORITY = [
+  'changes_requested',
+  'ci_failed',
+  'bugbot_comments',
+  'merge_conflicts',
+  'approved_and_green',
+];
+
 export const LIFECYCLE_TOP_STATUSES = [
   'continue',
   'observe',

@@ -19,6 +19,7 @@ import { buildDoctorReport as buildDoctorReportModel } from './doctor-engine.js'
 import { loadDoctorLocalState } from './doctor-local-state-source.js';
 import { loadGitHubObservationSet } from './github-observation-source.js';
 import {
+  LIFECYCLE_DELIVERY_TRIGGER_PRIORITY,
   createLifecyclePrScope,
   createLifecycleProjectScope,
 } from './lifecycle-contracts.js';
@@ -74,12 +75,36 @@ function resolveLifecyclePrNumber(prBindings = [], matchedPrs = []) {
 export function deriveLifecycleTriggerForTask({
   matchedAoWorkers = [],
   matchedPrs = [],
+  deliveryEvents = [],
 } = {}) {
   if (
     matchedAoWorkers.length === 0
     || matchedAoWorkers.some((worker) => worker.freshness?.status === 'stale')
   ) {
     return 'agent_exited';
+  }
+
+  const prMap = new Map((matchedPrs ?? []).map((pr) => [pr.pr_number, pr]));
+  const activeDeliveryTriggers = new Set((deliveryEvents ?? [])
+    .filter((event) => {
+      const pr = prMap.get(event.pr_number);
+      if (!pr) return false;
+      const payload = event.payload ?? {};
+      if (event.event_family === 'review_comment' && payload.commit_oid && pr.head_sha) {
+        return payload.commit_oid === pr.head_sha;
+      }
+      if (payload.head_sha && pr.head_sha) {
+        return payload.head_sha === pr.head_sha;
+      }
+      return true;
+    })
+    .map((event) => event.lifecycle_trigger)
+    .filter((trigger) => typeof trigger === 'string' && trigger !== '' && trigger !== 'manual'));
+
+  for (const trigger of LIFECYCLE_DELIVERY_TRIGGER_PRIORITY) {
+    if (activeDeliveryTriggers.has(trigger)) {
+      return trigger;
+    }
   }
 
   if (matchedPrs.some((pr) => pr.review_status === 'changes_requested')) {
@@ -341,6 +366,7 @@ export async function runControllerLoop({
   ));
   const taskResults = [];
   let ingestedObservationCount = 0;
+  let deliveryEventCount = 0;
   let proposedActionCount = 0;
   let executedActionCount = 0;
   let blockedActionCount = 0;
@@ -363,9 +389,11 @@ export async function runControllerLoop({
         now: timestamp,
       });
       ingestedObservationCount += ingestResult.ingested_count;
+      deliveryEventCount += ingestResult.delivery_event_count ?? 0;
       const derivedTrigger = deriveLifecycleTriggerForTask({
         matchedAoWorkers: ingestResult.matchedAoWorkers,
         matchedPrs: ingestResult.matchedPrs,
+        deliveryEvents: ingestResult.deliveryEvents,
       });
 
       let lifecycleTopStatus = null;
@@ -430,6 +458,7 @@ export async function runControllerLoop({
         issue_number: task.issue_number,
         derived_trigger: derivedTrigger,
         new_observation_count: ingestResult.ingested_count,
+        new_delivery_event_count: ingestResult.delivery_event_count ?? 0,
         proposed_action_count: proposedActionIds.length,
         proposed_action_ids: proposedActionIds,
         executed_action_count: executedActionIds.length,
@@ -459,6 +488,7 @@ export async function runControllerLoop({
     managed_task_count: activeTasks.length,
     processed_task_count: taskResults.length,
     ingested_observation_count: ingestedObservationCount,
+    delivery_event_count: deliveryEventCount,
     proposed_action_count: proposedActionCount,
     executed_action_count: executedActionCount,
     blocked_action_count: blockedActionCount,

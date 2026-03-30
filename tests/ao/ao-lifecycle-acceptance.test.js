@@ -104,7 +104,7 @@ function useScenario(name) {
         'view',
         String(activeScenario.prNumber),
         '--json',
-        'number,state,headRefName,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url',
+        'number,state,headRefName,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url,reviews',
       ]);
       return success(fixture(activeScenario.githubFixture));
     }

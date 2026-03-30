@@ -73,8 +73,8 @@ describe('ao state migrations', () => {
 
     expect(readJson(paths.schemaPath)).toMatchObject({
       project_id: PROJECT_ID,
-      current_version: 2,
-      latest_version: 2,
+      current_version: 3,
+      latest_version: 3,
       applied_migrations: [
         {
           version: 1,
@@ -86,10 +86,16 @@ describe('ao state migrations', () => {
           key: '0002_task_spec_v1',
           applied_at: FIXED_NOW,
         },
+        {
+          version: 3,
+          key: '0003_delivery_events_v1',
+          applied_at: FIXED_NOW,
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
       project_id: PROJECT_ID,
+      delivery_events: [],
       task_specs: [],
       controller_modes: [
         {
@@ -112,6 +118,12 @@ describe('ao state migrations', () => {
         entity_id: 'v2',
         operation: 'migrate',
         summary: 'Applied control-plane task-spec migration.',
+      }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v3',
+        operation: 'migrate',
+        summary: 'Applied control-plane delivery-event migration.',
       }),
     ]);
   });
@@ -139,7 +151,7 @@ describe('ao state migrations', () => {
       migrated: false,
     });
     expect(readJson(paths.schemaPath).updated_at).toBe(FIXED_NOW);
-    expect(readAuditEntries(paths.auditPath)).toHaveLength(2);
+    expect(readAuditEntries(paths.auditPath)).toHaveLength(3);
   });
 
   it('upgrades a stale schema version and backfills invalid task specs for enrolled tasks', () => {
@@ -155,7 +167,7 @@ describe('ao state migrations', () => {
       format: 'ao_control_plane_schema',
       project_id: PROJECT_ID,
       current_version: 1,
-      latest_version: 2,
+      latest_version: 3,
       created_at: '2026-03-29T03:00:00.000Z',
       updated_at: '2026-03-29T03:00:00.000Z',
       applied_migrations: [
@@ -200,6 +212,7 @@ describe('ao state migrations', () => {
         },
       ],
       observations: [],
+      delivery_events: [],
       controller_cursors: [],
     }, null, 2)}\n`, 'utf8');
 
@@ -214,7 +227,7 @@ describe('ao state migrations', () => {
       migrated: true,
     });
     expect(readJson(paths.schemaPath)).toMatchObject({
-      current_version: 2,
+      current_version: 3,
       applied_migrations: [
         {
           version: 1,
@@ -224,9 +237,14 @@ describe('ao state migrations', () => {
           version: 2,
           key: '0002_task_spec_v1',
         },
+        {
+          version: 3,
+          key: '0003_delivery_events_v1',
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
+      delivery_events: [],
       task_specs: [
         {
           task_id: 'issue-105',

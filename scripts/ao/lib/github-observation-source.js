@@ -4,7 +4,7 @@ import {
   sanitizeFixtureToken,
 } from './fixture-support.js';
 
-const PR_JSON_FIELDS = 'number,state,headRefName,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url';
+const PR_JSON_FIELDS = 'number,state,headRefName,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url,reviews';
 
 function toIsoString(value) {
   if (!value) return null;
@@ -69,6 +69,34 @@ function normalizeState(value) {
   return 'UNKNOWN';
 }
 
+function normalizeReviewState(value) {
+  const normalized = String(value ?? '').trim().toUpperCase();
+  if (normalized === 'APPROVED') return 'approved';
+  if (normalized === 'CHANGES_REQUESTED') return 'changes_requested';
+  if (normalized === 'COMMENTED') return 'commented';
+  return 'unknown';
+}
+
+function normalizeReviews(value) {
+  const reviews = Array.isArray(value) ? value : [];
+
+  return reviews
+    .map((review) => ({
+      review_id: review?.id != null ? String(review.id) : null,
+      state: normalizeReviewState(review?.state),
+      author_login: review?.author?.login != null ? String(review.author.login) : null,
+      submitted_at: toIsoString(review?.submittedAt),
+      commit_oid: review?.commit?.oid != null ? String(review.commit.oid) : null,
+    }))
+    .filter((review) => review.review_id || review.submitted_at || review.commit_oid)
+    .sort((left, right) => {
+      if ((left.submitted_at ?? '') !== (right.submitted_at ?? '')) {
+        return String(left.submitted_at ?? '').localeCompare(String(right.submitted_at ?? ''));
+      }
+      return String(left.review_id ?? '').localeCompare(String(right.review_id ?? ''));
+    });
+}
+
 function buildEmptyObservationSet(scope, now, sourceError = null) {
   return {
     scope,
@@ -93,6 +121,7 @@ function normalizePrObservation(raw, now) {
     mergeability: normalizeMergeability(raw.mergeStateStatus),
     is_draft: typeof raw.isDraft === 'boolean' ? raw.isDraft : null,
     url: raw.url != null ? String(raw.url) : null,
+    reviews: normalizeReviews(raw.reviews),
   };
 }
 

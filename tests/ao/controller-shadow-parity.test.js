@@ -166,6 +166,34 @@ describe('ao controller shadow parity', () => {
       }))
       .sort((left, right) => left.id.localeCompare(right.id));
 
+    const deliveryEvents = repository.getSnapshot().state.delivery_events
+      .filter((record) => record.task_id === `issue-${issueNumber}`)
+      .map((record) => ({
+        event_family: record.event_family,
+        lifecycle_trigger: record.lifecycle_trigger,
+        lineage: record.lineage,
+      }));
+
     expect(actualActions).toEqual(expectedActions);
+    expect(deliveryEvents).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        event_family: 'pr',
+        lineage: expect.objectContaining({
+          source_observation_id: expect.stringContaining(`issue-${issueNumber}:github_poll:`),
+        }),
+      }),
+      expect.objectContaining({
+        event_family: 'check',
+        lineage: expect.objectContaining({
+          source_observation_id: expect.stringContaining(`issue-${issueNumber}:github_poll:`),
+        }),
+      }),
+      expect.objectContaining({
+        event_family: 'review',
+        lineage: expect.objectContaining({
+          source_observation_id: expect.stringContaining(`issue-${issueNumber}:github_poll:`),
+        }),
+      }),
+    ]));
   });
 });

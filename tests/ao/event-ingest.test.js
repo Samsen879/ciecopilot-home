@@ -138,15 +138,176 @@ describe('ao event ingest', () => {
     expect(thirdResult).toMatchObject({
       ingested_count: 1,
       skipped_count: 1,
+      delivery_event_count: 3,
     });
 
     const snapshot = repository.getSnapshot().state;
     expect(snapshot.observations).toHaveLength(3);
+    expect(snapshot.delivery_events).toHaveLength(6);
     expect(snapshot.controller_cursors).toHaveLength(2);
     expect(snapshot.controller_cursors.find((record) => record.source_kind === 'github_poll')).toMatchObject({
       task_id: 'issue-89',
       source_kind: 'github_poll',
       observed_at: '2026-03-29T06:33:00.000Z',
     });
+    expect(snapshot.delivery_events.map((record) => record.event_family)).toEqual(expect.arrayContaining([
+      'pr',
+      'check',
+      'review',
+    ]));
+  });
+
+  it('dedupes repeated review-comment loops and preserves durable lineage per head sha', () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-106',
+      issue_number: 106,
+      title: 'Protocolize delivery events',
+      branch_name: 'feat/106',
+      worktree_path: '/tmp/cie-53',
+      status: 'active',
+      created_at: '2026-03-30T08:30:00.000Z',
+      updated_at: '2026-03-30T08:30:00.000Z',
+    }));
+    repository.upsertPrBinding(createPrBinding({
+      binding_id: 'binding-issue-106-pr-112',
+      task_id: 'issue-106',
+      pr_number: 112,
+      branch_name: 'feat/106',
+      base_branch: 'main',
+      status: 'bound',
+      created_at: '2026-03-30T08:30:00.000Z',
+      updated_at: '2026-03-30T08:30:00.000Z',
+    }));
+
+    const task = repository.getSnapshot().state.managed_tasks[0];
+    const prBindings = repository.getSnapshot().state.pr_bindings;
+    const aoObservation = {
+      observed_at: '2026-03-30T08:31:00.000Z',
+      workers: [
+        {
+          session_name: 'cie-53',
+          session_runtime_id: 'cie-53',
+          issue_number: 106,
+          branch_name: 'feat/106',
+          pr_number: 112,
+          lifecycle_state: 'idle',
+          last_seen_at: '2026-03-30T08:30:45.000Z',
+          freshness: { status: 'fresh' },
+        },
+      ],
+    };
+
+    const firstGitHubObservation = {
+      observed_at: '2026-03-30T08:31:00.000Z',
+      prs: [
+        {
+          pr_number: 112,
+          state: 'OPEN',
+          head_branch: 'feat/106',
+          head_sha: 'abc123',
+          review_status: 'changes_requested',
+          ci_status: 'passing',
+          mergeability: 'mergeable',
+          is_draft: false,
+          url: 'https://example.test/pr/112',
+          reviews: [
+            {
+              review_id: 'review-comment-1',
+              state: 'commented',
+              author_login: 'chatgpt-codex-connector',
+              submitted_at: '2026-03-30T08:30:50.000Z',
+              commit_oid: 'abc123',
+            },
+          ],
+        },
+      ],
+    };
+
+    const firstResult = ingestManagedTaskPollEvents({
+      repository,
+      controllerId: 'default',
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation: firstGitHubObservation,
+      now: '2026-03-30T08:31:00.000Z',
+    });
+    const secondResult = ingestManagedTaskPollEvents({
+      repository,
+      controllerId: 'default',
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation: firstGitHubObservation,
+      now: '2026-03-30T08:32:00.000Z',
+    });
+    const thirdResult = ingestManagedTaskPollEvents({
+      repository,
+      controllerId: 'default',
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation: {
+        observed_at: '2026-03-30T08:33:00.000Z',
+        prs: [
+          {
+            ...firstGitHubObservation.prs[0],
+            head_sha: 'def456',
+            reviews: [
+              {
+                review_id: 'review-comment-2',
+                state: 'commented',
+                author_login: 'chatgpt-codex-connector',
+                submitted_at: '2026-03-30T08:32:45.000Z',
+                commit_oid: 'def456',
+              },
+            ],
+          },
+        ],
+      },
+      now: '2026-03-30T08:33:00.000Z',
+    });
+
+    expect(firstResult).toMatchObject({
+      ingested_count: 2,
+      delivery_event_count: 4,
+    });
+    expect(secondResult).toMatchObject({
+      ingested_count: 0,
+      delivery_event_count: 0,
+    });
+    expect(thirdResult).toMatchObject({
+      ingested_count: 1,
+      delivery_event_count: 4,
+    });
+
+    const snapshot = repository.getSnapshot().state;
+    const reviewCommentEvents = snapshot.delivery_events
+      .filter((record) => record.event_family === 'review_comment')
+      .sort((left, right) => String(left.payload.commit_oid ?? '').localeCompare(String(right.payload.commit_oid ?? '')));
+
+    expect(reviewCommentEvents).toHaveLength(2);
+    expect(reviewCommentEvents.map((record) => record.payload.review_id)).toEqual([
+      'review-comment-1',
+      'review-comment-2',
+    ]);
+    expect(reviewCommentEvents.map((record) => record.payload.commit_oid)).toEqual([
+      'abc123',
+      'def456',
+    ]);
+    expect(reviewCommentEvents).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        lifecycle_trigger: 'bugbot_comments',
+        controller_action_hint: 'hold_review',
+        lineage: expect.objectContaining({
+          source_observation_id: expect.stringContaining('issue-106:github_poll:'),
+        }),
+      }),
+    ]));
   });
 });

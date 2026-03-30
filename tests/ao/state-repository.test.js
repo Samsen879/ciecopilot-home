@@ -8,6 +8,7 @@ import {
   createActionRecord,
   createControllerLease,
   createControllerModeRecord,
+  createDeliveryEventRecord,
   createManagedTask,
   createOverrideRecord,
   createOwnershipLease,
@@ -69,6 +70,7 @@ describe('ao state repository', () => {
       actions: [],
       overrides: [],
       controller_modes: [],
+      delivery_events: [],
       task_specs: [],
     });
     expect(repository.listAuditEntries()).toEqual([]);
@@ -89,6 +91,7 @@ describe('ao state repository', () => {
         '2026-03-29T04:56:00.000Z',
         '2026-03-29T04:57:00.000Z',
         '2026-03-29T04:58:00.000Z',
+        '2026-03-29T04:59:00.000Z',
       ),
       auditIdGenerator: createIdGenerator('audit'),
     });
@@ -181,6 +184,27 @@ describe('ao state repository', () => {
         },
       },
     }));
+    repository.upsertDeliveryEvent(createDeliveryEventRecord({
+      event_id: 'delivery-1',
+      task_id: 'task-1',
+      pr_number: 101,
+      source_kind: 'github_poll',
+      event_family: 'review_comment',
+      event_type: 'review_comment_state',
+      dedupe_key: 'github_poll:review_comment:101:review-1',
+      lifecycle_trigger: 'bugbot_comments',
+      controller_action_hint: 'hold_review',
+      observed_at: '2026-03-29T04:58:00.000Z',
+      recorded_at: '2026-03-29T04:58:00.000Z',
+      lineage: {
+        source_observation_id: 'obs-1',
+        source_cursor: 'cursor-1',
+      },
+      payload: {
+        head_sha: 'abc123',
+        review_id: 'review-1',
+      },
+    }));
 
     const snapshot = repository.getSnapshot();
     const auditEntries = repository.listAuditEntries();
@@ -194,11 +218,13 @@ describe('ao state repository', () => {
       actions: [expect.objectContaining({ action_id: 'action-1', action_kind: 'notify_human_ready' })],
       overrides: [expect.objectContaining({ override_id: 'override-1', override_kind: 'hold_autonomy' })],
       controller_modes: [expect.objectContaining({ controller_id: 'default', mode: 'observe' })],
+      delivery_events: [expect.objectContaining({ event_id: 'delivery-1', event_family: 'review_comment' })],
       task_specs: [expect.objectContaining({ task_id: 'task-1', state: 'valid' })],
     });
     expect(auditEntries.map((entry) => `${entry.entity_kind}:${entry.operation}:${entry.entity_id}`)).toEqual([
       'schema:bootstrap:v1',
       'schema:migrate:v2',
+      'schema:migrate:v3',
       'managed_task:upsert:task-1',
       'pr_binding:upsert:binding-1',
       'ownership_lease:upsert:ownership-1',
@@ -207,6 +233,7 @@ describe('ao state repository', () => {
       'override:upsert:override-1',
       'controller_mode:upsert:default',
       'task_spec:upsert:task-1',
+      'delivery_event:upsert:delivery-1',
     ]);
   });
 

@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 import {
   createControllerCursorRecord,
+  createDeliveryEventRecord,
   createObservationRecord,
 } from './state-contracts.js';
 
@@ -38,8 +39,26 @@ function sortPrs(prs = []) {
       mergeability: pr.mergeability ?? null,
       is_draft: pr.is_draft ?? null,
       url: pr.url ?? null,
+      reviews: sortReviews(pr.reviews),
     }))
     .sort((left, right) => Number(left.pr_number ?? 0) - Number(right.pr_number ?? 0));
+}
+
+function sortReviews(reviews = []) {
+  return [...(reviews ?? [])]
+    .map((review) => ({
+      review_id: review.review_id ?? null,
+      state: review.state ?? null,
+      author_login: review.author_login ?? null,
+      submitted_at: review.submitted_at ?? null,
+      commit_oid: review.commit_oid ?? null,
+    }))
+    .sort((left, right) => {
+      if (String(left.submitted_at ?? '') !== String(right.submitted_at ?? '')) {
+        return String(left.submitted_at ?? '').localeCompare(String(right.submitted_at ?? ''));
+      }
+      return String(left.review_id ?? '').localeCompare(String(right.review_id ?? ''));
+    });
 }
 
 export function matchAoWorkers(task, prBindings = [], aoObservation = {}) {
@@ -105,6 +124,7 @@ function ingestSingleObservation({
       ingested: false,
       observationId,
       cursorId,
+      cursor,
     };
   }
 
@@ -137,7 +157,257 @@ function ingestSingleObservation({
     ingested: !existingObservation,
     observationId,
     cursorId,
+    cursor,
   };
+}
+
+function resolvePrLifecycleBinding(pr = {}) {
+  if (
+    pr.state === 'OPEN'
+    && pr.review_status === 'approved'
+    && pr.ci_status === 'passing'
+    && pr.mergeability === 'mergeable'
+    && pr.is_draft === false
+  ) {
+    return {
+      lifecycleTrigger: 'approved_and_green',
+      controllerActionHint: 'notify_human_ready',
+    };
+  }
+
+  if (pr.mergeability === 'conflicting') {
+    return {
+      lifecycleTrigger: 'merge_conflicts',
+      controllerActionHint: 'hold_mergeability',
+    };
+  }
+
+  return {
+    lifecycleTrigger: 'manual',
+    controllerActionHint: 'observe',
+  };
+}
+
+function resolveCheckLifecycleBinding(pr = {}) {
+  if (pr.ci_status === 'failing') {
+    return {
+      lifecycleTrigger: 'ci_failed',
+      controllerActionHint: 'hold_ci',
+    };
+  }
+
+  if (pr.ci_status === 'pending') {
+    return {
+      lifecycleTrigger: 'manual',
+      controllerActionHint: 'hold_ci',
+    };
+  }
+
+  return {
+    lifecycleTrigger: 'manual',
+    controllerActionHint: 'observe',
+  };
+}
+
+function resolveReviewLifecycleBinding(pr = {}) {
+  if (pr.review_status === 'changes_requested') {
+    return {
+      lifecycleTrigger: 'changes_requested',
+      controllerActionHint: 'hold_review',
+    };
+  }
+
+  if (pr.review_status === 'pending') {
+    return {
+      lifecycleTrigger: 'manual',
+      controllerActionHint: 'hold_review',
+    };
+  }
+
+  return {
+    lifecycleTrigger: 'manual',
+    controllerActionHint: 'observe',
+  };
+}
+
+function isBotLikeAuthor(authorLogin) {
+  const normalized = String(authorLogin ?? '').trim().toLowerCase();
+  return /bot|codex|copilot/.test(normalized);
+}
+
+function resolveReviewCommentLifecycleBinding(review = {}) {
+  if (review.state === 'commented' && isBotLikeAuthor(review.author_login)) {
+    return {
+      lifecycleTrigger: 'bugbot_comments',
+      controllerActionHint: 'hold_review',
+    };
+  }
+
+  return {
+    lifecycleTrigger: 'manual',
+    controllerActionHint: 'hold_review',
+  };
+}
+
+function buildDeliveryEventId(taskId, dedupeKey) {
+  return `${taskId}:delivery:${hashPayload(dedupeKey)}`;
+}
+
+function buildEventLineage({
+  observationId,
+  sourceCursor,
+} = {}) {
+  return {
+    source_observation_id: observationId,
+    source_cursor: sourceCursor,
+  };
+}
+
+function buildDeliveryEventsForPr({
+  task,
+  sourceKind,
+  observationId,
+  sourceCursor,
+  pr,
+  observedAt,
+  now,
+} = {}) {
+  const lineage = buildEventLineage({
+    observationId,
+    sourceCursor,
+  });
+  const prBinding = resolvePrLifecycleBinding(pr);
+  const checkBinding = resolveCheckLifecycleBinding(pr);
+  const reviewBinding = resolveReviewLifecycleBinding(pr);
+  const events = [];
+  const prPayload = {
+    state: pr.state ?? null,
+    head_branch: pr.head_branch ?? null,
+    head_sha: pr.head_sha ?? null,
+    review_status: pr.review_status ?? null,
+    ci_status: pr.ci_status ?? null,
+    mergeability: pr.mergeability ?? null,
+    is_draft: pr.is_draft ?? null,
+    url: pr.url ?? null,
+  };
+  const prDedupeKey = `${sourceKind}:pr:${pr.pr_number}:${hashPayload(prPayload)}`;
+  events.push(createDeliveryEventRecord({
+    event_id: buildDeliveryEventId(task.task_id, prDedupeKey),
+    task_id: task.task_id,
+    pr_number: pr.pr_number ?? null,
+    source_kind: sourceKind,
+    event_family: 'pr',
+    event_type: 'pr_state',
+    dedupe_key: prDedupeKey,
+    lifecycle_trigger: prBinding.lifecycleTrigger,
+    controller_action_hint: prBinding.controllerActionHint,
+    observed_at: observedAt,
+    recorded_at: now,
+    lineage,
+    payload: prPayload,
+  }));
+
+  const checkPayload = {
+    head_sha: pr.head_sha ?? null,
+    ci_status: pr.ci_status ?? null,
+  };
+  const checkDedupeKey = `${sourceKind}:check:${pr.pr_number}:${hashPayload(checkPayload)}`;
+  events.push(createDeliveryEventRecord({
+    event_id: buildDeliveryEventId(task.task_id, checkDedupeKey),
+    task_id: task.task_id,
+    pr_number: pr.pr_number ?? null,
+    source_kind: sourceKind,
+    event_family: 'check',
+    event_type: 'check_state',
+    dedupe_key: checkDedupeKey,
+    lifecycle_trigger: checkBinding.lifecycleTrigger,
+    controller_action_hint: checkBinding.controllerActionHint,
+    observed_at: observedAt,
+    recorded_at: now,
+    lineage,
+    payload: checkPayload,
+  }));
+
+  const reviewPayload = {
+    head_sha: pr.head_sha ?? null,
+    review_status: pr.review_status ?? null,
+  };
+  const reviewDedupeKey = `${sourceKind}:review:${pr.pr_number}:${hashPayload(reviewPayload)}`;
+  events.push(createDeliveryEventRecord({
+    event_id: buildDeliveryEventId(task.task_id, reviewDedupeKey),
+    task_id: task.task_id,
+    pr_number: pr.pr_number ?? null,
+    source_kind: sourceKind,
+    event_family: 'review',
+    event_type: 'review_state',
+    dedupe_key: reviewDedupeKey,
+    lifecycle_trigger: reviewBinding.lifecycleTrigger,
+    controller_action_hint: reviewBinding.controllerActionHint,
+    observed_at: observedAt,
+    recorded_at: now,
+    lineage,
+    payload: reviewPayload,
+  }));
+
+  for (const review of sortReviews(pr.reviews)) {
+    if (review.state !== 'commented') continue;
+    const commentBinding = resolveReviewCommentLifecycleBinding(review);
+    const reviewCommentPayload = {
+      head_sha: pr.head_sha ?? null,
+      review_id: review.review_id ?? null,
+      review_state: review.state ?? null,
+      author_login: review.author_login ?? null,
+      submitted_at: review.submitted_at ?? null,
+      commit_oid: review.commit_oid ?? null,
+    };
+    const reviewCommentDedupeKey = `${sourceKind}:review_comment:${pr.pr_number}:${review.review_id ?? hashPayload(reviewCommentPayload)}`;
+    events.push(createDeliveryEventRecord({
+      event_id: buildDeliveryEventId(task.task_id, reviewCommentDedupeKey),
+      task_id: task.task_id,
+      pr_number: pr.pr_number ?? null,
+      source_kind: sourceKind,
+      event_family: 'review_comment',
+      event_type: 'review_comment_state',
+      dedupe_key: reviewCommentDedupeKey,
+      lifecycle_trigger: commentBinding.lifecycleTrigger,
+      controller_action_hint: commentBinding.controllerActionHint,
+      observed_at: review.submitted_at ?? observedAt,
+      recorded_at: now,
+      lineage,
+      payload: reviewCommentPayload,
+    }));
+  }
+
+  return events;
+}
+
+function persistDeliveryEvents({
+  repository,
+  deliveryEvents = [],
+} = {}) {
+  const snapshot = repository.getSnapshot();
+  const existingEventIds = new Set((snapshot.state.delivery_events ?? []).map((record) => record.event_id));
+  const createdDeliveryEventIds = [];
+
+  for (const event of deliveryEvents) {
+    if (existingEventIds.has(event.event_id)) continue;
+    repository.upsertDeliveryEvent(event);
+    createdDeliveryEventIds.push(event.event_id);
+    existingEventIds.add(event.event_id);
+  }
+
+  return createdDeliveryEventIds;
+}
+
+function listTaskDeliveryEvents(repository, taskId) {
+  return (repository.getSnapshot().state.delivery_events ?? [])
+    .filter((event) => event.task_id === taskId)
+    .sort((left, right) => {
+      if (String(left.observed_at ?? '') !== String(right.observed_at ?? '')) {
+        return String(left.observed_at ?? '').localeCompare(String(right.observed_at ?? ''));
+      }
+      return String(left.event_id ?? '').localeCompare(String(right.event_id ?? ''));
+    });
 }
 
 export function ingestManagedTaskPollEvents({
@@ -171,6 +441,18 @@ export function ingestManagedTaskPollEvents({
     now,
     summary: `Observed ${matchedPrs.length} GitHub PR snapshot(s) for ${task.task_id}.`,
   });
+  const createdDeliveryEventIds = persistDeliveryEvents({
+    repository,
+    deliveryEvents: matchedPrs.flatMap((pr) => buildDeliveryEventsForPr({
+      task,
+      sourceKind: 'github_poll',
+      observationId: githubResult.observationId,
+      sourceCursor: githubResult.cursor,
+      pr,
+      observedAt: githubObservation.observed_at ?? now,
+      now,
+    })),
+  });
 
   const ingestedCount = [aoResult, githubResult].filter((result) => result.ingested).length;
 
@@ -178,11 +460,14 @@ export function ingestManagedTaskPollEvents({
     task_id: task.task_id,
     ingested_count: ingestedCount,
     skipped_count: 2 - ingestedCount,
+    delivery_event_count: createdDeliveryEventIds.length,
     created_observation_ids: [aoResult, githubResult]
       .filter((result) => result.ingested)
       .map((result) => result.observationId),
+    created_delivery_event_ids: createdDeliveryEventIds,
     updated_cursor_ids: [aoResult.cursorId, githubResult.cursorId],
     matchedAoWorkers,
     matchedPrs,
+    deliveryEvents: listTaskDeliveryEvents(repository, task.task_id),
   };
 }

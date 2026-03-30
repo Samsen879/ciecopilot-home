@@ -27,9 +27,15 @@ export const CONTROL_PLANE_TASK_SPEC_MIGRATION = {
   key: '0002_task_spec_v1',
 };
 
+export const CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION = {
+  version: 3,
+  key: '0003_delivery_events_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
+  CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -86,6 +92,7 @@ function buildBootstrapState({
     'overrides',
     'controller_modes',
     'observations',
+    'delivery_events',
     'controller_cursors',
     'task_specs',
   ]) {
@@ -160,6 +167,14 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -168,6 +183,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'bootstrap',
       summary: 'Applied control-plane bootstrap migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane delivery-event migration.',
     };
   }
 

@@ -46,6 +46,25 @@ function buildPrScopePrecondition(prNumber) {
   };
 }
 
+function normalizeRuntimePreflight(runtimeRef, runtimePreflight) {
+  const normalizedRuntimeRef = runtimeRef == null ? null : String(runtimeRef);
+  const normalizedRecord = isPlainObject(runtimePreflight) ? runtimePreflight : null;
+  return {
+    runtime_ref: normalizedRuntimeRef ?? normalizedRecord?.runtime_ref ?? null,
+    status: normalizedRecord?.status == null ? 'missing' : String(normalizedRecord.status),
+    replay_key: normalizedRecord?.replay_key == null ? null : String(normalizedRecord.replay_key),
+  };
+}
+
+function buildRuntimePreflightPrecondition(runtimeRef, runtimePreflight) {
+  const normalizedRuntimePreflight = normalizeRuntimePreflight(runtimeRef, runtimePreflight);
+  return {
+    code: 'runtime_preflight_clean',
+    description: 'Assist execution requires a clean runtime preflight for the bound runtime.',
+    satisfied: normalizedRuntimePreflight.runtime_ref != null && normalizedRuntimePreflight.status === 'clean',
+  };
+}
+
 const ACTION_POLICIES = {
   continue_worker: {
     riskClass: 'class_a',
@@ -153,7 +172,9 @@ function buildExecutionDecision({
 
   return {
     executable: preconditionsSatisfied,
-    reason: preconditionsSatisfied ? 'class_a_allowlist' : 'preconditions_unsatisfied',
+    reason: preconditionsSatisfied
+      ? 'class_a_allowlist'
+      : (preconditions.find((item) => item.satisfied !== true)?.code ?? 'preconditions_unsatisfied'),
   };
 }
 
@@ -163,16 +184,22 @@ export function buildAssistActionModel({
   prNumber = null,
   derivedTrigger = 'manual',
   lifecycleTopStatus = null,
+  runtimeRef = null,
+  runtimePreflight = null,
   action,
 } = {}) {
   const policy = resolveActionPolicy(action?.id);
   const normalizedPrNumber = toNullablePositiveInteger(prNumber);
-  const preconditions = policy.buildPreconditions({
-    controllerId,
-    task,
-    prNumber: normalizedPrNumber,
-    action,
-  });
+  const runtimePreflightRecord = normalizeRuntimePreflight(runtimeRef, runtimePreflight);
+  const preconditions = [
+    ...policy.buildPreconditions({
+      controllerId,
+      task,
+      prNumber: normalizedPrNumber,
+      action,
+    }),
+    buildRuntimePreflightPrecondition(runtimeRef, runtimePreflight),
+  ];
   const phase4Assist = buildExecutionDecision({
     phase4AssistExecutable: policy.phase4AssistExecutable,
     preconditions,
@@ -193,6 +220,7 @@ export function buildAssistActionModel({
     derived_trigger: String(derivedTrigger ?? 'manual'),
     lifecycle_top_status: lifecycleTopStatus == null ? null : String(lifecycleTopStatus),
     risk_class: policy.riskClass,
+    runtime_preflight: runtimePreflightRecord,
     preconditions,
     phase4_assist: phase4Assist,
   };
@@ -205,6 +233,12 @@ function buildFallbackActionModel(record, controllerId, task) {
     prNumber: record?.payload?.pr_number ?? null,
     derivedTrigger: record?.payload?.derived_trigger ?? 'manual',
     lifecycleTopStatus: record?.payload?.top_status ?? null,
+    runtimeRef: record?.payload?.runtime_preflight?.runtime_ref
+      ?? record?.payload?.action_model?.runtime_preflight?.runtime_ref
+      ?? null,
+    runtimePreflight: record?.payload?.runtime_preflight
+      ?? record?.payload?.action_model?.runtime_preflight
+      ?? null,
     action: {
       id: record?.action_kind,
       action_class: record?.payload?.action_class ?? record?.action_kind,
@@ -329,6 +363,13 @@ function buildExecutedActionRecord(record, model, timestamp) {
   });
 }
 
+function hasDurableAllowPolicy(record) {
+  const policyDecisionId = typeof record?.payload?.policy_decision_id === 'string'
+    ? record.payload.policy_decision_id.trim()
+    : '';
+  return policyDecisionId !== '' && record?.payload?.policy?.decision === 'allow';
+}
+
 export async function executeAssistActions({
   repository,
   controllerId,
@@ -350,6 +391,31 @@ export async function executeAssistActions({
     const model = isPlainObject(record.payload?.action_model)
       ? cloneJsonValue(record.payload.action_model)
       : buildFallbackActionModel(record, controllerId, task);
+
+    if (!hasDurableAllowPolicy(record)) {
+      const blockedRecord = buildBlockedActionRecord(record, model, timestamp, {
+        reason: 'policy_allow_required',
+        matchedOverrideIds: [],
+        structural: true,
+      });
+      repository.upsertAction(blockedRecord);
+      repository.appendAuditEntry({
+        entityKind: 'action',
+        entityId: record.action_id,
+        operation: 'execution_blocked',
+        actor: 'assist_controller',
+        summary: `Blocked assist execution for ${record.action_id}.`,
+        details: {
+          action_id: record.action_id,
+          action_kind: record.action_kind,
+          reason: 'policy_allow_required',
+          policy_decision_id: record?.payload?.policy_decision_id ?? null,
+        },
+        recordedAt: timestamp,
+      });
+      blockedActionIds.push(record.action_id);
+      continue;
+    }
 
     const blockingOverrides = resolveBlockingOverrides(repository, {
       controllerId,
@@ -402,6 +468,7 @@ export async function executeAssistActions({
           action_kind: record.action_kind,
           reason: model.phase4_assist?.reason ?? 'phase4_assist_not_executable',
           risk_class: model.risk_class,
+          runtime_preflight: cloneJsonValue(model.runtime_preflight ?? null),
         },
         recordedAt: timestamp,
       });
@@ -424,6 +491,8 @@ export async function executeAssistActions({
         task_id: task?.task_id ?? null,
         controller_id: controllerId,
         pr_number: model.pr_number ?? null,
+        runtime_preflight: cloneJsonValue(model.runtime_preflight ?? null),
+        policy_decision_id: record?.payload?.policy_decision_id ?? null,
       },
       recordedAt: timestamp,
     });

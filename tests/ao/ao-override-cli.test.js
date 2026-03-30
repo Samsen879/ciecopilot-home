@@ -35,6 +35,10 @@ describe('ao override cli', () => {
       'hold_autonomy',
       '--value',
       '{"enabled":true}',
+      '--expires-at',
+      '2026-03-30T12:00:00.000Z',
+      '--created-by',
+      'ao-operator',
       '--json',
     ], {
       writeStdout: (text) => stdout.push(text),
@@ -50,6 +54,8 @@ describe('ao override cli', () => {
       scopeId: 'issue-90',
       overrideKind: 'hold_autonomy',
       value: { enabled: true },
+      expiresAt: '2026-03-30T12:00:00.000Z',
+      createdBy: 'ao-operator',
     }));
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       override: {

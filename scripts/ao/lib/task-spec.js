@@ -6,7 +6,7 @@ const HUMAN_GATE_PATTERN = /^[a-z][a-z0-9_./-]*$/;
 
 function normalizeOptionalString(value) {
   if (value == null) return null;
-  if (typeof value !== 'string') return value;
+  if (typeof value !== 'string') return null;
   const normalized = value.trim();
   return normalized === '' ? null : normalized;
 }
@@ -21,6 +21,15 @@ function createFinding(code, field, summary) {
 }
 
 function normalizeProblemType(value, findings) {
+  if (value != null && typeof value !== 'string') {
+    findings.push(createFinding(
+      'task_spec_invalid_problem_type',
+      'problem_type',
+      'TaskSpec problem_type is invalid.',
+    ));
+    return null;
+  }
+
   const normalized = normalizeOptionalString(value);
   if (normalized == null) {
     findings.push(createFinding(
@@ -62,7 +71,17 @@ function normalizeAcceptanceContract(value, findings) {
     return [];
   }
 
-  const normalized = value.map((entry) => normalizeOptionalString(entry)).filter(Boolean);
+  if (value.some((entry) => entry != null && typeof entry !== 'string')) {
+    findings.push(createFinding(
+      'task_spec_invalid_acceptance_contract',
+      'acceptance_contract',
+      'TaskSpec acceptance_contract must be a non-empty string array.',
+    ));
+  }
+
+  const normalized = value
+    .map((entry) => normalizeOptionalString(entry))
+    .filter(Boolean);
   if (!normalized.length) {
     findings.push(createFinding(
       'task_spec_missing_acceptance_contract',
@@ -75,6 +94,15 @@ function normalizeAcceptanceContract(value, findings) {
 }
 
 function normalizeRef(value, fieldName, missingCode, invalidCode, findings) {
+  if (value != null && typeof value !== 'string') {
+    findings.push(createFinding(
+      invalidCode,
+      fieldName,
+      `TaskSpec ${fieldName} is invalid.`,
+    ));
+    return null;
+  }
+
   const normalized = normalizeOptionalString(value);
   if (normalized == null) {
     findings.push(createFinding(
@@ -116,7 +144,17 @@ function normalizeHumanGates(value, findings) {
     return [];
   }
 
-  const normalized = value.map((entry) => normalizeOptionalString(entry)).filter(Boolean);
+  if (value.some((entry) => entry != null && typeof entry !== 'string')) {
+    findings.push(createFinding(
+      'task_spec_invalid_human_gates',
+      'human_gates',
+      'TaskSpec human_gates contains an invalid value.',
+    ));
+  }
+
+  const normalized = value
+    .map((entry) => normalizeOptionalString(entry))
+    .filter(Boolean);
   if (!normalized.length) {
     findings.push(createFinding(
       'task_spec_missing_human_gates',

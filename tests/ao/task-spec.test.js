@@ -81,4 +81,33 @@ describe('task spec', () => {
       }),
     ]));
   });
+
+  it('fails closed on non-string programmatic inputs instead of coercing them through regex checks', () => {
+    const result = createTaskSpecSnapshot({
+      problem_type: true,
+      acceptance_contract: ['fixture-backed tests exist', 7, null],
+      runtime_ref: 42,
+      policy_ref: { ref: 'policy.operator_gated' },
+      human_gates: ['operator_enroll', false],
+    });
+
+    expect(result).toEqual({
+      schema_version: TASK_SPEC_SCHEMA_VERSION,
+      valid: false,
+      findings: expect.arrayContaining([
+        expect.objectContaining({ code: 'task_spec_invalid_problem_type' }),
+        expect.objectContaining({ code: 'task_spec_invalid_acceptance_contract' }),
+        expect.objectContaining({ code: 'task_spec_invalid_runtime_ref' }),
+        expect.objectContaining({ code: 'task_spec_invalid_policy_ref' }),
+        expect.objectContaining({ code: 'task_spec_invalid_human_gates' }),
+      ]),
+      spec: {
+        problem_type: null,
+        acceptance_contract: ['fixture-backed tests exist'],
+        runtime_ref: null,
+        policy_ref: null,
+        human_gates: ['operator_enroll'],
+      },
+    });
+  });
 });

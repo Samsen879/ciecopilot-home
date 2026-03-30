@@ -8,12 +8,14 @@ import {
   createControllerLease,
   createControllerModeRecord,
   createControllerCursorRecord,
+  createCredentialProvenanceRecord,
   createDeliveryEventRecord,
   createEmptyControlPlaneState,
   createManagedTask,
   createObservationRecord,
   createOverrideRecord,
   createOwnershipLease,
+  createPolicyDecisionRecord,
   createPrBinding,
   createTaskSpecRecord,
 } from './state-contracts.js';
@@ -95,6 +97,8 @@ export function createStateRepository({
     nextState.observations = sortCollectionByKey(nextState.observations, 'observation_id');
     nextState.delivery_events = sortCollectionByKey(nextState.delivery_events, 'event_id');
     nextState.controller_cursors = sortCollectionByKey(nextState.controller_cursors, 'cursor_id');
+    nextState.policy_decisions = sortCollectionByKey(nextState.policy_decisions, 'decision_id');
+    nextState.credential_provenances = sortCollectionByKey(nextState.credential_provenances, 'provenance_id');
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
 
     return {
@@ -307,6 +311,28 @@ export function createStateRepository({
         record,
         normalize: createDeliveryEventRecord,
         summary: `Persisted delivery event ${record?.event_id}.`,
+      });
+    },
+
+    upsertCredentialProvenance(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'credential_provenances',
+        identityKey: 'provenance_id',
+        entityKind: 'credential_provenance',
+        record,
+        normalize: createCredentialProvenanceRecord,
+        summary: `Persisted credential provenance ${record?.provenance_id}.`,
+      });
+    },
+
+    upsertPolicyDecision(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'policy_decisions',
+        identityKey: 'decision_id',
+        entityKind: 'policy_decision',
+        record,
+        normalize: createPolicyDecisionRecord,
+        summary: `Persisted policy decision ${record?.decision_id}.`,
       });
     },
 

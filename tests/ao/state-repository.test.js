@@ -8,10 +8,12 @@ import {
   createActionRecord,
   createControllerLease,
   createControllerModeRecord,
+  createCredentialProvenanceRecord,
   createDeliveryEventRecord,
   createManagedTask,
   createOverrideRecord,
   createOwnershipLease,
+  createPolicyDecisionRecord,
   createPrBinding,
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
@@ -71,6 +73,8 @@ describe('ao state repository', () => {
       overrides: [],
       controller_modes: [],
       delivery_events: [],
+      policy_decisions: [],
+      credential_provenances: [],
       task_specs: [],
     });
     expect(repository.listAuditEntries()).toEqual([]);
@@ -92,6 +96,8 @@ describe('ao state repository', () => {
         '2026-03-29T04:57:00.000Z',
         '2026-03-29T04:58:00.000Z',
         '2026-03-29T04:59:00.000Z',
+        '2026-03-29T05:00:00.000Z',
+        '2026-03-29T05:01:00.000Z',
       ),
       auditIdGenerator: createIdGenerator('audit'),
     });
@@ -205,6 +211,33 @@ describe('ao state repository', () => {
         review_id: 'review-1',
       },
     }));
+    repository.upsertCredentialProvenance(createCredentialProvenanceRecord({
+      provenance_id: 'cred-gh-cli',
+      credential_kind: 'github_token',
+      source_kind: 'gh_cli_auth',
+      scope: 'github.com',
+      created_at: '2026-03-29T04:59:00.000Z',
+      updated_at: '2026-03-29T04:59:00.000Z',
+    }));
+    repository.upsertPolicyDecision(createPolicyDecisionRecord({
+      decision_id: 'policy-1',
+      task_id: 'task-1',
+      action_id: 'action-1',
+      action_kind: 'notify_human_ready',
+      subject_kind: 'action',
+      decision: 'allow',
+      policy_version: 'ao.policy.v1',
+      input_fingerprint: 'fingerprint-1',
+      recorded_at: '2026-03-29T05:00:00.000Z',
+      summary: 'Allow low-risk GitHub inspection.',
+      findings: [],
+      input: {
+        tools: ['gh'],
+      },
+      result: {
+        decision: 'allow',
+      },
+    }));
 
     const snapshot = repository.getSnapshot();
     const auditEntries = repository.listAuditEntries();
@@ -219,12 +252,15 @@ describe('ao state repository', () => {
       overrides: [expect.objectContaining({ override_id: 'override-1', override_kind: 'hold_autonomy' })],
       controller_modes: [expect.objectContaining({ controller_id: 'default', mode: 'observe' })],
       delivery_events: [expect.objectContaining({ event_id: 'delivery-1', event_family: 'review_comment' })],
+      credential_provenances: [expect.objectContaining({ provenance_id: 'cred-gh-cli', credential_kind: 'github_token' })],
+      policy_decisions: [expect.objectContaining({ decision_id: 'policy-1', decision: 'allow' })],
       task_specs: [expect.objectContaining({ task_id: 'task-1', state: 'valid' })],
     });
     expect(auditEntries.map((entry) => `${entry.entity_kind}:${entry.operation}:${entry.entity_id}`)).toEqual([
       'schema:bootstrap:v1',
       'schema:migrate:v2',
       'schema:migrate:v3',
+      'schema:migrate:v4',
       'managed_task:upsert:task-1',
       'pr_binding:upsert:binding-1',
       'ownership_lease:upsert:ownership-1',
@@ -234,6 +270,8 @@ describe('ao state repository', () => {
       'controller_mode:upsert:default',
       'task_spec:upsert:task-1',
       'delivery_event:upsert:delivery-1',
+      'credential_provenance:upsert:cred-gh-cli',
+      'policy_decision:upsert:policy-1',
     ]);
   });
 

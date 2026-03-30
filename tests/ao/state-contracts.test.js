@@ -26,6 +26,7 @@ import {
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createRuntimePreflightRecord,
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 
@@ -44,7 +45,7 @@ describe('ao state contracts', () => {
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
     expect(POLICY_DECISIONS).toEqual(['allow', 'deny', 'downgrade']);
     expect(CREDENTIAL_PROVENANCE_TRUST_DECISIONS).toEqual(['trusted', 'untrusted']);
-    expect(CONTROL_PLANE_LATEST_VERSION).toBe(4);
+    expect(CONTROL_PLANE_LATEST_VERSION).toBe(5);
   });
 
   it('creates durable managed-task, binding, lease, action, override, and controller-mode records', () => {
@@ -233,6 +234,58 @@ describe('ao state contracts', () => {
       },
     });
 
+    const runtimePreflightRecord = createRuntimePreflightRecord({
+      recorded_at: NOW,
+      snapshot: {
+        schema_version: 'ao.runtime-preflight.v1alpha1',
+        format: 'ao_runtime_preflight',
+        runtime_ref: 'runtime.github_local',
+        provider_id: 'github_local',
+        status: 'clean',
+        observed_at: NOW,
+        replay_key: 'runtime_preflight:abc123',
+        contract: {
+          schema_version: 'ao.runtime-provider.v1alpha1',
+          runtime_ref: 'runtime.github_local',
+          provider_id: 'github_local',
+          provider_kind: 'github_local',
+          display_name: 'GitHub local workspace',
+          bootstrap_requirements: [],
+          metadata: {},
+        },
+        checks: [],
+      },
+    });
+    expect(runtimePreflightRecord.replay_key).toMatch(/^runtime_preflight:/);
+    expect(runtimePreflightRecord.snapshot.replay_key).toBe(runtimePreflightRecord.replay_key);
+    expect(runtimePreflightRecord).toMatchObject({
+      runtime_ref: 'runtime.github_local',
+      provider_id: 'github_local',
+      status: 'clean',
+      observed_at: NOW,
+      recorded_at: NOW,
+      replay_key: expect.stringMatching(/^runtime_preflight:/),
+      snapshot: {
+        schema_version: 'ao.runtime-preflight.v1alpha1',
+        format: 'ao_runtime_preflight',
+        runtime_ref: 'runtime.github_local',
+        provider_id: 'github_local',
+        status: 'clean',
+        observed_at: NOW,
+        replay_key: expect.stringMatching(/^runtime_preflight:/),
+        contract: {
+          schema_version: 'ao.runtime-provider.v1alpha1',
+          runtime_ref: 'runtime.github_local',
+          provider_id: 'github_local',
+          provider_kind: 'github_local',
+          display_name: 'GitHub local workspace',
+          bootstrap_requirements: [],
+          metadata: {},
+        },
+        checks: [],
+      },
+    });
+
     expect(createCredentialProvenanceRecord({
       provenance_id: 'cred-gh-cli',
       credential_kind: 'github_token',
@@ -390,6 +443,7 @@ describe('ao state contracts', () => {
       policy_decisions: [],
       credential_provenances: [],
       task_specs: [],
+      runtime_preflights: [],
     });
 
     expect(createControlPlaneAuditEntry({

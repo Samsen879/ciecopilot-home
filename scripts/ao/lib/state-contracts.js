@@ -1,3 +1,4 @@
+import { createRuntimePreflightSnapshot } from './runtime-contracts.js';
 import { createTaskSpecSnapshot } from './task-spec.js';
 
 export const CONTROL_PLANE_SCHEMA_VERSION = 'ao.control-plane.schema.v1alpha1';
@@ -6,7 +7,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 4;
+export const CONTROL_PLANE_LATEST_VERSION = 5;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 
 export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
@@ -165,6 +166,7 @@ export function createEmptyControlPlaneState({
     policy_decisions: [],
     credential_provenances: [],
     task_specs: [],
+    runtime_preflights: [],
   };
 }
 
@@ -508,6 +510,30 @@ export function createTaskSpecRecord({
     state: normalizedSnapshot.valid ? 'valid' : 'invalid',
     created_at: normalizeIsoTimestamp(created_at, 'created_at'),
     updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    snapshot: normalizedSnapshot,
+  };
+}
+
+export function createRuntimePreflightRecord({
+  recorded_at,
+  snapshot,
+} = {}) {
+  const normalizedSnapshot = createRuntimePreflightSnapshot({
+    runtime_ref: snapshot?.runtime_ref,
+    provider_id: snapshot?.provider_id ?? null,
+    observed_at: snapshot?.observed_at,
+    status: snapshot?.status,
+    contract: snapshot?.contract ?? null,
+    checks: snapshot?.checks ?? [],
+  });
+
+  return {
+    runtime_ref: normalizeRequiredString(normalizedSnapshot.runtime_ref, 'runtime_ref'),
+    provider_id: normalizeOptionalString(normalizedSnapshot.provider_id),
+    status: normalizeRequiredString(normalizedSnapshot.status, 'status'),
+    observed_at: normalizeIsoTimestamp(normalizedSnapshot.observed_at, 'observed_at'),
+    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
+    replay_key: normalizeRequiredString(normalizedSnapshot.replay_key, 'replay_key'),
     snapshot: normalizedSnapshot,
   };
 }

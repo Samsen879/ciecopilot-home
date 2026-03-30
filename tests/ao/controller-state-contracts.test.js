@@ -97,6 +97,7 @@ describe('ao controller state contracts', () => {
       observations: [],
       delivery_events: [],
       controller_cursors: [],
+      runtime_preflights: [],
     });
   });
 });

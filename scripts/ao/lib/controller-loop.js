@@ -452,6 +452,10 @@ export async function runControllerLoop({
     repoRoot,
     projectId,
   });
+  repository.ensureRuntimePreflights({
+    cwd,
+    now: timestamp,
+  });
   const resolvedMode = resolveLoopMode(repository, controllerId, mode, timestamp);
   assertNoActiveControllerLease(repository, controllerId);
   const holderId = process.env.AO_SESSION_NAME ?? process.env.AO_SESSION_ID ?? 'controller-loop';

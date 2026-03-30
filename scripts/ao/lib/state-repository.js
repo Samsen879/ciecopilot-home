@@ -17,8 +17,10 @@ import {
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createRuntimePreflightRecord,
   createTaskSpecRecord,
 } from './state-contracts.js';
+import { runRuntimeBootstrapPreflight } from './runtime-preflight.js';
 import { appendControlPlaneAuditEntry, readControlPlaneAuditEntries } from './state-audit.js';
 import {
   bootstrapControlPlaneState,
@@ -62,6 +64,20 @@ function sortCollectionByKey(items, key) {
   return [...(items ?? [])].sort((left, right) => String(left?.[key] ?? '').localeCompare(String(right?.[key] ?? '')));
 }
 
+function normalizeRuntimeRefs(runtimeRefs) {
+  if (!Array.isArray(runtimeRefs)) return [];
+  return [...new Set(runtimeRefs
+    .filter((value) => typeof value === 'string')
+    .map((value) => value.trim())
+    .filter(Boolean))].sort((left, right) => left.localeCompare(right));
+}
+
+function extractRuntimeRefsFromState(state) {
+  return normalizeRuntimeRefs(
+    (state?.task_specs ?? []).map((record) => record?.snapshot?.spec?.runtime_ref ?? null),
+  );
+}
+
 export function createStateRepository({
   repoRoot,
   projectId,
@@ -100,6 +116,7 @@ export function createStateRepository({
     nextState.policy_decisions = sortCollectionByKey(nextState.policy_decisions, 'decision_id');
     nextState.credential_provenances = sortCollectionByKey(nextState.credential_provenances, 'provenance_id');
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
+    nextState.runtime_preflights = sortCollectionByKey(nextState.runtime_preflights, 'runtime_ref');
 
     return {
       bootstrapped: true,
@@ -356,6 +373,78 @@ export function createStateRepository({
         normalize: createTaskSpecRecord,
         summary: `Persisted task spec ${record?.task_id}.`,
       });
+    },
+
+    upsertRuntimePreflight(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'runtime_preflights',
+        identityKey: 'runtime_ref',
+        entityKind: 'runtime_preflight',
+        record,
+        normalize: createRuntimePreflightRecord,
+        summary: `Persisted runtime preflight ${record?.runtime_ref ?? record?.snapshot?.runtime_ref}.`,
+      });
+    },
+
+    ensureRuntimePreflights({
+      cwd = repoRoot,
+      now = clock,
+      runtimeRefs = null,
+      probes = {},
+    } = {}) {
+      ensureBootstrapped();
+      const timestamp = resolveNow(now);
+      let snapshot = readSnapshot();
+      const requestedRuntimeRefs = runtimeRefs == null
+        ? extractRuntimeRefsFromState(snapshot.state)
+        : normalizeRuntimeRefs(runtimeRefs);
+      const ensuredRecords = [];
+
+      for (const runtimeRef of requestedRuntimeRefs) {
+        const preflightSnapshot = runRuntimeBootstrapPreflight({
+          runtimeRef,
+          cwd,
+          now: timestamp,
+          probes,
+        });
+        const normalizedRecord = createRuntimePreflightRecord({
+          recorded_at: timestamp,
+          snapshot: preflightSnapshot,
+        });
+        const existingRecord = (snapshot.state.runtime_preflights ?? []).find(
+          (record) => record?.runtime_ref === normalizedRecord.runtime_ref,
+        );
+
+        if (existingRecord?.replay_key === normalizedRecord.replay_key) {
+          ensuredRecords.push(existingRecord);
+          continue;
+        }
+
+        const nextState = cloneJsonValue(snapshot.state);
+        const existingIndex = nextState.runtime_preflights.findIndex(
+          (record) => record?.runtime_ref === normalizedRecord.runtime_ref,
+        );
+        if (existingIndex >= 0) {
+          nextState.runtime_preflights[existingIndex] = normalizedRecord;
+        } else {
+          nextState.runtime_preflights.push(normalizedRecord);
+        }
+
+        persistState({
+          state: nextState,
+          entityKind: 'runtime_preflight',
+          entityId: normalizedRecord.runtime_ref,
+          summary: `Persisted runtime preflight ${normalizedRecord.runtime_ref}.`,
+          details: normalizedRecord,
+        });
+        snapshot = {
+          ...snapshot,
+          state: nextState,
+        };
+        ensuredRecords.push(normalizedRecord);
+      }
+
+      return sortCollectionByKey(ensuredRecords, 'runtime_ref');
     },
   };
 }

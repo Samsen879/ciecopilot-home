@@ -5,6 +5,7 @@ const mockLoadDoctorLocalState = jest.fn();
 const mockBuildDoctorReport = jest.fn();
 const mockFindRepoRoot = jest.fn();
 const mockCreateStateRepository = jest.fn();
+const mockEnsureRuntimePreflights = jest.fn();
 
 jest.unstable_mockModule('../../scripts/ao/lib/reconciliation-runner.js', () => ({
   DEFAULT_PROJECT_ID: 'ciecopilot-home',
@@ -36,17 +37,20 @@ describe('doctor runner', () => {
     mockBuildDoctorReport.mockReset();
     mockFindRepoRoot.mockReset();
     mockCreateStateRepository.mockReset();
+    mockEnsureRuntimePreflights.mockReset();
     mockFindRepoRoot.mockReturnValue('/home/samsen/code/ciecopilot-home');
     mockCreateStateRepository.mockReturnValue({
+      ensureRuntimePreflights: mockEnsureRuntimePreflights,
       getSnapshot: () => ({
         bootstrapped: true,
         schema: {
-          current_version: 2,
-          latest_version: 2,
+          current_version: 5,
+          latest_version: 5,
         },
         state: {
           managed_tasks: [],
           task_specs: [],
+          runtime_preflights: [],
         },
       }),
     });
@@ -79,6 +83,9 @@ describe('doctor runner', () => {
       projectId: 'ciecopilot-home',
       prNumber: null,
     });
+    expect(mockEnsureRuntimePreflights).toHaveBeenCalledWith({
+      cwd: '/home/samsen/code/ciecopilot-home',
+    });
     expect(mockLoadDoctorLocalState).toHaveBeenCalledWith({
       cwd: '/home/samsen/code/ciecopilot-home',
     });
@@ -101,12 +108,13 @@ describe('doctor runner', () => {
       controlPlaneSnapshot: {
         bootstrapped: true,
         schema: {
-          current_version: 2,
-          latest_version: 2,
+          current_version: 5,
+          latest_version: 5,
         },
         state: {
           managed_tasks: [],
           task_specs: [],
+          runtime_preflights: [],
         },
       },
     });
@@ -129,12 +137,13 @@ describe('doctor runner', () => {
       controlPlaneSnapshot: {
         bootstrapped: true,
         schema: {
-          current_version: 2,
-          latest_version: 2,
+          current_version: 5,
+          latest_version: 5,
         },
         state: {
           managed_tasks: [],
           task_specs: [],
+          runtime_preflights: [],
         },
       },
       report: {
@@ -178,6 +187,9 @@ describe('doctor runner', () => {
       pr_number: 44,
       authoritative_for_release: false,
       diagnose_only: true,
+    });
+    expect(mockEnsureRuntimePreflights).toHaveBeenCalledWith({
+      cwd: '/home/samsen/code/ciecopilot-home',
     });
     expect(result.report.top_status).toBe('healthy');
   });

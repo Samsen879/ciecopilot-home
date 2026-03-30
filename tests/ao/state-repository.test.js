@@ -76,6 +76,7 @@ describe('ao state repository', () => {
       policy_decisions: [],
       credential_provenances: [],
       task_specs: [],
+      runtime_preflights: [],
     });
     expect(repository.listAuditEntries()).toEqual([]);
     expect(fs.existsSync(path.join(repoRoot, '.ao-control-plane'))).toBe(false);
@@ -261,6 +262,7 @@ describe('ao state repository', () => {
       'schema:migrate:v2',
       'schema:migrate:v3',
       'schema:migrate:v4',
+      'schema:migrate:v5',
       'managed_task:upsert:task-1',
       'pr_binding:upsert:binding-1',
       'ownership_lease:upsert:ownership-1',

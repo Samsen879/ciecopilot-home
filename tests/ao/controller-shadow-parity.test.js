@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { afterEach, describe, expect, it } from '@jest/globals';
 
@@ -22,7 +23,8 @@ import {
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 
 const PROJECT_ID = 'ciecopilot-home';
-const FIXTURE_ROOT = path.join(process.cwd(), 'tests', 'ao', 'fixtures', 'acceptance');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const FIXTURE_ROOT = path.join(__dirname, 'fixtures', 'acceptance');
 const ORIGINAL_FIXTURE_ROOT = process.env.AO_FIXTURE_ROOT;
 const tempDirs = [];
 

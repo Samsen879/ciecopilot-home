@@ -37,11 +37,17 @@ export const CONTROL_PLANE_POLICY_ENGINE_MIGRATION = {
   key: '0004_policy_engine_v1',
 };
 
+export const CONTROL_PLANE_RUNTIME_PREFLIGHT_MIGRATION = {
+  version: 5,
+  key: '0005_runtime_preflight_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
   CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION,
   CONTROL_PLANE_POLICY_ENGINE_MIGRATION,
+  CONTROL_PLANE_RUNTIME_PREFLIGHT_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -103,6 +109,7 @@ function buildBootstrapState({
     'policy_decisions',
     'credential_provenances',
     'task_specs',
+    'runtime_preflights',
   ]) {
     if (Array.isArray(existingState?.[collectionKey])) {
       state[collectionKey] = cloneJsonValue(existingState[collectionKey]);
@@ -191,6 +198,14 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_RUNTIME_PREFLIGHT_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -213,6 +228,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane policy-engine migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_RUNTIME_PREFLIGHT_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane runtime-preflight migration.',
     };
   }
 

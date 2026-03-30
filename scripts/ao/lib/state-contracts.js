@@ -7,10 +7,18 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 6;
+export const CONTROL_PLANE_LATEST_VERSION = 7;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
+export const HANDOFF_REQUEST_SCHEMA_VERSION = 'ao.handoff-request.v1alpha1';
+export const HANDOFF_REQUEST_FORMAT = 'ao_handoff_request';
+export const HANDOFF_CLAIM_SCHEMA_VERSION = 'ao.handoff-claim.v1alpha1';
+export const HANDOFF_CLAIM_FORMAT = 'ao_handoff_claim';
+export const HANDOFF_DECISION_SCHEMA_VERSION = 'ao.handoff-decision.v1alpha1';
+export const HANDOFF_DECISION_FORMAT = 'ao_handoff_decision';
+export const HANDOFF_TRANSFER_SCHEMA_VERSION = 'ao.handoff-transfer.v1alpha1';
+export const HANDOFF_TRANSFER_FORMAT = 'ao_handoff_transfer';
 
 export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
 export const PR_BINDING_STATUSES = ['bound', 'released', 'closed'];
@@ -25,6 +33,9 @@ export const TASK_SPEC_RECORD_STATES = ['valid', 'invalid'];
 export const DELIVERY_EVENT_FAMILIES = ['pr', 'check', 'review', 'review_comment'];
 export const POLICY_DECISIONS = ['allow', 'deny', 'downgrade'];
 export const CREDENTIAL_PROVENANCE_TRUST_DECISIONS = ['trusted', 'untrusted'];
+export const HANDOFF_REQUEST_STATUSES = ['open', 'accepted', 'rejected', 'expired', 'completed'];
+export const HANDOFF_CLAIM_STATUSES = ['pending', 'blocked', 'accepted', 'rejected', 'expired'];
+export const HANDOFF_DECISION_OUTCOMES = ['accept', 'reject', 'expire'];
 
 function isPlainObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
@@ -178,6 +189,10 @@ export function createEmptyControlPlaneState({
     task_specs: [],
     runtime_preflights: [],
     checkpoints: [],
+    handoff_requests: [],
+    handoff_claims: [],
+    handoff_decisions: [],
+    handoff_transfers: [],
   };
 }
 
@@ -703,6 +718,192 @@ export function createCheckpointRecord({
     reason: normalizeOptionalString(reason),
     metadata: normalizeMetadata(metadata),
     snapshot: normalizedSnapshot,
+  };
+}
+
+function normalizeReasonCodes(reasonCodes = []) {
+  return normalizeStringArray(reasonCodes ?? [], 'reason_codes');
+}
+
+function normalizeHandoffLineage(value = {}) {
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid lineage');
+  }
+
+  return {
+    checkpoint_id: normalizeRequiredString(value.checkpoint_id, 'lineage.checkpoint_id'),
+    checkpoint_recorded_at: normalizeIsoTimestamp(
+      value.checkpoint_recorded_at,
+      'lineage.checkpoint_recorded_at',
+    ),
+    checkpoint_state: normalizeRequiredString(value.checkpoint_state, 'lineage.checkpoint_state'),
+    prior_ownership_lease_id: normalizeOptionalString(value.prior_ownership_lease_id),
+    prior_owner_session_name: normalizeOptionalString(value.prior_owner_session_name),
+    prior_owner_session_id: normalizeOptionalString(value.prior_owner_session_id),
+    prior_ownership_status: normalizeOptionalString(value.prior_ownership_status),
+    pr_binding_id: normalizeOptionalString(value.pr_binding_id),
+    pr_number: normalizePositiveInteger(value.pr_number, 'lineage.pr_number', { nullable: true }),
+  };
+}
+
+export function createHandoffRequestRecord({
+  request_id,
+  task_id,
+  status,
+  created_at,
+  updated_at,
+  requested_by_session_name = null,
+  requested_by_session_id = null,
+  operator_session_name = null,
+  operator_session_id = null,
+  successor_session_name = null,
+  successor_session_id = null,
+  reason = null,
+  expires_at = null,
+  selected_claim_id = null,
+  accepted_decision_id = null,
+  completed_transfer_id = null,
+  reason_codes = [],
+  lineage,
+  metadata = {},
+} = {}) {
+  return {
+    schema_version: HANDOFF_REQUEST_SCHEMA_VERSION,
+    format: HANDOFF_REQUEST_FORMAT,
+    request_id: normalizeRequiredString(request_id, 'request_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    status: normalizeEnum(status, 'status', HANDOFF_REQUEST_STATUSES),
+    created_at: normalizeIsoTimestamp(created_at, 'created_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    requested_by_session_name: normalizeOptionalString(requested_by_session_name),
+    requested_by_session_id: normalizeOptionalString(requested_by_session_id),
+    operator_session_name: normalizeOptionalString(operator_session_name),
+    operator_session_id: normalizeOptionalString(operator_session_id),
+    successor_session_name: normalizeOptionalString(successor_session_name),
+    successor_session_id: normalizeOptionalString(successor_session_id),
+    reason: normalizeOptionalString(reason),
+    expires_at: normalizeIsoTimestamp(expires_at, 'expires_at', { nullable: true }),
+    selected_claim_id: normalizeOptionalString(selected_claim_id),
+    accepted_decision_id: normalizeOptionalString(accepted_decision_id),
+    completed_transfer_id: normalizeOptionalString(completed_transfer_id),
+    reason_codes: normalizeReasonCodes(reason_codes),
+    lineage: normalizeHandoffLineage(lineage),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createHandoffClaimRecord({
+  claim_id,
+  request_id,
+  task_id,
+  status,
+  created_at,
+  updated_at,
+  successor_session_name,
+  successor_session_id = null,
+  operator_session_name = null,
+  operator_session_id = null,
+  decision_id = null,
+  reason = null,
+  reason_codes = [],
+  metadata = {},
+} = {}) {
+  return {
+    schema_version: HANDOFF_CLAIM_SCHEMA_VERSION,
+    format: HANDOFF_CLAIM_FORMAT,
+    claim_id: normalizeRequiredString(claim_id, 'claim_id'),
+    request_id: normalizeRequiredString(request_id, 'request_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    status: normalizeEnum(status, 'status', HANDOFF_CLAIM_STATUSES),
+    created_at: normalizeIsoTimestamp(created_at, 'created_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    successor_session_name: normalizeRequiredString(successor_session_name, 'successor_session_name'),
+    successor_session_id: normalizeOptionalString(successor_session_id),
+    operator_session_name: normalizeOptionalString(operator_session_name),
+    operator_session_id: normalizeOptionalString(operator_session_id),
+    decision_id: normalizeOptionalString(decision_id),
+    reason: normalizeOptionalString(reason),
+    reason_codes: normalizeReasonCodes(reason_codes),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createHandoffDecisionRecord({
+  decision_id,
+  request_id,
+  claim_id = null,
+  task_id,
+  outcome,
+  decided_at,
+  operator_session_name,
+  operator_session_id = null,
+  successor_session_name = null,
+  successor_session_id = null,
+  grant_expires_at = null,
+  reason = null,
+  reason_codes = [],
+  metadata = {},
+} = {}) {
+  return {
+    schema_version: HANDOFF_DECISION_SCHEMA_VERSION,
+    format: HANDOFF_DECISION_FORMAT,
+    decision_id: normalizeRequiredString(decision_id, 'decision_id'),
+    request_id: normalizeRequiredString(request_id, 'request_id'),
+    claim_id: normalizeOptionalString(claim_id),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    outcome: normalizeEnum(outcome, 'outcome', HANDOFF_DECISION_OUTCOMES),
+    decided_at: normalizeIsoTimestamp(decided_at, 'decided_at'),
+    operator_session_name: normalizeRequiredString(operator_session_name, 'operator_session_name'),
+    operator_session_id: normalizeOptionalString(operator_session_id),
+    successor_session_name: normalizeOptionalString(successor_session_name),
+    successor_session_id: normalizeOptionalString(successor_session_id),
+    grant_expires_at: normalizeIsoTimestamp(grant_expires_at, 'grant_expires_at', { nullable: true }),
+    reason: normalizeOptionalString(reason),
+    reason_codes: normalizeReasonCodes(reason_codes),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createHandoffTransferRecord({
+  transfer_id,
+  request_id,
+  claim_id,
+  decision_id,
+  task_id,
+  checkpoint_id,
+  previous_ownership_lease_id = null,
+  previous_owner_session_name = null,
+  previous_owner_session_id = null,
+  successor_ownership_lease_id,
+  successor_session_name,
+  successor_session_id = null,
+  transferred_at,
+  transferred_by = null,
+  reason = null,
+  metadata = {},
+} = {}) {
+  return {
+    schema_version: HANDOFF_TRANSFER_SCHEMA_VERSION,
+    format: HANDOFF_TRANSFER_FORMAT,
+    transfer_id: normalizeRequiredString(transfer_id, 'transfer_id'),
+    request_id: normalizeRequiredString(request_id, 'request_id'),
+    claim_id: normalizeRequiredString(claim_id, 'claim_id'),
+    decision_id: normalizeRequiredString(decision_id, 'decision_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    checkpoint_id: normalizeRequiredString(checkpoint_id, 'checkpoint_id'),
+    previous_ownership_lease_id: normalizeOptionalString(previous_ownership_lease_id),
+    previous_owner_session_name: normalizeOptionalString(previous_owner_session_name),
+    previous_owner_session_id: normalizeOptionalString(previous_owner_session_id),
+    successor_ownership_lease_id: normalizeRequiredString(
+      successor_ownership_lease_id,
+      'successor_ownership_lease_id',
+    ),
+    successor_session_name: normalizeRequiredString(successor_session_name, 'successor_session_name'),
+    successor_session_id: normalizeOptionalString(successor_session_id),
+    transferred_at: normalizeIsoTimestamp(transferred_at, 'transferred_at'),
+    transferred_by: normalizeOptionalString(transferred_by),
+    reason: normalizeOptionalString(reason),
+    metadata: normalizeMetadata(metadata),
   };
 }
 

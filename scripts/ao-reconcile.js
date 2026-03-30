@@ -123,6 +123,7 @@ export async function runCli(argv, io = createDefaultIo()) {
   const { report } = await runReconciliation({
     projectId: options.projectId,
     prNumber: options.prNumber,
+    cwd: process.cwd(),
   });
 
   if (options.json) {

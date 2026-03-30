@@ -22,6 +22,7 @@ export function renderAoStateHumanSummary(report) {
     `observations: ${report.summary.observation_count}`,
     `controller_cursors: ${report.summary.controller_cursor_count}`,
     `checkpoints: ${report.summary.checkpoint_count} (valid=${report.summary.valid_checkpoint_count}, stale=${report.summary.stale_checkpoint_count}, invalid=${report.summary.invalid_checkpoint_count})`,
+    `handoffs: requests=${report.summary.handoff_request_count ?? 0}, claims=${report.summary.handoff_claim_count ?? 0}, decisions=${report.summary.handoff_decision_count ?? 0}, transfers=${report.summary.handoff_transfer_count ?? 0}, active=${report.summary.active_handoff_count ?? 0}`,
     `audit_entries: ${report.summary.audit_entry_count}`,
     `recent_audit: ${formatList(recentAudit)}`,
   ].join('\n');

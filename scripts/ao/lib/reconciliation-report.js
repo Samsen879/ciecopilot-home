@@ -76,6 +76,7 @@ export function renderHumanSummary(report) {
     `not_applicable_prs: ${formatList(report.project_summary.not_applicable_pr_numbers)}`,
     `ownership_summary: ${summarizeOwnership(report.pr_assessments)}`,
     `release_readiness_summary: ${summarizeReleaseReadiness(report.pr_assessments)}`,
+    `handoff_summary: inspections=${report.handoff_summary?.inspection_count ?? 0}, active=${report.handoff_summary?.active_count ?? 0}, ambiguous=${report.handoff_summary?.ambiguous_count ?? 0}, accepted=${report.handoff_summary?.accepted_count ?? 0}`,
     `key_findings: ${summarizeFindings(report.findings)}`,
     `recommended_actions: ${summarizeActions(report.recommended_actions)}`,
   ].join('\n');

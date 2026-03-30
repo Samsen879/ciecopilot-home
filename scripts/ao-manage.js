@@ -172,6 +172,7 @@ function renderHumanSummary(result) {
     `pr_binding: ${result.prBinding ? `${result.prBinding.pr_number}/${result.prBinding.status}` : 'none'}`,
     `ownership_lease: ${result.ownershipLease ? `${result.ownershipLease.owner_session_name}/${result.ownershipLease.status}` : 'none'}`,
     `resume_checkpoint: ${result.resume ? `${result.resume.checkpoint_id}/${result.resume.state}` : 'none'}`,
+    `handoff_transfer: ${result.handoffTransfer ? `${result.handoffTransfer.request_id}/${result.handoffTransfer.transfer_id}` : 'none'}`,
     `released_ownership_leases: ${result.releasedOwnershipLeaseIds.length ? result.releasedOwnershipLeaseIds.join(', ') : 'none'}`,
     `released_pr_bindings: ${result.releasedPrBindingIds.length ? result.releasedPrBindingIds.join(', ') : 'none'}`,
   ].join('\n');

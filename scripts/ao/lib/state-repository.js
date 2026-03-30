@@ -12,6 +12,10 @@ import {
   createCredentialProvenanceRecord,
   createDeliveryEventRecord,
   createEmptyControlPlaneState,
+  createHandoffClaimRecord,
+  createHandoffDecisionRecord,
+  createHandoffRequestRecord,
+  createHandoffTransferRecord,
   createManagedTask,
   createObservationRecord,
   createOverrideRecord,
@@ -119,6 +123,10 @@ export function createStateRepository({
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
     nextState.runtime_preflights = sortCollectionByKey(nextState.runtime_preflights, 'runtime_ref');
     nextState.checkpoints = sortCollectionByKey(nextState.checkpoints, 'checkpoint_id');
+    nextState.handoff_requests = sortCollectionByKey(nextState.handoff_requests, 'request_id');
+    nextState.handoff_claims = sortCollectionByKey(nextState.handoff_claims, 'claim_id');
+    nextState.handoff_decisions = sortCollectionByKey(nextState.handoff_decisions, 'decision_id');
+    nextState.handoff_transfers = sortCollectionByKey(nextState.handoff_transfers, 'transfer_id');
 
     return {
       bootstrapped: true,
@@ -385,6 +393,50 @@ export function createStateRepository({
         record,
         normalize: createRuntimePreflightRecord,
         summary: `Persisted runtime preflight ${record?.runtime_ref ?? record?.snapshot?.runtime_ref}.`,
+      });
+    },
+
+    upsertHandoffRequest(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_requests',
+        identityKey: 'request_id',
+        entityKind: 'handoff_request',
+        record,
+        normalize: createHandoffRequestRecord,
+        summary: `Persisted handoff request ${record?.request_id}.`,
+      });
+    },
+
+    upsertHandoffClaim(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_claims',
+        identityKey: 'claim_id',
+        entityKind: 'handoff_claim',
+        record,
+        normalize: createHandoffClaimRecord,
+        summary: `Persisted handoff claim ${record?.claim_id}.`,
+      });
+    },
+
+    upsertHandoffDecision(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_decisions',
+        identityKey: 'decision_id',
+        entityKind: 'handoff_decision',
+        record,
+        normalize: createHandoffDecisionRecord,
+        summary: `Persisted handoff decision ${record?.decision_id}.`,
+      });
+    },
+
+    upsertHandoffTransfer(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_transfers',
+        identityKey: 'transfer_id',
+        entityKind: 'handoff_transfer',
+        record,
+        normalize: createHandoffTransferRecord,
+        summary: `Persisted handoff transfer ${record?.transfer_id}.`,
       });
     },
 

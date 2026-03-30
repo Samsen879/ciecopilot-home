@@ -1,6 +1,10 @@
 import {
   CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
   createControllerLease,
+  createHandoffClaimRecord,
+  createHandoffDecisionRecord,
+  createHandoffRequestRecord,
+  createHandoffTransferRecord,
   createManagedTask,
   createOwnershipLease,
   createPrBinding,
@@ -8,6 +12,8 @@ import {
 
 export const DEFAULT_OWNERSHIP_LEASE_DURATION_MS = 20 * 60 * 1000;
 export const DEFAULT_CONTROLLER_LEASE_DURATION_MS = 5 * 60 * 1000;
+export const DEFAULT_HANDOFF_REQUEST_DURATION_MS = 24 * 60 * 60 * 1000;
+export const DEFAULT_HANDOFF_GRANT_DURATION_MS = 20 * 60 * 1000;
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -60,6 +66,22 @@ export function buildControllerLeaseId({
   holderId,
 } = {}) {
   return `controller-${sanitizeToken(controllerId)}-${sanitizeToken(holderId)}`;
+}
+
+export function buildHandoffRequestId({ taskId, requestedAt } = {}) {
+  return `handoff-${sanitizeToken(taskId)}-${sanitizeToken(requestedAt)}`;
+}
+
+export function buildHandoffClaimId({ requestId, successorSessionName } = {}) {
+  return `claim-${sanitizeToken(requestId)}-${sanitizeToken(successorSessionName)}`;
+}
+
+export function buildHandoffDecisionId({ requestId, outcome, decidedAt } = {}) {
+  return `decision-${sanitizeToken(requestId)}-${sanitizeToken(outcome)}-${sanitizeToken(decidedAt)}`;
+}
+
+export function buildHandoffTransferId({ requestId, transferredAt } = {}) {
+  return `transfer-${sanitizeToken(requestId)}-${sanitizeToken(transferredAt)}`;
 }
 
 export function transitionManagedTask({
@@ -295,6 +317,295 @@ export function transitionControllerLease({
     holder_id: holderId ?? existingLease?.holder_id,
     holder_type: holderType ?? existingLease?.holder_type ?? 'session',
     expiresAt,
+    metadata,
+  });
+}
+
+export function transitionHandoffRequest({
+  intent,
+  existingRequest = null,
+  now = new Date().toISOString(),
+  requestId = null,
+  taskId = null,
+  requestedBySessionName = null,
+  requestedBySessionId = null,
+  operatorSessionName = null,
+  operatorSessionId = null,
+  successorSessionName = null,
+  successorSessionId = null,
+  reason = null,
+  expiresAt = null,
+  selectedClaimId = null,
+  acceptedDecisionId = null,
+  completedTransferId = null,
+  reasonCodes = null,
+  lineage = null,
+  metadata = null,
+} = {}) {
+  const timestamp = resolveNow(now);
+  const currentStatus = existingRequest?.status ?? null;
+
+  switch (intent) {
+    case 'create':
+      if (existingRequest && ['open', 'accepted'].includes(currentStatus)) {
+        illegalTransition('handoff-request', currentStatus, intent);
+      }
+      return createHandoffRequestRecord({
+        request_id: requestId ?? existingRequest?.request_id ?? buildHandoffRequestId({
+          taskId,
+          requestedAt: timestamp,
+        }),
+        task_id: taskId ?? existingRequest?.task_id,
+        status: 'open',
+        created_at: existingRequest?.created_at ?? timestamp,
+        updated_at: timestamp,
+        requested_by_session_name: requestedBySessionName ?? existingRequest?.requested_by_session_name,
+        requested_by_session_id: requestedBySessionId ?? existingRequest?.requested_by_session_id,
+        operator_session_name: operatorSessionName ?? existingRequest?.operator_session_name,
+        operator_session_id: operatorSessionId ?? existingRequest?.operator_session_id,
+        successor_session_name: successorSessionName ?? existingRequest?.successor_session_name,
+        successor_session_id: successorSessionId ?? existingRequest?.successor_session_id,
+        reason: reason ?? existingRequest?.reason ?? null,
+        expires_at: expiresAt ?? existingRequest?.expires_at ?? addMilliseconds(timestamp, DEFAULT_HANDOFF_REQUEST_DURATION_MS),
+        selected_claim_id: null,
+        accepted_decision_id: null,
+        completed_transfer_id: null,
+        reason_codes: reasonCodes ?? existingRequest?.reason_codes ?? [],
+        lineage: lineage ?? existingRequest?.lineage,
+        metadata: metadata ?? existingRequest?.metadata ?? {},
+      });
+    case 'accept':
+      if (!existingRequest || !['open', 'accepted'].includes(currentStatus)) {
+        illegalTransition('handoff-request', currentStatus, intent);
+      }
+      return createHandoffRequestRecord({
+        ...existingRequest,
+        status: 'accepted',
+        updated_at: timestamp,
+        selected_claim_id: selectedClaimId ?? existingRequest.selected_claim_id,
+        accepted_decision_id: acceptedDecisionId ?? existingRequest.accepted_decision_id,
+        reason_codes: reasonCodes ?? existingRequest.reason_codes ?? [],
+      });
+    case 'reject':
+      if (!existingRequest || !['open', 'accepted'].includes(currentStatus)) {
+        illegalTransition('handoff-request', currentStatus, intent);
+      }
+      return createHandoffRequestRecord({
+        ...existingRequest,
+        status: 'rejected',
+        updated_at: timestamp,
+        reason_codes: reasonCodes ?? existingRequest.reason_codes ?? [],
+      });
+    case 'expire':
+      if (!existingRequest || ['completed', 'rejected', 'expired'].includes(currentStatus)) {
+        illegalTransition('handoff-request', currentStatus, intent);
+      }
+      return createHandoffRequestRecord({
+        ...existingRequest,
+        status: 'expired',
+        updated_at: timestamp,
+        reason_codes: reasonCodes ?? existingRequest.reason_codes ?? [],
+      });
+    case 'complete':
+      if (!existingRequest || currentStatus !== 'accepted') {
+        illegalTransition('handoff-request', currentStatus, intent);
+      }
+      return createHandoffRequestRecord({
+        ...existingRequest,
+        status: 'completed',
+        updated_at: timestamp,
+        completed_transfer_id: completedTransferId ?? existingRequest.completed_transfer_id,
+        reason_codes: reasonCodes ?? existingRequest.reason_codes ?? [],
+      });
+    default:
+      throw new Error(`Unsupported handoff-request intent: ${intent}`);
+  }
+}
+
+export function transitionHandoffClaim({
+  intent,
+  existingClaim = null,
+  now = new Date().toISOString(),
+  claimId = null,
+  requestId = null,
+  taskId = null,
+  successorSessionName = null,
+  successorSessionId = null,
+  operatorSessionName = null,
+  operatorSessionId = null,
+  decisionId = null,
+  reason = null,
+  reasonCodes = null,
+  metadata = null,
+} = {}) {
+  const timestamp = resolveNow(now);
+  const currentStatus = existingClaim?.status ?? null;
+
+  switch (intent) {
+    case 'create':
+      if (existingClaim && ['pending', 'accepted'].includes(currentStatus)) {
+        illegalTransition('handoff-claim', currentStatus, intent);
+      }
+      return createHandoffClaimRecord({
+        claim_id: claimId ?? existingClaim?.claim_id ?? buildHandoffClaimId({
+          requestId,
+          successorSessionName,
+        }),
+        request_id: requestId ?? existingClaim?.request_id,
+        task_id: taskId ?? existingClaim?.task_id,
+        status: 'pending',
+        created_at: existingClaim?.created_at ?? timestamp,
+        updated_at: timestamp,
+        successor_session_name: successorSessionName ?? existingClaim?.successor_session_name,
+        successor_session_id: successorSessionId ?? existingClaim?.successor_session_id,
+        operator_session_name: operatorSessionName ?? existingClaim?.operator_session_name,
+        operator_session_id: operatorSessionId ?? existingClaim?.operator_session_id,
+        decision_id: decisionId ?? existingClaim?.decision_id ?? null,
+        reason: reason ?? existingClaim?.reason ?? null,
+        reason_codes: reasonCodes ?? existingClaim?.reason_codes ?? [],
+        metadata: metadata ?? existingClaim?.metadata ?? {},
+      });
+    case 'block':
+      return createHandoffClaimRecord({
+        claim_id: claimId ?? existingClaim?.claim_id ?? buildHandoffClaimId({
+          requestId,
+          successorSessionName,
+        }),
+        request_id: requestId ?? existingClaim?.request_id,
+        task_id: taskId ?? existingClaim?.task_id,
+        status: 'blocked',
+        created_at: existingClaim?.created_at ?? timestamp,
+        updated_at: timestamp,
+        successor_session_name: successorSessionName ?? existingClaim?.successor_session_name,
+        successor_session_id: successorSessionId ?? existingClaim?.successor_session_id,
+        operator_session_name: operatorSessionName ?? existingClaim?.operator_session_name,
+        operator_session_id: operatorSessionId ?? existingClaim?.operator_session_id,
+        decision_id: decisionId ?? existingClaim?.decision_id ?? null,
+        reason: reason ?? existingClaim?.reason ?? null,
+        reason_codes: reasonCodes ?? existingClaim?.reason_codes ?? [],
+        metadata: metadata ?? existingClaim?.metadata ?? {},
+      });
+    case 'accept':
+      if (!existingClaim || !['pending', 'accepted'].includes(currentStatus)) {
+        illegalTransition('handoff-claim', currentStatus, intent);
+      }
+      return createHandoffClaimRecord({
+        ...existingClaim,
+        status: 'accepted',
+        updated_at: timestamp,
+        operator_session_name: operatorSessionName ?? existingClaim.operator_session_name,
+        operator_session_id: operatorSessionId ?? existingClaim.operator_session_id,
+        decision_id: decisionId ?? existingClaim.decision_id,
+        reason_codes: reasonCodes ?? existingClaim.reason_codes ?? [],
+      });
+    case 'reject':
+      if (!existingClaim || !['pending', 'accepted'].includes(currentStatus)) {
+        illegalTransition('handoff-claim', currentStatus, intent);
+      }
+      return createHandoffClaimRecord({
+        ...existingClaim,
+        status: 'rejected',
+        updated_at: timestamp,
+        operator_session_name: operatorSessionName ?? existingClaim.operator_session_name,
+        operator_session_id: operatorSessionId ?? existingClaim.operator_session_id,
+        decision_id: decisionId ?? existingClaim.decision_id,
+        reason_codes: reasonCodes ?? existingClaim.reason_codes ?? [],
+      });
+    case 'expire':
+      if (!existingClaim || ['blocked', 'rejected', 'expired'].includes(currentStatus)) {
+        illegalTransition('handoff-claim', currentStatus, intent);
+      }
+      return createHandoffClaimRecord({
+        ...existingClaim,
+        status: 'expired',
+        updated_at: timestamp,
+        operator_session_name: operatorSessionName ?? existingClaim.operator_session_name,
+        operator_session_id: operatorSessionId ?? existingClaim.operator_session_id,
+        decision_id: decisionId ?? existingClaim.decision_id,
+        reason_codes: reasonCodes ?? existingClaim.reason_codes ?? [],
+      });
+    default:
+      throw new Error(`Unsupported handoff-claim intent: ${intent}`);
+  }
+}
+
+export function createHandoffDecisionTransition({
+  requestId,
+  claimId = null,
+  taskId,
+  outcome,
+  now = new Date().toISOString(),
+  operatorSessionName,
+  operatorSessionId = null,
+  successorSessionName = null,
+  successorSessionId = null,
+  grantExpiresAt = null,
+  reason = null,
+  reasonCodes = [],
+  metadata = {},
+} = {}) {
+  const timestamp = resolveNow(now);
+  return createHandoffDecisionRecord({
+    decision_id: buildHandoffDecisionId({
+      requestId,
+      outcome,
+      decidedAt: timestamp,
+    }),
+    request_id: requestId,
+    claim_id: claimId,
+    task_id: taskId,
+    outcome,
+    decided_at: timestamp,
+    operator_session_name: operatorSessionName,
+    operator_session_id: operatorSessionId,
+    successor_session_name: successorSessionName,
+    successor_session_id: successorSessionId,
+    grant_expires_at: grantExpiresAt ?? (outcome === 'accept'
+      ? addMilliseconds(timestamp, DEFAULT_HANDOFF_GRANT_DURATION_MS)
+      : null),
+    reason,
+    reason_codes: reasonCodes,
+    metadata,
+  });
+}
+
+export function createHandoffTransferTransition({
+  requestId,
+  claimId,
+  decisionId,
+  taskId,
+  checkpointId,
+  previousOwnershipLeaseId = null,
+  previousOwnerSessionName = null,
+  previousOwnerSessionId = null,
+  successorOwnershipLeaseId,
+  successorSessionName,
+  successorSessionId = null,
+  now = new Date().toISOString(),
+  transferredBy = null,
+  reason = null,
+  metadata = {},
+} = {}) {
+  const timestamp = resolveNow(now);
+  return createHandoffTransferRecord({
+    transfer_id: buildHandoffTransferId({
+      requestId,
+      transferredAt: timestamp,
+    }),
+    request_id: requestId,
+    claim_id: claimId,
+    decision_id: decisionId,
+    task_id: taskId,
+    checkpoint_id: checkpointId,
+    previous_ownership_lease_id: previousOwnershipLeaseId,
+    previous_owner_session_name: previousOwnerSessionName,
+    previous_owner_session_id: previousOwnerSessionId,
+    successor_ownership_lease_id: successorOwnershipLeaseId,
+    successor_session_name: successorSessionName,
+    successor_session_id: successorSessionId,
+    transferred_at: timestamp,
+    transferred_by: transferredBy,
+    reason,
     metadata,
   });
 }

@@ -18,6 +18,7 @@
 - 复用依赖并跑通主线基线测试
 - 写出了本地分支独有内容的正式分类表
 - 在新主线基线中补上 `.worktrees/` 的 `.gitignore` 小补丁
+- 已将第一阶段收口结果提交为 `6c77527` `chore(closeout): record mainline recovery classification`
 
 ## 已验证结果
 
@@ -35,9 +36,7 @@ npm test -- --runInBand src/pages/__tests__/legacy-entry-mode.test.js src/api/__
 同时：
 
 - `git diff --check` 通过
-- 当前新基线 worktree 中只有两项待处理改动：
-  - `.gitignore` 的 `.worktrees/` 忽略规则
-  - `docs/reports/2026-03-30-local-branch-closeout-classification.md`
+- 第一阶段收口结果已经形成正式提交，不再只是工作区临时状态
 
 ## 当前结论
 
@@ -89,7 +88,7 @@ npm test -- --runInBand src/pages/__tests__/legacy-entry-mode.test.js src/api/__
 
 - 没有删除任何旧分支
 - 没有把任何大块 AO phase-4 WIP 带入主线
-- 没有提交当前新基线 worktree 里的 `.gitignore` 和收口文档
 - 没有发 PR
+- 没有把根工作区从旧分支切走
 
 这些动作都可以在后续单独决定，不影响当前“收口第一阶段已安全完成”这个事实。

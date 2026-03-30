@@ -32,10 +32,16 @@ export const CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION = {
   key: '0003_delivery_events_v1',
 };
 
+export const CONTROL_PLANE_POLICY_ENGINE_MIGRATION = {
+  version: 4,
+  key: '0004_policy_engine_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
   CONTROL_PLANE_DELIVERY_EVENTS_MIGRATION,
+  CONTROL_PLANE_POLICY_ENGINE_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -94,6 +100,8 @@ function buildBootstrapState({
     'observations',
     'delivery_events',
     'controller_cursors',
+    'policy_decisions',
+    'credential_provenances',
     'task_specs',
   ]) {
     if (Array.isArray(existingState?.[collectionKey])) {
@@ -175,6 +183,14 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_POLICY_ENGINE_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -190,6 +206,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane delivery-event migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_POLICY_ENGINE_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane policy-engine migration.',
     };
   }
 

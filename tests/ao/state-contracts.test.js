@@ -4,10 +4,13 @@ import {
   ACTION_STATUSES,
   CONTROLLER_LEASE_STATUSES,
   CONTROLLER_MODES,
+  CONTROL_PLANE_LATEST_VERSION,
+  CREDENTIAL_PROVENANCE_TRUST_DECISIONS,
   DELIVERY_EVENT_FAMILIES,
   MANAGED_TASK_STATUSES,
   OVERRIDE_SCOPE_KINDS,
   OVERRIDE_STATUSES,
+  POLICY_DECISIONS,
   PR_BINDING_STATUSES,
   OWNERSHIP_LEASE_STATUSES,
   createActionRecord,
@@ -15,11 +18,13 @@ import {
   createControlPlaneSchema,
   createControllerLease,
   createControllerModeRecord,
+  createCredentialProvenanceRecord,
   createDeliveryEventRecord,
   createEmptyControlPlaneState,
   createManagedTask,
   createOverrideRecord,
   createOwnershipLease,
+  createPolicyDecisionRecord,
   createPrBinding,
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
@@ -37,6 +42,9 @@ describe('ao state contracts', () => {
     expect(OVERRIDE_SCOPE_KINDS).toEqual(['global', 'task', 'pr', 'controller']);
     expect(OVERRIDE_STATUSES).toEqual(['active', 'cleared', 'expired']);
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
+    expect(POLICY_DECISIONS).toEqual(['allow', 'deny', 'downgrade']);
+    expect(CREDENTIAL_PROVENANCE_TRUST_DECISIONS).toEqual(['trusted', 'untrusted']);
+    expect(CONTROL_PLANE_LATEST_VERSION).toBe(4);
   });
 
   it('creates durable managed-task, binding, lease, action, override, and controller-mode records', () => {
@@ -225,6 +233,62 @@ describe('ao state contracts', () => {
       },
     });
 
+    expect(createCredentialProvenanceRecord({
+      provenance_id: 'cred-gh-cli',
+      credential_kind: 'github_token',
+      source_kind: 'gh_cli_auth',
+      scope: 'github.com',
+      created_at: NOW,
+      updated_at: NOW,
+    })).toEqual({
+      provenance_id: 'cred-gh-cli',
+      credential_kind: 'github_token',
+      source_kind: 'gh_cli_auth',
+      trust_decision: 'trusted',
+      scope: 'github.com',
+      created_at: NOW,
+      updated_at: NOW,
+      metadata: {},
+    });
+
+    expect(createPolicyDecisionRecord({
+      decision_id: 'policy-1',
+      task_id: 'task-1',
+      action_id: 'action-1',
+      action_kind: 'notify_human_ready',
+      subject_kind: 'action',
+      decision: 'allow',
+      policy_version: 'ao.policy.v1',
+      input_fingerprint: 'fingerprint-1',
+      recorded_at: NOW,
+      summary: 'Allow low-risk GitHub inspection.',
+      findings: [],
+      input: {
+        tools: ['gh'],
+      },
+      result: {
+        decision: 'allow',
+      },
+    })).toEqual({
+      decision_id: 'policy-1',
+      task_id: 'task-1',
+      action_id: 'action-1',
+      action_kind: 'notify_human_ready',
+      subject_kind: 'action',
+      decision: 'allow',
+      policy_version: 'ao.policy.v1',
+      input_fingerprint: 'fingerprint-1',
+      recorded_at: NOW,
+      summary: 'Allow low-risk GitHub inspection.',
+      findings: [],
+      input: {
+        tools: ['gh'],
+      },
+      result: {
+        decision: 'allow',
+      },
+    });
+
     expect(createDeliveryEventRecord({
       event_id: 'delivery-1',
       task_id: 'task-1',
@@ -323,6 +387,8 @@ describe('ao state contracts', () => {
       observations: [],
       delivery_events: [],
       controller_cursors: [],
+      policy_decisions: [],
+      credential_provenances: [],
       task_specs: [],
     });
 

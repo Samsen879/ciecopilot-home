@@ -4,6 +4,7 @@ import {
   CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
   createActionRecord,
   createControllerModeRecord,
+  createPolicyDecisionRecord,
 } from './state-contracts.js';
 import { createStateRepository } from './state-repository.js';
 import {
@@ -28,6 +29,10 @@ import {
   buildAssistActionModel,
   executeAssistActions,
 } from './action-executor.js';
+import {
+  buildPolicyInputForAction,
+  evaluatePolicyDecision,
+} from './policy-engine.js';
 import {
   createPrScope,
   createProjectScope,
@@ -181,34 +186,18 @@ async function persistShadowActions({
   prNumber,
   now,
 } = {}) {
-  const signature = JSON.stringify({
-    controllerId,
-    derivedTrigger,
-    prNumber,
-    top_status: lifecycleReport.top_status,
-    routing_decision: lifecycleReport.routing_decision,
-    release_decision: lifecycleReport.release_decision,
-    actions: lifecycleReport.actions.map((action) => ({
-      id: action.id,
-      action_class: action.action_class,
-      commands: action.commands,
-      rationale: action.rationale,
-    })),
-  });
-  const fingerprint = await hashText(signature);
-  const knownActionIds = new Set(repository.getSnapshot().state.actions.map((record) => record.action_id));
-  const createdActionIds = [];
+  const snapshot = repository.getSnapshot().state;
+  const knownActionIds = new Set(snapshot.actions.map((record) => record.action_id));
+  const knownPolicyDecisionIds = new Set(snapshot.policy_decisions.map((record) => record.decision_id));
   const actionIds = [];
+  const policyDecisionIds = [];
+  const blockedActionIds = [];
+  const deniedActionIds = [];
+  const downgradedActionIds = [];
   const requestedBy = mode === 'assist' ? 'assist_controller' : 'shadow_controller';
+  const credentialProvenances = snapshot.credential_provenances ?? [];
 
   for (const action of lifecycleReport.actions) {
-    const actionId = `proposal-${task.task_id}-${action.id}-${fingerprint.slice(0, 12)}`;
-    actionIds.push(actionId);
-    if (knownActionIds.has(actionId)) {
-      continue;
-    }
-    knownActionIds.add(actionId);
-
     const actionModel = buildAssistActionModel({
       controllerId,
       task,
@@ -217,12 +206,82 @@ async function persistShadowActions({
       lifecycleTopStatus: lifecycleReport.top_status ?? null,
       action,
     });
+    const policyInput = buildPolicyInputForAction({
+      task,
+      prNumber,
+      action,
+    });
+    const policyResult = evaluatePolicyDecision({
+      input: policyInput,
+      credentialProvenances,
+    });
+    const policyFingerprint = hashText(JSON.stringify({
+      policy_version: policyResult.policy_version,
+      input: policyResult.input,
+      decision: policyResult.decision,
+      findings: policyResult.findings,
+    }));
+    const policyDecisionId = `policy-${task.task_id}-${action.id}-${policyFingerprint.slice(0, 12)}`;
+    const actionFingerprint = hashText(JSON.stringify({
+      controllerId,
+      derivedTrigger,
+      prNumber,
+      top_status: lifecycleReport.top_status,
+      routing_decision: lifecycleReport.routing_decision,
+      release_decision: lifecycleReport.release_decision,
+      action: {
+        id: action.id,
+        action_class: action.action_class,
+        commands: action.commands,
+        rationale: action.rationale,
+        policy_inputs: policyResult.input,
+      },
+      policy_decision: policyResult.decision,
+      policy_fingerprint: policyFingerprint,
+    }));
+    const actionId = `proposal-${task.task_id}-${action.id}-${actionFingerprint.slice(0, 12)}`;
+    const actionStatus = policyResult.decision === 'allow' ? 'proposed' : 'blocked';
+
+    actionIds.push(actionId);
+    policyDecisionIds.push(policyDecisionId);
+    if (policyResult.decision !== 'allow') {
+      blockedActionIds.push(actionId);
+      if (policyResult.decision === 'deny') {
+        deniedActionIds.push(actionId);
+      } else if (policyResult.decision === 'downgrade') {
+        downgradedActionIds.push(actionId);
+      }
+    }
+
+    if (!knownPolicyDecisionIds.has(policyDecisionId)) {
+      repository.upsertPolicyDecision(createPolicyDecisionRecord({
+        decision_id: policyDecisionId,
+        task_id: task.task_id,
+        action_id: actionId,
+        action_kind: action.id,
+        subject_kind: 'action',
+        decision: policyResult.decision,
+        policy_version: policyResult.policy_version,
+        input_fingerprint: policyFingerprint,
+        recorded_at: now,
+        summary: policyResult.summary,
+        findings: policyResult.findings,
+        input: policyResult.input,
+        result: policyResult,
+      }));
+      knownPolicyDecisionIds.add(policyDecisionId);
+    }
+
+    if (knownActionIds.has(actionId)) {
+      continue;
+    }
+    knownActionIds.add(actionId);
 
     repository.upsertAction(createActionRecord({
       action_id: actionId,
       task_id: task.task_id,
       action_kind: action.id,
-      status: 'proposed',
+      status: actionStatus,
       requested_by: requestedBy,
       reason: action.summary,
       created_at: now,
@@ -230,7 +289,7 @@ async function persistShadowActions({
       payload: {
         controller_id: controllerId,
         derived_trigger: derivedTrigger,
-        fingerprint,
+        fingerprint: actionFingerprint,
         pr_number: prNumber,
         top_status: lifecycleReport.top_status,
         routing_decision: lifecycleReport.routing_decision,
@@ -239,14 +298,24 @@ async function persistShadowActions({
         commands: action.commands,
         rationale: action.rationale,
         action_model: actionModel,
+        policy_decision_id: policyDecisionId,
+        policy: {
+          decision: policyResult.decision,
+          policy_version: policyResult.policy_version,
+          summary: policyResult.summary,
+          findings: policyResult.findings,
+          input: policyResult.input,
+        },
       },
     }));
     repository.appendAuditEntry({
       entityKind: 'action',
       entityId: actionId,
-      operation: 'proposed',
+      operation: policyResult.decision === 'allow' ? 'proposed' : 'policy_blocked',
       actor: requestedBy,
-      summary: `Recorded proposed action ${actionId}.`,
+      summary: policyResult.decision === 'allow'
+        ? `Recorded proposed action ${actionId}.`
+        : `Policy blocked action ${actionId}.`,
       details: {
         action_id: actionId,
         action_kind: action.id,
@@ -254,16 +323,24 @@ async function persistShadowActions({
         controller_id: controllerId,
         pr_number: prNumber,
         risk_class: actionModel.risk_class,
+        policy_decision: policyResult.decision,
+        policy_decision_id: policyDecisionId,
       },
       recordedAt: now,
     });
-    createdActionIds.push(actionId);
   }
 
   return {
-    count: createdActionIds.length,
+    count: actionIds.length,
     actionIds,
-    createdActionIds,
+    policyDecisionIds,
+    policyDecisionCount: policyDecisionIds.length,
+    policyBlockedActionIds: blockedActionIds,
+    policyBlockedActionCount: blockedActionIds.length,
+    deniedActionIds,
+    deniedActionCount: deniedActionIds.length,
+    downgradedActionIds,
+    downgradedActionCount: downgradedActionIds.length,
   };
 }
 
@@ -410,6 +487,10 @@ export async function runControllerLoop({
   let proposedActionCount = 0;
   let executedActionCount = 0;
   let blockedActionCount = 0;
+  let policyDecisionCount = 0;
+  let policyBlockedActionCount = 0;
+  let deniedActionCount = 0;
+  let downgradedActionCount = 0;
 
   try {
     for (const task of activeTasks) {
@@ -440,6 +521,10 @@ export async function runControllerLoop({
       let proposedActionIds = [];
       let executedActionIds = [];
       let blockedActionIds = [];
+      let policyDecisionIds = [];
+      let policyBlockedActionIds = [];
+      let deniedActionIds = [];
+      let downgradedActionIds = [];
 
       if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
         const prNumber = resolveLifecyclePrNumber(prBindings, ingestResult.matchedPrs);
@@ -477,6 +562,14 @@ export async function runControllerLoop({
         });
         proposedActionIds = proposalResult.actionIds;
         proposedActionCount += proposalResult.count;
+        policyDecisionIds = proposalResult.policyDecisionIds;
+        policyDecisionCount += proposalResult.policyDecisionCount;
+        policyBlockedActionIds = proposalResult.policyBlockedActionIds;
+        policyBlockedActionCount += proposalResult.policyBlockedActionCount;
+        deniedActionIds = proposalResult.deniedActionIds;
+        deniedActionCount += proposalResult.deniedActionCount;
+        downgradedActionIds = proposalResult.downgradedActionIds;
+        downgradedActionCount += proposalResult.downgradedActionCount;
 
         if (resolvedMode === 'assist') {
           const executionResult = await executeAssistActions({
@@ -505,6 +598,14 @@ export async function runControllerLoop({
         executed_action_ids: executedActionIds,
         blocked_action_count: blockedActionIds.length,
         blocked_action_ids: blockedActionIds,
+        policy_decision_count: policyDecisionIds.length,
+        policy_decision_ids: policyDecisionIds,
+        policy_blocked_action_count: policyBlockedActionIds.length,
+        policy_blocked_action_ids: policyBlockedActionIds,
+        denied_action_count: deniedActionIds.length,
+        denied_action_ids: deniedActionIds,
+        downgraded_action_count: downgradedActionIds.length,
+        downgraded_action_ids: downgradedActionIds,
         lifecycle_top_status: lifecycleTopStatus,
       });
     }
@@ -532,6 +633,10 @@ export async function runControllerLoop({
     proposed_action_count: proposedActionCount,
     executed_action_count: executedActionCount,
     blocked_action_count: blockedActionCount,
+    policy_decision_count: policyDecisionCount,
+    policy_blocked_action_count: policyBlockedActionCount,
+    denied_action_count: deniedActionCount,
+    downgraded_action_count: downgradedActionCount,
     task_results: taskResults,
   };
 }

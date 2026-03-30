@@ -6,7 +6,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 3;
+export const CONTROL_PLANE_LATEST_VERSION = 4;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 
 export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
@@ -20,6 +20,8 @@ export const CONTROLLER_MODES = ['off', 'observe', 'shadow', 'assist'];
 export const OBSERVATION_SOURCE_KINDS = ['ao_poll', 'github_poll'];
 export const TASK_SPEC_RECORD_STATES = ['valid', 'invalid'];
 export const DELIVERY_EVENT_FAMILIES = ['pr', 'check', 'review', 'review_comment'];
+export const POLICY_DECISIONS = ['allow', 'deny', 'downgrade'];
+export const CREDENTIAL_PROVENANCE_TRUST_DECISIONS = ['trusted', 'untrusted'];
 
 function isPlainObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
@@ -160,6 +162,8 @@ export function createEmptyControlPlaneState({
     observations: [],
     delivery_events: [],
     controller_cursors: [],
+    policy_decisions: [],
+    credential_provenances: [],
     task_specs: [],
   };
 }
@@ -403,6 +407,78 @@ export function createControllerCursorRecord({
     last_cursor: normalizeRequiredString(last_cursor, 'last_cursor'),
     observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
     updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+  };
+}
+
+function normalizePolicyFindings(findings = []) {
+  if (!Array.isArray(findings)) {
+    throw new Error('Invalid findings');
+  }
+
+  return findings.map((finding) => ({
+    code: normalizeRequiredString(finding?.code, 'finding.code'),
+    severity: normalizeEnum(finding?.severity, 'finding.severity', POLICY_DECISIONS),
+    surface: normalizeRequiredString(finding?.surface, 'finding.surface'),
+    value: normalizeRequiredString(finding?.value, 'finding.value'),
+    detail: normalizeOptionalString(finding?.detail),
+  }));
+}
+
+export function createCredentialProvenanceRecord({
+  provenance_id,
+  credential_kind,
+  source_kind,
+  trust_decision = 'trusted',
+  scope = null,
+  created_at,
+  updated_at,
+  metadata = {},
+} = {}) {
+  return {
+    provenance_id: normalizeRequiredString(provenance_id, 'provenance_id'),
+    credential_kind: normalizeRequiredString(credential_kind, 'credential_kind'),
+    source_kind: normalizeRequiredString(source_kind, 'source_kind'),
+    trust_decision: normalizeEnum(
+      trust_decision,
+      'trust_decision',
+      CREDENTIAL_PROVENANCE_TRUST_DECISIONS,
+    ),
+    scope: normalizeOptionalString(scope),
+    created_at: normalizeIsoTimestamp(created_at, 'created_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createPolicyDecisionRecord({
+  decision_id,
+  task_id,
+  action_id = null,
+  action_kind = null,
+  subject_kind,
+  decision,
+  policy_version,
+  input_fingerprint,
+  recorded_at,
+  summary = null,
+  findings = [],
+  input = {},
+  result = {},
+} = {}) {
+  return {
+    decision_id: normalizeRequiredString(decision_id, 'decision_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    action_id: normalizeOptionalString(action_id),
+    action_kind: normalizeOptionalString(action_kind),
+    subject_kind: normalizeRequiredString(subject_kind, 'subject_kind'),
+    decision: normalizeEnum(decision, 'decision', POLICY_DECISIONS),
+    policy_version: normalizeRequiredString(policy_version, 'policy_version'),
+    input_fingerprint: normalizeRequiredString(input_fingerprint, 'input_fingerprint'),
+    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
+    summary: normalizeOptionalString(summary),
+    findings: normalizePolicyFindings(findings),
+    input: cloneJsonValue(input ?? {}),
+    result: cloneJsonValue(result ?? {}),
   };
 }
 

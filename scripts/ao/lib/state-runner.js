@@ -78,6 +78,7 @@ function buildControllerRuntimeSummary({
       lease_status: latestLease?.status ?? 'none',
       holder_id: latestLease?.holder_id ?? null,
       holder_type: latestLease?.holder_type ?? null,
+      incarnation_id: latestLease?.incarnation_id ?? null,
       heartbeat_at: latestLease?.heartbeat_at ?? null,
       expires_at: latestLease?.expires_at ?? null,
       lease_timeout_ms: latestLease?.lease_timeout_ms ?? null,

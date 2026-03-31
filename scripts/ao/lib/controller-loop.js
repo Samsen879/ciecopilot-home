@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 
 import {
   CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
@@ -88,7 +88,13 @@ function resolveHolderIdentity({
   const normalizedHolderId = typeof holderId === 'string' && holderId.trim() !== ''
     ? holderId.trim()
     : null;
-  const sessionHolderId = process.env.AO_SESSION_NAME ?? process.env.AO_SESSION_ID ?? null;
+  const sessionNameHolderId = typeof process.env.AO_SESSION_NAME === 'string' && process.env.AO_SESSION_NAME.trim() !== ''
+    ? process.env.AO_SESSION_NAME.trim()
+    : null;
+  const sessionIdHolderId = typeof process.env.AO_SESSION_ID === 'string' && process.env.AO_SESSION_ID.trim() !== ''
+    ? process.env.AO_SESSION_ID.trim()
+    : null;
+  const sessionHolderId = sessionNameHolderId ?? sessionIdHolderId;
   const resolvedHolderId = normalizedHolderId ?? sessionHolderId;
 
   if (resolvedHolderId == null) {
@@ -216,6 +222,7 @@ function buildActiveControllerLease({
   controllerId,
   holderId,
   holderType,
+  incarnationId = null,
   now,
   runtimeKind,
   pollIntervalMs = null,
@@ -232,10 +239,12 @@ function buildActiveControllerLease({
     lease_id: leaseId ?? existingLease?.lease_id ?? buildControllerLeaseId({
       controllerId,
       holderId,
+      incarnationId,
     }),
     controller_id: controllerId ?? existingLease?.controller_id,
     holder_id: holderId ?? existingLease?.holder_id,
     holder_type: holderType ?? existingLease?.holder_type,
+    incarnation_id: incarnationId ?? existingLease?.incarnation_id ?? null,
     status: 'active',
     acquired_at: existingLease?.acquired_at ?? timestamp,
     heartbeat_at: timestamp,
@@ -292,6 +301,7 @@ async function acquireControllerLeadership({
   runtimeKind,
   holderId = null,
   holderType = null,
+  leaseIncarnationId,
   pollIntervalMs = null,
   shutdownTimeoutMs = null,
   leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
@@ -309,6 +319,7 @@ async function acquireControllerLeadership({
   const leaseId = buildControllerLeaseId({
     controllerId,
     holderId: resolvedHolder.holderId,
+    incarnationId: leaseIncarnationId,
   });
 
   return repository.mutateControllerLeasesAtomically({
@@ -323,7 +334,7 @@ async function acquireControllerLeadership({
     }) => {
       const activeLease = findActiveLeaseForController(controllerId);
 
-      if (activeLease && activeLease.holder_id !== resolvedHolder.holderId) {
+      if (activeLease && activeLease.lease_id !== leaseId) {
         if (!isControllerLeaseStale(activeLease, timestamp)) {
           throw new Error(
             `Controller ${controllerId} already has an active lease held by ${activeLease.holder_id}.`,
@@ -343,6 +354,7 @@ async function acquireControllerLeadership({
         controllerId,
         holderId: resolvedHolder.holderId,
         holderType: resolvedHolder.holderType,
+        incarnationId: leaseIncarnationId,
         now: timestamp,
         runtimeKind,
         pollIntervalMs,
@@ -369,6 +381,7 @@ async function renewControllerLeadership({
   controllerId,
   holderId,
   holderType,
+  leaseIncarnationId,
   now,
   runtimeKind,
   pollIntervalMs = null,
@@ -394,6 +407,9 @@ async function renewControllerLeadership({
       if (!existingLease || existingLease.status !== 'active') {
         throw new Error(`Controller lease ${leaseId} is no longer active.`);
       }
+      if (existingLease.incarnation_id !== leaseIncarnationId) {
+        throw new Error(`Controller lease ${leaseId} is no longer held by incarnation ${leaseIncarnationId}.`);
+      }
 
       const lease = upsertControllerLease(buildActiveControllerLease({
         existingLease,
@@ -401,6 +417,7 @@ async function renewControllerLeadership({
         controllerId,
         holderId,
         holderType,
+        incarnationId: leaseIncarnationId,
         now: timestamp,
         runtimeKind,
         pollIntervalMs,
@@ -424,6 +441,7 @@ async function renewControllerLeadership({
 async function releaseControllerLeadership({
   repository,
   leaseId,
+  leaseIncarnationId,
   now,
   reason,
   lockTimeoutMs = 1000,
@@ -450,6 +468,14 @@ async function releaseControllerLeadership({
           details: existingLease ?? {},
         };
       }
+      if (existingLease.incarnation_id !== leaseIncarnationId) {
+        return {
+          value: existingLease,
+          entityId: leaseId,
+          summary: `Skipped controller lease release ${leaseId} for superseded incarnation.`,
+          details: existingLease,
+        };
+      }
 
       const lease = upsertControllerLease(buildReleasedControllerLease(existingLease, {
         now: timestamp,
@@ -474,6 +500,7 @@ function startControllerHeartbeat({
   leaseId,
   holderId,
   holderType,
+  leaseIncarnationId,
   runtimeKind,
   pollIntervalMs = null,
   shutdownTimeoutMs = null,
@@ -497,6 +524,7 @@ function startControllerHeartbeat({
       controllerId,
       holderId,
       holderType,
+      leaseIncarnationId,
       now,
       runtimeKind,
       pollIntervalMs,
@@ -521,6 +549,8 @@ function startControllerHeartbeat({
     timerId = setTimeout(async () => {
       try {
         await renewHeartbeat();
+      } catch {
+        // lastError is already captured by renewHeartbeat; keep the failure observable via getError().
       } finally {
         scheduleNextTick();
       }
@@ -1213,6 +1243,7 @@ export async function runControllerLoop({
   shutdownTimeoutMs = DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS,
   leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
   heartbeatIntervalMs = null,
+  leaseIncarnationId = randomUUID(),
   controllerLeaseLockTimeoutMs = 1000,
   controllerLeaseLockRetryMs = 10,
   maxPasses = null,
@@ -1271,6 +1302,9 @@ export async function runControllerLoop({
   let currentLeaseId = null;
   let currentHolder = null;
   let currentLeaseStatus = 'completed';
+  const controllerIncarnationId = typeof leaseIncarnationId === 'string' && leaseIncarnationId.trim() !== ''
+    ? leaseIncarnationId.trim()
+    : randomUUID();
 
   try {
     if (isStopRequested(stopSignal)) {
@@ -1289,6 +1323,7 @@ export async function runControllerLoop({
         runtimeKind,
         holderId,
         holderType,
+        leaseIncarnationId: controllerIncarnationId,
         pollIntervalMs: continuous ? pollIntervalMs : null,
         shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
         leaseTimeoutMs,
@@ -1309,6 +1344,7 @@ export async function runControllerLoop({
         leaseId: currentLeaseId,
         holderId: currentHolder.holderId,
         holderType: currentHolder.holderType,
+        leaseIncarnationId: controllerIncarnationId,
         runtimeKind,
         pollIntervalMs: continuous ? pollIntervalMs : null,
         shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
@@ -1355,6 +1391,7 @@ export async function runControllerLoop({
           controllerId,
           holderId: currentHolder.holderId,
           holderType: currentHolder.holderType,
+          leaseIncarnationId: controllerIncarnationId,
           now: completedAt,
           runtimeKind,
           pollIntervalMs: continuous ? pollIntervalMs : null,
@@ -1417,6 +1454,7 @@ export async function runControllerLoop({
         controllerId,
         holderId: currentHolder?.holderId,
         holderType: currentHolder?.holderType,
+        leaseIncarnationId: controllerIncarnationId,
         now: resolveNow(now),
         runtimeKind,
         pollIntervalMs: continuous ? pollIntervalMs : null,
@@ -1433,6 +1471,7 @@ export async function runControllerLoop({
       await releaseControllerLeadership({
         repository,
         leaseId: currentLeaseId,
+        leaseIncarnationId: controllerIncarnationId,
         now: resolveNow(now),
         reason: continuous ? `controller_runtime_${stopReason}` : 'controller_loop_complete',
         lockTimeoutMs: controllerLeaseLockTimeoutMs,

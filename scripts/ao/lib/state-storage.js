@@ -1,6 +1,8 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
 
+const syncSleepState = new Int32Array(new SharedArrayBuffer(4));
+
 export function ensureDirectory(directoryPath) {
   fs.mkdirSync(directoryPath, { recursive: true });
 }
@@ -11,6 +13,21 @@ export async function sleep(waitMs) {
   await new Promise((resolve) => {
     setTimeout(resolve, durationMs);
   });
+}
+
+export function sleepSync(waitMs) {
+  const durationMs = Number(waitMs);
+  if (!Number.isFinite(durationMs) || durationMs <= 0) return;
+
+  if (typeof Atomics?.wait === 'function') {
+    Atomics.wait(syncSleepState, 0, 0, durationMs);
+    return;
+  }
+
+  const deadlineMs = Date.now() + durationMs;
+  while (Date.now() < deadlineMs) {
+    // Busy-wait to keep synchronous repository callers serialized under the same lock.
+  }
 }
 
 export function readJsonFile(filePath) {
@@ -59,6 +76,50 @@ export async function withFileLock(
 
   try {
     return await callback();
+  } finally {
+    if (lockDescriptor != null) {
+      fs.closeSync(lockDescriptor);
+    }
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  }
+}
+
+export function withFileLockSync(
+  filePath,
+  callback,
+  {
+    timeoutMs = 1000,
+    retryMs = 10,
+    sleepFn = sleepSync,
+  } = {},
+) {
+  ensureDirectory(path.dirname(filePath));
+  const startedAtMs = Date.now();
+  let lockDescriptor = null;
+
+  while (lockDescriptor == null) {
+    try {
+      lockDescriptor = fs.openSync(filePath, 'wx');
+      fs.writeFileSync(
+        lockDescriptor,
+        `${JSON.stringify({ pid: process.pid, acquired_at: new Date().toISOString() })}\n`,
+        'utf8',
+      );
+    } catch (error) {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+      if (Date.now() - startedAtMs >= timeoutMs) {
+        throw new Error(`Timed out acquiring file lock ${path.basename(filePath)}`);
+      }
+      sleepFn(retryMs);
+    }
+  }
+
+  try {
+    return callback();
   } finally {
     if (lockDescriptor != null) {
       fs.closeSync(lockDescriptor);

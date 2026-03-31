@@ -129,6 +129,7 @@ describe('ao state contracts', () => {
       controller_id: 'default',
       holder_id: 'cie-orchestrator',
       holder_type: 'session',
+      incarnation_id: null,
       status: 'active',
       acquired_at: NOW,
       heartbeat_at: null,

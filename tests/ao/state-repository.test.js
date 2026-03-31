@@ -18,6 +18,7 @@ import {
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
+import { writeJsonFileAtomic } from '../../scripts/ao/lib/state-storage.js';
 
 const PROJECT_ID = 'ciecopilot-home';
 const tempDirs = [];
@@ -476,6 +477,77 @@ describe('ao state repository', () => {
         lease_id: 'controller-default-holder-a',
         holder_id: 'holder-a',
         status: 'active',
+      }),
+    ]);
+  });
+
+  it('preserves the latest controller lease heartbeat when a stale ordinary state write lands afterward', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-holder-a-incarnation-a',
+      controller_id: 'default',
+      holder_id: 'holder-a',
+      holder_type: 'session',
+      incarnation_id: 'incarnation-a',
+      status: 'active',
+      acquired_at: '2026-03-29T06:00:00.000Z',
+      heartbeat_at: '2026-03-29T06:00:00.000Z',
+      expires_at: '2026-03-29T06:05:00.000Z',
+      lease_timeout_ms: 300000,
+      runtime_kind: 'continuous',
+    }));
+
+    const staleState = repository.getSnapshot().state;
+
+    await repository.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a-incarnation-a',
+      summary: 'Renew controller lease heartbeat.',
+      mutate: async ({ findControllerLeaseById, upsertControllerLease }) => {
+        const lease = upsertControllerLease(createControllerLease({
+          ...findControllerLeaseById('controller-default-holder-a-incarnation-a'),
+          heartbeat_at: '2026-03-29T06:02:00.000Z',
+          expires_at: '2026-03-29T06:07:00.000Z',
+          last_run_status: 'running',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    });
+
+    const staleNextState = JSON.parse(JSON.stringify(staleState));
+    staleNextState.managed_tasks.push(createManagedTask({
+      task_id: 'task-1',
+      issue_number: 125,
+      title: 'controller stale snapshot write',
+      branch_name: 'feat/125',
+      worktree_path: '/tmp/cie-62',
+      status: 'active',
+      created_at: '2026-03-29T06:03:00.000Z',
+      updated_at: '2026-03-29T06:03:00.000Z',
+    }));
+    writeJsonFileAtomic(repository.getSnapshot().paths.statePath, staleNextState);
+
+    const snapshot = repository.getSnapshot().state;
+    expect(snapshot.managed_tasks).toEqual([
+      expect.objectContaining({
+        task_id: 'task-1',
+      }),
+    ]);
+    expect(snapshot.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-holder-a-incarnation-a',
+        incarnation_id: 'incarnation-a',
+        heartbeat_at: '2026-03-29T06:02:00.000Z',
+        expires_at: '2026-03-29T06:07:00.000Z',
       }),
     ]);
   });

@@ -41,6 +41,7 @@ import {
 import {
   readJsonFile,
   withFileLock,
+  withFileLockSync,
   writeJsonFileAtomic,
 } from './state-storage.js';
 
@@ -115,7 +116,16 @@ export function createStateRepository({
     repoRoot,
     projectId,
   });
-  const stateLockPath = `${paths.statePath}.lock`;
+  const controllerLeaseLockPath = `${paths.controllerLeasesPath}.lock`;
+
+  function readControllerLeaseRecords() {
+    const records = readJsonFile(paths.controllerLeasesPath);
+    if (!Array.isArray(records)) return null;
+    return sortCollectionByKey(
+      records.map((record) => createControllerLease(record)),
+      'lease_id',
+    );
+  }
 
   function readSnapshot() {
     const schema = readControlPlaneSchema({ schemaPath: paths.schemaPath });
@@ -159,6 +169,10 @@ export function createStateRepository({
       nextState.execution_attempt_metrics,
       'execution_attempt_metric_id',
     );
+    const isolatedControllerLeases = readControllerLeaseRecords();
+    if (isolatedControllerLeases != null) {
+      nextState.controller_leases = isolatedControllerLeases;
+    }
 
     return {
       bootstrapped: true,
@@ -203,6 +217,34 @@ export function createStateRepository({
     });
   }
 
+  function persistControllerLeases({
+    controllerLeases,
+    entityId,
+    summary,
+    details,
+  } = {}) {
+    const recordedAt = resolveNow(clock);
+    const nextControllerLeases = sortCollectionByKey(
+      (controllerLeases ?? []).map((record) => createControllerLease(record)),
+      'lease_id',
+    );
+    writeJsonFileAtomic(paths.controllerLeasesPath, nextControllerLeases);
+    appendControlPlaneAuditEntry({
+      auditPath: paths.auditPath,
+      entry: createControlPlaneAuditEntry({
+        audit_id: auditIdGenerator(),
+        project_id: projectId,
+        recorded_at: recordedAt,
+        entity_kind: 'controller_lease',
+        entity_id: entityId,
+        operation: 'upsert',
+        actor: 'state_repository',
+        summary,
+        details,
+      }),
+    });
+  }
+
   async function mutateControllerLeasesAtomically({
     entityId,
     summary,
@@ -211,7 +253,7 @@ export function createStateRepository({
     mutate,
   } = {}) {
     ensureBootstrapped();
-    return withFileLock(stateLockPath, async () => {
+    return withFileLock(controllerLeaseLockPath, async () => {
       const snapshot = readSnapshot();
       const nextState = cloneJsonValue(snapshot.state);
 
@@ -246,9 +288,8 @@ export function createStateRepository({
         findActiveLeaseForController,
       });
 
-      persistState({
-        state: nextState,
-        entityKind: 'controller_lease',
+      persistControllerLeases({
+        controllerLeases: nextState.controller_leases,
         entityId: result?.entityId ?? entityId,
         summary: result?.summary ?? summary,
         details: result?.details ?? nextState.controller_leases,
@@ -366,13 +407,29 @@ export function createStateRepository({
     },
 
     upsertControllerLease(record) {
-      return upsertCollectionRecord({
-        collectionKey: 'controller_leases',
-        identityKey: 'lease_id',
-        entityKind: 'controller_lease',
-        record,
-        normalize: createControllerLease,
-        summary: `Persisted controller lease ${record?.lease_id}.`,
+      ensureBootstrapped();
+      return withFileLockSync(controllerLeaseLockPath, () => {
+        const snapshot = readSnapshot();
+        const nextState = cloneJsonValue(snapshot.state);
+        const normalizedRecord = createControllerLease(record);
+        const existingIndex = nextState.controller_leases.findIndex(
+          (entry) => entry?.lease_id === normalizedRecord.lease_id,
+        );
+
+        if (existingIndex >= 0) {
+          nextState.controller_leases[existingIndex] = normalizedRecord;
+        } else {
+          nextState.controller_leases.push(normalizedRecord);
+        }
+
+        persistControllerLeases({
+          controllerLeases: nextState.controller_leases,
+          entityId: normalizedRecord.lease_id,
+          summary: `Persisted controller lease ${record?.lease_id}.`,
+          details: normalizedRecord,
+        });
+
+        return normalizedRecord;
       });
     },
 

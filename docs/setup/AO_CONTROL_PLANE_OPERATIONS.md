@@ -36,6 +36,8 @@ Manual-start rule:
 
 - if AO does not provide `AO_SESSION_NAME` or `AO_SESSION_ID`, operators must pass `--holder <id>`
 - reuse the same durable holder id when intentionally restarting the same controller instance
+- same-holder restart recovery only succeeds when the prior process is gone; a live concurrent controller with the same holder is fenced
+- orphaned controller lockfiles are recovered automatically when their recorded PID is gone or the lock has clearly aged out
 
 ### `ao-manage`
 

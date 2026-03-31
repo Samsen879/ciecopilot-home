@@ -113,9 +113,11 @@ Shutdown behavior:
 
 The controller runtime is replay-safe across restarts:
 
-- restarting with the same `AO_SESSION_NAME` renews the same leader lease instead of tripping split-brain protection
+- restarting with the same `AO_SESSION_NAME` recovers the same leader lease only when the prior process is actually gone; AO reuses the durable incarnation instead of creating a second live leader
+- starting a second live controller with the same holder while the original process is still running is blocked as split-brain
 - restarting with a different holder only succeeds if the prior lease is stale
 - repeated continuous passes keep one active leader lease instead of acquiring and releasing leadership every pass
+- orphaned controller lockfiles are reclaimed automatically when the recorded PID is gone or the lock ages out past the stale-lock window
 
 ## Recover A Stale Leader
 

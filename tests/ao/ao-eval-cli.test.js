@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockRunAoEvalHarness = jest.fn();
@@ -78,8 +80,22 @@ describe('ao eval cli', () => {
       operator_scorecard_path: '/tmp/ao-artifacts/ao-eval/scorecards/scorecard-1.json',
       baseline_path: null,
       operator_baseline_path: null,
+      baseline_action: null,
     });
     mockRenderAoEvalHumanSummary.mockReturnValue('scorecard_id: scorecard-1');
+  });
+
+  it('exposes canonical operator npm scripts for AO eval and metrics', () => {
+    const packageJson = JSON.parse(
+      fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8'),
+    );
+
+    expect(packageJson.scripts).toMatchObject({
+      'ao:eval': 'node scripts/ao-eval.js',
+      'ao:eval:json': 'node scripts/ao-eval.js --json',
+      'ao:metrics': 'node scripts/ao-metrics.js',
+      'ao:metrics:json': 'node scripts/ao-metrics.js --json',
+    });
   });
 
   it('runs the full suite by default and renders human summary output', async () => {
@@ -105,7 +121,7 @@ describe('ao eval cli', () => {
     expect(stdout.join('')).toContain('scorecard_id: scorecard-1');
   });
 
-  it('supports named pack subsets, baseline comparison, baseline saving, and JSON output', async () => {
+  it('supports named pack subsets, baseline comparison, baseline blessing, and JSON output', async () => {
     const stdout = [];
     const baseline = buildScorecard({
       scorecard_id: 'baseline-1',
@@ -123,13 +139,14 @@ describe('ao eval cli', () => {
       operator_scorecard_path: '/tmp/ao-artifacts/ao-eval/scorecards/scorecard-1.json',
       baseline_path: '/tmp/.ao-control-plane/ciecopilot-home/eval/baselines/wave-2.json',
       operator_baseline_path: '/tmp/ao-artifacts/ao-eval/baselines/wave-2.json',
+      baseline_action: 'blessed',
     });
 
     const result = await runCli([
       '--pack', 'parity',
       '--pack', 'successor-handoff',
       '--baseline', 'wave-1',
-      '--save-baseline', 'wave-2',
+      '--bless-baseline', 'wave-2',
       '--json',
     ], {
       writeStdout: (text) => stdout.push(text),
@@ -152,6 +169,7 @@ describe('ao eval cli', () => {
     });
     expect(mockPersistAoEvalScorecard).toHaveBeenCalledWith(expect.objectContaining({
       baselineName: 'wave-2',
+      baselineAction: 'bless',
     }));
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       scorecard: {
@@ -162,8 +180,24 @@ describe('ao eval cli', () => {
       },
       persisted: {
         baseline_path: '/tmp/.ao-control-plane/ciecopilot-home/eval/baselines/wave-2.json',
+        baseline_action: 'blessed',
       },
     });
+  });
+
+  it('supports explicit baseline updates for an existing alias', async () => {
+    const result = await runCli([
+      '--update-baseline', 'ao/mainline',
+    ], {
+      writeStdout: () => {},
+      writeStderr: () => {},
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(mockPersistAoEvalScorecard).toHaveBeenCalledWith(expect.objectContaining({
+      baselineName: 'ao/mainline',
+      baselineAction: 'update',
+    }));
   });
 
   it('fails closed when the scorecard contains failed scenarios or baseline regressions', async () => {
@@ -217,6 +251,13 @@ describe('ao eval cli', () => {
       writeStdout: () => {},
       writeStderr: (text) => stderr.push(text),
     });
+    const conflictingBaselineWrites = await runCli([
+      '--bless-baseline', 'ao/mainline',
+      '--update-baseline', 'ao/mainline',
+    ], {
+      writeStdout: () => {},
+      writeStderr: (text) => stderr.push(text),
+    });
     const unknownFlag = await runCli(['--bogus'], {
       writeStdout: () => {},
       writeStderr: (text) => stderr.push(text),
@@ -224,10 +265,12 @@ describe('ao eval cli', () => {
 
     expect(missingPackValue.exitCode).toBe(4);
     expect(missingBaselineValue.exitCode).toBe(4);
+    expect(conflictingBaselineWrites.exitCode).toBe(4);
     expect(unknownFlag.exitCode).toBe(4);
     expect(mockRunAoEvalHarness).not.toHaveBeenCalled();
     expect(stderr.join('')).toContain('Missing value for --pack');
     expect(stderr.join('')).toContain('Missing value for --baseline');
+    expect(stderr.join('')).toContain('Choose exactly one baseline write mode');
     expect(stderr.join('')).toContain('Unknown argument: --bogus');
   });
 });

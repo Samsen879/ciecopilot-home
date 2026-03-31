@@ -1,10 +1,11 @@
 import { createCheckpointStore } from './checkpoint-store.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
 import { inspectRepoKnowledgeRecordState } from './repo-knowledge.js';
-import { buildAoMetricsReport } from './run-metrics.js';
+import { buildAoMetricsReport, resolveAoMetricsArtifactPaths } from './run-metrics.js';
 import * as fs from 'node:fs';
 import path from 'node:path';
 
+import { resolveControlPlanePaths } from './state-migrations.js';
 import { createStateRepository } from './state-repository.js';
 
 export const DEFAULT_PROJECT_ID = 'ciecopilot-home';
@@ -31,11 +32,19 @@ function summarizeControllerModes(controllerModes) {
     .sort((left, right) => left.localeCompare(right));
 }
 
+function buildArtifactPointer(pathValue) {
+  return {
+    path: pathValue,
+    exists: fs.existsSync(pathValue),
+  };
+}
+
 export async function loadAoStateReport({
   cwd = process.cwd(),
   repoRoot = null,
   projectId = DEFAULT_PROJECT_ID,
   auditLimit = 5,
+  now = () => new Date().toISOString(),
 } = {}) {
   const resolvedRepoRoot = repoRoot ?? findRepoRoot(cwd);
   if (!resolvedRepoRoot) {
@@ -54,6 +63,7 @@ export async function loadAoStateReport({
   }).inspectAllCheckpoints();
   const handoffInspections = createHandoffProtocol({
     repository,
+    now,
   }).inspectAllHandoffs();
   const validCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'valid').length;
   const staleCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'stale').length;
@@ -70,6 +80,14 @@ export async function loadAoStateReport({
     repoRoot: resolvedRepoRoot,
     snapshot,
     traceLimit: auditLimit,
+  });
+  const evalArtifactPaths = resolveControlPlanePaths({
+    repoRoot: resolvedRepoRoot,
+    projectId,
+  });
+  const metricsArtifactPaths = resolveAoMetricsArtifactPaths({
+    repoRoot: resolvedRepoRoot,
+    projectId,
   });
 
   return {
@@ -122,6 +140,20 @@ export async function loadAoStateReport({
     metrics: {
       summary: metricsReport.summary,
       recent_traces: metricsReport.recent_traces,
+    },
+    artifacts: {
+      eval: {
+        latest_scorecard: buildArtifactPointer(evalArtifactPaths.latestEvalScorecardPath),
+        operator_latest_scorecard: buildArtifactPointer(evalArtifactPaths.operatorLatestEvalScorecardPath),
+        baseline_root: buildArtifactPointer(evalArtifactPaths.evalBaselineRoot),
+        operator_baseline_root: buildArtifactPointer(evalArtifactPaths.operatorEvalBaselineRoot),
+      },
+      metrics: {
+        latest_report: buildArtifactPointer(metricsArtifactPaths.latestMetricsReportPath),
+        operator_latest_report: buildArtifactPointer(metricsArtifactPaths.operatorLatestMetricsReportPath),
+        report_root: buildArtifactPointer(metricsArtifactPaths.metricsReportRoot),
+        operator_report_root: buildArtifactPointer(metricsArtifactPaths.operatorMetricsReportRoot),
+      },
     },
     audit: {
       recent_entries: recentEntries,

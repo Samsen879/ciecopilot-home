@@ -40,6 +40,10 @@ import {
   createProjectScope,
 } from './reconciliation-contracts.js';
 import { reconcileObservations as reconcileObservationModels } from './reconciliation-engine.js';
+import {
+  buildCurrentProcessMetadata,
+  matchesRecordedProcessIdentity,
+} from './state-storage.js';
 
 export const DEFAULT_PROJECT_ID = 'ciecopilot-home';
 export const CONTROLLER_MUTATION_MODES = ['observe', 'shadow', 'assist'];
@@ -109,29 +113,15 @@ function resolveHolderIdentity({
   };
 }
 
-function isProcessAlive(pid) {
-  const normalizedPid = Number(pid);
-  if (!Number.isInteger(normalizedPid) || normalizedPid <= 0) {
-    return false;
-  }
-
-  try {
-    process.kill(normalizedPid, 0);
-    return true;
-  } catch (error) {
-    return error?.code === 'EPERM';
-  }
-}
-
 function canRecoverSameHolderLease(existingLease) {
   if (!existingLease || existingLease.status !== 'active') {
     return false;
   }
-  const priorProcessId = existingLease?.metadata?.process_pid;
+  const priorProcessId = Number(existingLease?.metadata?.process_pid);
   if (!Number.isInteger(priorProcessId) || priorProcessId <= 0) {
     return false;
   }
-  return !isProcessAlive(priorProcessId);
+  return !matchesRecordedProcessIdentity(existingLease.metadata);
 }
 
 function isControllerLeaseStale(lease, now) {
@@ -395,10 +385,10 @@ async function acquireControllerLeadership({
         holderId: resolvedHolder.holderId,
         holderType: resolvedHolder.holderType,
         incarnationId: effectiveIncarnationId,
-        metadata: {
-          process_pid: processId,
-          process_started_at: processStartedAt,
-        },
+        metadata: buildCurrentProcessMetadata({
+          pid: processId,
+          startedAt: processStartedAt,
+        }),
         now: timestamp,
         runtimeKind,
         pollIntervalMs,
@@ -464,10 +454,10 @@ async function renewControllerLeadership({
         holderId,
         holderType,
         incarnationId: leaseIncarnationId,
-        metadata: {
-          process_pid: processId,
-          process_started_at: processStartedAt,
-        },
+        metadata: buildCurrentProcessMetadata({
+          pid: processId,
+          startedAt: processStartedAt,
+        }),
         now: timestamp,
         runtimeKind,
         pollIntervalMs,
@@ -1006,18 +996,11 @@ async function resolveLifecycleReportForTask({
   };
 }
 
-function resolveLoopMode(repository, controllerId, mode, now) {
+function resolveLoopMode(repository, controllerId, mode) {
   if (mode != null) {
     if (!CONTROLLER_MUTATION_MODES.includes(mode)) {
       throw new Error(`Unsupported controller mode: ${mode}`);
     }
-    repository.upsertControllerMode(createControllerModeRecord({
-      controller_id: controllerId,
-      mode,
-      updated_at: now,
-      updated_by: 'ao_controller',
-      reason: 'Controller loop mode override.',
-    }));
     return mode;
   }
 
@@ -1028,6 +1011,17 @@ function resolveLoopMode(repository, controllerId, mode, now) {
   }
 
   return currentMode;
+}
+
+function persistModeOverride(repository, controllerId, mode, now) {
+  if (mode == null) return;
+  repository.upsertControllerMode(createControllerModeRecord({
+    controller_id: controllerId,
+    mode,
+    updated_at: now,
+    updated_by: 'ao_controller',
+    reason: 'Controller loop mode override.',
+  }));
 }
 
 async function executeControllerPass({
@@ -1329,7 +1323,7 @@ export async function runControllerLoop({
     repository,
     now: () => activeTimestamp,
   });
-  const resolvedMode = resolveLoopMode(repository, controllerId, mode, activeTimestamp);
+  const resolvedMode = resolveLoopMode(repository, controllerId, mode);
   const runtimeKind = continuous ? 'continuous' : 'oneshot';
 
   const aggregate = {
@@ -1391,6 +1385,7 @@ export async function runControllerLoop({
         holderType: activeLease.holder_type,
       };
       currentLeaseStatus = 'running';
+      persistModeOverride(repository, controllerId, mode, activeTimestamp);
       const heartbeat = startControllerHeartbeat({
         repository,
         controllerId,

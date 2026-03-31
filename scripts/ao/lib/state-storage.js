@@ -57,6 +57,70 @@ function isProcessAlive(pid) {
   }
 }
 
+function readLinuxProcessStartToken(pid) {
+  try {
+    const statText = fs.readFileSync(`/proc/${pid}/stat`, 'utf8').trim();
+    const suffixStart = statText.lastIndexOf(') ');
+    if (suffixStart < 0) return null;
+    const suffixFields = statText.slice(suffixStart + 2).split(' ');
+    const startToken = suffixFields[19] ?? null;
+    return typeof startToken === 'string' && startToken.trim() !== ''
+      ? startToken.trim()
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+export function readLiveProcessIdentity(pid = process.pid) {
+  const normalizedPid = Number(pid);
+  if (!Number.isInteger(normalizedPid) || normalizedPid <= 0) {
+    return null;
+  }
+  if (!isProcessAlive(normalizedPid)) {
+    return null;
+  }
+
+  return {
+    process_pid: normalizedPid,
+    process_start_token: readLinuxProcessStartToken(normalizedPid),
+  };
+}
+
+export function buildCurrentProcessMetadata({
+  pid = process.pid,
+  startedAt = new Date().toISOString(),
+} = {}) {
+  const liveIdentity = readLiveProcessIdentity(pid);
+  return {
+    process_pid: Number(pid),
+    process_started_at: startedAt,
+    process_start_token: liveIdentity?.process_start_token ?? null,
+  };
+}
+
+export function matchesRecordedProcessIdentity(metadata = {}) {
+  const normalizedPid = Number(metadata?.process_pid ?? metadata?.pid);
+  if (!Number.isInteger(normalizedPid) || normalizedPid <= 0) {
+    return false;
+  }
+
+  const liveIdentity = readLiveProcessIdentity(normalizedPid);
+  if (!liveIdentity) {
+    return false;
+  }
+
+  const recordedStartToken = typeof metadata?.process_start_token === 'string' && metadata.process_start_token.trim() !== ''
+    ? metadata.process_start_token.trim()
+    : null;
+
+  if (recordedStartToken != null && liveIdentity.process_start_token != null) {
+    return recordedStartToken === liveIdentity.process_start_token;
+  }
+
+  return true;
+}
+
 function readLockMetadata(filePath) {
   if (!fs.existsSync(filePath)) return null;
 
@@ -75,7 +139,7 @@ function shouldRecoverStaleLock(filePath, staleLockAgeMs) {
   const metadata = readLockMetadata(filePath);
   const recordedPid = metadata?.pid;
   if (Number.isInteger(recordedPid) && recordedPid > 0) {
-    return !isProcessAlive(recordedPid);
+    return !matchesRecordedProcessIdentity(metadata);
   }
 
   const fileStats = fs.statSync(filePath);
@@ -117,7 +181,11 @@ export async function withFileLock(
       lockDescriptor = fs.openSync(filePath, 'wx');
       fs.writeFileSync(
         lockDescriptor,
-        `${JSON.stringify({ pid: process.pid, acquired_at: new Date().toISOString() })}\n`,
+        `${JSON.stringify({
+          pid: process.pid,
+          acquired_at: new Date().toISOString(),
+          ...buildCurrentProcessMetadata(),
+        })}\n`,
         'utf8',
       );
     } catch (error) {
@@ -165,7 +233,11 @@ export function withFileLockSync(
       lockDescriptor = fs.openSync(filePath, 'wx');
       fs.writeFileSync(
         lockDescriptor,
-        `${JSON.stringify({ pid: process.pid, acquired_at: new Date().toISOString() })}\n`,
+        `${JSON.stringify({
+          pid: process.pid,
+          acquired_at: new Date().toISOString(),
+          ...buildCurrentProcessMetadata(),
+        })}\n`,
         'utf8',
       );
     } catch (error) {

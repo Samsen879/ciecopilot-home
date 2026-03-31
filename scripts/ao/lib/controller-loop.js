@@ -51,6 +51,7 @@ export const DEFAULT_CONTROLLER_POLL_INTERVAL_MS = 30 * 1000;
 export const DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS = 10 * 1000;
 export const DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS = 5 * 60 * 1000;
 export const DEFAULT_CONTROLLER_HEARTBEAT_INTERVAL_MS = 1000;
+const CURRENT_PROCESS_COMPAT_STARTED_AT = new Date().toISOString();
 
 class ControllerStopRequestedError extends Error {
   constructor(stepName) {
@@ -351,7 +352,7 @@ async function acquireControllerLeadership({
   holderType = null,
   leaseIncarnationId,
   processId = process.pid,
-  processStartedAt = new Date().toISOString(),
+  processStartedAt = CURRENT_PROCESS_COMPAT_STARTED_AT,
   pollIntervalMs = null,
   shutdownTimeoutMs = null,
   leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
@@ -449,7 +450,7 @@ async function renewControllerLeadership({
   holderType,
   leaseIncarnationId,
   processId = process.pid,
-  processStartedAt = new Date().toISOString(),
+  processStartedAt = CURRENT_PROCESS_COMPAT_STARTED_AT,
   now,
   runtimeKind,
   pollIntervalMs = null,
@@ -573,7 +574,7 @@ function startControllerHeartbeat({
   holderId,
   holderType,
   leaseIncarnationId,
-  processStartedAt = new Date().toISOString(),
+  processStartedAt = CURRENT_PROCESS_COMPAT_STARTED_AT,
   runtimeKind,
   pollIntervalMs = null,
   shutdownTimeoutMs = null,
@@ -1383,7 +1384,7 @@ export async function runControllerLoop({
   let currentLeaseIncarnationId = typeof leaseIncarnationId === 'string' && leaseIncarnationId.trim() !== ''
     ? leaseIncarnationId.trim()
     : randomUUID();
-  const controllerProcessStartedAt = new Date().toISOString();
+  const controllerProcessStartedAt = CURRENT_PROCESS_COMPAT_STARTED_AT;
 
   try {
     if (isStopRequested(stopSignal)) {

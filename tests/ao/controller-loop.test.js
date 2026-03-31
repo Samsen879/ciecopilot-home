@@ -1627,6 +1627,95 @@ describe('ao controller loop', () => {
     ]);
   });
 
+  it('blocks a concurrent same-holder re-entry for a live legacy tokenless lease', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+
+    const finishGithubObservation = createDeferred();
+    const firstRun = runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-legacy-same-holder',
+      leaseIncarnationId: 'incarnation-a',
+      leaseTimeoutMs: 200,
+      heartbeatIntervalMs: 250,
+      now: () => new Date().toISOString(),
+      deps: {
+        loadAoProjectObservation: async ({ now }) => ({
+          observed_at: now,
+          workers: [],
+        }),
+        loadGitHubObservationSet: async ({ now }) => {
+          await finishGithubObservation.promise;
+          return {
+            observed_at: now,
+            prs: [],
+          };
+        },
+      },
+    });
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 40);
+    });
+
+    const activeLease = repository.getSnapshot().state.controller_leases.find((lease) => (
+      lease.status === 'active'
+    ));
+    expect(activeLease).toBeDefined();
+
+    const legacyMetadata = {
+      ...(activeLease.metadata ?? {}),
+    };
+    delete legacyMetadata.process_start_token;
+    repository.upsertControllerLease(createControllerLease({
+      ...activeLease,
+      metadata: legacyMetadata,
+    }));
+
+    await expect(runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-legacy-same-holder',
+      leaseIncarnationId: 'incarnation-b',
+      leaseTimeoutMs: 200,
+      heartbeatIntervalMs: 250,
+      now: () => new Date().toISOString(),
+      deps: {
+        loadAoProjectObservation: async ({ now }) => ({
+          observed_at: now,
+          workers: [],
+        }),
+        loadGitHubObservationSet: async ({ now }) => ({
+          observed_at: now,
+          prs: [],
+        }),
+      },
+    })).rejects.toThrow(/active lease/i);
+
+    finishGithubObservation.resolve();
+    await expect(firstRun).resolves.toMatchObject({
+      controller_id: 'default',
+      mode: 'observe',
+    });
+
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        holder_id: 'manual-legacy-same-holder',
+        incarnation_id: 'incarnation-a',
+        status: 'released',
+      }),
+    ]);
+  });
+
   it('fences stale same-holder supersession so the old incarnation cannot release the newer lease', async () => {
     const repoRoot = createTempRepo();
     const repository = createStateRepository({

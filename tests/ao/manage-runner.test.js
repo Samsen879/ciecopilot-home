@@ -278,6 +278,32 @@ describe('ao manage runner', () => {
       checkpoint_id: checkpoint.checkpoint_id,
       state: 'valid',
     });
+
+    const state = readState(repoRoot);
+    expect(state.execution_attempt_metrics).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-110',
+        owner_session_name: 'cie-57',
+        command: 'enroll',
+        status: 'paused',
+        failure_class: 'worker_exit',
+        retry_cause: 'none',
+      }),
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-110',
+        owner_session_name: 'cie-57',
+        command: 'resume',
+        status: 'active',
+        failure_class: 'none',
+        retry_cause: 'explicit_resume',
+        intervention_counts: expect.objectContaining({
+          explicit_resume: 1,
+          successor_handoff: 0,
+        }),
+      }),
+    ]));
   });
 
   it('fails closed when explicit resume sees a stale checkpoint', async () => {
@@ -563,6 +589,28 @@ describe('ao manage runner', () => {
         successor_session_name: 'cie-59',
       }),
     ]);
+    expect(state.execution_attempt_metrics).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-117',
+        owner_session_name: 'cie-58',
+        command: 'enroll',
+        status: 'paused',
+        failure_class: 'worker_exit',
+      }),
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-117',
+        owner_session_name: 'cie-59',
+        command: 'resume',
+        status: 'active',
+        retry_cause: 'successor_handoff',
+        intervention_counts: expect.objectContaining({
+          explicit_resume: 0,
+          successor_handoff: 1,
+        }),
+      }),
+    ]));
   });
 
   it('unmanages and retires a task without deleting its durable bindings', async () => {

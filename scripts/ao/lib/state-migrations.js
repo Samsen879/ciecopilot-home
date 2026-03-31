@@ -52,6 +52,11 @@ export const CONTROL_PLANE_HANDOFF_PROTOCOL_MIGRATION = {
   key: '0007_handoff_protocol_v1',
 };
 
+export const CONTROL_PLANE_MEASUREMENT_METRICS_MIGRATION = {
+  version: 8,
+  key: '0008_measurement_metrics_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
@@ -60,6 +65,7 @@ const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_RUNTIME_PREFLIGHT_MIGRATION,
   CONTROL_PLANE_CHECKPOINT_MIGRATION,
   CONTROL_PLANE_HANDOFF_PROTOCOL_MIGRATION,
+  CONTROL_PLANE_MEASUREMENT_METRICS_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -127,6 +133,8 @@ function buildBootstrapState({
     'handoff_claims',
     'handoff_decisions',
     'handoff_transfers',
+    'controller_run_metrics',
+    'execution_attempt_metrics',
   ]) {
     if (Array.isArray(existingState?.[collectionKey])) {
       state[collectionKey] = cloneJsonValue(existingState[collectionKey]);
@@ -239,6 +247,14 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_MEASUREMENT_METRICS_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -282,6 +298,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane handoff-protocol migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_MEASUREMENT_METRICS_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane measurement-metrics migration.',
     };
   }
 

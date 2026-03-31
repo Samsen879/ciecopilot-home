@@ -30,6 +30,7 @@ import {
   buildAssistActionModel,
   executeAssistActions,
 } from './action-executor.js';
+import { buildControllerRunMetric } from './run-metrics.js';
 import {
   buildPolicyInputForAction,
   evaluatePolicyDecision,
@@ -548,6 +549,7 @@ export async function runControllerLoop({
         matchedPrs: ingestResult.matchedPrs,
         deliveryEvents: ingestResult.deliveryEvents,
       });
+      const prNumber = resolveLifecyclePrNumber(prBindings, ingestResult.matchedPrs);
 
       let lifecycleTopStatus = null;
       let proposedActionIds = [];
@@ -559,7 +561,6 @@ export async function runControllerLoop({
       let downgradedActionIds = [];
 
       if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
-        const prNumber = resolveLifecyclePrNumber(prBindings, ingestResult.matchedPrs);
         const resolvedLifecycle = services.resolveLifecycleReport
           ? await services.resolveLifecycleReport({
               task,
@@ -645,6 +646,31 @@ export async function runControllerLoop({
           recordedAt: timestamp,
         });
       }
+
+      const completedAt = resolveNow(now);
+      const actionRecords = [...new Set(proposedActionIds)]
+        .map((actionId) => repository.getSnapshot().state.actions.find((record) => record.action_id === actionId) ?? null)
+        .filter(Boolean);
+      repository.upsertControllerRunMetric(buildControllerRunMetric({
+        task,
+        controllerId,
+        controllerMode: resolvedMode,
+        triggerKind: derivedTrigger,
+        lifecycleTopStatus,
+        startedAt: timestamp,
+        completedAt,
+        observationCount: ingestResult.ingested_count,
+        deliveryEventCount: ingestResult.delivery_event_count ?? 0,
+        proposedActionCount: proposedActionIds.length,
+        executedActionCount: executedActionIds.length,
+        blockedActionCount: blockedActionIds.length,
+        policyDecisionCount: policyDecisionIds.length,
+        policyBlockedActionCount: policyBlockedActionIds.length,
+        deniedActionCount: deniedActionIds.length,
+        downgradedActionCount: downgradedActionIds.length,
+        actionRecords,
+        prNumber,
+      }));
 
       taskResults.push({
         task_id: task.task_id,

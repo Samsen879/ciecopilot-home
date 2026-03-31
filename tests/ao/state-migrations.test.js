@@ -73,8 +73,8 @@ describe('ao state migrations', () => {
 
     expect(readJson(paths.schemaPath)).toMatchObject({
       project_id: PROJECT_ID,
-      current_version: 7,
-      latest_version: 7,
+      current_version: 8,
+      latest_version: 8,
       applied_migrations: [
         {
           version: 1,
@@ -111,6 +111,11 @@ describe('ao state migrations', () => {
           key: '0007_handoff_protocol_v1',
           applied_at: FIXED_NOW,
         },
+        {
+          version: 8,
+          key: '0008_measurement_metrics_v1',
+          applied_at: FIXED_NOW,
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
@@ -125,6 +130,8 @@ describe('ao state migrations', () => {
       handoff_claims: [],
       handoff_decisions: [],
       handoff_transfers: [],
+      controller_run_metrics: [],
+      execution_attempt_metrics: [],
       controller_modes: [
         {
           controller_id: 'default',
@@ -177,6 +184,12 @@ describe('ao state migrations', () => {
         operation: 'migrate',
         summary: 'Applied control-plane handoff-protocol migration.',
       }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v8',
+        operation: 'migrate',
+        summary: 'Applied control-plane measurement-metrics migration.',
+      }),
     ]);
   });
 
@@ -203,7 +216,7 @@ describe('ao state migrations', () => {
       migrated: false,
     });
     expect(readJson(paths.schemaPath).updated_at).toBe(FIXED_NOW);
-    expect(readAuditEntries(paths.auditPath)).toHaveLength(7);
+    expect(readAuditEntries(paths.auditPath)).toHaveLength(8);
   });
 
   it('upgrades a stale schema version and backfills invalid task specs for enrolled tasks', () => {
@@ -279,7 +292,7 @@ describe('ao state migrations', () => {
       migrated: true,
     });
     expect(readJson(paths.schemaPath)).toMatchObject({
-      current_version: 7,
+      current_version: 8,
       applied_migrations: [
         {
           version: 1,
@@ -308,6 +321,10 @@ describe('ao state migrations', () => {
         {
           version: 7,
           key: '0007_handoff_protocol_v1',
+        },
+        {
+          version: 8,
+          key: '0008_measurement_metrics_v1',
         },
       ],
     });

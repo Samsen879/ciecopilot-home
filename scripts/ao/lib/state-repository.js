@@ -8,10 +8,12 @@ import {
   createControlPlaneSchema,
   createControllerLease,
   createControllerModeRecord,
+  createControllerRunMetricRecord,
   createControllerCursorRecord,
   createCredentialProvenanceRecord,
   createDeliveryEventRecord,
   createEmptyControlPlaneState,
+  createExecutionAttemptMetricRecord,
   createHandoffClaimRecord,
   createHandoffDecisionRecord,
   createHandoffRequestRecord,
@@ -127,6 +129,14 @@ export function createStateRepository({
     nextState.handoff_claims = sortCollectionByKey(nextState.handoff_claims, 'claim_id');
     nextState.handoff_decisions = sortCollectionByKey(nextState.handoff_decisions, 'decision_id');
     nextState.handoff_transfers = sortCollectionByKey(nextState.handoff_transfers, 'transfer_id');
+    nextState.controller_run_metrics = sortCollectionByKey(
+      nextState.controller_run_metrics,
+      'controller_run_metric_id',
+    );
+    nextState.execution_attempt_metrics = sortCollectionByKey(
+      nextState.execution_attempt_metrics,
+      'execution_attempt_metric_id',
+    );
 
     return {
       bootstrapped: true,
@@ -437,6 +447,28 @@ export function createStateRepository({
         record,
         normalize: createHandoffTransferRecord,
         summary: `Persisted handoff transfer ${record?.transfer_id}.`,
+      });
+    },
+
+    upsertControllerRunMetric(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'controller_run_metrics',
+        identityKey: 'controller_run_metric_id',
+        entityKind: 'controller_run_metric',
+        record,
+        normalize: createControllerRunMetricRecord,
+        summary: `Persisted controller run metric ${record?.controller_run_metric_id}.`,
+      });
+    },
+
+    upsertExecutionAttemptMetric(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'execution_attempt_metrics',
+        identityKey: 'execution_attempt_metric_id',
+        entityKind: 'execution_attempt_metric',
+        record,
+        normalize: createExecutionAttemptMetricRecord,
+        summary: `Persisted execution attempt metric ${record?.execution_attempt_metric_id}.`,
       });
     },
 

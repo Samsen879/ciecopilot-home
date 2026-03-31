@@ -1,4 +1,5 @@
 import { createActionRecord } from './state-contracts.js';
+import { buildAssistExecutionAttemptMetric } from './run-metrics.js';
 
 export const ASSIST_ACTION_MODEL_SCHEMA_VERSION = 'ao.control-plane.action-model.v1alpha1';
 export const ASSIST_ACTION_MODEL_FORMAT = 'ao_control_plane_action_model';
@@ -370,6 +371,26 @@ function hasDurableAllowPolicy(record) {
   return policyDecisionId !== '' && record?.payload?.policy?.decision === 'allow';
 }
 
+function persistExecutionAttemptMetric(repository, {
+  controllerId,
+  task,
+  record,
+  model,
+  status,
+  reason,
+  timestamp,
+} = {}) {
+  repository.upsertExecutionAttemptMetric(buildAssistExecutionAttemptMetric({
+    task,
+    controllerId,
+    actionRecord: record,
+    model,
+    status,
+    reason,
+    now: timestamp,
+  }));
+}
+
 export async function executeAssistActions({
   repository,
   controllerId,
@@ -413,6 +434,15 @@ export async function executeAssistActions({
         },
         recordedAt: timestamp,
       });
+      persistExecutionAttemptMetric(repository, {
+        controllerId,
+        task,
+        record,
+        model,
+        status: 'blocked',
+        reason: 'policy_allow_required',
+        timestamp,
+      });
       blockedActionIds.push(record.action_id);
       continue;
     }
@@ -446,6 +476,15 @@ export async function executeAssistActions({
         },
         recordedAt: timestamp,
       });
+      persistExecutionAttemptMetric(repository, {
+        controllerId,
+        task,
+        record,
+        model,
+        status: 'blocked',
+        reason: blockingOverrides[0].reason,
+        timestamp,
+      });
       blockedActionIds.push(record.action_id);
       continue;
     }
@@ -472,6 +511,15 @@ export async function executeAssistActions({
         },
         recordedAt: timestamp,
       });
+      persistExecutionAttemptMetric(repository, {
+        controllerId,
+        task,
+        record,
+        model,
+        status: 'blocked',
+        reason: model.phase4_assist?.reason ?? 'phase4_assist_not_executable',
+        timestamp,
+      });
       blockedActionIds.push(record.action_id);
       continue;
     }
@@ -495,6 +543,15 @@ export async function executeAssistActions({
         policy_decision_id: record?.payload?.policy_decision_id ?? null,
       },
       recordedAt: timestamp,
+    });
+    persistExecutionAttemptMetric(repository, {
+      controllerId,
+      task,
+      record,
+      model,
+      status: 'executed',
+      reason: 'class_a_assist_execution',
+      timestamp,
     });
     executedActionIds.push(record.action_id);
   }

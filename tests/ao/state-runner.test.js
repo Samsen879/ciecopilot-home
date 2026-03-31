@@ -8,6 +8,8 @@ import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js'
 import { createHandoffProtocol } from '../../scripts/ao/lib/handoff-protocol.js';
 import {
   createControllerModeRecord,
+  createControllerRunMetricRecord,
+  createExecutionAttemptMetricRecord,
   createManagedTask,
   createOverrideRecord,
   createPrBinding,
@@ -73,6 +75,8 @@ describe('ao state runner', () => {
         active_override_count: 0,
         controller_mode_count: 0,
         controller_modes: [],
+        controller_run_metric_count: 0,
+        execution_attempt_metric_count: 0,
         audit_entry_count: 0,
       },
     });
@@ -140,7 +144,7 @@ describe('ao state runner', () => {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
-      audit_entry_count: 10,
+      audit_entry_count: 11,
     });
     expect(report.audit.recent_entries).toEqual([
       expect.objectContaining({
@@ -372,5 +376,147 @@ describe('ao state runner', () => {
         top_status: 'accepted',
       }),
     ]);
+  });
+
+  it('includes measurement summaries and recent traces in the operator-visible AO state report', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-03-31T12:00:00.000Z',
+        '2026-03-31T12:01:00.000Z',
+        '2026-03-31T12:02:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-118',
+      issue_number: 118,
+      title: 'feat(ao): add trace, cost, and failure taxonomy',
+      branch_name: 'feat/118',
+      worktree_path: '/tmp/cie-59',
+      status: 'active',
+      created_at: '2026-03-31T12:00:00.000Z',
+      updated_at: '2026-03-31T12:00:00.000Z',
+    }));
+    repository.upsertControllerRunMetric(createControllerRunMetricRecord({
+      controller_run_metric_id: 'controller-run-1',
+      task_id: 'issue-118',
+      issue_number: 118,
+      pr_number: 128,
+      controller_id: 'default',
+      controller_mode: 'assist',
+      trigger_kind: 'approved_and_green',
+      lifecycle_top_status: 'continue',
+      failure_class: 'policy_block',
+      started_at: '2026-03-31T12:00:00.000Z',
+      completed_at: '2026-03-31T12:00:03.000Z',
+      duration_ms: 3000,
+      observation_count: 2,
+      delivery_event_count: 3,
+      proposed_action_count: 2,
+      executed_action_count: 1,
+      blocked_action_count: 1,
+      policy_decision_count: 2,
+      policy_blocked_action_count: 1,
+      denied_action_count: 1,
+      downgraded_action_count: 0,
+      action_class_counts: {
+        continue_worker: 1,
+        notify_human: 1,
+      },
+      intervention_counts: {
+        human_gate: 0,
+        override: 0,
+        explicit_resume: 0,
+        successor_handoff: 0,
+        policy_block: 1,
+        preflight_block: 0,
+      },
+      token_usage: {
+        input_tokens: null,
+        output_tokens: null,
+        total_tokens: null,
+      },
+      cost: {
+        usd: null,
+      },
+    }));
+    repository.upsertExecutionAttemptMetric(createExecutionAttemptMetricRecord({
+      execution_attempt_metric_id: 'execution-attempt-1',
+      attempt_kind: 'managed_task',
+      task_id: 'issue-118',
+      issue_number: 118,
+      pr_number: 128,
+      controller_id: null,
+      owner_session_name: 'cie-59',
+      owner_session_id: 'cie-59',
+      action_id: null,
+      action_kind: null,
+      action_class: null,
+      command: 'resume',
+      status: 'active',
+      retry_cause: 'explicit_resume',
+      failure_class: 'none',
+      reason: null,
+      started_at: '2026-03-31T12:01:00.000Z',
+      completed_at: null,
+      duration_ms: null,
+      intervention_counts: {
+        human_gate: 0,
+        override: 0,
+        explicit_resume: 1,
+        successor_handoff: 0,
+        policy_block: 0,
+        preflight_block: 0,
+      },
+      token_usage: {
+        input_tokens: null,
+        output_tokens: null,
+        total_tokens: null,
+      },
+      cost: {
+        usd: null,
+      },
+    }));
+
+    const report = await loadAoStateReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+      auditLimit: 2,
+    });
+
+    expect(report.summary).toMatchObject({
+      controller_run_metric_count: 1,
+      execution_attempt_metric_count: 1,
+    });
+    expect(report.metrics.summary).toMatchObject({
+      controller_run_count: 1,
+      execution_attempt_count: 1,
+      intervention_counts: expect.objectContaining({
+        explicit_resume: 1,
+        policy_block: 1,
+      }),
+      failure_class_counts: expect.objectContaining({
+        none: 1,
+        policy_block: 1,
+      }),
+    });
+    expect(report.metrics.recent_traces).toMatchObject({
+      controller_runs: [
+        expect.objectContaining({
+          controller_run_metric_id: 'controller-run-1',
+          failure_class: 'policy_block',
+        }),
+      ],
+      execution_attempts: [
+        expect.objectContaining({
+          execution_attempt_metric_id: 'execution-attempt-1',
+          retry_cause: 'explicit_resume',
+        }),
+      ],
+    });
   });
 });

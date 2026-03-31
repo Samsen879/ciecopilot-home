@@ -46,6 +46,20 @@ function createIdGenerator(prefix) {
   };
 }
 
+function createDeferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return {
+    promise,
+    resolve,
+    reject,
+  };
+}
+
 afterEach(() => {
   while (tempDirs.length) {
     fs.rmSync(tempDirs.pop(), { recursive: true, force: true });
@@ -374,6 +388,94 @@ describe('ao state repository', () => {
         last_run_started_at: '2026-03-29T06:00:20.000Z',
         last_run_completed_at: '2026-03-29T06:00:25.000Z',
         last_run_status: 'completed',
+      }),
+    ]);
+  });
+
+  it('serializes controller lease acquisition so contenders cannot both win leadership', async () => {
+    const repoRoot = createTempRepo();
+    const repositoryA = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const repositoryB = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const releaseFirstWriter = createDeferred();
+
+    const firstWriter = repositoryA.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a',
+      summary: 'Persisted controller lease controller-default-holder-a.',
+      mutate: async ({ findActiveLeaseForController, upsertControllerLease }) => {
+        expect(findActiveLeaseForController('default')).toBeNull();
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-a',
+          controller_id: 'default',
+          holder_id: 'holder-a',
+          holder_type: 'session',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:00.000Z',
+          heartbeat_at: '2026-03-29T06:00:00.000Z',
+          expires_at: '2026-03-29T06:05:00.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        await releaseFirstWriter.promise;
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    });
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 20);
+    });
+
+    const secondWriter = repositoryB.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-b',
+      summary: 'Persisted controller lease controller-default-holder-b.',
+      mutate: async ({ findActiveLeaseForController, upsertControllerLease }) => {
+        const activeLease = findActiveLeaseForController('default');
+        if (activeLease) {
+          throw new Error(`Controller default already has an active lease held by ${activeLease.holder_id}.`);
+        }
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-b',
+          controller_id: 'default',
+          holder_id: 'holder-b',
+          holder_type: 'session',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:01.000Z',
+          heartbeat_at: '2026-03-29T06:00:01.000Z',
+          expires_at: '2026-03-29T06:05:01.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    });
+
+    releaseFirstWriter.resolve();
+
+    await expect(firstWriter).resolves.toEqual(expect.objectContaining({
+      holder_id: 'holder-a',
+      status: 'active',
+    }));
+    await expect(secondWriter).rejects.toThrow(/active lease held by holder-a/i);
+    expect(repositoryA.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-holder-a',
+        holder_id: 'holder-a',
+        status: 'active',
       }),
     ]);
   });

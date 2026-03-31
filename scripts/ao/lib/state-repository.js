@@ -40,6 +40,7 @@ import {
 } from './state-migrations.js';
 import {
   readJsonFile,
+  withFileLock,
   writeJsonFileAtomic,
 } from './state-storage.js';
 
@@ -114,6 +115,7 @@ export function createStateRepository({
     repoRoot,
     projectId,
   });
+  const stateLockPath = `${paths.statePath}.lock`;
 
   function readSnapshot() {
     const schema = readControlPlaneSchema({ schemaPath: paths.schemaPath });
@@ -198,6 +200,64 @@ export function createStateRepository({
         summary,
         details,
       }),
+    });
+  }
+
+  async function mutateControllerLeasesAtomically({
+    entityId,
+    summary,
+    timeoutMs = 1000,
+    retryMs = 10,
+    mutate,
+  } = {}) {
+    ensureBootstrapped();
+    return withFileLock(stateLockPath, async () => {
+      const snapshot = readSnapshot();
+      const nextState = cloneJsonValue(snapshot.state);
+
+      function upsertControllerLeaseRecord(record) {
+        const normalizedRecord = createControllerLease(record);
+        const existingIndex = nextState.controller_leases.findIndex(
+          (entry) => entry?.lease_id === normalizedRecord.lease_id,
+        );
+        if (existingIndex >= 0) {
+          nextState.controller_leases[existingIndex] = normalizedRecord;
+        } else {
+          nextState.controller_leases.push(normalizedRecord);
+        }
+        return normalizedRecord;
+      }
+
+      function findControllerLeaseById(leaseId) {
+        return nextState.controller_leases.find((entry) => entry?.lease_id === leaseId) ?? null;
+      }
+
+      function findActiveLeaseForController(controllerId) {
+        return nextState.controller_leases.find((entry) => (
+          entry?.controller_id === controllerId && entry?.status === 'active'
+        )) ?? null;
+      }
+
+      const result = await mutate({
+        snapshot,
+        nextState,
+        upsertControllerLease: upsertControllerLeaseRecord,
+        findControllerLeaseById,
+        findActiveLeaseForController,
+      });
+
+      persistState({
+        state: nextState,
+        entityKind: 'controller_lease',
+        entityId: result?.entityId ?? entityId,
+        summary: result?.summary ?? summary,
+        details: result?.details ?? nextState.controller_leases,
+      });
+
+      return result?.value ?? null;
+    }, {
+      timeoutMs,
+      retryMs,
     });
   }
 
@@ -315,6 +375,8 @@ export function createStateRepository({
         summary: `Persisted controller lease ${record?.lease_id}.`,
       });
     },
+
+    mutateControllerLeasesAtomically,
 
     upsertAction(record) {
       return upsertCollectionRecord({

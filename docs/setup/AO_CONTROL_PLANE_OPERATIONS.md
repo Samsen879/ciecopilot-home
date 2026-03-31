@@ -29,8 +29,13 @@ Typical command:
 ```bash
 cd /home/samsen/code/ciecopilot-home
 AO_SESSION_NAME=ao-controller-main \
-node scripts/ao-controller.js --continuous --mode shadow --poll-interval-ms 30000
+node scripts/ao-controller.js --continuous --holder ao-controller-main --mode shadow --poll-interval-ms 30000
 ```
+
+Manual-start rule:
+
+- if AO does not provide `AO_SESSION_NAME` or `AO_SESSION_ID`, operators must pass `--holder <id>`
+- reuse the same durable holder id when intentionally restarting the same controller instance
 
 ### `ao-manage`
 

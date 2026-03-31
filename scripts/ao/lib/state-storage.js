@@ -5,6 +5,14 @@ export function ensureDirectory(directoryPath) {
   fs.mkdirSync(directoryPath, { recursive: true });
 }
 
+export async function sleep(waitMs) {
+  const durationMs = Number(waitMs);
+  if (!Number.isFinite(durationMs) || durationMs <= 0) return;
+  await new Promise((resolve) => {
+    setTimeout(resolve, durationMs);
+  });
+}
+
 export function readJsonFile(filePath) {
   if (!fs.existsSync(filePath)) return null;
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -15,6 +23,50 @@ export function writeJsonFileAtomic(filePath, payload) {
   const tempPath = `${filePath}.tmp-${process.pid}-${Date.now()}`;
   fs.writeFileSync(tempPath, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
   fs.renameSync(tempPath, filePath);
+}
+
+export async function withFileLock(
+  filePath,
+  callback,
+  {
+    timeoutMs = 1000,
+    retryMs = 10,
+    sleepFn = sleep,
+  } = {},
+) {
+  ensureDirectory(path.dirname(filePath));
+  const startedAtMs = Date.now();
+  let lockDescriptor = null;
+
+  while (lockDescriptor == null) {
+    try {
+      lockDescriptor = fs.openSync(filePath, 'wx');
+      fs.writeFileSync(
+        lockDescriptor,
+        `${JSON.stringify({ pid: process.pid, acquired_at: new Date().toISOString() })}\n`,
+        'utf8',
+      );
+    } catch (error) {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+      if (Date.now() - startedAtMs >= timeoutMs) {
+        throw new Error(`Timed out acquiring file lock ${path.basename(filePath)}`);
+      }
+      await sleepFn(retryMs);
+    }
+  }
+
+  try {
+    return await callback();
+  } finally {
+    if (lockDescriptor != null) {
+      fs.closeSync(lockDescriptor);
+    }
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  }
 }
 
 export function appendJsonLine(filePath, payload) {

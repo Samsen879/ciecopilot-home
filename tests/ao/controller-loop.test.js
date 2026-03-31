@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import {
   createControllerLease,
@@ -26,6 +26,20 @@ function createTempRepo() {
   const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-controller-loop-'));
   tempDirs.push(repoRoot);
   return repoRoot;
+}
+
+function createDeferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return {
+    promise,
+    resolve,
+    reject,
+  };
 }
 
 function seedActiveTask(repository, mode) {
@@ -103,6 +117,11 @@ afterEach(() => {
   process.env.AO_SESSION_NAME = originalAoSessionName;
   process.env.AO_SESSION_ID = originalAoSessionId;
   process.env.AO_CALLER_TYPE = originalAoCallerType;
+});
+
+beforeEach(() => {
+  process.env.AO_SESSION_NAME = 'test-controller-holder';
+  process.env.AO_CALLER_TYPE = 'session';
 });
 
 describe('ao controller loop', () => {
@@ -1108,6 +1127,56 @@ describe('ao controller loop', () => {
     ]);
   });
 
+  it('requires an explicit durable holder identity when AO session env is missing', async () => {
+    delete process.env.AO_SESSION_NAME;
+    delete process.env.AO_SESSION_ID;
+    delete process.env.AO_CALLER_TYPE;
+
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+
+    const manualStart = () => runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [],
+        }),
+      },
+    });
+
+    await expect(Promise.allSettled([
+      manualStart(),
+      manualStart(),
+    ])).resolves.toEqual([
+      expect.objectContaining({
+        status: 'rejected',
+        reason: expect.objectContaining({
+          message: expect.stringMatching(/holder identity/i),
+        }),
+      }),
+      expect.objectContaining({
+        status: 'rejected',
+        reason: expect.objectContaining({
+          message: expect.stringMatching(/holder identity/i),
+        }),
+      }),
+    ]);
+
+    expect(repository.getSnapshot().state.controller_leases).toEqual([]);
+  });
+
   it('renews the current holder lease instead of treating it as split-brain', async () => {
     process.env.AO_SESSION_NAME = 'same-holder';
     process.env.AO_CALLER_TYPE = 'session';
@@ -1292,24 +1361,152 @@ describe('ao controller loop', () => {
       stop_reason: 'max_passes',
     });
     expect(betweenPassStatuses).toEqual([
-      {
+      expect.objectContaining({
         status: 'active',
-        heartbeat_at: '2026-03-29T06:41:00.000Z',
         runtime_kind: 'continuous',
-      },
+      }),
     ]);
     expect(repository.getSnapshot().state.controller_leases).toEqual([
       expect.objectContaining({
         holder_id: 'continuous-holder',
         status: 'released',
         acquired_at: '2026-03-29T06:41:00.000Z',
-        heartbeat_at: '2026-03-29T06:41:02.000Z',
+        heartbeat_at: '2026-03-29T06:41:04.000Z',
         runtime_kind: 'continuous',
         poll_interval_ms: 2000,
         shutdown_timeout_ms: 5000,
-        last_run_started_at: '2026-03-29T06:41:02.000Z',
-        last_run_completed_at: '2026-03-29T06:41:02.000Z',
+        last_run_started_at: '2026-03-29T06:41:04.000Z',
+        last_run_completed_at: '2026-03-29T06:41:04.000Z',
         last_run_status: 'completed',
+        release_reason: 'controller_runtime_max_passes',
+      }),
+    ]);
+  });
+
+  it('renews heartbeat during a long-running pass so another holder cannot reclaim leadership', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+
+    const finishGithubObservation = createDeferred();
+    const firstRun = runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-primary',
+      leaseTimeoutMs: 60,
+      heartbeatIntervalMs: 15,
+      now: () => new Date().toISOString(),
+      deps: {
+        loadAoProjectObservation: async ({ now }) => ({
+          observed_at: now,
+          workers: [],
+        }),
+        loadGitHubObservationSet: async ({ now }) => {
+          await finishGithubObservation.promise;
+          return {
+            observed_at: now,
+            prs: [],
+          };
+        },
+      },
+    });
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 90);
+    });
+
+    await expect(runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-secondary',
+      leaseTimeoutMs: 60,
+      heartbeatIntervalMs: 15,
+      now: () => new Date().toISOString(),
+      deps: {
+        loadAoProjectObservation: async ({ now }) => ({
+          observed_at: now,
+          workers: [],
+        }),
+        loadGitHubObservationSet: async ({ now }) => ({
+          observed_at: now,
+          prs: [],
+        }),
+      },
+    })).rejects.toThrow(/active lease/i);
+
+    finishGithubObservation.resolve();
+    await firstRun;
+
+    const primaryLease = repository.getSnapshot().state.controller_leases.find((lease) => (
+      lease.holder_id === 'manual-primary'
+    ));
+    expect(primaryLease).toEqual(expect.objectContaining({
+      status: 'released',
+    }));
+    expect(new Date(primaryLease.heartbeat_at).getTime()).toBeGreaterThan(
+      new Date(primaryLease.acquired_at).getTime(),
+    );
+  });
+
+  it('applies bounded shutdown semantics to an in-flight pass', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+    const stopSignal = {
+      aborted: false,
+      requested_at: null,
+    };
+    const neverResolves = createDeferred();
+    const startedAt = Date.now();
+
+    setTimeout(() => {
+      stopSignal.aborted = true;
+      stopSignal.requested_at = new Date().toISOString();
+    }, 10);
+
+    const result = await runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-shutdown',
+      continuous: true,
+      shutdownTimeoutMs: 30,
+      leaseTimeoutMs: 120,
+      heartbeatIntervalMs: 15,
+      stopSignal,
+      now: () => new Date().toISOString(),
+      deps: {
+        loadAoProjectObservation: async ({ now }) => ({
+          observed_at: now,
+          workers: [],
+        }),
+        loadGitHubObservationSet: async () => neverResolves.promise,
+      },
+    });
+
+    expect(Date.now() - startedAt).toBeLessThan(250);
+    expect(result).toMatchObject({
+      controller_id: 'default',
+      stop_reason: 'shutdown_timeout',
+      pass_count: 0,
+    });
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        holder_id: 'manual-shutdown',
+        status: 'released',
+        release_reason: 'controller_runtime_shutdown_timeout',
+        last_run_status: 'stopping',
       }),
     ]);
   });

@@ -46,6 +46,25 @@ export const CONTROLLER_MUTATION_MODES = ['observe', 'shadow', 'assist'];
 export const DEFAULT_CONTROLLER_POLL_INTERVAL_MS = 30 * 1000;
 export const DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS = 10 * 1000;
 export const DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS = 5 * 60 * 1000;
+export const DEFAULT_CONTROLLER_HEARTBEAT_INTERVAL_MS = 1000;
+
+class ControllerStopRequestedError extends Error {
+  constructor(stepName) {
+    super(`Controller shutdown requested during ${stepName}.`);
+    this.name = 'ControllerStopRequestedError';
+    this.code = 'controller_stop_requested';
+    this.stepName = stepName;
+  }
+}
+
+class ControllerShutdownTimeoutError extends Error {
+  constructor(stepName) {
+    super(`Controller shutdown timed out during ${stepName}.`);
+    this.name = 'ControllerShutdownTimeoutError';
+    this.code = 'controller_shutdown_timeout';
+    this.stepName = stepName;
+  }
+}
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -62,16 +81,133 @@ function addMilliseconds(isoTimestamp, durationMs) {
   return new Date(date.getTime() + durationMs).toISOString();
 }
 
-function resolveHolderIdentity() {
+function resolveHolderIdentity({
+  holderId = null,
+  holderType = null,
+} = {}) {
+  const normalizedHolderId = typeof holderId === 'string' && holderId.trim() !== ''
+    ? holderId.trim()
+    : null;
+  const sessionHolderId = process.env.AO_SESSION_NAME ?? process.env.AO_SESSION_ID ?? null;
+  const resolvedHolderId = normalizedHolderId ?? sessionHolderId;
+
+  if (resolvedHolderId == null) {
+    throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+  }
+
   return {
-    holderId: process.env.AO_SESSION_NAME ?? process.env.AO_SESSION_ID ?? 'controller-loop',
-    holderType: process.env.AO_CALLER_TYPE ?? 'session',
+    holderId: resolvedHolderId,
+    holderType: holderType
+      ?? process.env.AO_CALLER_TYPE
+      ?? (normalizedHolderId != null && sessionHolderId == null ? 'manual' : 'session'),
   };
 }
 
 function isControllerLeaseStale(lease, now) {
   if (!lease || lease.status !== 'active') return false;
   return new Date(lease.expires_at).getTime() <= new Date(now).getTime();
+}
+
+function isStopRequested(stopSignal) {
+  return stopSignal?.aborted === true;
+}
+
+function ensureStopRequestedAt(stopSignal) {
+  if (!stopSignal) return new Date().toISOString();
+  if (typeof stopSignal.requested_at === 'string' && stopSignal.requested_at.trim() !== '') {
+    return stopSignal.requested_at;
+  }
+  const timestamp = new Date().toISOString();
+  stopSignal.requested_at = timestamp;
+  return timestamp;
+}
+
+function isAbortSignalError(error, abortSignal) {
+  return abortSignal?.aborted === true && (
+    error === abortSignal.reason
+      || error?.name === 'AbortError'
+      || error?.code === 'ABORT_ERR'
+      || error?.message === abortSignal.reason?.message
+  );
+}
+
+function isControllerStopRequestedError(error) {
+  return error?.code === 'controller_stop_requested';
+}
+
+function isControllerShutdownTimeoutError(error) {
+  return error?.code === 'controller_shutdown_timeout';
+}
+
+function resolveHeartbeatIntervalMs(heartbeatIntervalMs, leaseTimeoutMs) {
+  if (Number.isInteger(heartbeatIntervalMs) && heartbeatIntervalMs > 0) {
+    return heartbeatIntervalMs;
+  }
+  return Math.max(
+    25,
+    Math.min(DEFAULT_CONTROLLER_HEARTBEAT_INTERVAL_MS, Math.floor(leaseTimeoutMs / 3)),
+  );
+}
+
+async function runStepWithShutdownBudget(
+  stepName,
+  execute,
+  {
+    stopSignal = null,
+    shutdownTimeoutMs = DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS,
+  } = {},
+) {
+  const abortController = new AbortController();
+  let settled = false;
+  let timerId = null;
+  let deadlineMs = null;
+
+  const stopWatcher = new Promise((resolve, reject) => {
+    function poll() {
+      if (settled) {
+        resolve();
+        return;
+      }
+      if (!isStopRequested(stopSignal)) {
+        timerId = setTimeout(poll, 5);
+        return;
+      }
+
+      if (deadlineMs == null) {
+        const requestedAtMs = new Date(ensureStopRequestedAt(stopSignal)).getTime();
+        deadlineMs = requestedAtMs + shutdownTimeoutMs;
+        abortController.abort(new ControllerStopRequestedError(stepName));
+      }
+
+      if (Date.now() >= deadlineMs) {
+        reject(new ControllerShutdownTimeoutError(stepName));
+        return;
+      }
+
+      timerId = setTimeout(poll, 5);
+    }
+
+    poll();
+  });
+
+  try {
+    return await Promise.race([
+      Promise.resolve().then(() => execute({
+        abortSignal: abortController.signal,
+      })),
+      stopWatcher,
+    ]);
+  } catch (error) {
+    if (isAbortSignalError(error, abortController.signal)) {
+      throw abortController.signal.reason;
+    }
+    throw error;
+  } finally {
+    settled = true;
+    if (timerId != null) {
+      clearTimeout(timerId);
+    }
+  }
 }
 
 function buildActiveControllerLease({
@@ -149,54 +285,264 @@ function buildExpiredControllerLease(existingLease, {
   });
 }
 
-function acquireControllerLeadership({
+async function acquireControllerLeadership({
   repository,
   controllerId,
+  now,
+  runtimeKind,
+  holderId = null,
+  holderType = null,
+  pollIntervalMs = null,
+  shutdownTimeoutMs = null,
+  leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+  lockTimeoutMs = 1000,
+  lockRetryMs = 10,
+  lastRunStartedAt = null,
+  lastRunCompletedAt = null,
+  lastRunStatus = 'running',
+} = {}) {
+  const timestamp = resolveNow(now);
+  const resolvedHolder = resolveHolderIdentity({
+    holderId,
+    holderType,
+  });
+  const leaseId = buildControllerLeaseId({
+    controllerId,
+    holderId: resolvedHolder.holderId,
+  });
+
+  return repository.mutateControllerLeasesAtomically({
+    entityId: leaseId,
+    summary: `Persisted controller lease ${leaseId}.`,
+    timeoutMs: lockTimeoutMs,
+    retryMs: lockRetryMs,
+    mutate: async ({
+      findActiveLeaseForController,
+      findControllerLeaseById,
+      upsertControllerLease,
+    }) => {
+      const activeLease = findActiveLeaseForController(controllerId);
+
+      if (activeLease && activeLease.holder_id !== resolvedHolder.holderId) {
+        if (!isControllerLeaseStale(activeLease, timestamp)) {
+          throw new Error(
+            `Controller ${controllerId} already has an active lease held by ${activeLease.holder_id}.`,
+          );
+        }
+
+        upsertControllerLease(buildExpiredControllerLease(activeLease, {
+          now: timestamp,
+          reason: 'stale_leader_reclaimed',
+        }));
+      }
+
+      const existingLease = findControllerLeaseById(leaseId);
+      const lease = upsertControllerLease(buildActiveControllerLease({
+        existingLease,
+        leaseId,
+        controllerId,
+        holderId: resolvedHolder.holderId,
+        holderType: resolvedHolder.holderType,
+        now: timestamp,
+        runtimeKind,
+        pollIntervalMs,
+        shutdownTimeoutMs,
+        leaseTimeoutMs,
+        lastRunStartedAt,
+        lastRunCompletedAt,
+        lastRunStatus,
+      }));
+
+      return {
+        value: lease,
+        entityId: lease.lease_id,
+        summary: `Persisted controller lease ${lease.lease_id}.`,
+        details: lease,
+      };
+    },
+  });
+}
+
+async function renewControllerLeadership({
+  repository,
+  leaseId,
+  controllerId,
+  holderId,
+  holderType,
   now,
   runtimeKind,
   pollIntervalMs = null,
   shutdownTimeoutMs = null,
   leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+  lockTimeoutMs = 1000,
+  lockRetryMs = 10,
+  lastRunStartedAt = null,
+  lastRunCompletedAt = null,
+  lastRunStatus = 'running',
 } = {}) {
   const timestamp = resolveNow(now);
-  const { holderId, holderType } = resolveHolderIdentity();
-  const snapshot = repository.getSnapshot().state;
-  const activeLease = snapshot.controller_leases.find((lease) => (
-    lease.controller_id === controllerId && lease.status === 'active'
-  )) ?? null;
+  return repository.mutateControllerLeasesAtomically({
+    entityId: leaseId,
+    summary: `Persisted controller lease ${leaseId}.`,
+    timeoutMs: lockTimeoutMs,
+    retryMs: lockRetryMs,
+    mutate: async ({
+      findControllerLeaseById,
+      upsertControllerLease,
+    }) => {
+      const existingLease = findControllerLeaseById(leaseId);
+      if (!existingLease || existingLease.status !== 'active') {
+        throw new Error(`Controller lease ${leaseId} is no longer active.`);
+      }
 
-  if (activeLease && activeLease.holder_id !== holderId) {
-    if (!isControllerLeaseStale(activeLease, timestamp)) {
-      throw new Error(
-        `Controller ${controllerId} already has an active lease held by ${activeLease.holder_id}.`,
-      );
-    }
+      const lease = upsertControllerLease(buildActiveControllerLease({
+        existingLease,
+        leaseId,
+        controllerId,
+        holderId,
+        holderType,
+        now: timestamp,
+        runtimeKind,
+        pollIntervalMs,
+        shutdownTimeoutMs,
+        leaseTimeoutMs,
+        lastRunStartedAt,
+        lastRunCompletedAt,
+        lastRunStatus,
+      }));
 
-    repository.upsertControllerLease(buildExpiredControllerLease(activeLease, {
-      now: timestamp,
-      reason: 'stale_leader_reclaimed',
-    }));
+      return {
+        value: lease,
+        entityId: lease.lease_id,
+        summary: `Persisted controller lease ${lease.lease_id}.`,
+        details: lease,
+      };
+    },
+  });
+}
+
+async function releaseControllerLeadership({
+  repository,
+  leaseId,
+  now,
+  reason,
+  lockTimeoutMs = 1000,
+  lockRetryMs = 10,
+  lastRunCompletedAt = null,
+  lastRunStatus = null,
+} = {}) {
+  const timestamp = resolveNow(now);
+  return repository.mutateControllerLeasesAtomically({
+    entityId: leaseId,
+    summary: `Persisted controller lease ${leaseId}.`,
+    timeoutMs: lockTimeoutMs,
+    retryMs: lockRetryMs,
+    mutate: async ({
+      findControllerLeaseById,
+      upsertControllerLease,
+    }) => {
+      const existingLease = findControllerLeaseById(leaseId);
+      if (!existingLease || existingLease.status !== 'active') {
+        return {
+          value: existingLease ?? null,
+          entityId: leaseId,
+          summary: `Skipped controller lease release ${leaseId}.`,
+          details: existingLease ?? {},
+        };
+      }
+
+      const lease = upsertControllerLease(buildReleasedControllerLease(existingLease, {
+        now: timestamp,
+        reason,
+        lastRunCompletedAt,
+        lastRunStatus,
+      }));
+
+      return {
+        value: lease,
+        entityId: lease.lease_id,
+        summary: `Persisted controller lease ${lease.lease_id}.`,
+        details: lease,
+      };
+    },
+  });
+}
+
+function startControllerHeartbeat({
+  repository,
+  controllerId,
+  leaseId,
+  holderId,
+  holderType,
+  runtimeKind,
+  pollIntervalMs = null,
+  shutdownTimeoutMs = null,
+  leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+  heartbeatIntervalMs = null,
+  lockTimeoutMs = 1000,
+  lockRetryMs = 10,
+  now,
+} = {}) {
+  const intervalMs = resolveHeartbeatIntervalMs(heartbeatIntervalMs, leaseTimeoutMs);
+  let active = true;
+  let timerId = null;
+  let inflightPromise = null;
+  let lastError = null;
+
+  async function renewHeartbeat() {
+    if (!active) return;
+    inflightPromise = renewControllerLeadership({
+      repository,
+      leaseId,
+      controllerId,
+      holderId,
+      holderType,
+      now,
+      runtimeKind,
+      pollIntervalMs,
+      shutdownTimeoutMs,
+      leaseTimeoutMs,
+      lockTimeoutMs,
+      lockRetryMs,
+      lastRunStatus: 'running',
+    }).catch((error) => {
+      lastError = error;
+      active = false;
+      throw error;
+    }).finally(() => {
+      inflightPromise = null;
+    });
+
+    await inflightPromise;
   }
 
-  const leaseId = buildControllerLeaseId({
-    controllerId,
-    holderId,
-  });
-  const existingLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === leaseId) ?? null;
-  const lease = buildActiveControllerLease({
-    existingLease,
-    leaseId,
-    controllerId,
-    holderId,
-    holderType,
-    now: timestamp,
-    runtimeKind,
-    pollIntervalMs,
-    shutdownTimeoutMs,
-    leaseTimeoutMs,
-  });
-  repository.upsertControllerLease(lease);
-  return lease;
+  function scheduleNextTick() {
+    if (!active) return;
+    timerId = setTimeout(async () => {
+      try {
+        await renewHeartbeat();
+      } finally {
+        scheduleNextTick();
+      }
+    }, intervalMs);
+  }
+
+  scheduleNextTick();
+
+  return {
+    async stop() {
+      active = false;
+      if (timerId != null) {
+        clearTimeout(timerId);
+      }
+      if (inflightPromise) {
+        await inflightPromise;
+      }
+    },
+    getError() {
+      return lastError;
+    },
+  };
 }
 
 async function waitForNextPass({
@@ -614,16 +960,26 @@ async function executeControllerPass({
   issueNumber,
   resolvedMode,
   timestamp,
+  stopSignal = null,
+  shutdownTimeoutMs = DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS,
 } = {}) {
-  await services.ensureRuntimePreflights({
+  await runStepWithShutdownBudget('ensure_runtime_preflights', ({ abortSignal }) => services.ensureRuntimePreflights({
     repository,
     cwd,
     now: timestamp,
+    abortSignal,
+  }), {
+    stopSignal,
+    shutdownTimeoutMs,
   });
 
-  const aoObservation = await services.loadAoProjectObservation({
+  const aoObservation = await runStepWithShutdownBudget('load_ao_project_observation', ({ abortSignal }) => services.loadAoProjectObservation({
     projectId,
     now: timestamp,
+    abortSignal,
+  }), {
+    stopSignal,
+    shutdownTimeoutMs,
   });
   const snapshot = repository.getSnapshot();
   const activeTasks = snapshot.state.managed_tasks.filter((task) => (
@@ -644,9 +1000,13 @@ async function executeControllerPass({
   for (const task of activeTasks) {
     const currentSnapshot = repository.getSnapshot();
     const prBindings = currentSnapshot.state.pr_bindings.filter((binding) => binding.task_id === task.task_id);
-    const githubObservation = await services.loadGitHubObservationSet({
+    const githubObservation = await runStepWithShutdownBudget('load_github_observation', ({ abortSignal }) => services.loadGitHubObservationSet({
       scope: buildGitHubScope(task, prBindings),
       now: timestamp,
+      abortSignal,
+    }), {
+      stopSignal,
+      shutdownTimeoutMs,
     });
     const ingestResult = ingestManagedTaskPollEvents({
       repository,
@@ -676,29 +1036,36 @@ async function executeControllerPass({
     let downgradedActionIds = [];
 
     if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
-      const resolvedLifecycle = services.resolveLifecycleReport
-        ? await services.resolveLifecycleReport({
-            task,
-            prNumber,
-            derivedTrigger,
-            aoObservation,
-            githubObservation,
-            cwd,
-            projectId,
-          })
-        : await resolveLifecycleReportForTask({
-            task,
-            prNumber,
-            derivedTrigger,
-            aoObservation,
-            githubObservation,
-            cwd,
-            projectId,
-            deps: {
-              ...services,
-              controlPlaneSnapshot: repository.getSnapshot(),
-            },
-          });
+      const resolvedLifecycle = await runStepWithShutdownBudget('resolve_lifecycle_report', ({ abortSignal }) => (
+        services.resolveLifecycleReport
+          ? services.resolveLifecycleReport({
+              task,
+              prNumber,
+              derivedTrigger,
+              aoObservation,
+              githubObservation,
+              cwd,
+              projectId,
+              abortSignal,
+            })
+          : resolveLifecycleReportForTask({
+              task,
+              prNumber,
+              derivedTrigger,
+              aoObservation,
+              githubObservation,
+              cwd,
+              projectId,
+              deps: {
+                ...services,
+                abortSignal,
+                controlPlaneSnapshot: repository.getSnapshot(),
+              },
+            })
+      ), {
+        stopSignal,
+        shutdownTimeoutMs,
+      });
       const lifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
       lifecycleTopStatus = lifecycleReport.top_status ?? null;
       const proposalResult = await persistShadowActions({
@@ -723,12 +1090,16 @@ async function executeControllerPass({
       downgradedActionCount += proposalResult.downgradedActionCount;
 
       if (resolvedMode === 'assist') {
-        const executionResult = await executeAssistActions({
+        const executionResult = await runStepWithShutdownBudget('execute_assist_actions', ({ abortSignal }) => executeAssistActions({
           repository,
           controllerId,
           task,
           actionIds: proposalResult.actionIds,
           now: timestamp,
+          abortSignal,
+        }), {
+          stopSignal,
+          shutdownTimeoutMs,
         });
         executedActionIds = executionResult.executedActionIds;
         blockedActionIds = executionResult.blockedActionIds;
@@ -832,6 +1203,8 @@ export async function runControllerLoop({
   cwd = repoRoot,
   projectId = DEFAULT_PROJECT_ID,
   controllerId = CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
+  holderId = null,
+  holderType = null,
   mode = null,
   issueNumber = null,
   now = new Date().toISOString(),
@@ -839,6 +1212,9 @@ export async function runControllerLoop({
   pollIntervalMs = DEFAULT_CONTROLLER_POLL_INTERVAL_MS,
   shutdownTimeoutMs = DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS,
   leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+  heartbeatIntervalMs = null,
+  controllerLeaseLockTimeoutMs = 1000,
+  controllerLeaseLockRetryMs = 10,
   maxPasses = null,
   stopSignal = null,
   deps = {},
@@ -893,63 +1269,124 @@ export async function runControllerLoop({
   let passCount = 0;
   let stopReason = 'completed';
   let currentLeaseId = null;
+  let currentHolder = null;
+  let currentLeaseStatus = 'completed';
 
   try {
+    if (isStopRequested(stopSignal)) {
+      stopReason = 'stop_requested';
+    }
+
     while (true) {
+      if (stopReason !== 'completed' && passCount === 0) {
+        break;
+      }
       activeTimestamp = passCount === 0 ? activeTimestamp : resolveNow(now);
-      const activeLease = acquireControllerLeadership({
+      const activeLease = await acquireControllerLeadership({
         repository,
         controllerId,
         now: activeTimestamp,
         runtimeKind,
+        holderId,
+        holderType,
         pollIntervalMs: continuous ? pollIntervalMs : null,
         shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
         leaseTimeoutMs,
+        lockTimeoutMs: controllerLeaseLockTimeoutMs,
+        lockRetryMs: controllerLeaseLockRetryMs,
+        lastRunStartedAt: activeTimestamp,
+        lastRunStatus: 'running',
       });
       currentLeaseId = activeLease.lease_id;
-
-      const passResult = await executeControllerPass({
+      currentHolder = {
+        holderId: activeLease.holder_id,
+        holderType: activeLease.holder_type,
+      };
+      currentLeaseStatus = 'running';
+      const heartbeat = startControllerHeartbeat({
         repository,
-        checkpointStore,
-        services,
-        cwd,
-        projectId,
         controllerId,
-        issueNumber,
-        resolvedMode,
-        timestamp: activeTimestamp,
-      });
-      passCount += 1;
-      aggregate.observed_at = activeTimestamp;
-      aggregate.managed_task_count = passResult.managed_task_count;
-      aggregate.processed_task_count += passResult.processed_task_count;
-      aggregate.ingested_observation_count += passResult.ingested_observation_count;
-      aggregate.delivery_event_count += passResult.delivery_event_count;
-      aggregate.proposed_action_count += passResult.proposed_action_count;
-      aggregate.executed_action_count += passResult.executed_action_count;
-      aggregate.blocked_action_count += passResult.blocked_action_count;
-      aggregate.policy_decision_count += passResult.policy_decision_count;
-      aggregate.policy_blocked_action_count += passResult.policy_blocked_action_count;
-      aggregate.denied_action_count += passResult.denied_action_count;
-      aggregate.downgraded_action_count += passResult.downgraded_action_count;
-      aggregate.task_results.push(...passResult.task_results);
-
-      const refreshedLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === currentLeaseId) ?? activeLease;
-      repository.upsertControllerLease(buildActiveControllerLease({
-        existingLease: refreshedLease,
         leaseId: currentLeaseId,
-        controllerId,
-        holderId: refreshedLease.holder_id,
-        holderType: refreshedLease.holder_type,
-        now: activeTimestamp,
+        holderId: currentHolder.holderId,
+        holderType: currentHolder.holderType,
         runtimeKind,
         pollIntervalMs: continuous ? pollIntervalMs : null,
         shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
         leaseTimeoutMs,
-        lastRunStartedAt: activeTimestamp,
-        lastRunCompletedAt: activeTimestamp,
-        lastRunStatus: 'completed',
-      }));
+        heartbeatIntervalMs,
+        lockTimeoutMs: controllerLeaseLockTimeoutMs,
+        lockRetryMs: controllerLeaseLockRetryMs,
+        now,
+      });
+
+      try {
+        const passResult = await executeControllerPass({
+          repository,
+          checkpointStore,
+          services,
+          cwd,
+          projectId,
+          controllerId,
+          issueNumber,
+          resolvedMode,
+          timestamp: activeTimestamp,
+          stopSignal,
+          shutdownTimeoutMs,
+        });
+        const completedAt = resolveNow(now);
+        passCount += 1;
+        aggregate.observed_at = completedAt;
+        aggregate.managed_task_count = passResult.managed_task_count;
+        aggregate.processed_task_count += passResult.processed_task_count;
+        aggregate.ingested_observation_count += passResult.ingested_observation_count;
+        aggregate.delivery_event_count += passResult.delivery_event_count;
+        aggregate.proposed_action_count += passResult.proposed_action_count;
+        aggregate.executed_action_count += passResult.executed_action_count;
+        aggregate.blocked_action_count += passResult.blocked_action_count;
+        aggregate.policy_decision_count += passResult.policy_decision_count;
+        aggregate.policy_blocked_action_count += passResult.policy_blocked_action_count;
+        aggregate.denied_action_count += passResult.denied_action_count;
+        aggregate.downgraded_action_count += passResult.downgraded_action_count;
+        aggregate.task_results.push(...passResult.task_results);
+
+        await renewControllerLeadership({
+          repository,
+          leaseId: currentLeaseId,
+          controllerId,
+          holderId: currentHolder.holderId,
+          holderType: currentHolder.holderType,
+          now: completedAt,
+          runtimeKind,
+          pollIntervalMs: continuous ? pollIntervalMs : null,
+          shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
+          leaseTimeoutMs,
+          lockTimeoutMs: controllerLeaseLockTimeoutMs,
+          lockRetryMs: controllerLeaseLockRetryMs,
+          lastRunStartedAt: activeTimestamp,
+          lastRunCompletedAt: completedAt,
+          lastRunStatus: 'completed',
+        });
+        currentLeaseStatus = 'completed';
+      } catch (error) {
+        const heartbeatError = heartbeat.getError();
+        if (heartbeatError) {
+          throw heartbeatError;
+        }
+        if (isControllerShutdownTimeoutError(error)) {
+          stopReason = 'shutdown_timeout';
+          currentLeaseStatus = 'stopping';
+          break;
+        }
+        if (isControllerStopRequestedError(error)) {
+          stopReason = 'stop_requested';
+          currentLeaseStatus = 'stopping';
+          break;
+        }
+        currentLeaseStatus = 'failed';
+        throw error;
+      } finally {
+        await heartbeat.stop();
+      }
 
       if (!continuous) {
         break;
@@ -973,35 +1410,35 @@ export async function runControllerLoop({
     }
   } catch (error) {
     if (currentLeaseId) {
-      const failedLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === currentLeaseId) ?? null;
-      if (failedLease?.status === 'active') {
-        repository.upsertControllerLease(buildActiveControllerLease({
-          existingLease: failedLease,
-          leaseId: currentLeaseId,
-          controllerId,
-          holderId: failedLease.holder_id,
-          holderType: failedLease.holder_type,
-          now: activeTimestamp,
-          runtimeKind,
-          pollIntervalMs: continuous ? pollIntervalMs : null,
-          shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
-          leaseTimeoutMs,
-          lastRunStartedAt: failedLease.last_run_started_at ?? activeTimestamp,
-          lastRunCompletedAt: activeTimestamp,
-          lastRunStatus: 'failed',
-        }));
-      }
+      currentLeaseStatus = 'failed';
+      await renewControllerLeadership({
+        repository,
+        leaseId: currentLeaseId,
+        controllerId,
+        holderId: currentHolder?.holderId,
+        holderType: currentHolder?.holderType,
+        now: resolveNow(now),
+        runtimeKind,
+        pollIntervalMs: continuous ? pollIntervalMs : null,
+        shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
+        leaseTimeoutMs,
+        lockTimeoutMs: controllerLeaseLockTimeoutMs,
+        lockRetryMs: controllerLeaseLockRetryMs,
+        lastRunStatus: 'failed',
+      }).catch(() => null);
     }
     throw error;
   } finally {
     if (currentLeaseId) {
-      const currentLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === currentLeaseId) ?? null;
-      if (currentLease?.status === 'active') {
-        repository.upsertControllerLease(buildReleasedControllerLease(currentLease, {
-          now: activeTimestamp,
-          reason: continuous ? `controller_runtime_${stopReason}` : 'controller_loop_complete',
-        }));
-      }
+      await releaseControllerLeadership({
+        repository,
+        leaseId: currentLeaseId,
+        now: resolveNow(now),
+        reason: continuous ? `controller_runtime_${stopReason}` : 'controller_loop_complete',
+        lockTimeoutMs: controllerLeaseLockTimeoutMs,
+        lockRetryMs: controllerLeaseLockRetryMs,
+        lastRunStatus: currentLeaseStatus,
+      }).catch(() => null);
     }
   }
 

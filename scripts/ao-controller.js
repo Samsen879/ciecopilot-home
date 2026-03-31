@@ -25,6 +25,7 @@ function parseArgs(argv) {
   const options = {
     projectId: 'ciecopilot-home',
     controllerId: 'default',
+    holderId: null,
     mode: null,
     issueNumber: null,
     continuous: false,
@@ -42,6 +43,9 @@ function parseArgs(argv) {
         index += 1;
       } else if (arg === '--controller') {
         options.controllerId = readOptionValue(argv, index, '--controller');
+        index += 1;
+      } else if (arg === '--holder') {
+        options.holderId = readOptionValue(argv, index, '--holder');
         index += 1;
       } else if (arg === '--mode') {
         options.mode = readOptionValue(argv, index, '--mode');
@@ -103,6 +107,17 @@ function parseArgs(argv) {
     };
   }
 
+  if (
+    (process.env.AO_SESSION_NAME == null || process.env.AO_SESSION_NAME === '')
+      && (process.env.AO_SESSION_ID == null || process.env.AO_SESSION_ID === '')
+      && (options.holderId == null || options.holderId.trim() === '')
+  ) {
+    return {
+      ok: false,
+      error: 'Manual controller runs require --holder when AO_SESSION_NAME/AO_SESSION_ID are unset',
+    };
+  }
+
   return {
     ok: true,
     options,
@@ -116,6 +131,7 @@ function renderHelp() {
     'Options:',
     '  --project <project_id>      AO project id. Default: ciecopilot-home',
     '  --controller <id>           Controller id. Default: default',
+    '  --holder <id>               Durable holder identity for manual controller runs',
     '  --mode <observe|shadow|assist> Override the durable controller mode',
     '  --issue <number>            Limit one loop to a specific issue-backed task',
     '  --continuous                Run the controller continuously until stopped',
@@ -191,6 +207,7 @@ export async function runCli(argv, io = createDefaultIo()) {
       cwd: process.cwd(),
       projectId: options.projectId,
       controllerId: options.controllerId,
+      holderId: options.holderId,
       mode: options.mode,
       issueNumber: options.issueNumber,
       continuous: options.continuous,

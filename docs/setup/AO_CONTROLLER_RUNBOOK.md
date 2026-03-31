@@ -36,6 +36,7 @@ cd /home/samsen/code/ciecopilot-home
 AO_SESSION_NAME=ao-controller-main \
 node scripts/ao-controller.js \
   --continuous \
+  --holder ao-controller-main \
   --mode shadow \
   --poll-interval-ms 30000 \
   --shutdown-timeout-ms 10000
@@ -44,6 +45,7 @@ node scripts/ao-controller.js \
 Notes:
 
 - `AO_SESSION_NAME` should be stable for a long-running controller instance.
+- when AO session environment is absent, `--holder <id>` is required so manual starts cannot share an unsafe implicit holder identity
 - `--mode observe|shadow|assist` both sets the durable controller mode and starts the runtime in that mode.
 - omit `--mode` when you want to reuse the durable mode already recorded in AO state.
 - `--poll-interval-ms` is the explicit pass cadence for the continuous runtime.
@@ -102,7 +104,9 @@ Shutdown behavior:
 
 - AO does not start another pass after the stop request lands
 - if the controller is sleeping between polls, it exits promptly
-- if a pass is already running, AO completes that pass and then releases leadership
+- if a pass is already running, AO cooperatively requests shutdown and bounds the in-flight wait by `--shutdown-timeout-ms`
+- long-running passes continue renewing heartbeat during the shutdown window so healthy leaders are not reclaimed as stale mid-exit
+- if the in-flight work does not stop before the timeout, AO exits the runtime with a bounded `shutdown_timeout` stop reason and releases leadership cleanly
 - the final lease release is visible in `ao-state`
 
 ## Restart Semantics
@@ -133,6 +137,7 @@ cd /home/samsen/code/ciecopilot-home
 AO_SESSION_NAME=ao-controller-recovery \
 node scripts/ao-controller.js \
   --continuous \
+  --holder ao-controller-recovery \
   --poll-interval-ms 30000 \
   --shutdown-timeout-ms 10000
 ```
@@ -154,6 +159,7 @@ cd /home/samsen/code/ciecopilot-home
 AO_SESSION_NAME=ao-controller-recovery \
 node scripts/ao-controller.js \
   --continuous \
+  --holder ao-controller-recovery \
   --mode observe \
   --poll-interval-ms 30000 \
   --shutdown-timeout-ms 10000

@@ -64,8 +64,17 @@ export function buildOwnershipLeaseId({ taskId, ownerSessionName } = {}) {
 export function buildControllerLeaseId({
   controllerId = CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
   holderId,
+  incarnationId = null,
 } = {}) {
-  return `controller-${sanitizeToken(controllerId)}-${sanitizeToken(holderId)}`;
+  const segments = [
+    'controller',
+    sanitizeToken(controllerId),
+    sanitizeToken(holderId),
+  ];
+  if (incarnationId != null) {
+    segments.push(sanitizeToken(incarnationId));
+  }
+  return segments.join('-');
 }
 
 export function buildHandoffRequestId({ taskId, requestedAt } = {}) {

@@ -25,8 +25,12 @@ function parseArgs(argv) {
   const options = {
     projectId: 'ciecopilot-home',
     controllerId: 'default',
+    holderId: null,
     mode: null,
     issueNumber: null,
+    continuous: false,
+    pollIntervalMs: 30 * 1000,
+    shutdownTimeoutMs: 10 * 1000,
     json: false,
     help: false,
   };
@@ -40,11 +44,22 @@ function parseArgs(argv) {
       } else if (arg === '--controller') {
         options.controllerId = readOptionValue(argv, index, '--controller');
         index += 1;
+      } else if (arg === '--holder') {
+        options.holderId = readOptionValue(argv, index, '--holder');
+        index += 1;
       } else if (arg === '--mode') {
         options.mode = readOptionValue(argv, index, '--mode');
         index += 1;
       } else if (arg === '--issue') {
         options.issueNumber = Number(readOptionValue(argv, index, '--issue'));
+        index += 1;
+      } else if (arg === '--continuous') {
+        options.continuous = true;
+      } else if (arg === '--poll-interval-ms') {
+        options.pollIntervalMs = Number(readOptionValue(argv, index, '--poll-interval-ms'));
+        index += 1;
+      } else if (arg === '--shutdown-timeout-ms') {
+        options.shutdownTimeoutMs = Number(readOptionValue(argv, index, '--shutdown-timeout-ms'));
         index += 1;
       } else if (arg === '--json') {
         options.json = true;
@@ -78,6 +93,31 @@ function parseArgs(argv) {
     };
   }
 
+  if (!Number.isInteger(options.pollIntervalMs) || options.pollIntervalMs <= 0) {
+    return {
+      ok: false,
+      error: 'Invalid value for --poll-interval-ms',
+    };
+  }
+
+  if (!Number.isInteger(options.shutdownTimeoutMs) || options.shutdownTimeoutMs <= 0) {
+    return {
+      ok: false,
+      error: 'Invalid value for --shutdown-timeout-ms',
+    };
+  }
+
+  if (
+    (process.env.AO_SESSION_NAME == null || process.env.AO_SESSION_NAME === '')
+      && (process.env.AO_SESSION_ID == null || process.env.AO_SESSION_ID === '')
+      && (options.holderId == null || options.holderId.trim() === '')
+  ) {
+    return {
+      ok: false,
+      error: 'Manual controller runs require --holder when AO_SESSION_NAME/AO_SESSION_ID are unset',
+    };
+  }
+
   return {
     ok: true,
     options,
@@ -91,8 +131,12 @@ function renderHelp() {
     'Options:',
     '  --project <project_id>      AO project id. Default: ciecopilot-home',
     '  --controller <id>           Controller id. Default: default',
+    '  --holder <id>               Durable holder identity for manual controller runs',
     '  --mode <observe|shadow|assist> Override the durable controller mode',
     '  --issue <number>            Limit one loop to a specific issue-backed task',
+    '  --continuous                Run the controller continuously until stopped',
+    '  --poll-interval-ms <ms>     Continuous-mode poll interval. Default: 30000',
+    '  --shutdown-timeout-ms <ms>  Continuous-mode shutdown grace bound. Default: 10000',
     '  --json                      Print machine-readable JSON output',
     '  -h, --help                  Show help',
   ].join('\n');
@@ -104,6 +148,9 @@ function renderHumanSummary(result) {
   return [
     `controller_id: ${result.controller_id}`,
     `mode: ${result.mode}`,
+    `runtime_kind: ${result.runtime_kind ?? 'oneshot'}`,
+    `pass_count: ${result.pass_count ?? 1}`,
+    `stop_reason: ${result.stop_reason ?? 'completed'}`,
     `processed_tasks: ${result.processed_task_count}`,
     `ingested_observations: ${result.ingested_observation_count}`,
     `proposed_actions: ${result.proposed_action_count}`,
@@ -141,14 +188,32 @@ export async function runCli(argv, io = createDefaultIo()) {
     };
   }
 
+  const stopSignal = {
+    aborted: false,
+    requested_at: null,
+  };
+  const requestStop = () => {
+    if (stopSignal.aborted) return;
+    stopSignal.aborted = true;
+    stopSignal.requested_at = new Date().toISOString();
+  };
+
   try {
+    process.once('SIGINT', requestStop);
+    process.once('SIGTERM', requestStop);
+
     const result = await runControllerLoop({
       repoRoot,
       cwd: process.cwd(),
       projectId: options.projectId,
       controllerId: options.controllerId,
+      holderId: options.holderId,
       mode: options.mode,
       issueNumber: options.issueNumber,
+      continuous: options.continuous,
+      pollIntervalMs: options.pollIntervalMs,
+      shutdownTimeoutMs: options.shutdownTimeoutMs,
+      stopSignal,
     });
 
     if (options.json) {
@@ -167,6 +232,9 @@ export async function runCli(argv, io = createDefaultIo()) {
       exitCode: 3,
       result: null,
     };
+  } finally {
+    process.off('SIGINT', requestStop);
+    process.off('SIGTERM', requestStop);
   }
 }
 

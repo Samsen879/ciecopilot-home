@@ -31,11 +31,79 @@ function summarizeControllerModes(controllerModes) {
     .sort((left, right) => left.localeCompare(right));
 }
 
+function compareTimestampDescending(left, right) {
+  const leftTime = left ? new Date(left).getTime() : 0;
+  const rightTime = right ? new Date(right).getTime() : 0;
+  return rightTime - leftTime;
+}
+
+function buildControllerRuntimeSummary({
+  snapshot,
+  projectId,
+  now,
+} = {}) {
+  const controllerModes = snapshot.state.controller_modes ?? [];
+  const controllerLeases = snapshot.state.controller_leases ?? [];
+  const controllerIds = [...new Set([
+    ...controllerModes.map((record) => record.controller_id),
+    ...controllerLeases.map((record) => record.controller_id),
+  ])].sort((left, right) => left.localeCompare(right));
+
+  const currentTime = new Date(now).getTime();
+  const controllers = controllerIds.map((controllerId) => {
+    const modeRecord = controllerModes.find((record) => record.controller_id === controllerId) ?? null;
+    const leases = controllerLeases
+      .filter((record) => record.controller_id === controllerId)
+      .sort((left, right) => compareTimestampDescending(
+        left.heartbeat_at ?? left.released_at ?? left.acquired_at ?? null,
+        right.heartbeat_at ?? right.released_at ?? right.acquired_at ?? null,
+      ));
+    const activeLease = leases.find((record) => record.status === 'active') ?? null;
+    const latestLease = activeLease ?? leases[0] ?? null;
+    const activeLeaseFresh = activeLease != null && new Date(activeLease.expires_at).getTime() > currentTime;
+
+    let healthStatus = 'idle';
+    if (modeRecord?.mode === 'off' && !activeLease) {
+      healthStatus = 'off';
+    } else if (activeLease) {
+      healthStatus = activeLeaseFresh ? 'healthy' : 'stale';
+    }
+
+    return {
+      project_id: projectId,
+      controller_id: controllerId,
+      configured_mode: modeRecord?.mode ?? 'off',
+      runtime_kind: latestLease?.runtime_kind ?? null,
+      health_status: healthStatus,
+      lease_status: latestLease?.status ?? 'none',
+      holder_id: latestLease?.holder_id ?? null,
+      holder_type: latestLease?.holder_type ?? null,
+      incarnation_id: latestLease?.incarnation_id ?? null,
+      heartbeat_at: latestLease?.heartbeat_at ?? null,
+      expires_at: latestLease?.expires_at ?? null,
+      lease_timeout_ms: latestLease?.lease_timeout_ms ?? null,
+      poll_interval_ms: latestLease?.poll_interval_ms ?? null,
+      shutdown_timeout_ms: latestLease?.shutdown_timeout_ms ?? null,
+      last_run_started_at: latestLease?.last_run_started_at ?? null,
+      last_run_completed_at: latestLease?.last_run_completed_at ?? null,
+      last_run_status: latestLease?.last_run_status ?? null,
+    };
+  });
+
+  return {
+    controllers,
+    controllerHealth: controllers.map((controller) => (
+      `${controller.controller_id}:${controller.health_status}:${controller.runtime_kind ?? 'none'}`
+    )),
+  };
+}
+
 export async function loadAoStateReport({
   cwd = process.cwd(),
   repoRoot = null,
   projectId = DEFAULT_PROJECT_ID,
   auditLimit = 5,
+  now = new Date().toISOString(),
 } = {}) {
   const resolvedRepoRoot = repoRoot ?? findRepoRoot(cwd);
   if (!resolvedRepoRoot) {
@@ -54,12 +122,13 @@ export async function loadAoStateReport({
   }).inspectAllCheckpoints();
   const handoffInspections = createHandoffProtocol({
     repository,
+    now,
   }).inspectAllHandoffs();
   const validCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'valid').length;
   const staleCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'stale').length;
   const invalidCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'invalid').length;
-  const activeHandoffCount = handoffInspections.filter((inspection) => (
-    ['open', 'pending_decision', 'accepted'].includes(inspection.top_status)
+  const activeHandoffCount = snapshot.state.handoff_requests.filter((request) => (
+    ['open', 'accepted'].includes(request.status)
   )).length;
   const repoKnowledgeRecord = (snapshot.state.repo_knowledge ?? []).find(
     (record) => record?.project_id === projectId,
@@ -70,6 +139,11 @@ export async function loadAoStateReport({
     repoRoot: resolvedRepoRoot,
     snapshot,
     traceLimit: auditLimit,
+  });
+  const controllerRuntime = buildControllerRuntimeSummary({
+    snapshot,
+    projectId,
+    now,
   });
 
   return {
@@ -90,6 +164,7 @@ export async function loadAoStateReport({
       active_override_count: snapshot.state.overrides.filter((override) => override.status === 'active').length,
       controller_mode_count: snapshot.state.controller_modes.length,
       controller_modes: summarizeControllerModes(snapshot.state.controller_modes),
+      controller_health: controllerRuntime.controllerHealth,
       observation_count: snapshot.state.observations.length,
       controller_cursor_count: snapshot.state.controller_cursors.length,
       checkpoint_count: checkpointInspections.length,
@@ -109,6 +184,7 @@ export async function loadAoStateReport({
       repo_knowledge_lint_status: repoKnowledgeRecord?.lint_status ?? null,
       audit_entry_count: auditEntries.length,
     },
+    controllers: controllerRuntime.controllers,
     checkpoints: {
       inspections: checkpointInspections,
     },

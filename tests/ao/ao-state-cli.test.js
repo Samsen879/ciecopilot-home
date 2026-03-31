@@ -31,8 +31,26 @@ function buildReport(overrides = {}) {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
+      controller_health: ['default:healthy:continuous'],
       audit_entry_count: 8,
     },
+    controllers: [
+      {
+        controller_id: 'default',
+        configured_mode: 'observe',
+        runtime_kind: 'continuous',
+        health_status: 'healthy',
+        lease_status: 'active',
+        holder_id: 'cie-62',
+        heartbeat_at: '2026-03-29T06:01:00.000Z',
+        expires_at: '2026-03-29T06:02:30.000Z',
+        poll_interval_ms: 15000,
+        shutdown_timeout_ms: 5000,
+        last_run_started_at: '2026-03-29T06:00:45.000Z',
+        last_run_completed_at: '2026-03-29T06:01:00.000Z',
+        last_run_status: 'completed',
+      },
+    ],
     audit: {
       recent_entries: [],
     },
@@ -85,6 +103,13 @@ describe('ao state cli', () => {
       summary: {
         managed_task_count: 1,
       },
+      controllers: [
+        expect.objectContaining({
+          controller_id: 'default',
+          runtime_kind: 'continuous',
+          health_status: 'healthy',
+        }),
+      ],
     });
   });
 

@@ -349,6 +349,7 @@ export function resolveControlPlanePaths({
     stateRoot,
     schemaPath: path.join(stateRoot, 'schema.json'),
     statePath: path.join(stateRoot, 'state.json'),
+    controllerLeasesPath: path.join(stateRoot, 'controller-leases.json'),
     auditPath: path.join(stateRoot, 'audit-log.jsonl'),
     evalRoot: path.join(stateRoot, 'eval'),
     evalScorecardRoot: path.join(stateRoot, 'eval', 'scorecards'),

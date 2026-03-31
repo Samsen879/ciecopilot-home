@@ -18,6 +18,7 @@ import {
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
+import { writeJsonFileAtomic } from '../../scripts/ao/lib/state-storage.js';
 
 const PROJECT_ID = 'ciecopilot-home';
 const tempDirs = [];
@@ -43,6 +44,20 @@ function createIdGenerator(prefix) {
   return () => {
     index += 1;
     return `${prefix}-${index}`;
+  };
+}
+
+function createDeferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return {
+    promise,
+    resolve,
+    reject,
   };
 }
 
@@ -331,5 +346,209 @@ describe('ao state repository', () => {
       operation: 'upsert',
       entity_id: 'task-1',
     });
+  });
+
+  it('persists controller runtime heartbeat fields for operator inspection', () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      clock: createClock('2026-03-29T06:00:00.000Z', '2026-03-29T06:01:00.000Z'),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-cie-62',
+      controller_id: 'default',
+      holder_id: 'cie-62',
+      holder_type: 'session',
+      status: 'active',
+      acquired_at: '2026-03-29T06:00:00.000Z',
+      heartbeat_at: '2026-03-29T06:00:30.000Z',
+      expires_at: '2026-03-29T06:01:30.000Z',
+      lease_timeout_ms: 90000,
+      runtime_kind: 'continuous',
+      poll_interval_ms: 15000,
+      shutdown_timeout_ms: 5000,
+      last_run_started_at: '2026-03-29T06:00:20.000Z',
+      last_run_completed_at: '2026-03-29T06:00:25.000Z',
+      last_run_status: 'completed',
+    }));
+
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-cie-62',
+        controller_id: 'default',
+        holder_id: 'cie-62',
+        status: 'active',
+        heartbeat_at: '2026-03-29T06:00:30.000Z',
+        expires_at: '2026-03-29T06:01:30.000Z',
+        lease_timeout_ms: 90000,
+        runtime_kind: 'continuous',
+        poll_interval_ms: 15000,
+        shutdown_timeout_ms: 5000,
+        last_run_started_at: '2026-03-29T06:00:20.000Z',
+        last_run_completed_at: '2026-03-29T06:00:25.000Z',
+        last_run_status: 'completed',
+      }),
+    ]);
+  });
+
+  it('serializes controller lease acquisition so contenders cannot both win leadership', async () => {
+    const repoRoot = createTempRepo();
+    const repositoryA = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const repositoryB = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const releaseFirstWriter = createDeferred();
+
+    const firstWriter = repositoryA.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a',
+      summary: 'Persisted controller lease controller-default-holder-a.',
+      mutate: async ({ findActiveLeaseForController, upsertControllerLease }) => {
+        expect(findActiveLeaseForController('default')).toBeNull();
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-a',
+          controller_id: 'default',
+          holder_id: 'holder-a',
+          holder_type: 'session',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:00.000Z',
+          heartbeat_at: '2026-03-29T06:00:00.000Z',
+          expires_at: '2026-03-29T06:05:00.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        await releaseFirstWriter.promise;
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    });
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 20);
+    });
+
+    const secondWriter = repositoryB.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-b',
+      summary: 'Persisted controller lease controller-default-holder-b.',
+      mutate: async ({ findActiveLeaseForController, upsertControllerLease }) => {
+        const activeLease = findActiveLeaseForController('default');
+        if (activeLease) {
+          throw new Error(`Controller default already has an active lease held by ${activeLease.holder_id}.`);
+        }
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-b',
+          controller_id: 'default',
+          holder_id: 'holder-b',
+          holder_type: 'session',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:01.000Z',
+          heartbeat_at: '2026-03-29T06:00:01.000Z',
+          expires_at: '2026-03-29T06:05:01.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    });
+
+    releaseFirstWriter.resolve();
+
+    await expect(firstWriter).resolves.toEqual(expect.objectContaining({
+      holder_id: 'holder-a',
+      status: 'active',
+    }));
+    await expect(secondWriter).rejects.toThrow(/active lease held by holder-a/i);
+    expect(repositoryA.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-holder-a',
+        holder_id: 'holder-a',
+        status: 'active',
+      }),
+    ]);
+  });
+
+  it('preserves the latest controller lease heartbeat when a stale ordinary state write lands afterward', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-holder-a-incarnation-a',
+      controller_id: 'default',
+      holder_id: 'holder-a',
+      holder_type: 'session',
+      incarnation_id: 'incarnation-a',
+      status: 'active',
+      acquired_at: '2026-03-29T06:00:00.000Z',
+      heartbeat_at: '2026-03-29T06:00:00.000Z',
+      expires_at: '2026-03-29T06:05:00.000Z',
+      lease_timeout_ms: 300000,
+      runtime_kind: 'continuous',
+    }));
+
+    const staleState = repository.getSnapshot().state;
+
+    await repository.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a-incarnation-a',
+      summary: 'Renew controller lease heartbeat.',
+      mutate: async ({ findControllerLeaseById, upsertControllerLease }) => {
+        const lease = upsertControllerLease(createControllerLease({
+          ...findControllerLeaseById('controller-default-holder-a-incarnation-a'),
+          heartbeat_at: '2026-03-29T06:02:00.000Z',
+          expires_at: '2026-03-29T06:07:00.000Z',
+          last_run_status: 'running',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    });
+
+    const staleNextState = JSON.parse(JSON.stringify(staleState));
+    staleNextState.managed_tasks.push(createManagedTask({
+      task_id: 'task-1',
+      issue_number: 125,
+      title: 'controller stale snapshot write',
+      branch_name: 'feat/125',
+      worktree_path: '/tmp/cie-62',
+      status: 'active',
+      created_at: '2026-03-29T06:03:00.000Z',
+      updated_at: '2026-03-29T06:03:00.000Z',
+    }));
+    writeJsonFileAtomic(repository.getSnapshot().paths.statePath, staleNextState);
+
+    const snapshot = repository.getSnapshot().state;
+    expect(snapshot.managed_tasks).toEqual([
+      expect.objectContaining({
+        task_id: 'task-1',
+      }),
+    ]);
+    expect(snapshot.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-holder-a-incarnation-a',
+        incarnation_id: 'incarnation-a',
+        heartbeat_at: '2026-03-29T06:02:00.000Z',
+        expires_at: '2026-03-29T06:07:00.000Z',
+      }),
+    ]);
   });
 });

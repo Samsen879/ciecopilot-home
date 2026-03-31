@@ -3,6 +3,13 @@ function formatList(values) {
   return values.join(', ');
 }
 
+function formatControllers(controllers) {
+  if (!controllers?.length) return 'none';
+  return controllers.map((controller) => (
+    `${controller.controller_id}:${controller.health_status}:${controller.configured_mode}:${controller.runtime_kind ?? 'none'}:${controller.holder_id ?? 'unheld'}`
+  )).join(', ');
+}
+
 export function renderAoStateHumanSummary(report) {
   const recentAudit = (report.audit?.recent_entries ?? [])
     .map((entry) => `${entry.entity_kind}.${entry.operation}:${entry.entity_id}`);
@@ -19,6 +26,8 @@ export function renderAoStateHumanSummary(report) {
     `actions: ${report.summary.action_count}`,
     `active_overrides: ${report.summary.active_override_count}`,
     `controller_modes: ${formatList(report.summary.controller_modes)}`,
+    `controller_health: ${formatList(report.summary.controller_health)}`,
+    `controller_runtime: ${formatControllers(report.controllers)}`,
     `observations: ${report.summary.observation_count}`,
     `controller_cursors: ${report.summary.controller_cursor_count}`,
     `repo_knowledge: ${report.summary.repo_knowledge_status ?? 'missing'} (profiles=${report.summary.repo_knowledge_count ?? 0}, version=${report.summary.repo_knowledge_profile_version ?? 'none'}, lint=${report.summary.repo_knowledge_lint_status ?? 'missing'})`,

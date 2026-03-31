@@ -132,6 +132,7 @@ describe('ao state runner', () => {
       repoRoot,
       projectId: PROJECT_ID,
       auditLimit: 2,
+      now: '2026-03-31T10:05:00.000Z',
     });
 
     expect(report.bootstrapped).toBe(true);
@@ -353,7 +354,7 @@ describe('ao state runner', () => {
       operatorSessionName: 'operator-1',
       operatorSessionId: 'operator-1',
       reason: 'approved_successor',
-      grantExpiresAt: '2026-03-31T10:20:00.000Z',
+      grantExpiresAt: '2026-04-30T10:20:00.000Z',
     });
 
     const report = await loadAoStateReport({

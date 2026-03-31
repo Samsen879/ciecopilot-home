@@ -350,6 +350,14 @@ export function resolveControlPlanePaths({
     schemaPath: path.join(stateRoot, 'schema.json'),
     statePath: path.join(stateRoot, 'state.json'),
     auditPath: path.join(stateRoot, 'audit-log.jsonl'),
+    evalRoot: path.join(stateRoot, 'eval'),
+    evalScorecardRoot: path.join(stateRoot, 'eval', 'scorecards'),
+    evalBaselineRoot: path.join(stateRoot, 'eval', 'baselines'),
+    latestEvalScorecardPath: path.join(stateRoot, 'eval', 'latest.json'),
+    operatorEvalRoot: path.join(normalizedRepoRoot, 'ao-artifacts', 'ao-eval'),
+    operatorEvalScorecardRoot: path.join(normalizedRepoRoot, 'ao-artifacts', 'ao-eval', 'scorecards'),
+    operatorEvalBaselineRoot: path.join(normalizedRepoRoot, 'ao-artifacts', 'ao-eval', 'baselines'),
+    operatorLatestEvalScorecardPath: path.join(normalizedRepoRoot, 'ao-artifacts', 'ao-eval', 'latest.json'),
   };
 }
 

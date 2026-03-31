@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 
 import {
   CONTROL_PLANE_LATEST_VERSION,
@@ -37,7 +38,10 @@ import {
   readControlPlaneState,
   resolveControlPlanePaths,
 } from './state-migrations.js';
-import { writeJsonFileAtomic } from './state-storage.js';
+import {
+  readJsonFile,
+  writeJsonFileAtomic,
+} from './state-storage.js';
 
 function resolveNow(clock) {
   if (typeof clock === 'function') return resolveNow(clock());
@@ -85,6 +89,19 @@ function extractRuntimeRefsFromState(state) {
   return normalizeRuntimeRefs(
     (state?.task_specs ?? []).map((record) => record?.snapshot?.spec?.runtime_ref ?? null),
   );
+}
+
+function sanitizeArtifactToken(value, fieldName) {
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  const normalized = value.trim();
+  if (!/^[A-Za-z0-9._-]+$/.test(normalized)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  return normalized;
 }
 
 export function createStateRepository({
@@ -600,6 +617,90 @@ export function createStateRepository({
         normalize: createCheckpointRecord,
         summary: `Persisted checkpoint ${record?.checkpoint_id}.`,
       });
+    },
+
+    persistEvalScorecardArtifact({
+      scorecard,
+      baselineName = null,
+      recordedAt = clock,
+    } = {}) {
+      ensureBootstrapped();
+      const timestamp = resolveNow(recordedAt);
+      const scorecardId = sanitizeArtifactToken(scorecard?.scorecard_id, 'scorecard_id');
+      const scorecardPath = path.join(paths.evalScorecardRoot, `${scorecardId}.json`);
+      const operatorScorecardPath = path.join(paths.operatorEvalScorecardRoot, `${scorecardId}.json`);
+
+      writeJsonFileAtomic(scorecardPath, scorecard);
+      writeJsonFileAtomic(paths.latestEvalScorecardPath, scorecard);
+      writeJsonFileAtomic(operatorScorecardPath, scorecard);
+      writeJsonFileAtomic(paths.operatorLatestEvalScorecardPath, scorecard);
+
+      appendControlPlaneAuditEntry({
+        auditPath: paths.auditPath,
+        entry: createControlPlaneAuditEntry({
+          audit_id: auditIdGenerator(),
+          project_id: projectId,
+          recorded_at: timestamp,
+          entity_kind: 'eval_scorecard',
+          entity_id: scorecardId,
+          operation: 'write',
+          actor: 'state_repository',
+          summary: `Persisted eval scorecard ${scorecardId}.`,
+          details: {
+            scorecard_path: scorecardPath,
+            operator_scorecard_path: operatorScorecardPath,
+          },
+        }),
+      });
+
+      let baselinePath = null;
+      let operatorBaselinePath = null;
+      if (baselineName != null) {
+        const normalizedBaselineName = sanitizeArtifactToken(baselineName, 'baselineName');
+        baselinePath = path.join(paths.evalBaselineRoot, `${normalizedBaselineName}.json`);
+        operatorBaselinePath = path.join(paths.operatorEvalBaselineRoot, `${normalizedBaselineName}.json`);
+        writeJsonFileAtomic(baselinePath, scorecard);
+        writeJsonFileAtomic(operatorBaselinePath, scorecard);
+        appendControlPlaneAuditEntry({
+          auditPath: paths.auditPath,
+          entry: createControlPlaneAuditEntry({
+            audit_id: auditIdGenerator(),
+            project_id: projectId,
+            recorded_at: timestamp,
+            entity_kind: 'eval_baseline',
+            entity_id: normalizedBaselineName,
+            operation: 'write',
+            actor: 'state_repository',
+            summary: `Persisted eval baseline ${normalizedBaselineName}.`,
+            details: {
+              baseline_path: baselinePath,
+              operator_baseline_path: operatorBaselinePath,
+              scorecard_id: scorecardId,
+            },
+          }),
+        });
+      }
+
+      return {
+        scorecard_path: scorecardPath,
+        operator_scorecard_path: operatorScorecardPath,
+        baseline_path: baselinePath,
+        operator_baseline_path: operatorBaselinePath,
+      };
+    },
+
+    readEvalScorecardArtifact({
+      scorecardId,
+    } = {}) {
+      const normalizedScorecardId = sanitizeArtifactToken(scorecardId, 'scorecardId');
+      return readJsonFile(path.join(paths.evalScorecardRoot, `${normalizedScorecardId}.json`));
+    },
+
+    readEvalBaselineArtifact({
+      baselineName,
+    } = {}) {
+      const normalizedBaselineName = sanitizeArtifactToken(baselineName, 'baselineName');
+      return readJsonFile(path.join(paths.evalBaselineRoot, `${normalizedBaselineName}.json`));
     },
   };
 }

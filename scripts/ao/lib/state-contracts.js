@@ -35,6 +35,10 @@ export const HANDOFF_DECISION_SCHEMA_VERSION = 'ao.handoff-decision.v1alpha1';
 export const HANDOFF_DECISION_FORMAT = 'ao_handoff_decision';
 export const HANDOFF_TRANSFER_SCHEMA_VERSION = 'ao.handoff-transfer.v1alpha1';
 export const HANDOFF_TRANSFER_FORMAT = 'ao_handoff_transfer';
+export const AO_EVAL_HARNESS_RUN_SCHEMA_VERSION = 'ao.eval-harness-run.v1alpha1';
+export const AO_EVAL_HARNESS_RUN_FORMAT = 'ao_eval_harness_run';
+export const AO_EVAL_SCORECARD_SCHEMA_VERSION = 'ao.eval-scorecard.v1alpha1';
+export const AO_EVAL_SCORECARD_FORMAT = 'ao_eval_scorecard';
 
 export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
 export const PR_BINDING_STATUSES = ['bound', 'released', 'closed'];

@@ -551,4 +551,103 @@ describe('ao state repository', () => {
       }),
     ]);
   });
+  it('recovers an orphaned controller lease lock before mutating controller leadership', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const snapshot = repository.getSnapshot();
+    const lockPath = `${snapshot.paths.controllerLeasesPath}.lock`;
+    fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+    fs.writeFileSync(lockPath, `${JSON.stringify({
+      pid: 999999,
+      acquired_at: '2026-03-29T05:00:00.000Z',
+    })}\n`, 'utf8');
+
+    await expect(repository.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a-incarnation-a',
+      summary: 'Recover stale controller lease lock.',
+      mutate: async ({ upsertControllerLease }) => {
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-a-incarnation-a',
+          controller_id: 'default',
+          holder_id: 'holder-a',
+          holder_type: 'session',
+          incarnation_id: 'incarnation-a',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:00.000Z',
+          heartbeat_at: '2026-03-29T06:00:00.000Z',
+          expires_at: '2026-03-29T06:05:00.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    })).resolves.toEqual(expect.objectContaining({
+      lease_id: 'controller-default-holder-a-incarnation-a',
+      status: 'active',
+    }));
+
+    expect(fs.existsSync(lockPath)).toBe(false);
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-holder-a-incarnation-a',
+        status: 'active',
+      }),
+    ]);
+  });
+
+  it('recovers a pid-reused controller lease lock when the recorded process identity token mismatches', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const snapshot = repository.getSnapshot();
+    const lockPath = `${snapshot.paths.controllerLeasesPath}.lock`;
+    fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+    fs.writeFileSync(lockPath, `${JSON.stringify({
+      pid: process.pid,
+      process_started_at: '2026-03-29T05:00:00.000Z',
+      process_start_token: 'stale-process-token',
+      acquired_at: '2026-03-29T05:00:00.000Z',
+    })}\n`, 'utf8');
+
+    await expect(repository.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a-incarnation-a',
+      summary: 'Recover pid-reused controller lease lock.',
+      mutate: async ({ upsertControllerLease }) => {
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-a-incarnation-a',
+          controller_id: 'default',
+          holder_id: 'holder-a',
+          holder_type: 'session',
+          incarnation_id: 'incarnation-a',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:00.000Z',
+          heartbeat_at: '2026-03-29T06:00:00.000Z',
+          expires_at: '2026-03-29T06:05:00.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    })).resolves.toEqual(expect.objectContaining({
+      lease_id: 'controller-default-holder-a-incarnation-a',
+      status: 'active',
+    }));
+
+    expect(fs.existsSync(lockPath)).toBe(false);
+  });
 });

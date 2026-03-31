@@ -1127,6 +1127,62 @@ describe('ao controller loop', () => {
     ]);
   });
 
+  it('does not persist a mode override when leadership acquisition loses to another active leader', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-other-holder',
+      controller_id: 'default',
+      holder_id: 'other-holder',
+      holder_type: 'session',
+      incarnation_id: 'other-incarnation',
+      status: 'active',
+      acquired_at: '2026-03-29T06:40:30.000Z',
+      heartbeat_at: '2026-03-29T06:40:30.000Z',
+      expires_at: '2026-03-29T06:45:30.000Z',
+      metadata: {
+        process_pid: process.pid,
+        process_started_at: '2026-03-29T06:40:30.000Z',
+        process_start_token: 'current-process-token',
+      },
+    }));
+
+    await expect(runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      mode: 'assist',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [],
+        }),
+      },
+    })).rejects.toThrow(/active lease/i);
+
+    expect(repository.getSnapshot().state.controller_modes).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        controller_id: 'default',
+        mode: 'observe',
+      }),
+    ]));
+    expect(repository.getSnapshot().state.controller_modes).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        controller_id: 'default',
+        mode: 'assist',
+      }),
+    ]));
+  });
+
   it('requires an explicit durable holder identity when AO session env is missing', async () => {
     delete process.env.AO_SESSION_NAME;
     delete process.env.AO_SESSION_ID;
@@ -1651,6 +1707,116 @@ describe('ao controller loop', () => {
         release_reason: 'controller_loop_complete',
       }),
     ]));
+  });
+
+  it('recovers same-holder leadership when a reused pid has a mismatched process identity token', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-manual-reused-holder-recovered-incarnation',
+      controller_id: 'default',
+      holder_id: 'manual-reused-holder',
+      holder_type: 'manual',
+      incarnation_id: 'recovered-incarnation',
+      status: 'active',
+      acquired_at: '2026-03-29T06:40:30.000Z',
+      heartbeat_at: '2026-03-29T06:40:45.000Z',
+      expires_at: '2026-03-29T06:45:30.000Z',
+      lease_timeout_ms: 300000,
+      runtime_kind: 'continuous',
+      poll_interval_ms: 30000,
+      shutdown_timeout_ms: 10000,
+      metadata: {
+        process_pid: process.pid,
+        process_started_at: '2026-03-29T06:40:30.000Z',
+        process_start_token: 'stale-process-token',
+      },
+    }));
+
+    await expect(runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-reused-holder',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [],
+        }),
+      },
+    })).resolves.toMatchObject({
+      controller_id: 'default',
+      mode: 'observe',
+    });
+
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-manual-reused-holder-recovered-incarnation',
+        holder_id: 'manual-reused-holder',
+        incarnation_id: 'recovered-incarnation',
+        status: 'released',
+        metadata: expect.objectContaining({
+          process_pid: process.pid,
+        }),
+      }),
+    ]);
+    expect(
+      repository.getSnapshot().state.controller_leases[0].metadata.process_start_token,
+    ).not.toBe('stale-process-token');
+  });
+
+  it('does not recover same-holder leadership when the prior lease lacks recoverable process identity metadata', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-manual-missing-identity-current-incarnation',
+      controller_id: 'default',
+      holder_id: 'manual-missing-identity',
+      holder_type: 'manual',
+      incarnation_id: 'current-incarnation',
+      status: 'active',
+      acquired_at: '2026-03-29T06:40:30.000Z',
+      heartbeat_at: '2026-03-29T06:40:45.000Z',
+      expires_at: '2026-03-29T06:45:30.000Z',
+      lease_timeout_ms: 300000,
+      runtime_kind: 'continuous',
+      poll_interval_ms: 30000,
+      shutdown_timeout_ms: 10000,
+      metadata: {},
+    }));
+
+    await expect(runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-missing-identity',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [],
+        }),
+      },
+    })).rejects.toThrow(/active lease/i);
   });
 
   it('applies bounded shutdown semantics to an in-flight pass', async () => {

@@ -49,7 +49,7 @@ describe('ao state contracts', () => {
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
     expect(POLICY_DECISIONS).toEqual(['allow', 'deny', 'downgrade']);
     expect(CREDENTIAL_PROVENANCE_TRUST_DECISIONS).toEqual(['trusted', 'untrusted']);
-    expect(CONTROL_PLANE_LATEST_VERSION).toBe(8);
+    expect(CONTROL_PLANE_LATEST_VERSION).toBe(9);
   });
 
   it('creates durable managed-task, binding, lease, action, override, and controller-mode records', () => {
@@ -554,6 +554,7 @@ describe('ao state contracts', () => {
       credential_provenances: [],
       task_specs: [],
       runtime_preflights: [],
+      repo_knowledge: [],
       checkpoints: [],
       handoff_requests: [],
       handoff_claims: [],

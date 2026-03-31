@@ -1,4 +1,8 @@
 import { createDefaultPolicyRules } from './policy-rules.js';
+import {
+  buildRepoKnowledgeRef,
+  classifyRepoKnowledgeRisk,
+} from './repo-knowledge.js';
 
 export const POLICY_DECISION_SCHEMA_VERSION = 'ao.policy-decision.v1alpha1';
 export const POLICY_DECISION_FORMAT = 'ao_control_plane_policy_decision_result';
@@ -253,6 +257,7 @@ export function evaluatePolicyDecision({
   input,
   credentialProvenances = [],
   rules = createDefaultPolicyRules(),
+  repoKnowledge = null,
 } = {}) {
   const normalizedInput = normalizePolicyInput(input);
   const activeRules = createDefaultPolicyRules();
@@ -265,7 +270,17 @@ export function evaluatePolicyDecision({
   const credentialProvenanceMap = new Map((credentialProvenances ?? [])
     .filter((record) => record?.provenance_id != null)
     .map((record) => [String(record.provenance_id), record]));
+  const repoKnowledgeRef = buildRepoKnowledgeRef(repoKnowledge);
   const findings = [];
+
+  if (repoKnowledgeRef?.lint_status && repoKnowledgeRef.lint_status !== 'pass') {
+    findings.push(buildFinding(
+      'repo_knowledge_invalid',
+      'deny',
+      'repo_knowledge',
+      `${repoKnowledgeRef.project_id}@${repoKnowledgeRef.profile_version}`,
+    ));
+  }
 
   for (const tool of normalizedInput.tools) {
     if (!allowedTools.has(tool)) {
@@ -335,7 +350,22 @@ export function evaluatePolicyDecision({
 
   for (const filePath of normalizedInput.file_paths) {
     const classification = classifyFilePath(filePath, activeRules);
-    if (classification === 'workflow') {
+    const repoKnowledgeRiskSurface = classifyRepoKnowledgeRisk(filePath, repoKnowledge);
+    const effectiveClassification = repoKnowledgeRiskSurface?.kind ?? classification;
+    if (
+      repoKnowledgeRef != null
+      && classification !== 'ordinary'
+      && repoKnowledgeRiskSurface == null
+    ) {
+      findings.push(buildFinding(
+        'unknown_risky_surface',
+        'deny',
+        'file',
+        filePath,
+      ));
+      continue;
+    }
+    if (effectiveClassification === 'workflow') {
       findings.push(buildFinding(
         'workflow_mutation_requires_review',
         'downgrade',
@@ -345,7 +375,7 @@ export function evaluatePolicyDecision({
       continue;
     }
 
-    if (classification === 'infra') {
+    if (effectiveClassification === 'infra') {
       findings.push(buildFinding(
         'infra_mutation_requires_review',
         'downgrade',
@@ -355,7 +385,7 @@ export function evaluatePolicyDecision({
       continue;
     }
 
-    if (classification === 'secret') {
+    if (effectiveClassification === 'secret') {
       findings.push(buildFinding(
         'secret_file_requires_review',
         'downgrade',
@@ -377,6 +407,7 @@ export function evaluatePolicyDecision({
     policy_version: activeRules.policy_version,
     decision,
     summary: buildDecisionSummary(decision, findings),
+    repo_knowledge_ref: repoKnowledgeRef,
     input: cloneJsonValue(normalizedInput),
     findings,
   };

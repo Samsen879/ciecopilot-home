@@ -1,4 +1,5 @@
 import { createRuntimePreflightSnapshot } from './runtime-contracts.js';
+import { createRepoKnowledgeSnapshot } from './repo-knowledge.js';
 import { createTaskSpecSnapshot } from './task-spec.js';
 import {
   CONTROLLER_RUN_MEASUREMENT_FORMAT,
@@ -22,7 +23,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 8;
+export const CONTROL_PLANE_LATEST_VERSION = 9;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
@@ -295,6 +296,7 @@ export function createEmptyControlPlaneState({
     credential_provenances: [],
     task_specs: [],
     runtime_preflights: [],
+    repo_knowledge: [],
     checkpoints: [],
     handoff_requests: [],
     handoff_claims: [],
@@ -666,6 +668,23 @@ export function createRuntimePreflightRecord({
     runtime_ref: normalizeRequiredString(normalizedSnapshot.runtime_ref, 'runtime_ref'),
     provider_id: normalizeOptionalString(normalizedSnapshot.provider_id),
     status: normalizeRequiredString(normalizedSnapshot.status, 'status'),
+    observed_at: normalizeIsoTimestamp(normalizedSnapshot.observed_at, 'observed_at'),
+    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
+    replay_key: normalizeRequiredString(normalizedSnapshot.replay_key, 'replay_key'),
+    snapshot: normalizedSnapshot,
+  };
+}
+
+export function createRepoKnowledgeRecord({
+  recorded_at,
+  snapshot,
+} = {}) {
+  const normalizedSnapshot = createRepoKnowledgeSnapshot(snapshot);
+
+  return {
+    project_id: normalizeRequiredString(normalizedSnapshot.project_id, 'project_id'),
+    profile_version: normalizePositiveInteger(normalizedSnapshot.profile_version, 'profile_version'),
+    lint_status: normalizeRequiredString(normalizedSnapshot?.lint?.status, 'lint.status'),
     observed_at: normalizeIsoTimestamp(normalizedSnapshot.observed_at, 'observed_at'),
     recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
     replay_key: normalizeRequiredString(normalizedSnapshot.replay_key, 'replay_key'),

@@ -2,6 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { evaluatePolicyDecision } from '../../scripts/ao/lib/policy-engine.js';
 import { createDefaultPolicyRules } from '../../scripts/ao/lib/policy-rules.js';
+import { createRepoKnowledgeProfile } from '../../scripts/ao/lib/repo-knowledge-lint.js';
 import { createCredentialProvenanceRecord } from '../../scripts/ao/lib/state-contracts.js';
 
 const NOW = '2026-03-30T10:00:00.000Z';
@@ -15,6 +16,82 @@ function createGitHubCredentialProvenance() {
     created_at: NOW,
     updated_at: NOW,
   });
+}
+
+function createRepoKnowledge(overrides = {}) {
+  const profile = createRepoKnowledgeProfile({
+    project_id: 'ciecopilot-home',
+    profile_version: 1,
+    generated_at: NOW,
+    canonical_commands: {
+      setup: [
+        {
+          command_id: 'setup.install_dependencies',
+          command: 'npm install',
+          source_ref: 'package.json',
+        },
+      ],
+      verify: [
+        {
+          command_id: 'verify.test_run_in_band',
+          command: 'npm test -- --runInBand',
+          source_ref: 'package.json#scripts.test',
+        },
+      ],
+      build: [
+        {
+          command_id: 'build.production_bundle',
+          command: 'npm run build',
+          source_ref: 'package.json#scripts.build',
+        },
+      ],
+    },
+    risky_surfaces: [
+      {
+        surface_id: 'workflow.github_workflows',
+        kind: 'workflow',
+        match_type: 'prefix',
+        pattern: '.github/workflows/',
+      },
+      {
+        surface_id: 'infra.terraform',
+        kind: 'infra',
+        match_type: 'prefix',
+        pattern: 'terraform/',
+      },
+      {
+        surface_id: 'secret.env_files',
+        kind: 'secret',
+        match_type: 'prefix',
+        pattern: '.env',
+      },
+    ],
+    runtime_hints: {
+      runtime_ref: 'runtime.github_local',
+      policy_ref: 'policy.operator_gated',
+      node_engine: '>=18.0.0',
+      package_manager: 'npm',
+      test_runner: 'jest',
+    },
+  });
+
+  return {
+    schema_version: 'ao.repo-knowledge.v1alpha1',
+    format: 'ao_repo_knowledge',
+    project_id: 'ciecopilot-home',
+    profile_version: 1,
+    observed_at: NOW,
+    replay_key: 'repo_knowledge:test',
+    profile,
+    lint: {
+      schema_version: 'ao.repo-knowledge-lint.v1alpha1',
+      format: 'ao_repo_knowledge_lint',
+      status: 'pass',
+      checked_at: NOW,
+      findings: [],
+    },
+    ...overrides,
+  };
 }
 
 describe('ao policy engine', () => {
@@ -161,6 +238,51 @@ describe('ao policy engine', () => {
         severity: 'downgrade',
         surface: 'network',
         value: 'registry.npmjs.org',
+      }),
+    ]));
+  });
+
+  it('fails closed when repo knowledge does not label a risky file surface', () => {
+    const repoKnowledge = createRepoKnowledge({
+      profile: createRepoKnowledgeProfile({
+        ...createRepoKnowledge().profile,
+        risky_surfaces: [
+          {
+            surface_id: 'secret.env_files',
+            kind: 'secret',
+            match_type: 'prefix',
+            pattern: '.env',
+          },
+        ],
+      }),
+    });
+
+    const decision = evaluatePolicyDecision({
+      input: {
+        task_id: 'issue-119',
+        action_kind: 'workflow-touch',
+        action_class: 'hold',
+        tools: ['git'],
+        file_paths: ['.github/workflows/release.yml'],
+      },
+      repoKnowledge,
+      rules: createDefaultPolicyRules(),
+    });
+
+    expect(decision).toMatchObject({
+      decision: 'deny',
+      repo_knowledge_ref: {
+        project_id: 'ciecopilot-home',
+        profile_version: 1,
+        lint_status: 'pass',
+      },
+    });
+    expect(decision.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'unknown_risky_surface',
+        severity: 'deny',
+        surface: 'file',
+        value: '.github/workflows/release.yml',
       }),
     ]));
   });

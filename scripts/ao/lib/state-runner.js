@@ -1,5 +1,6 @@
 import { createCheckpointStore } from './checkpoint-store.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
+import { inspectRepoKnowledgeRecordState } from './repo-knowledge.js';
 import { buildAoMetricsReport } from './run-metrics.js';
 import * as fs from 'node:fs';
 import path from 'node:path';
@@ -60,6 +61,10 @@ export async function loadAoStateReport({
   const activeHandoffCount = handoffInspections.filter((inspection) => (
     ['open', 'pending_decision', 'accepted'].includes(inspection.top_status)
   )).length;
+  const repoKnowledgeRecord = (snapshot.state.repo_knowledge ?? []).find(
+    (record) => record?.project_id === projectId,
+  ) ?? null;
+  const repoKnowledgeInspection = inspectRepoKnowledgeRecordState(repoKnowledgeRecord);
   const metricsReport = buildAoMetricsReport({
     projectId,
     repoRoot: resolvedRepoRoot,
@@ -98,6 +103,10 @@ export async function loadAoStateReport({
       active_handoff_count: activeHandoffCount,
       controller_run_metric_count: snapshot.state.controller_run_metrics.length,
       execution_attempt_metric_count: snapshot.state.execution_attempt_metrics.length,
+      repo_knowledge_count: snapshot.state.repo_knowledge.length,
+      repo_knowledge_status: repoKnowledgeInspection.status,
+      repo_knowledge_profile_version: repoKnowledgeRecord?.profile_version ?? null,
+      repo_knowledge_lint_status: repoKnowledgeRecord?.lint_status ?? null,
       audit_entry_count: auditEntries.length,
     },
     checkpoints: {
@@ -105,6 +114,10 @@ export async function loadAoStateReport({
     },
     handoffs: {
       inspections: handoffInspections,
+    },
+    repo_knowledge: {
+      record: repoKnowledgeRecord,
+      inspection: repoKnowledgeInspection,
     },
     metrics: {
       summary: metricsReport.summary,

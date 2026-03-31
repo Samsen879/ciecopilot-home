@@ -8,6 +8,9 @@ const {
   runRuntimeBootstrapPreflight,
 } = await import('../../scripts/ao/lib/runtime-preflight.js');
 const {
+  createRepoKnowledgeProfile,
+} = await import('../../scripts/ao/lib/repo-knowledge-lint.js');
+const {
   createManagedTask,
   createTaskSpecRecord,
 } = await import('../../scripts/ao/lib/state-contracts.js');
@@ -23,6 +26,70 @@ function createTempRepo() {
   const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-runtime-preflight-'));
   tempDirs.push(repoRoot);
   return repoRoot;
+}
+
+function createRepoKnowledge(overrides = {}) {
+  const profile = createRepoKnowledgeProfile({
+    project_id: PROJECT_ID,
+    profile_version: 1,
+    generated_at: NOW,
+    canonical_commands: {
+      setup: [
+        {
+          command_id: 'setup.install_dependencies',
+          command: 'npm install',
+          source_ref: 'package.json',
+        },
+      ],
+      verify: [
+        {
+          command_id: 'verify.test_run_in_band',
+          command: 'npm test -- --runInBand',
+          source_ref: 'package.json#scripts.test',
+        },
+      ],
+      build: [
+        {
+          command_id: 'build.production_bundle',
+          command: 'npm run build',
+          source_ref: 'package.json#scripts.build',
+        },
+      ],
+    },
+    risky_surfaces: [
+      {
+        surface_id: 'workflow.github_workflows',
+        kind: 'workflow',
+        match_type: 'prefix',
+        pattern: '.github/workflows/',
+      },
+    ],
+    runtime_hints: {
+      runtime_ref: 'runtime.github_local',
+      policy_ref: 'policy.operator_gated',
+      node_engine: '>=18.0.0',
+      package_manager: 'npm',
+      test_runner: 'jest',
+    },
+  });
+
+  return {
+    schema_version: 'ao.repo-knowledge.v1alpha1',
+    format: 'ao_repo_knowledge',
+    project_id: PROJECT_ID,
+    profile_version: 1,
+    observed_at: NOW,
+    replay_key: 'repo_knowledge:test',
+    profile,
+    lint: {
+      schema_version: 'ao.repo-knowledge-lint.v1alpha1',
+      format: 'ao_repo_knowledge_lint',
+      status: 'pass',
+      checked_at: NOW,
+      findings: [],
+    },
+    ...overrides,
+  };
 }
 
 afterEach(() => {
@@ -138,6 +205,58 @@ describe('runtime preflight', () => {
         }),
       ],
     });
+  });
+
+  it('fails closed when repo knowledge does not declare a canonical verification command', () => {
+    const repoKnowledge = createRepoKnowledge({
+      profile: createRepoKnowledgeProfile({
+        ...createRepoKnowledge().profile,
+        canonical_commands: {
+          ...createRepoKnowledge().profile.canonical_commands,
+          verify: [],
+        },
+      }),
+      lint: {
+        schema_version: 'ao.repo-knowledge-lint.v1alpha1',
+        format: 'ao_repo_knowledge_lint',
+        status: 'fail_closed',
+        checked_at: NOW,
+        findings: [
+          {
+            code: 'missing_canonical_verify_command',
+            severity: 'error',
+            surface: 'command_surface',
+            value: 'verify',
+            detail: null,
+          },
+        ],
+      },
+    });
+
+    const result = runRuntimeBootstrapPreflight({
+      runtimeRef: 'runtime.github_local',
+      cwd: '/tmp/ciecopilot-home',
+      now: NOW,
+      repoKnowledge,
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+
+    expect(result.status).toBe('missing_dependency');
+    expect(result.checks).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        requirement_id: 'setup_step.canonical_verify_command',
+        requirement_kind: 'setup_step',
+        status: 'missing',
+        details: expect.arrayContaining([
+          'project_id: ciecopilot-home',
+          'profile_version: 1',
+        ]),
+      }),
+    ]));
   });
 
   it('persists runtime preflight state durably and skips replay-identical rewrites', () => {

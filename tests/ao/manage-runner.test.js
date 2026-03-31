@@ -5,6 +5,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from '@jest/globals';
 
 import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js';
+import { createHandoffProtocol } from '../../scripts/ao/lib/handoff-protocol.js';
 import { resolveControlPlanePaths } from '../../scripts/ao/lib/state-migrations.js';
 import { runManageCommand } from '../../scripts/ao/lib/manage-runner.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
@@ -277,6 +278,32 @@ describe('ao manage runner', () => {
       checkpoint_id: checkpoint.checkpoint_id,
       state: 'valid',
     });
+
+    const state = readState(repoRoot);
+    expect(state.execution_attempt_metrics).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-110',
+        owner_session_name: 'cie-57',
+        command: 'enroll',
+        status: 'paused',
+        failure_class: 'worker_exit',
+        retry_cause: 'none',
+      }),
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-110',
+        owner_session_name: 'cie-57',
+        command: 'resume',
+        status: 'active',
+        failure_class: 'none',
+        retry_cause: 'explicit_resume',
+        intervention_counts: expect.objectContaining({
+          explicit_resume: 1,
+          successor_handoff: 0,
+        }),
+      }),
+    ]));
   });
 
   it('fails closed when explicit resume sees a stale checkpoint', async () => {
@@ -353,6 +380,237 @@ describe('ao manage runner', () => {
       ownerSessionId: 'cie-57',
       now: '2026-03-30T10:04:00.000Z',
     })).rejects.toThrow(/stale checkpoint/i);
+  });
+
+  it('blocks successor resume until an accepted handoff grant exists', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 117,
+      title: 'feat(ao): add successor handoff and authority transfer protocol',
+      branchName: 'feat/117',
+      worktreePath: '/tmp/cie-58',
+      prNumber: 127,
+      ownerSessionName: 'cie-58',
+      ownerSessionId: 'cie-58',
+      taskSpecBody: [
+        '## Problem Type',
+        'issue_delivery',
+        '',
+        '## Acceptance Contract',
+        '- successor handoff protocol exists',
+        '',
+        '## Runtime Ref',
+        'runtime.github_local',
+        '',
+        '## Policy Ref',
+        'policy.operator_gated',
+        '',
+        '## Human Gates',
+        '- operator_handoff',
+      ].join('\n'),
+      now: '2026-03-31T10:00:00.000Z',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: '2026-03-31T10:01:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    createCheckpointStore({
+      repository,
+      now: () => '2026-03-31T10:02:00.000Z',
+    }).captureCheckpoint({
+      taskId: 'issue-117',
+      controllerId: 'default',
+      derivedTrigger: 'agent_exited',
+      observedAt: '2026-03-31T10:02:00.000Z',
+      actionIds: ['proposal-issue-117-handoff'],
+    });
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 117,
+      now: '2026-03-31T10:03:00.000Z',
+      reason: 'worker_stale',
+    });
+
+    await expect(runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 117,
+      ownerSessionName: 'cie-59',
+      ownerSessionId: 'cie-59',
+      now: '2026-03-31T10:04:00.000Z',
+    })).rejects.toThrow(/accepted handoff/i);
+  });
+
+  it('transfers ownership to the accepted successor during resume', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 117,
+      title: 'feat(ao): add successor handoff and authority transfer protocol',
+      branchName: 'feat/117',
+      worktreePath: '/tmp/cie-58',
+      prNumber: 127,
+      ownerSessionName: 'cie-58',
+      ownerSessionId: 'cie-58',
+      taskSpecBody: [
+        '## Problem Type',
+        'issue_delivery',
+        '',
+        '## Acceptance Contract',
+        '- successor handoff protocol exists',
+        '',
+        '## Runtime Ref',
+        'runtime.github_local',
+        '',
+        '## Policy Ref',
+        'policy.operator_gated',
+        '',
+        '## Human Gates',
+        '- operator_handoff',
+      ].join('\n'),
+      now: '2026-03-31T10:00:00.000Z',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: '2026-03-31T10:01:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    createCheckpointStore({
+      repository,
+      now: () => '2026-03-31T10:02:00.000Z',
+    }).captureCheckpoint({
+      taskId: 'issue-117',
+      controllerId: 'default',
+      derivedTrigger: 'agent_exited',
+      observedAt: '2026-03-31T10:02:00.000Z',
+      actionIds: ['proposal-issue-117-handoff'],
+    });
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 117,
+      now: '2026-03-31T10:03:00.000Z',
+      reason: 'worker_stale',
+    });
+
+    const handoffProtocol = createHandoffProtocol({
+      repository,
+      now: () => '2026-03-31T10:04:00.000Z',
+    });
+    const request = handoffProtocol.requestHandoff({
+      taskId: 'issue-117',
+      requestedBySessionName: 'operator-1',
+      requestedBySessionId: 'operator-1',
+      operatorSessionName: 'operator-1',
+      operatorSessionId: 'operator-1',
+      successorSessionName: 'cie-59',
+      successorSessionId: 'cie-59',
+      reason: 'owner_stale',
+    });
+    const claim = handoffProtocol.claimHandoff({
+      requestId: request.request_id,
+      successorSessionName: 'cie-59',
+      successorSessionId: 'cie-59',
+      reason: 'resume_as_successor',
+    });
+    handoffProtocol.acceptHandoff({
+      requestId: request.request_id,
+      claimId: claim.claim_id,
+      operatorSessionName: 'operator-1',
+      operatorSessionId: 'operator-1',
+      reason: 'approved_successor',
+      grantExpiresAt: '2026-03-31T10:20:00.000Z',
+    });
+
+    const result = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 117,
+      ownerSessionName: 'cie-59',
+      ownerSessionId: 'cie-59',
+      now: '2026-03-31T10:05:00.000Z',
+    });
+
+    expect(result.ownershipLease).toMatchObject({
+      task_id: 'issue-117',
+      owner_session_name: 'cie-59',
+      status: 'active',
+    });
+    expect(result.handoffTransfer).toMatchObject({
+      request_id: request.request_id,
+      claim_id: claim.claim_id,
+      successor_session_name: 'cie-59',
+      checkpoint_id: expect.stringMatching(/^checkpoint-issue-117-/),
+    });
+
+    const state = readState(repoRoot);
+    expect(state.handoff_requests).toEqual([
+      expect.objectContaining({
+        request_id: request.request_id,
+        status: 'completed',
+      }),
+    ]);
+    expect(state.handoff_transfers).toEqual([
+      expect.objectContaining({
+        request_id: request.request_id,
+        successor_session_name: 'cie-59',
+      }),
+    ]);
+    expect(state.execution_attempt_metrics).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-117',
+        owner_session_name: 'cie-58',
+        command: 'enroll',
+        status: 'paused',
+        failure_class: 'worker_exit',
+      }),
+      expect.objectContaining({
+        attempt_kind: 'managed_task',
+        task_id: 'issue-117',
+        owner_session_name: 'cie-59',
+        command: 'resume',
+        status: 'active',
+        retry_cause: 'successor_handoff',
+        intervention_counts: expect.objectContaining({
+          explicit_resume: 0,
+          successor_handoff: 1,
+        }),
+      }),
+    ]));
   });
 
   it('unmanages and retires a task without deleting its durable bindings', async () => {

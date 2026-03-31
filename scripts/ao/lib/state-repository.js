@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import path from 'node:path';
 
 import {
   CONTROL_PLANE_LATEST_VERSION,
@@ -8,19 +9,27 @@ import {
   createControlPlaneSchema,
   createControllerLease,
   createControllerModeRecord,
+  createControllerRunMetricRecord,
   createControllerCursorRecord,
   createCredentialProvenanceRecord,
   createDeliveryEventRecord,
   createEmptyControlPlaneState,
+  createExecutionAttemptMetricRecord,
+  createHandoffClaimRecord,
+  createHandoffDecisionRecord,
+  createHandoffRequestRecord,
+  createHandoffTransferRecord,
   createManagedTask,
   createObservationRecord,
   createOverrideRecord,
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createRepoKnowledgeRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
 } from './state-contracts.js';
+import { materializeRepoKnowledge } from './repo-knowledge.js';
 import { runRuntimeBootstrapPreflight } from './runtime-preflight.js';
 import { appendControlPlaneAuditEntry, readControlPlaneAuditEntries } from './state-audit.js';
 import {
@@ -29,7 +38,10 @@ import {
   readControlPlaneState,
   resolveControlPlanePaths,
 } from './state-migrations.js';
-import { writeJsonFileAtomic } from './state-storage.js';
+import {
+  readJsonFile,
+  writeJsonFileAtomic,
+} from './state-storage.js';
 
 function resolveNow(clock) {
   if (typeof clock === 'function') return resolveNow(clock());
@@ -79,6 +91,19 @@ function extractRuntimeRefsFromState(state) {
   );
 }
 
+function sanitizeArtifactToken(value, fieldName) {
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  const normalized = value.trim();
+  if (!/^[A-Za-z0-9._-]+$/.test(normalized)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  return normalized;
+}
+
 export function createStateRepository({
   repoRoot,
   projectId,
@@ -118,7 +143,20 @@ export function createStateRepository({
     nextState.credential_provenances = sortCollectionByKey(nextState.credential_provenances, 'provenance_id');
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
     nextState.runtime_preflights = sortCollectionByKey(nextState.runtime_preflights, 'runtime_ref');
+    nextState.repo_knowledge = sortCollectionByKey(nextState.repo_knowledge, 'project_id');
     nextState.checkpoints = sortCollectionByKey(nextState.checkpoints, 'checkpoint_id');
+    nextState.handoff_requests = sortCollectionByKey(nextState.handoff_requests, 'request_id');
+    nextState.handoff_claims = sortCollectionByKey(nextState.handoff_claims, 'claim_id');
+    nextState.handoff_decisions = sortCollectionByKey(nextState.handoff_decisions, 'decision_id');
+    nextState.handoff_transfers = sortCollectionByKey(nextState.handoff_transfers, 'transfer_id');
+    nextState.controller_run_metrics = sortCollectionByKey(
+      nextState.controller_run_metrics,
+      'controller_run_metric_id',
+    );
+    nextState.execution_attempt_metrics = sortCollectionByKey(
+      nextState.execution_attempt_metrics,
+      'execution_attempt_metric_id',
+    );
 
     return {
       bootstrapped: true,
@@ -388,6 +426,83 @@ export function createStateRepository({
       });
     },
 
+    upsertRepoKnowledge(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'repo_knowledge',
+        identityKey: 'project_id',
+        entityKind: 'repo_knowledge',
+        record,
+        normalize: createRepoKnowledgeRecord,
+        summary: `Persisted repo knowledge ${record?.project_id ?? record?.snapshot?.project_id}.`,
+      });
+    },
+
+    upsertHandoffRequest(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_requests',
+        identityKey: 'request_id',
+        entityKind: 'handoff_request',
+        record,
+        normalize: createHandoffRequestRecord,
+        summary: `Persisted handoff request ${record?.request_id}.`,
+      });
+    },
+
+    upsertHandoffClaim(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_claims',
+        identityKey: 'claim_id',
+        entityKind: 'handoff_claim',
+        record,
+        normalize: createHandoffClaimRecord,
+        summary: `Persisted handoff claim ${record?.claim_id}.`,
+      });
+    },
+
+    upsertHandoffDecision(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_decisions',
+        identityKey: 'decision_id',
+        entityKind: 'handoff_decision',
+        record,
+        normalize: createHandoffDecisionRecord,
+        summary: `Persisted handoff decision ${record?.decision_id}.`,
+      });
+    },
+
+    upsertHandoffTransfer(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'handoff_transfers',
+        identityKey: 'transfer_id',
+        entityKind: 'handoff_transfer',
+        record,
+        normalize: createHandoffTransferRecord,
+        summary: `Persisted handoff transfer ${record?.transfer_id}.`,
+      });
+    },
+
+    upsertControllerRunMetric(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'controller_run_metrics',
+        identityKey: 'controller_run_metric_id',
+        entityKind: 'controller_run_metric',
+        record,
+        normalize: createControllerRunMetricRecord,
+        summary: `Persisted controller run metric ${record?.controller_run_metric_id}.`,
+      });
+    },
+
+    upsertExecutionAttemptMetric(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'execution_attempt_metrics',
+        identityKey: 'execution_attempt_metric_id',
+        entityKind: 'execution_attempt_metric',
+        record,
+        normalize: createExecutionAttemptMetricRecord,
+        summary: `Persisted execution attempt metric ${record?.execution_attempt_metric_id}.`,
+      });
+    },
+
     ensureRuntimePreflights({
       cwd = repoRoot,
       now = clock,
@@ -449,6 +564,50 @@ export function createStateRepository({
       return sortCollectionByKey(ensuredRecords, 'runtime_ref');
     },
 
+    ensureRepoKnowledge({
+      now = clock,
+    } = {}) {
+      ensureBootstrapped();
+      const timestamp = resolveNow(now);
+      const snapshot = readSnapshot();
+      const repoKnowledgeSnapshot = materializeRepoKnowledge({
+        repoRoot,
+        projectId,
+        now: timestamp,
+      });
+      const normalizedRecord = createRepoKnowledgeRecord({
+        recorded_at: timestamp,
+        snapshot: repoKnowledgeSnapshot,
+      });
+      const existingRecord = (snapshot.state.repo_knowledge ?? []).find(
+        (record) => record?.project_id === normalizedRecord.project_id,
+      );
+
+      if (existingRecord?.replay_key === normalizedRecord.replay_key) {
+        return existingRecord;
+      }
+
+      const nextState = cloneJsonValue(snapshot.state);
+      const existingIndex = nextState.repo_knowledge.findIndex(
+        (record) => record?.project_id === normalizedRecord.project_id,
+      );
+      if (existingIndex >= 0) {
+        nextState.repo_knowledge[existingIndex] = normalizedRecord;
+      } else {
+        nextState.repo_knowledge.push(normalizedRecord);
+      }
+
+      persistState({
+        state: nextState,
+        entityKind: 'repo_knowledge',
+        entityId: normalizedRecord.project_id,
+        summary: `Persisted repo knowledge ${normalizedRecord.project_id}.`,
+        details: normalizedRecord,
+      });
+
+      return normalizedRecord;
+    },
+
     upsertCheckpoint(record) {
       return upsertCollectionRecord({
         collectionKey: 'checkpoints',
@@ -458,6 +617,90 @@ export function createStateRepository({
         normalize: createCheckpointRecord,
         summary: `Persisted checkpoint ${record?.checkpoint_id}.`,
       });
+    },
+
+    persistEvalScorecardArtifact({
+      scorecard,
+      baselineName = null,
+      recordedAt = clock,
+    } = {}) {
+      ensureBootstrapped();
+      const timestamp = resolveNow(recordedAt);
+      const scorecardId = sanitizeArtifactToken(scorecard?.scorecard_id, 'scorecard_id');
+      const scorecardPath = path.join(paths.evalScorecardRoot, `${scorecardId}.json`);
+      const operatorScorecardPath = path.join(paths.operatorEvalScorecardRoot, `${scorecardId}.json`);
+
+      writeJsonFileAtomic(scorecardPath, scorecard);
+      writeJsonFileAtomic(paths.latestEvalScorecardPath, scorecard);
+      writeJsonFileAtomic(operatorScorecardPath, scorecard);
+      writeJsonFileAtomic(paths.operatorLatestEvalScorecardPath, scorecard);
+
+      appendControlPlaneAuditEntry({
+        auditPath: paths.auditPath,
+        entry: createControlPlaneAuditEntry({
+          audit_id: auditIdGenerator(),
+          project_id: projectId,
+          recorded_at: timestamp,
+          entity_kind: 'eval_scorecard',
+          entity_id: scorecardId,
+          operation: 'write',
+          actor: 'state_repository',
+          summary: `Persisted eval scorecard ${scorecardId}.`,
+          details: {
+            scorecard_path: scorecardPath,
+            operator_scorecard_path: operatorScorecardPath,
+          },
+        }),
+      });
+
+      let baselinePath = null;
+      let operatorBaselinePath = null;
+      if (baselineName != null) {
+        const normalizedBaselineName = sanitizeArtifactToken(baselineName, 'baselineName');
+        baselinePath = path.join(paths.evalBaselineRoot, `${normalizedBaselineName}.json`);
+        operatorBaselinePath = path.join(paths.operatorEvalBaselineRoot, `${normalizedBaselineName}.json`);
+        writeJsonFileAtomic(baselinePath, scorecard);
+        writeJsonFileAtomic(operatorBaselinePath, scorecard);
+        appendControlPlaneAuditEntry({
+          auditPath: paths.auditPath,
+          entry: createControlPlaneAuditEntry({
+            audit_id: auditIdGenerator(),
+            project_id: projectId,
+            recorded_at: timestamp,
+            entity_kind: 'eval_baseline',
+            entity_id: normalizedBaselineName,
+            operation: 'write',
+            actor: 'state_repository',
+            summary: `Persisted eval baseline ${normalizedBaselineName}.`,
+            details: {
+              baseline_path: baselinePath,
+              operator_baseline_path: operatorBaselinePath,
+              scorecard_id: scorecardId,
+            },
+          }),
+        });
+      }
+
+      return {
+        scorecard_path: scorecardPath,
+        operator_scorecard_path: operatorScorecardPath,
+        baseline_path: baselinePath,
+        operator_baseline_path: operatorBaselinePath,
+      };
+    },
+
+    readEvalScorecardArtifact({
+      scorecardId,
+    } = {}) {
+      const normalizedScorecardId = sanitizeArtifactToken(scorecardId, 'scorecardId');
+      return readJsonFile(path.join(paths.evalScorecardRoot, `${normalizedScorecardId}.json`));
+    },
+
+    readEvalBaselineArtifact({
+      baselineName,
+    } = {}) {
+      const normalizedBaselineName = sanitizeArtifactToken(baselineName, 'baselineName');
+      return readJsonFile(path.join(paths.evalBaselineRoot, `${normalizedBaselineName}.json`));
     },
   };
 }

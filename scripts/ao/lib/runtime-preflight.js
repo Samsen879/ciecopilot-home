@@ -7,6 +7,10 @@ import {
   createRuntimePreflightSnapshot,
 } from './runtime-contracts.js';
 import { getRuntimeProviderContract } from './runtime-providers/index.js';
+import {
+  buildRepoKnowledgeRef,
+  listRepoKnowledgeCommands,
+} from './repo-knowledge.js';
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -150,6 +154,29 @@ function deriveOverallStatus(checks) {
   return 'clean';
 }
 
+function buildRepoKnowledgeVerifyCheck(repoKnowledge) {
+  const repoKnowledgeRef = buildRepoKnowledgeRef(repoKnowledge);
+  if (!repoKnowledgeRef) return null;
+
+  const verifyCommands = listRepoKnowledgeCommands(repoKnowledge, 'verify');
+  const missingVerifySurface = repoKnowledgeRef.lint_status !== 'pass' || verifyCommands.length === 0;
+
+  return createRuntimePreflightCheck({
+    requirement_id: 'setup_step.canonical_verify_command',
+    requirement_kind: 'setup_step',
+    status: missingVerifySurface ? 'missing' : 'satisfied',
+    summary: 'Repo knowledge declares a canonical verification command for this repository.',
+    details: [
+      `project_id: ${repoKnowledgeRef.project_id}`,
+      `profile_version: ${repoKnowledgeRef.profile_version}`,
+      ...verifyCommands.map((command) => `command: ${command.command}`),
+    ],
+    setup_steps: missingVerifySurface
+      ? ['Declare a canonical verify command in docs/setup/AO_REPO_KNOWLEDGE.md and materialize repo knowledge.']
+      : [],
+  });
+}
+
 export function runRuntimeBootstrapPreflight({
   runtimeRef,
   cwd = process.cwd(),
@@ -157,6 +184,7 @@ export function runRuntimeBootstrapPreflight({
   resolveRuntimeProvider = getRuntimeProviderContract,
   probes = {},
   env = process.env,
+  repoKnowledge = null,
 } = {}) {
   const timestamp = resolveNow(now);
   const runtimeProvider = resolveRuntimeProvider(runtimeRef);
@@ -194,6 +222,10 @@ export function runRuntimeBootstrapPreflight({
   const checks = runtimeProvider.bootstrap_requirements.map((requirement) => (
     evaluateRequirement(requirement, context, effectiveProbes)
   ));
+  const repoKnowledgeCheck = buildRepoKnowledgeVerifyCheck(repoKnowledge);
+  if (repoKnowledgeCheck) {
+    checks.push(repoKnowledgeCheck);
+  }
 
   return createRuntimePreflightSnapshot({
     runtime_ref: runtimeProvider.runtime_ref,

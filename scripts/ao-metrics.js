@@ -4,9 +4,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   DEFAULT_PROJECT_ID,
-  runReconciliation,
-} from './ao/lib/reconciliation-runner.js';
-import { renderHumanSummary } from './ao/lib/reconciliation-report.js';
+  loadAoMetricsReport,
+  renderAoMetricsHumanSummary,
+} from './ao/lib/run-metrics.js';
 
 function createDefaultIo() {
   return {
@@ -15,28 +15,41 @@ function createDefaultIo() {
   };
 }
 
+function readOptionValue(argv, index, optionName) {
+  const value = argv[index + 1] ?? null;
+  if (value == null || value.startsWith('-')) {
+    throw new Error(`Missing value for ${optionName}`);
+  }
+
+  return value;
+}
+
 function parseArgs(argv) {
   const options = {
     projectId: DEFAULT_PROJECT_ID,
-    prNumber: null,
+    traceLimit: 5,
     json: false,
-    strict: false,
     help: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     if (arg === '--project') {
-      options.projectId = argv[index + 1] ?? null;
+      try {
+        options.projectId = readOptionValue(argv, index, '--project');
+      } catch (error) {
+        return {
+          ok: false,
+          error: error.message,
+        };
+      }
       index += 1;
-    } else if (arg === '--pr') {
+    } else if (arg === '--limit') {
       const value = argv[index + 1] ?? null;
-      options.prNumber = value == null ? null : Number(value);
+      options.traceLimit = value == null ? null : Number(value);
       index += 1;
     } else if (arg === '--json') {
       options.json = true;
-    } else if (arg === '--strict') {
-      options.strict = true;
     } else if (arg === '--help' || arg === '-h') {
       options.help = true;
     } else {
@@ -47,24 +60,17 @@ function parseArgs(argv) {
     }
   }
 
-  if (options.projectId == null || options.projectId === '') {
+  if (options.projectId == null || String(options.projectId).trim() === '') {
     return {
       ok: false,
       error: 'Missing value for --project',
     };
   }
 
-  if (options.prNumber != null && (!Number.isInteger(options.prNumber) || options.prNumber <= 0)) {
+  if (!Number.isInteger(options.traceLimit) || options.traceLimit <= 0) {
     return {
       ok: false,
-      error: 'Invalid value for --pr',
-    };
-  }
-
-  if (options.strict && options.prNumber == null) {
-    return {
-      ok: false,
-      error: 'Strict mode requires --pr <number>',
+      error: 'Invalid value for --limit',
     };
   }
 
@@ -74,29 +80,14 @@ function parseArgs(argv) {
   };
 }
 
-function exitCodeForReport(report, strict) {
-  if (strict) {
-    if (report.top_status === 'healthy') return 0;
-    if (report.top_status === 'warning') return 10;
-    if (report.top_status === 'blocked') return 11;
-    if (report.top_status === 'ambiguous') return 12;
-    if (report.top_status === 'source_failure') return 13;
-    return 14;
-  }
-
-  if (report.top_status === 'source_failure') return 3;
-  return 0;
-}
-
 function renderHelp() {
   return [
-    'Usage: node scripts/ao-reconcile.js [options]',
+    'Usage: node scripts/ao-metrics.js [options]',
     '',
     'Options:',
     '  --project <project_id>   AO project id. Default: ciecopilot-home',
-    '  --pr <number>            Reconcile one PR in authoritative automation mode',
+    '  --limit <number>         Number of recent traces to include. Default: 5',
     '  --json                   Print machine-readable JSON output',
-    '  --strict                 Use fixed automation exit-code mapping; requires --pr <number>',
     '  -h, --help               Show help',
   ].join('\n');
 }
@@ -120,22 +111,30 @@ export async function runCli(argv, io = createDefaultIo()) {
     };
   }
 
-  const { report } = await runReconciliation({
-    projectId: options.projectId,
-    prNumber: options.prNumber,
-    cwd: process.cwd(),
-  });
+  try {
+    const report = await loadAoMetricsReport({
+      cwd: process.cwd(),
+      projectId: options.projectId,
+      traceLimit: options.traceLimit,
+    });
 
-  if (options.json) {
-    io.writeStdout(JSON.stringify(report, null, 2));
-  } else {
-    io.writeStdout(`${renderHumanSummary(report)}\n`);
+    if (options.json) {
+      io.writeStdout(JSON.stringify(report, null, 2));
+    } else {
+      io.writeStdout(`${renderAoMetricsHumanSummary(report)}\n`);
+    }
+
+    return {
+      exitCode: 0,
+      report,
+    };
+  } catch (error) {
+    io.writeStderr(`${error.message}\n`);
+    return {
+      exitCode: 3,
+      report: null,
+    };
   }
-
-  return {
-    exitCode: exitCodeForReport(report, options.strict),
-    report,
-  };
 }
 
 const currentFile = fileURLToPath(import.meta.url);

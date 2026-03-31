@@ -4,6 +4,7 @@ import {
   createDoctorFinding,
   createDoctorSuggestion,
 } from './doctor-contracts.js';
+import { createHandoffProtocol } from './handoff-protocol.js';
 import { RUNTIME_PREFLIGHT_SCHEMA_VERSION } from './runtime-contracts.js';
 import { CONTROL_PLANE_LATEST_VERSION } from './state-contracts.js';
 import { TASK_SPEC_SCHEMA_VERSION } from './task-spec.js';
@@ -361,6 +362,77 @@ function buildRuntimePreflightFindings({ controlPlaneSnapshot, projectId }) {
   return findings;
 }
 
+function buildHandoffFindings({ controlPlaneSnapshot, projectId }) {
+  if (!controlPlaneSnapshot?.bootstrapped) return [];
+
+  const inspections = createHandoffProtocol({
+    repository: {
+      getSnapshot: () => controlPlaneSnapshot,
+    },
+  }).inspectAllHandoffs();
+
+  const findings = [];
+  for (const inspection of inspections) {
+    if (inspection?.top_status === 'invalid') {
+      findings.push(createDoctorFinding({
+        code: 'handoff_state_invalid',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: inspection.task_id ?? projectId,
+        summary: 'Managed task has invalid successor handoff state.',
+        details: inspection.reason_codes ?? [],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+    } else if (inspection?.top_status === 'ambiguous') {
+      findings.push(createDoctorFinding({
+        code: 'handoff_successor_ambiguous',
+        severity: 'ambiguous',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: inspection.task_id ?? projectId,
+        summary: 'Managed task has ambiguous successor selection.',
+        details: inspection.reason_codes ?? [],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+    } else if (inspection?.top_status === 'expired') {
+      findings.push(createDoctorFinding({
+        code: 'handoff_grant_expired',
+        severity: 'blocker',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: inspection.task_id ?? projectId,
+        summary: 'Managed task has expired handoff authority.',
+        details: inspection.reason_codes ?? [],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+    } else if (inspection?.top_status === 'accepted' || inspection?.top_status === 'pending_decision') {
+      findings.push(createDoctorFinding({
+        code: inspection.top_status === 'accepted' ? 'handoff_transfer_pending' : 'handoff_decision_pending',
+        severity: 'warning',
+        origin: 'doctor',
+        source_area: 'control_plane',
+        subject_type: 'task',
+        subject_id: inspection.task_id ?? projectId,
+        summary: inspection.top_status === 'accepted'
+          ? 'Managed task is waiting for successor transfer completion.'
+          : 'Managed task is waiting for an explicit handoff decision.',
+        details: inspection.reason_codes ?? [],
+        evidence_refs: [],
+        suggestion_ids: ['human_review'],
+      }));
+    }
+  }
+
+  return findings;
+}
+
 function buildDoctorOnlyFindings({
   scope,
   reconciliationReport,
@@ -566,6 +638,10 @@ function buildDoctorOnlyFindings({
       projectId,
     }),
     ...buildRuntimePreflightFindings({
+      controlPlaneSnapshot,
+      projectId,
+    }),
+    ...buildHandoffFindings({
       controlPlaneSnapshot,
       projectId,
     }),

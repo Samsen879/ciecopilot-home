@@ -19,6 +19,7 @@ import {
   createControllerModeRecord,
   createManagedTask,
   createPrBinding,
+  createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 
@@ -32,6 +33,39 @@ function createTempRepo() {
   const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-controller-parity-'));
   tempDirs.push(repoRoot);
   return repoRoot;
+}
+
+function seedCleanRuntimePreflight(repository, {
+  taskId,
+  issueNumber,
+  now = '2026-03-29T06:50:00.000Z',
+} = {}) {
+  repository.upsertTaskSpec(createTaskSpecRecord({
+    task_id: taskId,
+    source_kind: 'github_issue',
+    source_issue_number: issueNumber,
+    created_at: now,
+    updated_at: now,
+    snapshot: {
+      schema_version: 'ao.task-spec.v1alpha1',
+      spec: {
+        problem_type: 'issue_delivery',
+        acceptance_contract: ['Fixture parity scenario uses stable runtime contracts.'],
+        runtime_ref: 'runtime.github_local',
+        policy_ref: 'policy.operator_gated',
+        human_gates: ['operator_review'],
+      },
+    },
+  }));
+  repository.ensureRuntimePreflights({
+    cwd: repository.getSnapshot().paths.repoRoot,
+    now,
+    probes: {
+      commandExists: () => true,
+      pathExists: () => true,
+      capability: () => true,
+    },
+  });
 }
 
 afterEach(() => {
@@ -105,6 +139,10 @@ describe('ao controller shadow parity', () => {
       updated_by: 'operator',
       reason: 'Parity test setup',
     }));
+    seedCleanRuntimePreflight(repository, {
+      taskId: `issue-${issueNumber}`,
+      issueNumber,
+    });
 
     const controllerResult = await runControllerLoop({
       repoRoot,
@@ -113,6 +151,17 @@ describe('ao controller shadow parity', () => {
       controllerId: 'default',
       mode: 'shadow',
       now: '2026-03-29T06:51:00.000Z',
+      deps: {
+        ensureRuntimePreflights: ({ repository: activeRepository, cwd, now }) => activeRepository.ensureRuntimePreflights({
+          cwd,
+          now,
+          probes: {
+            commandExists: () => true,
+            pathExists: () => true,
+            capability: () => true,
+          },
+        }),
+      },
     });
 
     expect(controllerResult.task_results[0].derived_trigger).toBe(expectedTrigger);

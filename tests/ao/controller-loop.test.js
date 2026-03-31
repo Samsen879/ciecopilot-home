@@ -179,6 +179,37 @@ describe('ao controller loop', () => {
     const snapshot = repository.getSnapshot().state;
     expect(snapshot.observations).toHaveLength(2);
     expect(snapshot.actions).toEqual([]);
+    expect(snapshot.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        controller_id: 'default',
+        controller_mode: 'observe',
+        trigger_kind: 'manual',
+        failure_class: 'none',
+        lifecycle_top_status: null,
+        observation_count: 2,
+        delivery_event_count: 3,
+        proposed_action_count: 0,
+        executed_action_count: 0,
+        blocked_action_count: 0,
+        intervention_counts: expect.objectContaining({
+          human_gate: 0,
+          override: 0,
+          explicit_resume: 0,
+          successor_handoff: 0,
+          policy_block: 0,
+          preflight_block: 0,
+        }),
+        token_usage: {
+          input_tokens: null,
+          output_tokens: null,
+          total_tokens: null,
+        },
+        cost: {
+          usd: null,
+        },
+      }),
+    ]);
     expect(snapshot.checkpoints).toEqual([
       expect.objectContaining({
         task_id: 'issue-92',
@@ -311,6 +342,17 @@ describe('ao controller loop', () => {
       'pr',
       'review',
     ]));
+    expect(snapshot.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        trigger_kind: 'ci_failed',
+        failure_class: 'ci_failure',
+        action_class_counts: expect.objectContaining({
+          continue_worker: 1,
+          hold: 1,
+        }),
+      }),
+    ]);
     expect(snapshot.actions).toEqual(expect.arrayContaining([
       expect.objectContaining({
         task_id: 'issue-92',
@@ -341,6 +383,120 @@ describe('ao controller loop', () => {
         }),
       ]),
     );
+  });
+
+  it('passes the control-plane snapshot into doctor resolution for lifecycle handoff analysis', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'shadow');
+    seedCleanRuntimePreflight(repository);
+    const buildDoctorReport = jest.fn(() => ({
+      top_status: 'healthy',
+      source_health: {
+        reconciliation: 'ok',
+        ao: 'ok',
+        github: 'ok',
+        git: 'ok',
+        worktree: 'ok',
+      },
+      reconciliation_summary: {
+        top_status: 'healthy',
+        selected_pr_numbers: [92],
+      },
+      local_state: {
+        current_branch: 'feat/issue-92',
+        upstream_branch: 'origin/feat/issue-92',
+        worktree_dirty: false,
+        ao_artifact_paths: [],
+      },
+      findings: [],
+      suggestions: [],
+    }));
+    const buildLifecycleReport = jest.fn(() => ({
+      top_status: 'continue',
+      routing_decision: {
+        action: 'continue_current_worker',
+      },
+      release_decision: {
+        disposition: 'continue_current_worker',
+      },
+      actions: [],
+    }));
+
+    await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-29T06:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'pending',
+              ci_status: 'pending',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        reconcileObservations: () => ({
+          top_status: 'healthy',
+          source_health: { ao: 'ok', github: 'ok' },
+          scope: { selected_pr_numbers: [92] },
+          pr_assessments: [],
+          findings: [],
+        }),
+        loadDoctorLocalState: async () => ({
+          git_observable: true,
+          repo_root: repository.getSnapshot().paths.repoRoot,
+          head_sha: 'abc123',
+          current_branch: 'feat/issue-92',
+          upstream_branch: 'origin/feat/issue-92',
+          upstream_tracking: 'present',
+          worktree_dirty: false,
+          staged_changes: false,
+          unstaged_changes: false,
+          untracked_file_count: 0,
+          untracked_file_samples: [],
+          ao_artifact_paths: [],
+        }),
+        buildDoctorReport,
+        buildLifecycleReport,
+      },
+    });
+
+    expect(buildDoctorReport).toHaveBeenCalledWith(expect.objectContaining({
+      controlPlaneSnapshot: expect.objectContaining({
+        bootstrapped: true,
+        state: expect.objectContaining({
+          handoff_requests: expect.any(Array),
+        }),
+      }),
+    }));
   });
 
   it('derives bugbot comment follow-up from protocolized review-comment delivery events', async () => {
@@ -774,6 +930,22 @@ describe('ao controller loop', () => {
         }),
       }),
     ]));
+    expect(repository.getSnapshot().state.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        controller_mode: 'assist',
+        trigger_kind: 'approved_and_green',
+        failure_class: 'policy_block',
+        intervention_counts: expect.objectContaining({
+          human_gate: 0,
+          override: 0,
+          explicit_resume: 0,
+          successor_handoff: 0,
+          policy_block: 1,
+          preflight_block: 0,
+        }),
+      }),
+    ]);
   });
 
   it('assist mode blocks class A actions until runtime preflight has passed', async () => {
@@ -871,6 +1043,16 @@ describe('ao controller loop', () => {
             outcome: 'blocked',
             reason: 'runtime_preflight_clean',
           }),
+        }),
+      }),
+    ]);
+    expect(repository.getSnapshot().state.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        trigger_kind: 'approved_and_green',
+        failure_class: 'preflight_block',
+        intervention_counts: expect.objectContaining({
+          preflight_block: 1,
         }),
       }),
     ]);

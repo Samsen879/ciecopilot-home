@@ -113,15 +113,45 @@ function resolveHolderIdentity({
   };
 }
 
-function canRecoverSameHolderLease(existingLease) {
+function normalizeControllerMetadataValue(value) {
+  return typeof value === 'string' && value.trim() !== ''
+    ? value.trim()
+    : null;
+}
+
+function canRecoverSameHolderLease(
+  existingLease,
+  {
+    processId = process.pid,
+    processStartedAt = null,
+  } = {},
+) {
   if (!existingLease || existingLease.status !== 'active') {
     return false;
   }
-  const priorProcessId = Number(existingLease?.metadata?.process_pid);
+  const metadata = existingLease?.metadata ?? {};
+  const priorProcessId = Number(metadata?.process_pid);
   if (!Number.isInteger(priorProcessId) || priorProcessId <= 0) {
     return false;
   }
-  return !matchesRecordedProcessIdentity(existingLease.metadata);
+  if (!matchesRecordedProcessIdentity(metadata)) {
+    return true;
+  }
+
+  const recordedStartToken = normalizeControllerMetadataValue(metadata?.process_start_token);
+  if (recordedStartToken != null) {
+    return false;
+  }
+
+  const currentProcessId = Number(processId);
+  const recordedProcessStartedAt = normalizeControllerMetadataValue(metadata?.process_started_at);
+  const normalizedProcessStartedAt = normalizeControllerMetadataValue(processStartedAt);
+  return Number.isInteger(currentProcessId)
+    && currentProcessId > 0
+    && priorProcessId === currentProcessId
+    && recordedProcessStartedAt != null
+    && normalizedProcessStartedAt != null
+    && recordedProcessStartedAt !== normalizedProcessStartedAt;
 }
 function isControllerLeaseStale(lease, now) {
   if (!lease || lease.status !== 'active') return false;
@@ -359,7 +389,10 @@ async function acquireControllerLeadership({
       if (activeLease && activeLease.lease_id !== requestedLeaseId) {
         if (
           activeLease.holder_id === resolvedHolder.holderId
-          && canRecoverSameHolderLease(activeLease)
+          && canRecoverSameHolderLease(activeLease, {
+            processId,
+            processStartedAt,
+          })
           && !isControllerLeaseStale(activeLease, timestamp)
         ) {
           effectiveLeaseId = activeLease.lease_id;

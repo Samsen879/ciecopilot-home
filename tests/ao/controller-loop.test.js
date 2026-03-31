@@ -1775,6 +1775,68 @@ describe('ao controller loop', () => {
     ).not.toBe('stale-process-token');
   });
 
+  it('recovers same-holder leadership for a legacy tokenless lease after the pid-reuse compatibility fallback', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'observe');
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-manual-legacy-holder-legacy-incarnation',
+      controller_id: 'default',
+      holder_id: 'manual-legacy-holder',
+      holder_type: 'manual',
+      incarnation_id: 'legacy-incarnation',
+      status: 'active',
+      acquired_at: '2026-03-29T06:40:30.000Z',
+      heartbeat_at: '2026-03-29T06:40:45.000Z',
+      expires_at: '2026-03-29T06:45:30.000Z',
+      lease_timeout_ms: 300000,
+      runtime_kind: 'continuous',
+      poll_interval_ms: 30000,
+      shutdown_timeout_ms: 10000,
+      metadata: {
+        process_pid: process.pid,
+        process_started_at: '2026-03-29T06:40:30.000Z',
+      },
+    }));
+
+    await expect(runControllerLoop({
+      repoRoot,
+      cwd: repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'manual-legacy-holder',
+      now: '2026-03-29T06:41:20.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:20.000Z',
+          workers: [],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:20.000Z',
+          prs: [],
+        }),
+      },
+    })).resolves.toMatchObject({
+      controller_id: 'default',
+      mode: 'observe',
+    });
+
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-manual-legacy-holder-legacy-incarnation',
+        holder_id: 'manual-legacy-holder',
+        incarnation_id: 'legacy-incarnation',
+        status: 'released',
+        metadata: expect.objectContaining({
+          process_pid: process.pid,
+        }),
+      }),
+    ]);
+  });
+
   it('does not recover same-holder leadership when the prior lease lacks recoverable process identity metadata', async () => {
     const repoRoot = createTempRepo();
     const repository = createStateRepository({

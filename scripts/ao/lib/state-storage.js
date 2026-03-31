@@ -57,6 +57,12 @@ function isProcessAlive(pid) {
   }
 }
 
+function normalizeProcessStartToken(value) {
+  return typeof value === 'string' && value.trim() !== ''
+    ? value.trim()
+    : null;
+}
+
 function readLinuxProcessStartToken(pid) {
   try {
     const statText = fs.readFileSync(`/proc/${pid}/stat`, 'utf8').trim();
@@ -110,15 +116,57 @@ export function matchesRecordedProcessIdentity(metadata = {}) {
     return false;
   }
 
-  const recordedStartToken = typeof metadata?.process_start_token === 'string' && metadata.process_start_token.trim() !== ''
-    ? metadata.process_start_token.trim()
-    : null;
+  const recordedStartToken = normalizeProcessStartToken(metadata?.process_start_token);
 
   if (recordedStartToken != null && liveIdentity.process_start_token != null) {
     return recordedStartToken === liveIdentity.process_start_token;
   }
 
   return true;
+}
+
+function createLockFileMetadata({
+  pid = process.pid,
+  acquiredAt = new Date().toISOString(),
+} = {}) {
+  return {
+    pid: Number(pid),
+    acquired_at: acquiredAt,
+    ...buildCurrentProcessMetadata({
+      pid,
+      startedAt: acquiredAt,
+    }),
+  };
+}
+
+function writeLockDescriptor(lockDescriptor, metadata = createLockFileMetadata()) {
+  fs.writeFileSync(
+    lockDescriptor,
+    `${JSON.stringify(metadata)}\n`,
+    'utf8',
+  );
+}
+
+function sameFileIdentity(left, right) {
+  if (!left || !right) return false;
+
+  const leftInodeKnown = Number.isInteger(left.ino) && left.ino > 0;
+  const rightInodeKnown = Number.isInteger(right.ino) && right.ino > 0;
+  if (leftInodeKnown && rightInodeKnown) {
+    return left.dev === right.dev && left.ino === right.ino;
+  }
+
+  return left.size === right.size
+    && left.mtimeMs === right.mtimeMs
+    && left.ctimeMs === right.ctimeMs;
+}
+
+function sameLockSnapshot(left, right) {
+  if (!left || !right) return false;
+  return sameFileIdentity(left.stats, right.stats)
+    && left.stats.size === right.stats.size
+    && left.stats.mtimeMs === right.stats.mtimeMs
+    && left.stats.ctimeMs === right.stats.ctimeMs;
 }
 
 function readLockMetadata(filePath) {
@@ -133,21 +181,79 @@ function readLockMetadata(filePath) {
   }
 }
 
-function shouldRecoverStaleLock(filePath, staleLockAgeMs) {
-  if (!fs.existsSync(filePath)) return false;
+function readLockSnapshot(filePath) {
+  if (!fs.existsSync(filePath)) return null;
 
-  const metadata = readLockMetadata(filePath);
-  const recordedPid = metadata?.pid;
-  if (Number.isInteger(recordedPid) && recordedPid > 0) {
-    return !matchesRecordedProcessIdentity(metadata);
+  try {
+    return {
+      metadata: readLockMetadata(filePath),
+      stats: fs.statSync(filePath),
+    };
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return null;
+    }
+    throw error;
   }
-
-  const fileStats = fs.statSync(filePath);
-  return Date.now() - fileStats.mtimeMs >= staleLockAgeMs;
 }
 
-function tryRecoverStaleLock(filePath, staleLockAgeMs) {
-  if (!shouldRecoverStaleLock(filePath, staleLockAgeMs)) {
+function resolveLockSnapshotAgeMs(snapshot, nowMs = Date.now()) {
+  if (!snapshot) return 0;
+  const acquiredAtMs = new Date(snapshot.metadata?.acquired_at ?? '').getTime();
+  const referenceMs = Number.isFinite(acquiredAtMs)
+    ? acquiredAtMs
+    : snapshot.stats.mtimeMs;
+  return Math.max(0, nowMs - referenceMs);
+}
+
+function shouldRecoverStaleLockSnapshot(snapshot, staleLockAgeMs, nowMs = Date.now()) {
+  if (!snapshot) return false;
+
+  const metadata = snapshot.metadata ?? {};
+  const recordedPid = Number(metadata?.pid ?? metadata?.process_pid);
+  if (Number.isInteger(recordedPid) && recordedPid > 0) {
+    const liveIdentity = readLiveProcessIdentity(recordedPid);
+    if (!liveIdentity) {
+      return true;
+    }
+
+    const recordedStartToken = normalizeProcessStartToken(metadata?.process_start_token);
+    if (recordedStartToken != null && liveIdentity.process_start_token != null) {
+      return recordedStartToken !== liveIdentity.process_start_token;
+    }
+  }
+
+  return resolveLockSnapshotAgeMs(snapshot, nowMs) >= staleLockAgeMs;
+}
+
+function releaseLockDescriptor(lockDescriptor, filePath) {
+  if (lockDescriptor == null) return;
+
+  try {
+    try {
+      const descriptorStats = fs.fstatSync(lockDescriptor);
+      const currentStats = fs.statSync(filePath);
+      if (sameFileIdentity(descriptorStats, currentStats)) {
+        fs.unlinkSync(filePath);
+      }
+    } catch (error) {
+      if (error?.code !== 'ENOENT') {
+        throw error;
+      }
+    }
+  } finally {
+    fs.closeSync(lockDescriptor);
+  }
+}
+
+function tryRecoverClaimFileSync(filePath, staleLockAgeMs) {
+  const snapshot = readLockSnapshot(filePath);
+  if (!shouldRecoverStaleLockSnapshot(snapshot, staleLockAgeMs)) {
+    return false;
+  }
+
+  const currentSnapshot = readLockSnapshot(filePath);
+  if (!sameLockSnapshot(snapshot, currentSnapshot)) {
     return false;
   }
 
@@ -161,6 +267,168 @@ function tryRecoverStaleLock(filePath, staleLockAgeMs) {
     throw error;
   }
 }
+
+async function acquireRecoveryDescriptor(
+  recoveryPath,
+  {
+    timeoutMs,
+    retryMs,
+    sleepFn,
+    staleLockAgeMs,
+  } = {},
+) {
+  const startedAtMs = Date.now();
+  let recoveryDescriptor = null;
+
+  while (recoveryDescriptor == null) {
+    try {
+      recoveryDescriptor = fs.openSync(recoveryPath, 'wx');
+      writeLockDescriptor(recoveryDescriptor);
+    } catch (error) {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+      if (tryRecoverClaimFileSync(recoveryPath, staleLockAgeMs)) {
+        continue;
+      }
+      if (Date.now() - startedAtMs >= timeoutMs) {
+        return null;
+      }
+      await sleepFn(retryMs);
+    }
+  }
+
+  return recoveryDescriptor;
+}
+
+function acquireRecoveryDescriptorSync(
+  recoveryPath,
+  {
+    timeoutMs,
+    retryMs,
+    sleepFn,
+    staleLockAgeMs,
+  } = {},
+) {
+  const startedAtMs = Date.now();
+  let recoveryDescriptor = null;
+
+  while (recoveryDescriptor == null) {
+    try {
+      recoveryDescriptor = fs.openSync(recoveryPath, 'wx');
+      writeLockDescriptor(recoveryDescriptor);
+    } catch (error) {
+      if (error.code !== 'EEXIST') {
+        throw error;
+      }
+      if (tryRecoverClaimFileSync(recoveryPath, staleLockAgeMs)) {
+        continue;
+      }
+      if (Date.now() - startedAtMs >= timeoutMs) {
+        return null;
+      }
+      sleepFn(retryMs);
+    }
+  }
+
+  return recoveryDescriptor;
+}
+
+function tryRecoverStaleLockWithClaimSync(
+  filePath,
+  {
+    timeoutMs,
+    retryMs,
+    sleepFn,
+    staleLockAgeMs,
+    beforeStaleLockUnlink = null,
+  } = {},
+) {
+  const recoveryPath = `${filePath}.recover`;
+  const recoveryDescriptor = acquireRecoveryDescriptorSync(recoveryPath, {
+    timeoutMs,
+    retryMs,
+    sleepFn,
+    staleLockAgeMs,
+  });
+  if (recoveryDescriptor == null) {
+    return false;
+  }
+
+  try {
+    const initialSnapshot = readLockSnapshot(filePath);
+    if (!shouldRecoverStaleLockSnapshot(initialSnapshot, staleLockAgeMs)) {
+      return false;
+    }
+
+    beforeStaleLockUnlink?.({
+      filePath,
+      snapshot: initialSnapshot,
+    });
+    const currentSnapshot = readLockSnapshot(filePath);
+    if (!sameLockSnapshot(initialSnapshot, currentSnapshot)) {
+      return false;
+    }
+
+    fs.unlinkSync(filePath);
+    return true;
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return false;
+    }
+    throw error;
+  } finally {
+    releaseLockDescriptor(recoveryDescriptor, recoveryPath);
+  }
+}
+
+async function tryRecoverStaleLockWithClaim(
+  filePath,
+  {
+    timeoutMs,
+    retryMs,
+    sleepFn,
+    staleLockAgeMs,
+    beforeStaleLockUnlink = null,
+  } = {},
+) {
+  const recoveryPath = `${filePath}.recover`;
+  const recoveryDescriptor = await acquireRecoveryDescriptor(recoveryPath, {
+    timeoutMs,
+    retryMs,
+    sleepFn,
+    staleLockAgeMs,
+  });
+  if (recoveryDescriptor == null) {
+    return false;
+  }
+
+  try {
+    const initialSnapshot = readLockSnapshot(filePath);
+    if (!shouldRecoverStaleLockSnapshot(initialSnapshot, staleLockAgeMs)) {
+      return false;
+    }
+
+    beforeStaleLockUnlink?.({
+      filePath,
+      snapshot: initialSnapshot,
+    });
+    const currentSnapshot = readLockSnapshot(filePath);
+    if (!sameLockSnapshot(initialSnapshot, currentSnapshot)) {
+      return false;
+    }
+
+    fs.unlinkSync(filePath);
+    return true;
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return false;
+    }
+    throw error;
+  } finally {
+    releaseLockDescriptor(recoveryDescriptor, recoveryPath);
+  }
+}
 export async function withFileLock(
   filePath,
   callback,
@@ -169,6 +437,7 @@ export async function withFileLock(
     retryMs = 10,
     sleepFn = sleep,
     staleLockAgeMs = DEFAULT_STALE_LOCK_AGE_MS,
+    beforeStaleLockUnlink = null,
   } = {},
 ) {
   ensureDirectory(path.dirname(filePath));
@@ -178,20 +447,18 @@ export async function withFileLock(
   while (lockDescriptor == null) {
     try {
       lockDescriptor = fs.openSync(filePath, 'wx');
-      fs.writeFileSync(
-        lockDescriptor,
-        `${JSON.stringify({
-          pid: process.pid,
-          acquired_at: new Date().toISOString(),
-          ...buildCurrentProcessMetadata(),
-        })}\n`,
-        'utf8',
-      );
+      writeLockDescriptor(lockDescriptor);
     } catch (error) {
       if (error.code !== 'EEXIST') {
         throw error;
       }
-      if (tryRecoverStaleLock(filePath, staleLockAgeMs)) {
+      if (await tryRecoverStaleLockWithClaim(filePath, {
+        timeoutMs: Math.max(0, timeoutMs - (Date.now() - startedAtMs)),
+        retryMs,
+        sleepFn,
+        staleLockAgeMs,
+        beforeStaleLockUnlink,
+      })) {
         continue;
       }
       if (Date.now() - startedAtMs >= timeoutMs) {
@@ -204,12 +471,7 @@ export async function withFileLock(
   try {
     return await callback();
   } finally {
-    if (lockDescriptor != null) {
-      fs.closeSync(lockDescriptor);
-    }
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    releaseLockDescriptor(lockDescriptor, filePath);
   }
 }
 
@@ -221,6 +483,7 @@ export function withFileLockSync(
     retryMs = 10,
     sleepFn = sleepSync,
     staleLockAgeMs = DEFAULT_STALE_LOCK_AGE_MS,
+    beforeStaleLockUnlink = null,
   } = {},
 ) {
   ensureDirectory(path.dirname(filePath));
@@ -230,20 +493,18 @@ export function withFileLockSync(
   while (lockDescriptor == null) {
     try {
       lockDescriptor = fs.openSync(filePath, 'wx');
-      fs.writeFileSync(
-        lockDescriptor,
-        `${JSON.stringify({
-          pid: process.pid,
-          acquired_at: new Date().toISOString(),
-          ...buildCurrentProcessMetadata(),
-        })}\n`,
-        'utf8',
-      );
+      writeLockDescriptor(lockDescriptor);
     } catch (error) {
       if (error.code !== 'EEXIST') {
         throw error;
       }
-      if (tryRecoverStaleLock(filePath, staleLockAgeMs)) {
+      if (tryRecoverStaleLockWithClaimSync(filePath, {
+        timeoutMs: Math.max(0, timeoutMs - (Date.now() - startedAtMs)),
+        retryMs,
+        sleepFn,
+        staleLockAgeMs,
+        beforeStaleLockUnlink,
+      })) {
         continue;
       }
       if (Date.now() - startedAtMs >= timeoutMs) {
@@ -256,12 +517,7 @@ export function withFileLockSync(
   try {
     return callback();
   } finally {
-    if (lockDescriptor != null) {
-      fs.closeSync(lockDescriptor);
-    }
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    releaseLockDescriptor(lockDescriptor, filePath);
   }
 }
 

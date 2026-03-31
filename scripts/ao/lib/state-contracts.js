@@ -48,6 +48,8 @@ export const ACTION_STATUSES = ['proposed', 'blocked', 'executed', 'cancelled'];
 export const OVERRIDE_SCOPE_KINDS = ['global', 'task', 'pr', 'controller'];
 export const OVERRIDE_STATUSES = ['active', 'cleared', 'expired'];
 export const CONTROLLER_MODES = ['off', 'observe', 'shadow', 'assist'];
+export const CONTROLLER_RUNTIME_KINDS = ['oneshot', 'continuous'];
+export const CONTROLLER_RUN_STATUSES = ['running', 'completed', 'failed', 'stopping'];
 export const OBSERVATION_SOURCE_KINDS = ['ao_poll', 'github_poll'];
 export const TASK_SPEC_RECORD_STATES = ['valid', 'invalid'];
 export const DELIVERY_EVENT_FAMILIES = ['pr', 'check', 'review', 'review_comment'];
@@ -392,7 +394,15 @@ export function createControllerLease({
   holder_type,
   status,
   acquired_at,
+  heartbeat_at = null,
   expires_at,
+  lease_timeout_ms = null,
+  runtime_kind = null,
+  poll_interval_ms = null,
+  shutdown_timeout_ms = null,
+  last_run_started_at = null,
+  last_run_completed_at = null,
+  last_run_status = null,
   released_at = null,
   release_reason = null,
   metadata = {},
@@ -404,7 +414,15 @@ export function createControllerLease({
     holder_type: normalizeRequiredString(holder_type, 'holder_type'),
     status: normalizeEnum(status, 'status', CONTROLLER_LEASE_STATUSES),
     acquired_at: normalizeIsoTimestamp(acquired_at, 'acquired_at'),
+    heartbeat_at: normalizeIsoTimestamp(heartbeat_at, 'heartbeat_at', { nullable: true }),
     expires_at: normalizeIsoTimestamp(expires_at, 'expires_at'),
+    lease_timeout_ms: normalizePositiveInteger(lease_timeout_ms, 'lease_timeout_ms', { nullable: true }),
+    runtime_kind: runtime_kind == null ? null : normalizeEnum(runtime_kind, 'runtime_kind', CONTROLLER_RUNTIME_KINDS),
+    poll_interval_ms: normalizePositiveInteger(poll_interval_ms, 'poll_interval_ms', { nullable: true }),
+    shutdown_timeout_ms: normalizePositiveInteger(shutdown_timeout_ms, 'shutdown_timeout_ms', { nullable: true }),
+    last_run_started_at: normalizeIsoTimestamp(last_run_started_at, 'last_run_started_at', { nullable: true }),
+    last_run_completed_at: normalizeIsoTimestamp(last_run_completed_at, 'last_run_completed_at', { nullable: true }),
+    last_run_status: last_run_status == null ? null : normalizeEnum(last_run_status, 'last_run_status', CONTROLLER_RUN_STATUSES),
     released_at: normalizeIsoTimestamp(released_at, 'released_at', { nullable: true }),
     release_reason: normalizeOptionalString(release_reason),
     metadata: normalizeMetadata(metadata),

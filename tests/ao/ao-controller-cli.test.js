@@ -18,6 +18,9 @@ describe('ao controller cli', () => {
       ingested_observation_count: 2,
       proposed_action_count: 2,
       executed_action_count: 1,
+      pass_count: 1,
+      runtime_kind: 'oneshot',
+      stop_reason: 'completed',
       task_results: [],
     });
   });
@@ -44,6 +47,34 @@ describe('ao controller cli', () => {
     });
   });
 
+  it('parses continuous runtime flags', async () => {
+    const stdout = [];
+
+    const result = await runCli([
+      '--continuous',
+      '--poll-interval-ms',
+      '15000',
+      '--shutdown-timeout-ms',
+      '5000',
+      '--json',
+    ], {
+      writeStdout: (text) => stdout.push(text),
+      writeStderr: () => {},
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(mockRunControllerLoop).toHaveBeenCalledWith(expect.objectContaining({
+      cwd: process.cwd(),
+      continuous: true,
+      pollIntervalMs: 15000,
+      shutdownTimeoutMs: 5000,
+    }));
+    expect(JSON.parse(stdout.join(''))).toMatchObject({
+      runtime_kind: 'oneshot',
+      pass_count: 1,
+    });
+  });
+
   it('rejects invalid controller modes and invalid issue filters', async () => {
     const stderr = [];
 
@@ -55,12 +86,18 @@ describe('ao controller cli', () => {
       writeStdout: () => {},
       writeStderr: (text) => stderr.push(text),
     });
+    const invalidPollInterval = await runCli(['--continuous', '--poll-interval-ms', '0'], {
+      writeStdout: () => {},
+      writeStderr: (text) => stderr.push(text),
+    });
 
     expect(invalidMode.exitCode).toBe(4);
     expect(invalidIssue.exitCode).toBe(4);
+    expect(invalidPollInterval.exitCode).toBe(4);
     expect(mockRunControllerLoop).not.toHaveBeenCalled();
     expect(stderr.join('')).toContain('Invalid value for --mode');
     expect(stderr.join('')).toContain('Invalid value for --issue');
+    expect(stderr.join('')).toContain('Invalid value for --poll-interval-ms');
   });
 
   it('treats missing flag values as normal parse errors', async () => {

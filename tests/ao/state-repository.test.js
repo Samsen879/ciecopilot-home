@@ -332,4 +332,49 @@ describe('ao state repository', () => {
       entity_id: 'task-1',
     });
   });
+
+  it('persists controller runtime heartbeat fields for operator inspection', () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      clock: createClock('2026-03-29T06:00:00.000Z', '2026-03-29T06:01:00.000Z'),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertControllerLease(createControllerLease({
+      lease_id: 'controller-default-cie-62',
+      controller_id: 'default',
+      holder_id: 'cie-62',
+      holder_type: 'session',
+      status: 'active',
+      acquired_at: '2026-03-29T06:00:00.000Z',
+      heartbeat_at: '2026-03-29T06:00:30.000Z',
+      expires_at: '2026-03-29T06:01:30.000Z',
+      lease_timeout_ms: 90000,
+      runtime_kind: 'continuous',
+      poll_interval_ms: 15000,
+      shutdown_timeout_ms: 5000,
+      last_run_started_at: '2026-03-29T06:00:20.000Z',
+      last_run_completed_at: '2026-03-29T06:00:25.000Z',
+      last_run_status: 'completed',
+    }));
+
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-cie-62',
+        controller_id: 'default',
+        holder_id: 'cie-62',
+        status: 'active',
+        heartbeat_at: '2026-03-29T06:00:30.000Z',
+        expires_at: '2026-03-29T06:01:30.000Z',
+        lease_timeout_ms: 90000,
+        runtime_kind: 'continuous',
+        poll_interval_ms: 15000,
+        shutdown_timeout_ms: 5000,
+        last_run_started_at: '2026-03-29T06:00:20.000Z',
+        last_run_completed_at: '2026-03-29T06:00:25.000Z',
+        last_run_status: 'completed',
+      }),
+    ]);
+  });
 });

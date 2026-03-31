@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import {
   CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
   createActionRecord,
+  createControllerLease,
   createControllerModeRecord,
   createPolicyDecisionRecord,
 } from './state-contracts.js';
@@ -10,7 +11,6 @@ import { createCheckpointStore } from './checkpoint-store.js';
 import { createStateRepository } from './state-repository.js';
 import {
   buildControllerLeaseId,
-  transitionControllerLease,
 } from './transition-engine.js';
 import {
   ingestManagedTaskPollEvents,
@@ -43,11 +43,180 @@ import { reconcileObservations as reconcileObservationModels } from './reconcili
 
 export const DEFAULT_PROJECT_ID = 'ciecopilot-home';
 export const CONTROLLER_MUTATION_MODES = ['observe', 'shadow', 'assist'];
+export const DEFAULT_CONTROLLER_POLL_INTERVAL_MS = 30 * 1000;
+export const DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS = 10 * 1000;
+export const DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS = 5 * 60 * 1000;
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
   if (typeof now === 'string' && now.trim() !== '') return now.trim();
   return new Date().toISOString();
+}
+
+function addMilliseconds(isoTimestamp, durationMs) {
+  const date = new Date(isoTimestamp);
+  if (Number.isNaN(date.getTime())) {
+    throw new Error(`Invalid timestamp: ${isoTimestamp}`);
+  }
+
+  return new Date(date.getTime() + durationMs).toISOString();
+}
+
+function resolveHolderIdentity() {
+  return {
+    holderId: process.env.AO_SESSION_NAME ?? process.env.AO_SESSION_ID ?? 'controller-loop',
+    holderType: process.env.AO_CALLER_TYPE ?? 'session',
+  };
+}
+
+function isControllerLeaseStale(lease, now) {
+  if (!lease || lease.status !== 'active') return false;
+  return new Date(lease.expires_at).getTime() <= new Date(now).getTime();
+}
+
+function buildActiveControllerLease({
+  existingLease = null,
+  leaseId,
+  controllerId,
+  holderId,
+  holderType,
+  now,
+  runtimeKind,
+  pollIntervalMs = null,
+  shutdownTimeoutMs = null,
+  leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+  lastRunStartedAt = null,
+  lastRunCompletedAt = null,
+  lastRunStatus = 'running',
+} = {}) {
+  const timestamp = resolveNow(now);
+
+  return createControllerLease({
+    ...existingLease,
+    lease_id: leaseId ?? existingLease?.lease_id ?? buildControllerLeaseId({
+      controllerId,
+      holderId,
+    }),
+    controller_id: controllerId ?? existingLease?.controller_id,
+    holder_id: holderId ?? existingLease?.holder_id,
+    holder_type: holderType ?? existingLease?.holder_type,
+    status: 'active',
+    acquired_at: existingLease?.acquired_at ?? timestamp,
+    heartbeat_at: timestamp,
+    expires_at: addMilliseconds(timestamp, leaseTimeoutMs ?? existingLease?.lease_timeout_ms ?? DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS),
+    lease_timeout_ms: leaseTimeoutMs ?? existingLease?.lease_timeout_ms ?? DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+    runtime_kind: runtimeKind ?? existingLease?.runtime_kind ?? 'oneshot',
+    poll_interval_ms: pollIntervalMs ?? existingLease?.poll_interval_ms ?? null,
+    shutdown_timeout_ms: shutdownTimeoutMs ?? existingLease?.shutdown_timeout_ms ?? null,
+    last_run_started_at: lastRunStartedAt ?? existingLease?.last_run_started_at ?? null,
+    last_run_completed_at: lastRunCompletedAt ?? existingLease?.last_run_completed_at ?? null,
+    last_run_status: lastRunStatus ?? existingLease?.last_run_status ?? null,
+    released_at: null,
+    release_reason: null,
+    metadata: existingLease?.metadata ?? {},
+  });
+}
+
+function buildReleasedControllerLease(existingLease, {
+  now,
+  reason,
+  lastRunCompletedAt = null,
+  lastRunStatus = null,
+} = {}) {
+  const timestamp = resolveNow(now);
+
+  return createControllerLease({
+    ...existingLease,
+    status: 'released',
+    released_at: timestamp,
+    release_reason: reason ?? 'released',
+    last_run_completed_at: lastRunCompletedAt ?? existingLease?.last_run_completed_at ?? timestamp,
+    last_run_status: lastRunStatus ?? existingLease?.last_run_status ?? 'completed',
+  });
+}
+
+function buildExpiredControllerLease(existingLease, {
+  now,
+  reason,
+} = {}) {
+  const timestamp = resolveNow(now);
+
+  return createControllerLease({
+    ...existingLease,
+    status: 'expired',
+    released_at: timestamp,
+    release_reason: reason ?? 'expired',
+  });
+}
+
+function acquireControllerLeadership({
+  repository,
+  controllerId,
+  now,
+  runtimeKind,
+  pollIntervalMs = null,
+  shutdownTimeoutMs = null,
+  leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+} = {}) {
+  const timestamp = resolveNow(now);
+  const { holderId, holderType } = resolveHolderIdentity();
+  const snapshot = repository.getSnapshot().state;
+  const activeLease = snapshot.controller_leases.find((lease) => (
+    lease.controller_id === controllerId && lease.status === 'active'
+  )) ?? null;
+
+  if (activeLease && activeLease.holder_id !== holderId) {
+    if (!isControllerLeaseStale(activeLease, timestamp)) {
+      throw new Error(
+        `Controller ${controllerId} already has an active lease held by ${activeLease.holder_id}.`,
+      );
+    }
+
+    repository.upsertControllerLease(buildExpiredControllerLease(activeLease, {
+      now: timestamp,
+      reason: 'stale_leader_reclaimed',
+    }));
+  }
+
+  const leaseId = buildControllerLeaseId({
+    controllerId,
+    holderId,
+  });
+  const existingLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === leaseId) ?? null;
+  const lease = buildActiveControllerLease({
+    existingLease,
+    leaseId,
+    controllerId,
+    holderId,
+    holderType,
+    now: timestamp,
+    runtimeKind,
+    pollIntervalMs,
+    shutdownTimeoutMs,
+    leaseTimeoutMs,
+  });
+  repository.upsertControllerLease(lease);
+  return lease;
+}
+
+async function waitForNextPass({
+  intervalMs,
+  stopSignal = null,
+} = {}) {
+  const remaining = Number(intervalMs);
+  if (!Number.isFinite(remaining) || remaining <= 0) {
+    return;
+  }
+
+  let elapsedMs = 0;
+  while (elapsedMs < remaining) {
+    if (stopSignal?.aborted) return;
+    const sleepMs = Math.min(remaining - elapsedMs, 100);
+    await new Promise((resolve) => {
+      setTimeout(resolve, sleepMs);
+    });
+    elapsedMs += sleepMs;
+  }
 }
 
 function hashText(value) {
@@ -435,75 +604,22 @@ function resolveLoopMode(repository, controllerId, mode, now) {
   return currentMode;
 }
 
-function assertNoActiveControllerLease(repository, controllerId) {
-  const activeLease = repository.getSnapshot().state.controller_leases.find((lease) => (
-    lease.controller_id === controllerId && lease.status === 'active'
-  ));
-
-  if (activeLease) {
-    throw new Error(
-      `Controller ${controllerId} already has an active lease held by ${activeLease.holder_id}.`,
-    );
-  }
-}
-
-export async function runControllerLoop({
-  repoRoot,
-  cwd = repoRoot,
-  projectId = DEFAULT_PROJECT_ID,
-  controllerId = CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
-  mode = null,
-  issueNumber = null,
-  now = new Date().toISOString(),
-  deps = {},
+async function executeControllerPass({
+  repository,
+  checkpointStore,
+  services,
+  cwd,
+  projectId,
+  controllerId,
+  issueNumber,
+  resolvedMode,
+  timestamp,
 } = {}) {
-  const services = {
-    loadAoProjectObservation,
-    loadGitHubObservationSet,
-    loadDoctorLocalState,
-    reconcileObservations: reconcileObservationModels,
-    buildDoctorReport: buildDoctorReportModel,
-    buildLifecycleReport: buildLifecycleReportModel,
-    resolveLifecycleReport: null,
-    ensureRuntimePreflights: ({ repository: activeRepository, cwd: activeCwd, now: activeNow }) => activeRepository.ensureRuntimePreflights({
-      cwd: activeCwd,
-      now: activeNow,
-    }),
-    ...deps,
-  };
-  const timestamp = resolveNow(now);
-  const repository = createStateRepository({
-    repoRoot,
-    projectId,
-  });
-  const checkpointStore = createCheckpointStore({
-    repository,
-    now: () => timestamp,
-  });
   await services.ensureRuntimePreflights({
     repository,
     cwd,
     now: timestamp,
   });
-  const resolvedMode = resolveLoopMode(repository, controllerId, mode, timestamp);
-  assertNoActiveControllerLease(repository, controllerId);
-  const holderId = process.env.AO_SESSION_NAME ?? process.env.AO_SESSION_ID ?? 'controller-loop';
-  const holderType = process.env.AO_CALLER_TYPE ?? 'session';
-  const leaseId = buildControllerLeaseId({
-    controllerId,
-    holderId,
-  });
-  const existingLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === leaseId) ?? null;
-  const activeLease = transitionControllerLease({
-    intent: 'acquire',
-    existingLease,
-    now: timestamp,
-    leaseId,
-    controllerId,
-    holderId,
-    holderType,
-  });
-  repository.upsertControllerLease(activeLease);
 
   const aoObservation = await services.loadAoProjectObservation({
     projectId,
@@ -525,192 +641,176 @@ export async function runControllerLoop({
   let deniedActionCount = 0;
   let downgradedActionCount = 0;
 
-  try {
-    for (const task of activeTasks) {
-      const currentSnapshot = repository.getSnapshot();
-      const prBindings = currentSnapshot.state.pr_bindings.filter((binding) => binding.task_id === task.task_id);
-      const githubObservation = await services.loadGitHubObservationSet({
-        scope: buildGitHubScope(task, prBindings),
-        now: timestamp,
-      });
-      const ingestResult = ingestManagedTaskPollEvents({
+  for (const task of activeTasks) {
+    const currentSnapshot = repository.getSnapshot();
+    const prBindings = currentSnapshot.state.pr_bindings.filter((binding) => binding.task_id === task.task_id);
+    const githubObservation = await services.loadGitHubObservationSet({
+      scope: buildGitHubScope(task, prBindings),
+      now: timestamp,
+    });
+    const ingestResult = ingestManagedTaskPollEvents({
+      repository,
+      controllerId,
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation,
+      now: timestamp,
+    });
+    ingestedObservationCount += ingestResult.ingested_count;
+    deliveryEventCount += ingestResult.delivery_event_count ?? 0;
+    const derivedTrigger = deriveLifecycleTriggerForTask({
+      matchedAoWorkers: ingestResult.matchedAoWorkers,
+      matchedPrs: ingestResult.matchedPrs,
+      deliveryEvents: ingestResult.deliveryEvents,
+    });
+    const prNumber = resolveLifecyclePrNumber(prBindings, ingestResult.matchedPrs);
+
+    let lifecycleTopStatus = null;
+    let proposedActionIds = [];
+    let executedActionIds = [];
+    let blockedActionIds = [];
+    let policyDecisionIds = [];
+    let policyBlockedActionIds = [];
+    let deniedActionIds = [];
+    let downgradedActionIds = [];
+
+    if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
+      const resolvedLifecycle = services.resolveLifecycleReport
+        ? await services.resolveLifecycleReport({
+            task,
+            prNumber,
+            derivedTrigger,
+            aoObservation,
+            githubObservation,
+            cwd,
+            projectId,
+          })
+        : await resolveLifecycleReportForTask({
+            task,
+            prNumber,
+            derivedTrigger,
+            aoObservation,
+            githubObservation,
+            cwd,
+            projectId,
+            deps: {
+              ...services,
+              controlPlaneSnapshot: repository.getSnapshot(),
+            },
+          });
+      const lifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
+      lifecycleTopStatus = lifecycleReport.top_status ?? null;
+      const proposalResult = await persistShadowActions({
         repository,
-        controllerId,
         task,
-        prBindings,
-        aoObservation,
-        githubObservation,
+        controllerId,
+        mode: resolvedMode,
+        derivedTrigger,
+        lifecycleReport,
+        prNumber,
         now: timestamp,
       });
-      ingestedObservationCount += ingestResult.ingested_count;
-      deliveryEventCount += ingestResult.delivery_event_count ?? 0;
-      const derivedTrigger = deriveLifecycleTriggerForTask({
-        matchedAoWorkers: ingestResult.matchedAoWorkers,
-        matchedPrs: ingestResult.matchedPrs,
-        deliveryEvents: ingestResult.deliveryEvents,
-      });
-      const prNumber = resolveLifecyclePrNumber(prBindings, ingestResult.matchedPrs);
+      proposedActionIds = proposalResult.actionIds;
+      proposedActionCount += proposalResult.count;
+      policyDecisionIds = proposalResult.policyDecisionIds;
+      policyDecisionCount += proposalResult.policyDecisionCount;
+      policyBlockedActionIds = proposalResult.policyBlockedActionIds;
+      policyBlockedActionCount += proposalResult.policyBlockedActionCount;
+      deniedActionIds = proposalResult.deniedActionIds;
+      deniedActionCount += proposalResult.deniedActionCount;
+      downgradedActionIds = proposalResult.downgradedActionIds;
+      downgradedActionCount += proposalResult.downgradedActionCount;
 
-      let lifecycleTopStatus = null;
-      let proposedActionIds = [];
-      let executedActionIds = [];
-      let blockedActionIds = [];
-      let policyDecisionIds = [];
-      let policyBlockedActionIds = [];
-      let deniedActionIds = [];
-      let downgradedActionIds = [];
-
-      if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
-        const resolvedLifecycle = services.resolveLifecycleReport
-          ? await services.resolveLifecycleReport({
-              task,
-              prNumber,
-              derivedTrigger,
-              aoObservation,
-              githubObservation,
-              cwd,
-              projectId,
-            })
-          : await resolveLifecycleReportForTask({
-              task,
-              prNumber,
-              derivedTrigger,
-              aoObservation,
-              githubObservation,
-              cwd,
-              projectId,
-              deps: {
-                ...services,
-                controlPlaneSnapshot: repository.getSnapshot(),
-              },
-            });
-        const lifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
-        lifecycleTopStatus = lifecycleReport.top_status ?? null;
-        const proposalResult = await persistShadowActions({
+      if (resolvedMode === 'assist') {
+        const executionResult = await executeAssistActions({
           repository,
-          task,
           controllerId,
-          mode: resolvedMode,
-          derivedTrigger,
-          lifecycleReport,
-          prNumber,
+          task,
+          actionIds: proposalResult.actionIds,
           now: timestamp,
         });
-        proposedActionIds = proposalResult.actionIds;
-        proposedActionCount += proposalResult.count;
-        policyDecisionIds = proposalResult.policyDecisionIds;
-        policyDecisionCount += proposalResult.policyDecisionCount;
-        policyBlockedActionIds = proposalResult.policyBlockedActionIds;
-        policyBlockedActionCount += proposalResult.policyBlockedActionCount;
-        deniedActionIds = proposalResult.deniedActionIds;
-        deniedActionCount += proposalResult.deniedActionCount;
-        downgradedActionIds = proposalResult.downgradedActionIds;
-        downgradedActionCount += proposalResult.downgradedActionCount;
-
-        if (resolvedMode === 'assist') {
-          const executionResult = await executeAssistActions({
-            repository,
-            controllerId,
-            task,
-            actionIds: proposalResult.actionIds,
-            now: timestamp,
-          });
-          executedActionIds = executionResult.executedActionIds;
-          blockedActionIds = executionResult.blockedActionIds;
-          executedActionCount += executedActionIds.length;
-          blockedActionCount += blockedActionIds.length;
-        }
+        executedActionIds = executionResult.executedActionIds;
+        blockedActionIds = executionResult.blockedActionIds;
+        executedActionCount += executedActionIds.length;
+        blockedActionCount += blockedActionIds.length;
       }
+    }
 
-      try {
-        checkpointStore.captureCheckpoint({
-          taskId: task.task_id,
-          controllerId,
-          derivedTrigger,
-          lifecycleTopStatus,
-          observedAt: timestamp,
-          actionIds: [...proposedActionIds, ...executedActionIds],
-          reason: 'controller_loop_checkpoint',
-          createdBy: 'ao_controller',
-        });
-      } catch (error) {
-        repository.appendAuditEntry({
-          entityKind: 'checkpoint',
-          entityId: task.task_id,
-          operation: 'skip',
-          actor: 'ao_controller',
-          summary: `Skipped checkpoint for ${task.task_id}.`,
-          details: {
-            error: error.message,
-          },
-          recordedAt: timestamp,
-        });
-      }
-
-      const completedAt = resolveNow(now);
-      const actionRecords = [...new Set(proposedActionIds)]
-        .map((actionId) => repository.getSnapshot().state.actions.find((record) => record.action_id === actionId) ?? null)
-        .filter(Boolean);
-      repository.upsertControllerRunMetric(buildControllerRunMetric({
-        task,
+    try {
+      checkpointStore.captureCheckpoint({
+        taskId: task.task_id,
         controllerId,
-        controllerMode: resolvedMode,
-        triggerKind: derivedTrigger,
+        derivedTrigger,
         lifecycleTopStatus,
-        startedAt: timestamp,
-        completedAt,
-        observationCount: ingestResult.ingested_count,
-        deliveryEventCount: ingestResult.delivery_event_count ?? 0,
-        proposedActionCount: proposedActionIds.length,
-        executedActionCount: executedActionIds.length,
-        blockedActionCount: blockedActionIds.length,
-        policyDecisionCount: policyDecisionIds.length,
-        policyBlockedActionCount: policyBlockedActionIds.length,
-        deniedActionCount: deniedActionIds.length,
-        downgradedActionCount: downgradedActionIds.length,
-        actionRecords,
-        prNumber,
-      }));
-
-      taskResults.push({
-        task_id: task.task_id,
-        issue_number: task.issue_number,
-        derived_trigger: derivedTrigger,
-        new_observation_count: ingestResult.ingested_count,
-        new_delivery_event_count: ingestResult.delivery_event_count ?? 0,
-        proposed_action_count: proposedActionIds.length,
-        proposed_action_ids: proposedActionIds,
-        executed_action_count: executedActionIds.length,
-        executed_action_ids: executedActionIds,
-        blocked_action_count: blockedActionIds.length,
-        blocked_action_ids: blockedActionIds,
-        policy_decision_count: policyDecisionIds.length,
-        policy_decision_ids: policyDecisionIds,
-        policy_blocked_action_count: policyBlockedActionIds.length,
-        policy_blocked_action_ids: policyBlockedActionIds,
-        denied_action_count: deniedActionIds.length,
-        denied_action_ids: deniedActionIds,
-        downgraded_action_count: downgradedActionIds.length,
-        downgraded_action_ids: downgradedActionIds,
-        lifecycle_top_status: lifecycleTopStatus,
+        observedAt: timestamp,
+        actionIds: [...proposedActionIds, ...executedActionIds],
+        reason: 'controller_loop_checkpoint',
+        createdBy: 'ao_controller',
+      });
+    } catch (error) {
+      repository.appendAuditEntry({
+        entityKind: 'checkpoint',
+        entityId: task.task_id,
+        operation: 'skip',
+        actor: 'ao_controller',
+        summary: `Skipped checkpoint for ${task.task_id}.`,
+        details: {
+          error: error.message,
+        },
+        recordedAt: timestamp,
       });
     }
-  } finally {
-    const currentLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === leaseId) ?? null;
-    if (currentLease?.status === 'active') {
-      repository.upsertControllerLease(transitionControllerLease({
-        intent: 'release',
-        existingLease: currentLease,
-        now: timestamp,
-        reason: 'controller_loop_complete',
-      }));
-    }
+
+    const actionRecords = [...new Set(proposedActionIds)]
+      .map((actionId) => repository.getSnapshot().state.actions.find((record) => record.action_id === actionId) ?? null)
+      .filter(Boolean);
+    repository.upsertControllerRunMetric(buildControllerRunMetric({
+      task,
+      controllerId,
+      controllerMode: resolvedMode,
+      triggerKind: derivedTrigger,
+      lifecycleTopStatus,
+      startedAt: timestamp,
+      completedAt: timestamp,
+      observationCount: ingestResult.ingested_count,
+      deliveryEventCount: ingestResult.delivery_event_count ?? 0,
+      proposedActionCount: proposedActionIds.length,
+      executedActionCount: executedActionIds.length,
+      blockedActionCount: blockedActionIds.length,
+      policyDecisionCount: policyDecisionIds.length,
+      policyBlockedActionCount: policyBlockedActionIds.length,
+      deniedActionCount: deniedActionIds.length,
+      downgradedActionCount: downgradedActionIds.length,
+      actionRecords,
+      prNumber,
+    }));
+
+    taskResults.push({
+      task_id: task.task_id,
+      issue_number: task.issue_number,
+      derived_trigger: derivedTrigger,
+      new_observation_count: ingestResult.ingested_count,
+      new_delivery_event_count: ingestResult.delivery_event_count ?? 0,
+      proposed_action_count: proposedActionIds.length,
+      proposed_action_ids: proposedActionIds,
+      executed_action_count: executedActionIds.length,
+      executed_action_ids: executedActionIds,
+      blocked_action_count: blockedActionIds.length,
+      blocked_action_ids: blockedActionIds,
+      policy_decision_count: policyDecisionIds.length,
+      policy_decision_ids: policyDecisionIds,
+      policy_blocked_action_count: policyBlockedActionIds.length,
+      policy_blocked_action_ids: policyBlockedActionIds,
+      denied_action_count: deniedActionIds.length,
+      denied_action_ids: deniedActionIds,
+      downgraded_action_count: downgradedActionIds.length,
+      downgraded_action_ids: downgradedActionIds,
+      lifecycle_top_status: lifecycleTopStatus,
+    });
   }
 
   return {
-    project_id: projectId,
-    controller_id: controllerId,
-    mode: resolvedMode,
     observed_at: timestamp,
     managed_task_count: activeTasks.length,
     processed_task_count: taskResults.length,
@@ -724,5 +824,206 @@ export async function runControllerLoop({
     denied_action_count: deniedActionCount,
     downgraded_action_count: downgradedActionCount,
     task_results: taskResults,
+  };
+}
+
+export async function runControllerLoop({
+  repoRoot,
+  cwd = repoRoot,
+  projectId = DEFAULT_PROJECT_ID,
+  controllerId = CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
+  mode = null,
+  issueNumber = null,
+  now = new Date().toISOString(),
+  continuous = false,
+  pollIntervalMs = DEFAULT_CONTROLLER_POLL_INTERVAL_MS,
+  shutdownTimeoutMs = DEFAULT_CONTROLLER_SHUTDOWN_TIMEOUT_MS,
+  leaseTimeoutMs = DEFAULT_CONTROLLER_LEASE_TIMEOUT_MS,
+  maxPasses = null,
+  stopSignal = null,
+  deps = {},
+} = {}) {
+  const services = {
+    loadAoProjectObservation,
+    loadGitHubObservationSet,
+    loadDoctorLocalState,
+    reconcileObservations: reconcileObservationModels,
+    buildDoctorReport: buildDoctorReportModel,
+    buildLifecycleReport: buildLifecycleReportModel,
+    resolveLifecycleReport: null,
+    ensureRuntimePreflights: ({ repository: activeRepository, cwd: activeCwd, now: activeNow }) => activeRepository.ensureRuntimePreflights({
+      cwd: activeCwd,
+      now: activeNow,
+    }),
+    wait: ({ intervalMs, stopSignal: activeStopSignal }) => waitForNextPass({
+      intervalMs,
+      stopSignal: activeStopSignal,
+    }),
+    shouldContinue: ({ stopSignal: activeStopSignal }) => activeStopSignal?.aborted !== true,
+    ...deps,
+  };
+
+  const repository = createStateRepository({
+    repoRoot,
+    projectId,
+  });
+  let activeTimestamp = resolveNow(now);
+  const checkpointStore = createCheckpointStore({
+    repository,
+    now: () => activeTimestamp,
+  });
+  const resolvedMode = resolveLoopMode(repository, controllerId, mode, activeTimestamp);
+  const runtimeKind = continuous ? 'continuous' : 'oneshot';
+
+  const aggregate = {
+    observed_at: activeTimestamp,
+    managed_task_count: 0,
+    processed_task_count: 0,
+    ingested_observation_count: 0,
+    delivery_event_count: 0,
+    proposed_action_count: 0,
+    executed_action_count: 0,
+    blocked_action_count: 0,
+    policy_decision_count: 0,
+    policy_blocked_action_count: 0,
+    denied_action_count: 0,
+    downgraded_action_count: 0,
+    task_results: [],
+  };
+  let passCount = 0;
+  let stopReason = 'completed';
+  let currentLeaseId = null;
+
+  try {
+    while (true) {
+      activeTimestamp = passCount === 0 ? activeTimestamp : resolveNow(now);
+      const activeLease = acquireControllerLeadership({
+        repository,
+        controllerId,
+        now: activeTimestamp,
+        runtimeKind,
+        pollIntervalMs: continuous ? pollIntervalMs : null,
+        shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
+        leaseTimeoutMs,
+      });
+      currentLeaseId = activeLease.lease_id;
+
+      const passResult = await executeControllerPass({
+        repository,
+        checkpointStore,
+        services,
+        cwd,
+        projectId,
+        controllerId,
+        issueNumber,
+        resolvedMode,
+        timestamp: activeTimestamp,
+      });
+      passCount += 1;
+      aggregate.observed_at = activeTimestamp;
+      aggregate.managed_task_count = passResult.managed_task_count;
+      aggregate.processed_task_count += passResult.processed_task_count;
+      aggregate.ingested_observation_count += passResult.ingested_observation_count;
+      aggregate.delivery_event_count += passResult.delivery_event_count;
+      aggregate.proposed_action_count += passResult.proposed_action_count;
+      aggregate.executed_action_count += passResult.executed_action_count;
+      aggregate.blocked_action_count += passResult.blocked_action_count;
+      aggregate.policy_decision_count += passResult.policy_decision_count;
+      aggregate.policy_blocked_action_count += passResult.policy_blocked_action_count;
+      aggregate.denied_action_count += passResult.denied_action_count;
+      aggregate.downgraded_action_count += passResult.downgraded_action_count;
+      aggregate.task_results.push(...passResult.task_results);
+
+      const refreshedLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === currentLeaseId) ?? activeLease;
+      repository.upsertControllerLease(buildActiveControllerLease({
+        existingLease: refreshedLease,
+        leaseId: currentLeaseId,
+        controllerId,
+        holderId: refreshedLease.holder_id,
+        holderType: refreshedLease.holder_type,
+        now: activeTimestamp,
+        runtimeKind,
+        pollIntervalMs: continuous ? pollIntervalMs : null,
+        shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
+        leaseTimeoutMs,
+        lastRunStartedAt: activeTimestamp,
+        lastRunCompletedAt: activeTimestamp,
+        lastRunStatus: 'completed',
+      }));
+
+      if (!continuous) {
+        break;
+      }
+      if (Number.isInteger(maxPasses) && passCount >= maxPasses) {
+        stopReason = 'max_passes';
+        break;
+      }
+      if (!services.shouldContinue({ stopSignal })) {
+        stopReason = 'stop_requested';
+        break;
+      }
+      await services.wait({
+        intervalMs: pollIntervalMs,
+        stopSignal,
+      });
+      if (!services.shouldContinue({ stopSignal })) {
+        stopReason = 'stop_requested';
+        break;
+      }
+    }
+  } catch (error) {
+    if (currentLeaseId) {
+      const failedLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === currentLeaseId) ?? null;
+      if (failedLease?.status === 'active') {
+        repository.upsertControllerLease(buildActiveControllerLease({
+          existingLease: failedLease,
+          leaseId: currentLeaseId,
+          controllerId,
+          holderId: failedLease.holder_id,
+          holderType: failedLease.holder_type,
+          now: activeTimestamp,
+          runtimeKind,
+          pollIntervalMs: continuous ? pollIntervalMs : null,
+          shutdownTimeoutMs: continuous ? shutdownTimeoutMs : null,
+          leaseTimeoutMs,
+          lastRunStartedAt: failedLease.last_run_started_at ?? activeTimestamp,
+          lastRunCompletedAt: activeTimestamp,
+          lastRunStatus: 'failed',
+        }));
+      }
+    }
+    throw error;
+  } finally {
+    if (currentLeaseId) {
+      const currentLease = repository.getSnapshot().state.controller_leases.find((lease) => lease.lease_id === currentLeaseId) ?? null;
+      if (currentLease?.status === 'active') {
+        repository.upsertControllerLease(buildReleasedControllerLease(currentLease, {
+          now: activeTimestamp,
+          reason: continuous ? `controller_runtime_${stopReason}` : 'controller_loop_complete',
+        }));
+      }
+    }
+  }
+
+  return {
+    project_id: projectId,
+    controller_id: controllerId,
+    mode: resolvedMode,
+    observed_at: aggregate.observed_at,
+    runtime_kind: runtimeKind,
+    stop_reason: stopReason,
+    pass_count: passCount,
+    managed_task_count: aggregate.managed_task_count,
+    processed_task_count: aggregate.processed_task_count,
+    ingested_observation_count: aggregate.ingested_observation_count,
+    delivery_event_count: aggregate.delivery_event_count,
+    proposed_action_count: aggregate.proposed_action_count,
+    executed_action_count: aggregate.executed_action_count,
+    blocked_action_count: aggregate.blocked_action_count,
+    policy_decision_count: aggregate.policy_decision_count,
+    policy_blocked_action_count: aggregate.policy_blocked_action_count,
+    denied_action_count: aggregate.denied_action_count,
+    downgraded_action_count: aggregate.downgraded_action_count,
+    task_results: aggregate.task_results,
   };
 }

@@ -144,7 +144,7 @@ describe('ao state runner', () => {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
-      audit_entry_count: 11,
+      audit_entry_count: 12,
     });
     expect(report.audit.recent_entries).toEqual([
       expect.objectContaining({

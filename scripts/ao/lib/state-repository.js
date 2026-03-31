@@ -24,9 +24,11 @@ import {
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createRepoKnowledgeRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
 } from './state-contracts.js';
+import { materializeRepoKnowledge } from './repo-knowledge.js';
 import { runRuntimeBootstrapPreflight } from './runtime-preflight.js';
 import { appendControlPlaneAuditEntry, readControlPlaneAuditEntries } from './state-audit.js';
 import {
@@ -124,6 +126,7 @@ export function createStateRepository({
     nextState.credential_provenances = sortCollectionByKey(nextState.credential_provenances, 'provenance_id');
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
     nextState.runtime_preflights = sortCollectionByKey(nextState.runtime_preflights, 'runtime_ref');
+    nextState.repo_knowledge = sortCollectionByKey(nextState.repo_knowledge, 'project_id');
     nextState.checkpoints = sortCollectionByKey(nextState.checkpoints, 'checkpoint_id');
     nextState.handoff_requests = sortCollectionByKey(nextState.handoff_requests, 'request_id');
     nextState.handoff_claims = sortCollectionByKey(nextState.handoff_claims, 'claim_id');
@@ -406,6 +409,17 @@ export function createStateRepository({
       });
     },
 
+    upsertRepoKnowledge(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'repo_knowledge',
+        identityKey: 'project_id',
+        entityKind: 'repo_knowledge',
+        record,
+        normalize: createRepoKnowledgeRecord,
+        summary: `Persisted repo knowledge ${record?.project_id ?? record?.snapshot?.project_id}.`,
+      });
+    },
+
     upsertHandoffRequest(record) {
       return upsertCollectionRecord({
         collectionKey: 'handoff_requests',
@@ -531,6 +545,50 @@ export function createStateRepository({
       }
 
       return sortCollectionByKey(ensuredRecords, 'runtime_ref');
+    },
+
+    ensureRepoKnowledge({
+      now = clock,
+    } = {}) {
+      ensureBootstrapped();
+      const timestamp = resolveNow(now);
+      const snapshot = readSnapshot();
+      const repoKnowledgeSnapshot = materializeRepoKnowledge({
+        repoRoot,
+        projectId,
+        now: timestamp,
+      });
+      const normalizedRecord = createRepoKnowledgeRecord({
+        recorded_at: timestamp,
+        snapshot: repoKnowledgeSnapshot,
+      });
+      const existingRecord = (snapshot.state.repo_knowledge ?? []).find(
+        (record) => record?.project_id === normalizedRecord.project_id,
+      );
+
+      if (existingRecord?.replay_key === normalizedRecord.replay_key) {
+        return existingRecord;
+      }
+
+      const nextState = cloneJsonValue(snapshot.state);
+      const existingIndex = nextState.repo_knowledge.findIndex(
+        (record) => record?.project_id === normalizedRecord.project_id,
+      );
+      if (existingIndex >= 0) {
+        nextState.repo_knowledge[existingIndex] = normalizedRecord;
+      } else {
+        nextState.repo_knowledge.push(normalizedRecord);
+      }
+
+      persistState({
+        state: nextState,
+        entityKind: 'repo_knowledge',
+        entityId: normalizedRecord.project_id,
+        summary: `Persisted repo knowledge ${normalizedRecord.project_id}.`,
+        details: normalizedRecord,
+      });
+
+      return normalizedRecord;
     },
 
     upsertCheckpoint(record) {

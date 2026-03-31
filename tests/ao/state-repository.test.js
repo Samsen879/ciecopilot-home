@@ -18,7 +18,11 @@ import {
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
-import { writeJsonFileAtomic } from '../../scripts/ao/lib/state-storage.js';
+import {
+  buildCurrentProcessMetadata,
+  withFileLock,
+  writeJsonFileAtomic,
+} from '../../scripts/ao/lib/state-storage.js';
 
 const PROJECT_ID = 'ciecopilot-home';
 const tempDirs = [];
@@ -550,5 +554,179 @@ describe('ao state repository', () => {
         expires_at: '2026-03-29T06:07:00.000Z',
       }),
     ]);
+  });
+  it('recovers an orphaned controller lease lock before mutating controller leadership', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const snapshot = repository.getSnapshot();
+    const lockPath = `${snapshot.paths.controllerLeasesPath}.lock`;
+    fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+    fs.writeFileSync(lockPath, `${JSON.stringify({
+      pid: 999999,
+      acquired_at: '2026-03-29T05:00:00.000Z',
+    })}\n`, 'utf8');
+
+    await expect(repository.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a-incarnation-a',
+      summary: 'Recover stale controller lease lock.',
+      mutate: async ({ upsertControllerLease }) => {
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-a-incarnation-a',
+          controller_id: 'default',
+          holder_id: 'holder-a',
+          holder_type: 'session',
+          incarnation_id: 'incarnation-a',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:00.000Z',
+          heartbeat_at: '2026-03-29T06:00:00.000Z',
+          expires_at: '2026-03-29T06:05:00.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    })).resolves.toEqual(expect.objectContaining({
+      lease_id: 'controller-default-holder-a-incarnation-a',
+      status: 'active',
+    }));
+
+    expect(fs.existsSync(lockPath)).toBe(false);
+    expect(repository.getSnapshot().state.controller_leases).toEqual([
+      expect.objectContaining({
+        lease_id: 'controller-default-holder-a-incarnation-a',
+        status: 'active',
+      }),
+    ]);
+  });
+
+  it('does not delete a newly replaced live lock while recovering a stale controller lease lock', async () => {
+    const repoRoot = createTempRepo();
+    const lockPath = path.join(repoRoot, 'controller-leases.json.lock');
+    fs.writeFileSync(lockPath, `${JSON.stringify({
+      pid: 999999,
+      acquired_at: '2026-03-29T05:00:00.000Z',
+    })}\n`, 'utf8');
+
+    const liveLockMetadata = {
+      pid: process.pid,
+      acquired_at: new Date().toISOString(),
+      ...buildCurrentProcessMetadata({
+        startedAt: new Date().toISOString(),
+      }),
+    };
+
+    await expect(withFileLock(lockPath, async () => 'acquired', {
+      timeoutMs: 40,
+      retryMs: 5,
+      beforeStaleLockUnlink: () => {
+        fs.writeFileSync(lockPath, `${JSON.stringify(liveLockMetadata)}\n`, 'utf8');
+      },
+    })).rejects.toThrow(/Timed out acquiring file lock/i);
+
+    expect(JSON.parse(fs.readFileSync(lockPath, 'utf8'))).toEqual(liveLockMetadata);
+  });
+
+  it('recovers a legacy tokenless controller lease lock after stale age even when the pid is still live', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const snapshot = repository.getSnapshot();
+    const lockPath = `${snapshot.paths.controllerLeasesPath}.lock`;
+    fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+    fs.writeFileSync(lockPath, `${JSON.stringify({
+      pid: process.pid,
+      acquired_at: '2026-03-29T05:00:00.000Z',
+    })}\n`, 'utf8');
+
+    await expect(repository.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a-incarnation-a',
+      summary: 'Recover legacy tokenless controller lease lock.',
+      timeoutMs: 60,
+      retryMs: 5,
+      mutate: async ({ upsertControllerLease }) => {
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-a-incarnation-a',
+          controller_id: 'default',
+          holder_id: 'holder-a',
+          holder_type: 'session',
+          incarnation_id: 'incarnation-a',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:00.000Z',
+          heartbeat_at: '2026-03-29T06:00:00.000Z',
+          expires_at: '2026-03-29T06:05:00.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    })).resolves.toEqual(expect.objectContaining({
+      lease_id: 'controller-default-holder-a-incarnation-a',
+      status: 'active',
+    }));
+
+    expect(fs.existsSync(lockPath)).toBe(false);
+  });
+
+  it('recovers a pid-reused controller lease lock when the recorded process identity token mismatches', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const snapshot = repository.getSnapshot();
+    const lockPath = `${snapshot.paths.controllerLeasesPath}.lock`;
+    fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+    fs.writeFileSync(lockPath, `${JSON.stringify({
+      pid: process.pid,
+      process_started_at: '2026-03-29T05:00:00.000Z',
+      process_start_token: 'stale-process-token',
+      acquired_at: '2026-03-29T05:00:00.000Z',
+    })}\n`, 'utf8');
+
+    await expect(repository.mutateControllerLeasesAtomically({
+      entityId: 'controller-default-holder-a-incarnation-a',
+      summary: 'Recover pid-reused controller lease lock.',
+      mutate: async ({ upsertControllerLease }) => {
+        const lease = upsertControllerLease(createControllerLease({
+          lease_id: 'controller-default-holder-a-incarnation-a',
+          controller_id: 'default',
+          holder_id: 'holder-a',
+          holder_type: 'session',
+          incarnation_id: 'incarnation-a',
+          status: 'active',
+          acquired_at: '2026-03-29T06:00:00.000Z',
+          heartbeat_at: '2026-03-29T06:00:00.000Z',
+          expires_at: '2026-03-29T06:05:00.000Z',
+          lease_timeout_ms: 300000,
+          runtime_kind: 'continuous',
+        }));
+        return {
+          value: lease,
+          entityId: lease.lease_id,
+          summary: `Persisted controller lease ${lease.lease_id}.`,
+          details: lease,
+        };
+      },
+    })).resolves.toEqual(expect.objectContaining({
+      lease_id: 'controller-default-holder-a-incarnation-a',
+      status: 'active',
+    }));
+
+    expect(fs.existsSync(lockPath)).toBe(false);
   });
 });

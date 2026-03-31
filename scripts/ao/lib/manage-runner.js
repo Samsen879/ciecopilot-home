@@ -1,6 +1,10 @@
 import { createCheckpointStore } from './checkpoint-store.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
 import { normalizeIssueIntake } from './issue-intake.js';
+import {
+  buildManagedTaskExecutionAttemptMetric,
+  completeManagedTaskExecutionAttemptMetric,
+} from './run-metrics.js';
 import { createStateRepository } from './state-repository.js';
 import { createTaskSpecRecord } from './state-contracts.js';
 import {
@@ -29,6 +33,16 @@ function matchesTaskIdentity(task, { taskId = null, issueNumber = null } = {}) {
   if (taskId && task.task_id === taskId) return true;
   if (issueNumber != null && task.issue_number === Number(issueNumber)) return true;
   return false;
+}
+
+function latestActiveManagedExecutionAttempt(snapshot, taskId) {
+  return [...(snapshot?.state?.execution_attempt_metrics ?? [])]
+    .filter((record) => (
+      record?.attempt_kind === 'managed_task'
+        && record?.task_id === taskId
+        && record?.status === 'active'
+    ))
+    .sort((left, right) => String(right?.started_at ?? '').localeCompare(String(left?.started_at ?? '')))[0] ?? null;
 }
 
 function releaseActiveOwnershipLeases(repository, taskId, now, reason) {
@@ -232,6 +246,7 @@ export async function runManageCommand({
   let handoffTransfer = null;
   let releasedOwnershipLeaseIds = [];
   let releasedPrBindingIds = [];
+  let acceptedHandoff = null;
 
   if (ownerSessionName && ['enroll', 'adopt', 'resume'].includes(command)) {
     if (command === 'resume') {
@@ -242,7 +257,7 @@ export async function runManageCommand({
       const latestOwnershipLease = latestTaskOwnershipLease(resumeSnapshot, task.task_id);
       const sameOwnerResume = latestOwnershipLease?.owner_session_name === ownerSessionName
         || activeOwnershipLeases.some((lease) => lease.owner_session_name === ownerSessionName);
-      const acceptedHandoff = sameOwnerResume
+      acceptedHandoff = sameOwnerResume
         ? null
         : handoffProtocol.resolveAcceptedHandoff({
             taskId: task.task_id,
@@ -337,6 +352,18 @@ export async function runManageCommand({
     repository.upsertPrBinding(prBinding);
   }
 
+  if (ownerSessionName && ['enroll', 'adopt', 'resume'].includes(command)) {
+    repository.upsertExecutionAttemptMetric(buildManagedTaskExecutionAttemptMetric({
+      task,
+      ownerSessionName,
+      ownerSessionId,
+      prNumber: resolvedPrNumber,
+      command,
+      acceptedHandoff: acceptedHandoff != null,
+      now: timestamp,
+    }));
+  }
+
   if (command === 'unmanage' || command === 'retire') {
     releasedOwnershipLeaseIds = releaseActiveOwnershipLeases(
       repository,
@@ -351,6 +378,19 @@ export async function runManageCommand({
         timestamp,
         reason ?? 'task_retired',
       );
+    }
+
+    const activeExecutionAttempt = latestActiveManagedExecutionAttempt(
+      repository.getSnapshot(),
+      task.task_id,
+    );
+    if (activeExecutionAttempt) {
+      repository.upsertExecutionAttemptMetric(completeManagedTaskExecutionAttemptMetric({
+        attemptRecord: activeExecutionAttempt,
+        status: command === 'retire' ? 'retired' : 'paused',
+        reason,
+        now: timestamp,
+      }));
     }
   }
 

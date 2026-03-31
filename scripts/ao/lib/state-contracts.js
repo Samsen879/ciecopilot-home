@@ -1,5 +1,20 @@
 import { createRuntimePreflightSnapshot } from './runtime-contracts.js';
 import { createTaskSpecSnapshot } from './task-spec.js';
+import {
+  CONTROLLER_RUN_MEASUREMENT_FORMAT,
+  CONTROLLER_RUN_MEASUREMENT_SCHEMA_VERSION,
+  EXECUTION_ATTEMPT_MEASUREMENT_FORMAT,
+  EXECUTION_ATTEMPT_MEASUREMENT_SCHEMA_VERSION,
+  MEASUREMENT_ACTION_CLASSES,
+  MEASUREMENT_FAILURE_CLASSES,
+  MEASUREMENT_INTERVENTION_KINDS,
+  MEASUREMENT_RETRY_CAUSES,
+  createMeasurementCountMap,
+  normalizeMeasurementActionClass,
+  normalizeMeasurementFailureClass,
+  normalizeMeasurementRetryCause,
+  normalizeMeasurementTrigger,
+} from './measurement-taxonomy.js';
 
 export const CONTROL_PLANE_SCHEMA_VERSION = 'ao.control-plane.schema.v1alpha1';
 export const CONTROL_PLANE_SCHEMA_FORMAT = 'ao_control_plane_schema';
@@ -7,7 +22,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 7;
+export const CONTROL_PLANE_LATEST_VERSION = 8;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
@@ -36,6 +51,8 @@ export const CREDENTIAL_PROVENANCE_TRUST_DECISIONS = ['trusted', 'untrusted'];
 export const HANDOFF_REQUEST_STATUSES = ['open', 'accepted', 'rejected', 'expired', 'completed'];
 export const HANDOFF_CLAIM_STATUSES = ['pending', 'blocked', 'accepted', 'rejected', 'expired'];
 export const HANDOFF_DECISION_OUTCOMES = ['accept', 'reject', 'expire'];
+export const EXECUTION_ATTEMPT_KINDS = ['assist_action', 'managed_task'];
+export const EXECUTION_ATTEMPT_STATUSES = ['active', 'executed', 'blocked', 'paused', 'retired', 'completed'];
 
 function isPlainObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
@@ -122,6 +139,96 @@ function normalizeMetadata(value = {}) {
   return cloneJsonValue(value);
 }
 
+function normalizeNullableNumber(value, fieldName) {
+  if (value == null) return null;
+  const normalized = Number(value);
+  if (!Number.isFinite(normalized) || normalized < 0) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+  return normalized;
+}
+
+function normalizeCountMap(values, fieldName, keys) {
+  if (values == null) return createMeasurementCountMap(keys);
+  if (!isPlainObject(values)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  const nextValues = {};
+  for (const [key, value] of Object.entries(values)) {
+    if (!keys.includes(key)) {
+      throw new Error(`Invalid ${fieldName}.${key}`);
+    }
+    nextValues[key] = normalizePositiveInteger(value, `${fieldName}.${key}`, {
+      allowZero: true,
+    });
+  }
+
+  return createMeasurementCountMap(keys, nextValues);
+}
+
+function normalizeActionClassCounts(values) {
+  if (values == null) return createMeasurementCountMap(MEASUREMENT_ACTION_CLASSES);
+  if (!isPlainObject(values)) {
+    throw new Error('Invalid action_class_counts');
+  }
+
+  const nextValues = {};
+  for (const [key, value] of Object.entries(values)) {
+    const normalizedKey = normalizeMeasurementActionClass(key);
+    nextValues[normalizedKey] = (nextValues[normalizedKey] ?? 0) + normalizePositiveInteger(
+      value,
+      `action_class_counts.${key}`,
+      { allowZero: true },
+    );
+  }
+
+  return createMeasurementCountMap(MEASUREMENT_ACTION_CLASSES, nextValues);
+}
+
+function normalizeTokenUsage(value) {
+  if (value == null) {
+    return {
+      input_tokens: null,
+      output_tokens: null,
+      total_tokens: null,
+    };
+  }
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid token_usage');
+  }
+
+  return {
+    input_tokens: normalizePositiveInteger(value.input_tokens, 'token_usage.input_tokens', {
+      nullable: true,
+      allowZero: true,
+    }),
+    output_tokens: normalizePositiveInteger(value.output_tokens, 'token_usage.output_tokens', {
+      nullable: true,
+      allowZero: true,
+    }),
+    total_tokens: normalizePositiveInteger(value.total_tokens, 'token_usage.total_tokens', {
+      nullable: true,
+      allowZero: true,
+    }),
+  };
+}
+
+function normalizeCost(value) {
+  if (value == null) {
+    return {
+      usd: null,
+    };
+  }
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid cost');
+  }
+
+  return {
+    usd: normalizeNullableNumber(value.usd, 'cost.usd'),
+  };
+}
+
 function normalizeLineage(value = {}) {
   if (!isPlainObject(value)) {
     throw new Error('Invalid lineage');
@@ -193,6 +300,8 @@ export function createEmptyControlPlaneState({
     handoff_claims: [],
     handoff_decisions: [],
     handoff_transfers: [],
+    controller_run_metrics: [],
+    execution_attempt_metrics: [],
   };
 }
 
@@ -903,6 +1012,162 @@ export function createHandoffTransferRecord({
     transferred_at: normalizeIsoTimestamp(transferred_at, 'transferred_at'),
     transferred_by: normalizeOptionalString(transferred_by),
     reason: normalizeOptionalString(reason),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createControllerRunMetricRecord({
+  controller_run_metric_id,
+  task_id,
+  issue_number = null,
+  pr_number = null,
+  controller_id,
+  controller_mode,
+  trigger_kind = 'manual',
+  lifecycle_top_status = null,
+  failure_class = 'none',
+  started_at,
+  completed_at,
+  duration_ms = null,
+  observation_count = 0,
+  delivery_event_count = 0,
+  proposed_action_count = 0,
+  executed_action_count = 0,
+  blocked_action_count = 0,
+  policy_decision_count = 0,
+  policy_blocked_action_count = 0,
+  denied_action_count = 0,
+  downgraded_action_count = 0,
+  action_class_counts = null,
+  intervention_counts = null,
+  token_usage = null,
+  cost = null,
+  metadata = {},
+} = {}) {
+  return {
+    schema_version: CONTROLLER_RUN_MEASUREMENT_SCHEMA_VERSION,
+    format: CONTROLLER_RUN_MEASUREMENT_FORMAT,
+    controller_run_metric_id: normalizeRequiredString(
+      controller_run_metric_id,
+      'controller_run_metric_id',
+    ),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    issue_number: normalizePositiveInteger(issue_number, 'issue_number', { nullable: true }),
+    pr_number: normalizePositiveInteger(pr_number, 'pr_number', { nullable: true }),
+    controller_id: normalizeRequiredString(controller_id, 'controller_id'),
+    controller_mode: normalizeEnum(controller_mode, 'controller_mode', CONTROLLER_MODES),
+    trigger_kind: normalizeMeasurementTrigger(trigger_kind),
+    lifecycle_top_status: normalizeOptionalString(lifecycle_top_status),
+    failure_class: normalizeMeasurementFailureClass(failure_class),
+    started_at: normalizeIsoTimestamp(started_at, 'started_at'),
+    completed_at: normalizeIsoTimestamp(completed_at, 'completed_at'),
+    duration_ms: normalizePositiveInteger(duration_ms, 'duration_ms', {
+      nullable: true,
+      allowZero: true,
+    }),
+    observation_count: normalizePositiveInteger(observation_count, 'observation_count', {
+      allowZero: true,
+    }),
+    delivery_event_count: normalizePositiveInteger(delivery_event_count, 'delivery_event_count', {
+      allowZero: true,
+    }),
+    proposed_action_count: normalizePositiveInteger(proposed_action_count, 'proposed_action_count', {
+      allowZero: true,
+    }),
+    executed_action_count: normalizePositiveInteger(executed_action_count, 'executed_action_count', {
+      allowZero: true,
+    }),
+    blocked_action_count: normalizePositiveInteger(blocked_action_count, 'blocked_action_count', {
+      allowZero: true,
+    }),
+    policy_decision_count: normalizePositiveInteger(policy_decision_count, 'policy_decision_count', {
+      allowZero: true,
+    }),
+    policy_blocked_action_count: normalizePositiveInteger(
+      policy_blocked_action_count,
+      'policy_blocked_action_count',
+      { allowZero: true },
+    ),
+    denied_action_count: normalizePositiveInteger(denied_action_count, 'denied_action_count', {
+      allowZero: true,
+    }),
+    downgraded_action_count: normalizePositiveInteger(
+      downgraded_action_count,
+      'downgraded_action_count',
+      { allowZero: true },
+    ),
+    action_class_counts: normalizeActionClassCounts(action_class_counts),
+    intervention_counts: normalizeCountMap(
+      intervention_counts,
+      'intervention_counts',
+      MEASUREMENT_INTERVENTION_KINDS,
+    ),
+    token_usage: normalizeTokenUsage(token_usage),
+    cost: normalizeCost(cost),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createExecutionAttemptMetricRecord({
+  execution_attempt_metric_id,
+  attempt_kind,
+  task_id,
+  issue_number = null,
+  pr_number = null,
+  controller_id = null,
+  owner_session_name = null,
+  owner_session_id = null,
+  action_id = null,
+  action_kind = null,
+  action_class = null,
+  command = null,
+  status,
+  retry_cause = 'none',
+  failure_class = 'none',
+  reason = null,
+  started_at,
+  completed_at = null,
+  duration_ms = null,
+  intervention_counts = null,
+  token_usage = null,
+  cost = null,
+  metadata = {},
+} = {}) {
+  return {
+    schema_version: EXECUTION_ATTEMPT_MEASUREMENT_SCHEMA_VERSION,
+    format: EXECUTION_ATTEMPT_MEASUREMENT_FORMAT,
+    execution_attempt_metric_id: normalizeRequiredString(
+      execution_attempt_metric_id,
+      'execution_attempt_metric_id',
+    ),
+    attempt_kind: normalizeEnum(attempt_kind, 'attempt_kind', EXECUTION_ATTEMPT_KINDS),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    issue_number: normalizePositiveInteger(issue_number, 'issue_number', { nullable: true }),
+    pr_number: normalizePositiveInteger(pr_number, 'pr_number', { nullable: true }),
+    controller_id: normalizeOptionalString(controller_id),
+    owner_session_name: normalizeOptionalString(owner_session_name),
+    owner_session_id: normalizeOptionalString(owner_session_id),
+    action_id: normalizeOptionalString(action_id),
+    action_kind: normalizeOptionalString(action_kind),
+    action_class: action_class == null ? null : normalizeMeasurementActionClass(action_class),
+    command: normalizeOptionalString(command),
+    status: normalizeEnum(status, 'status', EXECUTION_ATTEMPT_STATUSES),
+    retry_cause: normalizeMeasurementRetryCause(retry_cause),
+    failure_class: normalizeMeasurementFailureClass(failure_class),
+    reason: normalizeOptionalString(reason),
+    started_at: normalizeIsoTimestamp(started_at, 'started_at'),
+    completed_at: normalizeIsoTimestamp(completed_at, 'completed_at', { nullable: true }),
+    duration_ms: normalizePositiveInteger(duration_ms, 'duration_ms', {
+      nullable: true,
+      allowZero: true,
+    }),
+    intervention_counts: normalizeCountMap(
+      intervention_counts,
+      'intervention_counts',
+      MEASUREMENT_INTERVENTION_KINDS,
+    ),
+    token_usage: normalizeTokenUsage(token_usage),
+    cost: normalizeCost(cost),
     metadata: normalizeMetadata(metadata),
   };
 }

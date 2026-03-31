@@ -1,5 +1,6 @@
 import { createCheckpointStore } from './checkpoint-store.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
+import { buildAoMetricsReport } from './run-metrics.js';
 import * as fs from 'node:fs';
 import path from 'node:path';
 
@@ -59,6 +60,12 @@ export async function loadAoStateReport({
   const activeHandoffCount = handoffInspections.filter((inspection) => (
     ['open', 'pending_decision', 'accepted'].includes(inspection.top_status)
   )).length;
+  const metricsReport = buildAoMetricsReport({
+    projectId,
+    repoRoot: resolvedRepoRoot,
+    snapshot,
+    traceLimit: auditLimit,
+  });
 
   return {
     schema_version: AO_STATE_SCHEMA_VERSION,
@@ -89,6 +96,8 @@ export async function loadAoStateReport({
       handoff_decision_count: snapshot.state.handoff_decisions.length,
       handoff_transfer_count: snapshot.state.handoff_transfers.length,
       active_handoff_count: activeHandoffCount,
+      controller_run_metric_count: snapshot.state.controller_run_metrics.length,
+      execution_attempt_metric_count: snapshot.state.execution_attempt_metrics.length,
       audit_entry_count: auditEntries.length,
     },
     checkpoints: {
@@ -96,6 +105,10 @@ export async function loadAoStateReport({
     },
     handoffs: {
       inspections: handoffInspections,
+    },
+    metrics: {
+      summary: metricsReport.summary,
+      recent_traces: metricsReport.recent_traces,
     },
     audit: {
       recent_entries: recentEntries,

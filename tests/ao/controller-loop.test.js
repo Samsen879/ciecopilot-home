@@ -179,6 +179,37 @@ describe('ao controller loop', () => {
     const snapshot = repository.getSnapshot().state;
     expect(snapshot.observations).toHaveLength(2);
     expect(snapshot.actions).toEqual([]);
+    expect(snapshot.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        controller_id: 'default',
+        controller_mode: 'observe',
+        trigger_kind: 'manual',
+        failure_class: 'none',
+        lifecycle_top_status: null,
+        observation_count: 2,
+        delivery_event_count: 3,
+        proposed_action_count: 0,
+        executed_action_count: 0,
+        blocked_action_count: 0,
+        intervention_counts: expect.objectContaining({
+          human_gate: 0,
+          override: 0,
+          explicit_resume: 0,
+          successor_handoff: 0,
+          policy_block: 0,
+          preflight_block: 0,
+        }),
+        token_usage: {
+          input_tokens: null,
+          output_tokens: null,
+          total_tokens: null,
+        },
+        cost: {
+          usd: null,
+        },
+      }),
+    ]);
     expect(snapshot.checkpoints).toEqual([
       expect.objectContaining({
         task_id: 'issue-92',
@@ -311,6 +342,17 @@ describe('ao controller loop', () => {
       'pr',
       'review',
     ]));
+    expect(snapshot.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        trigger_kind: 'ci_failed',
+        failure_class: 'ci_failure',
+        action_class_counts: expect.objectContaining({
+          continue_worker: 1,
+          hold: 1,
+        }),
+      }),
+    ]);
     expect(snapshot.actions).toEqual(expect.arrayContaining([
       expect.objectContaining({
         task_id: 'issue-92',
@@ -888,6 +930,22 @@ describe('ao controller loop', () => {
         }),
       }),
     ]));
+    expect(repository.getSnapshot().state.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        controller_mode: 'assist',
+        trigger_kind: 'approved_and_green',
+        failure_class: 'policy_block',
+        intervention_counts: expect.objectContaining({
+          human_gate: 0,
+          override: 0,
+          explicit_resume: 0,
+          successor_handoff: 0,
+          policy_block: 1,
+          preflight_block: 0,
+        }),
+      }),
+    ]);
   });
 
   it('assist mode blocks class A actions until runtime preflight has passed', async () => {
@@ -985,6 +1043,16 @@ describe('ao controller loop', () => {
             outcome: 'blocked',
             reason: 'runtime_preflight_clean',
           }),
+        }),
+      }),
+    ]);
+    expect(repository.getSnapshot().state.controller_run_metrics).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        trigger_kind: 'approved_and_green',
+        failure_class: 'preflight_block',
+        intervention_counts: expect.objectContaining({
+          preflight_block: 1,
         }),
       }),
     ]);

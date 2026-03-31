@@ -244,6 +244,34 @@ describe('ao action executor', () => {
         }),
       }),
     ]);
+    expect(repository.getSnapshot().state.execution_attempt_metrics).toEqual([
+      expect.objectContaining({
+        attempt_kind: 'assist_action',
+        task_id: 'issue-90',
+        action_id: 'action-1',
+        action_kind: 'continue_worker',
+        action_class: 'continue_worker',
+        status: 'executed',
+        failure_class: 'none',
+        retry_cause: 'none',
+        intervention_counts: expect.objectContaining({
+          human_gate: 0,
+          override: 0,
+          explicit_resume: 0,
+          successor_handoff: 0,
+          policy_block: 0,
+          preflight_block: 0,
+        }),
+        token_usage: {
+          input_tokens: null,
+          output_tokens: null,
+          total_tokens: null,
+        },
+        cost: {
+          usd: null,
+        },
+      }),
+    ]);
 
     expect(repository.listAuditEntries().filter((entry) => (
       entry.entity_kind === 'action' && entry.entity_id === 'action-1'
@@ -320,6 +348,17 @@ describe('ao action executor', () => {
             outcome: 'blocked',
             reason: 'policy_allow_required',
           }),
+        }),
+      }),
+    ]);
+    expect(repository.getSnapshot().state.execution_attempt_metrics).toEqual([
+      expect.objectContaining({
+        attempt_kind: 'assist_action',
+        action_id: 'action-1',
+        status: 'blocked',
+        failure_class: 'policy_block',
+        intervention_counts: expect.objectContaining({
+          policy_block: 1,
         }),
       }),
     ]);
@@ -409,6 +448,17 @@ describe('ao action executor', () => {
             outcome: 'blocked',
             reason: 'override_hold_autonomy',
           }),
+        }),
+      }),
+    ]);
+    expect(repository.getSnapshot().state.execution_attempt_metrics).toEqual([
+      expect.objectContaining({
+        attempt_kind: 'assist_action',
+        action_id: 'action-1',
+        status: 'blocked',
+        failure_class: 'override',
+        intervention_counts: expect.objectContaining({
+          override: 1,
         }),
       }),
     ]);

@@ -267,6 +267,48 @@ describe('ao eval scorecard', () => {
     ]));
   });
 
+  it('adds explicit governance findings when completion review is missing or failed', () => {
+    const harnessResult = createHarnessResult();
+    harnessResult.pack_ids.push('completion-review');
+    harnessResult.scenario_ids.push('completion-review-missing');
+    harnessResult.scenario_results.push({
+      ...harnessResult.scenario_results[0],
+      scenario_id: 'completion-review-missing',
+      pack_id: 'completion-review',
+      title: 'Completion review governance failure',
+      status: 'failed',
+      verification: {
+        status: 'failed',
+        findings: [{
+          code: 'completion_review_missing',
+          summary: 'Independent completion review is still missing for the current head.',
+        }],
+      },
+      replay: {
+        stable: true,
+        fingerprint: 'scenario:completion-review',
+      },
+      continuity: {
+        kind: 'none',
+        status: 'not_applicable',
+        outcome: 'none',
+      },
+    });
+
+    const scorecard = buildAoEvalScorecard({
+      projectId: PROJECT_ID,
+      harnessResult,
+      generatedAt: '2026-04-01T12:00:00.000Z',
+    });
+
+    expect(scorecard.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'completion_review_governance_failed',
+        scenario_id: 'completion-review-missing',
+      }),
+    ]));
+  });
+
   it('compares scorecards against a saved baseline and flags regressions explicitly', () => {
     const baseline = buildAoEvalScorecard({
       projectId: PROJECT_ID,

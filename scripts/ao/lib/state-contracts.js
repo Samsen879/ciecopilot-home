@@ -24,7 +24,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 11;
+export const CONTROL_PLANE_LATEST_VERSION = 12;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
@@ -48,6 +48,9 @@ export const CONTROLLER_LEASE_STATUSES = ['active', 'released', 'expired'];
 export const WORKTREE_BINDING_STATUSES = ['active', 'released'];
 export const RELEASE_GUARD_STATUSES = ['waiting', 'blocked', 'ambiguous', 'ready', 'not_applicable'];
 export const RELEASE_GUARD_VALIDITY_STATUSES = ['active', 'invalidated'];
+export const COMPLETION_REVIEW_STATUSES = ['requested', 'in_review', 'rejected', 'accepted', 'expired', 'waived'];
+export const COMPLETION_REVIEW_VALIDITY_STATUSES = ['active', 'invalidated'];
+export const COMPLETION_REVIEW_VERDICTS = ['accepted', 'rejected', 'waived'];
 export const WORKTREE_OCCUPANCY_STATUSES = ['occupied', 'stale', 'conflicting', 'unknown'];
 export const WORKTREE_CLEANLINESS_STATUSES = ['clean', 'dirty', 'unknown'];
 export const WORKTREE_HEAD_STATUSES = ['attached', 'detached', 'unknown'];
@@ -272,6 +275,48 @@ function normalizeLineage(value = {}) {
   };
 }
 
+function normalizeEvidenceRefs(values = [], fieldName) {
+  if (!Array.isArray(values)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  return values.map((value, index) => {
+    if (!isPlainObject(value)) {
+      throw new Error(`Invalid ${fieldName}[${index}]`);
+    }
+
+    return {
+      source: normalizeRequiredString(value.source, `${fieldName}[${index}].source`),
+      kind: normalizeRequiredString(value.kind, `${fieldName}[${index}].kind`),
+      id: normalizeOptionalString(value.id),
+      summary: normalizeRequiredString(value.summary, `${fieldName}[${index}].summary`),
+    };
+  });
+}
+
+function normalizeFindingArray(values = [], fieldName) {
+  if (!Array.isArray(values)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  return values.map((value, index) => {
+    if (!isPlainObject(value)) {
+      throw new Error(`Invalid ${fieldName}[${index}]`);
+    }
+
+    return {
+      code: normalizeRequiredString(value.code, `${fieldName}[${index}].code`),
+      severity: normalizeRequiredString(value.severity, `${fieldName}[${index}].severity`),
+      summary: normalizeRequiredString(value.summary, `${fieldName}[${index}].summary`),
+      details: normalizeStringArray(value.details ?? [], `${fieldName}[${index}].details`),
+      evidence_refs: normalizeEvidenceRefs(
+        value.evidence_refs ?? [],
+        `${fieldName}[${index}].evidence_refs`,
+      ),
+    };
+  });
+}
+
 export function createControlPlaneSchema({
   project_id,
   current_version,
@@ -316,6 +361,7 @@ export function createEmptyControlPlaneState({
     controller_leases: [],
     worktree_bindings: [],
     release_guards: [],
+    completion_reviews: [],
     actions: [],
     overrides: [],
     controller_modes: [],
@@ -587,6 +633,72 @@ export function createReleaseGuardRecord({
       'invalidation_reason_codes',
     ),
     superseded_by_guard_id: normalizeOptionalString(superseded_by_guard_id),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createCompletionReviewRecord({
+  review_id,
+  task_id = null,
+  pr_number = null,
+  branch_name = null,
+  head_sha,
+  status,
+  validity_status = 'active',
+  requested_at,
+  updated_at,
+  reviewed_at = null,
+  reviewer_session_name = null,
+  reviewer_session_id = null,
+  implementation_owner_session_name = null,
+  implementation_owner_session_id = null,
+  verdict = null,
+  reason_codes = [],
+  findings = [],
+  evidence_refs = [],
+  invalidated_at = null,
+  invalidation_reason_codes = [],
+  superseded_by_review_id = null,
+  metadata = {},
+} = {}) {
+  if (task_id == null && pr_number == null) {
+    throw new Error('Completion review requires task_id or pr_number');
+  }
+
+  const normalizedStatus = normalizeEnum(status, 'status', COMPLETION_REVIEW_STATUSES);
+  const normalizedVerdict = verdict == null
+    ? (COMPLETION_REVIEW_VERDICTS.includes(normalizedStatus) ? normalizedStatus : null)
+    : normalizeEnum(verdict, 'verdict', COMPLETION_REVIEW_VERDICTS);
+
+  return {
+    review_id: normalizeRequiredString(review_id, 'review_id'),
+    task_id: normalizeOptionalString(task_id),
+    pr_number: normalizePositiveInteger(pr_number, 'pr_number', { nullable: true }),
+    branch_name: normalizeOptionalString(branch_name),
+    head_sha: normalizeRequiredString(head_sha, 'head_sha'),
+    status: normalizedStatus,
+    validity_status: normalizeEnum(
+      validity_status,
+      'validity_status',
+      COMPLETION_REVIEW_VALIDITY_STATUSES,
+    ),
+    requested_at: normalizeIsoTimestamp(requested_at, 'requested_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    reviewed_at: normalizeIsoTimestamp(reviewed_at, 'reviewed_at', { nullable: true }),
+    reviewer_session_name: normalizeOptionalString(reviewer_session_name),
+    reviewer_session_id: normalizeOptionalString(reviewer_session_id),
+    implementation_owner_session_name: normalizeOptionalString(implementation_owner_session_name),
+    implementation_owner_session_id: normalizeOptionalString(implementation_owner_session_id),
+    verdict: normalizedVerdict,
+    reason_codes: normalizeStringArray(reason_codes, 'reason_codes'),
+    findings: normalizeFindingArray(findings, 'findings'),
+    evidence_refs: normalizeEvidenceRefs(evidence_refs, 'evidence_refs'),
+    invalidated_at: normalizeIsoTimestamp(invalidated_at, 'invalidated_at', { nullable: true }),
+    invalidation_reason_codes: normalizeStringArray(
+      invalidation_reason_codes,
+      'invalidation_reason_codes',
+    ),
+    superseded_by_review_id: normalizeOptionalString(superseded_by_review_id),
     metadata: normalizeMetadata(metadata),
   };
 }

@@ -1,12 +1,17 @@
 import { createHash } from 'node:crypto';
 
 import {
+  buildCompletionReviewGate,
+  invalidateStaleCompletionReviews,
+} from './completion-review.js';
+import {
   CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
   createActionRecord,
   createControllerModeRecord,
   createPolicyDecisionRecord,
   createReleaseGuardRecord,
 } from './state-contracts.js';
+import { createGateSnapshot, getGate } from './gate-model.js';
 import { createCheckpointStore } from './checkpoint-store.js';
 import { createStateRepository } from './state-repository.js';
 import {
@@ -55,6 +60,13 @@ function resolveNow(now) {
 
 function hashText(value) {
   return createHash('sha1').update(value).digest('hex');
+}
+
+function uniqueStrings(values) {
+  return [...new Set((values ?? [])
+    .filter((value) => value != null)
+    .map((value) => String(value))
+    .filter((value) => value !== ''))];
 }
 
 function buildReleaseGuardId({ prNumber, now, truthFingerprint }) {
@@ -231,6 +243,65 @@ function calculateReleaseGuardInvalidationReasons(existingGuard, nextGuard) {
   return reasons.length ? reasons : ['release_truth_changed'];
 }
 
+function mergeCompletionReviewIntoReleaseProjection(projection, lifecycleReport) {
+  const completionReview = lifecycleReport?.completion_review ?? null;
+  if (!projection || !completionReview || completionReview.status === 'not_applicable') {
+    return projection;
+  }
+
+  const completionReviewGate = buildCompletionReviewGate(completionReview);
+  const gates = createGateSnapshot({
+    ...(projection.gates ?? {}),
+    completion_review: completionReviewGate,
+  });
+  const releaseGate = getGate(gates, 'release');
+  let nextStatus = projection.status;
+  let nextReleaseState = releaseGate?.state ?? 'open';
+
+  if (['missing_review', 'requested', 'in_review'].includes(completionReview.status)) {
+    if (!['blocked', 'ambiguous', 'not_applicable'].includes(nextStatus)) {
+      nextStatus = 'waiting';
+    }
+    if (!['blocked', 'ambiguous'].includes(nextReleaseState)) {
+      nextReleaseState = 'pending';
+    }
+  }
+
+  if (['rejected', 'expired', 'self_review'].includes(completionReview.status)) {
+    if (!['ambiguous', 'not_applicable'].includes(nextStatus)) {
+      nextStatus = 'blocked';
+    }
+    if (nextReleaseState !== 'ambiguous') {
+      nextReleaseState = 'blocked';
+    }
+  }
+
+  return {
+    ...projection,
+    status: nextStatus,
+    basis: uniqueStrings([
+      ...(projection.basis ?? []),
+      ...(completionReview.reason_codes ?? []),
+    ]),
+    reason_codes: uniqueStrings([
+      ...(projection.reason_codes ?? []),
+      ...(completionReview.reason_codes ?? []),
+    ]),
+    gates: createGateSnapshot({
+      ...gates,
+      release: {
+        name: 'release',
+        state: nextReleaseState,
+        blocker_codes: releaseGate?.blocker_codes ?? [],
+        reason_codes: uniqueStrings([
+          ...(releaseGate?.reason_codes ?? []),
+          ...(completionReview.reason_codes ?? []),
+        ]),
+      },
+    }),
+  };
+}
+
 function persistReleaseGuard({
   repository,
   task,
@@ -245,7 +316,10 @@ function persistReleaseGuard({
   const assessment = (reconciliationReport?.pr_assessments ?? []).find(
     (candidate) => candidate?.pr_number === prNumber,
   ) ?? null;
-  const projection = assessment?.release_guard ?? null;
+  const projection = mergeCompletionReviewIntoReleaseProjection(
+    assessment?.release_guard ?? null,
+    lifecycleReport,
+  );
   if (!projection?.head_sha) return null;
 
   const truthFingerprint = hashText(JSON.stringify({
@@ -573,6 +647,7 @@ async function resolveLifecycleReportForTask({
           : createLifecycleProjectScope({ projectId, trigger: derivedTrigger }),
         reconciliationReport,
         doctorReport,
+        controlPlaneSnapshot: deps.controlPlaneSnapshot ?? null,
   });
 
   return {
@@ -733,6 +808,8 @@ export async function runControllerLoop({
       let downgradedActionIds = [];
       let releaseGuardId = null;
       let releaseGuardStatus = null;
+      let completionReviewId = null;
+      let completionReviewStatus = null;
 
       if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
         const resolvedLifecycle = services.resolveLifecycleReport
@@ -776,8 +853,20 @@ export async function runControllerLoop({
           lifecycleReport,
           now: timestamp,
         });
+        const releaseHeadSha = persistedReleaseGuard?.head_sha
+          ?? reconciliationReport?.pr_assessments?.find((candidate) => candidate?.pr_number === prNumber)?.release_guard?.head_sha
+          ?? null;
+        invalidateStaleCompletionReviews({
+          repository,
+          taskId: task.task_id,
+          prNumber,
+          headSha: releaseHeadSha,
+          now: timestamp,
+        });
         releaseGuardId = persistedReleaseGuard?.guard_id ?? null;
         releaseGuardStatus = persistedReleaseGuard?.status ?? null;
+        completionReviewId = lifecycleReport?.completion_review?.review_id ?? null;
+        completionReviewStatus = lifecycleReport?.completion_review?.status ?? null;
         worktreeContinuityStatus = persistedWorktreeBinding?.continuity_status ?? doctorReport?.worktree_safety?.continuity_status ?? null;
         lifecycleTopStatus = lifecycleReport.top_status ?? null;
         const proposalResult = await persistShadowActions({
@@ -890,6 +979,8 @@ export async function runControllerLoop({
         worktree_continuity_status: worktreeContinuityStatus,
         release_guard_id: releaseGuardId,
         release_guard_status: releaseGuardStatus,
+        completion_review_id: completionReviewId,
+        completion_review_status: completionReviewStatus,
       });
     }
   } finally {

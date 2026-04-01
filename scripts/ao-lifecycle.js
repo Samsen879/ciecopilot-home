@@ -158,6 +158,7 @@ export async function runCli(argv, io = createDefaultIo()) {
     scope,
     reconciliationReport: doctorResult.reconciliationReport,
     doctorReport: doctorResult.report,
+    controlPlaneSnapshot: doctorResult.controlPlaneSnapshot ?? null,
   });
 
   if (options.json) {

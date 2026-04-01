@@ -9,6 +9,7 @@ import {
   createGateSnapshot,
   getGate,
 } from './gate-model.js';
+import { inspectCompletionReviewGate } from './completion-review.js';
 
 const RECONCILIATION_FINDING_SOURCE_AREAS = {
   no_orchestrator_session: 'ao',
@@ -63,6 +64,35 @@ function selectSingleAssessment(scope, reconciliationReport) {
   if (scope?.mode === 'pr') return assessments[0] ?? null;
   if (assessments.length === 1) return assessments[0];
   return null;
+}
+
+function buildCompletionReviewStatus({
+  scope,
+  assessment,
+  controlPlaneSnapshot,
+} = {}) {
+  if (scope?.mode !== 'pr' || !assessment) {
+    return {
+      status: 'not_applicable',
+      satisfied: false,
+      reason_codes: ['completion_review_not_applicable'],
+      review_id: null,
+      head_sha: assessment?.release_guard?.head_sha ?? null,
+      evidence_refs: [],
+      findings: [],
+    };
+  }
+
+  const releaseProjection = assessment?.release_guard ?? assessment?.release_readiness ?? {};
+  return inspectCompletionReviewGate({
+    state: controlPlaneSnapshot?.state ?? {},
+    taskId: assessment?.task_id ?? null,
+    prNumber: assessment?.pr_number ?? scope?.pr_number ?? null,
+    branchName: assessment?.branch_name ?? null,
+    headSha: releaseProjection?.head_sha ?? null,
+    ownerSessionName: assessment?.ownership?.owner_session ?? releaseProjection?.truth?.owner_session_name ?? null,
+    ownerSessionId: null,
+  });
 }
 
 function extractTypedReleaseData(assessment) {
@@ -292,6 +322,7 @@ function buildReleaseDecision({
   reconciliationReport,
   doctorControlStatus,
   sourceHealth,
+  completionReview,
 }) {
   if (scope?.mode === 'project') {
     return {
@@ -351,6 +382,40 @@ function buildReleaseDecision({
     && reconciliationReport?.top_status === 'healthy'
     && ['approved_and_green', 'manual'].includes(scope?.trigger)
   ) {
+    if (completionReview?.status === 'self_review') {
+      return {
+        disposition: 'await_review',
+        basis: ['completion_review_self_review'],
+        authoritative: true,
+      };
+    }
+
+    if (completionReview?.status === 'rejected') {
+      return {
+        disposition: 'await_review',
+        basis: ['completion_review_rejected'],
+        authoritative: true,
+      };
+    }
+
+    if (completionReview?.status === 'expired') {
+      return {
+        disposition: 'await_review',
+        basis: ['completion_review_expired'],
+        authoritative: true,
+      };
+    }
+
+    if (
+      ['missing_review', 'requested', 'in_review'].includes(completionReview?.status ?? '')
+    ) {
+      return {
+        disposition: 'await_review',
+        basis: [completionReview.reason_codes?.[0] ?? 'completion_review_missing'],
+        authoritative: true,
+      };
+    }
+
     return {
       disposition: 'notify_human_ready',
       basis: ['ready_for_human_notification'],
@@ -426,6 +491,7 @@ function buildLifecycleFindings({
   scope,
   routingDecision,
   releaseDecision,
+  completionReview,
 }) {
   const findings = [];
 
@@ -531,6 +597,96 @@ function buildLifecycleFindings({
       details: ['Local continuity diagnosis must be resolved before control can proceed.'],
       evidence_refs: [],
       action_ids: ['hold_local_control'],
+    }));
+  }
+
+  if (completionReview?.status === 'missing_review') {
+    findings.push(createLifecycleFinding({
+      code: 'completion_review_missing',
+      severity: 'warning',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'completion_review',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'Independent completion review is missing for the current PR head.',
+      details: completionReview.reason_codes ?? [],
+      evidence_refs: completionReview.evidence_refs ?? [],
+      action_ids: ['hold_review'],
+    }));
+  }
+
+  if (completionReview?.status === 'requested') {
+    findings.push(createLifecycleFinding({
+      code: 'completion_review_requested',
+      severity: 'warning',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'completion_review',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'Independent completion review has been requested but is not complete.',
+      details: completionReview.reason_codes ?? [],
+      evidence_refs: completionReview.evidence_refs ?? [],
+      action_ids: ['hold_review'],
+    }));
+  }
+
+  if (completionReview?.status === 'in_review') {
+    findings.push(createLifecycleFinding({
+      code: 'completion_review_in_review',
+      severity: 'warning',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'completion_review',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'Independent completion review is still in progress.',
+      details: completionReview.reason_codes ?? [],
+      evidence_refs: completionReview.evidence_refs ?? [],
+      action_ids: ['hold_review'],
+    }));
+  }
+
+  if (completionReview?.status === 'rejected') {
+    findings.push(createLifecycleFinding({
+      code: 'completion_review_rejected',
+      severity: 'warning',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'completion_review',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'Independent completion review rejected the current PR head.',
+      details: completionReview.reason_codes ?? [],
+      evidence_refs: completionReview.evidence_refs ?? [],
+      action_ids: ['hold_review'],
+    }));
+  }
+
+  if (completionReview?.status === 'expired') {
+    findings.push(createLifecycleFinding({
+      code: 'completion_review_expired',
+      severity: 'warning',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'completion_review',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'Independent completion review for the current PR head has expired.',
+      details: completionReview.reason_codes ?? [],
+      evidence_refs: completionReview.evidence_refs ?? [],
+      action_ids: ['hold_review'],
+    }));
+  }
+
+  if (completionReview?.status === 'self_review') {
+    findings.push(createLifecycleFinding({
+      code: 'completion_review_self_review',
+      severity: 'warning',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'completion_review',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'Self review does not satisfy the independent completion-review gate.',
+      details: completionReview.reason_codes ?? [],
+      evidence_refs: completionReview.evidence_refs ?? [],
+      action_ids: ['hold_review'],
     }));
   }
 
@@ -735,10 +891,16 @@ export function buildLifecycleReport({
   scope,
   reconciliationReport,
   doctorReport,
+  controlPlaneSnapshot = null,
 } = {}) {
   const sourceHealth = deriveLifecycleSourceHealth(reconciliationReport, doctorReport);
   const doctorControlStatus = deriveDoctorControlStatus(doctorReport);
   const assessment = selectSingleAssessment(scope, reconciliationReport);
+  const completionReview = buildCompletionReviewStatus({
+    scope,
+    assessment,
+    controlPlaneSnapshot,
+  });
   const routingDecision = buildRoutingDecision({
     scope,
     assessment,
@@ -751,6 +913,7 @@ export function buildLifecycleReport({
     reconciliationReport,
     doctorControlStatus,
     sourceHealth,
+    completionReview,
   });
   const findings = [
     ...preserveReconciliationFindings(reconciliationReport),
@@ -759,6 +922,7 @@ export function buildLifecycleReport({
       scope,
       routingDecision,
       releaseDecision,
+      completionReview,
     }),
   ];
   const actions = buildActions(findings, scope);
@@ -788,6 +952,7 @@ export function buildLifecycleReport({
       finding_codes: (doctorReport?.findings ?? []).map((finding) => finding.code),
     },
     routing_decision: routingDecision,
+    completion_review: completionReview,
     release_decision: releaseDecision,
     findings,
     actions,

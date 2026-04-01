@@ -66,6 +66,12 @@ function buildDefaultGuardrails() {
   };
 }
 
+function hasCompletionReviewGovernanceFailure(scenario) {
+  return (scenario?.verification?.findings ?? []).some((finding) => (
+    typeof finding?.code === 'string' && finding.code.startsWith('completion_review_')
+  ));
+}
+
 export function buildAoEvalScorecard({
   projectId = DEFAULT_PROJECT_ID,
   harnessResult,
@@ -145,6 +151,13 @@ export function buildAoEvalScorecard({
         code: 'scenario_continuity_failed',
         scenario_id: scenario.scenario_id,
         summary: `Scenario ${scenario.scenario_id} failed its continuity contract.`,
+      });
+    }
+    if (hasCompletionReviewGovernanceFailure(scenario)) {
+      findings.push({
+        code: 'completion_review_governance_failed',
+        scenario_id: scenario.scenario_id,
+        summary: `Scenario ${scenario.scenario_id} failed completion-review governance.`,
       });
     }
   }

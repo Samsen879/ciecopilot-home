@@ -1,5 +1,6 @@
 export const GATE_NAMES = Object.freeze([
   'ownership',
+  'completion_review',
   'review',
   'ci',
   'mergeability',

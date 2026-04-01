@@ -14,6 +14,7 @@ import {
   PR_BINDING_STATUSES,
   OWNERSHIP_LEASE_STATUSES,
   createActionRecord,
+  createCompletionReviewRecord,
   createControlPlaneAuditEntry,
   createControlPlaneSchema,
   createControllerLease,
@@ -49,7 +50,7 @@ describe('ao state contracts', () => {
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
     expect(POLICY_DECISIONS).toEqual(['allow', 'deny', 'downgrade']);
     expect(CREDENTIAL_PROVENANCE_TRUST_DECISIONS).toEqual(['trusted', 'untrusted']);
-    expect(CONTROL_PLANE_LATEST_VERSION).toBe(11);
+    expect(CONTROL_PLANE_LATEST_VERSION).toBe(12);
   });
 
   it('creates durable managed-task, binding, lease, action, override, and controller-mode records', () => {
@@ -499,6 +500,62 @@ describe('ao state contracts', () => {
     });
   });
 
+  it('creates durable completion-review records', () => {
+    expect(createCompletionReviewRecord({
+      review_id: 'completion-review-pr-141-accepted',
+      task_id: 'issue-131',
+      pr_number: 141,
+      branch_name: 'feat/131',
+      head_sha: 'abc131',
+      status: 'accepted',
+      validity_status: 'active',
+      requested_at: NOW,
+      updated_at: NOW,
+      reviewed_at: NOW,
+      reviewer_session_name: 'cie-reviewer-1',
+      reviewer_session_id: 'cie-reviewer-1',
+      implementation_owner_session_name: 'cie-70',
+      implementation_owner_session_id: 'cie-70',
+      verdict: 'accepted',
+      reason_codes: ['completion_review_accepted'],
+      findings: [],
+      evidence_refs: [{
+        source: 'github',
+        kind: 'review',
+        id: 'rvw-141',
+        summary: 'Independent completion review accepted.',
+      }],
+    })).toEqual({
+      review_id: 'completion-review-pr-141-accepted',
+      task_id: 'issue-131',
+      pr_number: 141,
+      branch_name: 'feat/131',
+      head_sha: 'abc131',
+      status: 'accepted',
+      validity_status: 'active',
+      requested_at: NOW,
+      updated_at: NOW,
+      reviewed_at: NOW,
+      reviewer_session_name: 'cie-reviewer-1',
+      reviewer_session_id: 'cie-reviewer-1',
+      implementation_owner_session_name: 'cie-70',
+      implementation_owner_session_id: 'cie-70',
+      verdict: 'accepted',
+      reason_codes: ['completion_review_accepted'],
+      findings: [],
+      evidence_refs: [{
+        source: 'github',
+        kind: 'review',
+        id: 'rvw-141',
+        summary: 'Independent completion review accepted.',
+      }],
+      invalidated_at: null,
+      invalidation_reason_codes: [],
+      superseded_by_review_id: null,
+      metadata: {},
+    });
+  });
+
   it('creates empty schema, state, and audit envelopes for repo-local bootstrap', () => {
     expect(createControlPlaneSchema({
       project_id: 'ciecopilot-home',
@@ -546,6 +603,7 @@ describe('ao state contracts', () => {
       controller_leases: [],
       worktree_bindings: [],
       release_guards: [],
+      completion_reviews: [],
       actions: [],
       overrides: [],
       controller_modes: [],

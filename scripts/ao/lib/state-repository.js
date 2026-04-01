@@ -5,6 +5,7 @@ import {
   CONTROL_PLANE_LATEST_VERSION,
   createActionRecord,
   createCheckpointRecord,
+  createCompletionReviewRecord,
   createControlPlaneAuditEntry,
   createControlPlaneSchema,
   createControllerLease,
@@ -137,6 +138,7 @@ export function createStateRepository({
     nextState.controller_leases = sortCollectionByKey(nextState.controller_leases, 'lease_id');
     nextState.worktree_bindings = sortCollectionByKey(nextState.worktree_bindings, 'binding_id');
     nextState.release_guards = sortCollectionByKey(nextState.release_guards, 'guard_id');
+    nextState.completion_reviews = sortCollectionByKey(nextState.completion_reviews, 'review_id');
     nextState.actions = sortCollectionByKey(nextState.actions, 'action_id');
     nextState.overrides = sortCollectionByKey(nextState.overrides, 'override_id');
     nextState.controller_modes = sortCollectionByKey(nextState.controller_modes, 'controller_id');
@@ -339,6 +341,17 @@ export function createStateRepository({
         record,
         normalize: createReleaseGuardRecord,
         summary: `Persisted release guard ${record?.guard_id}.`,
+      });
+    },
+
+    upsertCompletionReview(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'completion_reviews',
+        identityKey: 'review_id',
+        entityKind: 'completion_review',
+        record,
+        normalize: createCompletionReviewRecord,
+        summary: `Persisted completion review ${record?.review_id}.`,
       });
     },
 

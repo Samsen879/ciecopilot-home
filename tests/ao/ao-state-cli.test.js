@@ -28,6 +28,37 @@ function buildReport(overrides = {}) {
       active_ownership_lease_count: 1,
       active_controller_lease_count: 1,
       action_count: 1,
+      delivery_event_count: 3,
+      action_visibility_counts: {
+        proposed: 1,
+        executed: 0,
+        blocked: 0,
+        denied: 0,
+        downgraded: 0,
+      },
+      event_replay_decision_counts: {
+        delivery_events: {
+          accepted: 1,
+          replayed: 1,
+          suppressed: 0,
+          executed: 0,
+          blocked: 0,
+        },
+        controller_cursors: {
+          accepted: 1,
+          replayed: 0,
+          suppressed: 1,
+          executed: 0,
+          blocked: 0,
+        },
+      },
+      action_replay_decision_counts: {
+        accepted: 1,
+        replayed: 0,
+        suppressed: 0,
+        executed: 0,
+        blocked: 0,
+      },
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
@@ -84,6 +115,10 @@ describe('ao state cli', () => {
       schema_version: 'ao.state.v1alpha1',
       summary: {
         managed_task_count: 1,
+        delivery_event_count: 3,
+        action_visibility_counts: {
+          proposed: 1,
+        },
       },
     });
   });

@@ -73,8 +73,8 @@ describe('ao state migrations', () => {
 
     expect(readJson(paths.schemaPath)).toMatchObject({
       project_id: PROJECT_ID,
-      current_version: 12,
-      latest_version: 12,
+      current_version: 13,
+      latest_version: 13,
       applied_migrations: [
         {
           version: 1,
@@ -134,6 +134,11 @@ describe('ao state migrations', () => {
         {
           version: 12,
           key: '0012_completion_review_v1',
+          applied_at: FIXED_NOW,
+        },
+        {
+          version: 13,
+          key: '0013_event_action_governance_v1',
           applied_at: FIXED_NOW,
         },
       ],
@@ -236,6 +241,12 @@ describe('ao state migrations', () => {
         operation: 'migrate',
         summary: 'Applied control-plane completion-review migration.',
       }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v13',
+        operation: 'migrate',
+        summary: 'Applied control-plane event-action-governance migration.',
+      }),
     ]);
   });
 
@@ -262,7 +273,7 @@ describe('ao state migrations', () => {
       migrated: false,
     });
     expect(readJson(paths.schemaPath).updated_at).toBe(FIXED_NOW);
-    expect(readAuditEntries(paths.auditPath)).toHaveLength(12);
+    expect(readAuditEntries(paths.auditPath)).toHaveLength(13);
   });
 
   it('upgrades a stale schema version and backfills invalid task specs for enrolled tasks', () => {
@@ -338,7 +349,7 @@ describe('ao state migrations', () => {
       migrated: true,
     });
     expect(readJson(paths.schemaPath)).toMatchObject({
-      current_version: 12,
+      current_version: 13,
       applied_migrations: [
         {
           version: 1,
@@ -388,6 +399,10 @@ describe('ao state migrations', () => {
           version: 12,
           key: '0012_completion_review_v1',
         },
+        {
+          version: 13,
+          key: '0013_event_action_governance_v1',
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
@@ -395,6 +410,7 @@ describe('ao state migrations', () => {
       policy_decisions: [],
       credential_provenances: [],
       runtime_preflights: [],
+      completion_reviews: [],
       checkpoints: [],
       handoff_requests: [],
       handoff_claims: [],

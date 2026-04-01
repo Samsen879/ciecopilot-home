@@ -240,6 +240,105 @@ export function createStateRepository({
     return normalizedRecord;
   }
 
+  function replaceCollectionRecord({
+    collectionKey,
+    identityKey,
+    entityKind,
+    entityId,
+    normalize,
+    mutate,
+    summary,
+  } = {}) {
+    ensureBootstrapped();
+    const snapshot = readSnapshot();
+    const nextState = cloneJsonValue(snapshot.state);
+    const existingIndex = nextState[collectionKey].findIndex(
+      (entry) => entry?.[identityKey] === entityId,
+    );
+
+    if (existingIndex < 0) {
+      throw new Error(`Unknown ${entityKind} ${entityId}`);
+    }
+
+    const nextRecord = normalize(mutate(cloneJsonValue(nextState[collectionKey][existingIndex])));
+    nextState[collectionKey][existingIndex] = nextRecord;
+    persistState({
+      state: nextState,
+      entityKind,
+      entityId,
+      summary,
+      details: nextRecord,
+    });
+
+    return nextRecord;
+  }
+
+  function mergeUniqueStrings(values = []) {
+    return [...new Set((values ?? [])
+      .filter((value) => typeof value === 'string')
+      .map((value) => value.trim())
+      .filter(Boolean))];
+  }
+
+  function buildGovernanceSnapshot(existingGovernance = {}, {
+    now,
+    decision,
+    backpressureStatus = null,
+    reasonCodes = null,
+    replayKey = null,
+    replayLimit = null,
+  } = {}) {
+    const timestamp = resolveNow(now);
+    return {
+      ...cloneJsonValue(existingGovernance ?? {}),
+      replay_key: replayKey ?? existingGovernance?.replay_key,
+      replay_limit: replayLimit ?? existingGovernance?.replay_limit ?? 2,
+      replay_count: Number(existingGovernance?.replay_count ?? 0) + 1,
+      suppressed_count: Number(existingGovernance?.suppressed_count ?? 0) + (decision === 'suppressed' ? 1 : 0),
+      last_decision: decision,
+      backpressure_status: backpressureStatus ?? existingGovernance?.backpressure_status ?? 'open',
+      first_recorded_at: existingGovernance?.first_recorded_at ?? timestamp,
+      last_decision_at: timestamp,
+      reason_codes: reasonCodes == null
+        ? (existingGovernance?.reason_codes ?? [])
+        : mergeUniqueStrings(reasonCodes),
+    };
+  }
+
+  function buildActionLineageSnapshot(existingLineage = {}, {
+    sourceDeliveryEventIds = null,
+    sourceObservationIds = null,
+    sourceCursorIds = null,
+    derivedTrigger = null,
+    prHeadSha = null,
+    policyDecisionId = null,
+  } = {}) {
+    return {
+      ...cloneJsonValue(existingLineage ?? {}),
+      source_delivery_event_ids: sourceDeliveryEventIds == null
+        ? (existingLineage?.source_delivery_event_ids ?? [])
+        : mergeUniqueStrings([
+            ...(existingLineage?.source_delivery_event_ids ?? []),
+            ...sourceDeliveryEventIds,
+          ]),
+      source_observation_ids: sourceObservationIds == null
+        ? (existingLineage?.source_observation_ids ?? [])
+        : mergeUniqueStrings([
+            ...(existingLineage?.source_observation_ids ?? []),
+            ...sourceObservationIds,
+          ]),
+      source_cursor_ids: sourceCursorIds == null
+        ? (existingLineage?.source_cursor_ids ?? [])
+        : mergeUniqueStrings([
+            ...(existingLineage?.source_cursor_ids ?? []),
+            ...sourceCursorIds,
+          ]),
+      derived_trigger: derivedTrigger ?? existingLineage?.derived_trigger ?? 'manual',
+      pr_head_sha: prHeadSha ?? existingLineage?.pr_head_sha ?? null,
+      policy_decision_id: policyDecisionId ?? existingLineage?.policy_decision_id ?? null,
+    };
+  }
+
   return {
     getSnapshot() {
       return readSnapshot();
@@ -366,6 +465,76 @@ export function createStateRepository({
       });
     },
 
+    recordActionGovernanceDecision({
+      actionId,
+      now = clock,
+      decision,
+      backpressureStatus = null,
+      reasonCodes = null,
+      replayKey = null,
+      replayLimit = null,
+      sourceDeliveryEventIds = null,
+      sourceObservationIds = null,
+      sourceCursorIds = null,
+      derivedTrigger = null,
+      prHeadSha = null,
+      policyDecisionId = null,
+    } = {}) {
+      const timestamp = resolveNow(now);
+      const nextRecord = replaceCollectionRecord({
+        collectionKey: 'actions',
+        identityKey: 'action_id',
+        entityKind: 'action',
+        entityId: actionId,
+        normalize: createActionRecord,
+        mutate: (record) => ({
+          ...record,
+          updated_at: timestamp,
+          lineage: buildActionLineageSnapshot(record.lineage, {
+            sourceDeliveryEventIds,
+            sourceObservationIds,
+            sourceCursorIds,
+            derivedTrigger,
+            prHeadSha,
+            policyDecisionId,
+          }),
+          governance: buildGovernanceSnapshot(record.governance, {
+            now: timestamp,
+            decision,
+            backpressureStatus,
+            reasonCodes,
+            replayKey,
+            replayLimit,
+          }),
+        }),
+        summary: `Recorded action governance decision ${decision} for ${actionId}.`,
+      });
+
+      appendControlPlaneAuditEntry({
+        auditPath: paths.auditPath,
+        entry: createControlPlaneAuditEntry({
+          audit_id: auditIdGenerator(),
+          project_id: projectId,
+          recorded_at: timestamp,
+          entity_kind: 'action',
+          entity_id: actionId,
+          operation: decision === 'suppressed' ? 'replay_suppressed' : decision,
+          actor: 'state_repository',
+          summary: `Recorded action governance decision ${decision} for ${actionId}.`,
+          details: {
+            action_id: actionId,
+            decision,
+            backpressure_status: nextRecord.governance.backpressure_status,
+            replay_count: nextRecord.governance.replay_count,
+            suppressed_count: nextRecord.governance.suppressed_count,
+            reason_codes: nextRecord.governance.reason_codes,
+          },
+        }),
+      });
+
+      return nextRecord;
+    },
+
     upsertOverride(record) {
       return upsertCollectionRecord({
         collectionKey: 'overrides',
@@ -410,6 +579,61 @@ export function createStateRepository({
       });
     },
 
+    recordDeliveryEventGovernanceDecision({
+      eventId,
+      now = clock,
+      decision,
+      backpressureStatus = null,
+      reasonCodes = null,
+      replayKey = null,
+      replayLimit = null,
+    } = {}) {
+      const timestamp = resolveNow(now);
+      const nextRecord = replaceCollectionRecord({
+        collectionKey: 'delivery_events',
+        identityKey: 'event_id',
+        entityKind: 'delivery_event',
+        entityId: eventId,
+        normalize: createDeliveryEventRecord,
+        mutate: (record) => ({
+          ...record,
+          governance: buildGovernanceSnapshot(record.governance, {
+            now: timestamp,
+            decision,
+            backpressureStatus,
+            reasonCodes,
+            replayKey,
+            replayLimit,
+          }),
+        }),
+        summary: `Recorded delivery-event governance decision ${decision} for ${eventId}.`,
+      });
+
+      appendControlPlaneAuditEntry({
+        auditPath: paths.auditPath,
+        entry: createControlPlaneAuditEntry({
+          audit_id: auditIdGenerator(),
+          project_id: projectId,
+          recorded_at: timestamp,
+          entity_kind: 'delivery_event',
+          entity_id: eventId,
+          operation: decision === 'suppressed' ? 'replay_suppressed' : decision,
+          actor: 'state_repository',
+          summary: `Recorded delivery-event governance decision ${decision} for ${eventId}.`,
+          details: {
+            event_id: eventId,
+            decision,
+            backpressure_status: nextRecord.governance.backpressure_status,
+            replay_count: nextRecord.governance.replay_count,
+            suppressed_count: nextRecord.governance.suppressed_count,
+            reason_codes: nextRecord.governance.reason_codes,
+          },
+        }),
+      });
+
+      return nextRecord;
+    },
+
     upsertCredentialProvenance(record) {
       return upsertCollectionRecord({
         collectionKey: 'credential_provenances',
@@ -441,6 +665,62 @@ export function createStateRepository({
         normalize: createControllerCursorRecord,
         summary: `Persisted controller cursor ${record?.cursor_id}.`,
       });
+    },
+
+    recordControllerCursorGovernanceDecision({
+      cursorId,
+      now = clock,
+      decision,
+      backpressureStatus = null,
+      reasonCodes = null,
+      replayKey = null,
+      replayLimit = null,
+    } = {}) {
+      const timestamp = resolveNow(now);
+      const nextRecord = replaceCollectionRecord({
+        collectionKey: 'controller_cursors',
+        identityKey: 'cursor_id',
+        entityKind: 'controller_cursor',
+        entityId: cursorId,
+        normalize: createControllerCursorRecord,
+        mutate: (record) => ({
+          ...record,
+          updated_at: timestamp,
+          governance: buildGovernanceSnapshot(record.governance, {
+            now: timestamp,
+            decision,
+            backpressureStatus,
+            reasonCodes,
+            replayKey,
+            replayLimit,
+          }),
+        }),
+        summary: `Recorded controller-cursor governance decision ${decision} for ${cursorId}.`,
+      });
+
+      appendControlPlaneAuditEntry({
+        auditPath: paths.auditPath,
+        entry: createControlPlaneAuditEntry({
+          audit_id: auditIdGenerator(),
+          project_id: projectId,
+          recorded_at: timestamp,
+          entity_kind: 'controller_cursor',
+          entity_id: cursorId,
+          operation: decision === 'suppressed' ? 'replay_suppressed' : decision,
+          actor: 'state_repository',
+          summary: `Recorded controller-cursor governance decision ${decision} for ${cursorId}.`,
+          details: {
+            cursor_id: cursorId,
+            decision,
+            backpressure_status: nextRecord.governance.backpressure_status,
+            replay_count: nextRecord.governance.replay_count,
+            suppressed_count: nextRecord.governance.suppressed_count,
+            reason_codes: nextRecord.governance.reason_codes,
+          },
+        }),
+      });
+
+      return nextRecord;
     },
 
     upsertTaskSpec(record) {

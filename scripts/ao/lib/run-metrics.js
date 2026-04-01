@@ -428,6 +428,112 @@ function buildZeroMetricsSummary() {
     intervention_counts: createMeasurementCountMap(MEASUREMENT_INTERVENTION_KINDS),
     failure_class_counts: createMeasurementCountMap(MEASUREMENT_FAILURE_CLASSES),
     retry_cause_counts: createMeasurementCountMap(MEASUREMENT_RETRY_CAUSES),
+    action_visibility_counts: {
+      proposed: 0,
+      executed: 0,
+      blocked: 0,
+      denied: 0,
+      downgraded: 0,
+    },
+    replay_decision_counts: {
+      actions: {
+        accepted: 0,
+        replayed: 0,
+        suppressed: 0,
+        executed: 0,
+        blocked: 0,
+      },
+      delivery_events: {
+        accepted: 0,
+        replayed: 0,
+        suppressed: 0,
+        executed: 0,
+        blocked: 0,
+      },
+      controller_cursors: {
+        accepted: 0,
+        replayed: 0,
+        suppressed: 0,
+        executed: 0,
+        blocked: 0,
+      },
+    },
+    backpressure_status_counts: {
+      actions: {
+        open: 0,
+        suppressed: 0,
+        exhausted: 0,
+      },
+      delivery_events: {
+        open: 0,
+        suppressed: 0,
+        exhausted: 0,
+      },
+      controller_cursors: {
+        open: 0,
+        suppressed: 0,
+        exhausted: 0,
+      },
+    },
+  };
+}
+
+function buildZeroGovernanceDecisionCounts() {
+  return {
+    accepted: 0,
+    replayed: 0,
+    suppressed: 0,
+    executed: 0,
+    blocked: 0,
+  };
+}
+
+function buildZeroBackpressureStatusCounts() {
+  return {
+    open: 0,
+    suppressed: 0,
+    exhausted: 0,
+  };
+}
+
+function summarizeActionVisibility(actionRecords = []) {
+  const counts = {
+    proposed: 0,
+    executed: 0,
+    blocked: 0,
+    denied: 0,
+    downgraded: 0,
+  };
+
+  for (const record of actionRecords ?? []) {
+    if (record?.status === 'proposed') counts.proposed += 1;
+    if (record?.status === 'executed') counts.executed += 1;
+    if (record?.status === 'blocked') counts.blocked += 1;
+    if (record?.payload?.policy?.decision === 'deny') counts.denied += 1;
+    if (record?.payload?.policy?.decision === 'downgrade') counts.downgraded += 1;
+  }
+
+  return counts;
+}
+
+function summarizeGovernanceCounts(records = []) {
+  const replayDecisionCounts = buildZeroGovernanceDecisionCounts();
+  const backpressureStatusCounts = buildZeroBackpressureStatusCounts();
+
+  for (const record of records ?? []) {
+    const lastDecision = record?.governance?.last_decision ?? null;
+    const backpressureStatus = record?.governance?.backpressure_status ?? null;
+    if (lastDecision && Object.hasOwn(replayDecisionCounts, lastDecision)) {
+      replayDecisionCounts[lastDecision] += 1;
+    }
+    if (backpressureStatus && Object.hasOwn(backpressureStatusCounts, backpressureStatus)) {
+      backpressureStatusCounts[backpressureStatus] += 1;
+    }
+  }
+
+  return {
+    replayDecisionCounts,
+    backpressureStatusCounts,
   };
 }
 
@@ -440,6 +546,9 @@ export function buildAoMetricsReport({
 } = {}) {
   const controllerRuns = [...(snapshot?.state?.controller_run_metrics ?? [])].sort(compareMetricRecords);
   const executionAttempts = [...(snapshot?.state?.execution_attempt_metrics ?? [])].sort(compareMetricRecords);
+  const actionRecords = [...(snapshot?.state?.actions ?? [])];
+  const deliveryEvents = [...(snapshot?.state?.delivery_events ?? [])];
+  const controllerCursors = [...(snapshot?.state?.controller_cursors ?? [])];
 
   const summary = buildZeroMetricsSummary();
   summary.controller_run_count = controllerRuns.length;
@@ -470,6 +579,13 @@ export function buildAoMetricsReport({
     MEASUREMENT_RETRY_CAUSES,
     executionAttempts.map((record) => record.retry_cause),
   );
+  summary.action_visibility_counts = summarizeActionVisibility(actionRecords);
+  summary.replay_decision_counts.actions = summarizeGovernanceCounts(actionRecords).replayDecisionCounts;
+  summary.replay_decision_counts.delivery_events = summarizeGovernanceCounts(deliveryEvents).replayDecisionCounts;
+  summary.replay_decision_counts.controller_cursors = summarizeGovernanceCounts(controllerCursors).replayDecisionCounts;
+  summary.backpressure_status_counts.actions = summarizeGovernanceCounts(actionRecords).backpressureStatusCounts;
+  summary.backpressure_status_counts.delivery_events = summarizeGovernanceCounts(deliveryEvents).backpressureStatusCounts;
+  summary.backpressure_status_counts.controller_cursors = summarizeGovernanceCounts(controllerCursors).backpressureStatusCounts;
   const recentTraces = {
     controller_runs: controllerRuns.slice(0, traceLimit),
     execution_attempts: executionAttempts.slice(0, traceLimit),
@@ -586,6 +702,12 @@ function formatCountMap(counts) {
     .join(', ') || 'none';
 }
 
+function formatNestedCountMap(counts) {
+  return Object.entries(counts ?? {})
+    .map(([scope, values]) => `${scope}(${formatCountMap(values)})`)
+    .join(', ') || 'none';
+}
+
 export function renderAoMetricsHumanSummary(payloadOrReport) {
   const report = payloadOrReport?.report ?? payloadOrReport;
   const persisted = payloadOrReport?.report ? payloadOrReport.persisted : null;
@@ -602,6 +724,9 @@ export function renderAoMetricsHumanSummary(payloadOrReport) {
     `interventions: ${formatCountMap(report.summary.intervention_counts)}`,
     `failures: ${formatCountMap(report.summary.failure_class_counts)}`,
     `retries: ${formatCountMap(report.summary.retry_cause_counts)}`,
+    `action_visibility: ${formatCountMap(report.summary.action_visibility_counts ?? {})}`,
+    `replay_governance: ${formatNestedCountMap(report.summary.replay_decision_counts ?? {})}`,
+    `backpressure: ${formatNestedCountMap(report.summary.backpressure_status_counts ?? {})}`,
     `recent_controller_runs: ${controllerTrace.join(', ') || 'none'}`,
     `recent_execution_attempts: ${executionTrace.join(', ') || 'none'}`,
     `report_path: ${persisted?.report_path ?? 'not_persisted'}`,

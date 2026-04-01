@@ -103,6 +103,20 @@ function buildGitHubPayload(task, matchedPrs) {
   };
 }
 
+function resolveReplayDecision(replayCount, replayLimit) {
+  if (replayCount > replayLimit) {
+    return {
+      decision: 'suppressed',
+      backpressureStatus: 'suppressed',
+    };
+  }
+
+  return {
+    decision: 'replayed',
+    backpressureStatus: 'open',
+  };
+}
+
 function ingestSingleObservation({
   repository,
   controllerId,
@@ -120,6 +134,15 @@ function ingestSingleObservation({
   const existingCursor = snapshot.state.controller_cursors.find((record) => record.cursor_id === cursorId) ?? null;
 
   if (existingCursor?.last_cursor === cursor) {
+    repository.recordControllerCursorGovernanceDecision({
+      cursorId,
+      now,
+      decision: 'suppressed',
+      backpressureStatus: 'suppressed',
+      reasonCodes: ['duplicate_cursor'],
+      replayKey: existingCursor?.governance?.replay_key ?? `cursor:${cursorId}`,
+      replayLimit: existingCursor?.governance?.replay_limit ?? 2,
+    });
     return {
       ingested: false,
       observationId,
@@ -151,6 +174,17 @@ function ingestSingleObservation({
     last_cursor: cursor,
     observed_at: observedAt,
     updated_at: now,
+    governance: {
+      replay_key: existingCursor?.governance?.replay_key ?? `cursor:${cursorId}`,
+      replay_limit: existingCursor?.governance?.replay_limit ?? 2,
+      replay_count: existingCursor?.governance?.replay_count ?? 0,
+      suppressed_count: existingCursor?.governance?.suppressed_count ?? 0,
+      last_decision: 'accepted',
+      backpressure_status: 'open',
+      first_recorded_at: existingCursor?.governance?.first_recorded_at ?? now,
+      last_decision_at: now,
+      reason_codes: [],
+    },
   }));
 
   return {
@@ -386,14 +420,32 @@ function persistDeliveryEvents({
   deliveryEvents = [],
 } = {}) {
   const snapshot = repository.getSnapshot();
-  const existingEventIds = new Set((snapshot.state.delivery_events ?? []).map((record) => record.event_id));
+  const existingEvents = new Map((snapshot.state.delivery_events ?? []).map((record) => [record.event_id, record]));
   const createdDeliveryEventIds = [];
 
   for (const event of deliveryEvents) {
-    if (existingEventIds.has(event.event_id)) continue;
+    const existingEvent = existingEvents.get(event.event_id) ?? null;
+    if (existingEvent) {
+      const nextReplayCount = Number(existingEvent?.governance?.replay_count ?? 0) + 1;
+      const replayLimit = Number(existingEvent?.governance?.replay_limit ?? 2);
+      const replayDecision = resolveReplayDecision(nextReplayCount, replayLimit);
+      repository.recordDeliveryEventGovernanceDecision({
+        eventId: event.event_id,
+        now: event.recorded_at,
+        decision: replayDecision.decision,
+        backpressureStatus: replayDecision.backpressureStatus,
+        reasonCodes: replayDecision.decision === 'suppressed'
+          ? ['duplicate_delivery_event', 'event_replay_budget_exhausted']
+          : ['duplicate_delivery_event'],
+        replayKey: existingEvent?.governance?.replay_key ?? event.dedupe_key,
+        replayLimit,
+      });
+      continue;
+    }
+
     repository.upsertDeliveryEvent(event);
     createdDeliveryEventIds.push(event.event_id);
-    existingEventIds.add(event.event_id);
+    existingEvents.set(event.event_id, event);
   }
 
   return createdDeliveryEventIds;

@@ -363,4 +363,98 @@ describe('ao state repository', () => {
       entity_id: 'task-1',
     });
   });
+
+  it('persists durable action replay and backpressure decisions with lineage updates', () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-04-01T08:00:00.000Z',
+        '2026-04-01T08:01:00.000Z',
+        '2026-04-01T08:02:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertAction(createActionRecord({
+      action_id: 'action-128',
+      task_id: 'issue-128',
+      action_kind: 'hold_ci',
+      status: 'proposed',
+      requested_by: 'shadow_controller',
+      reason: 'Hold until CI stabilizes.',
+      created_at: '2026-04-01T08:00:00.000Z',
+      updated_at: '2026-04-01T08:00:00.000Z',
+      payload: {
+        pr_number: 128,
+        derived_trigger: 'ci_failed',
+      },
+    }));
+
+    repository.recordActionGovernanceDecision({
+      actionId: 'action-128',
+      now: '2026-04-01T08:01:00.000Z',
+      decision: 'replayed',
+      backpressureStatus: 'open',
+      reasonCodes: ['ci_flapping_same_head'],
+      replayKey: 'action:issue-128:128:hold_ci:abc123',
+      replayLimit: 2,
+      sourceDeliveryEventIds: ['delivery-check-128'],
+      sourceObservationIds: ['obs-github-128'],
+      sourceCursorIds: ['cursor-github-128'],
+      derivedTrigger: 'manual',
+      prHeadSha: 'abc123',
+      policyDecisionId: 'policy-action-128',
+    });
+    repository.recordActionGovernanceDecision({
+      actionId: 'action-128',
+      now: '2026-04-01T08:02:00.000Z',
+      decision: 'suppressed',
+      backpressureStatus: 'suppressed',
+      reasonCodes: ['ci_flapping_same_head', 'replay_budget_exhausted'],
+      replayKey: 'action:issue-128:128:hold_ci:abc123',
+      replayLimit: 2,
+      sourceDeliveryEventIds: ['delivery-check-128'],
+      sourceObservationIds: ['obs-github-128'],
+      sourceCursorIds: ['cursor-github-128'],
+      derivedTrigger: 'manual',
+      prHeadSha: 'abc123',
+      policyDecisionId: 'policy-action-128',
+    });
+
+    const action = repository.getSnapshot().state.actions.find((record) => record.action_id === 'action-128');
+    const auditEntries = repository.listAuditEntries().filter((entry) => entry.entity_kind === 'action');
+
+    expect(action).toMatchObject({
+      action_id: 'action-128',
+      status: 'proposed',
+      lineage: {
+        source_delivery_event_ids: ['delivery-check-128'],
+        source_observation_ids: ['obs-github-128'],
+        source_cursor_ids: ['cursor-github-128'],
+        derived_trigger: 'manual',
+        pr_head_sha: 'abc123',
+        policy_decision_id: 'policy-action-128',
+      },
+      governance: {
+        replay_key: 'action:issue-128:128:hold_ci:abc123',
+        replay_limit: 2,
+        replay_count: 2,
+        suppressed_count: 1,
+        last_decision: 'suppressed',
+        backpressure_status: 'suppressed',
+        reason_codes: ['ci_flapping_same_head', 'replay_budget_exhausted'],
+      },
+    });
+    expect(auditEntries).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        operation: 'replayed',
+        entity_id: 'action-128',
+      }),
+      expect.objectContaining({
+        operation: 'replay_suppressed',
+        entity_id: 'action-128',
+      }),
+    ]));
+  });
 });

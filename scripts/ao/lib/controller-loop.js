@@ -74,6 +74,36 @@ function buildReleaseGuardId({ prNumber, now, truthFingerprint }) {
   return `release-guard-pr-${prNumber}-${timestampToken}-${truthFingerprint.slice(0, 12)}`;
 }
 
+function buildActionReplayKey({
+  taskId,
+  prNumber,
+  actionKind,
+  prHeadSha,
+} = {}) {
+  return [
+    'action',
+    taskId ?? 'unknown-task',
+    prNumber ?? 'no-pr',
+    actionKind ?? 'unknown-action',
+    prHeadSha ?? 'no-head',
+  ].join(':');
+}
+
+function compareActionReplayOrder(left, right) {
+  const leftUpdatedAt = String(left?.updated_at ?? left?.created_at ?? '');
+  const rightUpdatedAt = String(right?.updated_at ?? right?.created_at ?? '');
+  if (leftUpdatedAt !== rightUpdatedAt) {
+    return rightUpdatedAt.localeCompare(leftUpdatedAt);
+  }
+  return String(right?.action_id ?? '').localeCompare(String(left?.action_id ?? ''));
+}
+
+function resolveReplayReasonCode(actionKind) {
+  if (actionKind === 'hold_ci') return 'ci_flapping_same_head';
+  if (actionKind === 'hold_review') return 'review_flapping_same_head';
+  return 'action_replayed_same_head';
+}
+
 function uniquePrNumbers(prBindings = [], matchedPrs = []) {
   return [...new Set([
     ...(prBindings ?? []).filter((binding) => binding.status === 'bound').map((binding) => binding.pr_number),
@@ -444,16 +474,28 @@ async function persistShadowActions({
   derivedTrigger,
   lifecycleReport,
   prNumber,
+  prHeadSha = null,
+  sourceDeliveryEventIds = [],
+  sourceObservationIds = [],
+  sourceCursorIds = [],
   now,
 } = {}) {
   const snapshot = repository.getSnapshot().state;
   const knownActionIds = new Set(snapshot.actions.map((record) => record.action_id));
   const knownPolicyDecisionIds = new Set(snapshot.policy_decisions.map((record) => record.decision_id));
+  const actionByReplayKey = new Map(
+    (snapshot.actions ?? [])
+      .filter((record) => record?.governance?.replay_key)
+      .sort(compareActionReplayOrder)
+      .map((record) => [record.governance.replay_key, record]),
+  );
   const actionIds = [];
   const policyDecisionIds = [];
   const blockedActionIds = [];
   const deniedActionIds = [];
   const downgradedActionIds = [];
+  const replayedActionIds = [];
+  const suppressedActionIds = [];
   const requestedBy = mode === 'assist' ? 'assist_controller' : 'shadow_controller';
   const credentialProvenances = snapshot.credential_provenances ?? [];
   const { runtimeRef, runtimePreflight } = resolveTaskRuntimePreflight({ state: snapshot }, task);
@@ -485,6 +527,43 @@ async function persistShadowActions({
       findings: policyResult.findings,
     }));
     const policyDecisionId = `policy-${task.task_id}-${action.id}-${policyFingerprint.slice(0, 12)}`;
+    const replayKey = buildActionReplayKey({
+      taskId: task.task_id,
+      prNumber,
+      actionKind: action.id,
+      prHeadSha,
+    });
+    const existingReplayAction = actionByReplayKey.get(replayKey) ?? null;
+
+    if (existingReplayAction) {
+      const nextReplayCount = Number(existingReplayAction?.governance?.replay_count ?? 0) + 1;
+      const replayLimit = Number(existingReplayAction?.governance?.replay_limit ?? 2);
+      const decision = nextReplayCount > replayLimit ? 'suppressed' : 'replayed';
+      repository.recordActionGovernanceDecision({
+        actionId: existingReplayAction.action_id,
+        now,
+        decision,
+        backpressureStatus: decision === 'suppressed' ? 'suppressed' : 'open',
+        reasonCodes: decision === 'suppressed'
+          ? [resolveReplayReasonCode(action.id), 'replay_budget_exhausted']
+          : [resolveReplayReasonCode(action.id)],
+        replayKey,
+        replayLimit,
+        sourceDeliveryEventIds,
+        sourceObservationIds,
+        sourceCursorIds,
+        derivedTrigger,
+        prHeadSha,
+        policyDecisionId: existingReplayAction?.lineage?.policy_decision_id ?? policyDecisionId,
+      });
+      if (decision === 'suppressed') {
+        suppressedActionIds.push(existingReplayAction.action_id);
+      } else {
+        replayedActionIds.push(existingReplayAction.action_id);
+      }
+      continue;
+    }
+
     const actionFingerprint = hashText(JSON.stringify({
       controllerId,
       derivedTrigger,
@@ -549,11 +628,31 @@ async function persistShadowActions({
       reason: action.summary,
       created_at: now,
       updated_at: now,
+      lineage: {
+        source_delivery_event_ids: sourceDeliveryEventIds,
+        source_observation_ids: sourceObservationIds,
+        source_cursor_ids: sourceCursorIds,
+        derived_trigger: derivedTrigger,
+        pr_head_sha: prHeadSha,
+        policy_decision_id: policyDecisionId,
+      },
+      governance: {
+        replay_key: replayKey,
+        replay_limit: 2,
+        replay_count: 0,
+        suppressed_count: 0,
+        last_decision: 'accepted',
+        backpressure_status: 'open',
+        first_recorded_at: now,
+        last_decision_at: now,
+        reason_codes: [],
+      },
       payload: {
         controller_id: controllerId,
         derived_trigger: derivedTrigger,
         fingerprint: actionFingerprint,
         pr_number: prNumber,
+        pr_head_sha: prHeadSha,
         top_status: lifecycleReport.top_status,
         routing_decision: lifecycleReport.routing_decision,
         release_decision: lifecycleReport.release_decision,
@@ -563,6 +662,7 @@ async function persistShadowActions({
         action_model: actionModel,
         runtime_preflight: actionModel.runtime_preflight,
         policy_decision_id: policyDecisionId,
+        replay_key: replayKey,
         policy: {
           decision: policyResult.decision,
           policy_version: policyResult.policy_version,
@@ -592,6 +692,7 @@ async function persistShadowActions({
       },
       recordedAt: now,
     });
+    actionByReplayKey.set(replayKey, repository.getSnapshot().state.actions.find((record) => record.action_id === actionId));
   }
 
   return {
@@ -605,6 +706,10 @@ async function persistShadowActions({
     deniedActionCount: deniedActionIds.length,
     downgradedActionIds,
     downgradedActionCount: downgradedActionIds.length,
+    replayedActionIds,
+    replayedActionCount: replayedActionIds.length,
+    suppressedActionIds,
+    suppressedActionCount: suppressedActionIds.length,
   };
 }
 
@@ -770,6 +875,8 @@ export async function runControllerLoop({
   let policyBlockedActionCount = 0;
   let deniedActionCount = 0;
   let downgradedActionCount = 0;
+  let replayedActionCount = 0;
+  let suppressedActionCount = 0;
 
   try {
     for (const task of activeTasks) {
@@ -806,6 +913,8 @@ export async function runControllerLoop({
       let policyBlockedActionIds = [];
       let deniedActionIds = [];
       let downgradedActionIds = [];
+      let replayedActionIds = [];
+      let suppressedActionIds = [];
       let releaseGuardId = null;
       let releaseGuardStatus = null;
       let completionReviewId = null;
@@ -869,6 +978,13 @@ export async function runControllerLoop({
         completionReviewStatus = lifecycleReport?.completion_review?.status ?? null;
         worktreeContinuityStatus = persistedWorktreeBinding?.continuity_status ?? doctorReport?.worktree_safety?.continuity_status ?? null;
         lifecycleTopStatus = lifecycleReport.top_status ?? null;
+        const actionSourceEvents = selectCurrentDeliveryEvents({
+          matchedPrs: ingestResult.matchedPrs,
+          deliveryEvents: ingestResult.deliveryEvents,
+        });
+        const selectedPr = prNumber == null
+          ? (ingestResult.matchedPrs.at(0) ?? null)
+          : (ingestResult.matchedPrs.find((candidate) => candidate.pr_number === prNumber) ?? null);
         const proposalResult = await persistShadowActions({
           repository,
           task,
@@ -877,6 +993,10 @@ export async function runControllerLoop({
           derivedTrigger,
           lifecycleReport,
           prNumber,
+          prHeadSha: selectedPr?.head_sha ?? null,
+          sourceDeliveryEventIds: actionSourceEvents.map((event) => event.event_id),
+          sourceObservationIds: ingestResult.created_observation_ids ?? [],
+          sourceCursorIds: ingestResult.updated_cursor_ids ?? [],
           now: timestamp,
         });
         proposedActionIds = proposalResult.actionIds;
@@ -889,6 +1009,10 @@ export async function runControllerLoop({
         deniedActionCount += proposalResult.deniedActionCount;
         downgradedActionIds = proposalResult.downgradedActionIds;
         downgradedActionCount += proposalResult.downgradedActionCount;
+        replayedActionIds = proposalResult.replayedActionIds;
+        replayedActionCount += proposalResult.replayedActionCount;
+        suppressedActionIds = proposalResult.suppressedActionIds;
+        suppressedActionCount += proposalResult.suppressedActionCount;
 
         if (resolvedMode === 'assist') {
           const executionResult = await executeAssistActions({
@@ -975,6 +1099,10 @@ export async function runControllerLoop({
         denied_action_ids: deniedActionIds,
         downgraded_action_count: downgradedActionIds.length,
         downgraded_action_ids: downgradedActionIds,
+        replayed_action_count: replayedActionIds.length,
+        replayed_action_ids: replayedActionIds,
+        suppressed_action_count: suppressedActionIds.length,
+        suppressed_action_ids: suppressedActionIds,
         lifecycle_top_status: lifecycleTopStatus,
         worktree_continuity_status: worktreeContinuityStatus,
         release_guard_id: releaseGuardId,
@@ -1011,6 +1139,8 @@ export async function runControllerLoop({
     policy_blocked_action_count: policyBlockedActionCount,
     denied_action_count: deniedActionCount,
     downgraded_action_count: downgradedActionCount,
+    replayed_action_count: replayedActionCount,
+    suppressed_action_count: suppressedActionCount,
     task_results: taskResults,
   };
 }

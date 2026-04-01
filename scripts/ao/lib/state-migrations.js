@@ -3,9 +3,12 @@ import path from 'node:path';
 import {
   CONTROL_PLANE_DEFAULT_CONTROLLER_ID,
   CONTROL_PLANE_LATEST_VERSION,
+  createActionRecord,
   createControlPlaneAuditEntry,
   createControlPlaneSchema,
   createControllerModeRecord,
+  createControllerCursorRecord,
+  createDeliveryEventRecord,
   createEmptyControlPlaneState,
   createTaskSpecRecord,
   createWorktreeBinding,
@@ -78,6 +81,11 @@ export const CONTROL_PLANE_COMPLETION_REVIEW_MIGRATION = {
   key: '0012_completion_review_v1',
 };
 
+export const CONTROL_PLANE_EVENT_ACTION_GOVERNANCE_MIGRATION = {
+  version: 13,
+  key: '0013_event_action_governance_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
@@ -91,6 +99,7 @@ const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_WORKTREE_REGISTRY_MIGRATION,
   CONTROL_PLANE_RELEASE_GUARD_MIGRATION,
   CONTROL_PLANE_COMPLETION_REVIEW_MIGRATION,
+  CONTROL_PLANE_EVENT_ACTION_GOVERNANCE_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -264,6 +273,25 @@ function backfillWorktreeBindings({
   return nextState;
 }
 
+function backfillEventActionGovernance({
+  state,
+  now,
+} = {}) {
+  const nextState = buildBootstrapState({
+    projectId: state?.project_id,
+    now,
+    existingState: state,
+  });
+
+  nextState.actions = (nextState.actions ?? []).map((record) => createActionRecord(record));
+  nextState.delivery_events = (nextState.delivery_events ?? []).map((record) => createDeliveryEventRecord(record));
+  nextState.controller_cursors = (nextState.controller_cursors ?? []).map(
+    (record) => createControllerCursorRecord(record),
+  );
+  nextState.updated_at = now;
+  return nextState;
+}
+
 function applyMigration({
   migration,
   projectId,
@@ -372,6 +400,17 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_EVENT_ACTION_GOVERNANCE_MIGRATION.version) {
+    return backfillEventActionGovernance({
+      state: buildBootstrapState({
+        projectId,
+        now,
+        existingState: state,
+      }),
+      now,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -450,6 +489,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane completion-review migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_EVENT_ACTION_GOVERNANCE_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane event-action-governance migration.',
     };
   }
 

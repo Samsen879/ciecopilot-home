@@ -45,6 +45,53 @@ function buildReport(overrides = {}) {
         preflight_retry: 0,
         unknown: 0,
       },
+      action_visibility_counts: {
+        proposed: 1,
+        executed: 1,
+        blocked: 1,
+        denied: 1,
+        downgraded: 0,
+      },
+      replay_decision_counts: {
+        actions: {
+          accepted: 1,
+          replayed: 1,
+          suppressed: 1,
+          executed: 0,
+          blocked: 0,
+        },
+        delivery_events: {
+          accepted: 1,
+          replayed: 1,
+          suppressed: 0,
+          executed: 0,
+          blocked: 0,
+        },
+        controller_cursors: {
+          accepted: 1,
+          replayed: 0,
+          suppressed: 1,
+          executed: 0,
+          blocked: 0,
+        },
+      },
+      backpressure_status_counts: {
+        actions: {
+          open: 1,
+          suppressed: 1,
+          exhausted: 0,
+        },
+        delivery_events: {
+          open: 2,
+          suppressed: 0,
+          exhausted: 0,
+        },
+        controller_cursors: {
+          open: 0,
+          suppressed: 1,
+          exhausted: 0,
+        },
+      },
     },
     recent_traces: {
       controller_runs: [],
@@ -113,6 +160,14 @@ describe('ao metrics cli', () => {
         summary: {
           controller_run_count: 2,
           execution_attempt_count: 3,
+          action_visibility_counts: {
+            blocked: 1,
+          },
+          replay_decision_counts: {
+            actions: {
+              replayed: 1,
+            },
+          },
         },
       },
       persisted: {

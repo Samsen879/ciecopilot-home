@@ -1,11 +1,13 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 const mockLoadAoMetricsReport = jest.fn();
+const mockPersistAoMetricsReport = jest.fn();
 const mockRenderAoMetricsHumanSummary = jest.fn();
 
 jest.unstable_mockModule('../../scripts/ao/lib/run-metrics.js', () => ({
   DEFAULT_PROJECT_ID: 'ciecopilot-home',
   loadAoMetricsReport: mockLoadAoMetricsReport,
+  persistAoMetricsReport: mockPersistAoMetricsReport,
   renderAoMetricsHumanSummary: mockRenderAoMetricsHumanSummary,
 }));
 
@@ -15,8 +17,10 @@ function buildReport(overrides = {}) {
   return {
     schema_version: 'ao.metrics-report.v1alpha1',
     report_format: 'ao_metrics_report',
+    report_id: 'metrics-1',
     project_id: 'ciecopilot-home',
     repo_root: '/home/samsen/code/ciecopilot-home',
+    generated_at: '2026-03-31T12:10:00.000Z',
     summary: {
       controller_run_count: 2,
       execution_attempt_count: 3,
@@ -53,9 +57,16 @@ function buildReport(overrides = {}) {
 describe('ao metrics cli', () => {
   beforeEach(() => {
     mockLoadAoMetricsReport.mockReset();
+    mockPersistAoMetricsReport.mockReset();
     mockRenderAoMetricsHumanSummary.mockReset();
 
     mockLoadAoMetricsReport.mockResolvedValue(buildReport());
+    mockPersistAoMetricsReport.mockReturnValue({
+      report_path: '/tmp/.ao-control-plane/ciecopilot-home/metrics/reports/metrics-1.json',
+      latest_report_path: '/tmp/.ao-control-plane/ciecopilot-home/metrics/latest.json',
+      operator_report_path: '/tmp/ao-artifacts/ao-metrics/reports/metrics-1.json',
+      operator_latest_report_path: '/tmp/ao-artifacts/ao-metrics/latest.json',
+    });
     mockRenderAoMetricsHumanSummary.mockReturnValue('controller_runs: 2');
   });
 
@@ -73,10 +84,16 @@ describe('ao metrics cli', () => {
       projectId: 'ciecopilot-home',
       traceLimit: 5,
     });
+    expect(mockPersistAoMetricsReport).toHaveBeenCalledWith(expect.objectContaining({
+      projectId: 'ciecopilot-home',
+      report: expect.objectContaining({
+        report_id: 'metrics-1',
+      }),
+    }));
     expect(stdout.join('')).toContain('controller_runs: 2');
   });
 
-  it('renders JSON output with an explicit trace limit', async () => {
+  it('renders JSON output with an explicit trace limit and artifact paths', async () => {
     const stdout = [];
 
     const result = await runCli(['--json', '--limit', '2'], {
@@ -91,10 +108,15 @@ describe('ao metrics cli', () => {
       traceLimit: 2,
     });
     expect(JSON.parse(stdout.join(''))).toMatchObject({
-      schema_version: 'ao.metrics-report.v1alpha1',
-      summary: {
-        controller_run_count: 2,
-        execution_attempt_count: 3,
+      report: {
+        schema_version: 'ao.metrics-report.v1alpha1',
+        summary: {
+          controller_run_count: 2,
+          execution_attempt_count: 3,
+        },
+      },
+      persisted: {
+        operator_latest_report_path: '/tmp/ao-artifacts/ao-metrics/latest.json',
       },
     });
   });
@@ -114,6 +136,7 @@ describe('ao metrics cli', () => {
     expect(invalidLimit.exitCode).toBe(4);
     expect(unknownArg.exitCode).toBe(4);
     expect(mockLoadAoMetricsReport).not.toHaveBeenCalled();
+    expect(mockPersistAoMetricsReport).not.toHaveBeenCalled();
     expect(stderr.join('')).toContain('Invalid value for --limit');
     expect(stderr.join('')).toContain('Unknown argument: --bogus');
   });
@@ -128,6 +151,7 @@ describe('ao metrics cli', () => {
 
     expect(result.exitCode).toBe(4);
     expect(mockLoadAoMetricsReport).not.toHaveBeenCalled();
+    expect(mockPersistAoMetricsReport).not.toHaveBeenCalled();
     expect(stderr.join('')).toContain('Missing value for --project');
   });
 });

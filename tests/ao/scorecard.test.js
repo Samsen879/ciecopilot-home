@@ -330,6 +330,9 @@ describe('ao eval scorecard', () => {
     expect(comparison.findings).toEqual(expect.arrayContaining([
       expect.objectContaining({
         code: 'verification_success_regressed',
+        finding_kind: 'baseline_governance',
+        severity: 'error',
+        summary: expect.stringContaining('verification_success.rate'),
       }),
       expect.objectContaining({
         code: 'replay_stability_regressed',
@@ -347,6 +350,59 @@ describe('ao eval scorecard', () => {
     ]));
   });
 
+  it('requires explicit bless-vs-update semantics for baseline aliases', () => {
+    const repoRoot = createTempRepo();
+    const blessedScorecard = buildAoEvalScorecard({
+      projectId: PROJECT_ID,
+      generatedAt: '2026-03-31T12:40:00.000Z',
+      harnessResult: createHarnessResult(),
+    });
+    const updatedScorecard = buildAoEvalScorecard({
+      projectId: PROJECT_ID,
+      generatedAt: '2026-03-31T12:45:00.000Z',
+      harnessResult: createHarnessResult(),
+    });
+
+    const blessed = persistAoEvalScorecard({
+      repoRoot,
+      projectId: PROJECT_ID,
+      scorecard: blessedScorecard,
+      baselineName: 'ao/mainline',
+      baselineAction: 'bless',
+    });
+
+    expect(blessed).toMatchObject({
+      baseline_action: 'blessed',
+    });
+    expect(() => persistAoEvalScorecard({
+      repoRoot,
+      projectId: PROJECT_ID,
+      scorecard: updatedScorecard,
+      baselineName: 'ao/mainline',
+      baselineAction: 'bless',
+    })).toThrow(/already exists/i);
+
+    const updated = persistAoEvalScorecard({
+      repoRoot,
+      projectId: PROJECT_ID,
+      scorecard: updatedScorecard,
+      baselineName: 'ao/mainline',
+      baselineAction: 'update',
+    });
+
+    expect(updated).toMatchObject({
+      baseline_action: 'updated',
+    });
+    expect(loadAoEvalBaseline({
+      repoRoot,
+      projectId: PROJECT_ID,
+      baselineRef: 'ao/mainline',
+    })).toMatchObject({
+      scorecard_id: updatedScorecard.scorecard_id,
+      generated_at: '2026-03-31T12:45:00.000Z',
+    });
+  });
+
   it('persists versioned scorecards and baseline aliases under AO artifact roots', () => {
     const repoRoot = createTempRepo();
     const scorecard = buildAoEvalScorecard({
@@ -360,12 +416,14 @@ describe('ao eval scorecard', () => {
       projectId: PROJECT_ID,
       scorecard,
       baselineName: 'wave-2-mainline',
+      baselineAction: 'bless',
     });
 
     expect(fs.existsSync(persisted.scorecard_path)).toBe(true);
     expect(fs.existsSync(persisted.operator_scorecard_path)).toBe(true);
     expect(fs.existsSync(persisted.baseline_path)).toBe(true);
     expect(fs.existsSync(persisted.operator_baseline_path)).toBe(true);
+    expect(persisted.baseline_action).toBe('blessed');
 
     const loadedBaseline = loadAoEvalBaseline({
       repoRoot,

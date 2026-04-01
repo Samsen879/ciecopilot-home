@@ -1,7 +1,15 @@
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readFileSync } from 'node:fs';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, afterEach, describe, expect, it, jest } from '@jest/globals';
+
+import {
+  CONTROL_PLANE_LATEST_VERSION,
+  createCompletionReviewRecord,
+  createControlPlaneSchema,
+  createEmptyControlPlaneState,
+} from '../../scripts/ao/lib/state-contracts.js';
 
 const mockSpawnSync = jest.fn();
 const mockExistsSync = jest.fn();
@@ -26,6 +34,9 @@ const { runCli: runLifecycleCli } = await import('../../scripts/ao-lifecycle.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE_ROOT = path.join(__dirname, 'fixtures', 'acceptance');
+const PROJECT_ID = 'ciecopilot-home';
+const ORIGINAL_CWD = process.cwd();
+const tempDirs = [];
 
 const SCENARIOS = {
   'clean-pr-continuity': {
@@ -73,9 +84,10 @@ const SCENARIOS = {
 };
 
 let activeScenario = null;
+let activeRepoRoot = null;
 
 function fixture(name) {
-  return readFileSync(path.join(activeScenario.fixtureDir, name), 'utf8');
+  return fs.readFileSync(path.join(activeScenario.fixtureDir, name), 'utf8');
 }
 
 function success(stdout) {
@@ -88,6 +100,7 @@ function success(stdout) {
 
 function useScenario(name) {
   activeScenario = SCENARIOS[name];
+  activeRepoRoot = null;
   if (!activeScenario) {
     throw new Error(`Unknown scenario: ${name}`);
   }
@@ -110,7 +123,7 @@ function useScenario(name) {
     }
 
     if (command === 'git' && args[0] === 'rev-parse' && args[1] === '--show-toplevel') {
-      return success('/home/samsen/code/ciecopilot-home\n');
+      return success(`${activeRepoRoot ?? '/home/samsen/code/ciecopilot-home'}\n`);
     }
     if (command === 'git' && args[0] === 'branch' && args[1] === '--show-current') {
       return success(`${activeScenario.currentBranch}\n`);
@@ -129,12 +142,83 @@ function useScenario(name) {
   });
 }
 
+function createTempRepo() {
+  const repoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-lifecycle-acceptance-'));
+  tempDirs.push(repoRoot);
+  fs.mkdirSync(path.join(repoRoot, '.git'), { recursive: true });
+  return repoRoot;
+}
+
+function seedAcceptedCompletionReview({
+  repoRoot,
+  prNumber,
+  branchName,
+  headSha,
+  implementationOwnerSessionName,
+  reviewerSessionName,
+} = {}) {
+  const stateRoot = path.join(repoRoot, '.ao-control-plane', PROJECT_ID);
+  const schemaPath = path.join(stateRoot, 'schema.json');
+  const statePath = path.join(stateRoot, 'state.json');
+  const recordedAt = '2026-03-29T07:10:00.000Z';
+  const schema = createControlPlaneSchema({
+    project_id: PROJECT_ID,
+    current_version: CONTROL_PLANE_LATEST_VERSION,
+    latest_version: CONTROL_PLANE_LATEST_VERSION,
+    created_at: recordedAt,
+    updated_at: recordedAt,
+    applied_migrations: [],
+  });
+  const state = createEmptyControlPlaneState({
+    project_id: PROJECT_ID,
+    created_at: recordedAt,
+    updated_at: recordedAt,
+  });
+
+  state.completion_reviews.push(createCompletionReviewRecord({
+    review_id: `completion-review-pr-${prNumber}-accepted`,
+    pr_number: prNumber,
+    branch_name: branchName,
+    head_sha: headSha,
+    status: 'accepted',
+    validity_status: 'active',
+    requested_at: recordedAt,
+    updated_at: recordedAt,
+    reviewed_at: recordedAt,
+    reviewer_session_name: reviewerSessionName,
+    reviewer_session_id: reviewerSessionName,
+    implementation_owner_session_name: implementationOwnerSessionName,
+    implementation_owner_session_id: implementationOwnerSessionName,
+    verdict: 'accepted',
+    reason_codes: ['completion_review_accepted'],
+    findings: [],
+    evidence_refs: [{
+      source: 'github',
+      kind: 'review',
+      id: 'completion-review-93',
+      summary: 'Independent completion review accepted the PR head.',
+    }],
+  }));
+
+  fs.mkdirSync(stateRoot, { recursive: true });
+  fs.writeFileSync(schemaPath, `${JSON.stringify(schema, null, 2)}\n`, 'utf8');
+  fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, 'utf8');
+}
+
 describe('ao lifecycle acceptance', () => {
   beforeEach(() => {
     mockSpawnSync.mockReset();
     mockExistsSync.mockReset();
     mockStatSync.mockReset();
     mockExistsSync.mockReturnValue(false);
+  });
+
+  afterEach(() => {
+    activeRepoRoot = null;
+    process.chdir(ORIGINAL_CWD);
+    while (tempDirs.length) {
+      fs.rmSync(tempDirs.pop(), { recursive: true, force: true });
+    }
   });
 
   it('keeps clean continuity visible while release readiness stays ambiguous on review-pending PRs', async () => {
@@ -313,9 +397,53 @@ describe('ao lifecycle acceptance', () => {
     });
   });
 
+  it('holds approved-and-green PRs at await_review when completion review is missing', async () => {
+    useScenario('approved-and-green-pr');
+    const stdout = [];
+
+    const result = await runLifecycleCli(['--pr', '93', '--trigger', 'approved_and_green', '--json', '--strict'], {
+      writeStdout: (text) => stdout.push(text),
+      writeStderr: () => {},
+    });
+
+    expect(result.exitCode).toBe(31);
+    expect(JSON.parse(stdout.join(''))).toMatchObject({
+      top_status: 'hold',
+      routing_decision: {
+        action: 'continue_current_worker',
+        owner_session: 'cie-93',
+        target_pr_number: 93,
+        authoritative: true,
+      },
+      release_decision: {
+        disposition: 'await_review',
+        authoritative: true,
+        basis: ['completion_review_missing'],
+      },
+      completion_review: {
+        status: 'missing_review',
+        satisfied: false,
+      },
+    });
+  });
+
   it('notifies the human only when approved-and-green is truly clear end to end', async () => {
     useScenario('approved-and-green-pr');
     const stdout = [];
+    const repoRoot = createTempRepo();
+
+    activeRepoRoot = repoRoot;
+    process.chdir(repoRoot);
+    mockExistsSync.mockImplementation((targetPath) => fs.existsSync(targetPath));
+    mockStatSync.mockImplementation((targetPath) => fs.statSync(targetPath));
+    seedAcceptedCompletionReview({
+      repoRoot,
+      prNumber: 93,
+      branchName: activeScenario.currentBranch,
+      headSha: activeScenario.headSha,
+      implementationOwnerSessionName: 'cie-93',
+      reviewerSessionName: 'cie-reviewer-93',
+    });
 
     const result = await runLifecycleCli(['--pr', '93', '--trigger', 'approved_and_green', '--json', '--strict'], {
       writeStdout: (text) => stdout.push(text),
@@ -334,6 +462,15 @@ describe('ao lifecycle acceptance', () => {
       release_decision: {
         disposition: 'notify_human_ready',
         authoritative: true,
+      },
+      completion_review: {
+        review_id: 'completion-review-pr-93-accepted',
+        status: 'accepted',
+        satisfied: true,
+        reviewer_distinct: true,
+        reviewer_session_name: 'cie-reviewer-93',
+        implementation_owner_session_name: 'cie-93',
+        head_sha: '93abc0',
       },
     });
   });

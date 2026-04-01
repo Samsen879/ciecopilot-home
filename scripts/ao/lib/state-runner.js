@@ -49,6 +49,24 @@ function summarizeWorktreeContinuity(worktreeBindings) {
   return counts;
 }
 
+function summarizeActiveReleaseGuardStatuses(releaseGuards) {
+  const counts = {
+    ready: 0,
+    waiting: 0,
+    blocked: 0,
+    ambiguous: 0,
+    not_applicable: 0,
+  };
+
+  for (const guard of releaseGuards ?? []) {
+    if (guard?.validity_status !== 'active') continue;
+    if (!Object.hasOwn(counts, guard?.status ?? '')) continue;
+    counts[guard.status] += 1;
+  }
+
+  return counts;
+}
+
 function buildArtifactPointer(pathValue) {
   return {
     path: pathValue,
@@ -89,6 +107,15 @@ export async function loadAoStateReport({
     ['open', 'pending_decision', 'accepted'].includes(inspection.top_status)
   )).length;
   const worktreeContinuityCounts = summarizeWorktreeContinuity(snapshot.state.worktree_bindings);
+  const activeReleaseGuardStatusCounts = summarizeActiveReleaseGuardStatuses(snapshot.state.release_guards);
+  const currentReleaseGuards = [...(snapshot.state.release_guards ?? [])]
+    .filter((guard) => guard?.validity_status === 'active')
+    .sort((left, right) => {
+      if ((left?.pr_number ?? 0) !== (right?.pr_number ?? 0)) {
+        return (left?.pr_number ?? 0) - (right?.pr_number ?? 0);
+      }
+      return String(right?.recorded_at ?? '').localeCompare(String(left?.recorded_at ?? ''));
+    });
   const repoKnowledgeRecord = (snapshot.state.repo_knowledge ?? []).find(
     (record) => record?.project_id === projectId,
   ) ?? null;
@@ -125,6 +152,9 @@ export async function loadAoStateReport({
       worktree_binding_count: snapshot.state.worktree_bindings.length,
       active_worktree_binding_count: snapshot.state.worktree_bindings.filter((binding) => binding.status === 'active').length,
       worktree_continuity_counts: worktreeContinuityCounts,
+      release_guard_count: snapshot.state.release_guards.length,
+      active_release_guard_count: currentReleaseGuards.length,
+      active_release_guard_status_counts: activeReleaseGuardStatusCounts,
       action_count: snapshot.state.actions.length,
       active_override_count: snapshot.state.overrides.filter((override) => override.status === 'active').length,
       controller_mode_count: snapshot.state.controller_modes.length,
@@ -156,6 +186,10 @@ export async function loadAoStateReport({
     },
     worktrees: {
       bindings: snapshot.state.worktree_bindings,
+    },
+    release: {
+      guards: snapshot.state.release_guards,
+      current_guards: currentReleaseGuards,
     },
     repo_knowledge: {
       record: repoKnowledgeRecord,

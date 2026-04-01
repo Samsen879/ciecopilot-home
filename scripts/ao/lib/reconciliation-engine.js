@@ -6,6 +6,7 @@ import {
 } from './reconciliation-contracts.js';
 import {
   collectGateBlockerCodes,
+  collectGateReasonCodes,
   createGate,
   createGateSnapshot,
 } from './gate-model.js';
@@ -315,20 +316,129 @@ function resolveOwnership(pr, workers) {
   };
 }
 
-function deriveReleaseReadiness(pr, ownership) {
-  const warnings = [];
+function buildReleaseGuard(pr, ownership) {
   const gates = buildReleaseReadinessGates(pr, ownership);
   const blockerCodes = collectGateBlockerCodes(gates);
+  const reasonCodes = collectGateReasonCodes(gates);
   const releaseGate = gates.release;
+  const truth = {
+    pr_state: pr?.state ?? null,
+    is_draft: pr?.is_draft ?? null,
+    review_status: pr?.review_status ?? null,
+    ci_status: pr?.ci_status ?? null,
+    mergeability: pr?.mergeability ?? null,
+    ownership_status: ownership?.status ?? null,
+    owner_session_name: ownership?.owner_session ?? null,
+  };
 
   if (!pr || pr.state !== 'OPEN') {
     return {
       status: 'not_applicable',
-      blockers: blockerCodes,
+      pr_number: pr?.pr_number ?? null,
+      branch_name: pr?.head_branch ?? null,
+      head_sha: pr?.head_sha ?? null,
       blocker_codes: blockerCodes,
-      warnings,
+      reason_codes: reasonCodes,
       basis: ['pr_not_open'],
       gates,
+      truth,
+    };
+  }
+
+  if (pr.is_draft === true) {
+    return {
+      status: 'not_applicable',
+      pr_number: pr.pr_number,
+      branch_name: pr.head_branch ?? null,
+      head_sha: pr.head_sha ?? null,
+      blocker_codes: blockerCodes,
+      reason_codes: reasonCodes,
+      basis: ['draft_pr'],
+      gates,
+      truth,
+    };
+  }
+
+  if (releaseGate?.state === 'blocked') {
+    return {
+      status: 'blocked',
+      pr_number: pr.pr_number,
+      branch_name: pr.head_branch ?? null,
+      head_sha: pr.head_sha ?? null,
+      blocker_codes: blockerCodes,
+      reason_codes: reasonCodes,
+      basis: blockerCodes.includes('orphan_open_pr') ? ['ownership_orphaned'] : [...blockerCodes],
+      gates,
+      truth,
+    };
+  }
+
+  if (releaseGate?.state === 'pending') {
+    return {
+      status: 'waiting',
+      pr_number: pr.pr_number,
+      branch_name: pr.head_branch ?? null,
+      head_sha: pr.head_sha ?? null,
+      blocker_codes: blockerCodes,
+      reason_codes: reasonCodes,
+      basis: releaseGate.reason_codes?.length ? [...releaseGate.reason_codes] : ['await_signal_clear'],
+      gates,
+      truth,
+    };
+  }
+
+  if (releaseGate?.state === 'ambiguous') {
+    return {
+      status: 'ambiguous',
+      pr_number: pr.pr_number,
+      branch_name: pr.head_branch ?? null,
+      head_sha: pr.head_sha ?? null,
+      blocker_codes: blockerCodes,
+      reason_codes: reasonCodes,
+      basis: releaseGate.reason_codes?.length ? [...releaseGate.reason_codes] : ['fallback_ambiguous'],
+      gates,
+      truth,
+    };
+  }
+
+  if (releaseGate?.state === 'open') {
+    return {
+      status: 'ready',
+      pr_number: pr.pr_number,
+      branch_name: pr.head_branch ?? null,
+      head_sha: pr.head_sha ?? null,
+      blocker_codes: blockerCodes,
+      reason_codes: reasonCodes,
+      basis: ['all_release_signals_clear'],
+      gates,
+      truth,
+    };
+  }
+
+  return {
+    status: 'ambiguous',
+    pr_number: pr?.pr_number ?? null,
+    branch_name: pr?.head_branch ?? null,
+    head_sha: pr?.head_sha ?? null,
+    blocker_codes: blockerCodes,
+    reason_codes: reasonCodes,
+    basis: ['fallback_ambiguous'],
+    gates,
+    truth,
+  };
+}
+
+function deriveReleaseReadiness(pr, ownership, releaseGuard) {
+  const warnings = [];
+
+  if (!pr || pr.state !== 'OPEN') {
+    return {
+      status: 'not_applicable',
+      blockers: releaseGuard.blocker_codes,
+      blocker_codes: releaseGuard.blocker_codes,
+      warnings,
+      basis: releaseGuard.basis,
+      gates: releaseGuard.gates,
     };
   }
 
@@ -336,56 +446,56 @@ function deriveReleaseReadiness(pr, ownership) {
     warnings.push('draft_pr_not_releasable');
     return {
       status: 'not_applicable',
-      blockers: blockerCodes,
-      blocker_codes: blockerCodes,
+      blockers: releaseGuard.blocker_codes,
+      blocker_codes: releaseGuard.blocker_codes,
       warnings,
-      basis: ['draft_pr'],
-      gates,
+      basis: releaseGuard.basis,
+      gates: releaseGuard.gates,
     };
   }
 
   if (ownership.status === 'stale') warnings.push('stale_worker_session');
 
-  if (releaseGate?.state === 'blocked') {
+  if (releaseGuard.status === 'blocked') {
     return {
       status: 'blocked',
-      blockers: blockerCodes,
-      blocker_codes: blockerCodes,
+      blockers: releaseGuard.blocker_codes,
+      blocker_codes: releaseGuard.blocker_codes,
       warnings,
-      basis: blockerCodes.includes('orphan_open_pr') ? ['ownership_orphaned'] : [...blockerCodes],
-      gates,
+      basis: releaseGuard.basis,
+      gates: releaseGuard.gates,
     };
   }
 
-  if (releaseGate?.state === 'pending' || releaseGate?.state === 'ambiguous') {
+  if (releaseGuard.status === 'waiting' || releaseGuard.status === 'ambiguous') {
     return {
       status: 'ambiguous',
-      blockers: blockerCodes,
-      blocker_codes: blockerCodes,
+      blockers: releaseGuard.blocker_codes,
+      blocker_codes: releaseGuard.blocker_codes,
       warnings,
-      basis: releaseGate.reason_codes?.length ? [...releaseGate.reason_codes] : ['fallback_ambiguous'],
-      gates,
+      basis: releaseGuard.basis,
+      gates: releaseGuard.gates,
     };
   }
 
-  if (releaseGate?.state === 'open') {
+  if (releaseGuard.status === 'ready') {
     return {
       status: 'ready',
-      blockers: blockerCodes,
-      blocker_codes: blockerCodes,
+      blockers: releaseGuard.blocker_codes,
+      blocker_codes: releaseGuard.blocker_codes,
       warnings,
-      basis: ['all_release_signals_clear'],
-      gates,
+      basis: releaseGuard.basis,
+      gates: releaseGuard.gates,
     };
   }
 
   return {
     status: 'ambiguous',
-    blockers: blockerCodes,
-    blocker_codes: blockerCodes,
+    blockers: releaseGuard.blocker_codes,
+    blocker_codes: releaseGuard.blocker_codes,
     warnings,
-    basis: ['fallback_ambiguous'],
-    gates,
+    basis: releaseGuard.basis?.length ? releaseGuard.basis : ['fallback_ambiguous'],
+    gates: releaseGuard.gates,
   };
 }
 
@@ -711,7 +821,8 @@ export function reconcileObservations({
   const workers = aoObservation?.workers ?? [];
   const prAssessments = (githubObservation?.prs ?? []).map((pr) => {
     const ownership = resolveOwnership(pr, workers);
-    const releaseReadiness = deriveReleaseReadiness(pr, ownership);
+    const releaseGuard = buildReleaseGuard(pr, ownership);
+    const releaseReadiness = deriveReleaseReadiness(pr, ownership, releaseGuard);
     const prFindings = buildPrFindings(pr, ownership, releaseReadiness);
     findings.push(...prFindings);
 
@@ -720,6 +831,7 @@ export function reconcileObservations({
       branch_name: pr.head_branch ?? null,
       github: pr,
       ownership,
+      release_guard: releaseGuard,
       release_readiness: releaseReadiness,
       findings: prFindings,
     };

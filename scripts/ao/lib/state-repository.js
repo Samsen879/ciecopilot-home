@@ -25,6 +25,7 @@ import {
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createReleaseGuardRecord,
   createRepoKnowledgeRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
@@ -135,6 +136,7 @@ export function createStateRepository({
     nextState.ownership_leases = sortCollectionByKey(nextState.ownership_leases, 'lease_id');
     nextState.controller_leases = sortCollectionByKey(nextState.controller_leases, 'lease_id');
     nextState.worktree_bindings = sortCollectionByKey(nextState.worktree_bindings, 'binding_id');
+    nextState.release_guards = sortCollectionByKey(nextState.release_guards, 'guard_id');
     nextState.actions = sortCollectionByKey(nextState.actions, 'action_id');
     nextState.overrides = sortCollectionByKey(nextState.overrides, 'override_id');
     nextState.controller_modes = sortCollectionByKey(nextState.controller_modes, 'controller_id');
@@ -326,6 +328,17 @@ export function createStateRepository({
         record,
         normalize: createWorktreeBinding,
         summary: `Persisted worktree binding ${record?.binding_id}.`,
+      });
+    },
+
+    upsertReleaseGuard(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'release_guards',
+        identityKey: 'guard_id',
+        entityKind: 'release_guard',
+        record,
+        normalize: createReleaseGuardRecord,
+        summary: `Persisted release guard ${record?.guard_id}.`,
       });
     },
 

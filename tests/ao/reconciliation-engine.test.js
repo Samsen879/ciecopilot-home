@@ -153,6 +153,58 @@ describe('reconciliation engine', () => {
     expect(report.pr_assessments[0].release_readiness.status).toBe('not_applicable');
   });
 
+  it('derives a waiting release guard projection bound to the current head sha', () => {
+    const scope = createPrScope(44);
+    const report = reconcileObservations({
+      scope,
+      aoObservation: buildAoObservation({ workers: [buildAoWorker()] }),
+      githubObservation: buildGitHubObservation(scope, [
+        buildGitHubPr({
+          review_status: 'pending',
+          ci_status: 'pending',
+        }),
+      ]),
+    });
+
+    expect(report.pr_assessments[0].release_guard).toMatchObject({
+      status: 'waiting',
+      pr_number: 44,
+      branch_name: 'feat/issue-44',
+      head_sha: 'abc123',
+      basis: ['review_pending', 'ci_pending'],
+      blocker_codes: [],
+      gates: createGateSnapshot({
+        ownership: {
+          state: 'open',
+        },
+        review: {
+          state: 'pending',
+          reason_codes: ['review_pending'],
+        },
+        ci: {
+          state: 'pending',
+          reason_codes: ['ci_pending'],
+        },
+        mergeability: {
+          state: 'open',
+        },
+        release: {
+          state: 'pending',
+          reason_codes: ['review_pending', 'ci_pending'],
+        },
+      }),
+      truth: {
+        pr_state: 'OPEN',
+        is_draft: false,
+        review_status: 'pending',
+        ci_status: 'pending',
+        mergeability: 'mergeable',
+        ownership_status: 'clear',
+        owner_session_name: 'cie-44',
+      },
+    });
+  });
+
   it('treats unknown mergeability as ambiguous, not ready', () => {
     const scope = createPrScope(44);
     const report = reconcileObservations({

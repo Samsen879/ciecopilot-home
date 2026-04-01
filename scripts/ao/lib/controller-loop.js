@@ -5,6 +5,7 @@ import {
   createActionRecord,
   createControllerModeRecord,
   createPolicyDecisionRecord,
+  createReleaseGuardRecord,
 } from './state-contracts.js';
 import { createCheckpointStore } from './checkpoint-store.js';
 import { createStateRepository } from './state-repository.js';
@@ -54,6 +55,11 @@ function resolveNow(now) {
 
 function hashText(value) {
   return createHash('sha1').update(value).digest('hex');
+}
+
+function buildReleaseGuardId({ prNumber, now, truthFingerprint }) {
+  const timestampToken = String(now ?? '').replace(/[^0-9]/g, '') || 'now';
+  return `release-guard-pr-${prNumber}-${timestampToken}-${truthFingerprint.slice(0, 12)}`;
 }
 
 function uniquePrNumbers(prBindings = [], matchedPrs = []) {
@@ -182,6 +188,129 @@ function persistTaskWorktreeSafety({
   });
   repository.upsertWorktreeBinding(nextBinding);
   return nextBinding;
+}
+
+function buildReleasePromotionSnapshot(lifecycleReport) {
+  const disposition = lifecycleReport?.release_decision?.disposition ?? null;
+  return {
+    disposition,
+    signal: disposition === 'notify_human_ready' ? 'notify_human_ready' : null,
+    authoritative: Boolean(lifecycleReport?.release_decision?.authoritative),
+    basis: lifecycleReport?.release_decision?.basis ?? [],
+  };
+}
+
+function calculateReleaseGuardInvalidationReasons(existingGuard, nextGuard) {
+  const reasons = [];
+
+  if ((existingGuard?.head_sha ?? null) !== (nextGuard?.head_sha ?? null)) {
+    reasons.push('head_sha_changed');
+  }
+  if ((existingGuard?.truth?.review_status ?? null) !== (nextGuard?.truth?.review_status ?? null)) {
+    reasons.push('review_truth_changed');
+  }
+  if ((existingGuard?.truth?.ci_status ?? null) !== (nextGuard?.truth?.ci_status ?? null)) {
+    reasons.push('ci_truth_changed');
+  }
+  if ((existingGuard?.truth?.mergeability ?? null) !== (nextGuard?.truth?.mergeability ?? null)) {
+    reasons.push('mergeability_truth_changed');
+  }
+  if (
+    (existingGuard?.truth?.ownership_status ?? null) !== (nextGuard?.truth?.ownership_status ?? null)
+    || (existingGuard?.truth?.owner_session_name ?? null) !== (nextGuard?.truth?.owner_session_name ?? null)
+  ) {
+    reasons.push('ownership_truth_changed');
+  }
+  if (
+    (existingGuard?.truth?.pr_state ?? null) !== (nextGuard?.truth?.pr_state ?? null)
+    || (existingGuard?.truth?.is_draft ?? null) !== (nextGuard?.truth?.is_draft ?? null)
+  ) {
+    reasons.push('pr_truth_changed');
+  }
+
+  return reasons.length ? reasons : ['release_truth_changed'];
+}
+
+function persistReleaseGuard({
+  repository,
+  task,
+  controllerId,
+  prNumber,
+  reconciliationReport,
+  lifecycleReport,
+  now,
+} = {}) {
+  if (!Number.isInteger(prNumber)) return null;
+
+  const assessment = (reconciliationReport?.pr_assessments ?? []).find(
+    (candidate) => candidate?.pr_number === prNumber,
+  ) ?? null;
+  const projection = assessment?.release_guard ?? null;
+  if (!projection?.head_sha) return null;
+
+  const truthFingerprint = hashText(JSON.stringify({
+    head_sha: projection.head_sha,
+    truth: projection.truth ?? {},
+  }));
+  const nextRecordBase = {
+    pr_number: prNumber,
+    branch_name: projection.branch_name ?? task?.branch_name ?? null,
+    head_sha: projection.head_sha,
+    status: projection.status,
+    recorded_at: now,
+    truth_fingerprint: truthFingerprint,
+    basis: projection.basis ?? [],
+    blocker_codes: projection.blocker_codes ?? [],
+    reason_codes: projection.reason_codes ?? [],
+    gates: projection.gates ?? {},
+    truth: projection.truth ?? {},
+    promotion: buildReleasePromotionSnapshot(lifecycleReport),
+    metadata: {
+      task_id: task?.task_id ?? null,
+      controller_id: controllerId,
+    },
+  };
+
+  const snapshot = repository.getSnapshot().state;
+  const activeGuards = (snapshot.release_guards ?? []).filter((guard) => (
+    guard?.pr_number === prNumber && guard?.validity_status === 'active'
+  ));
+  const matchingGuard = activeGuards.find((guard) => guard.truth_fingerprint === truthFingerprint) ?? null;
+
+  const nextGuard = matchingGuard
+    ? createReleaseGuardRecord({
+        ...matchingGuard,
+        ...nextRecordBase,
+        guard_id: matchingGuard.guard_id,
+        validity_status: 'active',
+        invalidated_at: null,
+        invalidation_reason_codes: [],
+        superseded_by_guard_id: null,
+      })
+    : createReleaseGuardRecord({
+        guard_id: buildReleaseGuardId({ prNumber, now, truthFingerprint }),
+        validity_status: 'active',
+        invalidated_at: null,
+        invalidation_reason_codes: [],
+        superseded_by_guard_id: null,
+        ...nextRecordBase,
+      });
+
+  repository.upsertReleaseGuard(nextGuard);
+
+  for (const existingGuard of activeGuards) {
+    if (existingGuard.guard_id === nextGuard.guard_id) continue;
+
+    repository.upsertReleaseGuard(createReleaseGuardRecord({
+      ...existingGuard,
+      validity_status: 'invalidated',
+      invalidated_at: now,
+      invalidation_reason_codes: calculateReleaseGuardInvalidationReasons(existingGuard, nextGuard),
+      superseded_by_guard_id: nextGuard.guard_id,
+    }));
+  }
+
+  return nextGuard;
 }
 
 export function deriveLifecycleTriggerForTask({
@@ -602,6 +731,8 @@ export async function runControllerLoop({
       let policyBlockedActionIds = [];
       let deniedActionIds = [];
       let downgradedActionIds = [];
+      let releaseGuardId = null;
+      let releaseGuardStatus = null;
 
       if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
         const resolvedLifecycle = services.resolveLifecycleReport
@@ -628,6 +759,7 @@ export async function runControllerLoop({
               },
             });
         const lifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
+        const reconciliationReport = resolvedLifecycle.reconciliationReport ?? null;
         const doctorReport = resolvedLifecycle.doctorReport ?? null;
         const persistedWorktreeBinding = persistTaskWorktreeSafety({
           repository,
@@ -635,6 +767,17 @@ export async function runControllerLoop({
           worktreeSafety: doctorReport?.worktree_safety ?? null,
           now: timestamp,
         });
+        const persistedReleaseGuard = persistReleaseGuard({
+          repository,
+          task,
+          controllerId,
+          prNumber,
+          reconciliationReport,
+          lifecycleReport,
+          now: timestamp,
+        });
+        releaseGuardId = persistedReleaseGuard?.guard_id ?? null;
+        releaseGuardStatus = persistedReleaseGuard?.status ?? null;
         worktreeContinuityStatus = persistedWorktreeBinding?.continuity_status ?? doctorReport?.worktree_safety?.continuity_status ?? null;
         lifecycleTopStatus = lifecycleReport.top_status ?? null;
         const proposalResult = await persistShadowActions({
@@ -745,6 +888,8 @@ export async function runControllerLoop({
         downgraded_action_ids: downgradedActionIds,
         lifecycle_top_status: lifecycleTopStatus,
         worktree_continuity_status: worktreeContinuityStatus,
+        release_guard_id: releaseGuardId,
+        release_guard_status: releaseGuardStatus,
       });
     }
   } finally {

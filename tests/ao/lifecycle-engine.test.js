@@ -176,6 +176,63 @@ describe('lifecycle engine', () => {
     });
   });
 
+  it('uses the typed release guard surface to derive waiting release actions', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'manual',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          ownership: {
+            status: 'clear',
+            owner_session: 'cie-44',
+            candidate_sessions: ['cie-44'],
+          },
+          release_readiness: {
+            status: 'ambiguous',
+            basis: ['legacy_ambiguous_basis'],
+          },
+          release_guard: {
+            status: 'waiting',
+            head_sha: 'abc123',
+            basis: ['review_pending'],
+            blocker_codes: [],
+            gates: createGateSnapshot({
+              ownership: {
+                state: 'open',
+              },
+              review: {
+                state: 'pending',
+                reason_codes: ['review_pending'],
+              },
+              ci: {
+                state: 'open',
+              },
+              mergeability: {
+                state: 'open',
+              },
+              release: {
+                state: 'pending',
+                reason_codes: ['review_pending'],
+              },
+            }),
+          },
+        }],
+      }),
+      doctorReport: buildDoctorReport(),
+    });
+
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_review',
+      authoritative: true,
+      basis: ['review_pending'],
+    });
+  });
+
   it('does not let pending CI override an already blocked typed release gate', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({

@@ -1,6 +1,7 @@
 import { createRuntimePreflightSnapshot } from './runtime-contracts.js';
 import { createRepoKnowledgeSnapshot } from './repo-knowledge.js';
 import { createTaskSpecSnapshot } from './task-spec.js';
+import { createGateSnapshot } from './gate-model.js';
 import {
   CONTROLLER_RUN_MEASUREMENT_FORMAT,
   CONTROLLER_RUN_MEASUREMENT_SCHEMA_VERSION,
@@ -23,7 +24,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 10;
+export const CONTROL_PLANE_LATEST_VERSION = 11;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
@@ -45,6 +46,8 @@ export const PR_BINDING_STATUSES = ['bound', 'released', 'closed'];
 export const OWNERSHIP_LEASE_STATUSES = ['active', 'released', 'expired'];
 export const CONTROLLER_LEASE_STATUSES = ['active', 'released', 'expired'];
 export const WORKTREE_BINDING_STATUSES = ['active', 'released'];
+export const RELEASE_GUARD_STATUSES = ['waiting', 'blocked', 'ambiguous', 'ready', 'not_applicable'];
+export const RELEASE_GUARD_VALIDITY_STATUSES = ['active', 'invalidated'];
 export const WORKTREE_OCCUPANCY_STATUSES = ['occupied', 'stale', 'conflicting', 'unknown'];
 export const WORKTREE_CLEANLINESS_STATUSES = ['clean', 'dirty', 'unknown'];
 export const WORKTREE_HEAD_STATUSES = ['attached', 'detached', 'unknown'];
@@ -312,6 +315,7 @@ export function createEmptyControlPlaneState({
     ownership_leases: [],
     controller_leases: [],
     worktree_bindings: [],
+    release_guards: [],
     actions: [],
     overrides: [],
     controller_modes: [],
@@ -453,6 +457,45 @@ function normalizeWorktreeObservation(value, fieldName, { nullable = false } = {
   };
 }
 
+function normalizeReleaseGuardTruth(value = {}) {
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid truth');
+  }
+
+  return {
+    pr_state: normalizeOptionalString(value.pr_state),
+    is_draft: normalizeOptionalBoolean(value.is_draft, 'truth.is_draft'),
+    review_status: normalizeOptionalString(value.review_status),
+    ci_status: normalizeOptionalString(value.ci_status),
+    mergeability: normalizeOptionalString(value.mergeability),
+    ownership_status: normalizeOptionalString(value.ownership_status),
+    owner_session_name: normalizeOptionalString(value.owner_session_name),
+  };
+}
+
+function normalizeReleasePromotion(value = null) {
+  if (value == null) {
+    return {
+      disposition: null,
+      signal: null,
+      authoritative: false,
+      basis: [],
+    };
+  }
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid promotion');
+  }
+
+  return {
+    disposition: normalizeOptionalString(value.disposition),
+    signal: normalizeOptionalString(value.signal),
+    authoritative: value.authoritative == null
+      ? false
+      : normalizeOptionalBoolean(value.authoritative, 'promotion.authoritative'),
+    basis: normalizeStringArray(value.basis ?? [], 'promotion.basis'),
+  };
+}
+
 export function createWorktreeBinding({
   binding_id,
   task_id,
@@ -499,6 +542,51 @@ export function createWorktreeBinding({
       'last_safe_observation',
       { nullable: true },
     ),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+export function createReleaseGuardRecord({
+  guard_id,
+  pr_number,
+  branch_name = null,
+  head_sha,
+  status,
+  validity_status = 'active',
+  recorded_at,
+  truth_fingerprint,
+  basis = [],
+  blocker_codes = [],
+  reason_codes = [],
+  gates = {},
+  truth = {},
+  promotion = null,
+  invalidated_at = null,
+  invalidation_reason_codes = [],
+  superseded_by_guard_id = null,
+  metadata = {},
+} = {}) {
+  return {
+    guard_id: normalizeRequiredString(guard_id, 'guard_id'),
+    pr_number: normalizePositiveInteger(pr_number, 'pr_number'),
+    branch_name: normalizeOptionalString(branch_name),
+    head_sha: normalizeRequiredString(head_sha, 'head_sha'),
+    status: normalizeEnum(status, 'status', RELEASE_GUARD_STATUSES),
+    validity_status: normalizeEnum(validity_status, 'validity_status', RELEASE_GUARD_VALIDITY_STATUSES),
+    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
+    truth_fingerprint: normalizeRequiredString(truth_fingerprint, 'truth_fingerprint'),
+    basis: normalizeStringArray(basis, 'basis'),
+    blocker_codes: normalizeStringArray(blocker_codes, 'blocker_codes'),
+    reason_codes: normalizeStringArray(reason_codes, 'reason_codes'),
+    gates: createGateSnapshot(gates),
+    truth: normalizeReleaseGuardTruth(truth),
+    promotion: normalizeReleasePromotion(promotion),
+    invalidated_at: normalizeIsoTimestamp(invalidated_at, 'invalidated_at', { nullable: true }),
+    invalidation_reason_codes: normalizeStringArray(
+      invalidation_reason_codes,
+      'invalidation_reason_codes',
+    ),
+    superseded_by_guard_id: normalizeOptionalString(superseded_by_guard_id),
     metadata: normalizeMetadata(metadata),
   };
 }

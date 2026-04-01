@@ -33,6 +33,19 @@ function buildReport(overrides = {}) {
       controller_modes: ['default=observe'],
       audit_entry_count: 8,
     },
+    governance: {
+      status: 'current',
+      policy_version: 'ao.policy.v2',
+      summary: {
+        tool_allowlist_count: 9,
+        mcp_allowlist_count: 1,
+        credential_provenance_count: 1,
+        provenance_gap_count: 0,
+        unknown_tool_count: 0,
+        unknown_mcp_server_count: 0,
+        repo_knowledge_drift_count: 0,
+      },
+    },
     audit: {
       recent_entries: [],
     },
@@ -82,6 +95,10 @@ describe('ao state cli', () => {
     });
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       schema_version: 'ao.state.v1alpha1',
+      governance: {
+        status: 'current',
+        policy_version: 'ao.policy.v2',
+      },
       summary: {
         managed_task_count: 1,
       },

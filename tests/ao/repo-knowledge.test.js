@@ -5,9 +5,11 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from '@jest/globals';
 
 const {
+  loadRepoKnowledgeReport,
   inspectRepoKnowledgeRecordState,
   materializeRepoKnowledge,
   renderRepoKnowledgeDocContract,
+  renderRepoKnowledgeHumanSummary,
 } = await import('../../scripts/ao/lib/repo-knowledge.js');
 const {
   createStateRepository,
@@ -238,5 +240,55 @@ describe('repo knowledge', () => {
         }),
       ]),
     });
+  });
+
+  it('publishes repo-knowledge governance surfaces and drift state in the operator report', async () => {
+    const repoRoot = createTempRepo();
+    writePackageJson(repoRoot);
+    const firstPass = materializeRepoKnowledge({
+      repoRoot,
+      projectId: PROJECT_ID,
+      now: NOW,
+    });
+    writeRepoKnowledgeDoc(repoRoot, firstPass.profile);
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+      clock: () => NOW,
+    });
+    repository.ensureRepoKnowledge({
+      now: NOW,
+    });
+
+    const report = await loadRepoKnowledgeReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+
+    expect(report).toMatchObject({
+      inspection: {
+        status: 'current',
+      },
+      governance: {
+        status: 'current',
+        policy_version: 'ao.policy.v2',
+        risky_surface_refs: expect.arrayContaining([
+          expect.objectContaining({
+            governance_ref: 'repo_knowledge.ciecopilot-home.risky_surface.workflow.github_workflows@1',
+            surface_id: 'workflow.github_workflows',
+          }),
+        ]),
+        command_refs: expect.arrayContaining([
+          expect.objectContaining({
+            governance_ref: 'repo_knowledge.ciecopilot-home.command.verify.test_run_in_band@1',
+            command_id: 'verify.test_run_in_band',
+          }),
+        ]),
+      },
+    });
+    expect(renderRepoKnowledgeHumanSummary(report)).toContain(
+      'governance_risky_surfaces: repo_knowledge.ciecopilot-home.risky_surface.workflow.github_workflows@1',
+    );
   });
 });

@@ -744,6 +744,10 @@ function normalizePolicyFindings(findings = []) {
     surface: normalizeRequiredString(finding?.surface, 'finding.surface'),
     value: normalizeRequiredString(finding?.value, 'finding.value'),
     detail: normalizeOptionalString(finding?.detail),
+    governance_ref: normalizeOptionalString(finding?.governance_ref),
+    related_governance_refs: (finding?.related_governance_refs ?? []).map((value, index) => (
+      normalizeRequiredString(value, `finding.related_governance_refs[${index}]`)
+    )),
   }));
 }
 

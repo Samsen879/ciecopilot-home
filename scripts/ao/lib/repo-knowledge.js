@@ -57,6 +57,11 @@ function normalizePositiveInteger(value, fieldName) {
   return normalized;
 }
 
+function normalizeNonNegativeInteger(value) {
+  const normalized = Number(value);
+  return Number.isInteger(normalized) && normalized >= 0 ? normalized : null;
+}
+
 function readJsonFile(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
@@ -92,6 +97,45 @@ function buildReplayKey(snapshot) {
       checked_at: null,
     },
   })).digest('hex')}`;
+}
+
+function resolveRepoKnowledgeSnapshot(repoKnowledge) {
+  if (!isPlainObject(repoKnowledge)) return null;
+  return isPlainObject(repoKnowledge.snapshot) ? repoKnowledge.snapshot : repoKnowledge;
+}
+
+export function buildRepoKnowledgeGovernanceRef({
+  projectId,
+  profileVersion,
+} = {}) {
+  const normalizedProjectId = normalizeOptionalString(projectId);
+  const normalizedProfileVersion = normalizeNonNegativeInteger(profileVersion);
+  if (!normalizedProjectId || normalizedProfileVersion == null) return null;
+  return `repo_knowledge.${normalizedProjectId}@${normalizedProfileVersion}`;
+}
+
+function buildRepoKnowledgeCommandGovernanceRef({
+  projectId,
+  profileVersion,
+  commandId,
+} = {}) {
+  const normalizedProjectId = normalizeOptionalString(projectId);
+  const normalizedProfileVersion = normalizeNonNegativeInteger(profileVersion);
+  const normalizedCommandId = normalizeOptionalString(commandId);
+  if (!normalizedProjectId || normalizedProfileVersion == null || !normalizedCommandId) return null;
+  return `repo_knowledge.${normalizedProjectId}.command.${normalizedCommandId}@${normalizedProfileVersion}`;
+}
+
+function buildRepoKnowledgeRiskSurfaceGovernanceRef({
+  projectId,
+  profileVersion,
+  surfaceId,
+} = {}) {
+  const normalizedProjectId = normalizeOptionalString(projectId);
+  const normalizedProfileVersion = normalizeNonNegativeInteger(profileVersion);
+  const normalizedSurfaceId = normalizeOptionalString(surfaceId);
+  if (!normalizedProjectId || normalizedProfileVersion == null || !normalizedSurfaceId) return null;
+  return `repo_knowledge.${normalizedProjectId}.risky_surface.${normalizedSurfaceId}@${normalizedProfileVersion}`;
 }
 
 function deriveCanonicalCommands(packageJson = {}) {
@@ -281,24 +325,77 @@ export function createRepoKnowledgeSnapshot({
 }
 
 export function buildRepoKnowledgeRef(repoKnowledge) {
-  if (!isPlainObject(repoKnowledge)) return null;
+  const snapshot = resolveRepoKnowledgeSnapshot(repoKnowledge);
+  if (!isPlainObject(snapshot)) return null;
+  const profileVersion = normalizeNonNegativeInteger(snapshot.profile_version);
+  if (profileVersion == null) return null;
   return {
-    project_id: normalizeRequiredString(repoKnowledge.project_id, 'project_id'),
-    profile_version: normalizePositiveInteger(repoKnowledge.profile_version, 'profile_version'),
-    lint_status: normalizeRequiredString(repoKnowledge?.lint?.status, 'lint.status'),
+    project_id: normalizeRequiredString(snapshot.project_id, 'project_id'),
+    profile_version: profileVersion,
+    lint_status: normalizeRequiredString(snapshot?.lint?.status, 'lint.status'),
+    governance_ref: buildRepoKnowledgeGovernanceRef({
+      projectId: snapshot.project_id,
+      profileVersion,
+    }),
   };
 }
 
 export function listRepoKnowledgeCommands(repoKnowledge, surface) {
-  if (!isPlainObject(repoKnowledge?.profile?.canonical_commands)) return [];
-  return cloneJsonValue(repoKnowledge.profile.canonical_commands[surface] ?? []);
+  const snapshot = resolveRepoKnowledgeSnapshot(repoKnowledge);
+  if (!isPlainObject(snapshot?.profile?.canonical_commands)) return [];
+  return cloneJsonValue(snapshot.profile.canonical_commands[surface] ?? []);
+}
+
+export function listRepoKnowledgeGovernanceSurfaces(repoKnowledge) {
+  const snapshot = resolveRepoKnowledgeSnapshot(repoKnowledge);
+  if (!isPlainObject(snapshot?.profile)) {
+    return {
+      command_refs: [],
+      risky_surface_refs: [],
+    };
+  }
+
+  const projectId = snapshot.project_id;
+  const profileVersion = snapshot.profile_version;
+  const commandRefs = Object.values(snapshot.profile.canonical_commands ?? {})
+    .flatMap((commands) => commands ?? [])
+    .map((command) => ({
+      governance_ref: buildRepoKnowledgeCommandGovernanceRef({
+        projectId,
+        profileVersion,
+        commandId: command.command_id,
+      }),
+      command_id: command.command_id,
+      command: command.command,
+      source_ref: command.source_ref,
+    }))
+    .filter((record) => record.governance_ref != null);
+  const riskySurfaceRefs = (snapshot.profile.risky_surfaces ?? [])
+    .map((surface) => ({
+      governance_ref: buildRepoKnowledgeRiskSurfaceGovernanceRef({
+        projectId,
+        profileVersion,
+        surfaceId: surface.surface_id,
+      }),
+      surface_id: surface.surface_id,
+      kind: surface.kind,
+      match_type: surface.match_type,
+      pattern: surface.pattern,
+    }))
+    .filter((record) => record.governance_ref != null);
+
+  return {
+    command_refs: commandRefs,
+    risky_surface_refs: riskySurfaceRefs,
+  };
 }
 
 export function classifyRepoKnowledgeRisk(filePath, repoKnowledge) {
+  const snapshot = resolveRepoKnowledgeSnapshot(repoKnowledge);
   const normalizedPath = normalizeOptionalString(filePath)?.replaceAll('\\', '/').replace(/^\.\//, '') ?? null;
   if (!normalizedPath) return null;
 
-  for (const surface of repoKnowledge?.profile?.risky_surfaces ?? []) {
+  for (const surface of snapshot?.profile?.risky_surfaces ?? []) {
     if (surface.match_type === 'prefix' && normalizedPath.startsWith(surface.pattern)) {
       return surface;
     }
@@ -311,7 +408,8 @@ export function classifyRepoKnowledgeRisk(filePath, repoKnowledge) {
 }
 
 export function inspectRepoKnowledgeRecordState(record) {
-  if (!isPlainObject(record) || !isPlainObject(record.snapshot)) {
+  const snapshot = resolveRepoKnowledgeSnapshot(record);
+  if (!isPlainObject(snapshot)) {
     return {
       status: 'missing',
       findings: [
@@ -327,9 +425,8 @@ export function inspectRepoKnowledgeRecordState(record) {
   }
 
   const findings = [];
-  const snapshot = record.snapshot;
-  const topLevelProfileVersion = Number(record.profile_version ?? snapshot.profile_version ?? 0);
-  const topLevelLintStatus = normalizeOptionalString(record.lint_status);
+  const topLevelProfileVersion = Number(record?.profile_version ?? snapshot.profile_version ?? 0);
+  const topLevelLintStatus = normalizeOptionalString(record?.lint_status ?? snapshot?.lint?.status ?? null);
   const mixedVersion = snapshot.schema_version !== REPO_KNOWLEDGE_SCHEMA_VERSION
     || snapshot.profile?.schema_version == null
     || snapshot.profile.schema_version !== REPO_KNOWLEDGE_PROFILE_SCHEMA_VERSION
@@ -435,6 +532,12 @@ function formatList(values) {
 }
 
 export function renderRepoKnowledgeHumanSummary(report) {
+  const governance = report.governance ?? {
+    status: report.inspection?.status ?? 'missing',
+    policy_version: null,
+    risky_surface_refs: [],
+    command_refs: [],
+  };
   const findings = (report.snapshot?.lint?.findings ?? []).map((finding) => `${finding.code}:${finding.value}`);
   return [
     `repo_knowledge_status: ${report.inspection.status}`,
@@ -445,6 +548,10 @@ export function renderRepoKnowledgeHumanSummary(report) {
     `verify_commands: ${formatList((report.snapshot?.profile?.canonical_commands?.verify ?? []).map((item) => item.command))}`,
     `build_commands: ${formatList((report.snapshot?.profile?.canonical_commands?.build ?? []).map((item) => item.command))}`,
     `lint_findings: ${formatList(findings)}`,
+    `governance_status: ${governance.status}`,
+    `governance_policy_version: ${governance.policy_version ?? 'missing'}`,
+    `governance_command_refs: ${formatList(governance.command_refs.map((item) => item.governance_ref))}`,
+    `governance_risky_surfaces: ${formatList(governance.risky_surface_refs.map((item) => item.governance_ref))}`,
   ].join('\n');
 }
 
@@ -465,6 +572,8 @@ export async function loadRepoKnowledgeReport({
   });
   const record = repository.ensureRepoKnowledge();
   const inspection = inspectRepoKnowledgeRecordState(record);
+  const governanceSurfaces = listRepoKnowledgeGovernanceSurfaces(record);
+  const policyRules = createDefaultPolicyRules();
 
   return {
     schema_version: REPO_KNOWLEDGE_REPORT_SCHEMA_VERSION,
@@ -475,5 +584,12 @@ export async function loadRepoKnowledgeReport({
     snapshot: record.snapshot,
     record,
     inspection,
+    governance: {
+      status: inspection.status,
+      policy_version: policyRules.policy_version,
+      repo_knowledge_ref: buildRepoKnowledgeRef(record),
+      command_refs: governanceSurfaces.command_refs,
+      risky_surface_refs: governanceSurfaces.risky_surface_refs,
+    },
   };
 }

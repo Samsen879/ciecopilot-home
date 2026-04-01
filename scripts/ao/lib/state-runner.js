@@ -11,6 +11,12 @@ export const DEFAULT_PROJECT_ID = 'ciecopilot-home';
 export const AO_STATE_SCHEMA_VERSION = 'ao.state.v1alpha1';
 export const AO_STATE_REPORT_FORMAT = 'ao_state_report';
 
+function resolveNow(now) {
+  if (typeof now === 'function') return resolveNow(now());
+  if (typeof now === 'string' && now.trim() !== '') return now.trim();
+  return new Date().toISOString();
+}
+
 function findRepoRoot(startCwd) {
   let currentPath = path.resolve(startCwd);
 
@@ -31,11 +37,23 @@ function summarizeControllerModes(controllerModes) {
     .sort((left, right) => left.localeCompare(right));
 }
 
+function summarizeWorktreeContinuity(worktreeBindings) {
+  const counts = {};
+
+  for (const binding of worktreeBindings ?? []) {
+    const continuityStatus = binding?.continuity_status ?? 'unobserved';
+    counts[continuityStatus] = (counts[continuityStatus] ?? 0) + 1;
+  }
+
+  return counts;
+}
+
 export async function loadAoStateReport({
   cwd = process.cwd(),
   repoRoot = null,
   projectId = DEFAULT_PROJECT_ID,
   auditLimit = 5,
+  now = null,
 } = {}) {
   const resolvedRepoRoot = repoRoot ?? findRepoRoot(cwd);
   if (!resolvedRepoRoot) {
@@ -54,6 +72,7 @@ export async function loadAoStateReport({
   }).inspectAllCheckpoints();
   const handoffInspections = createHandoffProtocol({
     repository,
+    now: () => resolveNow(now),
   }).inspectAllHandoffs();
   const validCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'valid').length;
   const staleCheckpointCount = checkpointInspections.filter((inspection) => inspection.state === 'stale').length;
@@ -61,6 +80,7 @@ export async function loadAoStateReport({
   const activeHandoffCount = handoffInspections.filter((inspection) => (
     ['open', 'pending_decision', 'accepted'].includes(inspection.top_status)
   )).length;
+  const worktreeContinuityCounts = summarizeWorktreeContinuity(snapshot.state.worktree_bindings);
   const repoKnowledgeRecord = (snapshot.state.repo_knowledge ?? []).find(
     (record) => record?.project_id === projectId,
   ) ?? null;
@@ -86,6 +106,9 @@ export async function loadAoStateReport({
       pr_binding_count: snapshot.state.pr_bindings.length,
       active_ownership_lease_count: snapshot.state.ownership_leases.filter((lease) => lease.status === 'active').length,
       active_controller_lease_count: snapshot.state.controller_leases.filter((lease) => lease.status === 'active').length,
+      worktree_binding_count: snapshot.state.worktree_bindings.length,
+      active_worktree_binding_count: snapshot.state.worktree_bindings.filter((binding) => binding.status === 'active').length,
+      worktree_continuity_counts: worktreeContinuityCounts,
       action_count: snapshot.state.actions.length,
       active_override_count: snapshot.state.overrides.filter((override) => override.status === 'active').length,
       controller_mode_count: snapshot.state.controller_modes.length,
@@ -114,6 +137,9 @@ export async function loadAoStateReport({
     },
     handoffs: {
       inspections: handoffInspections,
+    },
+    worktrees: {
+      bindings: snapshot.state.worktree_bindings,
     },
     repo_knowledge: {
       record: repoKnowledgeRecord,

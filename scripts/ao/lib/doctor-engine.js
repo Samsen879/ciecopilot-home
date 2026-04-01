@@ -183,6 +183,177 @@ function deriveExpectedTarget(scope, reconciliationReport) {
   };
 }
 
+function resolveDoctorTaskContext({
+  scope,
+  reconciliationReport,
+  controlPlaneSnapshot,
+} = {}) {
+  const state = controlPlaneSnapshot?.state ?? {};
+  const managedTasks = state.managed_tasks ?? [];
+  const prBindings = state.pr_bindings ?? [];
+  const worktreeBindings = state.worktree_bindings ?? [];
+  const ownershipLeases = state.ownership_leases ?? [];
+  const expectedTarget = deriveExpectedTarget(scope, reconciliationReport);
+
+  let task = null;
+  if (scope?.mode === 'pr' && Number.isInteger(scope?.pr_number)) {
+    const matchedTasks = prBindings
+      .filter((binding) => binding?.status === 'bound' && binding?.pr_number === scope.pr_number)
+      .map((binding) => managedTasks.find((candidate) => candidate?.task_id === binding?.task_id) ?? null)
+      .filter(Boolean);
+    if (matchedTasks.length === 1) {
+      task = matchedTasks[0];
+    }
+  }
+
+  if (!task && expectedTarget.targetCount === 1 && expectedTarget.branchName) {
+    task = managedTasks.find((candidate) => candidate?.branch_name === expectedTarget.branchName) ?? null;
+  }
+
+  if (!task && managedTasks.length === 1) {
+    task = managedTasks[0];
+  }
+
+  const binding = task
+    ? [...worktreeBindings]
+      .filter((record) => record?.task_id === task.task_id)
+      .sort((left, right) => String(right?.updated_at ?? '').localeCompare(String(left?.updated_at ?? '')))[0] ?? null
+    : null;
+  const activeOwnershipLeases = task
+    ? ownershipLeases.filter((lease) => lease?.task_id === task.task_id && lease?.status === 'active')
+    : [];
+
+  return {
+    expectedTarget,
+    task,
+    binding,
+    activeOwnershipLeases,
+    worktreeBindings,
+  };
+}
+
+function buildObservedWorktreeState(localState) {
+  return {
+    branch_name: localState?.current_branch ?? null,
+    worktree_path: localState?.worktree_path ?? localState?.repo_root ?? null,
+    head_sha: localState?.head_sha ?? null,
+    upstream_branch: localState?.upstream_branch ?? null,
+    worktree_dirty: localState?.worktree_dirty ?? null,
+    staged_changes: localState?.staged_changes ?? null,
+    unstaged_changes: localState?.unstaged_changes ?? null,
+  };
+}
+
+function deriveWorktreeSafety({
+  scope,
+  reconciliationReport,
+  localState,
+  controlPlaneSnapshot,
+} = {}) {
+  if (!controlPlaneSnapshot?.bootstrapped) return null;
+
+  const {
+    expectedTarget,
+    task,
+    binding,
+    activeOwnershipLeases,
+    worktreeBindings,
+  } = resolveDoctorTaskContext({
+    scope,
+    reconciliationReport,
+    controlPlaneSnapshot,
+  });
+
+  if (!task && !binding) return null;
+
+  const expectedBranchName = binding?.branch_name ?? task?.branch_name ?? expectedTarget.branchName ?? null;
+  const expectedWorktreePath = binding?.worktree_path ?? task?.worktree_path ?? null;
+  const observedState = buildObservedWorktreeState(localState);
+  const observedBranchName = observedState.branch_name;
+  const observedWorktreePath = observedState.worktree_path;
+  const conflictingBindings = worktreeBindings.filter((record) => (
+    record?.status === 'active'
+      && record?.task_id !== (task?.task_id ?? binding?.task_id)
+      && (
+        (expectedBranchName && record?.branch_name === expectedBranchName)
+        || (expectedWorktreePath && record?.worktree_path === expectedWorktreePath)
+      )
+  ));
+  const sameOwnerActive = binding?.owner_session_name
+    ? activeOwnershipLeases.some((lease) => lease?.owner_session_name === binding.owner_session_name)
+    : false;
+
+  const occupancyStatus = conflictingBindings.length > 0 || activeOwnershipLeases.length > 1
+    ? 'conflicting'
+    : (sameOwnerActive ? 'occupied' : (binding?.owner_session_name ? 'stale' : 'unknown'));
+  const cleanlinessStatus = localState?.worktree_dirty === true
+    ? 'dirty'
+    : (localState?.worktree_dirty === false ? 'clean' : (binding?.cleanliness_status ?? 'unknown'));
+  const headStatus = localState?.detached_head === true
+    ? 'detached'
+    : (localState?.detached_head === false ? 'attached' : (binding?.head_status ?? 'unknown'));
+  const branchMatches = expectedBranchName == null || observedBranchName == null
+    ? true
+    : expectedBranchName === observedBranchName;
+  const worktreeMatches = expectedWorktreePath == null || observedWorktreePath == null
+    ? true
+    : expectedWorktreePath === observedWorktreePath;
+
+  const reasonCodes = [];
+  let continuityStatus = 'unobserved';
+
+  if (conflictingBindings.length > 0 || activeOwnershipLeases.length > 1) {
+    continuityStatus = 'conflicting_local_occupancy';
+    if (conflictingBindings.length > 0) reasonCodes.push('conflicting_worktree_binding');
+    if (activeOwnershipLeases.length > 1) reasonCodes.push('conflicting_active_owner');
+  } else if (localState?.detached_head === true) {
+    continuityStatus = 'detached_head_hold';
+    reasonCodes.push('detached_head');
+  } else if (localState?.worktree_dirty === true) {
+    continuityStatus = 'dirty_worktree_hold';
+    reasonCodes.push('dirty_worktree');
+  } else if (!branchMatches || !worktreeMatches) {
+    continuityStatus = 'branch_mismatch_hold';
+    if (!branchMatches) reasonCodes.push('current_branch_mismatch');
+    if (!worktreeMatches) reasonCodes.push('worktree_path_mismatch');
+  } else if (binding?.owner_session_name && !sameOwnerActive) {
+    continuityStatus = 'stale_local_occupancy';
+    reasonCodes.push('owner_lease_not_active');
+  } else if (expectedBranchName || expectedWorktreePath) {
+    continuityStatus = 'safe_resume';
+    reasonCodes.push('binding_matches_local_state');
+  }
+
+  const lastObservedAt = reconciliationReport?.observed_at ?? new Date().toISOString();
+  const safeObservation = ['safe_resume', 'stale_local_occupancy'].includes(continuityStatus)
+    ? observedState
+    : (binding?.last_safe_observation ?? null);
+  const lastSafeObservedAt = ['safe_resume', 'stale_local_occupancy'].includes(continuityStatus)
+    ? lastObservedAt
+    : (binding?.last_safe_observed_at ?? null);
+
+  return {
+    task_id: task?.task_id ?? binding?.task_id ?? null,
+    binding_id: binding?.binding_id ?? null,
+    continuity_status: continuityStatus,
+    occupancy_status: occupancyStatus,
+    cleanliness_status: cleanlinessStatus,
+    head_status: headStatus,
+    owner_session_name: binding?.owner_session_name ?? null,
+    owner_session_id: binding?.owner_session_id ?? null,
+    expected_branch_name: expectedBranchName,
+    expected_worktree_path: expectedWorktreePath,
+    observed_branch_name: observedBranchName,
+    observed_worktree_path: observedWorktreePath,
+    reason_codes: reasonCodes,
+    conflicting_binding_ids: conflictingBindings.map((record) => record.binding_id).sort((left, right) => left.localeCompare(right)),
+    last_observed_at: lastObservedAt,
+    last_observed: observedState,
+    last_safe_observed_at: lastSafeObservedAt,
+    last_safe_observation: safeObservation,
+  };
+}
+
 function buildTaskSpecFindings({ controlPlaneSnapshot, projectId }) {
   const findings = [];
   if (!controlPlaneSnapshot?.bootstrapped) return findings;
@@ -440,6 +611,7 @@ function buildDoctorOnlyFindings({
   sourceHealth,
   projectId,
   controlPlaneSnapshot,
+  worktreeSafety,
 }) {
   const findings = [];
 
@@ -530,6 +702,96 @@ function buildDoctorOnlyFindings({
       details: ['Upstream tracking is missing for the current branch.'],
       evidence_refs: [],
       suggestion_ids: ['git_upstream'],
+    }));
+  }
+
+  if (worktreeSafety?.continuity_status === 'safe_resume') {
+    findings.push(createDoctorFinding({
+      code: 'safe_local_resume',
+      severity: 'info',
+      origin: 'doctor',
+      source_area: 'worktree',
+      subject_type: 'task',
+      subject_id: worktreeSafety.task_id ?? projectId,
+      summary: 'Durable worktree binding matches the current local state.',
+      details: worktreeSafety.reason_codes ?? [],
+      evidence_refs: [],
+      suggestion_ids: [],
+    }));
+  }
+
+  if (worktreeSafety?.continuity_status === 'stale_local_occupancy') {
+    findings.push(createDoctorFinding({
+      code: 'stale_local_occupancy',
+      severity: 'warning',
+      origin: 'doctor',
+      source_area: 'worktree',
+      subject_type: 'task',
+      subject_id: worktreeSafety.task_id ?? projectId,
+      summary: 'Durable worktree binding is present, but local occupancy is stale.',
+      details: worktreeSafety.reason_codes ?? [],
+      evidence_refs: [],
+      suggestion_ids: ['human_review'],
+    }));
+  }
+
+  if (worktreeSafety?.continuity_status === 'dirty_worktree_hold') {
+    findings.push(createDoctorFinding({
+      code: 'dirty_worktree_hold',
+      severity: 'blocker',
+      origin: 'doctor',
+      source_area: 'worktree',
+      subject_type: 'task',
+      subject_id: worktreeSafety.task_id ?? projectId,
+      summary: 'Dirty local worktree blocks bounded continuity repair.',
+      details: worktreeSafety.reason_codes ?? [],
+      evidence_refs: [],
+      suggestion_ids: ['git_status', 'human_review'],
+    }));
+  }
+
+  if (worktreeSafety?.continuity_status === 'detached_head_hold') {
+    findings.push(createDoctorFinding({
+      code: 'detached_head_hold',
+      severity: 'blocker',
+      origin: 'doctor',
+      source_area: 'git',
+      subject_type: 'task',
+      subject_id: worktreeSafety.task_id ?? projectId,
+      summary: 'Detached HEAD blocks bounded continuity repair.',
+      details: worktreeSafety.reason_codes ?? [],
+      evidence_refs: [],
+      suggestion_ids: ['git_branch_context', 'human_review'],
+    }));
+  }
+
+  if (worktreeSafety?.continuity_status === 'branch_mismatch_hold') {
+    findings.push(createDoctorFinding({
+      code: 'branch_mismatch_hold',
+      severity: 'blocker',
+      origin: 'doctor',
+      source_area: 'git',
+      subject_type: 'task',
+      subject_id: worktreeSafety.task_id ?? projectId,
+      summary: 'Branch or worktree mismatch blocks bounded continuity repair.',
+      details: worktreeSafety.reason_codes ?? [],
+      evidence_refs: [],
+      suggestion_ids: ['git_branch_context', 'reconcile_scope', 'human_review'],
+    }));
+  }
+
+  if (worktreeSafety?.continuity_status === 'conflicting_local_occupancy') {
+    findings.push(createDoctorFinding({
+      code: 'conflicting_local_occupancy',
+      severity: 'blocker',
+      origin: 'doctor',
+      source_area: 'worktree',
+      subject_type: 'task',
+      subject_id: worktreeSafety.task_id ?? projectId,
+      summary: 'Conflicting local occupancy blocks bounded continuity repair.',
+      details: worktreeSafety.reason_codes ?? [],
+      evidence_refs: [],
+      suggestion_ids: ['human_review'],
     }));
   }
 
@@ -687,6 +949,12 @@ export function buildDoctorReport({
   const projectId = scope?.project_id ?? reconciliationReport?.project_id ?? 'unknown-project';
   const sourceHealth = deriveSourceHealth(reconciliationReport, localState);
   const reconciliationFindings = preserveReconciliationFindings(reconciliationReport);
+  const worktreeSafety = deriveWorktreeSafety({
+    scope,
+    reconciliationReport,
+    localState,
+    controlPlaneSnapshot,
+  });
   const doctorFindings = buildDoctorOnlyFindings({
     scope,
     reconciliationReport,
@@ -694,6 +962,7 @@ export function buildDoctorReport({
     sourceHealth,
     projectId,
     controlPlaneSnapshot,
+    worktreeSafety,
   });
   const findings = [...reconciliationFindings, ...doctorFindings];
   const suggestions = buildSuggestions(findings, scope);
@@ -714,6 +983,7 @@ export function buildDoctorReport({
       finding_codes: (reconciliationReport?.findings ?? []).map((finding) => finding.code),
     },
     local_state: localState,
+    worktree_safety: worktreeSafety,
     findings,
     suggestions,
   };

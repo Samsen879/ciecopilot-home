@@ -8,6 +8,7 @@ import {
   createControllerModeRecord,
   createEmptyControlPlaneState,
   createTaskSpecRecord,
+  createWorktreeBinding,
 } from './state-contracts.js';
 import { normalizeIssueIntake } from './issue-intake.js';
 import { appendControlPlaneAuditEntry } from './state-audit.js';
@@ -62,6 +63,11 @@ export const CONTROL_PLANE_REPO_KNOWLEDGE_MIGRATION = {
   key: '0009_repo_knowledge_v1',
 };
 
+export const CONTROL_PLANE_WORKTREE_REGISTRY_MIGRATION = {
+  version: 10,
+  key: '0010_worktree_registry_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
@@ -72,6 +78,7 @@ const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_HANDOFF_PROTOCOL_MIGRATION,
   CONTROL_PLANE_MEASUREMENT_METRICS_MIGRATION,
   CONTROL_PLANE_REPO_KNOWLEDGE_MIGRATION,
+  CONTROL_PLANE_WORKTREE_REGISTRY_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -124,6 +131,7 @@ function buildBootstrapState({
     'pr_bindings',
     'ownership_leases',
     'controller_leases',
+    'worktree_bindings',
     'actions',
     'overrides',
     'controller_modes',
@@ -182,6 +190,59 @@ function backfillTaskSpecs({
       created_at: now,
       updated_at: now,
       snapshot: taskSpecSnapshot,
+    }));
+  }
+
+  nextState.updated_at = now;
+  return nextState;
+}
+
+function latestTaskOwnershipLease(state, taskId) {
+  return [...(state?.ownership_leases ?? [])]
+    .filter((lease) => lease?.task_id === taskId)
+    .sort((left, right) => String(right?.acquired_at ?? '').localeCompare(String(left?.acquired_at ?? '')))[0] ?? null;
+}
+
+function buildWorktreeBindingId(taskId) {
+  return `worktree-${String(taskId).trim().replace(/[^A-Za-z0-9._-]+/g, '_')}`;
+}
+
+function backfillWorktreeBindings({
+  state,
+  now,
+} = {}) {
+  const nextState = buildBootstrapState({
+    projectId: state?.project_id,
+    now,
+    existingState: state,
+  });
+
+  const existingTaskIds = new Set((nextState.worktree_bindings ?? []).map((record) => record?.task_id));
+  for (const task of nextState.managed_tasks ?? []) {
+    if (!task?.task_id || existingTaskIds.has(task.task_id)) continue;
+
+    const latestOwnership = latestTaskOwnershipLease(nextState, task.task_id);
+    nextState.worktree_bindings.push(createWorktreeBinding({
+      binding_id: buildWorktreeBindingId(task.task_id),
+      task_id: task.task_id,
+      branch_name: task.branch_name ?? null,
+      worktree_path: task.worktree_path ?? null,
+      owner_session_name: latestOwnership?.owner_session_name ?? null,
+      owner_session_id: latestOwnership?.owner_session_id ?? null,
+      status: task.status === 'retired' ? 'released' : 'active',
+      occupancy_status: latestOwnership?.status === 'active'
+        ? 'occupied'
+        : (latestOwnership ? 'stale' : 'unknown'),
+      cleanliness_status: 'unknown',
+      head_status: 'unknown',
+      continuity_status: 'unobserved',
+      reason_codes: ['migration_backfill'],
+      created_at: task.created_at ?? now,
+      updated_at: now,
+      last_observed_at: null,
+      last_observed: null,
+      last_safe_observed_at: null,
+      last_safe_observation: null,
     }));
   }
 
@@ -270,6 +331,17 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_WORKTREE_REGISTRY_MIGRATION.version) {
+    return backfillWorktreeBindings({
+      state: buildBootstrapState({
+        projectId,
+        now,
+        existingState: state,
+      }),
+      now,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -327,6 +399,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane repo-knowledge migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_WORKTREE_REGISTRY_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane worktree-registry migration.',
     };
   }
 

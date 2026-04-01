@@ -49,6 +49,7 @@ describe('doctor local state source', () => {
 
     expect(state).toMatchObject({
       repo_root: '/home/samsen/code/ciecopilot-home',
+      worktree_path: '/home/samsen/code/ciecopilot-home',
       cwd: '/home/samsen/code/ciecopilot-home',
       current_branch: 'feat/issue-44',
       head_sha: 'abc123',

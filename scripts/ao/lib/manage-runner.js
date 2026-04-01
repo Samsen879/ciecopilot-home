@@ -10,10 +10,12 @@ import { createTaskSpecRecord } from './state-contracts.js';
 import {
   buildOwnershipLeaseId,
   buildPrBindingId,
+  buildWorktreeBindingId,
   deriveManagedTaskId,
   transitionManagedTask,
   transitionOwnershipLease,
   transitionPrBinding,
+  transitionWorktreeBinding,
 } from './transition-engine.js';
 
 export const DEFAULT_PROJECT_ID = 'ciecopilot-home';
@@ -133,6 +135,64 @@ function releaseConflictingPrBindings(repository, taskId, prNumber, now) {
   return activeBindings.map((binding) => binding.binding_id);
 }
 
+function latestTaskWorktreeBinding(snapshot, taskId) {
+  return [...(snapshot?.state?.worktree_bindings ?? [])]
+    .filter((binding) => binding?.task_id === taskId)
+    .sort((left, right) => String(right?.updated_at ?? '').localeCompare(String(left?.updated_at ?? '')))[0] ?? null;
+}
+
+function findConflictingWorktreeBindings(snapshot, {
+  taskId,
+  branchName = null,
+  worktreePath = null,
+} = {}) {
+  return (snapshot?.state?.worktree_bindings ?? []).filter((binding) => (
+    binding?.status === 'active'
+      && binding?.task_id !== taskId
+      && (
+        (branchName && binding?.branch_name === branchName)
+        || (worktreePath && binding?.worktree_path === worktreePath)
+      )
+  ));
+}
+
+function assertResumeWorktreeContinuity(binding, taskId) {
+  if (!binding || binding.status !== 'active') {
+    throw new Error(`Cannot resume ${taskId} without a durable worktree binding`);
+  }
+
+  switch (binding.continuity_status) {
+    case 'safe_resume':
+    case 'stale_local_occupancy':
+      return;
+    case 'dirty_worktree_hold':
+      throw new Error(`Cannot resume ${taskId} while the durable binding reports a dirty worktree hold`);
+    case 'detached_head_hold':
+      throw new Error(`Cannot resume ${taskId} while the durable binding reports a detached head hold`);
+    case 'branch_mismatch_hold':
+      throw new Error(`Cannot resume ${taskId} while the durable binding reports a branch mismatch hold`);
+    case 'conflicting_local_occupancy':
+      throw new Error(`Cannot resume ${taskId} while the durable binding reports conflicting worktree occupancy`);
+    default:
+      throw new Error(`Cannot resume ${taskId} without a safe durable worktree observation`);
+  }
+}
+
+function buildExplicitWorktreeObservation({
+  branchName = null,
+  worktreePath = null,
+} = {}) {
+  return {
+    branch_name: branchName,
+    worktree_path: worktreePath,
+    head_sha: null,
+    upstream_branch: null,
+    worktree_dirty: false,
+    staged_changes: false,
+    unstaged_changes: false,
+  };
+}
+
 export async function runManageCommand({
   repoRoot,
   cwd = repoRoot,
@@ -174,6 +234,25 @@ export async function runManageCommand({
     taskId,
     issueNumber,
   });
+  const existingWorktreeBinding = latestTaskWorktreeBinding(snapshot, resolvedTaskId);
+  const preflightBranchName = branchName ?? existingTask?.branch_name ?? existingWorktreeBinding?.branch_name ?? null;
+  const preflightWorktreePath = worktreePath ?? existingTask?.worktree_path ?? existingWorktreeBinding?.worktree_path ?? null;
+  const conflictingWorktreeBindings = ['enroll', 'adopt', 'resume'].includes(command)
+    ? findConflictingWorktreeBindings(snapshot, {
+        taskId: resolvedTaskId,
+        branchName: preflightBranchName,
+        worktreePath: preflightWorktreePath,
+      })
+    : [];
+
+  if (conflictingWorktreeBindings.length > 0) {
+    throw new Error(`Cannot ${command} ${resolvedTaskId} with conflicting worktree occupancy`);
+  }
+
+  if (command === 'resume') {
+    assertResumeWorktreeContinuity(existingWorktreeBinding, resolvedTaskId);
+  }
+
   const resumeCheckpoint = command === 'resume'
     ? checkpointStore.loadCheckpointForResume({
         taskId: resolvedTaskId,
@@ -183,10 +262,11 @@ export async function runManageCommand({
   const checkpointPrBinding = checkpointTaskRef?.pr_binding ?? null;
   const resolvedIssueNumber = issueNumber ?? existingTask?.issue_number ?? checkpointTaskRef?.issue_number ?? null;
   const resolvedTitle = title ?? checkpointTaskRef?.title ?? existingTask?.title ?? (resolvedIssueNumber != null ? `Issue #${resolvedIssueNumber}` : resolvedTaskId);
-  const resolvedBranchName = branchName ?? checkpointTaskRef?.branch_name ?? existingTask?.branch_name ?? null;
-  const resolvedWorktreePath = worktreePath ?? checkpointTaskRef?.worktree_path ?? existingTask?.worktree_path ?? null;
+  const resolvedBranchName = branchName ?? checkpointTaskRef?.branch_name ?? existingTask?.branch_name ?? existingWorktreeBinding?.branch_name ?? null;
+  const resolvedWorktreePath = worktreePath ?? checkpointTaskRef?.worktree_path ?? existingTask?.worktree_path ?? existingWorktreeBinding?.worktree_path ?? null;
   const resolvedPrNumber = prNumber ?? checkpointPrBinding?.pr_number ?? null;
   const resolvedBaseBranch = baseBranch ?? checkpointPrBinding?.base_branch ?? 'main';
+
   const nextMetadata = command === 'resume'
     ? {
         ...(isPlainObject(existingTask?.metadata) ? existingTask.metadata : {}),
@@ -243,6 +323,7 @@ export async function runManageCommand({
 
   let prBinding = null;
   let ownershipLease = null;
+  let worktreeBinding = null;
   let handoffTransfer = null;
   let releasedOwnershipLeaseIds = [];
   let releasedPrBindingIds = [];
@@ -326,6 +407,37 @@ export async function runManageCommand({
     }
   }
 
+  if (['enroll', 'adopt', 'resume'].includes(command)) {
+    const explicitObservation = buildExplicitWorktreeObservation({
+      branchName: resolvedBranchName ?? task.branch_name,
+      worktreePath: resolvedWorktreePath ?? task.worktree_path,
+    });
+    worktreeBinding = transitionWorktreeBinding({
+      intent: existingWorktreeBinding ? 'observe' : 'bind',
+      existingBinding: existingWorktreeBinding,
+      now: timestamp,
+      bindingId: buildWorktreeBindingId({
+        taskId: task.task_id,
+      }),
+      taskId: task.task_id,
+      branchName: resolvedBranchName ?? task.branch_name,
+      worktreePath: resolvedWorktreePath ?? task.worktree_path,
+      ownerSessionName: ownerSessionName ?? ownershipLease?.owner_session_name ?? existingWorktreeBinding?.owner_session_name ?? null,
+      ownerSessionId: ownerSessionId ?? ownershipLease?.owner_session_id ?? existingWorktreeBinding?.owner_session_id ?? null,
+      status: 'active',
+      occupancyStatus: ownerSessionName ? 'occupied' : (existingWorktreeBinding?.occupancy_status ?? 'unknown'),
+      cleanlinessStatus: 'clean',
+      headStatus: 'attached',
+      continuityStatus: 'safe_resume',
+      reasonCodes: ['binding_matches_local_state'],
+      lastObservedAt: timestamp,
+      lastObserved: explicitObservation,
+      lastSafeObservedAt: timestamp,
+      lastSafeObservation: explicitObservation,
+    });
+    repository.upsertWorktreeBinding(worktreeBinding);
+  }
+
   if (resolvedPrNumber != null) {
     releasedPrBindingIds = releaseConflictingPrBindings(repository, task.task_id, resolvedPrNumber, timestamp);
     const postReleaseSnapshot = repository.getSnapshot();
@@ -380,6 +492,35 @@ export async function runManageCommand({
       );
     }
 
+    const currentWorktreeBinding = latestTaskWorktreeBinding(repository.getSnapshot(), task.task_id);
+    if (currentWorktreeBinding?.status === 'active') {
+      if (command === 'retire') {
+        worktreeBinding = transitionWorktreeBinding({
+          intent: 'release',
+          existingBinding: currentWorktreeBinding,
+          now: timestamp,
+          reason: reason ?? 'task_retired',
+        });
+      } else {
+        worktreeBinding = transitionWorktreeBinding({
+          intent: 'observe',
+          existingBinding: currentWorktreeBinding,
+          now: timestamp,
+          status: 'active',
+          occupancyStatus: currentWorktreeBinding.owner_session_name ? 'stale' : currentWorktreeBinding.occupancy_status,
+          cleanlinessStatus: currentWorktreeBinding.cleanliness_status,
+          headStatus: currentWorktreeBinding.head_status,
+          continuityStatus: currentWorktreeBinding.continuity_status === 'safe_resume'
+            ? 'stale_local_occupancy'
+            : currentWorktreeBinding.continuity_status,
+          reasonCodes: currentWorktreeBinding.continuity_status === 'safe_resume'
+            ? ['owner_lease_not_active']
+            : currentWorktreeBinding.reason_codes,
+        });
+      }
+      repository.upsertWorktreeBinding(worktreeBinding);
+    }
+
     const activeExecutionAttempt = latestActiveManagedExecutionAttempt(
       repository.getSnapshot(),
       task.task_id,
@@ -402,6 +543,7 @@ export async function runManageCommand({
     taskSpec,
     prBinding,
     ownershipLease,
+    worktreeBinding,
     handoffTransfer,
     resume: resumeCheckpoint == null ? null : {
       checkpoint_id: resumeCheckpoint.checkpoint_id,

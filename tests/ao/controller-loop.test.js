@@ -11,6 +11,7 @@ import {
   createPrBinding,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
+  createWorktreeBinding,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { runControllerLoop } from '../../scripts/ao/lib/controller-loop.js';
 import { runRuntimeBootstrapPreflight } from '../../scripts/ao/lib/runtime-preflight.js';
@@ -497,6 +498,216 @@ describe('ao controller loop', () => {
         }),
       }),
     }));
+  });
+
+  it('persists doctor-derived worktree safety facts into the durable registry and task result', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'shadow');
+    seedCleanRuntimePreflight(repository);
+    repository.upsertWorktreeBinding(createWorktreeBinding({
+      binding_id: 'worktree-issue-92',
+      task_id: 'issue-92',
+      branch_name: 'feat/issue-92',
+      worktree_path: '/tmp/cie-92',
+      owner_session_name: 'cie-92',
+      owner_session_id: 'cie-92',
+      status: 'active',
+      occupancy_status: 'occupied',
+      cleanliness_status: 'clean',
+      head_status: 'attached',
+      continuity_status: 'safe_resume',
+      reason_codes: ['binding_matches_local_state'],
+      created_at: '2026-03-29T06:40:00.000Z',
+      updated_at: '2026-03-29T06:40:00.000Z',
+      last_observed_at: '2026-03-29T06:40:00.000Z',
+      last_safe_observed_at: '2026-03-29T06:40:00.000Z',
+      last_observed: {
+        branch_name: 'feat/issue-92',
+        worktree_path: '/tmp/cie-92',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/issue-92',
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+      last_safe_observation: {
+        branch_name: 'feat/issue-92',
+        worktree_path: '/tmp/cie-92',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/issue-92',
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+    }));
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-29T06:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'pending',
+              ci_status: 'pending',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        reconcileObservations: () => ({
+          top_status: 'healthy',
+          source_health: { ao: 'ok', github: 'ok' },
+          scope: { selected_pr_numbers: [92] },
+          pr_assessments: [{
+            pr_number: 92,
+            branch_name: 'feat/issue-92',
+            ownership: {
+              status: 'clear',
+              owner_session: 'cie-92',
+            },
+            release_readiness: { status: 'pending' },
+          }],
+          findings: [],
+        }),
+        loadDoctorLocalState: async () => ({
+          git_observable: true,
+          repo_root: repository.getSnapshot().paths.repoRoot,
+          worktree_path: repository.getSnapshot().paths.repoRoot,
+          head_sha: 'abc123',
+          current_branch: 'feat/issue-92',
+          upstream_branch: 'origin/feat/issue-92',
+          upstream_tracking: 'present',
+          detached_head: false,
+          worktree_dirty: true,
+          staged_changes: true,
+          unstaged_changes: false,
+          untracked_file_count: 0,
+          untracked_file_samples: [],
+          ao_artifact_paths: [],
+        }),
+        buildDoctorReport: () => ({
+          top_status: 'blocked',
+          source_health: {
+            reconciliation: 'ok',
+            ao: 'ok',
+            github: 'ok',
+            git: 'ok',
+            worktree: 'ok',
+          },
+          reconciliation_summary: {
+            top_status: 'healthy',
+            selected_pr_numbers: [92],
+          },
+          local_state: {
+            current_branch: 'feat/issue-92',
+            worktree_path: repository.getSnapshot().paths.repoRoot,
+            worktree_dirty: true,
+          },
+          worktree_safety: {
+            task_id: 'issue-92',
+            binding_id: 'worktree-issue-92',
+            continuity_status: 'dirty_worktree_hold',
+            occupancy_status: 'occupied',
+            cleanliness_status: 'dirty',
+            head_status: 'attached',
+            owner_session_name: 'cie-92',
+            expected_branch_name: 'feat/issue-92',
+            expected_worktree_path: '/tmp/cie-92',
+            observed_branch_name: 'feat/issue-92',
+            observed_worktree_path: repository.getSnapshot().paths.repoRoot,
+            reason_codes: ['dirty_worktree'],
+            conflicting_binding_ids: [],
+            last_observed_at: '2026-03-29T06:41:00.000Z',
+            last_safe_observed_at: '2026-03-29T06:40:00.000Z',
+            last_observed: {
+              branch_name: 'feat/issue-92',
+              worktree_path: repository.getSnapshot().paths.repoRoot,
+              head_sha: 'abc123',
+              upstream_branch: 'origin/feat/issue-92',
+              worktree_dirty: true,
+              staged_changes: true,
+              unstaged_changes: false,
+            },
+            last_safe_observation: {
+              branch_name: 'feat/issue-92',
+              worktree_path: '/tmp/cie-92',
+              head_sha: 'abc123',
+              upstream_branch: 'origin/feat/issue-92',
+              worktree_dirty: false,
+              staged_changes: false,
+              unstaged_changes: false,
+            },
+          },
+          findings: [
+            {
+              code: 'dirty_worktree_hold',
+              severity: 'blocker',
+              origin: 'doctor',
+              source_area: 'worktree',
+              subject_type: 'worktree',
+              subject_id: 'issue-92',
+              summary: 'Dirty worktree blocks continuity repair.',
+              details: ['dirty_worktree'],
+              evidence_refs: [],
+              suggestion_ids: ['git_status'],
+            },
+          ],
+          suggestions: [],
+        }),
+        buildLifecycleReport: () => ({
+          top_status: 'hold',
+          routing_decision: {
+            action: 'hold_for_human',
+          },
+          release_decision: {
+            disposition: 'human_gate',
+          },
+          actions: [],
+        }),
+      },
+    });
+
+    expect(result.task_results).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-92',
+        worktree_continuity_status: 'dirty_worktree_hold',
+      }),
+    ]);
+    expect(repository.getSnapshot().state.worktree_bindings).toEqual([
+      expect.objectContaining({
+        binding_id: 'worktree-issue-92',
+        continuity_status: 'dirty_worktree_hold',
+        cleanliness_status: 'dirty',
+      }),
+    ]);
   });
 
   it('derives bugbot comment follow-up from protocolized review-comment delivery events', async () => {

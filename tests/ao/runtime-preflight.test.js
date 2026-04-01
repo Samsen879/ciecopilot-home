@@ -259,6 +259,42 @@ describe('runtime preflight', () => {
     ]));
   });
 
+  it('fails closed when repo-knowledge governance is stale', () => {
+    const staleRepoKnowledge = createRepoKnowledge({
+      profile_version: 0,
+      profile: {
+        ...createRepoKnowledge().profile,
+        profile_version: 0,
+      },
+    });
+
+    const result = runRuntimeBootstrapPreflight({
+      runtimeRef: 'runtime.github_local',
+      cwd: '/tmp/ciecopilot-home',
+      now: NOW,
+      repoKnowledge: staleRepoKnowledge,
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+
+    expect(result.status).toBe('missing_dependency');
+    expect(result.checks).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        requirement_id: 'setup_step.repo_knowledge_governance',
+        requirement_kind: 'setup_step',
+        status: 'missing',
+        details: expect.arrayContaining([
+          'project_id: ciecopilot-home',
+          'profile_version: 0',
+          'repo_knowledge_status: stale',
+        ]),
+      }),
+    ]));
+  });
+
   it('persists runtime preflight state durably and skips replay-identical rewrites', () => {
     const repoRoot = createTempRepo();
     const repository = createStateRepository({

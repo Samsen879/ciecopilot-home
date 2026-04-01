@@ -9,6 +9,7 @@ import {
 import { getRuntimeProviderContract } from './runtime-providers/index.js';
 import {
   buildRepoKnowledgeRef,
+  inspectRepoKnowledgeRecordState,
   listRepoKnowledgeCommands,
 } from './repo-knowledge.js';
 
@@ -177,6 +178,30 @@ function buildRepoKnowledgeVerifyCheck(repoKnowledge) {
   });
 }
 
+function buildRepoKnowledgeGovernanceCheck(repoKnowledge) {
+  if (repoKnowledge == null) return null;
+
+  const inspection = inspectRepoKnowledgeRecordState(repoKnowledge);
+  const repoKnowledgeRef = buildRepoKnowledgeRef(repoKnowledge);
+  const missingGovernance = inspection.status !== 'current';
+
+  return createRuntimePreflightCheck({
+    requirement_id: 'setup_step.repo_knowledge_governance',
+    requirement_kind: 'setup_step',
+    status: missingGovernance ? 'missing' : 'satisfied',
+    summary: 'Repo knowledge governance is current, version-aligned, and safe to trust for policy/runtime checks.',
+    details: [
+      `project_id: ${repoKnowledgeRef?.project_id ?? 'missing'}`,
+      `profile_version: ${repoKnowledgeRef?.profile_version ?? 'missing'}`,
+      `repo_knowledge_status: ${inspection.status}`,
+      ...(inspection.findings ?? []).map((finding) => `finding: ${finding.code}`),
+    ],
+    setup_steps: missingGovernance
+      ? ['Refresh repo knowledge state and resolve mixed-version, stale, or lint-failed governance before continuing.']
+      : [],
+  });
+}
+
 export function runRuntimeBootstrapPreflight({
   runtimeRef,
   cwd = process.cwd(),
@@ -222,6 +247,10 @@ export function runRuntimeBootstrapPreflight({
   const checks = runtimeProvider.bootstrap_requirements.map((requirement) => (
     evaluateRequirement(requirement, context, effectiveProbes)
   ));
+  const repoKnowledgeGovernanceCheck = buildRepoKnowledgeGovernanceCheck(repoKnowledge);
+  if (repoKnowledgeGovernanceCheck) {
+    checks.push(repoKnowledgeGovernanceCheck);
+  }
   const repoKnowledgeCheck = buildRepoKnowledgeVerifyCheck(repoKnowledge);
   if (repoKnowledgeCheck) {
     checks.push(repoKnowledgeCheck);

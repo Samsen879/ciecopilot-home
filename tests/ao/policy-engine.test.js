@@ -110,7 +110,37 @@ describe('ao policy engine', () => {
 
     expect(decision).toMatchObject({
       decision: 'allow',
-      policy_version: 'ao.policy.v1',
+      policy_version: 'ao.policy.v2',
+      governance_ref: {
+        governance_version: 'ao.policy-governance.v2',
+        policy_version: 'ao.policy.v2',
+        replay_key: expect.stringMatching(/^policy_governance:/),
+      },
+      governance_status: 'current',
+      governance_trace: {
+        allowed: expect.arrayContaining([
+          expect.objectContaining({
+            input_kind: 'tool',
+            value: 'ao',
+            effect: 'allow',
+            governance_ref: 'policy.tool.ao@ao.policy.v2',
+          }),
+          expect.objectContaining({
+            input_kind: 'tool',
+            value: 'gh',
+            effect: 'allow',
+            governance_ref: 'policy.tool.gh@ao.policy.v2',
+          }),
+          expect.objectContaining({
+            input_kind: 'network',
+            value: 'api.github.com',
+            effect: 'allow',
+            governance_ref: 'policy.network.api.github.com@ao.policy.v2',
+          }),
+        ]),
+        denied: [],
+        downgraded: [],
+      },
       input: {
         tools: ['ao', 'gh'],
         network_targets: ['api.github.com', 'github.com'],
@@ -141,12 +171,28 @@ describe('ao policy engine', () => {
         severity: 'deny',
         surface: 'tool',
         value: 'terraform',
+        governance_ref: 'policy.tool_allowlist@ao.policy.v2',
       }),
       expect.objectContaining({
         code: 'unknown_mcp_server',
         severity: 'deny',
         surface: 'mcp_server',
         value: 'filesystem',
+        governance_ref: 'policy.mcp_allowlist@ao.policy.v2',
+      }),
+    ]));
+    expect(decision.governance_trace.denied).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        input_kind: 'tool',
+        value: 'terraform',
+        effect: 'deny',
+        governance_ref: 'policy.tool_allowlist@ao.policy.v2',
+      }),
+      expect.objectContaining({
+        input_kind: 'mcp_server',
+        value: 'filesystem',
+        effect: 'deny',
+        governance_ref: 'policy.mcp_allowlist@ao.policy.v2',
       }),
     ]));
   });
@@ -204,6 +250,54 @@ describe('ao policy engine', () => {
       decision: 'allow',
       findings: [],
     });
+    expect(decision.governance_trace.allowed).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        input_kind: 'secret_need',
+        value: 'github_token:cred-gh-cli',
+        effect: 'allow',
+        governance_ref: 'credential_provenance.cred-gh-cli',
+        related_governance_refs: ['policy.credential_source.github_token@ao.policy.v2'],
+      }),
+    ]));
+  });
+
+  it('fails closed on mismatched credential provenance governance records', () => {
+    const decision = evaluatePolicyDecision({
+      input: {
+        task_id: 'issue-107',
+        action_kind: 'review-secret',
+        action_class: 'notify_human',
+        tools: ['gh'],
+        secret_needs: [
+          {
+            credential_kind: 'github_token',
+            provenance_id: 'cred-gh-cli',
+          },
+        ],
+      },
+      credentialProvenances: [
+        createCredentialProvenanceRecord({
+          provenance_id: 'cred-gh-cli',
+          credential_kind: 'openai_api_key',
+          source_kind: 'operator_env',
+          created_at: NOW,
+          updated_at: NOW,
+        }),
+      ],
+      rules: createDefaultPolicyRules(),
+    });
+
+    expect(decision.decision).toBe('deny');
+    expect(decision.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'credential_kind_mismatch',
+        severity: 'deny',
+        surface: 'secret',
+        value: 'github_token:cred-gh-cli',
+        governance_ref: 'credential_provenance.cred-gh-cli',
+        related_governance_refs: ['policy.credential_source.github_token@ao.policy.v2'],
+      }),
+    ]));
   });
 
   it('downgrades workflow, infra, and unallowlisted network surfaces', () => {
@@ -283,6 +377,46 @@ describe('ao policy engine', () => {
         severity: 'deny',
         surface: 'file',
         value: '.github/workflows/release.yml',
+        governance_ref: 'policy.repo_knowledge_contract@ao.policy.v2',
+      }),
+    ]));
+  });
+
+  it('fails closed when repo-knowledge governance is stale', () => {
+    const decision = evaluatePolicyDecision({
+      input: {
+        task_id: 'issue-130',
+        action_kind: 'stale-governance',
+        action_class: 'hold',
+        tools: ['git'],
+      },
+      repoKnowledge: createRepoKnowledge({
+        profile_version: 0,
+        profile: {
+          ...createRepoKnowledge().profile,
+          profile_version: 0,
+        },
+      }),
+      rules: createDefaultPolicyRules(),
+    });
+
+    expect(decision).toMatchObject({
+      decision: 'deny',
+      governance_status: 'stale',
+      repo_knowledge_ref: {
+        project_id: 'ciecopilot-home',
+        profile_version: 0,
+        lint_status: 'pass',
+        governance_ref: 'repo_knowledge.ciecopilot-home@0',
+      },
+    });
+    expect(decision.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'stale_repo_knowledge_governance',
+        severity: 'deny',
+        surface: 'repo_knowledge',
+        value: 'ciecopilot-home@0',
+        governance_ref: 'repo_knowledge.ciecopilot-home@0',
       }),
     ]));
   });

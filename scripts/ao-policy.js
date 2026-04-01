@@ -1,19 +1,35 @@
 #!/usr/bin/env node
 
+import * as fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { DEFAULT_PROJECT_ID } from './ao/lib/state-runner.js';
+import { renderPolicyGovernanceHumanSummary } from './ao/lib/policy-engine.js';
+import { createStateRepository } from './ao/lib/state-repository.js';
 import {
-  loadRepoKnowledgeReport,
-  renderRepoKnowledgeHumanSummary,
-} from './ao/lib/repo-knowledge.js';
+  DEFAULT_PROJECT_ID,
+  loadAoStateReport,
+} from './ao/lib/state-runner.js';
 
 function createDefaultIo() {
   return {
     writeStdout: (text) => process.stdout.write(text),
     writeStderr: (text) => process.stderr.write(text),
   };
+}
+
+function findRepoRoot(startCwd) {
+  let currentPath = path.resolve(startCwd);
+
+  while (true) {
+    if (fs.existsSync(path.join(currentPath, '.git'))) {
+      return currentPath;
+    }
+
+    const parentPath = path.dirname(currentPath);
+    if (parentPath === currentPath) return null;
+    currentPath = parentPath;
+  }
 }
 
 function readOptionValue(argv, index, optionName) {
@@ -64,9 +80,7 @@ function parseArgs(argv) {
 
 function renderHelp() {
   return [
-    'Usage: node scripts/ao-knowledge.js [options]',
-    '',
-    'Inspect AO repo-knowledge plus the governance refs it feeds into policy/runtime decisions.',
+    'Usage: node scripts/ao-policy.js [options]',
     '',
     'Options:',
     '  --project <project_id>   AO project id. Default: ciecopilot-home',
@@ -75,9 +89,9 @@ function renderHelp() {
   ].join('\n');
 }
 
-function exitCodeForInspection(status) {
+function exitCodeForGovernanceStatus(status) {
   if (status === 'current') return 0;
-  if (status === 'fail_closed') return 2;
+  if (status === 'attention') return 2;
   if (status === 'stale') return 10;
   if (status === 'mixed_version') return 11;
   return 12;
@@ -103,20 +117,30 @@ export async function runCli(argv, io = createDefaultIo()) {
   }
 
   try {
-    const report = await loadRepoKnowledgeReport({
-      cwd: process.cwd(),
+    const repoRoot = findRepoRoot(process.cwd());
+    if (!repoRoot) {
+      throw new Error(`Could not locate repo root from ${process.cwd()}`);
+    }
+
+    createStateRepository({
+      repoRoot,
+      projectId: options.projectId,
+    }).ensureRepoKnowledge();
+
+    const report = await loadAoStateReport({
+      repoRoot,
       projectId: options.projectId,
     });
 
     if (options.json) {
-      io.writeStdout(JSON.stringify(report, null, 2));
+      io.writeStdout(JSON.stringify(report.governance, null, 2));
     } else {
-      io.writeStdout(`${renderRepoKnowledgeHumanSummary(report)}\n`);
+      io.writeStdout(`${renderPolicyGovernanceHumanSummary(report.governance)}\n`);
     }
 
     return {
-      exitCode: exitCodeForInspection(report.inspection.status),
-      report,
+      exitCode: exitCodeForGovernanceStatus(report.governance.status),
+      report: report.governance,
     };
   } catch (error) {
     io.writeStderr(`${error.message}\n`);

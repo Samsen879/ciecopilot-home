@@ -4,6 +4,7 @@ import {
   summarizeCompletionReviewStatuses,
 } from './completion-review.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
+import { buildPolicyGovernanceReport } from './policy-engine.js';
 import { inspectRepoKnowledgeRecordState } from './repo-knowledge.js';
 import { buildAoMetricsReport, resolveAoMetricsArtifactPaths } from './run-metrics.js';
 import * as fs from 'node:fs';
@@ -329,6 +330,13 @@ export async function loadAoStateReport({
     (record) => record?.project_id === projectId,
   ) ?? null;
   const repoKnowledgeInspection = inspectRepoKnowledgeRecordState(repoKnowledgeRecord);
+  const governanceReport = buildPolicyGovernanceReport({
+    projectId,
+    credentialProvenances: snapshot.state.credential_provenances,
+    repoKnowledge: repoKnowledgeRecord,
+    policyDecisions: snapshot.state.policy_decisions,
+    requireRepoKnowledge: snapshot.bootstrapped,
+  });
   const metricsReport = buildAoMetricsReport({
     projectId,
     repoRoot: resolvedRepoRoot,
@@ -410,6 +418,15 @@ export async function loadAoStateReport({
       repo_knowledge_status: repoKnowledgeInspection.status,
       repo_knowledge_profile_version: repoKnowledgeRecord?.profile_version ?? null,
       repo_knowledge_lint_status: repoKnowledgeRecord?.lint_status ?? null,
+      governance_status: governanceReport.status,
+      governance_policy_version: governanceReport.policy_version,
+      governance_tool_allowlist_count: governanceReport.summary.tool_allowlist_count,
+      governance_mcp_allowlist_count: governanceReport.summary.mcp_allowlist_count,
+      governance_credential_provenance_count: governanceReport.summary.credential_provenance_count,
+      governance_provenance_gap_count: governanceReport.summary.provenance_gap_count,
+      governance_unknown_tool_count: governanceReport.summary.unknown_tool_count,
+      governance_unknown_mcp_server_count: governanceReport.summary.unknown_mcp_server_count,
+      governance_repo_knowledge_drift_count: governanceReport.summary.repo_knowledge_drift_count,
       audit_entry_count: auditEntries.length,
     },
     checkpoints: {
@@ -435,6 +452,7 @@ export async function loadAoStateReport({
       record: repoKnowledgeRecord,
       inspection: repoKnowledgeInspection,
     },
+    governance: governanceReport,
     metrics: {
       summary: metricsReport.summary,
       recent_traces: metricsReport.recent_traces,

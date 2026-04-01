@@ -32,6 +32,7 @@ export function renderAoStateHumanSummary(report) {
       .filter(([, value]) => value > 0)
       .map(([key, value]) => `${key}=${value}`))}`,
     `repo_knowledge: ${report.summary.repo_knowledge_status ?? 'missing'} (profiles=${report.summary.repo_knowledge_count ?? 0}, version=${report.summary.repo_knowledge_profile_version ?? 'none'}, lint=${report.summary.repo_knowledge_lint_status ?? 'missing'})`,
+    `governance: ${report.summary.governance_status ?? 'missing'} (policy=${report.summary.governance_policy_version ?? 'missing'}, tools=${report.summary.governance_tool_allowlist_count ?? 0}, mcp=${report.summary.governance_mcp_allowlist_count ?? 0}, provenances=${report.summary.governance_credential_provenance_count ?? 0}, provenance_gaps=${report.summary.governance_provenance_gap_count ?? 0}, unknown_tools=${report.summary.governance_unknown_tool_count ?? 0}, unknown_mcp=${report.summary.governance_unknown_mcp_server_count ?? 0}, repo_drift=${report.summary.governance_repo_knowledge_drift_count ?? 0})`,
     `checkpoints: ${report.summary.checkpoint_count} (valid=${report.summary.valid_checkpoint_count}, stale=${report.summary.stale_checkpoint_count}, invalid=${report.summary.invalid_checkpoint_count})`,
     `handoffs: requests=${report.summary.handoff_request_count ?? 0}, claims=${report.summary.handoff_claim_count ?? 0}, decisions=${report.summary.handoff_decision_count ?? 0}, transfers=${report.summary.handoff_transfer_count ?? 0}, active=${report.summary.active_handoff_count ?? 0}`,
     `audit_entries: ${report.summary.audit_entry_count}`,

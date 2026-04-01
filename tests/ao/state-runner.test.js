@@ -7,6 +7,14 @@ import { afterEach, describe, expect, it } from '@jest/globals';
 import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js';
 import { createHandoffProtocol } from '../../scripts/ao/lib/handoff-protocol.js';
 import {
+  buildAoMetricsReport,
+  persistAoMetricsReport,
+} from '../../scripts/ao/lib/run-metrics.js';
+import {
+  buildAoEvalScorecard,
+  persistAoEvalScorecard,
+} from '../../scripts/ao/lib/scorecard.js';
+import {
   createControllerModeRecord,
   createControllerRunMetricRecord,
   createExecutionAttemptMetricRecord,
@@ -360,6 +368,7 @@ describe('ao state runner', () => {
       repoRoot,
       projectId: PROJECT_ID,
       auditLimit: 2,
+      now: '2026-03-31T10:05:00.000Z',
     });
 
     expect(report.summary).toMatchObject({
@@ -482,6 +491,86 @@ describe('ao state runner', () => {
       },
     }));
 
+    const scorecard = buildAoEvalScorecard({
+      projectId: PROJECT_ID,
+      generatedAt: '2026-03-31T12:03:00.000Z',
+      harnessResult: {
+        schema_version: 'ao.eval-harness-run.v1alpha1',
+        format: 'ao_eval_harness_run',
+        project_id: PROJECT_ID,
+        pack_ids: ['parity'],
+        scenario_ids: ['issue-118-measurement'],
+        scenario_results: [
+          {
+            scenario_id: 'issue-118-measurement',
+            pack_id: 'parity',
+            runner: 'state-runner-artifact-fixture',
+            title: 'State runner artifact fixture',
+            status: 'passed',
+            verification: {
+              status: 'passed',
+              findings: [],
+            },
+            replay: {
+              stable: true,
+              fingerprint: 'state-runner-artifact-fixture',
+            },
+            continuity: {
+              kind: 'none',
+              status: 'not_applicable',
+              outcome: 'none',
+            },
+            metrics: {
+              controller_run_count: 1,
+              execution_attempt_count: 1,
+              measurement_count: 2,
+              intervened_measurement_count: 1,
+              intervention_counts: {
+                human_gate: 0,
+                override: 0,
+                explicit_resume: 1,
+                successor_handoff: 0,
+                policy_block: 0,
+                preflight_block: 0,
+              },
+              failure_class_counts: {
+                none: 1,
+                ci_failure: 0,
+                review_blocked: 0,
+                merge_conflict: 0,
+                source_failure: 0,
+                human_gate: 0,
+                override: 0,
+                policy_block: 1,
+                preflight_block: 0,
+                worker_exit: 0,
+                successor_handoff: 0,
+                unknown: 0,
+              },
+            },
+          },
+        ],
+      },
+    });
+    const persistedScorecard = persistAoEvalScorecard({
+      repoRoot,
+      projectId: PROJECT_ID,
+      scorecard,
+      baselineName: 'ao/mainline',
+      baselineAction: 'bless',
+    });
+    const persistedMetrics = persistAoMetricsReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+      report: buildAoMetricsReport({
+        projectId: PROJECT_ID,
+        repoRoot,
+        snapshot: repository.getSnapshot(),
+        traceLimit: 2,
+        generatedAt: '2026-03-31T12:04:00.000Z',
+      }),
+    });
+
     const report = await loadAoStateReport({
       repoRoot,
       projectId: PROJECT_ID,
@@ -517,6 +606,40 @@ describe('ao state runner', () => {
           retry_cause: 'explicit_resume',
         }),
       ],
+    });
+    expect(report.artifacts).toMatchObject({
+      eval: {
+        latest_scorecard: {
+          exists: true,
+          path: persistedScorecard.scorecard_path.replace(/scorecards\/[^/]+\.json$/, 'latest.json'),
+        },
+        operator_latest_scorecard: {
+          exists: true,
+          path: persistedScorecard.operator_scorecard_path.replace(/scorecards\/[^/]+\.json$/, 'latest.json'),
+        },
+        baseline_root: {
+          exists: true,
+        },
+        operator_baseline_root: {
+          exists: true,
+        },
+      },
+      metrics: {
+        latest_report: {
+          exists: true,
+          path: persistedMetrics.latest_report_path,
+        },
+        operator_latest_report: {
+          exists: true,
+          path: persistedMetrics.operator_latest_report_path,
+        },
+        report_root: {
+          exists: true,
+        },
+        operator_report_root: {
+          exists: true,
+        },
+      },
     });
   });
 });

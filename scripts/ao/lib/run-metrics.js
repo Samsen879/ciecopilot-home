@@ -1,4 +1,6 @@
+import fs from 'node:fs';
 import { createHash } from 'node:crypto';
+import path from 'node:path';
 
 import { findRepoRoot } from './repo-root.js';
 import { createStateRepository } from './state-repository.js';
@@ -36,12 +38,37 @@ function sanitizeToken(value) {
     .replace(/[^A-Za-z0-9._-]+/g, '_');
 }
 
+function ensureDirectory(directoryPath) {
+  fs.mkdirSync(directoryPath, { recursive: true });
+}
+
+function writeJsonFileAtomic(filePath, payload) {
+  ensureDirectory(path.dirname(filePath));
+  const tempPath = `${filePath}.tmp-${process.pid}-${Date.now()}`;
+  fs.writeFileSync(tempPath, `${JSON.stringify(payload, null, 2)}\n`);
+  fs.renameSync(tempPath, filePath);
+}
+
 function buildDeterministicId(prefix, payload) {
   const fingerprint = createHash('sha1')
     .update(JSON.stringify(payload))
     .digest('hex')
     .slice(0, 12);
   return `${prefix}-${fingerprint}`;
+}
+
+function buildMetricsReportId({
+  projectId,
+  generatedAt,
+  summary,
+  traceIds,
+} = {}) {
+  return buildDeterministicId('metrics-report', {
+    project_id: projectId,
+    generated_at: generatedAt,
+    summary,
+    trace_ids: traceIds,
+  });
 }
 
 function parseTimestamp(value) {
@@ -409,6 +436,7 @@ export function buildAoMetricsReport({
   repoRoot = null,
   snapshot = null,
   traceLimit = 5,
+  generatedAt = new Date().toISOString(),
 } = {}) {
   const controllerRuns = [...(snapshot?.state?.controller_run_metrics ?? [])].sort(compareMetricRecords);
   const executionAttempts = [...(snapshot?.state?.execution_attempt_metrics ?? [])].sort(compareMetricRecords);
@@ -442,17 +470,88 @@ export function buildAoMetricsReport({
     MEASUREMENT_RETRY_CAUSES,
     executionAttempts.map((record) => record.retry_cause),
   );
+  const recentTraces = {
+    controller_runs: controllerRuns.slice(0, traceLimit),
+    execution_attempts: executionAttempts.slice(0, traceLimit),
+  };
 
   return {
     schema_version: AO_METRICS_REPORT_SCHEMA_VERSION,
     report_format: AO_METRICS_REPORT_FORMAT,
+    report_id: buildMetricsReportId({
+      projectId,
+      generatedAt,
+      summary,
+      traceIds: {
+        controller_runs: recentTraces.controller_runs.map((record) => record.controller_run_metric_id),
+        execution_attempts: recentTraces.execution_attempts.map((record) => record.execution_attempt_metric_id),
+      },
+    }),
     project_id: projectId,
     repo_root: repoRoot,
+    generated_at: generatedAt,
     summary,
-    recent_traces: {
-      controller_runs: controllerRuns.slice(0, traceLimit),
-      execution_attempts: executionAttempts.slice(0, traceLimit),
-    },
+    recent_traces: recentTraces,
+  };
+}
+
+export function resolveAoMetricsArtifactPaths({
+  repoRoot,
+  projectId = DEFAULT_PROJECT_ID,
+} = {}) {
+  const normalizedRepoRoot = path.resolve(String(repoRoot));
+  const normalizedProjectId = sanitizeToken(projectId);
+  const stateRoot = path.join(normalizedRepoRoot, '.ao-control-plane', normalizedProjectId);
+
+  return {
+    metricsRoot: path.join(stateRoot, 'metrics'),
+    metricsReportRoot: path.join(stateRoot, 'metrics', 'reports'),
+    latestMetricsReportPath: path.join(stateRoot, 'metrics', 'latest.json'),
+    operatorMetricsRoot: path.join(normalizedRepoRoot, 'ao-artifacts', 'ao-metrics'),
+    operatorMetricsReportRoot: path.join(normalizedRepoRoot, 'ao-artifacts', 'ao-metrics', 'reports'),
+    operatorLatestMetricsReportPath: path.join(normalizedRepoRoot, 'ao-artifacts', 'ao-metrics', 'latest.json'),
+  };
+}
+
+export function persistAoMetricsReport({
+  repoRoot,
+  projectId = DEFAULT_PROJECT_ID,
+  report,
+} = {}) {
+  const resolvedRepoRoot = repoRoot ?? report?.repo_root ?? null;
+  if (!resolvedRepoRoot) {
+    throw new Error('Missing repoRoot');
+  }
+
+  const paths = resolveAoMetricsArtifactPaths({
+    repoRoot: resolvedRepoRoot,
+    projectId,
+  });
+  const reportId = sanitizeToken(
+    report?.report_id
+      ?? buildMetricsReportId({
+        projectId,
+        generatedAt: report?.generated_at ?? new Date().toISOString(),
+        summary: report?.summary ?? {},
+        traceIds: {
+          controller_runs: (report?.recent_traces?.controller_runs ?? []).map((record) => record.controller_run_metric_id),
+          execution_attempts: (report?.recent_traces?.execution_attempts ?? []).map((record) => record.execution_attempt_metric_id),
+        },
+      }),
+  );
+  const reportPath = path.join(paths.metricsReportRoot, `${reportId}.json`);
+  const operatorReportPath = path.join(paths.operatorMetricsReportRoot, `${reportId}.json`);
+
+  writeJsonFileAtomic(reportPath, report);
+  writeJsonFileAtomic(paths.latestMetricsReportPath, report);
+  writeJsonFileAtomic(operatorReportPath, report);
+  writeJsonFileAtomic(paths.operatorLatestMetricsReportPath, report);
+
+  return {
+    report_path: reportPath,
+    latest_report_path: paths.latestMetricsReportPath,
+    operator_report_path: operatorReportPath,
+    operator_latest_report_path: paths.operatorLatestMetricsReportPath,
   };
 }
 
@@ -487,7 +586,9 @@ function formatCountMap(counts) {
     .join(', ') || 'none';
 }
 
-export function renderAoMetricsHumanSummary(report) {
+export function renderAoMetricsHumanSummary(payloadOrReport) {
+  const report = payloadOrReport?.report ?? payloadOrReport;
+  const persisted = payloadOrReport?.report ? payloadOrReport.persisted : null;
   const controllerTrace = (report.recent_traces?.controller_runs ?? [])
     .map((record) => `${record.task_id}:${record.trigger_kind}:${record.failure_class}`);
   const executionTrace = (report.recent_traces?.execution_attempts ?? [])
@@ -495,6 +596,7 @@ export function renderAoMetricsHumanSummary(report) {
 
   return [
     `project_id: ${report.project_id}`,
+    `report_id: ${report.report_id ?? 'unknown'}`,
     `controller_runs: ${report.summary.controller_run_count}`,
     `execution_attempts: ${report.summary.execution_attempt_count}`,
     `interventions: ${formatCountMap(report.summary.intervention_counts)}`,
@@ -502,5 +604,7 @@ export function renderAoMetricsHumanSummary(report) {
     `retries: ${formatCountMap(report.summary.retry_cause_counts)}`,
     `recent_controller_runs: ${controllerTrace.join(', ') || 'none'}`,
     `recent_execution_attempts: ${executionTrace.join(', ') || 'none'}`,
+    `report_path: ${persisted?.report_path ?? 'not_persisted'}`,
+    `operator_report_path: ${persisted?.operator_report_path ?? 'not_persisted'}`,
   ].join('\n');
 }

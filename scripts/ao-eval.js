@@ -34,10 +34,31 @@ function parseArgs(argv) {
     projectId: DEFAULT_PROJECT_ID,
     packNames: [],
     baselineRef: null,
-    saveBaseline: null,
+    baselineName: null,
+    baselineAction: null,
     json: false,
     help: false,
   };
+
+  function assignBaselineWrite(action, optionName, optionIndex) {
+    if (options.baselineAction != null) {
+      return {
+        ok: false,
+        error: 'Choose exactly one baseline write mode',
+      };
+    }
+
+    try {
+      options.baselineName = readOptionValue(argv, optionIndex, optionName);
+      options.baselineAction = action;
+      return null;
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -71,15 +92,17 @@ function parseArgs(argv) {
         };
       }
       index += 1;
+    } else if (arg === '--bless-baseline') {
+      const errorResult = assignBaselineWrite('bless', '--bless-baseline', index);
+      if (errorResult) return errorResult;
+      index += 1;
+    } else if (arg === '--update-baseline') {
+      const errorResult = assignBaselineWrite('update', '--update-baseline', index);
+      if (errorResult) return errorResult;
+      index += 1;
     } else if (arg === '--save-baseline') {
-      try {
-        options.saveBaseline = readOptionValue(argv, index, '--save-baseline');
-      } catch (error) {
-        return {
-          ok: false,
-          error: error.message,
-        };
-      }
+      const errorResult = assignBaselineWrite('save', '--save-baseline', index);
+      if (errorResult) return errorResult;
       index += 1;
     } else if (arg === '--json') {
       options.json = true;
@@ -118,7 +141,8 @@ function renderHelp() {
     '  --project <project_id>       AO project id. Default: ciecopilot-home',
     '  --pack <name>               Eval pack to run. Repeatable. Default: all',
     '  --baseline <ref>            Compare against a saved baseline alias, scorecard id, or JSON path',
-    '  --save-baseline <name>      Save the current scorecard as a named baseline alias',
+    '  --bless-baseline <name>     Bless a new named baseline alias from the current scorecard',
+    '  --update-baseline <name>    Replace an existing named baseline alias with the current scorecard',
     '  --json                      Print machine-readable JSON output',
     '  -h, --help                  Show help',
   ].join('\n');
@@ -183,7 +207,8 @@ export async function runCli(argv, io = createDefaultIo()) {
       repoRoot,
       projectId: options.projectId,
       scorecard,
-      baselineName: options.saveBaseline,
+      baselineName: options.baselineName,
+      baselineAction: options.baselineAction,
     });
     const payload = {
       scorecard,

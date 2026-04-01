@@ -16,6 +16,15 @@ function ratio(numerator, denominator) {
   return numerator / denominator;
 }
 
+function normalizeArtifactAlias(value, fieldName) {
+  const normalized = String(value ?? '').trim();
+  if (normalized === '') {
+    throw new Error(`Missing ${fieldName}`);
+  }
+
+  return normalized.replace(/[^A-Za-z0-9._-]+/g, '_');
+}
+
 function buildScorecardId({ projectId, generatedAt, scenarioIds, packIds }) {
   const digest = createHash('sha1')
     .update(JSON.stringify({
@@ -193,6 +202,9 @@ export function buildAoEvalScorecard({
 function createRegressionFinding(code, metric, baselineValue, currentValue) {
   return {
     code,
+    finding_kind: 'baseline_governance',
+    severity: 'error',
+    summary: `${metric} regressed against the current AO baseline.`,
     metric,
     baseline_value: baselineValue,
     current_value: currentValue,
@@ -303,15 +315,42 @@ export function persistAoEvalScorecard({
   projectId = DEFAULT_PROJECT_ID,
   scorecard,
   baselineName = null,
+  baselineAction = null,
 } = {}) {
   const repository = createStateRepository({
     repoRoot,
     projectId,
   });
-  return repository.persistEvalScorecardArtifact({
+  let normalizedBaselineName = null;
+  if (baselineName != null) {
+    normalizedBaselineName = normalizeArtifactAlias(baselineName, 'baselineName');
+    const existingBaseline = repository.readEvalBaselineArtifact({
+      baselineName: normalizedBaselineName,
+    });
+    if (baselineAction === 'bless' && existingBaseline != null) {
+      throw new Error(`Eval baseline already exists: ${baselineName}`);
+    }
+    if (baselineAction === 'update' && existingBaseline == null) {
+      throw new Error(`Eval baseline does not exist: ${baselineName}`);
+    }
+  } else if (baselineAction != null) {
+    throw new Error('Missing baselineName');
+  }
+
+  const persisted = repository.persistEvalScorecardArtifact({
     scorecard,
-    baselineName,
+    baselineName: normalizedBaselineName,
   });
+  return {
+    ...persisted,
+    baseline_action: baselineAction === 'bless'
+      ? 'blessed'
+      : baselineAction === 'update'
+        ? 'updated'
+        : baselineAction == null
+          ? null
+          : 'saved',
+  };
 }
 
 export function loadAoEvalBaseline({
@@ -336,8 +375,9 @@ export function loadAoEvalBaseline({
     repoRoot,
     projectId,
   });
+  const normalizedAlias = normalizeArtifactAlias(normalizedBaselineRef, 'baselineRef');
   const baseline = repository.readEvalBaselineArtifact({
-    baselineName: normalizedBaselineRef,
+    baselineName: normalizedAlias,
   });
   if (baseline != null) return baseline;
 
@@ -350,7 +390,7 @@ export function loadAoEvalBaseline({
   }
 
   const scorecard = repository.readEvalScorecardArtifact({
-    scorecardId: normalizedBaselineRef,
+    scorecardId: normalizedAlias,
   });
   if (scorecard != null) return scorecard;
 
@@ -381,5 +421,6 @@ export function renderAoEvalHumanSummary({
     `comparison: ${comparison?.status ?? 'not_requested'}`,
     `scorecard_path: ${persisted?.scorecard_path ?? 'not_persisted'}`,
     `baseline_path: ${persisted?.baseline_path ?? 'none'}`,
+    `baseline_action: ${persisted?.baseline_action ?? 'none'}`,
   ].join('\n');
 }

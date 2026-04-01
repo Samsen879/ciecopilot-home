@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import {
   DEFAULT_PROJECT_ID,
   loadAoMetricsReport,
+  persistAoMetricsReport,
   renderAoMetricsHumanSummary,
 } from './ao/lib/run-metrics.js';
 
@@ -117,22 +118,33 @@ export async function runCli(argv, io = createDefaultIo()) {
       projectId: options.projectId,
       traceLimit: options.traceLimit,
     });
+    const persisted = persistAoMetricsReport({
+      repoRoot: report.repo_root,
+      projectId: options.projectId,
+      report,
+    });
+    const payload = {
+      report,
+      persisted,
+    };
 
     if (options.json) {
-      io.writeStdout(JSON.stringify(report, null, 2));
+      io.writeStdout(JSON.stringify(payload, null, 2));
     } else {
-      io.writeStdout(`${renderAoMetricsHumanSummary(report)}\n`);
+      io.writeStdout(`${renderAoMetricsHumanSummary(payload)}\n`);
     }
 
     return {
       exitCode: 0,
       report,
+      persisted,
     };
   } catch (error) {
     io.writeStderr(`${error.message}\n`);
     return {
       exitCode: 3,
       report: null,
+      persisted: null,
     };
   }
 }

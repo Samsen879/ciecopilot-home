@@ -297,6 +297,7 @@ describe('ao state repository', () => {
       'schema:migrate:v10',
       'schema:migrate:v11',
       'schema:migrate:v12',
+      'schema:migrate:v13',
       'managed_task:upsert:task-1',
       'pr_binding:upsert:binding-1',
       'ownership_lease:upsert:ownership-1',

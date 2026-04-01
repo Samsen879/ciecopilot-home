@@ -24,7 +24,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 12;
+export const CONTROL_PLANE_LATEST_VERSION = 13;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
@@ -77,6 +77,8 @@ export const HANDOFF_CLAIM_STATUSES = ['pending', 'blocked', 'accepted', 'reject
 export const HANDOFF_DECISION_OUTCOMES = ['accept', 'reject', 'expire'];
 export const EXECUTION_ATTEMPT_KINDS = ['assist_action', 'managed_task'];
 export const EXECUTION_ATTEMPT_STATUSES = ['active', 'executed', 'blocked', 'paused', 'retired', 'completed'];
+export const GOVERNANCE_DECISIONS = ['accepted', 'replayed', 'suppressed', 'executed', 'blocked'];
+export const GOVERNANCE_BACKPRESSURE_STATUSES = ['open', 'suppressed', 'exhausted'];
 
 function isPlainObject(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value);
@@ -315,6 +317,92 @@ function normalizeFindingArray(values = [], fieldName) {
       ),
     };
   });
+}
+
+function normalizeGovernance(value = {}, {
+  fieldName = 'governance',
+  defaultReplayKey = null,
+  defaultReplayLimit = 2,
+  defaultRecordedAt = null,
+  defaultLastDecision = 'accepted',
+  defaultBackpressureStatus = 'open',
+} = {}) {
+  if (value == null) value = {};
+  if (!isPlainObject(value)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  return {
+    replay_key: normalizeRequiredString(
+      value.replay_key ?? defaultReplayKey,
+      `${fieldName}.replay_key`,
+    ),
+    replay_limit: normalizePositiveInteger(
+      value.replay_limit ?? defaultReplayLimit,
+      `${fieldName}.replay_limit`,
+    ),
+    replay_count: normalizePositiveInteger(
+      value.replay_count ?? 0,
+      `${fieldName}.replay_count`,
+      { allowZero: true },
+    ),
+    suppressed_count: normalizePositiveInteger(
+      value.suppressed_count ?? 0,
+      `${fieldName}.suppressed_count`,
+      { allowZero: true },
+    ),
+    last_decision: normalizeEnum(
+      value.last_decision ?? defaultLastDecision,
+      `${fieldName}.last_decision`,
+      GOVERNANCE_DECISIONS,
+    ),
+    backpressure_status: normalizeEnum(
+      value.backpressure_status ?? defaultBackpressureStatus,
+      `${fieldName}.backpressure_status`,
+      GOVERNANCE_BACKPRESSURE_STATUSES,
+    ),
+    first_recorded_at: normalizeIsoTimestamp(
+      value.first_recorded_at ?? defaultRecordedAt,
+      `${fieldName}.first_recorded_at`,
+    ),
+    last_decision_at: normalizeIsoTimestamp(
+      value.last_decision_at ?? defaultRecordedAt,
+      `${fieldName}.last_decision_at`,
+    ),
+    reason_codes: normalizeStringArray(value.reason_codes ?? [], `${fieldName}.reason_codes`),
+  };
+}
+
+function normalizeActionLineage(value = {}, payload = {}) {
+  if (value == null) value = {};
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid action lineage');
+  }
+
+  return {
+    source_delivery_event_ids: normalizeStringArray(
+      value.source_delivery_event_ids ?? [],
+      'lineage.source_delivery_event_ids',
+    ),
+    source_observation_ids: normalizeStringArray(
+      value.source_observation_ids ?? [],
+      'lineage.source_observation_ids',
+    ),
+    source_cursor_ids: normalizeStringArray(
+      value.source_cursor_ids ?? [],
+      'lineage.source_cursor_ids',
+    ),
+    derived_trigger: normalizeRequiredString(
+      value.derived_trigger ?? payload.derived_trigger ?? 'manual',
+      'lineage.derived_trigger',
+    ),
+    pr_head_sha: normalizeOptionalString(
+      value.pr_head_sha ?? payload.pr_head_sha ?? payload.head_sha ?? null,
+    ),
+    policy_decision_id: normalizeOptionalString(
+      value.policy_decision_id ?? payload.policy_decision_id ?? null,
+    ),
+  };
 }
 
 export function createControlPlaneSchema({
@@ -713,17 +801,38 @@ export function createActionRecord({
   created_at,
   updated_at,
   payload = {},
+  lineage = {},
+  governance = {},
 } = {}) {
+  const normalizedActionId = normalizeRequiredString(action_id, 'action_id');
+  const normalizedTaskId = normalizeOptionalString(task_id);
+  const normalizedActionKind = normalizeRequiredString(action_kind, 'action_kind');
+  const normalizedStatus = normalizeEnum(status, 'status', ACTION_STATUSES);
+  const normalizedRequestedBy = normalizeOptionalString(requested_by);
+  const normalizedReason = normalizeOptionalString(reason);
+  const normalizedCreatedAt = normalizeIsoTimestamp(created_at, 'created_at');
+  const normalizedUpdatedAt = normalizeIsoTimestamp(updated_at, 'updated_at');
+  const normalizedPayload = cloneJsonValue(payload ?? {});
+
   return {
-    action_id: normalizeRequiredString(action_id, 'action_id'),
-    task_id: normalizeOptionalString(task_id),
-    action_kind: normalizeRequiredString(action_kind, 'action_kind'),
-    status: normalizeEnum(status, 'status', ACTION_STATUSES),
-    requested_by: normalizeOptionalString(requested_by),
-    reason: normalizeOptionalString(reason),
-    created_at: normalizeIsoTimestamp(created_at, 'created_at'),
-    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
-    payload: cloneJsonValue(payload ?? {}),
+    action_id: normalizedActionId,
+    task_id: normalizedTaskId,
+    action_kind: normalizedActionKind,
+    status: normalizedStatus,
+    requested_by: normalizedRequestedBy,
+    reason: normalizedReason,
+    created_at: normalizedCreatedAt,
+    updated_at: normalizedUpdatedAt,
+    payload: normalizedPayload,
+    lineage: normalizeActionLineage(lineage, normalizedPayload),
+    governance: normalizeGovernance(governance, {
+      defaultReplayKey: `action:${normalizedActionId}`,
+      defaultRecordedAt: normalizedUpdatedAt,
+      defaultLastDecision: normalizedStatus === 'executed'
+        ? 'executed'
+        : (normalizedStatus === 'blocked' ? 'blocked' : 'accepted'),
+      defaultBackpressureStatus: 'open',
+    }),
   };
 }
 
@@ -807,21 +916,40 @@ export function createDeliveryEventRecord({
   recorded_at,
   lineage = {},
   payload = {},
+  governance = {},
 } = {}) {
+  const normalizedEventId = normalizeRequiredString(event_id, 'event_id');
+  const normalizedTaskId = normalizeRequiredString(task_id, 'task_id');
+  const normalizedPrNumber = normalizePositiveInteger(pr_number, 'pr_number', { nullable: true });
+  const normalizedSourceKind = normalizeRequiredString(source_kind, 'source_kind');
+  const normalizedEventFamily = normalizeEnum(event_family, 'event_family', DELIVERY_EVENT_FAMILIES);
+  const normalizedEventType = normalizeRequiredString(event_type, 'event_type');
+  const normalizedDedupeKey = normalizeRequiredString(dedupe_key, 'dedupe_key');
+  const normalizedLifecycleTrigger = normalizeOptionalString(lifecycle_trigger);
+  const normalizedControllerActionHint = normalizeOptionalString(controller_action_hint);
+  const normalizedObservedAt = normalizeIsoTimestamp(observed_at, 'observed_at');
+  const normalizedRecordedAt = normalizeIsoTimestamp(recorded_at, 'recorded_at');
+  const normalizedLineage = normalizeLineage(lineage);
+  const normalizedPayload = cloneJsonValue(payload ?? {});
+
   return {
-    event_id: normalizeRequiredString(event_id, 'event_id'),
-    task_id: normalizeRequiredString(task_id, 'task_id'),
-    pr_number: normalizePositiveInteger(pr_number, 'pr_number', { nullable: true }),
-    source_kind: normalizeRequiredString(source_kind, 'source_kind'),
-    event_family: normalizeEnum(event_family, 'event_family', DELIVERY_EVENT_FAMILIES),
-    event_type: normalizeRequiredString(event_type, 'event_type'),
-    dedupe_key: normalizeRequiredString(dedupe_key, 'dedupe_key'),
-    lifecycle_trigger: normalizeOptionalString(lifecycle_trigger),
-    controller_action_hint: normalizeOptionalString(controller_action_hint),
-    observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
-    recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
-    lineage: normalizeLineage(lineage),
-    payload: cloneJsonValue(payload ?? {}),
+    event_id: normalizedEventId,
+    task_id: normalizedTaskId,
+    pr_number: normalizedPrNumber,
+    source_kind: normalizedSourceKind,
+    event_family: normalizedEventFamily,
+    event_type: normalizedEventType,
+    dedupe_key: normalizedDedupeKey,
+    lifecycle_trigger: normalizedLifecycleTrigger,
+    controller_action_hint: normalizedControllerActionHint,
+    observed_at: normalizedObservedAt,
+    recorded_at: normalizedRecordedAt,
+    lineage: normalizedLineage,
+    payload: normalizedPayload,
+    governance: normalizeGovernance(governance, {
+      defaultReplayKey: normalizedDedupeKey,
+      defaultRecordedAt: normalizedRecordedAt,
+    }),
   };
 }
 
@@ -833,15 +961,28 @@ export function createControllerCursorRecord({
   last_cursor,
   observed_at,
   updated_at,
+  governance = {},
 } = {}) {
+  const normalizedCursorId = normalizeRequiredString(cursor_id, 'cursor_id');
+  const normalizedControllerId = normalizeRequiredString(controller_id, 'controller_id');
+  const normalizedTaskId = normalizeRequiredString(task_id, 'task_id');
+  const normalizedSourceKind = normalizeEnum(source_kind, 'source_kind', OBSERVATION_SOURCE_KINDS);
+  const normalizedLastCursor = normalizeRequiredString(last_cursor, 'last_cursor');
+  const normalizedObservedAt = normalizeIsoTimestamp(observed_at, 'observed_at');
+  const normalizedUpdatedAt = normalizeIsoTimestamp(updated_at, 'updated_at');
+
   return {
-    cursor_id: normalizeRequiredString(cursor_id, 'cursor_id'),
-    controller_id: normalizeRequiredString(controller_id, 'controller_id'),
-    task_id: normalizeRequiredString(task_id, 'task_id'),
-    source_kind: normalizeEnum(source_kind, 'source_kind', OBSERVATION_SOURCE_KINDS),
-    last_cursor: normalizeRequiredString(last_cursor, 'last_cursor'),
-    observed_at: normalizeIsoTimestamp(observed_at, 'observed_at'),
-    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    cursor_id: normalizedCursorId,
+    controller_id: normalizedControllerId,
+    task_id: normalizedTaskId,
+    source_kind: normalizedSourceKind,
+    last_cursor: normalizedLastCursor,
+    observed_at: normalizedObservedAt,
+    updated_at: normalizedUpdatedAt,
+    governance: normalizeGovernance(governance, {
+      defaultReplayKey: `cursor:${normalizedCursorId}`,
+      defaultRecordedAt: normalizedUpdatedAt,
+    }),
   };
 }
 

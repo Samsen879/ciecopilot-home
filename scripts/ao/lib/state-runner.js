@@ -15,6 +15,10 @@ import { createStateRepository } from './state-repository.js';
 export const DEFAULT_PROJECT_ID = 'ciecopilot-home';
 export const AO_STATE_SCHEMA_VERSION = 'ao.state.v1alpha1';
 export const AO_STATE_REPORT_FORMAT = 'ao_state_report';
+export const AO_EVENT_REPORT_SCHEMA_VERSION = 'ao.events.v1alpha1';
+export const AO_EVENT_REPORT_FORMAT = 'ao_event_report';
+export const AO_ACTION_REPORT_SCHEMA_VERSION = 'ao.actions.v1alpha1';
+export const AO_ACTION_REPORT_FORMAT = 'ao_action_report';
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -75,6 +79,203 @@ function buildArtifactPointer(pathValue) {
   return {
     path: pathValue,
     exists: fs.existsSync(pathValue),
+  };
+}
+
+function compareByRecentTimestamp(left, right) {
+  const leftTimestamp = String(
+    left?.updated_at
+      ?? left?.recorded_at
+      ?? left?.observed_at
+      ?? left?.created_at
+      ?? '',
+  );
+  const rightTimestamp = String(
+    right?.updated_at
+      ?? right?.recorded_at
+      ?? right?.observed_at
+      ?? right?.created_at
+      ?? '',
+  );
+  if (leftTimestamp !== rightTimestamp) {
+    return rightTimestamp.localeCompare(leftTimestamp);
+  }
+  return JSON.stringify(right ?? {}).localeCompare(JSON.stringify(left ?? {}));
+}
+
+function matchesFilter(record, {
+  taskId = null,
+  prNumber = null,
+} = {}) {
+  if (taskId != null && record?.task_id !== taskId) return false;
+  if (prNumber != null && record?.pr_number !== Number(prNumber)) return false;
+  return true;
+}
+
+function summarizeGovernance(records = []) {
+  const replayDecisionCounts = {
+    accepted: 0,
+    replayed: 0,
+    suppressed: 0,
+    executed: 0,
+    blocked: 0,
+  };
+  const backpressureStatusCounts = {
+    open: 0,
+    suppressed: 0,
+    exhausted: 0,
+  };
+
+  for (const record of records ?? []) {
+    const lastDecision = record?.governance?.last_decision ?? null;
+    const backpressureStatus = record?.governance?.backpressure_status ?? null;
+    if (lastDecision && Object.hasOwn(replayDecisionCounts, lastDecision)) {
+      replayDecisionCounts[lastDecision] += 1;
+    }
+    if (backpressureStatus && Object.hasOwn(backpressureStatusCounts, backpressureStatus)) {
+      backpressureStatusCounts[backpressureStatus] += 1;
+    }
+  }
+
+  return {
+    replay_decision_counts: replayDecisionCounts,
+    backpressure_status_counts: backpressureStatusCounts,
+  };
+}
+
+function summarizeDeliveryEvents(deliveryEvents = []) {
+  const familyCounts = {};
+  const triggerCounts = {};
+
+  for (const event of deliveryEvents ?? []) {
+    const family = event?.event_family ?? 'unknown';
+    const trigger = event?.lifecycle_trigger ?? 'manual';
+    familyCounts[family] = (familyCounts[family] ?? 0) + 1;
+    triggerCounts[trigger] = (triggerCounts[trigger] ?? 0) + 1;
+  }
+
+  return {
+    family_counts: familyCounts,
+    trigger_counts: triggerCounts,
+    unique_dedupe_key_count: new Set((deliveryEvents ?? []).map((record) => record?.dedupe_key).filter(Boolean)).size,
+  };
+}
+
+function summarizeActions(actions = []) {
+  const statusCounts = {
+    proposed: 0,
+    blocked: 0,
+    executed: 0,
+    cancelled: 0,
+  };
+  const visibilityCounts = {
+    proposed: 0,
+    executed: 0,
+    blocked: 0,
+    denied: 0,
+    downgraded: 0,
+  };
+  const policyDecisionCounts = {
+    allow: 0,
+    deny: 0,
+    downgrade: 0,
+  };
+
+  for (const action of actions ?? []) {
+    if (Object.hasOwn(statusCounts, action?.status ?? '')) {
+      statusCounts[action.status] += 1;
+    }
+    if (action?.status === 'proposed') visibilityCounts.proposed += 1;
+    if (action?.status === 'executed') visibilityCounts.executed += 1;
+    if (action?.status === 'blocked') visibilityCounts.blocked += 1;
+
+    const policyDecision = action?.payload?.policy?.decision ?? null;
+    if (policyDecision && Object.hasOwn(policyDecisionCounts, policyDecision)) {
+      policyDecisionCounts[policyDecision] += 1;
+      if (policyDecision === 'deny') visibilityCounts.denied += 1;
+      if (policyDecision === 'downgrade') visibilityCounts.downgraded += 1;
+    }
+  }
+
+  return {
+    status_counts: statusCounts,
+    visibility_counts: visibilityCounts,
+    policy_decision_counts: policyDecisionCounts,
+  };
+}
+
+export function buildAoEventReport({
+  projectId = DEFAULT_PROJECT_ID,
+  repoRoot = null,
+  stateRoot = null,
+  snapshot,
+  limit = 5,
+  taskId = null,
+  prNumber = null,
+} = {}) {
+  const deliveryEvents = (snapshot?.state?.delivery_events ?? [])
+    .filter((record) => matchesFilter(record, { taskId, prNumber }))
+    .sort(compareByRecentTimestamp);
+  const controllerCursors = (snapshot?.state?.controller_cursors ?? [])
+    .filter((record) => taskId == null || record?.task_id === taskId)
+    .sort(compareByRecentTimestamp);
+  const eventGovernance = summarizeGovernance(deliveryEvents);
+  const cursorGovernance = summarizeGovernance(controllerCursors);
+
+  return {
+    schema_version: AO_EVENT_REPORT_SCHEMA_VERSION,
+    report_format: AO_EVENT_REPORT_FORMAT,
+    project_id: projectId,
+    repo_root: repoRoot,
+    state_root: stateRoot,
+    summary: {
+      delivery_event_count: deliveryEvents.length,
+      controller_cursor_count: controllerCursors.length,
+      ...summarizeDeliveryEvents(deliveryEvents),
+      replay_decision_counts: {
+        delivery_events: eventGovernance.replay_decision_counts,
+        controller_cursors: cursorGovernance.replay_decision_counts,
+      },
+      backpressure_status_counts: {
+        delivery_events: eventGovernance.backpressure_status_counts,
+        controller_cursors: cursorGovernance.backpressure_status_counts,
+      },
+    },
+    recent_events: deliveryEvents.slice(0, limit),
+    controller_cursors: controllerCursors.slice(0, limit),
+  };
+}
+
+export function buildAoActionReport({
+  projectId = DEFAULT_PROJECT_ID,
+  repoRoot = null,
+  stateRoot = null,
+  snapshot,
+  limit = 5,
+  taskId = null,
+  prNumber = null,
+} = {}) {
+  const actions = (snapshot?.state?.actions ?? [])
+    .filter((record) => matchesFilter(record, { taskId, prNumber }))
+    .sort(compareByRecentTimestamp);
+  const actionSummary = summarizeActions(actions);
+  const actionGovernance = summarizeGovernance(actions);
+
+  return {
+    schema_version: AO_ACTION_REPORT_SCHEMA_VERSION,
+    report_format: AO_ACTION_REPORT_FORMAT,
+    project_id: projectId,
+    repo_root: repoRoot,
+    state_root: stateRoot,
+    summary: {
+      action_count: actions.length,
+      status_counts: actionSummary.status_counts,
+      visibility_counts: actionSummary.visibility_counts,
+      policy_decision_counts: actionSummary.policy_decision_counts,
+      replay_decision_counts: actionGovernance.replay_decision_counts,
+      backpressure_status_counts: actionGovernance.backpressure_status_counts,
+    },
+    recent_actions: actions.slice(0, limit),
   };
 }
 
@@ -142,6 +343,20 @@ export async function loadAoStateReport({
     repoRoot: resolvedRepoRoot,
     projectId,
   });
+  const eventReport = buildAoEventReport({
+    projectId,
+    repoRoot: resolvedRepoRoot,
+    stateRoot: snapshot.paths.stateRoot,
+    snapshot,
+    limit: auditLimit,
+  });
+  const actionReport = buildAoActionReport({
+    projectId,
+    repoRoot: resolvedRepoRoot,
+    stateRoot: snapshot.paths.stateRoot,
+    snapshot,
+    limit: auditLimit,
+  });
 
   return {
     schema_version: AO_STATE_SCHEMA_VERSION,
@@ -173,7 +388,13 @@ export async function loadAoStateReport({
       controller_mode_count: snapshot.state.controller_modes.length,
       controller_modes: summarizeControllerModes(snapshot.state.controller_modes),
       observation_count: snapshot.state.observations.length,
+      delivery_event_count: eventReport.summary.delivery_event_count,
+      delivery_event_family_counts: eventReport.summary.family_counts,
+      event_replay_decision_counts: eventReport.summary.replay_decision_counts,
       controller_cursor_count: snapshot.state.controller_cursors.length,
+      action_status_counts: actionReport.summary.status_counts,
+      action_visibility_counts: actionReport.summary.visibility_counts,
+      action_replay_decision_counts: actionReport.summary.replay_decision_counts,
       checkpoint_count: checkpointInspections.length,
       valid_checkpoint_count: validCheckpointCount,
       stale_checkpoint_count: staleCheckpointCount,
@@ -208,6 +429,8 @@ export async function loadAoStateReport({
       records: snapshot.state.completion_reviews,
       inspections: completionReviewInspections,
     },
+    events: eventReport,
+    actions: actionReport,
     repo_knowledge: {
       record: repoKnowledgeRecord,
       inspection: repoKnowledgeInspection,
@@ -234,4 +457,64 @@ export async function loadAoStateReport({
       recent_entries: recentEntries,
     },
   };
+}
+
+export async function loadAoEventReport({
+  cwd = process.cwd(),
+  repoRoot = null,
+  projectId = DEFAULT_PROJECT_ID,
+  limit = 5,
+  taskId = null,
+  prNumber = null,
+} = {}) {
+  const resolvedRepoRoot = repoRoot ?? findRepoRoot(cwd);
+  if (!resolvedRepoRoot) {
+    throw new Error(`Could not locate repo root from ${cwd}`);
+  }
+
+  const repository = createStateRepository({
+    repoRoot: resolvedRepoRoot,
+    projectId,
+  });
+  const snapshot = repository.getSnapshot();
+
+  return buildAoEventReport({
+    projectId,
+    repoRoot: resolvedRepoRoot,
+    stateRoot: snapshot.paths.stateRoot,
+    snapshot,
+    limit,
+    taskId,
+    prNumber,
+  });
+}
+
+export async function loadAoActionReport({
+  cwd = process.cwd(),
+  repoRoot = null,
+  projectId = DEFAULT_PROJECT_ID,
+  limit = 5,
+  taskId = null,
+  prNumber = null,
+} = {}) {
+  const resolvedRepoRoot = repoRoot ?? findRepoRoot(cwd);
+  if (!resolvedRepoRoot) {
+    throw new Error(`Could not locate repo root from ${cwd}`);
+  }
+
+  const repository = createStateRepository({
+    repoRoot: resolvedRepoRoot,
+    projectId,
+  });
+  const snapshot = repository.getSnapshot();
+
+  return buildAoActionReport({
+    projectId,
+    repoRoot: resolvedRepoRoot,
+    stateRoot: snapshot.paths.stateRoot,
+    snapshot,
+    limit,
+    taskId,
+    prNumber,
+  });
 }

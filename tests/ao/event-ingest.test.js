@@ -149,12 +149,31 @@ describe('ao event ingest', () => {
       task_id: 'issue-89',
       source_kind: 'github_poll',
       observed_at: '2026-03-29T06:33:00.000Z',
+      governance: expect.objectContaining({
+        replay_limit: 2,
+        replay_count: 1,
+        suppressed_count: 1,
+        last_decision: 'accepted',
+        backpressure_status: 'open',
+      }),
     });
     expect(snapshot.delivery_events.map((record) => record.event_family)).toEqual(expect.arrayContaining([
       'pr',
       'check',
       'review',
     ]));
+    expect(snapshot.delivery_events.find((record) => (
+      record.event_family === 'pr' && record.payload.head_sha === 'abc123'
+    ))).toMatchObject({
+      governance: expect.objectContaining({
+        replay_key: expect.stringContaining('github_poll:pr:109:'),
+        replay_limit: 2,
+        replay_count: 1,
+        suppressed_count: 0,
+        last_decision: 'replayed',
+        backpressure_status: 'open',
+      }),
+    });
   });
 
   it('dedupes repeated review-comment loops and preserves durable lineage per head sha', () => {
@@ -307,7 +326,141 @@ describe('ao event ingest', () => {
         lineage: expect.objectContaining({
           source_observation_id: expect.stringContaining('issue-106:github_poll:'),
         }),
+        governance: expect.objectContaining({
+          replay_key: expect.stringContaining('github_poll:review_comment:112:'),
+          replay_limit: 2,
+          replay_count: 1,
+          suppressed_count: 0,
+          last_decision: 'replayed',
+          backpressure_status: 'open',
+        }),
       }),
     ]));
+  });
+
+  it('bounds repeated identical poll replays durably once cursor replay pressure is exhausted', () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-128',
+      issue_number: 128,
+      title: 'Event and action operator governance',
+      branch_name: 'feat/128',
+      worktree_path: '/tmp/cie-72',
+      status: 'active',
+      created_at: '2026-04-01T08:00:00.000Z',
+      updated_at: '2026-04-01T08:00:00.000Z',
+    }));
+    repository.upsertPrBinding(createPrBinding({
+      binding_id: 'binding-issue-128-pr-128',
+      task_id: 'issue-128',
+      pr_number: 128,
+      branch_name: 'feat/128',
+      base_branch: 'ao/mainline',
+      status: 'bound',
+      created_at: '2026-04-01T08:00:00.000Z',
+      updated_at: '2026-04-01T08:00:00.000Z',
+    }));
+
+    const task = repository.getSnapshot().state.managed_tasks[0];
+    const prBindings = repository.getSnapshot().state.pr_bindings;
+    const aoObservation = {
+      observed_at: '2026-04-01T08:01:00.000Z',
+      workers: [
+        {
+          session_name: 'cie-72',
+          session_runtime_id: 'cie-72',
+          issue_number: 128,
+          branch_name: 'feat/128',
+          pr_number: 128,
+          lifecycle_state: 'idle',
+          last_seen_at: '2026-04-01T08:00:45.000Z',
+          freshness: { status: 'fresh' },
+        },
+      ],
+    };
+    const githubObservation = {
+      observed_at: '2026-04-01T08:01:00.000Z',
+      prs: [
+        {
+          pr_number: 128,
+          state: 'OPEN',
+          head_branch: 'feat/128',
+          head_sha: 'abc123',
+          review_status: 'changes_requested',
+          ci_status: 'failing',
+          mergeability: 'mergeable',
+          is_draft: false,
+          url: 'https://example.test/pr/128',
+        },
+      ],
+    };
+
+    ingestManagedTaskPollEvents({
+      repository,
+      controllerId: 'default',
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation,
+      now: '2026-04-01T08:01:00.000Z',
+    });
+    ingestManagedTaskPollEvents({
+      repository,
+      controllerId: 'default',
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation,
+      now: '2026-04-01T08:02:00.000Z',
+    });
+    ingestManagedTaskPollEvents({
+      repository,
+      controllerId: 'default',
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation,
+      now: '2026-04-01T08:03:00.000Z',
+    });
+    ingestManagedTaskPollEvents({
+      repository,
+      controllerId: 'default',
+      task,
+      prBindings,
+      aoObservation,
+      githubObservation,
+      now: '2026-04-01T08:04:00.000Z',
+    });
+
+    const snapshot = repository.getSnapshot().state;
+    const githubCursor = snapshot.controller_cursors.find((record) => record.source_kind === 'github_poll');
+    const ciEvent = snapshot.delivery_events.find((record) => (
+      record.event_family === 'check' && record.payload.head_sha === 'abc123'
+    ));
+
+    expect(snapshot.observations).toHaveLength(2);
+    expect(snapshot.delivery_events).toHaveLength(3);
+    expect(githubCursor).toMatchObject({
+      governance: expect.objectContaining({
+        replay_limit: 2,
+        replay_count: 3,
+        suppressed_count: 3,
+        last_decision: 'suppressed',
+        backpressure_status: 'suppressed',
+      }),
+    });
+    expect(ciEvent).toMatchObject({
+      governance: expect.objectContaining({
+        replay_limit: 2,
+        replay_count: 3,
+        suppressed_count: 1,
+        last_decision: 'suppressed',
+        backpressure_status: 'suppressed',
+      }),
+    });
   });
 });

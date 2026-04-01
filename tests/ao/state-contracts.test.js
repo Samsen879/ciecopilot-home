@@ -50,7 +50,7 @@ describe('ao state contracts', () => {
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
     expect(POLICY_DECISIONS).toEqual(['allow', 'deny', 'downgrade']);
     expect(CREDENTIAL_PROVENANCE_TRUST_DECISIONS).toEqual(['trusted', 'untrusted']);
-    expect(CONTROL_PLANE_LATEST_VERSION).toBe(12);
+    expect(CONTROL_PLANE_LATEST_VERSION).toBe(13);
   });
 
   it('creates durable managed-task, binding, lease, action, override, and controller-mode records', () => {
@@ -158,6 +158,25 @@ describe('ao state contracts', () => {
       created_at: NOW,
       updated_at: NOW,
       payload: { pr_number: 101 },
+      lineage: {
+        source_delivery_event_ids: [],
+        source_observation_ids: [],
+        source_cursor_ids: [],
+        derived_trigger: 'manual',
+        pr_head_sha: null,
+        policy_decision_id: null,
+      },
+      governance: {
+        replay_key: 'action:action-1',
+        replay_limit: 2,
+        replay_count: 0,
+        suppressed_count: 0,
+        last_decision: 'accepted',
+        backpressure_status: 'open',
+        first_recorded_at: NOW,
+        last_decision_at: NOW,
+        reason_codes: [],
+      },
     });
 
     expect(createOverrideRecord({
@@ -390,6 +409,17 @@ describe('ao state contracts', () => {
         review_id: 'review-1',
         review_state: 'commented',
         author_login: 'chatgpt-codex-connector',
+      },
+      governance: {
+        replay_key: 'github_poll:review_comment:101:review-1',
+        replay_limit: 2,
+        replay_count: 0,
+        suppressed_count: 0,
+        last_decision: 'accepted',
+        backpressure_status: 'open',
+        first_recorded_at: NOW,
+        last_decision_at: NOW,
+        reason_codes: [],
       },
     });
 

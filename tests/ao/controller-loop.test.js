@@ -1590,6 +1590,207 @@ describe('ao controller loop', () => {
     expect(left.actions).toEqual(right.actions);
   });
 
+  it('suppresses repeated CI flapping actions on the same head once replay pressure is exhausted', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'shadow');
+    seedCleanRuntimePreflight(repository);
+
+    const githubStates = [
+      {
+        observed_at: '2026-04-01T09:00:00.000Z',
+        prs: [
+          {
+            pr_number: 92,
+            state: 'OPEN',
+            head_branch: 'feat/issue-92',
+            head_sha: 'abc123',
+            review_status: 'approved',
+            ci_status: 'failing',
+            mergeability: 'mergeable',
+            is_draft: false,
+            url: 'https://example.test/pr/92',
+          },
+        ],
+      },
+      {
+        observed_at: '2026-04-01T09:01:00.000Z',
+        prs: [
+          {
+            pr_number: 92,
+            state: 'OPEN',
+            head_branch: 'feat/issue-92',
+            head_sha: 'abc123',
+            review_status: 'approved',
+            ci_status: 'pending',
+            mergeability: 'mergeable',
+            is_draft: false,
+            url: 'https://example.test/pr/92',
+          },
+        ],
+      },
+      {
+        observed_at: '2026-04-01T09:02:00.000Z',
+        prs: [
+          {
+            pr_number: 92,
+            state: 'OPEN',
+            head_branch: 'feat/issue-92',
+            head_sha: 'abc123',
+            review_status: 'approved',
+            ci_status: 'failing',
+            mergeability: 'mergeable',
+            is_draft: false,
+            url: 'https://example.test/pr/92',
+          },
+        ],
+      },
+      {
+        observed_at: '2026-04-01T09:03:00.000Z',
+        prs: [
+          {
+            pr_number: 92,
+            state: 'OPEN',
+            head_branch: 'feat/issue-92',
+            head_sha: 'abc123',
+            review_status: 'approved',
+            ci_status: 'pending',
+            mergeability: 'mergeable',
+            is_draft: false,
+            url: 'https://example.test/pr/92',
+          },
+        ],
+      },
+    ];
+    const loadGitHubObservationSet = jest.fn(async () => githubStates.shift());
+    const resolveLifecycleReport = jest.fn(async ({ derivedTrigger }) => ({
+      top_status: derivedTrigger === 'ci_failed' ? 'hold' : 'continue',
+      routing_decision: {
+        action: 'continue_current_worker',
+      },
+      release_decision: {
+        disposition: derivedTrigger === 'ci_failed' ? 'await_ci' : 'await_ci_pending',
+      },
+      actions: [
+        {
+          id: 'continue_worker',
+          action_class: 'continue_worker',
+          summary: 'Continue the current worker owner.',
+          commands: ['ao status -p ciecopilot-home --json'],
+          rationale: 'Ownership continuity is still clear.',
+        },
+        {
+          id: 'hold_ci',
+          action_class: 'hold',
+          summary: 'Hold until CI stabilizes.',
+          commands: ['gh pr checks 92'],
+          rationale: `CI state ${derivedTrigger} is not stable enough to create more churn.`,
+        },
+      ],
+    }));
+
+    const commonDeps = {
+      loadAoProjectObservation: async () => ({
+        observed_at: '2026-04-01T09:00:00.000Z',
+        workers: [
+          {
+            session_name: 'cie-92',
+            session_runtime_id: 'cie-92',
+            issue_number: 92,
+            branch_name: 'feat/issue-92',
+            pr_number: 92,
+            lifecycle_state: 'idle',
+            last_seen_at: '2026-04-01T08:59:45.000Z',
+            freshness: { status: 'fresh' },
+          },
+        ],
+      }),
+      loadGitHubObservationSet,
+      resolveLifecycleReport,
+    };
+
+    const first = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-04-01T09:00:00.000Z',
+      deps: commonDeps,
+    });
+    const second = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-04-01T09:01:00.000Z',
+      deps: commonDeps,
+    });
+    const third = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-04-01T09:02:00.000Z',
+      deps: commonDeps,
+    });
+    const fourth = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-04-01T09:03:00.000Z',
+      deps: commonDeps,
+    });
+
+    expect(first).toMatchObject({
+      proposed_action_count: 2,
+      replayed_action_count: 0,
+      suppressed_action_count: 0,
+    });
+    expect(second).toMatchObject({
+      proposed_action_count: 0,
+      replayed_action_count: 2,
+      suppressed_action_count: 0,
+    });
+    expect(third).toMatchObject({
+      proposed_action_count: 0,
+      replayed_action_count: 2,
+      suppressed_action_count: 0,
+    });
+    expect(fourth).toMatchObject({
+      proposed_action_count: 0,
+      replayed_action_count: 0,
+      suppressed_action_count: 2,
+    });
+
+    const governedActions = repository.getSnapshot().state.actions.filter((record) => (
+      ['continue_worker', 'hold_ci'].includes(record.action_kind)
+    ));
+    expect(governedActions).toHaveLength(2);
+    expect(governedActions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        action_kind: 'hold_ci',
+        lineage: expect.objectContaining({
+          derived_trigger: 'manual',
+          pr_head_sha: 'abc123',
+          source_delivery_event_ids: expect.arrayContaining([
+            expect.stringContaining('delivery'),
+          ]),
+        }),
+        governance: expect.objectContaining({
+          replay_limit: 2,
+          replay_count: 3,
+          suppressed_count: 1,
+          last_decision: 'suppressed',
+          backpressure_status: 'suppressed',
+          reason_codes: expect.arrayContaining(['ci_flapping_same_head']),
+        }),
+      }),
+    ]));
+  });
+
   it('assist mode executes only explicit class A actions and keeps higher-risk actions gated', async () => {
     const repository = createStateRepository({
       repoRoot: createTempRepo(),

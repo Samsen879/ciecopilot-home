@@ -73,8 +73,8 @@ describe('ao state migrations', () => {
 
     expect(readJson(paths.schemaPath)).toMatchObject({
       project_id: PROJECT_ID,
-      current_version: 9,
-      latest_version: 9,
+      current_version: 12,
+      latest_version: 12,
       applied_migrations: [
         {
           version: 1,
@@ -121,6 +121,21 @@ describe('ao state migrations', () => {
           key: '0009_repo_knowledge_v1',
           applied_at: FIXED_NOW,
         },
+        {
+          version: 10,
+          key: '0010_worktree_registry_v1',
+          applied_at: FIXED_NOW,
+        },
+        {
+          version: 11,
+          key: '0011_release_guard_v1',
+          applied_at: FIXED_NOW,
+        },
+        {
+          version: 12,
+          key: '0012_completion_review_v1',
+          applied_at: FIXED_NOW,
+        },
       ],
     });
     expect(readJson(paths.statePath)).toMatchObject({
@@ -131,6 +146,7 @@ describe('ao state migrations', () => {
       task_specs: [],
       runtime_preflights: [],
       repo_knowledge: [],
+      completion_reviews: [],
       checkpoints: [],
       handoff_requests: [],
       handoff_claims: [],
@@ -202,6 +218,24 @@ describe('ao state migrations', () => {
         operation: 'migrate',
         summary: 'Applied control-plane repo-knowledge migration.',
       }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v10',
+        operation: 'migrate',
+        summary: 'Applied control-plane worktree-registry migration.',
+      }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v11',
+        operation: 'migrate',
+        summary: 'Applied control-plane release-guard migration.',
+      }),
+      expect.objectContaining({
+        entity_kind: 'schema',
+        entity_id: 'v12',
+        operation: 'migrate',
+        summary: 'Applied control-plane completion-review migration.',
+      }),
     ]);
   });
 
@@ -228,7 +262,7 @@ describe('ao state migrations', () => {
       migrated: false,
     });
     expect(readJson(paths.schemaPath).updated_at).toBe(FIXED_NOW);
-    expect(readAuditEntries(paths.auditPath)).toHaveLength(9);
+    expect(readAuditEntries(paths.auditPath)).toHaveLength(12);
   });
 
   it('upgrades a stale schema version and backfills invalid task specs for enrolled tasks', () => {
@@ -304,7 +338,7 @@ describe('ao state migrations', () => {
       migrated: true,
     });
     expect(readJson(paths.schemaPath)).toMatchObject({
-      current_version: 9,
+      current_version: 12,
       applied_migrations: [
         {
           version: 1,
@@ -341,6 +375,18 @@ describe('ao state migrations', () => {
         {
           version: 9,
           key: '0009_repo_knowledge_v1',
+        },
+        {
+          version: 10,
+          key: '0010_worktree_registry_v1',
+        },
+        {
+          version: 11,
+          key: '0011_release_guard_v1',
+        },
+        {
+          version: 12,
+          key: '0012_completion_review_v1',
         },
       ],
     });

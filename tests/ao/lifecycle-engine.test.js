@@ -5,6 +5,7 @@ import {
 } from '../../scripts/ao/lib/lifecycle-contracts.js';
 import { createGateSnapshot } from '../../scripts/ao/lib/gate-model.js';
 import { buildLifecycleReport } from '../../scripts/ao/lib/lifecycle-engine.js';
+import { createCompletionReviewRecord } from '../../scripts/ao/lib/state-contracts.js';
 
 function buildReconciliationReport(overrides = {}) {
   return {
@@ -58,6 +59,65 @@ function buildDoctorReport(overrides = {}) {
     findings: [],
     suggestions: [],
     ...overrides,
+  };
+}
+
+function buildReadyAssessment(overrides = {}) {
+  return {
+    pr_number: 44,
+    branch_name: 'feat/issue-44',
+    ownership: {
+      status: 'clear',
+      owner_session: 'cie-44',
+      candidate_sessions: ['cie-44'],
+    },
+    release_readiness: {
+      status: 'ready',
+      basis: ['all_release_signals_clear'],
+    },
+    release_guard: {
+      status: 'ready',
+      head_sha: 'abc123',
+      basis: ['all_release_signals_clear'],
+      blocker_codes: [],
+      reason_codes: ['all_release_signals_clear'],
+      gates: createGateSnapshot({
+        ownership: {
+          state: 'open',
+        },
+        review: {
+          state: 'open',
+        },
+        ci: {
+          state: 'open',
+        },
+        mergeability: {
+          state: 'open',
+        },
+        release: {
+          state: 'open',
+          reason_codes: ['all_release_signals_clear'],
+        },
+      }),
+      truth: {
+        pr_state: 'OPEN',
+        is_draft: false,
+        review_status: 'approved',
+        ci_status: 'passing',
+        mergeability: 'mergeable',
+        ownership_status: 'clear',
+        owner_session_name: 'cie-44',
+      },
+    },
+    ...overrides,
+  };
+}
+
+function buildControlPlaneSnapshot(completionReviews = []) {
+  return {
+    state: {
+      completion_reviews: completionReviews,
+    },
   };
 }
 
@@ -522,18 +582,191 @@ describe('lifecycle engine', () => {
     expect(report.routing_decision.action).toBe('hold_for_human');
   });
 
-  it('notifies the human when approved-and-green is truly ready', () => {
+  it('holds approved-and-green PRs until an independent completion review exists', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({
         projectId: 'ciecopilot-home',
         prNumber: 44,
         trigger: 'approved_and_green',
       }),
-      reconciliationReport: buildReconciliationReport(),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [buildReadyAssessment()],
+      }),
       doctorReport: buildDoctorReport(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot(),
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.completion_review).toMatchObject({
+      status: 'missing_review',
+      satisfied: false,
+      head_sha: 'abc123',
+    });
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_review',
+      basis: ['completion_review_missing'],
+      authoritative: true,
+    });
+  });
+
+  it('rejects self review as satisfying the completion-review gate', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'approved_and_green',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [buildReadyAssessment()],
+      }),
+      doctorReport: buildDoctorReport(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot([
+        createCompletionReviewRecord({
+          review_id: 'completion-review-pr-44-self',
+          task_id: 'issue-44',
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          head_sha: 'abc123',
+          status: 'accepted',
+          validity_status: 'active',
+          requested_at: '2026-04-01T09:00:00.000Z',
+          updated_at: '2026-04-01T09:03:00.000Z',
+          reviewed_at: '2026-04-01T09:03:00.000Z',
+          reviewer_session_name: 'cie-44',
+          reviewer_session_id: 'cie-44',
+          implementation_owner_session_name: 'cie-44',
+          implementation_owner_session_id: 'cie-44',
+          verdict: 'accepted',
+          reason_codes: ['completion_review_accepted'],
+          findings: [],
+          evidence_refs: [{
+            source: 'github',
+            kind: 'review',
+            id: 'rvw-self',
+            summary: 'Self approval on the implementation branch.',
+          }],
+        }),
+      ]),
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.completion_review).toMatchObject({
+      status: 'self_review',
+      satisfied: false,
+      review_id: 'completion-review-pr-44-self',
+    });
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_review',
+      basis: ['completion_review_self_review'],
+      authoritative: true,
+    });
+  });
+
+  it('blocks ready release posture when completion review is rejected', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'approved_and_green',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [buildReadyAssessment()],
+      }),
+      doctorReport: buildDoctorReport(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot([
+        createCompletionReviewRecord({
+          review_id: 'completion-review-pr-44-rejected',
+          task_id: 'issue-44',
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          head_sha: 'abc123',
+          status: 'rejected',
+          validity_status: 'active',
+          requested_at: '2026-04-01T09:00:00.000Z',
+          updated_at: '2026-04-01T09:04:00.000Z',
+          reviewed_at: '2026-04-01T09:04:00.000Z',
+          reviewer_session_name: 'cie-reviewer-1',
+          reviewer_session_id: 'cie-reviewer-1',
+          implementation_owner_session_name: 'cie-44',
+          implementation_owner_session_id: 'cie-44',
+          verdict: 'rejected',
+          reason_codes: ['completion_review_rejected'],
+          findings: [{
+            code: 'needs_follow_up',
+            severity: 'warning',
+            summary: 'Reviewer found follow-up work.',
+            details: ['A failing edge case still exists.'],
+            evidence_refs: [],
+          }],
+          evidence_refs: [{
+            source: 'github',
+            kind: 'review',
+            id: 'rvw-rejected',
+            summary: 'Changes requested by an independent reviewer.',
+          }],
+        }),
+      ]),
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.completion_review).toMatchObject({
+      status: 'rejected',
+      satisfied: false,
+      review_id: 'completion-review-pr-44-rejected',
+    });
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_review',
+      basis: ['completion_review_rejected'],
+      authoritative: true,
+    });
+  });
+
+  it('notifies the human when approved-and-green has an accepted independent completion review', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'approved_and_green',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [buildReadyAssessment()],
+      }),
+      doctorReport: buildDoctorReport(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot([
+        createCompletionReviewRecord({
+          review_id: 'completion-review-pr-44-accepted',
+          task_id: 'issue-44',
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          head_sha: 'abc123',
+          status: 'accepted',
+          validity_status: 'active',
+          requested_at: '2026-04-01T09:00:00.000Z',
+          updated_at: '2026-04-01T09:05:00.000Z',
+          reviewed_at: '2026-04-01T09:05:00.000Z',
+          reviewer_session_name: 'cie-reviewer-1',
+          reviewer_session_id: 'cie-reviewer-1',
+          implementation_owner_session_name: 'cie-44',
+          implementation_owner_session_id: 'cie-44',
+          verdict: 'accepted',
+          reason_codes: ['completion_review_accepted'],
+          findings: [],
+          evidence_refs: [{
+            source: 'github',
+            kind: 'review',
+            id: 'rvw-accepted',
+            summary: 'Independent reviewer accepted the completion review.',
+          }],
+        }),
+      ]),
     });
 
     expect(report.top_status).toBe('continue');
+    expect(report.completion_review).toMatchObject({
+      status: 'accepted',
+      satisfied: true,
+      review_id: 'completion-review-pr-44-accepted',
+    });
     expect(report.release_decision).toMatchObject({
       disposition: 'notify_human_ready',
       authoritative: true,
@@ -544,6 +777,58 @@ describe('lifecycle engine', () => {
         action_class: 'notify_human',
       }),
     ]));
+  });
+
+  it('allows an explicit completion-review waiver to satisfy the release gate', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'approved_and_green',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [buildReadyAssessment()],
+      }),
+      doctorReport: buildDoctorReport(),
+      controlPlaneSnapshot: buildControlPlaneSnapshot([
+        createCompletionReviewRecord({
+          review_id: 'completion-review-pr-44-waived',
+          task_id: 'issue-44',
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          head_sha: 'abc123',
+          status: 'waived',
+          validity_status: 'active',
+          requested_at: '2026-04-01T09:00:00.000Z',
+          updated_at: '2026-04-01T09:06:00.000Z',
+          reviewed_at: '2026-04-01T09:06:00.000Z',
+          reviewer_session_name: 'operator',
+          reviewer_session_id: 'operator',
+          implementation_owner_session_name: 'cie-44',
+          implementation_owner_session_id: 'cie-44',
+          verdict: 'waived',
+          reason_codes: ['completion_review_waived'],
+          findings: [],
+          evidence_refs: [{
+            source: 'ao',
+            kind: 'waiver',
+            id: 'waiver-44',
+            summary: 'Operator waived the independent completion review gate.',
+          }],
+        }),
+      ]),
+    });
+
+    expect(report.top_status).toBe('continue');
+    expect(report.completion_review).toMatchObject({
+      status: 'waived',
+      satisfied: true,
+      review_id: 'completion-review-pr-44-waived',
+    });
+    expect(report.release_decision).toMatchObject({
+      disposition: 'notify_human_ready',
+      authoritative: true,
+    });
   });
 
   it('treats bugbot review comments as a deterministic review hold', () => {

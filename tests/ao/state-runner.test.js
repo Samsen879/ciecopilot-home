@@ -15,6 +15,7 @@ import {
   persistAoEvalScorecard,
 } from '../../scripts/ao/lib/scorecard.js';
 import {
+  createCompletionReviewRecord,
   createControllerModeRecord,
   createControllerRunMetricRecord,
   createExecutionAttemptMetricRecord,
@@ -155,7 +156,7 @@ describe('ao state runner', () => {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
-      audit_entry_count: 14,
+      audit_entry_count: 15,
     });
     expect(report.audit.recent_entries).toEqual([
       expect.objectContaining({
@@ -869,6 +870,176 @@ describe('ao state runner', () => {
     expect(report.release.guards).toEqual(expect.arrayContaining([
       expect.objectContaining({
         guard_id: 'release-guard-pr-137-stale',
+        validity_status: 'invalidated',
+        invalidation_reason_codes: ['head_sha_changed'],
+      }),
+    ]));
+  });
+
+  it('surfaces current completion-review posture and evidence in the AO state report', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-04-01T09:00:00.000Z',
+        '2026-04-01T09:01:00.000Z',
+        '2026-04-01T09:02:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-131',
+      issue_number: 131,
+      title: 'feat(ao): add completion review protocol and independent reviewer gate',
+      branch_name: 'feat/131',
+      worktree_path: '/tmp/cie-70-ao131',
+      status: 'active',
+      created_at: '2026-04-01T09:00:00.000Z',
+      updated_at: '2026-04-01T09:00:00.000Z',
+    }));
+    repository.upsertPrBinding(createPrBinding({
+      binding_id: 'binding-issue-131-pr-141',
+      task_id: 'issue-131',
+      pr_number: 141,
+      branch_name: 'feat/131',
+      base_branch: 'ao/mainline',
+      status: 'bound',
+      created_at: '2026-04-01T09:00:00.000Z',
+      updated_at: '2026-04-01T09:00:00.000Z',
+    }));
+    repository.upsertReleaseGuard(createReleaseGuardRecord({
+      guard_id: 'release-guard-pr-141-ready',
+      pr_number: 141,
+      branch_name: 'feat/131',
+      head_sha: 'abc131',
+      status: 'ready',
+      validity_status: 'active',
+      recorded_at: '2026-04-01T09:01:00.000Z',
+      truth_fingerprint: 'truth-ready-131',
+      basis: ['all_release_signals_clear'],
+      blocker_codes: [],
+      reason_codes: ['all_release_signals_clear'],
+      gates: {
+        ownership: { name: 'ownership', state: 'open', blocker_codes: [], reason_codes: [] },
+        review: { name: 'review', state: 'open', blocker_codes: [], reason_codes: [] },
+        ci: { name: 'ci', state: 'open', blocker_codes: [], reason_codes: [] },
+        mergeability: { name: 'mergeability', state: 'open', blocker_codes: [], reason_codes: [] },
+        release: { name: 'release', state: 'open', blocker_codes: [], reason_codes: ['all_release_signals_clear'] },
+      },
+      truth: {
+        pr_state: 'OPEN',
+        is_draft: false,
+        review_status: 'approved',
+        ci_status: 'passing',
+        mergeability: 'mergeable',
+        ownership_status: 'clear',
+        owner_session_name: 'cie-70',
+      },
+      promotion: {
+        disposition: 'notify_human_ready',
+        signal: 'notify_human_ready',
+        authoritative: true,
+        basis: ['ready_for_human_notification'],
+      },
+    }));
+    repository.upsertCompletionReview(createCompletionReviewRecord({
+      review_id: 'completion-review-pr-141-accepted',
+      task_id: 'issue-131',
+      pr_number: 141,
+      branch_name: 'feat/131',
+      head_sha: 'abc131',
+      status: 'accepted',
+      validity_status: 'active',
+      requested_at: '2026-04-01T09:00:00.000Z',
+      updated_at: '2026-04-01T09:01:00.000Z',
+      reviewed_at: '2026-04-01T09:01:00.000Z',
+      reviewer_session_name: 'cie-reviewer-1',
+      reviewer_session_id: 'cie-reviewer-1',
+      implementation_owner_session_name: 'cie-70',
+      implementation_owner_session_id: 'cie-70',
+      verdict: 'accepted',
+      reason_codes: ['completion_review_accepted'],
+      findings: [],
+      evidence_refs: [{
+        source: 'github',
+        kind: 'review',
+        id: 'rvw-141',
+        summary: 'Independent completion review accepted.',
+      }],
+    }));
+    repository.upsertCompletionReview(createCompletionReviewRecord({
+      review_id: 'completion-review-pr-141-stale',
+      task_id: 'issue-131',
+      pr_number: 141,
+      branch_name: 'feat/131',
+      head_sha: 'old131',
+      status: 'accepted',
+      validity_status: 'invalidated',
+      requested_at: '2026-04-01T08:45:00.000Z',
+      updated_at: '2026-04-01T08:50:00.000Z',
+      reviewed_at: '2026-04-01T08:50:00.000Z',
+      reviewer_session_name: 'cie-reviewer-0',
+      reviewer_session_id: 'cie-reviewer-0',
+      implementation_owner_session_name: 'cie-70',
+      implementation_owner_session_id: 'cie-70',
+      verdict: 'accepted',
+      reason_codes: ['completion_review_accepted'],
+      findings: [],
+      evidence_refs: [{
+        source: 'github',
+        kind: 'review',
+        id: 'rvw-140',
+        summary: 'Old completion review before new commits.',
+      }],
+      invalidated_at: '2026-04-01T09:01:00.000Z',
+      invalidation_reason_codes: ['head_sha_changed'],
+      superseded_by_review_id: 'completion-review-pr-141-accepted',
+    }));
+
+    const report = await loadAoStateReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+      auditLimit: 2,
+      now: '2026-04-01T09:02:00.000Z',
+    });
+
+    expect(report.summary).toMatchObject({
+      completion_review_count: 2,
+      active_completion_review_count: 1,
+      current_completion_review_status_counts: {
+        accepted: 1,
+        waived: 0,
+        rejected: 0,
+        requested: 0,
+        in_review: 0,
+        expired: 0,
+        missing_review: 0,
+        self_review: 0,
+      },
+    });
+    expect(report.completion_reviews.inspections).toEqual([
+      expect.objectContaining({
+        pr_number: 141,
+        task_id: 'issue-131',
+        head_sha: 'abc131',
+        status: 'accepted',
+        satisfied: true,
+        review_id: 'completion-review-pr-141-accepted',
+        reviewer_session_name: 'cie-reviewer-1',
+        evidence_refs: [
+          expect.objectContaining({
+            source: 'github',
+            kind: 'review',
+            id: 'rvw-141',
+          }),
+        ],
+      }),
+    ]);
+    expect(report.completion_reviews.records).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        review_id: 'completion-review-pr-141-stale',
         validity_status: 'invalidated',
         invalidation_reason_codes: ['head_sha_changed'],
       }),

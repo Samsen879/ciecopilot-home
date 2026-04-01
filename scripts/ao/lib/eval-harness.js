@@ -20,6 +20,7 @@ import { reconcileObservations } from './reconciliation-engine.js';
 import {
   AO_EVAL_HARNESS_RUN_FORMAT,
   AO_EVAL_HARNESS_RUN_SCHEMA_VERSION,
+  createCompletionReviewRecord,
   createControllerModeRecord,
   createCredentialProvenanceRecord,
   createManagedTask,
@@ -127,6 +128,41 @@ function buildHarnessSummary(scenarioResults = []) {
   };
 }
 
+function createCompletionReviewFinding(status) {
+  switch (status) {
+    case 'self_review':
+      return createFinding(
+        'completion_review_self_review',
+        'Independent completion review was satisfied only by the implementation owner.',
+      );
+    case 'rejected':
+      return createFinding(
+        'completion_review_rejected',
+        'Independent completion review rejected the current PR head.',
+      );
+    case 'expired':
+      return createFinding(
+        'completion_review_expired',
+        'Independent completion review expired for the current PR head.',
+      );
+    case 'requested':
+      return createFinding(
+        'completion_review_requested',
+        'Independent completion review has been requested but is not complete.',
+      );
+    case 'in_review':
+      return createFinding(
+        'completion_review_in_review',
+        'Independent completion review is still in progress.',
+      );
+    default:
+      return createFinding(
+        'completion_review_missing',
+        'Independent completion review is still missing for the current PR head.',
+      );
+  }
+}
+
 function loadPackRegistry(fixtureRoot) {
   const registry = readJsonFile(path.join(fixtureRoot, 'packs.json'));
   const packs = Array.isArray(registry?.packs) ? registry.packs : [];
@@ -203,6 +239,10 @@ function buildControllerTaskSeed(repository, scenario, now, { withCredentials = 
     for (const record of scenario.seed?.credential_provenances ?? []) {
       repository.upsertCredentialProvenance(createCredentialProvenanceRecord(record));
     }
+  }
+
+  for (const record of scenario.seed?.completion_reviews ?? []) {
+    repository.upsertCompletionReview(createCompletionReviewRecord(record));
   }
 }
 
@@ -290,6 +330,7 @@ async function executeControllerParityScenario({
     const localState = await loadDoctorLocalState({
       cwd: repoRoot,
     });
+    const snapshot = repository.getSnapshot();
     const doctorReport = buildDoctorReport({
       scope: createDoctorPrScope({
         projectId,
@@ -297,6 +338,7 @@ async function executeControllerParityScenario({
       }),
       reconciliationReport,
       localState,
+      controlPlaneSnapshot: snapshot,
     });
     const lifecycleReport = buildLifecycleReport({
       scope: createLifecyclePrScope({
@@ -306,9 +348,8 @@ async function executeControllerParityScenario({
       }),
       reconciliationReport,
       doctorReport,
+      controlPlaneSnapshot: snapshot,
     });
-
-    const snapshot = repository.getSnapshot();
     const findings = [];
     if (controllerResult.task_results[0]?.derived_trigger !== scenario.expected.derived_trigger) {
       findings.push(createFinding(
@@ -354,6 +395,10 @@ async function executeControllerParityScenario({
           },
         ));
       }
+    }
+
+    if (scenario.expected?.require_completion_review && lifecycleReport?.completion_review?.satisfied !== true) {
+      findings.push(createCompletionReviewFinding(lifecycleReport?.completion_review?.status));
     }
 
     const controllerMetric = snapshot.state.controller_run_metrics[0] ?? null;

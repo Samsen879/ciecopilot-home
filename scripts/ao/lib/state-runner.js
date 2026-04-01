@@ -1,4 +1,8 @@
 import { createCheckpointStore } from './checkpoint-store.js';
+import {
+  inspectAllCompletionReviewGates,
+  summarizeCompletionReviewStatuses,
+} from './completion-review.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
 import { inspectRepoKnowledgeRecordState } from './repo-knowledge.js';
 import { buildAoMetricsReport, resolveAoMetricsArtifactPaths } from './run-metrics.js';
@@ -108,6 +112,10 @@ export async function loadAoStateReport({
   )).length;
   const worktreeContinuityCounts = summarizeWorktreeContinuity(snapshot.state.worktree_bindings);
   const activeReleaseGuardStatusCounts = summarizeActiveReleaseGuardStatuses(snapshot.state.release_guards);
+  const completionReviewInspections = inspectAllCompletionReviewGates({
+    state: snapshot.state,
+  });
+  const completionReviewStatusCounts = summarizeCompletionReviewStatuses(completionReviewInspections);
   const currentReleaseGuards = [...(snapshot.state.release_guards ?? [])]
     .filter((guard) => guard?.validity_status === 'active')
     .sort((left, right) => {
@@ -155,6 +163,11 @@ export async function loadAoStateReport({
       release_guard_count: snapshot.state.release_guards.length,
       active_release_guard_count: currentReleaseGuards.length,
       active_release_guard_status_counts: activeReleaseGuardStatusCounts,
+      completion_review_count: snapshot.state.completion_reviews.length,
+      active_completion_review_count: snapshot.state.completion_reviews.filter(
+        (review) => review?.validity_status === 'active',
+      ).length,
+      current_completion_review_status_counts: completionReviewStatusCounts,
       action_count: snapshot.state.actions.length,
       active_override_count: snapshot.state.overrides.filter((override) => override.status === 'active').length,
       controller_mode_count: snapshot.state.controller_modes.length,
@@ -190,6 +203,10 @@ export async function loadAoStateReport({
     release: {
       guards: snapshot.state.release_guards,
       current_guards: currentReleaseGuards,
+    },
+    completion_reviews: {
+      records: snapshot.state.completion_reviews,
+      inspections: completionReviewInspections,
     },
     repo_knowledge: {
       record: repoKnowledgeRecord,

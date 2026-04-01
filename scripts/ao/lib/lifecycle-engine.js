@@ -399,6 +399,14 @@ function buildReleaseDecision({
     };
   }
 
+  if (releaseStatus === 'waiting') {
+    return {
+      disposition: 'human_gate',
+      basis,
+      authoritative: false,
+    };
+  }
+
   if (releaseStatus === 'not_applicable') {
     return {
       disposition: 'not_applicable',

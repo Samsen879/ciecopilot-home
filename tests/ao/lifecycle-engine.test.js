@@ -308,6 +308,31 @@ describe('lifecycle engine', () => {
             status: 'ambiguous',
             basis: ['stale_worker_session'],
           },
+          release_guard: {
+            status: 'waiting',
+            head_sha: 'abc123',
+            basis: ['ownership_stale'],
+            blocker_codes: [],
+            gates: createGateSnapshot({
+              ownership: {
+                state: 'pending',
+                reason_codes: ['ownership_stale'],
+              },
+              review: {
+                state: 'open',
+              },
+              ci: {
+                state: 'open',
+              },
+              mergeability: {
+                state: 'open',
+              },
+              release: {
+                state: 'pending',
+                reason_codes: ['ownership_stale'],
+              },
+            }),
+          },
         }],
       }),
       doctorReport: buildDoctorReport(),
@@ -319,6 +344,11 @@ describe('lifecycle engine', () => {
       authoritative: true,
     });
     expect(report.top_status).toBe('human_gate');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'human_gate',
+      basis: ['ownership_stale'],
+      authoritative: false,
+    });
   });
 
   it('routes orphaned ownership to successor handoff', () => {

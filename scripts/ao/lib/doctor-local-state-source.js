@@ -144,6 +144,7 @@ export async function loadDoctorLocalState({
 
   return createDoctorLocalState({
     repo_root: repoRoot,
+    worktree_path: repoRoot,
     cwd,
     current_branch: currentBranch,
     head_sha: headSha,

@@ -8,6 +8,7 @@ import {
   createManagedTask,
   createOwnershipLease,
   createPrBinding,
+  createWorktreeBinding,
 } from './state-contracts.js';
 
 export const DEFAULT_OWNERSHIP_LEASE_DURATION_MS = 20 * 60 * 1000;
@@ -59,6 +60,10 @@ export function buildPrBindingId({ taskId, prNumber } = {}) {
 
 export function buildOwnershipLeaseId({ taskId, ownerSessionName } = {}) {
   return `ownership-${sanitizeToken(taskId)}-${sanitizeToken(ownerSessionName)}`;
+}
+
+export function buildWorktreeBindingId({ taskId } = {}) {
+  return `worktree-${sanitizeToken(taskId)}`;
 }
 
 export function buildControllerLeaseId({
@@ -211,6 +216,76 @@ export function transitionPrBinding({
       });
     default:
       throw new Error(`Unsupported PR binding intent: ${intent}`);
+  }
+}
+
+export function transitionWorktreeBinding({
+  intent,
+  existingBinding = null,
+  now = new Date().toISOString(),
+  bindingId = null,
+  taskId = null,
+  branchName = null,
+  worktreePath = null,
+  ownerSessionName = null,
+  ownerSessionId = null,
+  status = 'active',
+  occupancyStatus = 'unknown',
+  cleanlinessStatus = 'unknown',
+  headStatus = 'unknown',
+  continuityStatus = 'unobserved',
+  reasonCodes = [],
+  lastObservedAt = null,
+  lastObserved = null,
+  lastSafeObservedAt = null,
+  lastSafeObservation = null,
+  metadata = null,
+  reason = null,
+} = {}) {
+  const timestamp = resolveNow(now);
+  const currentStatus = existingBinding?.status ?? null;
+
+  switch (intent) {
+    case 'bind':
+    case 'observe':
+      return createWorktreeBinding({
+        binding_id: bindingId ?? existingBinding?.binding_id ?? buildWorktreeBindingId({
+          taskId: taskId ?? existingBinding?.task_id,
+        }),
+        task_id: taskId ?? existingBinding?.task_id,
+        branch_name: branchName ?? existingBinding?.branch_name ?? null,
+        worktree_path: worktreePath ?? existingBinding?.worktree_path ?? null,
+        owner_session_name: ownerSessionName ?? existingBinding?.owner_session_name ?? null,
+        owner_session_id: ownerSessionId ?? existingBinding?.owner_session_id ?? null,
+        status: status ?? existingBinding?.status ?? 'active',
+        occupancy_status: occupancyStatus ?? existingBinding?.occupancy_status ?? 'unknown',
+        cleanliness_status: cleanlinessStatus ?? existingBinding?.cleanliness_status ?? 'unknown',
+        head_status: headStatus ?? existingBinding?.head_status ?? 'unknown',
+        continuity_status: continuityStatus ?? existingBinding?.continuity_status ?? 'unobserved',
+        reason_codes: reasonCodes.length ? reasonCodes : (existingBinding?.reason_codes ?? []),
+        created_at: existingBinding?.created_at ?? timestamp,
+        updated_at: timestamp,
+        last_observed_at: lastObservedAt ?? existingBinding?.last_observed_at ?? null,
+        last_observed: lastObserved ?? existingBinding?.last_observed ?? null,
+        last_safe_observed_at: lastSafeObservedAt ?? existingBinding?.last_safe_observed_at ?? null,
+        last_safe_observation: lastSafeObservation ?? existingBinding?.last_safe_observation ?? null,
+        metadata: metadata ?? existingBinding?.metadata ?? {},
+      });
+    case 'release':
+      if (!existingBinding || currentStatus !== 'active') {
+        illegalTransition('worktree-binding', currentStatus, intent);
+      }
+      return createWorktreeBinding({
+        ...existingBinding,
+        status: 'released',
+        updated_at: timestamp,
+        metadata: {
+          ...(existingBinding.metadata ?? {}),
+          release_reason: reason ?? null,
+        },
+      });
+    default:
+      throw new Error(`Unsupported worktree-binding intent: ${intent}`);
   }
 }
 

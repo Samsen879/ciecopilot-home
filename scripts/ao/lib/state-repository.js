@@ -28,6 +28,7 @@ import {
   createRepoKnowledgeRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
+  createWorktreeBinding,
 } from './state-contracts.js';
 import { materializeRepoKnowledge } from './repo-knowledge.js';
 import { runRuntimeBootstrapPreflight } from './runtime-preflight.js';
@@ -133,6 +134,7 @@ export function createStateRepository({
     nextState.pr_bindings = sortCollectionByKey(nextState.pr_bindings, 'binding_id');
     nextState.ownership_leases = sortCollectionByKey(nextState.ownership_leases, 'lease_id');
     nextState.controller_leases = sortCollectionByKey(nextState.controller_leases, 'lease_id');
+    nextState.worktree_bindings = sortCollectionByKey(nextState.worktree_bindings, 'binding_id');
     nextState.actions = sortCollectionByKey(nextState.actions, 'action_id');
     nextState.overrides = sortCollectionByKey(nextState.overrides, 'override_id');
     nextState.controller_modes = sortCollectionByKey(nextState.controller_modes, 'controller_id');
@@ -313,6 +315,17 @@ export function createStateRepository({
         record,
         normalize: createControllerLease,
         summary: `Persisted controller lease ${record?.lease_id}.`,
+      });
+    },
+
+    upsertWorktreeBinding(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'worktree_bindings',
+        identityKey: 'binding_id',
+        entityKind: 'worktree_binding',
+        record,
+        normalize: createWorktreeBinding,
+        summary: `Persisted worktree binding ${record?.binding_id}.`,
       });
     },
 

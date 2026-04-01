@@ -23,7 +23,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 9;
+export const CONTROL_PLANE_LATEST_VERSION = 10;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
@@ -44,6 +44,19 @@ export const MANAGED_TASK_STATUSES = ['active', 'paused', 'retired'];
 export const PR_BINDING_STATUSES = ['bound', 'released', 'closed'];
 export const OWNERSHIP_LEASE_STATUSES = ['active', 'released', 'expired'];
 export const CONTROLLER_LEASE_STATUSES = ['active', 'released', 'expired'];
+export const WORKTREE_BINDING_STATUSES = ['active', 'released'];
+export const WORKTREE_OCCUPANCY_STATUSES = ['occupied', 'stale', 'conflicting', 'unknown'];
+export const WORKTREE_CLEANLINESS_STATUSES = ['clean', 'dirty', 'unknown'];
+export const WORKTREE_HEAD_STATUSES = ['attached', 'detached', 'unknown'];
+export const WORKTREE_CONTINUITY_STATUSES = [
+  'unobserved',
+  'safe_resume',
+  'stale_local_occupancy',
+  'dirty_worktree_hold',
+  'detached_head_hold',
+  'branch_mismatch_hold',
+  'conflicting_local_occupancy',
+];
 export const ACTION_STATUSES = ['proposed', 'blocked', 'executed', 'cancelled'];
 export const OVERRIDE_SCOPE_KINDS = ['global', 'task', 'pr', 'controller'];
 export const OVERRIDE_STATUSES = ['active', 'cleared', 'expired'];
@@ -151,6 +164,14 @@ function normalizeNullableNumber(value, fieldName) {
     throw new Error(`Invalid ${fieldName}`);
   }
   return normalized;
+}
+
+function normalizeOptionalBoolean(value, fieldName) {
+  if (value == null) return null;
+  if (typeof value !== 'boolean') {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+  return value;
 }
 
 function normalizeCountMap(values, fieldName, keys) {
@@ -290,6 +311,7 @@ export function createEmptyControlPlaneState({
     pr_bindings: [],
     ownership_leases: [],
     controller_leases: [],
+    worktree_bindings: [],
     actions: [],
     overrides: [],
     controller_modes: [],
@@ -407,6 +429,76 @@ export function createControllerLease({
     expires_at: normalizeIsoTimestamp(expires_at, 'expires_at'),
     released_at: normalizeIsoTimestamp(released_at, 'released_at', { nullable: true }),
     release_reason: normalizeOptionalString(release_reason),
+    metadata: normalizeMetadata(metadata),
+  };
+}
+
+function normalizeWorktreeObservation(value, fieldName, { nullable = false } = {}) {
+  if (value == null) {
+    if (nullable) return null;
+    throw new Error(`Invalid ${fieldName}`);
+  }
+  if (!isPlainObject(value)) {
+    throw new Error(`Invalid ${fieldName}`);
+  }
+
+  return {
+    branch_name: normalizeOptionalString(value.branch_name),
+    worktree_path: normalizeOptionalString(value.worktree_path),
+    head_sha: normalizeOptionalString(value.head_sha),
+    upstream_branch: normalizeOptionalString(value.upstream_branch),
+    worktree_dirty: normalizeOptionalBoolean(value.worktree_dirty, `${fieldName}.worktree_dirty`),
+    staged_changes: normalizeOptionalBoolean(value.staged_changes, `${fieldName}.staged_changes`),
+    unstaged_changes: normalizeOptionalBoolean(value.unstaged_changes, `${fieldName}.unstaged_changes`),
+  };
+}
+
+export function createWorktreeBinding({
+  binding_id,
+  task_id,
+  branch_name = null,
+  worktree_path = null,
+  owner_session_name = null,
+  owner_session_id = null,
+  status,
+  occupancy_status = 'unknown',
+  cleanliness_status = 'unknown',
+  head_status = 'unknown',
+  continuity_status = 'unobserved',
+  reason_codes = [],
+  created_at,
+  updated_at,
+  last_observed_at = null,
+  last_observed = null,
+  last_safe_observed_at = null,
+  last_safe_observation = null,
+  metadata = {},
+} = {}) {
+  return {
+    binding_id: normalizeRequiredString(binding_id, 'binding_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    branch_name: normalizeOptionalString(branch_name),
+    worktree_path: normalizeOptionalString(worktree_path),
+    owner_session_name: normalizeOptionalString(owner_session_name),
+    owner_session_id: normalizeOptionalString(owner_session_id),
+    status: normalizeEnum(status, 'status', WORKTREE_BINDING_STATUSES),
+    occupancy_status: normalizeEnum(occupancy_status, 'occupancy_status', WORKTREE_OCCUPANCY_STATUSES),
+    cleanliness_status: normalizeEnum(cleanliness_status, 'cleanliness_status', WORKTREE_CLEANLINESS_STATUSES),
+    head_status: normalizeEnum(head_status, 'head_status', WORKTREE_HEAD_STATUSES),
+    continuity_status: normalizeEnum(continuity_status, 'continuity_status', WORKTREE_CONTINUITY_STATUSES),
+    reason_codes: normalizeStringArray(reason_codes, 'reason_codes'),
+    created_at: normalizeIsoTimestamp(created_at, 'created_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    last_observed_at: normalizeIsoTimestamp(last_observed_at, 'last_observed_at', { nullable: true }),
+    last_observed: normalizeWorktreeObservation(last_observed, 'last_observed', { nullable: true }),
+    last_safe_observed_at: normalizeIsoTimestamp(last_safe_observed_at, 'last_safe_observed_at', {
+      nullable: true,
+    }),
+    last_safe_observation: normalizeWorktreeObservation(
+      last_safe_observation,
+      'last_safe_observation',
+      { nullable: true },
+    ),
     metadata: normalizeMetadata(metadata),
   };
 }

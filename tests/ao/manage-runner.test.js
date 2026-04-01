@@ -8,6 +8,7 @@ import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js'
 import { createHandoffProtocol } from '../../scripts/ao/lib/handoff-protocol.js';
 import { resolveControlPlanePaths } from '../../scripts/ao/lib/state-migrations.js';
 import { runManageCommand } from '../../scripts/ao/lib/manage-runner.js';
+import { createWorktreeBinding } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 
 const PROJECT_ID = 'ciecopilot-home';
@@ -380,6 +381,264 @@ describe('ao manage runner', () => {
       ownerSessionId: 'cie-57',
       now: '2026-03-30T10:04:00.000Z',
     })).rejects.toThrow(/stale checkpoint/i);
+  });
+
+  it('fails closed when resume sees a dirty worktree hold in the durable binding registry', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 110,
+      title: 'feat(ao): add worktree registry and bounded continuity repair',
+      branchName: 'feat/110',
+      worktreePath: '/tmp/cie-57',
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-31T10:00:00.000Z',
+    });
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 110,
+      now: '2026-03-31T10:01:00.000Z',
+      reason: 'worker_exited',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.upsertWorktreeBinding(createWorktreeBinding({
+      binding_id: 'worktree-issue-110',
+      task_id: 'issue-110',
+      branch_name: 'feat/110',
+      worktree_path: '/tmp/cie-57',
+      owner_session_name: 'cie-57',
+      owner_session_id: 'cie-57',
+      status: 'active',
+      occupancy_status: 'stale',
+      cleanliness_status: 'dirty',
+      head_status: 'attached',
+      continuity_status: 'dirty_worktree_hold',
+      reason_codes: ['dirty_worktree'],
+      created_at: '2026-03-31T10:00:00.000Z',
+      updated_at: '2026-03-31T10:02:00.000Z',
+      last_observed_at: '2026-03-31T10:02:00.000Z',
+      last_safe_observed_at: '2026-03-31T10:00:00.000Z',
+      last_observed: {
+        branch_name: 'feat/110',
+        worktree_path: '/tmp/cie-57',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/110',
+        worktree_dirty: true,
+        staged_changes: true,
+        unstaged_changes: false,
+      },
+      last_safe_observation: {
+        branch_name: 'feat/110',
+        worktree_path: '/tmp/cie-57',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/110',
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+    }));
+
+    await expect(runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 110,
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-31T10:03:00.000Z',
+    })).rejects.toThrow(/dirty worktree/i);
+  });
+
+  it('fails closed when resume sees a detached-head hold in the durable binding registry', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 110,
+      title: 'feat(ao): add worktree registry and bounded continuity repair',
+      branchName: 'feat/110',
+      worktreePath: '/tmp/cie-57',
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-31T10:00:00.000Z',
+    });
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 110,
+      now: '2026-03-31T10:01:00.000Z',
+      reason: 'worker_exited',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.upsertWorktreeBinding(createWorktreeBinding({
+      binding_id: 'worktree-issue-110',
+      task_id: 'issue-110',
+      branch_name: 'feat/110',
+      worktree_path: '/tmp/cie-57',
+      owner_session_name: 'cie-57',
+      owner_session_id: 'cie-57',
+      status: 'active',
+      occupancy_status: 'stale',
+      cleanliness_status: 'clean',
+      head_status: 'detached',
+      continuity_status: 'detached_head_hold',
+      reason_codes: ['detached_head'],
+      created_at: '2026-03-31T10:00:00.000Z',
+      updated_at: '2026-03-31T10:02:00.000Z',
+      last_observed_at: '2026-03-31T10:02:00.000Z',
+      last_safe_observed_at: '2026-03-31T10:00:00.000Z',
+      last_observed: {
+        branch_name: null,
+        worktree_path: '/tmp/cie-57',
+        head_sha: 'abc123',
+        upstream_branch: null,
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+      last_safe_observation: {
+        branch_name: 'feat/110',
+        worktree_path: '/tmp/cie-57',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/110',
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+    }));
+
+    await expect(runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 110,
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-31T10:03:00.000Z',
+    })).rejects.toThrow(/detached head/i);
+  });
+
+  it('fails closed when resume sees a branch-mismatch hold in the durable binding registry', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 110,
+      title: 'feat(ao): add worktree registry and bounded continuity repair',
+      branchName: 'feat/110',
+      worktreePath: '/tmp/cie-57',
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-31T10:00:00.000Z',
+    });
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'unmanage',
+      issueNumber: 110,
+      now: '2026-03-31T10:01:00.000Z',
+      reason: 'worker_exited',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.upsertWorktreeBinding(createWorktreeBinding({
+      binding_id: 'worktree-issue-110',
+      task_id: 'issue-110',
+      branch_name: 'feat/110',
+      worktree_path: '/tmp/cie-57',
+      owner_session_name: 'cie-57',
+      owner_session_id: 'cie-57',
+      status: 'active',
+      occupancy_status: 'stale',
+      cleanliness_status: 'clean',
+      head_status: 'attached',
+      continuity_status: 'branch_mismatch_hold',
+      reason_codes: ['current_branch_mismatch'],
+      created_at: '2026-03-31T10:00:00.000Z',
+      updated_at: '2026-03-31T10:02:00.000Z',
+      last_observed_at: '2026-03-31T10:02:00.000Z',
+      last_safe_observed_at: '2026-03-31T10:00:00.000Z',
+      last_observed: {
+        branch_name: 'feat/other-branch',
+        worktree_path: '/tmp/cie-57',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/other-branch',
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+      last_safe_observation: {
+        branch_name: 'feat/110',
+        worktree_path: '/tmp/cie-57',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/110',
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+    }));
+
+    await expect(runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 110,
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-31T10:03:00.000Z',
+    })).rejects.toThrow(/branch mismatch/i);
+  });
+
+  it('fails closed when a second active task tries to claim the same durable worktree occupancy', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 110,
+      title: 'feat(ao): add worktree registry and bounded continuity repair',
+      branchName: 'feat/110',
+      worktreePath: '/tmp/shared-worktree',
+      ownerSessionName: 'cie-57',
+      ownerSessionId: 'cie-57',
+      now: '2026-03-31T10:00:00.000Z',
+    });
+
+    await expect(runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 111,
+      title: 'Second task should not reuse the same worktree',
+      branchName: 'feat/111',
+      worktreePath: '/tmp/shared-worktree',
+      ownerSessionName: 'cie-58',
+      ownerSessionId: 'cie-58',
+      now: '2026-03-31T10:01:00.000Z',
+    })).rejects.toThrow(/conflicting worktree occupancy/i);
   });
 
   it('blocks successor resume until an accepted handoff grant exists', async () => {

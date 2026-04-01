@@ -11,6 +11,8 @@ import { createStateRepository } from './state-repository.js';
 import {
   buildControllerLeaseId,
   transitionControllerLease,
+  transitionWorktreeBinding,
+  buildWorktreeBindingId,
 } from './transition-engine.js';
 import {
   ingestManagedTaskPollEvents,
@@ -140,6 +142,46 @@ function selectCurrentDeliveryEvents({
   }
 
   return [...latestByFamily.values()].sort(compareDeliveryEventOrder);
+}
+
+function persistTaskWorktreeSafety({
+  repository,
+  task,
+  worktreeSafety,
+  now,
+} = {}) {
+  if (!task || !worktreeSafety) return null;
+
+  const snapshot = repository.getSnapshot();
+  const existingBinding = (snapshot.state.worktree_bindings ?? []).find(
+    (record) => record?.task_id === task.task_id,
+  ) ?? null;
+
+  const nextBinding = transitionWorktreeBinding({
+    intent: existingBinding ? 'observe' : 'bind',
+    existingBinding,
+    now,
+    bindingId: worktreeSafety.binding_id ?? buildWorktreeBindingId({
+      taskId: task.task_id,
+    }),
+    taskId: task.task_id,
+    branchName: worktreeSafety.expected_branch_name ?? task.branch_name ?? null,
+    worktreePath: worktreeSafety.expected_worktree_path ?? task.worktree_path ?? null,
+    ownerSessionName: worktreeSafety.owner_session_name ?? existingBinding?.owner_session_name ?? null,
+    ownerSessionId: worktreeSafety.owner_session_id ?? existingBinding?.owner_session_id ?? null,
+    status: 'active',
+    occupancyStatus: worktreeSafety.occupancy_status ?? existingBinding?.occupancy_status ?? 'unknown',
+    cleanlinessStatus: worktreeSafety.cleanliness_status ?? existingBinding?.cleanliness_status ?? 'unknown',
+    headStatus: worktreeSafety.head_status ?? existingBinding?.head_status ?? 'unknown',
+    continuityStatus: worktreeSafety.continuity_status ?? existingBinding?.continuity_status ?? 'unobserved',
+    reasonCodes: worktreeSafety.reason_codes ?? existingBinding?.reason_codes ?? [],
+    lastObservedAt: worktreeSafety.last_observed_at ?? now,
+    lastObserved: worktreeSafety.last_observed ?? existingBinding?.last_observed ?? null,
+    lastSafeObservedAt: worktreeSafety.last_safe_observed_at ?? existingBinding?.last_safe_observed_at ?? null,
+    lastSafeObservation: worktreeSafety.last_safe_observation ?? existingBinding?.last_safe_observation ?? null,
+  });
+  repository.upsertWorktreeBinding(nextBinding);
+  return nextBinding;
 }
 
 export function deriveLifecycleTriggerForTask({
@@ -552,6 +594,7 @@ export async function runControllerLoop({
       const prNumber = resolveLifecyclePrNumber(prBindings, ingestResult.matchedPrs);
 
       let lifecycleTopStatus = null;
+      let worktreeContinuityStatus = null;
       let proposedActionIds = [];
       let executedActionIds = [];
       let blockedActionIds = [];
@@ -585,6 +628,14 @@ export async function runControllerLoop({
               },
             });
         const lifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
+        const doctorReport = resolvedLifecycle.doctorReport ?? null;
+        const persistedWorktreeBinding = persistTaskWorktreeSafety({
+          repository,
+          task,
+          worktreeSafety: doctorReport?.worktree_safety ?? null,
+          now: timestamp,
+        });
+        worktreeContinuityStatus = persistedWorktreeBinding?.continuity_status ?? doctorReport?.worktree_safety?.continuity_status ?? null;
         lifecycleTopStatus = lifecycleReport.top_status ?? null;
         const proposalResult = await persistShadowActions({
           repository,
@@ -693,6 +744,7 @@ export async function runControllerLoop({
         downgraded_action_count: downgradedActionIds.length,
         downgraded_action_ids: downgradedActionIds,
         lifecycle_top_status: lifecycleTopStatus,
+        worktree_continuity_status: worktreeContinuityStatus,
       });
     }
   } finally {

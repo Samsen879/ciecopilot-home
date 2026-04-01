@@ -101,6 +101,7 @@ export function createDoctorSuggestion({
 
 export function createDoctorLocalState({
   repo_root = null,
+  worktree_path = null,
   cwd,
   current_branch = null,
   head_sha = null,
@@ -118,6 +119,7 @@ export function createDoctorLocalState({
 } = {}) {
   return {
     repo_root,
+    worktree_path,
     cwd: String(cwd),
     current_branch,
     head_sha,

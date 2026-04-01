@@ -4,7 +4,13 @@ import {
   createDoctorPrScope,
   createDoctorProjectScope,
 } from '../../scripts/ao/lib/doctor-contracts.js';
-import { CONTROL_PLANE_LATEST_VERSION } from '../../scripts/ao/lib/state-contracts.js';
+import {
+  CONTROL_PLANE_LATEST_VERSION,
+  createOwnershipLease,
+  createRuntimePreflightRecord,
+  createTaskSpecRecord,
+  createWorktreeBinding,
+} from '../../scripts/ao/lib/state-contracts.js';
 import { buildDoctorReport } from '../../scripts/ao/lib/doctor-engine.js';
 
 function buildReconciliationReport(overrides = {}) {
@@ -43,6 +49,7 @@ function buildReconciliationReport(overrides = {}) {
 function buildLocalState(overrides = {}) {
   return createDoctorLocalState({
     repo_root: '/home/samsen/code/ciecopilot-home',
+    worktree_path: '/home/samsen/code/ciecopilot-home',
     cwd: '/home/samsen/code/ciecopilot-home',
     current_branch: 'feat/issue-44',
     head_sha: 'abc123',
@@ -70,11 +77,55 @@ function buildControlPlaneSnapshot(overrides = {}) {
     },
     state: {
       managed_tasks: [],
+      pr_bindings: [],
+      ownership_leases: [],
+      worktree_bindings: [],
       task_specs: [],
       runtime_preflights: [],
     },
     ...overrides,
   };
+}
+
+function buildValidTaskSpecRecord({
+  taskId,
+  issueNumber,
+  updatedAt = '2026-03-31T10:00:00.000Z',
+  runtimeRef = 'runtime.github_local',
+} = {}) {
+  return createTaskSpecRecord({
+    task_id: taskId,
+    source_kind: 'github_issue',
+    source_issue_number: issueNumber,
+    created_at: updatedAt,
+    updated_at: updatedAt,
+    snapshot: {
+      schema_version: 'ao.task-spec.v1alpha1',
+      spec: {
+        problem_type: 'issue_delivery',
+        acceptance_contract: ['durable worktree registry exists'],
+        runtime_ref: runtimeRef,
+        policy_ref: 'policy.operator_gated',
+        human_gates: ['human_review'],
+      },
+    },
+  });
+}
+
+function buildValidRuntimePreflightRecord({
+  runtimeRef = 'runtime.github_local',
+  observedAt = '2026-03-31T10:00:00.000Z',
+} = {}) {
+  return createRuntimePreflightRecord({
+    recorded_at: observedAt,
+    snapshot: {
+      runtime_ref: runtimeRef,
+      provider_id: 'github_local',
+      observed_at: observedAt,
+      status: 'clean',
+      checks: [],
+    },
+  });
 }
 
 describe('doctor engine', () => {
@@ -250,6 +301,301 @@ describe('doctor engine', () => {
         severity: 'warning',
       }),
     ]));
+  });
+
+  it('classifies a clean matching durable binding as safe resume', () => {
+    const report = buildDoctorReport({
+      scope: createDoctorPrScope({ projectId: 'ciecopilot-home', prNumber: 44 }),
+      reconciliationReport: buildReconciliationReport({
+        scope: { mode: 'pr', selected_pr_numbers: [44] },
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          release_readiness: { status: 'ready' },
+        }],
+      }),
+      localState: buildLocalState({
+        repo_root: '/worktrees/feat-44',
+        worktree_path: '/worktrees/feat-44',
+      }),
+      controlPlaneSnapshot: buildControlPlaneSnapshot({
+        state: {
+          managed_tasks: [{
+            task_id: 'issue-44',
+            issue_number: 44,
+            title: 'Durable worktree registry',
+            branch_name: 'feat/issue-44',
+            worktree_path: '/worktrees/feat-44',
+            status: 'active',
+          }],
+          pr_bindings: [{
+            binding_id: 'binding-issue-44-pr-44',
+            task_id: 'issue-44',
+            pr_number: 44,
+            branch_name: 'feat/issue-44',
+            base_branch: 'main',
+            status: 'bound',
+            created_at: '2026-03-31T10:00:00.000Z',
+            updated_at: '2026-03-31T10:00:00.000Z',
+          }],
+          ownership_leases: [
+            createOwnershipLease({
+              lease_id: 'ownership-issue-44-cie-44',
+              task_id: 'issue-44',
+              owner_session_name: 'cie-44',
+              owner_session_id: 'cie-44',
+              status: 'active',
+              acquired_at: '2026-03-31T10:00:00.000Z',
+              expires_at: '2026-03-31T10:20:00.000Z',
+            }),
+          ],
+          worktree_bindings: [
+            createWorktreeBinding({
+              binding_id: 'worktree-issue-44',
+              task_id: 'issue-44',
+              branch_name: 'feat/issue-44',
+              worktree_path: '/worktrees/feat-44',
+              owner_session_name: 'cie-44',
+              owner_session_id: 'cie-44',
+              status: 'active',
+              occupancy_status: 'occupied',
+              cleanliness_status: 'clean',
+              head_status: 'attached',
+              continuity_status: 'safe_resume',
+              reason_codes: ['binding_matches_local_state'],
+              created_at: '2026-03-31T10:00:00.000Z',
+              updated_at: '2026-03-31T10:00:00.000Z',
+              last_observed_at: '2026-03-31T10:00:00.000Z',
+              last_safe_observed_at: '2026-03-31T10:00:00.000Z',
+              last_observed: {
+                branch_name: 'feat/issue-44',
+                worktree_path: '/worktrees/feat-44',
+                head_sha: 'abc123',
+                upstream_branch: 'origin/feat/issue-44',
+                worktree_dirty: false,
+                staged_changes: false,
+                unstaged_changes: false,
+              },
+              last_safe_observation: {
+                branch_name: 'feat/issue-44',
+                worktree_path: '/worktrees/feat-44',
+                head_sha: 'abc123',
+                upstream_branch: 'origin/feat/issue-44',
+                worktree_dirty: false,
+                staged_changes: false,
+                unstaged_changes: false,
+              },
+            }),
+          ],
+          task_specs: [
+            buildValidTaskSpecRecord({
+              taskId: 'issue-44',
+              issueNumber: 44,
+            }),
+          ],
+          runtime_preflights: [
+            buildValidRuntimePreflightRecord(),
+          ],
+        },
+      }),
+    });
+
+    expect(report.top_status).toBe('healthy');
+    expect(report.worktree_safety).toMatchObject({
+      task_id: 'issue-44',
+      continuity_status: 'safe_resume',
+      occupancy_status: 'occupied',
+      expected_branch_name: 'feat/issue-44',
+      expected_worktree_path: '/worktrees/feat-44',
+      observed_branch_name: 'feat/issue-44',
+      observed_worktree_path: '/worktrees/feat-44',
+      owner_session_name: 'cie-44',
+      conflicting_binding_ids: [],
+    });
+  });
+
+  it('classifies stale local occupancy when the last safe binding remains but no active owner lease exists', () => {
+    const report = buildDoctorReport({
+      scope: createDoctorPrScope({ projectId: 'ciecopilot-home', prNumber: 44 }),
+      reconciliationReport: buildReconciliationReport({
+        scope: { mode: 'pr', selected_pr_numbers: [44] },
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          release_readiness: { status: 'ready' },
+        }],
+      }),
+      localState: buildLocalState({
+        repo_root: '/worktrees/feat-44',
+        worktree_path: '/worktrees/feat-44',
+      }),
+      controlPlaneSnapshot: buildControlPlaneSnapshot({
+        state: {
+          managed_tasks: [{
+            task_id: 'issue-44',
+            issue_number: 44,
+            title: 'Durable worktree registry',
+            branch_name: 'feat/issue-44',
+            worktree_path: '/worktrees/feat-44',
+            status: 'paused',
+          }],
+          pr_bindings: [{
+            binding_id: 'binding-issue-44-pr-44',
+            task_id: 'issue-44',
+            pr_number: 44,
+            branch_name: 'feat/issue-44',
+            base_branch: 'main',
+            status: 'bound',
+            created_at: '2026-03-31T10:00:00.000Z',
+            updated_at: '2026-03-31T10:00:00.000Z',
+          }],
+          worktree_bindings: [
+            createWorktreeBinding({
+              binding_id: 'worktree-issue-44',
+              task_id: 'issue-44',
+              branch_name: 'feat/issue-44',
+              worktree_path: '/worktrees/feat-44',
+              owner_session_name: 'cie-44',
+              owner_session_id: 'cie-44',
+              status: 'active',
+              occupancy_status: 'stale',
+              cleanliness_status: 'clean',
+              head_status: 'attached',
+              continuity_status: 'stale_local_occupancy',
+              reason_codes: ['owner_lease_not_active'],
+              created_at: '2026-03-31T10:00:00.000Z',
+              updated_at: '2026-03-31T10:05:00.000Z',
+              last_observed_at: '2026-03-31T10:05:00.000Z',
+              last_safe_observed_at: '2026-03-31T10:00:00.000Z',
+              last_observed: {
+                branch_name: 'feat/issue-44',
+                worktree_path: '/worktrees/feat-44',
+                head_sha: 'abc123',
+                upstream_branch: 'origin/feat/issue-44',
+                worktree_dirty: false,
+                staged_changes: false,
+                unstaged_changes: false,
+              },
+              last_safe_observation: {
+                branch_name: 'feat/issue-44',
+                worktree_path: '/worktrees/feat-44',
+                head_sha: 'abc123',
+                upstream_branch: 'origin/feat/issue-44',
+                worktree_dirty: false,
+                staged_changes: false,
+                unstaged_changes: false,
+              },
+            }),
+          ],
+          task_specs: [
+            buildValidTaskSpecRecord({
+              taskId: 'issue-44',
+              issueNumber: 44,
+            }),
+          ],
+          runtime_preflights: [
+            buildValidRuntimePreflightRecord(),
+          ],
+        },
+      }),
+    });
+
+    expect(report.top_status).toBe('warning');
+    expect(report.findings.map((finding) => finding.code)).toContain('stale_local_occupancy');
+    expect(report.worktree_safety).toMatchObject({
+      continuity_status: 'stale_local_occupancy',
+      occupancy_status: 'stale',
+    });
+  });
+
+  it('blocks on conflicting local occupancy when another task claims the same branch or worktree', () => {
+    const report = buildDoctorReport({
+      scope: createDoctorPrScope({ projectId: 'ciecopilot-home', prNumber: 44 }),
+      reconciliationReport: buildReconciliationReport({
+        scope: { mode: 'pr', selected_pr_numbers: [44] },
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          release_readiness: { status: 'ready' },
+        }],
+      }),
+      localState: buildLocalState({
+        repo_root: '/worktrees/shared',
+        worktree_path: '/worktrees/shared',
+      }),
+      controlPlaneSnapshot: buildControlPlaneSnapshot({
+        state: {
+          managed_tasks: [{
+            task_id: 'issue-44',
+            issue_number: 44,
+            title: 'Durable worktree registry',
+            branch_name: 'feat/issue-44',
+            worktree_path: '/worktrees/shared',
+            status: 'active',
+          }],
+          pr_bindings: [{
+            binding_id: 'binding-issue-44-pr-44',
+            task_id: 'issue-44',
+            pr_number: 44,
+            branch_name: 'feat/issue-44',
+            base_branch: 'main',
+            status: 'bound',
+            created_at: '2026-03-31T10:00:00.000Z',
+            updated_at: '2026-03-31T10:00:00.000Z',
+          }],
+          worktree_bindings: [
+            createWorktreeBinding({
+              binding_id: 'worktree-issue-44',
+              task_id: 'issue-44',
+              branch_name: 'feat/issue-44',
+              worktree_path: '/worktrees/shared',
+              owner_session_name: 'cie-44',
+              owner_session_id: 'cie-44',
+              status: 'active',
+              occupancy_status: 'occupied',
+              cleanliness_status: 'clean',
+              head_status: 'attached',
+              continuity_status: 'safe_resume',
+              reason_codes: ['binding_matches_local_state'],
+              created_at: '2026-03-31T10:00:00.000Z',
+              updated_at: '2026-03-31T10:00:00.000Z',
+            }),
+            createWorktreeBinding({
+              binding_id: 'worktree-issue-45',
+              task_id: 'issue-45',
+              branch_name: 'feat/issue-45',
+              worktree_path: '/worktrees/shared',
+              owner_session_name: 'cie-45',
+              owner_session_id: 'cie-45',
+              status: 'active',
+              occupancy_status: 'occupied',
+              cleanliness_status: 'clean',
+              head_status: 'attached',
+              continuity_status: 'safe_resume',
+              reason_codes: ['binding_matches_local_state'],
+              created_at: '2026-03-31T10:00:00.000Z',
+              updated_at: '2026-03-31T10:00:00.000Z',
+            }),
+          ],
+          task_specs: [
+            buildValidTaskSpecRecord({
+              taskId: 'issue-44',
+              issueNumber: 44,
+            }),
+          ],
+          runtime_preflights: [
+            buildValidRuntimePreflightRecord(),
+          ],
+        },
+      }),
+    });
+
+    expect(report.top_status).toBe('blocked');
+    expect(report.findings.map((finding) => finding.code)).toContain('conflicting_local_occupancy');
+    expect(report.worktree_safety).toMatchObject({
+      continuity_status: 'conflicting_local_occupancy',
+      conflicting_binding_ids: ['worktree-issue-45'],
+    });
   });
 
   it('blocks when a managed task is missing durable task spec state', () => {

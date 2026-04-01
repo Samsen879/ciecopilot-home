@@ -22,6 +22,7 @@ import {
   createOverrideRecord,
   createPrBinding,
   createTaskSpecRecord,
+  createWorktreeBinding,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
 import { loadAoStateReport } from '../../scripts/ao/lib/state-runner.js';
@@ -140,6 +141,7 @@ describe('ao state runner', () => {
       repoRoot,
       projectId: PROJECT_ID,
       auditLimit: 2,
+      now: '2026-03-31T10:03:00.000Z',
     });
 
     expect(report.bootstrapped).toBe(true);
@@ -152,7 +154,7 @@ describe('ao state runner', () => {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
-      audit_entry_count: 12,
+      audit_entry_count: 13,
     });
     expect(report.audit.recent_entries).toEqual([
       expect.objectContaining({
@@ -248,6 +250,7 @@ describe('ao state runner', () => {
       repoRoot,
       projectId: PROJECT_ID,
       auditLimit: 2,
+      now: '2026-03-31T10:03:00.000Z',
     });
 
     expect(report.summary).toMatchObject({
@@ -641,5 +644,87 @@ describe('ao state runner', () => {
         },
       },
     });
+  });
+
+  it('includes durable worktree registry state and continuity counts in the operator-visible AO state report', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-03-31T13:00:00.000Z',
+        '2026-03-31T13:01:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-126',
+      issue_number: 126,
+      title: 'feat(ao): add worktree registry and bounded continuity repair',
+      branch_name: 'feat/126',
+      worktree_path: '/tmp/cie-66',
+      status: 'active',
+      created_at: '2026-03-31T13:00:00.000Z',
+      updated_at: '2026-03-31T13:00:00.000Z',
+    }));
+    repository.upsertWorktreeBinding(createWorktreeBinding({
+      binding_id: 'worktree-issue-126',
+      task_id: 'issue-126',
+      branch_name: 'feat/126',
+      worktree_path: '/tmp/cie-66',
+      owner_session_name: 'cie-66',
+      owner_session_id: 'cie-66',
+      status: 'active',
+      occupancy_status: 'stale',
+      cleanliness_status: 'dirty',
+      head_status: 'attached',
+      continuity_status: 'dirty_worktree_hold',
+      reason_codes: ['dirty_worktree'],
+      created_at: '2026-03-31T13:00:00.000Z',
+      updated_at: '2026-03-31T13:01:00.000Z',
+      last_observed_at: '2026-03-31T13:01:00.000Z',
+      last_safe_observed_at: '2026-03-31T13:00:00.000Z',
+      last_observed: {
+        branch_name: 'feat/126',
+        worktree_path: '/tmp/cie-66',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/126',
+        worktree_dirty: true,
+        staged_changes: true,
+        unstaged_changes: false,
+      },
+      last_safe_observation: {
+        branch_name: 'feat/126',
+        worktree_path: '/tmp/cie-66',
+        head_sha: 'abc123',
+        upstream_branch: 'origin/feat/126',
+        worktree_dirty: false,
+        staged_changes: false,
+        unstaged_changes: false,
+      },
+    }));
+
+    const report = await loadAoStateReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+      auditLimit: 2,
+    });
+
+    expect(report.summary).toMatchObject({
+      worktree_binding_count: 1,
+      active_worktree_binding_count: 1,
+      worktree_continuity_counts: expect.objectContaining({
+        dirty_worktree_hold: 1,
+      }),
+    });
+    expect(report.worktrees.bindings).toEqual([
+      expect.objectContaining({
+        binding_id: 'worktree-issue-126',
+        continuity_status: 'dirty_worktree_hold',
+        occupancy_status: 'stale',
+        cleanliness_status: 'dirty',
+      }),
+    ]);
   });
 });

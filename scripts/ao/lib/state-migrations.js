@@ -68,6 +68,11 @@ export const CONTROL_PLANE_WORKTREE_REGISTRY_MIGRATION = {
   key: '0010_worktree_registry_v1',
 };
 
+export const CONTROL_PLANE_RELEASE_GUARD_MIGRATION = {
+  version: 11,
+  key: '0011_release_guard_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
@@ -79,6 +84,7 @@ const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_MEASUREMENT_METRICS_MIGRATION,
   CONTROL_PLANE_REPO_KNOWLEDGE_MIGRATION,
   CONTROL_PLANE_WORKTREE_REGISTRY_MIGRATION,
+  CONTROL_PLANE_RELEASE_GUARD_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -132,6 +138,7 @@ function buildBootstrapState({
     'ownership_leases',
     'controller_leases',
     'worktree_bindings',
+    'release_guards',
     'actions',
     'overrides',
     'controller_modes',
@@ -342,6 +349,14 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_RELEASE_GUARD_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -406,6 +421,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane worktree-registry migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_RELEASE_GUARD_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane release-guard migration.',
     };
   }
 

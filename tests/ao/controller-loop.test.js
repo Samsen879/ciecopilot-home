@@ -127,7 +127,11 @@ describe('ao controller loop', () => {
           },
         }),
         loadAoProjectObservation: async () => ({
+          project_id: PROJECT_ID,
           observed_at: '2026-03-29T06:41:00.000Z',
+          source_ok: true,
+          source_error: null,
+          orchestrator: null,
           workers: [
             {
               session_name: 'cie-92',
@@ -140,9 +144,19 @@ describe('ao controller loop', () => {
               freshness: { status: 'fresh' },
             },
           ],
+          raw_summary: {
+            session_count: 1,
+            orchestrator_count: 0,
+            orchestrator_session_names: [],
+            worker_count: 1,
+            branch_count: 1,
+            pr_count: 1,
+          },
         }),
         loadGitHubObservationSet: async () => ({
           observed_at: '2026-03-29T06:41:00.000Z',
+          source_ok: true,
+          source_error: null,
           prs: [
             {
               pr_number: 92,
@@ -384,6 +398,334 @@ describe('ao controller loop', () => {
         }),
       ]),
     );
+  });
+
+  it('persists an active release guard snapshot for a ready PR without granting merge authority', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'shadow');
+    seedCleanRuntimePreflight(repository);
+
+    await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-03-29T06:40:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-03-29T06:41:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        resolveLifecycleReport: async () => ({
+          reconciliationReport: {
+            pr_assessments: [{
+              pr_number: 92,
+              release_guard: {
+                pr_number: 92,
+                branch_name: 'feat/issue-92',
+                head_sha: 'abc123',
+                status: 'ready',
+                basis: ['all_release_signals_clear'],
+                blocker_codes: [],
+                reason_codes: ['all_release_signals_clear'],
+                gates: {
+                  ownership: { name: 'ownership', state: 'open', blocker_codes: [], reason_codes: [] },
+                  review: { name: 'review', state: 'open', blocker_codes: [], reason_codes: [] },
+                  ci: { name: 'ci', state: 'open', blocker_codes: [], reason_codes: [] },
+                  mergeability: { name: 'mergeability', state: 'open', blocker_codes: [], reason_codes: [] },
+                  release: { name: 'release', state: 'open', blocker_codes: [], reason_codes: ['all_release_signals_clear'] },
+                },
+                truth: {
+                  pr_state: 'OPEN',
+                  is_draft: false,
+                  review_status: 'approved',
+                  ci_status: 'passing',
+                  mergeability: 'mergeable',
+                  ownership_status: 'clear',
+                  owner_session_name: 'cie-92',
+                },
+              },
+            }],
+          },
+          lifecycleReport: {
+            top_status: 'continue',
+            routing_decision: {
+              action: 'continue_current_worker',
+              owner_session: 'cie-92',
+              authoritative: true,
+            },
+            release_decision: {
+              disposition: 'notify_human_ready',
+              basis: ['ready_for_human_notification'],
+              authoritative: true,
+            },
+            actions: [],
+          },
+          doctorReport: null,
+        }),
+      },
+    });
+
+    expect(repository.getSnapshot().state.release_guards).toEqual([
+      expect.objectContaining({
+        pr_number: 92,
+        head_sha: 'abc123',
+        status: 'ready',
+        validity_status: 'active',
+        promotion: expect.objectContaining({
+          signal: 'notify_human_ready',
+          disposition: 'notify_human_ready',
+          authoritative: true,
+        }),
+        blocker_codes: [],
+        basis: ['all_release_signals_clear'],
+      }),
+    ]);
+  });
+
+  it('invalidates stale ready release guards when the PR head sha changes', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'shadow');
+    seedCleanRuntimePreflight(repository);
+    const githubStates = [
+      {
+        observed_at: '2026-03-29T06:41:00.000Z',
+        source_ok: true,
+        source_error: null,
+        prs: [
+          {
+            pr_number: 92,
+            state: 'OPEN',
+            head_branch: 'feat/issue-92',
+            head_sha: 'abc123',
+            review_status: 'approved',
+            ci_status: 'passing',
+            mergeability: 'mergeable',
+            is_draft: false,
+            url: 'https://example.test/pr/92',
+          },
+        ],
+      },
+      {
+        observed_at: '2026-03-29T06:46:00.000Z',
+        source_ok: true,
+        source_error: null,
+        prs: [
+          {
+            pr_number: 92,
+            state: 'OPEN',
+            head_branch: 'feat/issue-92',
+            head_sha: 'def456',
+            review_status: 'approved',
+            ci_status: 'pending',
+            mergeability: 'mergeable',
+            is_draft: false,
+            url: 'https://example.test/pr/92',
+          },
+        ],
+      },
+    ];
+
+    const loadGitHubObservationSet = jest.fn(async () => githubStates.shift());
+    const lifecycleStates = [
+      {
+        reconciliationReport: {
+          pr_assessments: [{
+            pr_number: 92,
+            release_guard: {
+              pr_number: 92,
+              branch_name: 'feat/issue-92',
+              head_sha: 'abc123',
+              status: 'ready',
+              basis: ['all_release_signals_clear'],
+              blocker_codes: [],
+              reason_codes: ['all_release_signals_clear'],
+              gates: {
+                ownership: { name: 'ownership', state: 'open', blocker_codes: [], reason_codes: [] },
+                review: { name: 'review', state: 'open', blocker_codes: [], reason_codes: [] },
+                ci: { name: 'ci', state: 'open', blocker_codes: [], reason_codes: [] },
+                mergeability: { name: 'mergeability', state: 'open', blocker_codes: [], reason_codes: [] },
+                release: { name: 'release', state: 'open', blocker_codes: [], reason_codes: ['all_release_signals_clear'] },
+              },
+              truth: {
+                pr_state: 'OPEN',
+                is_draft: false,
+                review_status: 'approved',
+                ci_status: 'passing',
+                mergeability: 'mergeable',
+                ownership_status: 'clear',
+                owner_session_name: 'cie-92',
+              },
+            },
+          }],
+        },
+        lifecycleReport: {
+          top_status: 'continue',
+          routing_decision: {
+            action: 'continue_current_worker',
+            owner_session: 'cie-92',
+            authoritative: true,
+          },
+          release_decision: {
+            disposition: 'notify_human_ready',
+            basis: ['ready_for_human_notification'],
+            authoritative: true,
+          },
+          actions: [],
+        },
+        doctorReport: null,
+      },
+      {
+        reconciliationReport: {
+          pr_assessments: [{
+            pr_number: 92,
+            release_guard: {
+              pr_number: 92,
+              branch_name: 'feat/issue-92',
+              head_sha: 'def456',
+              status: 'waiting',
+              basis: ['ci_pending'],
+              blocker_codes: [],
+              reason_codes: ['ci_pending'],
+              gates: {
+                ownership: { name: 'ownership', state: 'open', blocker_codes: [], reason_codes: [] },
+                review: { name: 'review', state: 'open', blocker_codes: [], reason_codes: [] },
+                ci: { name: 'ci', state: 'pending', blocker_codes: [], reason_codes: ['ci_pending'] },
+                mergeability: { name: 'mergeability', state: 'open', blocker_codes: [], reason_codes: [] },
+                release: { name: 'release', state: 'pending', blocker_codes: [], reason_codes: ['ci_pending'] },
+              },
+              truth: {
+                pr_state: 'OPEN',
+                is_draft: false,
+                review_status: 'approved',
+                ci_status: 'pending',
+                mergeability: 'mergeable',
+                ownership_status: 'clear',
+                owner_session_name: 'cie-92',
+              },
+            },
+          }],
+        },
+        lifecycleReport: {
+          top_status: 'hold',
+          routing_decision: {
+            action: 'continue_current_worker',
+            owner_session: 'cie-92',
+            authoritative: true,
+          },
+          release_decision: {
+            disposition: 'await_ci',
+            basis: ['ci_pending'],
+            authoritative: true,
+          },
+          actions: [],
+        },
+        doctorReport: null,
+      },
+    ];
+    const resolveLifecycleReport = jest.fn(async () => lifecycleStates.shift());
+
+    const commonDeps = {
+      loadAoProjectObservation: async () => ({
+        project_id: PROJECT_ID,
+        observed_at: '2026-03-29T06:41:00.000Z',
+        source_ok: true,
+        source_error: null,
+        orchestrator: null,
+        workers: [
+          {
+            session_name: 'cie-92',
+            session_runtime_id: 'cie-92',
+            issue_number: 92,
+            branch_name: 'feat/issue-92',
+            pr_number: 92,
+            lifecycle_state: 'idle',
+            last_seen_at: '2026-03-29T06:40:45.000Z',
+            freshness: { status: 'fresh' },
+          },
+        ],
+        raw_summary: {
+          session_count: 1,
+          orchestrator_count: 0,
+          orchestrator_session_names: [],
+          worker_count: 1,
+          branch_count: 1,
+          pr_count: 1,
+        },
+      }),
+      loadGitHubObservationSet,
+      resolveLifecycleReport,
+    };
+
+    await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:41:00.000Z',
+      deps: commonDeps,
+    });
+    await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-03-29T06:46:00.000Z',
+      deps: commonDeps,
+    });
+
+    expect(repository.getSnapshot().state.release_guards).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        pr_number: 92,
+        head_sha: 'abc123',
+        status: 'ready',
+        validity_status: 'invalidated',
+        invalidation_reason_codes: expect.arrayContaining(['head_sha_changed']),
+      }),
+      expect.objectContaining({
+        pr_number: 92,
+        head_sha: 'def456',
+        status: 'waiting',
+        validity_status: 'active',
+        promotion: expect.objectContaining({
+          signal: null,
+          disposition: 'await_ci',
+        }),
+      }),
+    ]));
   });
 
   it('passes the control-plane snapshot into doctor resolution for lifecycle handoff analysis', async () => {

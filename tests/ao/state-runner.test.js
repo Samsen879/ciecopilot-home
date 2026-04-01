@@ -21,6 +21,7 @@ import {
   createManagedTask,
   createOverrideRecord,
   createPrBinding,
+  createReleaseGuardRecord,
   createTaskSpecRecord,
   createWorktreeBinding,
 } from '../../scripts/ao/lib/state-contracts.js';
@@ -154,7 +155,7 @@ describe('ao state runner', () => {
       active_override_count: 1,
       controller_mode_count: 1,
       controller_modes: ['default=observe'],
-      audit_entry_count: 13,
+      audit_entry_count: 14,
     });
     expect(report.audit.recent_entries).toEqual([
       expect.objectContaining({
@@ -726,5 +727,151 @@ describe('ao state runner', () => {
         cleanliness_status: 'dirty',
       }),
     ]);
+  });
+
+  it('surfaces active release guards and their typed status counts in the AO state report', async () => {
+    const repoRoot = createTempRepo();
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-04-01T08:00:00.000Z',
+        '2026-04-01T08:01:00.000Z',
+        '2026-04-01T08:02:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertManagedTask(createManagedTask({
+      task_id: 'issue-127',
+      issue_number: 127,
+      title: 'feat(ao): add typed release guard and PR promotion surface',
+      branch_name: 'feat/127',
+      worktree_path: '/tmp/cie-69',
+      status: 'active',
+      created_at: '2026-04-01T08:00:00.000Z',
+      updated_at: '2026-04-01T08:00:00.000Z',
+    }));
+    repository.upsertPrBinding(createPrBinding({
+      binding_id: 'binding-issue-127-pr-137',
+      task_id: 'issue-127',
+      pr_number: 137,
+      branch_name: 'feat/127',
+      base_branch: 'ao/mainline',
+      status: 'bound',
+      created_at: '2026-04-01T08:00:00.000Z',
+      updated_at: '2026-04-01T08:00:00.000Z',
+    }));
+    repository.upsertReleaseGuard(createReleaseGuardRecord({
+      guard_id: 'release-guard-pr-137-ready',
+      pr_number: 137,
+      branch_name: 'feat/127',
+      head_sha: 'abc123',
+      status: 'ready',
+      validity_status: 'active',
+      recorded_at: '2026-04-01T08:01:00.000Z',
+      truth_fingerprint: 'truth-ready',
+      basis: ['all_release_signals_clear'],
+      blocker_codes: [],
+      reason_codes: [],
+      gates: {
+        ownership: { name: 'ownership', state: 'open', blocker_codes: [], reason_codes: [] },
+        review: { name: 'review', state: 'open', blocker_codes: [], reason_codes: [] },
+        ci: { name: 'ci', state: 'open', blocker_codes: [], reason_codes: [] },
+        mergeability: { name: 'mergeability', state: 'open', blocker_codes: [], reason_codes: [] },
+        release: { name: 'release', state: 'open', blocker_codes: [], reason_codes: ['all_release_signals_clear'] },
+      },
+      truth: {
+        pr_state: 'OPEN',
+        is_draft: false,
+        review_status: 'approved',
+        ci_status: 'passing',
+        mergeability: 'mergeable',
+        ownership_status: 'clear',
+        owner_session_name: 'cie-69',
+      },
+      promotion: {
+        disposition: 'notify_human_ready',
+        signal: 'notify_human_ready',
+        authoritative: true,
+        basis: ['ready_for_human_notification'],
+      },
+    }));
+    repository.upsertReleaseGuard(createReleaseGuardRecord({
+      guard_id: 'release-guard-pr-137-stale',
+      pr_number: 137,
+      branch_name: 'feat/127',
+      head_sha: 'old111',
+      status: 'ready',
+      validity_status: 'invalidated',
+      recorded_at: '2026-04-01T08:00:30.000Z',
+      truth_fingerprint: 'truth-old',
+      basis: ['all_release_signals_clear'],
+      blocker_codes: [],
+      reason_codes: [],
+      gates: {
+        ownership: { name: 'ownership', state: 'open', blocker_codes: [], reason_codes: [] },
+        review: { name: 'review', state: 'open', blocker_codes: [], reason_codes: [] },
+        ci: { name: 'ci', state: 'open', blocker_codes: [], reason_codes: [] },
+        mergeability: { name: 'mergeability', state: 'open', blocker_codes: [], reason_codes: [] },
+        release: { name: 'release', state: 'open', blocker_codes: [], reason_codes: ['all_release_signals_clear'] },
+      },
+      truth: {
+        pr_state: 'OPEN',
+        is_draft: false,
+        review_status: 'approved',
+        ci_status: 'passing',
+        mergeability: 'mergeable',
+        ownership_status: 'clear',
+        owner_session_name: 'cie-69',
+      },
+      promotion: {
+        disposition: 'notify_human_ready',
+        signal: 'notify_human_ready',
+        authoritative: true,
+        basis: ['ready_for_human_notification'],
+      },
+      invalidated_at: '2026-04-01T08:01:00.000Z',
+      invalidation_reason_codes: ['head_sha_changed'],
+      superseded_by_guard_id: 'release-guard-pr-137-ready',
+    }));
+
+    const report = await loadAoStateReport({
+      repoRoot,
+      projectId: PROJECT_ID,
+      auditLimit: 2,
+      now: '2026-04-01T08:02:00.000Z',
+    });
+
+    expect(report.summary).toMatchObject({
+      release_guard_count: 2,
+      active_release_guard_count: 1,
+      active_release_guard_status_counts: {
+        ready: 1,
+        waiting: 0,
+        blocked: 0,
+        ambiguous: 0,
+        not_applicable: 0,
+      },
+    });
+    expect(report.release.current_guards).toEqual([
+      expect.objectContaining({
+        guard_id: 'release-guard-pr-137-ready',
+        pr_number: 137,
+        head_sha: 'abc123',
+        status: 'ready',
+        validity_status: 'active',
+        promotion: expect.objectContaining({
+          signal: 'notify_human_ready',
+        }),
+      }),
+    ]);
+    expect(report.release.guards).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        guard_id: 'release-guard-pr-137-stale',
+        validity_status: 'invalidated',
+        invalidation_reason_codes: ['head_sha_changed'],
+      }),
+    ]));
   });
 });

@@ -66,11 +66,11 @@ function selectSingleAssessment(scope, reconciliationReport) {
 }
 
 function extractTypedReleaseData(assessment) {
-  const releaseReadiness = assessment?.release_readiness ?? {};
-  const gates = createGateSnapshot(releaseReadiness.gates ?? {});
+  const releaseProjection = assessment?.release_guard ?? assessment?.release_readiness ?? {};
+  const gates = createGateSnapshot(releaseProjection.gates ?? {});
   const blockerCodes = uniqueStrings([
-    ...(releaseReadiness.blocker_codes ?? []),
-    ...(releaseReadiness.blockers ?? []),
+    ...(releaseProjection.blocker_codes ?? []),
+    ...(releaseProjection.blockers ?? []),
     ...collectGateBlockerCodes(gates),
   ]);
   const reasonCodes = uniqueStrings(Object.values(gates).flatMap((gate) => gate.reason_codes ?? []));
@@ -333,8 +333,9 @@ function buildReleaseDecision({
     };
   }
 
-  const releaseStatus = assessment.release_readiness?.status ?? 'unknown';
-  const basis = assessment.release_readiness?.basis ?? [];
+  const releaseProjection = assessment.release_guard ?? assessment.release_readiness ?? {};
+  const releaseStatus = releaseProjection.status ?? assessment.release_readiness?.status ?? 'unknown';
+  const basis = releaseProjection.basis ?? assessment.release_readiness?.basis ?? [];
   const typedReleaseDecision = resolveTypedReleaseDisposition(assessment);
 
   if (scope?.trigger === 'bugbot_comments') {
@@ -391,6 +392,14 @@ function buildReleaseDecision({
   }
 
   if (releaseStatus === 'ambiguous') {
+    return {
+      disposition: 'human_gate',
+      basis,
+      authoritative: false,
+    };
+  }
+
+  if (releaseStatus === 'waiting') {
     return {
       disposition: 'human_gate',
       basis,

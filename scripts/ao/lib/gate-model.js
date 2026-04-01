@@ -96,3 +96,18 @@ export function collectGateBlockerCodes(snapshot) {
     }),
   ).sort((left, right) => left.localeCompare(right));
 }
+
+export function collectGateReasonCodes(snapshot, { states = null } = {}) {
+  const normalizedStates = states == null
+    ? null
+    : uniqueStrings(states).filter((state) => GATE_STATES.includes(state));
+
+  return uniqueStrings(
+    GATE_NAMES.flatMap((name) => {
+      const gate = getGate(snapshot, name);
+      if (!gate) return [];
+      if (normalizedStates && !normalizedStates.includes(gate.state)) return [];
+      return gate.reason_codes ?? [];
+    }),
+  );
+}

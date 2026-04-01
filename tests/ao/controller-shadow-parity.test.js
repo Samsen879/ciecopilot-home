@@ -26,6 +26,7 @@ import { createStateRepository } from '../../scripts/ao/lib/state-repository.js'
 const PROJECT_ID = 'ciecopilot-home';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURE_ROOT = path.join(__dirname, 'fixtures', 'acceptance');
+const FIXTURE_REPO_ROOT = '/home/samsen/code/ciecopilot-home';
 const ORIGINAL_FIXTURE_ROOT = process.env.AO_FIXTURE_ROOT;
 const tempDirs = [];
 
@@ -117,7 +118,7 @@ describe('ao controller shadow parity', () => {
       issue_number: issueNumber,
       title: `Fixture parity ${name}`,
       branch_name: branchName,
-      worktree_path: `/tmp/${branchName}`,
+      worktree_path: FIXTURE_REPO_ROOT,
       status: 'active',
       created_at: '2026-03-29T06:50:00.000Z',
       updated_at: '2026-03-29T06:50:00.000Z',

@@ -26,6 +26,7 @@ const clientState = {
   workspaceProjections: new Map(),
   questionInsertGate: null,
 };
+const LOCAL_TEST_USER_ID = '99ab903e-46aa-4cfb-9317-cf09aae34d79';
 
 function createDeferred() {
   let resolve;
@@ -105,10 +106,10 @@ function seedTopics() {
 function seedWorkspaceProjections() {
   clientState.workspaceProjections = new Map([
     [
-      'student-1:topic-integration-1',
+      `${LOCAL_TEST_USER_ID}:topic-integration-1`,
       {
         workspace_id: 'workspace-integration-1',
-        user_id: 'student-1',
+        user_id: LOCAL_TEST_USER_ID,
         topic_id: 'topic-integration-1',
         topic_path: '9709.integration.application',
         slot_state: {
@@ -439,9 +440,55 @@ class QueryBuilder {
 }
 
 function createClient() {
+  const listUsers = jest.fn(async ({ page }) => ({
+    data: {
+      users: page === 1
+        ? [
+          {
+            id: LOCAL_TEST_USER_ID,
+            email: 'student-1@example.test',
+            user_metadata: {
+              name: 'student-1',
+              role: 'student',
+              auth_source: 'local_test',
+            },
+            app_metadata: {
+              role: 'student',
+              auth_source: 'local_test',
+            },
+          },
+        ]
+        : [],
+      nextPage: 0,
+    },
+    error: null,
+  }));
+
+  const createUser = jest.fn(async ({
+    email,
+    user_metadata = {},
+    app_metadata = {},
+  }) => ({
+    data: {
+      user: {
+        id: LOCAL_TEST_USER_ID,
+        email,
+        user_metadata,
+        app_metadata,
+      },
+    },
+    error: null,
+  }));
+
   return {
     from(table) {
       return new QueryBuilder(table);
+    },
+    auth: {
+      admin: {
+        listUsers,
+        createUser,
+      },
     },
   };
 }
@@ -501,6 +548,46 @@ function buildTrigIdentityInput(overrides = {}) {
       candidate_rubric_refs: [buildReleasedRubricRef()],
       uncertainty_validated: true,
       variant_tags: ['paper:p1', 'structure:identity_rewrite'],
+      ...classification,
+    },
+  };
+}
+
+function buildTrigEquationInput(overrides = {}) {
+  const classification = overrides.classification || {};
+
+  return {
+    subject_code: '9709',
+    prompt_representation: {
+      type: 'text',
+      value: 'Solve 2cos(2x)-3sin x=0 for 0<=x<=180 degrees.',
+    },
+    provenance_summary: {
+      import_source: 'manual_paste',
+    },
+    classification: {
+      primary_question_type_id: '9709.trigonometry.equations',
+      classification_confidence: 0.91,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.trigonometry.equations',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p1', 'structure:solve_in_domain'],
+      ...classification,
+    },
+    ...overrides,
+    classification: {
+      primary_question_type_id: '9709.trigonometry.equations',
+      classification_confidence: 0.91,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.trigonometry.equations',
+        }),
+      ],
+      uncertainty_validated: true,
+      variant_tags: ['paper:p1', 'structure:solve_in_domain'],
       ...classification,
     },
   };
@@ -1093,6 +1180,28 @@ describe('question import service', () => {
       ),
     ).toHaveLength(0);
   });
+
+  test('question import normalizes runtime topic aliases before durable writes', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildTrigEquationInput({
+        classification: {
+          primary_topic_id: 'topic-trig-equations',
+        },
+      }),
+      idempotencyKey: 'import-topic-alias-1',
+    });
+
+    expect(result.question).toMatchObject({
+      primary_topic_id: null,
+      primary_question_type_id: '9709.trigonometry.equations',
+    });
+    const [storedQuestion] = clientState.questions.values();
+    expect(storedQuestion).toMatchObject({
+      primary_topic_id: null,
+      primary_question_type_id: '9709.trigonometry.equations',
+    });
+  });
 });
 
 describe('learning question import api', () => {
@@ -1167,6 +1276,52 @@ describe('learning question import api', () => {
       fallback_mode: 'non_released_fallback',
       fallback_reason_code: 'subject_adapter_capability_not_enabled',
       learning_signal_posture: 'conservative_fallback',
+    });
+  });
+
+  test('imported question sessions keep a canonical topic path even when the stored topic id is absent', async () => {
+    const importRes = await harness.request
+      .post('/api/learning/questions/import')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildTrigIdentityInput());
+
+    expect(importRes.status).toBe(200);
+    expect(importRes.body.question).toMatchObject({
+      primary_topic_id: null,
+      primary_question_type_id: '9709.trigonometry.identities',
+    });
+
+    const questionId = importRes.body.question.question_id;
+    const createSessionRes = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        subject_code: '9709',
+        mode: 'guided_solve',
+        session_goal: 'Work through imported identity question',
+        anchor_kind: 'question',
+        anchor_ref: {
+          kind: 'question',
+          question_id: questionId,
+        },
+        current_question_id: questionId,
+        current_question_type_id: null,
+      });
+
+    expect(createSessionRes.status).toBe(200);
+    expect(createSessionRes.body.session.active_scope_bundle).toMatchObject({
+      primary_topic_id: null,
+      primary_topic_path: '9709.trigonometry.identities',
+      current_question_ref: {
+        kind: 'question',
+        question_id: questionId,
+      },
+      current_question_type_ref: {
+        kind: 'question_type',
+        question_type_id: '9709.trigonometry.identities',
+      },
     });
   });
 

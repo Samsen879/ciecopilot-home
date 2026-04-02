@@ -18,10 +18,10 @@ describe('shared rate limit gate coverage', () => {
     process.env.NODE_ENV = 'test';
     process.env.AUTH_LOCAL_TEST_MODE = 'true';
     process.env.ALLOWED_ORIGINS = 'http://localhost:3000';
-    process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret';
-    process.env.SUPABASE_URL = process.env.SUPABASE_URL || 'https://example.supabase.co';
-    process.env.SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || 'anon-key';
-    process.env.SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'service-key';
+    process.env.JWT_SECRET = 'test-secret';
+    process.env.SUPABASE_URL = 'https://example.supabase.co';
+    process.env.SUPABASE_ANON_KEY = 'anon-key';
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-key';
 
     const mod = await import('../index.js');
     server = http.createServer(mod.default);

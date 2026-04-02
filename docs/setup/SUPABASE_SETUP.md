@@ -2,6 +2,17 @@
 
 本指南将帮助您完成 CIE Copilot 项目的 Supabase 数据库配置。
 
+## 当前阶段说明
+
+- 当前产品配置不能停留在 legacy initial schema。
+- learning-runtime 依赖仓库内 2026-03-20 和 2026-03-24 的 repo migrations，尤其是：
+  - `20260320110000_expand_question_bank_for_learning_runtime.sql`
+  - `20260320111000_create_learning_runtime_core.sql`
+  - `20260320111500_seed_learning_runtime_pilot_registry.sql`
+  - `20260320112000_create_learning_runtime_read_models.sql`
+  - `20260324120000_create_learning_request_idempotency.sql`
+- Supabase auth callbacks、前端本地文档、以及 runtime smoke 都应保持与 `http://localhost:5173` 对齐。
+
 ## 📋 准备工作
 
 ### 1. 注册 Supabase 账号
@@ -51,10 +62,16 @@ VITE_NODE_ENV=development
 
 1. 在 Supabase 仪表板中，点击左侧菜单的 "SQL Editor"
 2. 点击 "New query"
-3. 复制 `scripts/001_initial_schema.sql` 文件的全部内容
-4. 粘贴到 SQL 编辑器中
-5. 点击 "Run" 执行 SQL 脚本
-6. 确认所有表都创建成功（无错误信息）
+3. 不要只停留在 legacy initial schema；当前产品需要仓库 migrations 中的完整运行时表
+4. 推荐优先使用仓库 migration 流程，而不是手工复制单个 SQL 文件：
+
+```bash
+supabase link --project-ref nbzvlqtgnkmohlamguzz
+supabase db push --yes
+```
+
+5. 如果是本地环境，至少要确认 March 20 和 March 24 的 learning-runtime migrations 已应用完成
+6. 确认 learning-runtime 相关表已经存在，而不是只完成早期基础表
 
 ### 步骤 4: 配置认证
 
@@ -129,8 +146,10 @@ npm run dev
 
 ### 3. 运行数据迁移
 ```bash
-node scripts/migrate-data.js
+supabase db push --yes
 ```
+
+如果需要验证 learning-runtime 当前所需 schema，请确认 March 20 和 March 24 的 repo migrations 已成功应用，而不是只运行旧的初始化脚本。
 
 ## 📊 数据迁移
 
@@ -152,6 +171,7 @@ node scripts/migrate-data.js
 - [ ] Supabase 项目创建成功
 - [ ] 环境变量配置正确
 - [ ] 数据库表创建成功
+- [ ] March 20 和 March 24 的 learning-runtime migrations 已应用
 - [ ] 认证设置配置完成
 - [ ] 用户注册/登录功能正常
 - [ ] 数据迁移完成

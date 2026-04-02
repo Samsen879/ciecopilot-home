@@ -45,7 +45,7 @@ describe('ImportedQuestionIntake', () => {
       },
       classification: {
         primary_question_type_id: '9709.trigonometry.equations',
-        primary_topic_id: 'topic-trig-equations',
+        primary_topic_id: null,
       },
     });
   });

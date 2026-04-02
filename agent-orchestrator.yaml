@@ -39,7 +39,11 @@ projects:
       If the repository branch, `agent-orchestrator.yaml`, or `.agent-rules.md` changed, or AO-related stash content was restored, stop and recreate the orchestrator session instead of reusing an older one.
       Do not instruct agents to run repo-local AO control-plane scripts unless those scripts exist in the current branch.
       When repo-local workflow scripts exist, normalize local posture first with `npm run workflow:baseline:sync`.
+      Default workflow mode is `formal`.
       When repo-local workflow scripts exist, create new implementation work only through `npm run workflow:task:create -- --id <id> --slug <slug> --base baseline/origin-main-20260402`.
+      Treat `light-direct-minimal` as a local Codex-only exception for report docs under `docs/reports/**`.
+      Do not assign autonomous AO workers direct-main edits under `light-direct-minimal`.
+      If a task is ambiguous or touches anything outside `docs/reports/**`, require `formal` task worktree + PR.
       Do not let workers implement changes directly in `main`, `master`, `baseline/*`, or the preserved dirty root worktree.
       Worker sessions should operate only inside their assigned `task/*` worktree once it has been created.
       After a human merges a task PR, run `npm run workflow:task:closeout -- --branch <branch> --confirm closeout` when the local task branch still exists.

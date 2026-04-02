@@ -24,10 +24,20 @@ describe('git hook guardrails', () => {
   test('pre-commit blocks direct commits on protected branches', () => {
     const result = evaluatePreCommitGuardrail({
       currentBranch: 'baseline/origin-main-20260402',
+      stagedFilePaths: ['docs/setup/ENGINEERING_WORKFLOW_GOVERNANCE_V1.md'],
     });
 
     expect(result.ok).toBe(false);
     expect(result.code).toBe('protected_branch_commit_blocked');
+  });
+
+  test('pre-commit allows light-direct-minimal commits on protected branches', () => {
+    const result = evaluatePreCommitGuardrail({
+      currentBranch: 'baseline/origin-main-20260402',
+      stagedFilePaths: ['docs/reports/2026-04-02-status.md'],
+    });
+
+    expect(result.ok).toBe(true);
   });
 
   test('pre-commit allows commits on task branches', () => {
@@ -72,10 +82,68 @@ describe('git hook guardrails', () => {
           remoteSha: 'def456',
         },
       ],
+      protectedPushFilePaths: ['docs/reports/2026-04-02-status.md'],
     });
 
     expect(result.ok).toBe(false);
     expect(result.code).toBe('protected_branch_push_blocked');
+  });
+
+  test('pre-push allows light-direct-minimal direct push from a protected branch', () => {
+    const result = evaluatePrePushGuardrail({
+      currentBranch: 'baseline/origin-main-20260402',
+      worktreeDirty: false,
+      pushUpdates: [
+        {
+          localRef: 'refs/heads/baseline/origin-main-20260402',
+          localSha: 'abc123',
+          remoteRef: 'refs/heads/main',
+          remoteSha: 'def456',
+        },
+      ],
+      protectedPushFilePaths: ['docs/reports/2026-04-02-status.md'],
+    });
+
+    expect(result.ok).toBe(true);
+  });
+
+  test('pre-push blocks protected-branch direct push when paths exceed light-direct-minimal allowlist', () => {
+    const result = evaluatePrePushGuardrail({
+      currentBranch: 'baseline/origin-main-20260402',
+      worktreeDirty: false,
+      pushUpdates: [
+        {
+          localRef: 'refs/heads/baseline/origin-main-20260402',
+          localSha: 'abc123',
+          remoteRef: 'refs/heads/main',
+          remoteSha: 'def456',
+        },
+      ],
+      protectedPushFilePaths: ['docs/setup/ENGINEERING_WORKFLOW_GOVERNANCE_V1.md'],
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.code).toBe('protected_branch_push_blocked');
+  });
+
+  test('pre-push blocks light-direct-minimal direct push when baseline is still dirty', () => {
+    const result = evaluatePrePushGuardrail({
+      currentBranch: 'baseline/origin-main-20260402',
+      worktreeDirty: true,
+      pushUpdates: [
+        {
+          localRef: 'refs/heads/baseline/origin-main-20260402',
+          localSha: 'abc123',
+          remoteRef: 'refs/heads/main',
+          remoteSha: 'def456',
+        },
+      ],
+      protectedPushFilePaths: ['docs/reports/2026-04-02-status.md'],
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.code).toBe('protected_branch_push_blocked');
+    expect(result.messageLines.join('\n')).toContain('当前 worktree 仍然是脏的');
   });
 
   test('pre-push blocks dirty task branches', () => {

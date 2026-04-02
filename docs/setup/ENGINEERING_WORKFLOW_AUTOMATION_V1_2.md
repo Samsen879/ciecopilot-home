@@ -8,6 +8,15 @@ v1.2 的目标很简单：
 
 这次不做新的流程体系，只把 v1 和 v1.1 已经定下来的做法，补成可执行命令。
 
+v1.3 再补了一层模式说明，但没有再多发明一套命令。
+
+- `formal` 继续用这份文档里的 `workflow:*` 命令
+- `light-direct-minimal` 只在干净 baseline worktree 里启动，靠路径白名单和 git hook 判定是否放行
+
+详细规则见：
+
+- [ENGINEERING_WORKFLOW_MODES_V1_3.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_WORKFLOW_MODES_V1_3.md)
+
 ## 新增命令
 
 ### 1. 同步 baseline
@@ -102,6 +111,7 @@ npm run workflow:task:closeout -- --id 142 --slug governance-v1 --confirm closeo
 - `git:hooks:install` 和 `workflow:*` 命令，先在干净 baseline worktree 里执行
 - 旧根目录里的 `npm run ao:start:clean` 已经加了桥接，会先尝试跑 baseline sync，再启动 AO
 - 如果你继续在旧根目录里直接执行 `ao start`，当前的 `agent-orchestrator.yaml` 也已经把项目根指向 baseline worktree
+- `ao:start:clean` 仍然默认启动 `formal`，不会自动把 AO worker 放进轻量直入模式
 
 ## 这次没有自动化的部分
 
@@ -111,11 +121,13 @@ v1.2 先不做这些：
 - 不自动 merge PR
 - 不把 AO 门禁包装成一键总控命令
 - 不自动清理 `runs/`、截图或历史 artifact
+- 不为 `light-direct-minimal` 再造一套新脚本
 
 原因：
 
 - 这些动作要么风险更高，要么已经和 AO / GitHub 控制面边界接近
 - v1.2 先把“本地开工”和“本地收口”做稳
+- v1.3 轻量档只做极窄例外，靠现有 baseline sync + hook 就够了
 
 ## 推荐使用顺序
 

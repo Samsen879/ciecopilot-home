@@ -81,6 +81,17 @@ closeout 就是“合并后的收尾动作”。
 
 **不在本地 `main` 开发，不在脏根目录继续叠任务，不把 merge 当成结束。**
 
+v1.3 补充后，这句话仍然成立。
+
+区别只是：
+
+- 默认仍然走 `formal`
+- 只有 `docs/reports/**` 这类超小结论文档，才允许走极窄的 `light-direct-minimal`
+
+详细规则见：
+
+- [ENGINEERING_WORKFLOW_MODES_V1_3.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_WORKFLOW_MODES_V1_3.md)
+
 ## 硬规则
 
 以下规则是 v1 的硬规则，默认不例外：
@@ -88,8 +99,8 @@ closeout 就是“合并后的收尾动作”。
 - 不在本地 `main` 直接开发，也不在本地 `main` 上直接提交。
 - 仓库必须长期保留一个干净 baseline worktree。当前默认基线是 `baseline/origin-main-20260402` 对应的 worktree。
 - 每个任务必须单独使用一个 branch 和一个 worktree。默认放在 `.worktrees/` 下。
-- 所有要进入 `main` 的改动必须走 PR。
-- AO / AI 可以写代码、写文档、跑验证、开 PR，但不能自动 merge。
+- 默认所有要进入 `main` 的改动都走 PR。只有 `light-direct-minimal` 白名单文档是例外，规则见 v1.3。
+- AO / AI 可以写代码、写文档、跑验证、开 PR，但 formal 流程里的 merge 仍由人执行；`light-direct-minimal` 不给 AO 自主 worker 默认直入主线权限。
 - PR 请求人工 merge 之前，至少要有本轮相关验证结果，并执行 PR 维度的 `ao:reconcile` 严格模式。
 - 如果存在本地连续性风险、目录变脏风险、分支对不上等问题，要补跑 `ao:doctor`。
 - 如果需要判断“现在该继续 agent、交接还是通知人来处理”，要跑 `ao:lifecycle`，但它仍然不拥有 merge 权限。
@@ -130,12 +141,14 @@ closeout 就是“合并后的收尾动作”。
 使用说明见：
 
 - [ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md)
+- [ENGINEERING_WORKFLOW_MODES_V1_3.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_WORKFLOW_MODES_V1_3.md)
 
 ## 标准开发 SOP
 
 详细步骤见：
 
 - [ENGINEERING_TASK_WORKFLOW_SOP.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_TASK_WORKFLOW_SOP.md)
+- [ENGINEERING_WORKFLOW_MODES_V1_3.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_WORKFLOW_MODES_V1_3.md)
 
 高层 SOP 只有 7 步：
 
@@ -192,6 +205,11 @@ closeout 不是可选项。merge 后至少要做到：
 执行时直接看：
 
 - [ENGINEERING_CLOSEOUT_CHECKLIST.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_CLOSEOUT_CHECKLIST.md)
+
+补充说明：
+
+- `formal` 走 merge + closeout
+- `light-direct-minimal` 不开 task worktree，也没有 PR closeout；但结束前必须把 baseline worktree 恢复到干净、已对齐主线的状态
 
 ## AI artifact 最小治理规则
 
@@ -308,6 +326,7 @@ v1 规则：
 - 没有把“merge 后 15 分钟内必须收口”写成硬性分钟 SLA。这个项目当前是单 owner + 多 AI，v1 更适合“同一工作轮次内完成，最晚不拖到下一任务前”。
 - 没有把“每个任务都写完整 spec”写成硬规则。小任务允许 only brief，大任务再补设计文档。
 - 没有把所有 AO 控制面能力都纳入 v1 强制流程。先把 `reconcile / doctor / lifecycle` 固定下来就够了。
+- 没有把“轻量档”放宽成大面积直推主线。v1.3 只对白名单 `docs/reports/**` 开例外，不把治理文档、runbook、脚本、代码也一起放开。
 - 没有在这次顺手清理所有历史 `runs/**` 或旧脏工作区。v1 先管未来增量，不在本轮扩大施工面。
 
 ## v1 的一句话总结

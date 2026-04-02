@@ -47,11 +47,16 @@ function createRepoFixture() {
     private: true,
     type: 'module',
   }, null, 2));
+  copyProjectFile('.githooks/pre-commit', repoDir);
+  copyProjectFile('.githooks/pre-push', repoDir);
+  copyProjectFile('scripts/git-hooks/guardrails.js', repoDir);
+  copyProjectFile('scripts/git-hooks/install.sh', repoDir);
+  copyProjectFile('scripts/workflow/lib/workflow-mode.js', repoDir);
   fs.mkdirSync(path.join(repoDir, '.git', 'ao-hooks'), { recursive: true });
   runGit(['config', 'user.name', 'Codex Test'], repoDir);
   runGit(['config', 'user.email', 'codex@example.com'], repoDir);
   runGit(['config', 'core.hooksPath', path.join(repoDir, '.git', 'ao-hooks')], repoDir);
-  runGit(['add', 'README.md', 'package.json'], repoDir);
+  runGit(['add', '.'], repoDir);
   runGit(['commit', '-m', 'chore: seed repo'], repoDir);
   runGit(['push', '-u', 'origin', 'main'], repoDir);
   runGit(
@@ -62,6 +67,7 @@ function createRepoFixture() {
   return {
     tempRoot,
     repoDir,
+    remoteDir,
     baselineWorktreePath: path.join(repoDir, '.worktrees', BASELINE_WORKTREE_NAME),
   };
 }
@@ -115,6 +121,7 @@ describe('workflow scripts', () => {
       copyProjectFile('.githooks/pre-push', fixture.baselineWorktreePath);
       copyProjectFile('scripts/git-hooks/guardrails.js', fixture.baselineWorktreePath);
       copyProjectFile('scripts/git-hooks/install.sh', fixture.baselineWorktreePath);
+      copyProjectFile('scripts/workflow/lib/workflow-mode.js', fixture.baselineWorktreePath);
 
       const installResult = runCommand('bash', [HOOK_INSTALL_SCRIPT], {
         cwd: fixture.baselineWorktreePath,
@@ -131,6 +138,7 @@ describe('workflow scripts', () => {
 
       const protectedWorktree = path.join(fixture.repoDir, '.worktrees', 'baseline-test');
       copyProjectFile('scripts/git-hooks/guardrails.js', protectedWorktree);
+      copyProjectFile('scripts/workflow/lib/workflow-mode.js', protectedWorktree);
       fs.writeFileSync(path.join(protectedWorktree, 'guardrail.txt'), 'blocked\n');
       runGit(['add', 'guardrail.txt'], protectedWorktree);
 
@@ -141,6 +149,45 @@ describe('workflow scripts', () => {
       expect(commitResult.status).toBe(1);
       const blockedCommit = runGit(['log', '--oneline', '--grep', 'test: blocked baseline commit'], protectedWorktree);
       expect(blockedCommit.stdout.trim()).toBe('');
+    } finally {
+      fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  test('hook install allows light-direct-minimal report docs to commit and push from baseline', () => {
+    const fixture = createRepoFixture();
+
+    try {
+      copyProjectFile('.githooks/pre-commit', fixture.baselineWorktreePath);
+      copyProjectFile('.githooks/pre-push', fixture.baselineWorktreePath);
+      copyProjectFile('scripts/git-hooks/guardrails.js', fixture.baselineWorktreePath);
+      copyProjectFile('scripts/git-hooks/install.sh', fixture.baselineWorktreePath);
+      copyProjectFile('scripts/workflow/lib/workflow-mode.js', fixture.baselineWorktreePath);
+
+      const installResult = runCommand('bash', [HOOK_INSTALL_SCRIPT], {
+        cwd: fixture.baselineWorktreePath,
+      });
+
+      expect(installResult.status).toBe(0);
+
+      const reportsDir = path.join(fixture.baselineWorktreePath, 'docs', 'reports');
+      fs.mkdirSync(reportsDir, { recursive: true });
+      fs.writeFileSync(path.join(reportsDir, '2026-04-02-status.md'), '# status\n');
+
+      runGit(['add', 'docs/reports/2026-04-02-status.md'], fixture.baselineWorktreePath);
+
+      const commitResult = runCommand('git', ['commit', '-m', 'docs: add status report'], {
+        cwd: fixture.baselineWorktreePath,
+      });
+      expect(commitResult.status).toBe(0);
+
+      const pushResult = runCommand('git', ['push', 'origin', 'HEAD:main'], {
+        cwd: fixture.baselineWorktreePath,
+      });
+      expect(pushResult.status).toBe(0);
+
+      const remoteLog = runCommand('git', ['--git-dir', fixture.remoteDir, 'log', '--oneline', '--max-count=1', 'main']);
+      expect(remoteLog.stdout).toContain('docs: add status report');
     } finally {
       fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
     }

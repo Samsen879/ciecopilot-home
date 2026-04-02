@@ -1,5 +1,10 @@
 import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import {
+  classifyWorkflowModeByPaths,
+  LIGHT_DIRECT_MINIMAL_ALLOWED_PREFIXES,
+  WORKFLOW_MODE_LIGHT_DIRECT_MINIMAL,
+} from '../workflow/lib/workflow-mode.js';
 
 const PROTECTED_BRANCHES = new Set(['main', 'master']);
 const PROTECTED_BRANCH_PREFIXES = ['baseline/'];
@@ -34,6 +39,17 @@ function branchNameFromRef(refName) {
 
 export function isProtectedRemoteRef(refName) {
   return isProtectedBranchName(branchNameFromRef(refName));
+}
+
+function parseNameOnlyStdout(stdout) {
+  return Array.from(
+    new Set(
+      String(stdout ?? '')
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean),
+    ),
+  ).sort((left, right) => left.localeCompare(right));
 }
 
 export function parsePrePushStdin(stdinText) {
@@ -85,8 +101,21 @@ export function parseStatusPorcelain(stdout) {
   };
 }
 
+function formatLightDirectMinimalRule() {
+  return `只有 \`${LIGHT_DIRECT_MINIMAL_ALLOWED_PREFIXES.join('`, `')}\` 允许走 \`light-direct-minimal\`。`;
+}
+
+function formatDisallowedPathLine(decision) {
+  const disallowedPaths = decision?.disallowedPaths ?? [];
+  if (disallowedPaths.length === 0) return null;
+
+  const samples = disallowedPaths.slice(0, 3).join(', ');
+  return `超出白名单的路径样例：${samples}`;
+}
+
 export function evaluatePreCommitGuardrail({
   currentBranch,
+  stagedFilePaths = [],
 } = {}) {
   if (trimText(currentBranch) == null) {
     return createResult(false, 'branch_unavailable', [
@@ -96,11 +125,25 @@ export function evaluatePreCommitGuardrail({
   }
 
   if (isProtectedBranchName(currentBranch)) {
+    const workflowModeDecision = classifyWorkflowModeByPaths(stagedFilePaths);
+    if (workflowModeDecision.mode === WORKFLOW_MODE_LIGHT_DIRECT_MINIMAL) {
+      return createResult(true, 'ok', [], {
+        currentBranch,
+        workflowModeDecision,
+      });
+    }
+
     return createResult(false, 'protected_branch_commit_blocked', [
       `[git guardrails] 已阻止在受保护分支 \`${currentBranch}\` 上直接 commit。`,
+      formatLightDirectMinimalRule(),
+      workflowModeDecision.reason === 'no_paths'
+        ? '当前没有可判定的 staged 路径，不能按轻量档放行。'
+        : '这次改动不属于轻量直入白名单，必须升级到 formal。',
+      formatDisallowedPathLine(workflowModeDecision),
       '请从干净 baseline 新开 task branch + worktree，再在任务分支里提交。',
     ], {
       currentBranch,
+      workflowModeDecision,
     });
   }
 
@@ -122,6 +165,7 @@ export function evaluatePrePushGuardrail({
   worktreeDirty,
   pushUpdates = [],
   statusSummary = null,
+  protectedPushFilePaths = [],
 } = {}) {
   if (trimText(currentBranch) == null) {
     return createResult(false, 'branch_unavailable', [
@@ -130,23 +174,47 @@ export function evaluatePrePushGuardrail({
     ]);
   }
 
-  if (isProtectedBranchName(currentBranch)) {
-    return createResult(false, 'protected_branch_push_blocked', [
-      `[git guardrails] 已阻止从受保护分支 \`${currentBranch}\` 直接 push。`,
-      '受保护分支只作为 baseline 或远端主线镜像使用，不作为日常开发分支。',
-    ], {
-      currentBranch,
-    });
-  }
-
   const protectedTarget = pushUpdates.find((update) => isProtectedRemoteRef(update.remoteRef));
-  if (protectedTarget) {
+  const pushingFromProtectedBranch = isProtectedBranchName(currentBranch);
+
+  if (pushingFromProtectedBranch || protectedTarget) {
+    const workflowModeDecision = classifyWorkflowModeByPaths(protectedPushFilePaths);
+    const protectedDirtySummary = worktreeDirty ? formatDirtySummary(statusSummary) : null;
+
+    if (pushingFromProtectedBranch && protectedTarget && !worktreeDirty && workflowModeDecision.mode === WORKFLOW_MODE_LIGHT_DIRECT_MINIMAL) {
+      return createResult(true, 'ok', [], {
+        currentBranch,
+        protectedRemoteRef: protectedTarget.remoteRef,
+        workflowModeDecision,
+      });
+    }
+
+    const blockedTargetName = protectedTarget != null
+      ? branchNameFromRef(protectedTarget.remoteRef)
+      : currentBranch;
+    const introLine = protectedTarget != null
+      ? `[git guardrails] 已阻止把内容直接推到受保护分支 \`${blockedTargetName}\`。`
+      : `[git guardrails] 已阻止从受保护分支 \`${currentBranch}\` 直接 push。`;
+
     return createResult(false, 'protected_branch_push_blocked', [
-      `[git guardrails] 已阻止把内容直接推到受保护分支 \`${branchNameFromRef(protectedTarget.remoteRef)}\`。`,
-      '请先推到任务分支并通过 PR 合入主线。',
-    ], {
+      introLine,
+      formatLightDirectMinimalRule(),
+      !pushingFromProtectedBranch || protectedTarget == null
+        ? '轻量直入只允许在干净 baseline/main 本地分支上使用，不允许从任务分支绕过 PR。'
+        : worktreeDirty
+          ? '当前 worktree 仍然是脏的，轻量直入也不放行。'
+        : workflowModeDecision.reason === 'no_paths'
+          ? '当前没有可判定的推送路径，不能按轻量档放行。'
+          : '这次推送不属于轻量直入白名单，必须走 formal + PR。',
+      protectedDirtySummary ? `检测结果：${protectedDirtySummary}。` : null,
+      formatDisallowedPathLine(workflowModeDecision),
+      protectedTarget != null
+        ? '请先推到任务分支并通过 PR 合入主线。'
+        : '受保护分支只作为 baseline 或远端主线镜像使用，不作为日常开发分支。',
+    ].filter(Boolean), {
       currentBranch,
-      protectedRemoteRef: protectedTarget.remoteRef,
+      protectedRemoteRef: protectedTarget?.remoteRef ?? null,
+      workflowModeDecision,
     });
   }
 
@@ -198,9 +266,44 @@ function readStatusSummary(cwd) {
   return parseStatusPorcelain(result.stdout);
 }
 
+function readStagedFilePaths(cwd) {
+  const result = runGit(['diff', '--cached', '--name-only', '--diff-filter=ACMR'], cwd);
+  if (result.status !== 0) return [];
+  return parseNameOnlyStdout(result.stdout);
+}
+
+function isZeroSha(value) {
+  const normalizedValue = trimText(value);
+  return normalizedValue != null && /^0+$/u.test(normalizedValue);
+}
+
+function readProtectedPushFilePaths(cwd, pushUpdates) {
+  const filePaths = new Set();
+
+  for (const update of pushUpdates) {
+    if (!isProtectedRemoteRef(update.remoteRef)) continue;
+
+    const args = isZeroSha(update.remoteSha)
+      ? ['diff-tree', '--no-commit-id', '--name-only', '-r', update.localSha]
+      : ['diff', '--name-only', update.remoteSha, update.localSha];
+    const result = runGit(args, cwd);
+    if (result.status !== 0) continue;
+
+    for (const filePath of parseNameOnlyStdout(result.stdout)) {
+      filePaths.add(filePath);
+    }
+  }
+
+  return Array.from(filePaths).sort((left, right) => left.localeCompare(right));
+}
+
 export function runPreCommitGuardrail({ cwd = process.cwd() } = {}) {
   const currentBranch = readCurrentBranch(cwd);
-  return evaluatePreCommitGuardrail({ currentBranch });
+  const stagedFilePaths = readStagedFilePaths(cwd);
+  return evaluatePreCommitGuardrail({
+    currentBranch,
+    stagedFilePaths,
+  });
 }
 
 export function runPrePushGuardrail({
@@ -210,12 +313,14 @@ export function runPrePushGuardrail({
   const currentBranch = readCurrentBranch(cwd);
   const statusSummary = readStatusSummary(cwd);
   const pushUpdates = parsePrePushStdin(stdinText);
+  const protectedPushFilePaths = readProtectedPushFilePaths(cwd, pushUpdates);
 
   return evaluatePrePushGuardrail({
     currentBranch,
     worktreeDirty: statusSummary.worktreeDirty,
     pushUpdates,
     statusSummary,
+    protectedPushFilePaths,
   });
 }
 

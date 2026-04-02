@@ -2,6 +2,28 @@
 
 这份 SOP 只回答一件事：一个新任务从哪里开始，怎么走到 merge，再怎么收口。
 
+## 0. 先判模式
+
+默认先按 `formal` 想。
+
+只有一种极窄例外可以先看 `light-direct-minimal`：
+
+- 改动全部在 `docs/reports/**`
+- 只是报告、复盘、状态、结论说明
+- 不改治理、不改 runbook、不改默认行为
+
+只要有一点不确定，就直接回到 `formal`。
+
+详细规则见：
+
+- [ENGINEERING_WORKFLOW_MODES_V1_3.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_WORKFLOW_MODES_V1_3.md)
+
+如果确认是 `light-direct-minimal`，只做 3 步：
+
+1. 在干净 baseline worktree 执行 `npm run workflow:baseline:sync`
+2. 只修改 `docs/reports/**`
+3. 正常提交；如果 hook 不放行，就立刻升级 `formal`
+
 ## 1. 从干净 baseline 起步
 
 当前默认基线：

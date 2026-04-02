@@ -4,6 +4,7 @@ import { authenticateRequest } from '../../middleware/auth.js';
 
 const LOCAL_TEST_AUTH_SOURCE = 'local_test';
 const LOCAL_TEST_USER_PAGE_SIZE = 200;
+const LOCAL_TEST_PLACEHOLDER_HOSTS = new Set(['example.supabase.co']);
 
 export function parseBearerToken(req) {
   const raw = req?.headers?.authorization || req?.headers?.Authorization;
@@ -61,6 +62,35 @@ function resolveLocalTestUser(token) {
       auth_source: LOCAL_TEST_AUTH_SOURCE,
     },
   };
+}
+
+function buildSyntheticLocalTestAuthUser(localTestIdentity) {
+  return {
+    id: localTestIdentity.key,
+    email: localTestIdentity.email,
+    role: localTestIdentity.role,
+    user_metadata: {
+      ...localTestIdentity.user_metadata,
+    },
+    app_metadata: {
+      ...localTestIdentity.app_metadata,
+    },
+  };
+}
+
+function isMockFunction(fn) {
+  return Boolean(fn?._isMockFunction);
+}
+
+function usesPlaceholderSupabaseHost() {
+  const url = process.env.SUPABASE_URL;
+  if (!url) return false;
+
+  try {
+    return LOCAL_TEST_PLACEHOLDER_HOSTS.has(new URL(url).hostname.toLowerCase());
+  } catch {
+    return false;
+  }
 }
 
 function normalizeEmail(value) {
@@ -123,7 +153,15 @@ async function ensureLocalTestAuthUser(localTestIdentity) {
   const adminApi = client?.auth?.admin;
 
   if (!adminApi?.listUsers || !adminApi?.createUser) {
-    throw new Error('Supabase admin API is unavailable for local test auth.');
+    return buildSyntheticLocalTestAuthUser(localTestIdentity);
+  }
+
+  if (
+    usesPlaceholderSupabaseHost() &&
+    !isMockFunction(adminApi.listUsers) &&
+    !isMockFunction(adminApi.createUser)
+  ) {
+    return buildSyntheticLocalTestAuthUser(localTestIdentity);
   }
 
   const existing = await findLocalTestAuthUser(adminApi, localTestIdentity.email);

@@ -22,6 +22,7 @@ describe('auth-context local test identity mapping', () => {
 
   afterEach(() => {
     delete process.env.AUTH_LOCAL_TEST_MODE;
+    delete process.env.SUPABASE_URL;
   });
 
   test('reuses an existing auth.users-backed local test identity', async () => {
@@ -130,5 +131,112 @@ describe('auth-context local test identity mapping', () => {
         source: 'local_test',
       },
     });
+  });
+
+  test('falls back to a synthetic local test identity when the admin api is unavailable', async () => {
+    getServiceClientMock.mockReturnValue({
+      from: jest.fn(),
+    });
+
+    const result = await resolveTrustedAuthContext({
+      headers: {
+        authorization: 'Bearer test-user:student-1:student',
+      },
+    });
+
+    expect(result).toMatchObject({
+      ok: true,
+      context: {
+        userId: 'student-1',
+        role: 'student',
+        source: 'local_test',
+        user: expect.objectContaining({
+          id: 'student-1',
+          email: 'student-1@example.test',
+        }),
+      },
+    });
+  });
+
+  test('still uses mocked admin provisioning for placeholder test hosts', async () => {
+    process.env.SUPABASE_URL = 'https://example.supabase.co';
+    const existingUser = {
+      id: '99ab903e-46aa-4cfb-9317-cf09aae34d79',
+      email: 'student-1@example.test',
+      user_metadata: { role: 'student' },
+      app_metadata: { role: 'student' },
+    };
+    const listUsersMock = jest.fn().mockResolvedValue({
+      data: {
+        users: [existingUser],
+        nextPage: null,
+      },
+      error: null,
+    });
+    const createUserMock = jest.fn();
+
+    getServiceClientMock.mockReturnValue({
+      auth: {
+        admin: {
+          listUsers: listUsersMock,
+          createUser: createUserMock,
+        },
+      },
+    });
+
+    const result = await resolveTrustedAuthContext({
+      headers: {
+        authorization: 'Bearer test-user:student-1:student',
+      },
+    });
+
+    expect(result).toMatchObject({
+      ok: true,
+      context: {
+        userId: existingUser.id,
+        role: 'student',
+        source: 'local_test',
+      },
+    });
+    expect(listUsersMock).toHaveBeenCalledWith({ page: 1, perPage: 200 });
+    expect(createUserMock).not.toHaveBeenCalled();
+  });
+
+  test('skips placeholder-host provisioning when the admin client is a real network client', async () => {
+    process.env.SUPABASE_URL = 'https://example.supabase.co';
+    let listUsersCalled = false;
+    let createUserCalled = false;
+
+    getServiceClientMock.mockReturnValue({
+      auth: {
+        admin: {
+          async listUsers() {
+            listUsersCalled = true;
+            return { data: { users: [], nextPage: null }, error: null };
+          },
+          async createUser() {
+            createUserCalled = true;
+            return { data: { user: null }, error: null };
+          },
+        },
+      },
+    });
+
+    const result = await resolveTrustedAuthContext({
+      headers: {
+        authorization: 'Bearer test-user:student-1:student',
+      },
+    });
+
+    expect(result).toMatchObject({
+      ok: true,
+      context: {
+        userId: 'student-1',
+        role: 'student',
+        source: 'local_test',
+      },
+    });
+    expect(listUsersCalled).toBe(false);
+    expect(createUserCalled).toBe(false);
   });
 });

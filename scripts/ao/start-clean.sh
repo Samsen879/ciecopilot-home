@@ -64,6 +64,34 @@ done
 repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root"
 
+workflow_sync_script=""
+workflow_sync_candidates=(
+  "$repo_root/scripts/workflow/baseline-sync.sh"
+  "$repo_root/.worktrees/baseline-origin-main-20260402/scripts/workflow/baseline-sync.sh"
+)
+git_hooks_install_script=""
+git_hooks_install_candidates=(
+  "$repo_root/scripts/git-hooks/install.sh"
+  "$repo_root/.worktrees/baseline-origin-main-20260402/scripts/git-hooks/install.sh"
+)
+git_common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
+expected_hooks_dir="$git_common_dir/ao-hooks"
+current_hooks_path="$(git config --get core.hooksPath || true)"
+
+for candidate in "${workflow_sync_candidates[@]}"; do
+  if [[ -x "$candidate" ]]; then
+    workflow_sync_script="$candidate"
+    break
+  fi
+done
+
+for candidate in "${git_hooks_install_candidates[@]}"; do
+  if [[ -x "$candidate" ]]; then
+    git_hooks_install_script="$candidate"
+    break
+  fi
+done
+
 printf '+ ao stop %q --purge-session || true\n' "$project"
 if [[ "$dry_run" -eq 0 ]]; then
   ao stop "$project" --purge-session || true
@@ -81,6 +109,22 @@ else
   echo "+ ao doctor --fix"
   echo "+ ao update    # fallback if doctor --fix fails"
   echo "+ ao doctor    # re-check after update"
+fi
+
+if [[ -n "$git_hooks_install_script" ]]; then
+  if [[ "$current_hooks_path" != "$expected_hooks_dir" || ! -d "$expected_hooks_dir" ]]; then
+    run_cmd bash "$git_hooks_install_script"
+  else
+    echo "+ skip git hook install (already configured)"
+  fi
+else
+  echo "+ skip git hook install (script not present in current entry workspace or baseline bridge)"
+fi
+
+if [[ -n "$workflow_sync_script" ]]; then
+  run_cmd bash "$workflow_sync_script"
+else
+  echo "+ skip workflow baseline sync (script not present in current entry workspace or baseline bridge)"
 fi
 
 if [[ -n "$dashboard_flag" ]]; then

@@ -21,6 +21,10 @@ import { validateQuestionImportInput } from '../validators/question-import-valid
 const IDEMPOTENCY_POLL_ATTEMPTS = 10;
 const IDEMPOTENCY_POLL_INTERVAL_MS = 250;
 const IDEMPOTENCY_ABANDONED_AGE_MS = 5 * 60 * 1000;
+const COMPAT_RUNTIME_TOPIC_ALIAS_BY_QUESTION_TYPE = Object.freeze({
+  '9709.trigonometry.equations': new Set(['topic-trig-equations']),
+  '9709.trigonometry.identities': new Set(['topic-trig-identities']),
+});
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -68,6 +72,31 @@ function normalizeClassificationConfidence(value) {
 
   const parsed = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function isUuidString(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    String(value || '').trim(),
+  );
+}
+
+function normalizeCompatibleRuntimeTopicId(value, questionTypeId) {
+  const normalizedTopicId = normalizeNullableString(value);
+  if (!normalizedTopicId) {
+    return null;
+  }
+
+  if (isUuidString(normalizedTopicId)) {
+    return normalizedTopicId;
+  }
+
+  const normalizedQuestionTypeId = normalizeNullableString(questionTypeId);
+  const aliases = COMPAT_RUNTIME_TOPIC_ALIAS_BY_QUESTION_TYPE[normalizedQuestionTypeId];
+  if (aliases?.has(normalizedTopicId)) {
+    return null;
+  }
+
+  return normalizedTopicId;
 }
 
 function normalizeCandidateRubricRefs(value) {
@@ -282,6 +311,10 @@ async function performQuestionImport(client, {
     classification: normalizedInput.classification,
     canonicalQuestionType,
   });
+  classification.primary_topic_id = normalizeCompatibleRuntimeTopicId(
+    classification.primary_topic_id,
+    classification.primary_question_type_id,
+  );
   const scoringScopePosture = adapter.marking.resolveReleasedScoringPosture({
     questionTypeId: classification.primary_question_type_id,
     questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,

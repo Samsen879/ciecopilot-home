@@ -2,109 +2,177 @@
 
 ## Scope
 
-This repair wave stayed inside the AO handoff scope:
+This report records the approved repair wave for the imported-question mainline on the live Supabase project behind `nbzvlqtgnkmohlamguzz`.
 
-- restore the canonical frontend dev port to `5173`
-- proxy frontend `/api` traffic to `http://127.0.0.1:3001`
-- stop the imported-question intake from sending fake topic IDs into the runtime import API
-- repair the imported-question session handoff so the first in-session follow-up no longer fails with `409 session_state_conflict`
+Target flow:
 
-## Code Changes
+- import the standard `9709` trigonometry sample from `http://localhost:5173/learn/session/new?entry=imported_question`
+- enter the runtime session created from that durable imported question
+- send the first follow-up turn `What should I do first?`
 
-### Frontend/dev-server
+## Original Failure Summary
 
-- `vite.config.js`
-  - changed the Vite dev server port from `5174` to `5173`
-  - added a `/api` proxy to `http://127.0.0.1:3001`
-- `tests/vite.config.test.js`
-  - added a regression test for the canonical port and backend proxy
+The failure chain was multi-stage:
 
-### Imported-question intake
+1. Browser import originally failed on the same-origin runtime path, which led to the direct backend probe.
+2. The linked Supabase project was behind the repo’s learning-runtime migrations, so the direct backend probe exposed missing runtime tables instead of a healthy import path.
+3. After the missing migrations were pushed, the exact approved sample still failed twice on backend writes:
+   - request `3f0b51c7-b6d4-4092-9eb3-69f9adefa2f3`
+   - `Failed to reserve learning request idempotency row: invalid input syntax for type uuid: "student-1"`
+   - root cause: `AUTH_LOCAL_TEST_MODE` mapped `test-user:student-1:student` to a non-UUID `user_id`, but `learning_request_idempotency.user_id` is UUID-backed
+4. After the auth mapping fix, the exact sample still failed on imported-question persistence:
+   - request `51335caf-5e79-4d9e-95f3-9a2d1ef77fcf`
+   - `Failed to insert imported question: invalid input syntax for type uuid: "topic-trig-equations"`
+   - root cause: the approved sample passes `primary_topic_id = topic-trig-equations`, but the durable column is UUID-backed
 
-- `src/components/learning-runtime/ImportedQuestionIntake.js`
-  - stopped sending the placeholder runtime-context `primary_topic_id`
-  - preserved `primary_question_type_id` so the backend still receives the intended canonical question type
-- `src/components/learning-runtime/__tests__/ImportedQuestionIntake.test.js`
-  - updated the regression expectation to require `primary_topic_id: null`
+## Migration State
 
-### Session-anchor repair
+### Before push
 
-- `api/learning/lib/session-runtime/session-anchor-resolution.js`
-  - when a question anchor cannot recover a canonical topic path from `question.primary_topic_id`, it now falls back to the resolved `primary_question_type_id` for `active_scope_bundle.primary_topic_path`
-  - this keeps imported-question sessions legal for the ask path even when the durable imported question has no stored topic UUID
+Before reconciliation, the live Supabase project was missing the runtime tables required by the imported-question flow:
+
+- `learning_request_idempotency` -> `42P01`
+- `learning_question_types` -> `42P01`
+- `learning_question_analysis_snapshots` -> `42P01`
+
+The missing schema was already present in repo migrations:
+
+- `20260320110000_expand_question_bank_for_learning_runtime.sql`
+- `20260320111000_create_learning_runtime_core.sql`
+- `20260320111500_seed_learning_runtime_pilot_registry.sql`
+- `20260320112000_create_learning_runtime_read_models.sql`
+- `20260324120000_create_learning_request_idempotency.sql`
+
+### Push actions
+
+Applied against the linked project:
+
+```bash
+supabase link --project-ref nbzvlqtgnkmohlamguzz
+supabase db push --dry-run --yes
+supabase db push --yes
+```
+
+### After push
+
+Post-push verification:
+
+- `learning_request_idempotency` -> `OK rows=0`
+- `learning_question_types` -> `OK rows=3`
+- `learning_question_analysis_snapshots` -> `OK rows=0`
+- pilot registry row `9709.trigonometry.equations` exists with `release_state = released`
+- migration ledger is now `in_sync`
+
+Recorded after-state artifacts:
+
+- `docs/reports/rag_supabase_migration_state.md`
+- `runs/backend/rag_supabase_migration_state.json`
+
+## Code Repair Summary
+
+### Local test auth
+
+`api/lib/security/auth-context.js` now provisions or reuses a real `auth.users` row for local-test tokens so UUID-backed runtime tables receive a valid `user_id`.
+
+Observed ensured user:
+
+- email: `student-1@example.test`
+- id: `99ab903e-46aa-4cfb-9317-cf09aae34d79`
+
+Regression coverage:
+
+- `api/lib/security/__tests__/auth-context.test.js`
+
+### Imported-question topic normalization
+
+`api/learning/lib/import/question-import-service.js` now normalizes the approved pilot runtime topic aliases before durable writes so the exact plan sample stays unchanged while the stored row stays schema-valid.
+
+Observed compatible behavior for the approved sample:
+
+- incoming `primary_topic_id`: `topic-trig-equations`
+- stored `question.primary_topic_id`: `null`
+- stored `question.primary_question_type_id`: `9709.trigonometry.equations`
+
+Regression coverage:
+
 - `api/learning/__tests__/question-import-service.test.js`
-  - added a regression test covering imported-question session creation with `primary_topic_id: null`
 
-## Verification
-
-### Targeted automated tests
+## Direct Backend Import Result
 
 Command:
 
 ```bash
-npm test -- --runInBand \
-  tests/vite.config.test.js \
-  src/components/learning-runtime/__tests__/ImportedQuestionIntake.test.js \
-  api/learning/__tests__/question-import-service.test.js \
-  api/learning/__tests__/session-api.test.js \
-  --verbose
+curl -sS -i -X POST http://127.0.0.1:3001/api/learning/questions/import \
+  -H 'Authorization: Bearer test-user:student-1:student' \
+  -H 'Content-Type: application/json' \
+  -H 'Idempotency-Key: smoke-import-direct-1' \
+  --data '{"subject_code":"9709","prompt_representation":{"type":"text","value":"Solve 2cos(2x)-3sin x=0 for 0<=x<=180 degrees."},"provenance_summary":{"import_source":"manual_paste"},"classification":{"primary_question_type_id":"9709.trigonometry.equations","primary_topic_id":"topic-trig-equations"}}'
 ```
 
-Outcome:
-
-- PASS `4` suites
-- PASS `41` tests
-
-### Direct backend import probe
-
-Method:
-
-- signed up a fresh local Supabase user against `http://127.0.0.1:54321/auth/v1/signup`
-- called `POST http://127.0.0.1:3001/api/learning/questions/import` with:
-  - `subject_code: 9709`
-  - `primary_question_type_id: 9709.trigonometry.equations`
-  - `primary_topic_id: null`
-
-Outcome:
+Final result:
 
 - HTTP `200`
-- imported question persisted successfully
-- `question.primary_topic_id` remained `null`
-- `scoring_scope_posture.fallback_mode` returned `non_released_fallback`
+- request id: `bd8d4e11-9200-474a-aeca-f050451c320b`
+- question id: `30608d86-b672-4b58-9340-5e31d4531684`
+- `question.primary_topic_id = null`
+- `question.primary_question_type_id = 9709.trigonometry.equations`
+- `scoring_scope_posture.release_scope_status = non_released_fallback`
+- `scoring_scope_posture.fallback_reason_code = missing_released_rubric`
 
-### Real browser smoke
+## Real-Browser Smoke Result
 
-Method:
+Browser target:
 
-- used a headless Playwright/Chromium run against the live frontend at `http://127.0.0.1:5173`
-- signed up a fresh user in the real auth modal
-- opened `/learn/session/new?entry=imported_question`
-- imported the standard `9709` sample `Solve 2sin x = 1 for 0 <= x < 360.`
-- entered the runtime session
-- sent the first follow-up
+- `http://localhost:5173/learn/session/new?entry=imported_question`
 
-Outcome:
+Sample:
 
-- signup: HTTP/UI success
-- import: HTTP `200`
-- create session: HTTP `200`
-- created session bundle included `primary_topic_path: 9709.trigonometry.equations`
-- first follow-up ask: HTTP `200`
-- ask posture remained `non_released_fallback`
+- subject code: `9709`
+- runtime context: `9709.trigonometry.equations`
+- topic id passed by the UI contract: `topic-trig-equations`
+- prompt: `Solve 2cos(2x)-3sin x=0 for 0<=x<=180 degrees.`
+- first follow-up: `What should I do first?`
 
-Observed assistant message:
+Observed result:
 
-> I cannot answer right now because the retrieval step failed.
+- import request -> HTTP `200`
+- create session request -> HTTP `200`
+- ask request -> HTTP `200`
+- browser import question id: `a02cc6f2-1566-4a3c-b4b3-ead2b5d27d1b`
+- browser session id: `d4a0ff40-1589-4ed7-be50-e89b5e29a566`
+- session shell shows:
+  - `Anchor: question`
+  - `Topic: 9709.trigonometry.equations`
+  - `Fallback: non_released_fallback`
+- follow-up result rendered in the timeline:
+  - `I cannot answer right now because the retrieval step failed.`
+  - `Fallback reason: missing_released_rubric`
+  - `Evidence topic: 9709.trigonometry.equations`
 
-That message still represents a successful session ask response from the runtime path; the earlier `409` blocker is resolved.
+Browser-captured request ids:
 
-## Environment Notes
+- import: `17cfab96-aff4-4bb5-ab03-8c753c7db2ab`
+- create session: `e1d44512-0087-41e1-bee7-28aa0c9f4e83`
+- ask: `0a97ebc9-7a79-4155-a209-ee5dc18ba931`
 
-- local Supabase migrations were reconciled against the existing repo migrations only
-- the backend dev server had to be restarted after the code fix so the live browser smoke would exercise the updated session-anchor resolver
-- for this machine, browser smoke required user-local extraction of missing Chromium shared libraries under `/tmp`; no repo files were changed for that setup
+Screenshot artifacts:
 
-## Remaining Non-Blocking Issues
+- `output/playwright/2026-04-02-imported-question-posture.png`
+- `output/playwright/2026-04-02-imported-question-follow-up.png`
 
-- `/api/community/*` requests still log `401` console noise during authenticated browser sessions; this did not block the learning-runtime import/session/ask flow
-- the first follow-up returned a graceful retrieval-fallback message instead of a grounded worked hint; that appears to be a separate RAG/content availability issue rather than an imported-question session-contract failure
+## Residual Non-Blocking Issues
+
+- The first follow-up still returns a graceful retrieval-fallback message instead of a grounded worked hint. The runtime path is healthy, but retrieval/content readiness is still separate work.
+- In this environment, a handcrafted Supabase `localStorage` session blob alone did not cause `supabase-js` to hydrate a live browser session. The smoke harness therefore patched the in-page `supabase.auth.getSession()` to return the same local-test session before driving the UI. The import/session/ask requests themselves still ran through the live browser and backend.
+- The navbar still showed `登录 / 注册` during the smoke because that UI is driven by the frontend auth state, not by the runtime API responses exercised here.
+
+## Outcome
+
+The approved mainline is restored for the exact sample:
+
+- direct backend import passes
+- browser import passes
+- browser session creation passes
+- first in-session follow-up passes
+
+The remaining user-visible degradation is in retrieval quality, not in the imported-question runtime contract.

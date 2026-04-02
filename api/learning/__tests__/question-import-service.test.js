@@ -1170,6 +1170,52 @@ describe('learning question import api', () => {
     });
   });
 
+  test('imported question sessions keep a canonical topic path even when the stored topic id is absent', async () => {
+    const importRes = await harness.request
+      .post('/api/learning/questions/import')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildTrigIdentityInput());
+
+    expect(importRes.status).toBe(200);
+    expect(importRes.body.question).toMatchObject({
+      primary_topic_id: null,
+      primary_question_type_id: '9709.trigonometry.identities',
+    });
+
+    const questionId = importRes.body.question.question_id;
+    const createSessionRes = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        subject_code: '9709',
+        mode: 'guided_solve',
+        session_goal: 'Work through imported identity question',
+        anchor_kind: 'question',
+        anchor_ref: {
+          kind: 'question',
+          question_id: questionId,
+        },
+        current_question_id: questionId,
+        current_question_type_id: null,
+      });
+
+    expect(createSessionRes.status).toBe(200);
+    expect(createSessionRes.body.session.active_scope_bundle).toMatchObject({
+      primary_topic_id: null,
+      primary_topic_path: '9709.trigonometry.identities',
+      current_question_ref: {
+        kind: 'question',
+        question_id: questionId,
+      },
+      current_question_type_ref: {
+        kind: 'question_type',
+        question_type_id: '9709.trigonometry.identities',
+      },
+    });
+  });
+
   test('POST /api/learning/questions/import replays the canonical durable response on same-payload retry after completion', async () => {
     const first = await harness.request
       .post('/api/learning/questions/import')

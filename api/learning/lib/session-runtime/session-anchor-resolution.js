@@ -115,13 +115,14 @@ async function resolveQuestionAnchor(client, {
   }
 
   const topic = await loadTopic(client, question.primary_topic_id);
+  const resolvedQuestionTypeId = currentQuestionTypeId || question.primary_question_type_id || null;
 
   return {
     currentQuestionId: currentQuestionId || question.question_id,
-    currentQuestionTypeId: currentQuestionTypeId || question.primary_question_type_id || null,
+    currentQuestionTypeId: resolvedQuestionTypeId,
     canonicalHome: {
       topic_id: topic?.node_id ?? question.primary_topic_id ?? null,
-      topic_path: topic?.topic_path ?? null,
+      topic_path: topic?.topic_path ?? resolvedQuestionTypeId ?? null,
     },
   };
 }

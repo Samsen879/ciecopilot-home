@@ -125,7 +125,7 @@ export function buildImportQuestionPayload(draft = {}) {
     },
     classification: {
       primary_question_type_id: normalizedDraft.questionTypeId || null,
-      primary_topic_id: normalizedDraft.topicId || null,
+      primary_topic_id: null,
     },
   };
 }

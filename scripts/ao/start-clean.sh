@@ -67,12 +67,10 @@ cd "$repo_root"
 workflow_sync_script=""
 workflow_sync_candidates=(
   "$repo_root/scripts/workflow/baseline-sync.sh"
-  "$repo_root/.worktrees/baseline-origin-main-20260402/scripts/workflow/baseline-sync.sh"
 )
 git_hooks_install_script=""
 git_hooks_install_candidates=(
   "$repo_root/scripts/git-hooks/install.sh"
-  "$repo_root/.worktrees/baseline-origin-main-20260402/scripts/git-hooks/install.sh"
 )
 git_common_dir="$(git rev-parse --path-format=absolute --git-common-dir)"
 expected_hooks_dir="$git_common_dir/ao-hooks"
@@ -118,13 +116,13 @@ if [[ -n "$git_hooks_install_script" ]]; then
     echo "+ skip git hook install (already configured)"
   fi
 else
-  echo "+ skip git hook install (script not present in current entry workspace or baseline bridge)"
+  echo "+ skip git hook install (repo-local install script not present)"
 fi
 
 if [[ -n "$workflow_sync_script" ]]; then
   run_cmd bash "$workflow_sync_script"
 else
-  echo "+ skip workflow baseline sync (script not present in current entry workspace or baseline bridge)"
+  echo "+ skip workflow baseline sync (repo-local baseline sync script not present)"
 fi
 
 if [[ -n "$dashboard_flag" ]]; then

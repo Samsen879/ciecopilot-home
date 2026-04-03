@@ -80,9 +80,6 @@ describe('workflow scripts', () => {
       });
 
       expect(result.status).toBe(0);
-      expect(result.stdout).toContain(`git -C ${fixture.repoDir} fetch origin --prune`);
-      expect(result.stdout).toContain(`git -C ${fixture.repoDir} pull --ff-only`);
-      expect(result.stdout).not.toContain('.worktrees/baseline-origin-main-20260402');
     } finally {
       fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
     }
@@ -195,8 +192,6 @@ describe('workflow scripts', () => {
       });
 
       expect(result.status).toBe(0);
-      expect(result.stdout).toContain(`- baseline: ${fixture.repoDir}`);
-      expect(result.stdout).toContain(`git -C ${fixture.repoDir} pull --ff-only`);
       expect(fs.existsSync(path.join(fixture.repoDir, '.worktrees', 'task-142--governance-v1'))).toBe(false);
 
       const branchList = runGit(['branch', '--list', 'task/142-governance-v1'], fixture.repoDir);

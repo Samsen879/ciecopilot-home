@@ -11,14 +11,13 @@ import {
   parseTaskIdentifier,
 } from './lib/workflow-helper.js';
 
-const DEFAULT_BASELINE_WORKTREE_NAME = 'baseline-origin-main-20260402';
-const DEFAULT_BASELINE_BRANCH_NAME = 'baseline/origin-main-20260402';
-const DEFAULT_TASK_BASE_REF = 'origin/main';
+const DEFAULT_BASELINE_BRANCH_NAME = 'baseline/origin-main';
+const DEFAULT_TASK_BASE_REF = DEFAULT_BASELINE_BRANCH_NAME;
 const CONFIRMATION_TEXT = 'closeout';
 
 function printUsage() {
   console.error(`Usage:
-  node scripts/workflow/cli.js baseline-sync [--baseline-worktree-name <name>] [--dry-run]
+  node scripts/workflow/cli.js baseline-sync [--dry-run]
   node scripts/workflow/cli.js task-create --id <id> --slug <slug> [--base <ref>] [--dry-run]
   node scripts/workflow/cli.js task-closeout (--id <id> --slug <slug> | --branch <branch>) [--dry-run]`);
 }
@@ -106,10 +105,6 @@ function parseArgs(argv) {
         parsed.baseRef = argv[index + 1];
         index += 1;
         break;
-      case '--baseline-worktree-name':
-        parsed.baselineWorktreeName = argv[index + 1];
-        index += 1;
-        break;
       case '--baseline-branch':
         parsed.baselineBranchName = argv[index + 1];
         index += 1;
@@ -138,38 +133,16 @@ function ensureHooksInstalled() {
   }
 }
 
-function resolveBaselinePaths(repoRoot, options) {
-  const baselineWorktreeName = trimText(options.baselineWorktreeName) ?? DEFAULT_BASELINE_WORKTREE_NAME;
-  const baselineBranchName = trimText(options.baselineBranchName) ?? DEFAULT_BASELINE_BRANCH_NAME;
-  const baselineWorktreePath = path.join(repoRoot, '.worktrees', baselineWorktreeName);
-
-  return {
-    baselineWorktreeName,
-    baselineBranchName,
-    baselineWorktreePath,
-  };
-}
-
-function ensureBaselineWorktreeExists(baselineWorktreePath) {
-  if (!fs.existsSync(baselineWorktreePath)) {
-    throw new Error(`baseline worktree does not exist: ${baselineWorktreePath}`);
-  }
-}
-
 async function handleBaselineSync(options) {
   const repoRoot = resolveRepoRoot();
   ensureHooksInstalled();
 
-  const { baselineWorktreePath } = resolveBaselinePaths(repoRoot, options);
-  ensureBaselineWorktreeExists(baselineWorktreePath);
-
   const plan = buildBaselineSyncPlan({
     repoRoot,
-    baselineWorktreePath,
   });
 
   execOrPreview(['git', '-C', repoRoot, 'fetch', 'origin', '--prune'], repoRoot, options.dryRun);
-  execOrPreview(['git', '-C', plan.baselineWorktreePath, 'pull', '--ff-only'], repoRoot, options.dryRun);
+  execOrPreview(['git', '-C', plan.baselineRootPath, 'pull', '--ff-only'], repoRoot, options.dryRun);
 }
 
 function resolveTaskIdentity(options) {
@@ -206,7 +179,7 @@ async function handleTaskCreate(options) {
     throw new Error(`task worktree already exists: ${taskPaths.worktreePath}`);
   }
 
-  const baseRef = trimText(options.baseRef) ?? DEFAULT_TASK_BASE_REF;
+  const baseRef = trimText(options.baseRef) ?? trimText(options.baselineBranchName) ?? DEFAULT_TASK_BASE_REF;
 
   execOrPreview(['git', 'fetch', 'origin', '--prune'], repoRoot, options.dryRun);
   execOrPreview(
@@ -224,7 +197,7 @@ function renderCloseoutPlan(plan) {
   console.log('Closeout plan:');
   console.log(`- branch: ${plan.branchName}`);
   console.log(`- worktree: ${plan.worktreePath}`);
-  console.log(`- baseline: ${plan.baselineWorktreePath}`);
+  console.log(`- baseline: ${plan.baselineRootPath}`);
   console.log('- commands:');
   for (const command of plan.commands) {
     console.log(`  ${command}`);
@@ -265,14 +238,10 @@ function currentWorktreePath(cwd = process.cwd()) {
 async function handleTaskCloseout(options) {
   const repoRoot = resolveRepoRoot();
   ensureHooksInstalled();
-
   const identity = resolveTaskIdentity(options);
-  const { baselineWorktreePath } = resolveBaselinePaths(repoRoot, options);
-  ensureBaselineWorktreeExists(baselineWorktreePath);
 
   const plan = buildTaskCloseoutPlan({
     repoRoot,
-    baselineWorktreePath,
     branchName: identity.branchName,
     worktreeName: identity.worktreeName,
   });
@@ -302,7 +271,7 @@ async function handleTaskCloseout(options) {
   execOrPreview(['git', 'worktree', 'remove', plan.worktreePath], repoRoot, false);
   execOrPreview(['git', 'branch', '-d', plan.branchName], repoRoot, false);
   execOrPreview(['git', 'fetch', 'origin', '--prune'], repoRoot, false);
-  execOrPreview(['git', '-C', plan.baselineWorktreePath, 'pull', '--ff-only'], repoRoot, false);
+  execOrPreview(['git', '-C', plan.baselineRootPath, 'pull', '--ff-only'], repoRoot, false);
 }
 
 async function main() {

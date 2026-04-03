@@ -44,22 +44,20 @@ describe('workflow helper', () => {
   test('creates a baseline sync plan with fetch and ff-only pull', () => {
     const plan = buildBaselineSyncPlan({
       repoRoot: '/repo',
-      baselineWorktreePath: '/repo/.worktrees/baseline-origin-main-20260402',
     });
 
     expect(plan).toEqual({
-      baselineWorktreePath: '/repo/.worktrees/baseline-origin-main-20260402',
+      baselineRootPath: '/repo',
       commands: [
         'git -C /repo fetch origin --prune',
-        'git -C /repo/.worktrees/baseline-origin-main-20260402 pull --ff-only',
+        'git -C /repo pull --ff-only',
       ],
     });
   });
 
-  test('creates a closeout plan with worktree removal, branch deletion, and baseline sync', () => {
+  test('creates a closeout plan with worktree removal, branch deletion, and repo-root baseline sync', () => {
     const plan = buildTaskCloseoutPlan({
       repoRoot: '/repo',
-      baselineWorktreePath: '/repo/.worktrees/baseline-origin-main-20260402',
       branchName: 'task/142-governance-v1',
       worktreeName: 'task-142--governance-v1',
     });
@@ -67,12 +65,12 @@ describe('workflow helper', () => {
     expect(plan).toEqual({
       branchName: 'task/142-governance-v1',
       worktreePath: '/repo/.worktrees/task-142--governance-v1',
-      baselineWorktreePath: '/repo/.worktrees/baseline-origin-main-20260402',
+      baselineRootPath: '/repo',
       commands: [
         'git -C /repo worktree remove /repo/.worktrees/task-142--governance-v1',
         'git -C /repo branch -d task/142-governance-v1',
         'git -C /repo fetch origin --prune',
-        'git -C /repo/.worktrees/baseline-origin-main-20260402 pull --ff-only',
+        'git -C /repo pull --ff-only',
       ],
     });
   });

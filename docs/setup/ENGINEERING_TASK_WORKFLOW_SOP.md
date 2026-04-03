@@ -6,22 +6,22 @@
 
 当前默认基线：
 
-- worktree：`/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402`
-- branch：`baseline/origin-main-20260402`
+- repo root：`/home/samsen/code/ciecopilot-home`
+- branch：`baseline/origin-main`
 
 先确认 baseline 是干净的，再开新任务。
 
 仓库第一次启用本地防呆时，先在根目录执行一次：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run git:hooks:install
 ```
 
 日常同步 baseline，优先使用：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:baseline:sync
 ```
 
@@ -35,7 +35,7 @@ npm run workflow:baseline:sync
 示例：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:task:create -- --id 142 --slug governance-v1
 ```
 
@@ -93,7 +93,7 @@ npm run ao:lifecycle:strict:pr -- <pr号> --trigger approved_and_green
 
 直接执行：
 
-- [ENGINEERING_CLOSEOUT_CHECKLIST.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_CLOSEOUT_CHECKLIST.md)
-- [ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md)
+- [ENGINEERING_CLOSEOUT_CHECKLIST.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_CLOSEOUT_CHECKLIST.md)
+- [ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md)
 
 不要把 merge 当作任务结束。收口做完，下一轮任务才真正有干净起点。

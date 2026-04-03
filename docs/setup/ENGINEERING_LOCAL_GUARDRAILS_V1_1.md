@@ -63,14 +63,14 @@ v1.1 不是要把本地开发变成重流程，而是先把最危险的误操作
 在仓库根目录执行：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run git:hooks:install
 ```
 
 这个命令会做两件事：
 
 - 把仓库的 `core.hooksPath` 指到 git common dir 下的共享绝对路径 `ao-hooks`
-- 从当前 baseline worktree 同步 `pre-commit` / `pre-push` 到这个共享 hook 目录
+- 从当前 repo root 同步 `pre-commit` / `pre-push` 到这个共享 hook 目录
 
 ## 生效范围
 

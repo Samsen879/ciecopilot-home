@@ -13,7 +13,7 @@ v1.2 的目标很简单：
 ### 1. 同步 baseline
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:baseline:sync
 ```
 
@@ -21,26 +21,26 @@ npm run workflow:baseline:sync
 
 - 检查本地 hook 是否已安装
 - `git fetch origin --prune`
-- 对默认 baseline worktree 执行 `pull --ff-only`
+- 对 repo root 当前 baseline 分支执行 `pull --ff-only`
 
 只想预览不执行：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:baseline:sync -- --dry-run
 ```
 
 ### 2. 创建任务 branch + worktree
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:task:create -- --id 142 --slug governance-v1
 ```
 
 默认行为：
 
 - 先检查 hook 是否已安装
-- 从 `origin/main` 新建 `task/142-governance-v1`
+- 默认从 `baseline/origin-main` 新建 `task/142-governance-v1`
 - 创建 `.worktrees/task-142--governance-v1`
 
 可选参数：
@@ -51,14 +51,14 @@ npm run workflow:task:create -- --id 142 --slug governance-v1
 ### 3. 执行任务 closeout
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:task:closeout -- --id 142 --slug governance-v1
 ```
 
 或者：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:task:closeout -- --branch task/142-governance-v1
 ```
 
@@ -84,24 +84,24 @@ closeout
 只想预览计划：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:task:closeout -- --id 142 --slug governance-v1 --dry-run
 ```
 
 如果是自动化或非交互场景，可以显式传：
 
 ```bash
-cd /home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402
+cd /home/samsen/code/ciecopilot-home
 npm run workflow:task:closeout -- --id 142 --slug governance-v1 --confirm closeout
 ```
 
-## 当前桥接说明
+## 当前入口说明
 
-在这些治理文件还没有合回 `main` 之前：
+阶段 1 收敛后：
 
-- `git:hooks:install` 和 `workflow:*` 命令，先在干净 baseline worktree 里执行
-- 旧根目录里的 `npm run ao:start:clean` 已经加了桥接，会先尝试跑 baseline sync，再启动 AO
-- 如果你继续在旧根目录里直接执行 `ao start`，当前的 `agent-orchestrator.yaml` 也已经把项目根指向 baseline worktree
+- `git:hooks:install` 和 `workflow:*` 命令统一在 repo root 执行
+- `npm run ao:start:clean` 也从 repo root 启动，不再依赖 baseline bridge
+- 日期化 baseline worktree 只保留为迁移输入或历史证据，不再是正式默认入口
 
 ## 这次没有自动化的部分
 

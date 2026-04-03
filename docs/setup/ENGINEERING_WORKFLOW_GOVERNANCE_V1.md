@@ -13,22 +13,27 @@ PR #141 已经证明当前学习主链路已恢复可用。现在更急的是把
 
 ## 本项目当前基线
 
-本文件基于 2026-04-02 的仓库现状。
+本文件基于 2026-04-03 的阶段 1 收敛目标。
 
-- 旧根工作区：`/home/samsen/code/ciecopilot-home`
-- 旧根工作区当前分支：`baseline/origin-main-20260330`
-- 旧根工作区现状：有未提交改动和未跟踪文件，暂时保留，但不作为新任务默认开发目录
-- 当前推荐干净基线 worktree：`/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402`
-- 当前推荐干净基线分支：`baseline/origin-main-20260402`
-- 当前推荐干净基线 HEAD：`f50a944a6f430eb1e5198d4777fae9986957cd2f`
+- canonical repo root：`/home/samsen/code/ciecopilot-home`
+- 默认基线分支：`baseline/origin-main`
+- 默认 task worktree 目录：`/home/samsen/code/ciecopilot-home/.worktrees/`
+- 历史迁移输入：`baseline/origin-main-20260330` 根目录状态、`.worktrees/baseline-origin-main-20260402`
 
-v1 的目标不是顺手清空历史问题，而是从这个干净基线开始，把后续开发流程固定下来。
+v1 的目标不是顺手清空所有历史问题，而是把“正式入口”和“历史迁移痕迹”彻底分开：
+
+- 正式入口固定在 repo root
+- 历史日期化 baseline 只作为迁移证据保留
+
+如果你的本地现场还停在旧双根结构，先看：
+
+- [AO_ROOT_BASELINE_MIGRATION_RUNBOOK.md](/home/samsen/code/ciecopilot-home/docs/setup/AO_ROOT_BASELINE_MIGRATION_RUNBOOK.md)
 
 ## 四个核心概念
 
 ### 1. baseline
 
-baseline 是本地长期保留的一份干净基线工作区，用来代表“当前可继续开工的安全起点”。
+baseline 是 repo root 当前应保持的稳定基线姿态，用来代表“当前可继续开工的安全起点”。
 
 在 `ciecopilot-home` 里，baseline 不是拿来堆日常开发改动的，而是拿来：
 
@@ -86,7 +91,7 @@ closeout 就是“合并后的收尾动作”。
 以下规则是 v1 的硬规则，默认不例外：
 
 - 不在本地 `main` 直接开发，也不在本地 `main` 上直接提交。
-- 仓库必须长期保留一个干净 baseline worktree。当前默认基线是 `baseline/origin-main-20260402` 对应的 worktree。
+- 仓库根目录必须长期保持在干净 baseline posture。当前默认基线分支是 `baseline/origin-main`。
 - 每个任务必须单独使用一个 branch 和一个 worktree。默认放在 `.worktrees/` 下。
 - 所有要进入 `main` 的改动必须走 PR。
 - AO / AI 可以写代码、写文档、跑验证、开 PR，但不能自动 merge。
@@ -105,7 +110,7 @@ closeout 就是“合并后的收尾动作”。
 - branch 命名默认用 `task/<id>-<slug>`。如果是明显的 bugfix 或文档任务，可用 `fix/`、`docs/`，但不要一仓库多套随意命名。
 - worktree 命名默认用 `.worktrees/task-<id>--<slug>`，保持一眼可读。
 - closeout 不做分钟级 SLA，不要求机械化计时；但原则是“本轮 merge 不收口，就不要开下一轮新任务”。
-- 旧根工作区当前只用于观察、取证、补充历史信息；不要在里面继续做新的默认开发。
+- 如果本地现场还保留 `baseline/origin-main-20260330` / `baseline-origin-main-20260402` 等历史结构，它们只用于迁移、观察和取证；不要继续把它们当正式入口。
 
 ## v1.1 本地防呆补充
 
@@ -117,7 +122,7 @@ closeout 就是“合并后的收尾动作”。
 
 安装与例外说明见：
 
-- [ENGINEERING_LOCAL_GUARDRAILS_V1_1.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_LOCAL_GUARDRAILS_V1_1.md)
+- [ENGINEERING_LOCAL_GUARDRAILS_V1_1.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_LOCAL_GUARDRAILS_V1_1.md)
 
 ## v1.2 流程自动化补充
 
@@ -129,13 +134,13 @@ closeout 就是“合并后的收尾动作”。
 
 使用说明见：
 
-- [ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md)
+- [ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_WORKFLOW_AUTOMATION_V1_2.md)
 
 ## 标准开发 SOP
 
 详细步骤见：
 
-- [ENGINEERING_TASK_WORKFLOW_SOP.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_TASK_WORKFLOW_SOP.md)
+- [ENGINEERING_TASK_WORKFLOW_SOP.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_TASK_WORKFLOW_SOP.md)
 
 高层 SOP 只有 7 步：
 
@@ -191,7 +196,7 @@ closeout 不是可选项。merge 后至少要做到：
 
 执行时直接看：
 
-- [ENGINEERING_CLOSEOUT_CHECKLIST.md](/home/samsen/code/ciecopilot-home/.worktrees/baseline-origin-main-20260402/docs/setup/ENGINEERING_CLOSEOUT_CHECKLIST.md)
+- [ENGINEERING_CLOSEOUT_CHECKLIST.md](/home/samsen/code/ciecopilot-home/docs/setup/ENGINEERING_CLOSEOUT_CHECKLIST.md)
 
 ## AI artifact 最小治理规则
 

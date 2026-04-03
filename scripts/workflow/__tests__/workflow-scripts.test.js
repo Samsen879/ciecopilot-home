@@ -8,8 +8,7 @@ const BASELINE_SYNC_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/baseline-
 const TASK_CREATE_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/task-create.sh');
 const TASK_CLOSEOUT_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/task-closeout.sh');
 const HOOK_INSTALL_SCRIPT = path.join(PROJECT_ROOT, 'scripts/git-hooks/install.sh');
-const BASELINE_WORKTREE_NAME = 'baseline-origin-main-20260402';
-const BASELINE_BRANCH_NAME = 'baseline/origin-main-20260402';
+const BASELINE_BRANCH_NAME = 'baseline/origin-main';
 
 function runCommand(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -54,15 +53,12 @@ function createRepoFixture() {
   runGit(['add', 'README.md', 'package.json'], repoDir);
   runGit(['commit', '-m', 'chore: seed repo'], repoDir);
   runGit(['push', '-u', 'origin', 'main'], repoDir);
-  runGit(
-    ['worktree', 'add', `.worktrees/${BASELINE_WORKTREE_NAME}`, '-b', BASELINE_BRANCH_NAME, 'origin/main'],
-    repoDir,
-  );
+  runGit(['switch', '-c', BASELINE_BRANCH_NAME, '--track', 'origin/main'], repoDir);
 
   return {
     tempRoot,
     repoDir,
-    baselineWorktreePath: path.join(repoDir, '.worktrees', BASELINE_WORKTREE_NAME),
+    baselineRootPath: repoDir,
   };
 }
 
@@ -111,13 +107,13 @@ describe('workflow scripts', () => {
     const fixture = createRepoFixture();
 
     try {
-      copyProjectFile('.githooks/pre-commit', fixture.baselineWorktreePath);
-      copyProjectFile('.githooks/pre-push', fixture.baselineWorktreePath);
-      copyProjectFile('scripts/git-hooks/guardrails.js', fixture.baselineWorktreePath);
-      copyProjectFile('scripts/git-hooks/install.sh', fixture.baselineWorktreePath);
+      copyProjectFile('.githooks/pre-commit', fixture.baselineRootPath);
+      copyProjectFile('.githooks/pre-push', fixture.baselineRootPath);
+      copyProjectFile('scripts/git-hooks/guardrails.js', fixture.baselineRootPath);
+      copyProjectFile('scripts/git-hooks/install.sh', fixture.baselineRootPath);
 
       const installResult = runCommand('bash', [HOOK_INSTALL_SCRIPT], {
-        cwd: fixture.baselineWorktreePath,
+        cwd: fixture.baselineRootPath,
       });
 
       expect(installResult.status).toBe(0);

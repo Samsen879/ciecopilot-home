@@ -80,31 +80,24 @@ export function buildTaskPaths({
 
 export function buildBaselineSyncPlan({
   repoRoot,
-  baselineWorktreePath,
 } = {}) {
   const normalizedRepoRoot = String(repoRoot ?? '').trim();
-  const normalizedBaselineWorktreePath = String(baselineWorktreePath ?? '').trim();
 
   if (normalizedRepoRoot === '') {
     throw new Error('repo root is required');
   }
 
-  if (normalizedBaselineWorktreePath === '') {
-    throw new Error('baseline worktree path is required');
-  }
-
   return {
-    baselineWorktreePath: normalizedBaselineWorktreePath,
+    baselineRootPath: normalizedRepoRoot,
     commands: [
       `git -C ${normalizedRepoRoot} fetch origin --prune`,
-      `git -C ${normalizedBaselineWorktreePath} pull --ff-only`,
+      `git -C ${normalizedRepoRoot} pull --ff-only`,
     ],
   };
 }
 
 export function buildTaskCloseoutPlan({
   repoRoot,
-  baselineWorktreePath,
   branchName,
   worktreeName,
 } = {}) {
@@ -114,20 +107,15 @@ export function buildTaskCloseoutPlan({
     worktreeName,
   });
 
-  const normalizedBaselineWorktreePath = String(baselineWorktreePath ?? '').trim();
-  if (normalizedBaselineWorktreePath === '') {
-    throw new Error('baseline worktree path is required');
-  }
-
   return {
     branchName: taskPaths.branchName,
     worktreePath: taskPaths.worktreePath,
-    baselineWorktreePath: normalizedBaselineWorktreePath,
+    baselineRootPath: repoRoot,
     commands: [
       `git -C ${repoRoot} worktree remove ${taskPaths.worktreePath}`,
       `git -C ${repoRoot} branch -d ${taskPaths.branchName}`,
       `git -C ${repoRoot} fetch origin --prune`,
-      `git -C ${normalizedBaselineWorktreePath} pull --ff-only`,
+      `git -C ${repoRoot} pull --ff-only`,
     ],
   };
 }

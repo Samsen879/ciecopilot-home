@@ -255,6 +255,19 @@ describe('ao lifecycle acceptance', () => {
     expect(result.exitCode).toBe(31);
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       top_status: 'hold',
+      decision_chain: {
+        contract_status: 'authoritative_pr_chain',
+        scope: expect.objectContaining({
+          mode: 'pr',
+          pr_number: 92,
+          trigger: 'ci_failed',
+        }),
+        stages: [
+          expect.objectContaining({ stage: 'reconcile', required: true }),
+          expect.objectContaining({ stage: 'doctor', required: true }),
+          expect.objectContaining({ stage: 'lifecycle', required: true }),
+        ],
+      },
       routing_decision: {
         action: 'continue_current_worker',
         owner_session: 'cie-92',
@@ -325,6 +338,15 @@ describe('ao lifecycle acceptance', () => {
     expect(result.exitCode).toBe(0);
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       top_status: 'continue',
+      decision_chain: expect.objectContaining({
+        contract_status: 'authoritative_pr_chain',
+        next_actions: expect.arrayContaining([
+          expect.objectContaining({
+            id: 'notify_human_ready',
+            stage: 'lifecycle',
+          }),
+        ]),
+      }),
       routing_decision: {
         action: 'continue_current_worker',
         owner_session: 'cie-93',

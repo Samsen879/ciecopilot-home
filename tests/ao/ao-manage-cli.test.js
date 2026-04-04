@@ -109,6 +109,66 @@ describe('ao manage cli', () => {
     }));
   });
 
+  it('renders continuity posture in the human summary', async () => {
+    mockRunManageCommand.mockResolvedValue({
+      command: 'resume',
+      task: {
+        task_id: 'issue-117',
+        status: 'active',
+      },
+      prBinding: {
+        pr_number: 117,
+        status: 'bound',
+      },
+      ownershipLease: {
+        owner_session_name: 'cie-59',
+        status: 'active',
+      },
+      resume: {
+        checkpoint_id: 'checkpoint-issue-117-abc',
+        state: 'valid',
+      },
+      handoffTransfer: {
+        request_id: 'handoff-issue-117-1',
+        transfer_id: 'transfer-issue-117-1',
+      },
+      continuity: {
+        posture: 'handoff_granted',
+        recommended_action: 'handoff_to_successor',
+        owner_session_name: 'cie-58',
+        successor_session_name: 'cie-59',
+        checkpoint_state: 'valid',
+      },
+      review: {
+        posture: 'review_pending',
+        freeze_status: 'active',
+        reviewer_session_name: null,
+        target_head_sha: 'abc123',
+        blocking_reason: 'independent_review_active',
+      },
+      releasedOwnershipLeaseIds: [],
+      releasedPrBindingIds: [],
+    });
+    const stdout = [];
+
+    const result = await runCli([
+      'resume',
+      '--issue',
+      '117',
+      '--owner-session',
+      'cie-59',
+      '--owner-session-id',
+      'cie-59',
+    ], {
+      writeStdout: (text) => stdout.push(text),
+      writeStderr: () => {},
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(stdout.join('')).toContain('continuity: handoff_granted -> handoff_to_successor owner=cie-58 successor=cie-59 checkpoint=valid');
+    expect(stdout.join('')).toContain('review: review_pending freeze=active reviewer=none target=abc123 reason=independent_review_active');
+  });
+
   it('rejects unsupported commands and invalid numeric arguments', async () => {
     const stderr = [];
 

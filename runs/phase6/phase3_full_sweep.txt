@@ -1,0 +1,242 @@
+(node:46976) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS tests/ao/state-repository.test.js (6.127 s)
+PASS tests/ao/state-contracts.test.js
+PASS tests/ao/lifecycle-engine.test.js
+PASS tests/ao/action-executor.test.js
+PASS tests/ao/doctor-engine.test.js
+PASS tests/ao/reconciliation-engine.test.js
+FAIL tests/ao/controller-policy-gating.test.js
+  ● ao controller policy gating › records inspectable allow, deny, and downgrade policy decisions in shadow mode
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at Object.<anonymous> (tests/ao/controller-policy-gating.test.js:122:26)
+
+  ● ao controller policy gating › keeps policy-blocked actions out of assist execution
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at Object.<anonymous> (tests/ao/controller-policy-gating.test.js:314:26)
+
+PASS tests/ao/state-migrations.test.js
+PASS tests/ao/runtime-preflight.test.js
+PASS tests/ao/ao-reconcile-cli.test.js
+PASS tests/ao/event-ingest.test.js
+PASS tests/ao/policy-engine.test.js
+FAIL tests/ao/controller-shadow-parity.test.js
+  ● ao controller shadow parity › matches lifecycle action outputs for ci-failed-pr
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at tests/ao/controller-shadow-parity.test.js:147:36
+
+  ● ao controller shadow parity › matches lifecycle action outputs for approved-and-green-pr
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at tests/ao/controller-shadow-parity.test.js:147:36
+
+  ● ao controller shadow parity › matches lifecycle action outputs for orphaned-ownership
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at tests/ao/controller-shadow-parity.test.js:147:36
+
+PASS tests/ao/runtime-contracts.test.js
+PASS tests/ao/ao-observation-source.test.js
+PASS tests/ao/handoff-protocol.test.js
+PASS tests/ao/checkpoint-store.test.js
+PASS tests/ao/doctor-local-state-source.test.js
+PASS tests/ao/repo-knowledge.test.js
+PASS tests/ao/github-observation-source.test.js
+PASS tests/ao/doctor-runner.test.js
+PASS tests/ao/repo-knowledge-lint.test.js
+PASS tests/ao/measurement-taxonomy.test.js
+PASS tests/ao/ao-doctor-cli.test.js
+PASS tests/ao/ao-controller-cli.test.js
+PASS tests/ao/override-runner.test.js
+PASS tests/ao/lifecycle-contracts.test.js
+PASS tests/ao/reconciliation-report.test.js
+PASS tests/ao/task-spec.test.js
+PASS tests/ao/ao-metrics-cli.test.js
+PASS tests/ao/doctor-report.test.js
+PASS tests/ao/transition-engine.test.js
+PASS tests/ao/doctor-contracts.test.js
+PASS tests/ao/issue-intake.test.js
+PASS tests/ao/reconciliation-runner.test.js
+PASS tests/ao/controller-state-contracts.test.js
+PASS tests/ao/ao-override-cli.test.js
+PASS tests/ao/lifecycle-report.test.js
+PASS tests/ao/reconciliation-contracts.test.js
+PASS tests/ao/orchestrator-decision-matrix-contract.test.js
+PASS tests/ao/gate-model.test.js
+PASS tests/ao/entry-topology-contract.test.js
+PASS tests/ao/scorecard.test.js
+PASS tests/ao/controller-loop.test.js
+PASS tests/ao/eval-harness.test.js
+PASS tests/ao/manage-runner.test.js
+PASS tests/ao/ao-lifecycle-acceptance.test.js
+PASS tests/ao/state-runner.test.js
+PASS tests/ao/ao-state-cli.test.js
+PASS tests/ao/ao-lifecycle-cli.test.js
+PASS tests/ao/decision-chain.test.js
+PASS tests/ao/ao-eval-cli.test.js
+PASS tests/ao/decision-chain-contracts.test.js
+PASS tests/ao/continuity-contracts.test.js
+PASS tests/ao/ao-manage-cli.test.js
+PASS tests/ao/ao-handoff-cli.test.js
+PASS tests/ao/control-plane-continuity-contract.test.js
+PASS tests/ao/state-report.test.js
+PASS tests/ao/continuity.test.js
+PASS tests/ao/state-storage.test.js
+
+Summary of all failing tests
+FAIL tests/ao/controller-policy-gating.test.js
+  ● ao controller policy gating › records inspectable allow, deny, and downgrade policy decisions in shadow mode
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at Object.<anonymous> (tests/ao/controller-policy-gating.test.js:122:26)
+
+  ● ao controller policy gating › keeps policy-blocked actions out of assist execution
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at Object.<anonymous> (tests/ao/controller-policy-gating.test.js:314:26)
+
+FAIL tests/ao/controller-shadow-parity.test.js
+  ● ao controller shadow parity › matches lifecycle action outputs for ci-failed-pr
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at tests/ao/controller-shadow-parity.test.js:147:36
+
+  ● ao controller shadow parity › matches lifecycle action outputs for approved-and-green-pr
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at tests/ao/controller-shadow-parity.test.js:147:36
+
+  ● ao controller shadow parity › matches lifecycle action outputs for orphaned-ownership
+
+    Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.
+
+      106 |
+      107 |   if (resolvedHolderId == null) {
+    > 108 |     throw new Error('Controller holder identity required when AO_SESSION_NAME/AO_SESSION_ID are unset. Pass an explicit holderId.');
+          |           ^
+      109 |   }
+      110 |
+      111 |   return {
+
+      at resolveHolderIdentity (scripts/ao/lib/controller-loop.js:108:11)
+      at acquireControllerLeadership (scripts/ao/lib/controller-loop.js:368:26)
+      at runControllerLoop (scripts/ao/lib/controller-loop.js:1442:33)
+      at tests/ao/controller-shadow-parity.test.js:147:36
+
+
+Test Suites: 2 failed, 58 passed, 60 total
+Tests:       5 failed, 271 passed, 276 total
+Snapshots:   0 total
+Time:        39.738 s
+Ran all test suites matching /tests\\ao\\/i.

@@ -98,6 +98,7 @@ closeout 就是“合并后的收尾动作”。
 - PR 请求人工 merge 之前，至少要有本轮相关验证结果，并执行 PR 维度的 `ao:reconcile` 严格模式。
 - 如果存在本地连续性风险、目录变脏风险、分支对不上等问题，要补跑 `ao:doctor`。
 - 如果需要判断“现在该继续 agent、交接还是通知人来处理”，要跑 `ao:lifecycle`，但它仍然不拥有 merge 权限。
+- 已知 PR trigger 场景下，优先读取 `ao:lifecycle --json --strict` 输出里的 `decision_chain`，不要靠 prompt 文案临时拼流程。
 - merge 后必须做 closeout。默认要求在同一工作轮次内完成，最晚不要拖到下一次新任务启动之后。
 - 涉及高风险区域的改动必须人工明确批准。至少包括：`.github/workflows/`、`.github/actions/`、`infra/`、`terraform/`、`pulumi/`、`.env*`、密钥类文件。
 
@@ -182,6 +183,8 @@ npm run ao:lifecycle:strict:pr -- <pr号> --trigger approved_and_green
 
 - `ao:doctor` 不是每个 PR 都必跑，但只要出现 worktree 脏、分支对不上、上下游不清楚、AO 残留产物等问题，就应补跑。
 - `ao:lifecycle` 不是 merge 批准器，它只是帮助判断“现在该继续自动推进，还是该交给人”。
+- 对已知 trigger 的 PR，优先读取 `ao:lifecycle` 输出里的 `decision_chain.contract_status`、`decision_chain.blocking_reasons`、`decision_chain.next_actions`、`decision_chain.next_commands`。
+- `ao:reconcile` 和 `ao:doctor` 继续保留为 truth / diagnose drilldown，而不是再用来手工拼下一步流程。
 
 ### closeout 最低要求
 

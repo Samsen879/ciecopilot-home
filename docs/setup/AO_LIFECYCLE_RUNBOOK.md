@@ -21,6 +21,12 @@ Lifecycle exists to answer the next control question after phase-1 reconciliatio
 - human gate
 - notify the human that a PR appears ready
 
+Independent reviewer gate note:
+
+- first release enables only explicit `ready_for_review` requests through `ao-review`
+- once a durable review request exists, lifecycle must fail closed for release-facing advancement until that review passes for the current target SHA
+- `notify_human_ready` remains notification-only and still never implies auto-merge
+
 ## When To Run Lifecycle
 
 Run lifecycle when:
@@ -133,6 +139,28 @@ Use lifecycle for:
 
 Lifecycle consumes reconciliation and doctor. It must not replace them.
 
+## Phase-2 Decision Chain Contract
+
+Lifecycle JSON output now carries a shared `decision_chain` object. This is the stable phase-2 machine-readable contract that converges:
+
+- phase-1 truth
+- phase-2 diagnosis
+- phase-3 control decisions
+
+Read these fields first:
+
+- `decision_chain.contract_status`
+- `decision_chain.stages`
+- `decision_chain.blocking_reasons`
+- `decision_chain.next_actions`
+- `decision_chain.next_commands`
+
+Interpretation:
+
+- `authoritative_pr_chain`: explicit PR scope; reconcile and lifecycle are authoritative, doctor is diagnose-only but required in the chain
+- `advisory_project_chain`: project-mode inspection only; doctor/lifecycle remain advisory
+- `pr_scope_required`: a non-manual trigger was evaluated without explicit PR scope, so the chain cannot be authoritative
+
 ## Trigger Vocabulary
 
 Supported triggers:
@@ -218,10 +246,17 @@ node scripts/ao-doctor.js --pr <number>
 3. Run lifecycle for the real trigger:
 
 ```bash
-node scripts/ao-lifecycle.js --pr <number> --trigger <trigger>
+node scripts/ao-lifecycle.js --pr <number> --trigger <trigger> --json --strict
 ```
 
-4. Follow the reported routing and release decisions.
+4. Read:
+
+- `decision_chain.contract_status`
+- `decision_chain.blocking_reasons`
+- `decision_chain.next_actions`
+- `decision_chain.next_commands`
+
+5. Use `ao:reconcile` / `ao:doctor` only when you need truth-only or diagnose-only drilldown beyond the chain result.
 
 ### For broad operator triage
 
@@ -236,10 +271,41 @@ node scripts/ao-lifecycle.js
 - `top_status`
 - `routing_decision`
 - `release_decision`
-- `key_findings`
-- `suggested_actions`
+- `decision_chain.contract_status`
+- `decision_chain.blocking_reasons`
+- `decision_chain.next_actions`
+- `decision_chain.next_commands`
 
 Remember that project mode is advisory only.
+
+## Phase-3 Continuity Alignment
+
+Lifecycle remains the decide-only phase-3 layer. The control-plane continuity contract is the companion operator view for restore and handoff readiness.
+
+Keep these aligned:
+
+- lifecycle `routing_decision.action = continue_current_worker` should map to continuity posture `active_owner`
+- lifecycle `routing_decision.action = restore_existing_worker` should only be treated as restore-ready when the task also has a valid checkpoint posture
+- lifecycle `routing_decision.action = handoff_to_successor` should be read together with `ao-handoff inspect --json` or `ao-state --json` continuity output to distinguish `handoff_pending`, `handoff_granted`, and still-`orphaned` state
+- lifecycle `routing_decision.action = hold_for_human` should be treated as authoritative when continuity posture is `ambiguous`
+
+Operator shortcut:
+
+- `decision_chain` answers “why this trigger classified this way?”
+- `continuity` answers “which owner path is currently safe to execute?”
+
+Phase-4 assist note:
+
+- lifecycle may propose Class A, B, or C actions
+- assist execution only auto-runs the phase-4 Class A allowlist after durable policy `allow` and clean runtime preflight
+- `notify_human_ready` remains notification-only; it is not auto-merge
+
+Independent reviewer gate note:
+
+- lifecycle now reads repo-local review state when it exists
+- `release_decision.disposition = await_review` is authoritative when review is pending, missing for the requested release path, or stale for the current target SHA
+- `release_decision.disposition = no_release_action` with basis `review_changes_required` means implementation should continue instead of advancing to human-ready notification
+- `release_decision.disposition = human_gate` with basis `review_escalated` means reviewer authority ran out and a human must decide next
 
 ## Strict Exit Codes
 

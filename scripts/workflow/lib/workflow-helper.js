@@ -100,6 +100,7 @@ export function buildTaskCloseoutPlan({
   repoRoot,
   branchName,
   worktreeName,
+  aoRetireCommand = null,
 } = {}) {
   const taskPaths = buildTaskPaths({
     repoRoot,
@@ -112,6 +113,7 @@ export function buildTaskCloseoutPlan({
     worktreePath: taskPaths.worktreePath,
     baselineRootPath: repoRoot,
     commands: [
+      ...(aoRetireCommand ? [aoRetireCommand] : []),
       `git -C ${repoRoot} worktree remove ${taskPaths.worktreePath}`,
       `git -C ${repoRoot} branch -d ${taskPaths.branchName}`,
       `git -C ${repoRoot} fetch origin --prune`,

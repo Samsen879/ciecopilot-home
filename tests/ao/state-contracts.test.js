@@ -30,6 +30,7 @@ import {
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createReviewRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
@@ -49,7 +50,7 @@ describe('ao state contracts', () => {
     expect(CONTROLLER_MODES).toEqual(['off', 'observe', 'shadow', 'assist']);
     expect(POLICY_DECISIONS).toEqual(['allow', 'deny', 'downgrade']);
     expect(CREDENTIAL_PROVENANCE_TRUST_DECISIONS).toEqual(['trusted', 'untrusted']);
-    expect(CONTROL_PLANE_LATEST_VERSION).toBe(9);
+    expect(CONTROL_PLANE_LATEST_VERSION).toBe(10);
   });
 
   it('creates durable managed-task, binding, lease, action, override, and controller-mode records', () => {
@@ -245,6 +246,60 @@ describe('ao state contracts', () => {
           human_gates: ['operator_enroll'],
         },
       },
+    });
+
+    expect(createReviewRecord({
+      review_id: 'review-1',
+      task_id: 'task-1',
+      issue_number: 88,
+      pr_number: 101,
+      status: 'open',
+      trigger_kind: 'ready_for_review',
+      target_branch: 'feat/88',
+      target_head_sha: 'abc123',
+      requested_by_session_name: 'cie-48',
+      requested_by_session_id: 'session-48',
+      implementation_session_name: 'cie-48',
+      implementation_session_id: 'session-48',
+      verification_baseline: [
+        {
+          category: 'workspace_sanity',
+          commands: ['git status --short'],
+        },
+      ],
+      freeze_status: 'active',
+      created_at: NOW,
+      updated_at: NOW,
+    })).toEqual({
+      schema_version: 'ao.review-record.v1alpha1',
+      format: 'ao_review_record',
+      review_id: 'review-1',
+      task_id: 'task-1',
+      issue_number: 88,
+      pr_number: 101,
+      status: 'open',
+      trigger_kind: 'ready_for_review',
+      target_branch: 'feat/88',
+      target_head_sha: 'abc123',
+      requested_by_session_name: 'cie-48',
+      requested_by_session_id: 'session-48',
+      implementation_session_name: 'cie-48',
+      implementation_session_id: 'session-48',
+      reviewer_session_name: null,
+      reviewer_session_id: null,
+      verification_baseline: [
+        {
+          category: 'workspace_sanity',
+          commands: ['git status --short'],
+        },
+      ],
+      findings_summary: [],
+      verdict: null,
+      baseline_execution: null,
+      freeze_status: 'active',
+      created_at: NOW,
+      updated_at: NOW,
+      metadata: {},
     });
 
     const runtimePreflightRecord = createRuntimePreflightRecord({
@@ -564,6 +619,7 @@ describe('ao state contracts', () => {
       task_specs: [],
       runtime_preflights: [],
       repo_knowledge: [],
+      review_records: [],
       checkpoints: [],
       handoff_requests: [],
       handoff_claims: [],

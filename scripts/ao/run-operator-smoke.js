@@ -1,10 +1,17 @@
 #!/usr/bin/env node
 
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { runCli as runReconcileCli } from '../ao-reconcile.js';
+import { runCli as runDoctorCli } from '../ao-doctor.js';
+import { runCli as runLifecycleCli } from '../ao-lifecycle.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+const CLI_RUNNERS = {
+  'scripts/ao-reconcile.js': runReconcileCli,
+  'scripts/ao-doctor.js': runDoctorCli,
+  'scripts/ao-lifecycle.js': runLifecycleCli,
+};
 
 const SCENARIOS = {
   'ci-failed-pr': {
@@ -127,38 +134,57 @@ function renderHelp() {
   ].join('\n');
 }
 
-function runStep(step, fixtureRoot) {
-  const result = spawnSync(process.execPath, [step.script, ...step.args], {
-    cwd: ROOT,
-    encoding: 'utf8',
-    env: {
-      ...process.env,
-      AO_FIXTURE_ROOT: fixtureRoot,
-    },
-  });
+async function runStep(step, fixtureRoot) {
+  const runner = CLI_RUNNERS[step.script];
+  if (!runner) {
+    throw new Error(`Unsupported smoke script: ${step.script}`);
+  }
 
-  const stdout = String(result.stdout ?? '');
-  const stderr = String(result.stderr ?? '');
-  const exitCode = result.status ?? 1;
+  const stdout = [];
+  const stderr = [];
+  const originalFixtureRoot = process.env.AO_FIXTURE_ROOT;
+  const originalCwd = process.cwd();
+  process.env.AO_FIXTURE_ROOT = fixtureRoot;
+  process.chdir(ROOT);
+
+  let exitCode = 1;
+
+  try {
+    const result = await runner(step.args, {
+      writeStdout: (text) => stdout.push(text),
+      writeStderr: (text) => stderr.push(text),
+    });
+    exitCode = result.exitCode ?? 1;
+  } finally {
+    process.chdir(originalCwd);
+    if (originalFixtureRoot == null) {
+      delete process.env.AO_FIXTURE_ROOT;
+    } else {
+      process.env.AO_FIXTURE_ROOT = originalFixtureRoot;
+    }
+  }
+
+  const renderedStdout = stdout.join('');
+  const renderedStderr = stderr.join('');
 
   if (exitCode !== step.expectExitCode) {
     throw new Error([
       `${step.label} exit code mismatch: expected ${step.expectExitCode}, received ${exitCode}`,
-      stdout.trim(),
-      stderr.trim(),
+      renderedStdout.trim(),
+      renderedStderr.trim(),
     ].filter(Boolean).join('\n'));
   }
 
   for (const fragment of step.expectStdoutContains) {
-    if (!stdout.includes(fragment)) {
+    if (!renderedStdout.includes(fragment)) {
       throw new Error([
         `${step.label} output missing expected fragment: ${fragment}`,
-        stdout.trim(),
+        renderedStdout.trim(),
       ].filter(Boolean).join('\n'));
     }
   }
 
-  return stdout.trim();
+  return renderedStdout.trim();
 }
 
 try {
@@ -173,7 +199,7 @@ try {
   console.log(`fixture_root: ${scenario.fixtureRoot}`);
 
   for (const step of scenario.steps) {
-    const summary = runStep(step, scenario.fixtureRoot);
+    const summary = await runStep(step, scenario.fixtureRoot);
     console.log('');
     console.log(`## ${step.label}`);
     console.log(summary);

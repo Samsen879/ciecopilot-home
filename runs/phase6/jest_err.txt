@@ -1,0 +1,51 @@
+(node:31420) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL tests/ao/controller-loop.test.js (9.008 s)
+  ao controller loop
+    √ observe mode persists observations without proposing actions (72 ms)
+    √ shadow mode records proposed lifecycle actions without executing them (56 ms)
+    √ passes the control-plane snapshot into doctor resolution for lifecycle handoff analysis (595 ms)
+    √ derives bugbot comment follow-up from protocolized review-comment delivery events (64 ms)
+    √ ignores superseded failing delivery events once a later approved-and-green state is observed on the same head (78 ms)
+    √ produces deterministic delivery envelopes and routing decisions for the same seeded state (96 ms)
+    √ assist mode executes only explicit class A actions and keeps higher-risk actions gated (106 ms)
+    √ assist mode blocks class A actions until runtime preflight has passed (54 ms)
+    √ blocks when another active lease already exists for the same controller (69 ms)
+    √ does not persist a mode override when leadership acquisition loses to another active leader (19 ms)
+    √ requires an explicit durable holder identity when AO session env is missing (14 ms)
+    √ falls back from a blank AO_SESSION_NAME to AO_SESSION_ID when resolving holder identity (37 ms)
+    √ renews the current holder lease instead of treating it as split-brain (40 ms)
+    √ reclaims a stale controller lease before starting a new pass (38 ms)
+    √ keeps leadership active across continuous passes and releases it on shutdown (54 ms)
+    √ renews heartbeat during a long-running pass so another holder cannot reclaim leadership (138 ms)
+    √ blocks a concurrent same-holder incarnation from joining a live lease (85 ms)
+    √ blocks a concurrent same-holder re-entry for a live legacy tokenless lease (88 ms)
+    √ fences stale same-holder supersession so the old incarnation cannot release the newer lease (136 ms)
+    × recovers same-holder leadership when a reused pid has a mismatched process identity token (18 ms)
+    √ recovers same-holder leadership for a legacy tokenless lease after the pid-reuse compatibility fallback (42 ms)
+    √ does not recover same-holder leadership when the prior lease lacks recoverable process identity metadata (17 ms)
+    √ applies bounded shutdown semantics to an in-flight pass (74 ms)
+
+  ● ao controller loop › recovers same-holder leadership when a reused pid has a mismatched process identity token
+
+    expect(received).resolves.toMatchObject()
+
+    Received promise rejected instead of resolved
+    Rejected to value: [Error: Controller default already has an active lease held by manual-reused-holder.]
+
+      1833 |     }));
+      1834 |
+    > 1835 |     await expect(runControllerLoop({
+           |           ^
+      1836 |       repoRoot,
+      1837 |       cwd: repoRoot,
+      1838 |       projectId: PROJECT_ID,
+
+      at expect (node_modules/expect/build/index.js:113:15)
+      at Object.<anonymous> (tests/ao/controller-loop.test.js:1835:11)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 22 passed, 23 total
+Snapshots:   0 total
+Time:        9.61 s
+Ran all test suites matching /tests\\ao\\controller-loop.test.js/i.

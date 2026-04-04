@@ -62,6 +62,11 @@ export const CONTROL_PLANE_REPO_KNOWLEDGE_MIGRATION = {
   key: '0009_repo_knowledge_v1',
 };
 
+export const CONTROL_PLANE_REVIEW_GATE_MIGRATION = {
+  version: 10,
+  key: '0010_review_gate_v1',
+};
+
 const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_BOOTSTRAP_MIGRATION,
   CONTROL_PLANE_TASK_SPEC_MIGRATION,
@@ -72,6 +77,7 @@ const CONTROL_PLANE_MIGRATIONS = [
   CONTROL_PLANE_HANDOFF_PROTOCOL_MIGRATION,
   CONTROL_PLANE_MEASUREMENT_METRICS_MIGRATION,
   CONTROL_PLANE_REPO_KNOWLEDGE_MIGRATION,
+  CONTROL_PLANE_REVIEW_GATE_MIGRATION,
 ];
 
 function resolveNow(now) {
@@ -135,6 +141,7 @@ function buildBootstrapState({
     'task_specs',
     'runtime_preflights',
     'repo_knowledge',
+    'review_records',
     'checkpoints',
     'handoff_requests',
     'handoff_claims',
@@ -270,6 +277,14 @@ function applyMigration({
     });
   }
 
+  if (migration.version === CONTROL_PLANE_REVIEW_GATE_MIGRATION.version) {
+    return buildBootstrapState({
+      projectId,
+      now,
+      existingState: state,
+    });
+  }
+
   throw new Error(`Unsupported migration version ${migration.version}`);
 }
 
@@ -327,6 +342,13 @@ function buildAuditSummary(migration) {
     return {
       operation: 'migrate',
       summary: 'Applied control-plane repo-knowledge migration.',
+    };
+  }
+
+  if (migration.version === CONTROL_PLANE_REVIEW_GATE_MIGRATION.version) {
+    return {
+      operation: 'migrate',
+      summary: 'Applied control-plane review-gate migration.',
     };
   }
 

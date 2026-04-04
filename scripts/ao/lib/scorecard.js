@@ -96,6 +96,7 @@ export function buildAoEvalScorecard({
   const continuityOutcomeCounts = {
     explicit_resume_success: 0,
     successor_handoff_success: 0,
+    ambiguous_human_gate_success: 0,
     failed: 0,
     not_applicable: 0,
   };
@@ -110,6 +111,10 @@ export function buildAoEvalScorecard({
     }
     if (scenario?.continuity?.outcome === 'successor_handoff' && scenario?.continuity?.status === 'success') {
       continuityOutcomeCounts.successor_handoff_success += 1;
+      continue;
+    }
+    if (scenario?.continuity?.outcome === 'ambiguous_human_gate' && scenario?.continuity?.status === 'success') {
+      continuityOutcomeCounts.ambiguous_human_gate_success += 1;
       continue;
     }
     continuityOutcomeCounts.failed += 1;

@@ -11,7 +11,8 @@
         "parity-orphaned-ownership",
         "policy-unknown-tool-fail-closed",
         "resume-explicit-checkpoint",
-        "handoff-successor-transfer"
+        "handoff-successor-transfer",
+        "ambiguous-competing-successors"
       ]
     },
     {
@@ -42,6 +43,15 @@
       "title": "Successor handoff continuity pack",
       "scenario_ids": [
         "handoff-successor-transfer"
+      ]
+    },
+    {
+      "pack_id": "continuity-incident-matrix",
+      "title": "Task-level continuity incident acceptance matrix",
+      "scenario_ids": [
+        "resume-explicit-checkpoint",
+        "handoff-successor-transfer",
+        "ambiguous-competing-successors"
       ]
     }
   ]

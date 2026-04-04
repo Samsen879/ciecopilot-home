@@ -58,6 +58,32 @@ describe('ao reconcile cli', () => {
     expect(result.exitCode).toBe(0);
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       automation_disposition: 'continue',
+      decision_chain: expect.objectContaining({
+        contract_status: 'authoritative_pr_chain',
+        scope: expect.objectContaining({
+          mode: 'pr',
+          project_id: 'ciecopilot-home',
+          pr_number: 44,
+          trigger: 'manual',
+        }),
+        stages: expect.arrayContaining([
+          expect.objectContaining({
+            stage: 'reconcile',
+            executed: true,
+            authority: 'authoritative',
+          }),
+          expect.objectContaining({
+            stage: 'doctor',
+            executed: false,
+            authority: 'diagnose_only',
+          }),
+          expect.objectContaining({
+            stage: 'lifecycle',
+            executed: false,
+            authority: 'authoritative',
+          }),
+        ]),
+      }),
     });
   });
 

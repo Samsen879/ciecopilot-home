@@ -25,6 +25,7 @@ import {
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createReviewRecord,
   createRepoKnowledgeRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
@@ -156,6 +157,7 @@ export function createStateRepository({
     nextState.task_specs = sortCollectionByKey(nextState.task_specs, 'task_id');
     nextState.runtime_preflights = sortCollectionByKey(nextState.runtime_preflights, 'runtime_ref');
     nextState.repo_knowledge = sortCollectionByKey(nextState.repo_knowledge, 'project_id');
+    nextState.review_records = sortCollectionByKey(nextState.review_records, 'review_id');
     nextState.checkpoints = sortCollectionByKey(nextState.checkpoints, 'checkpoint_id');
     nextState.handoff_requests = sortCollectionByKey(nextState.handoff_requests, 'request_id');
     nextState.handoff_claims = sortCollectionByKey(nextState.handoff_claims, 'claim_id');
@@ -553,6 +555,17 @@ export function createStateRepository({
         record,
         normalize: createRepoKnowledgeRecord,
         summary: `Persisted repo knowledge ${record?.project_id ?? record?.snapshot?.project_id}.`,
+      });
+    },
+
+    upsertReviewRecord(record) {
+      return upsertCollectionRecord({
+        collectionKey: 'review_records',
+        identityKey: 'review_id',
+        entityKind: 'review_record',
+        record,
+        normalize: createReviewRecord,
+        summary: `Persisted review record ${record?.review_id}.`,
       });
     },
 

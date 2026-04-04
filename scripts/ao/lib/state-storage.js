@@ -117,9 +117,13 @@ export function matchesRecordedProcessIdentity(metadata = {}) {
   }
 
   const recordedStartToken = normalizeProcessStartToken(metadata?.process_start_token);
+  const liveStartToken = normalizeProcessStartToken(liveIdentity.process_start_token);
 
-  if (recordedStartToken != null && liveIdentity.process_start_token != null) {
-    return recordedStartToken === liveIdentity.process_start_token;
+  if (recordedStartToken != null) {
+    if (liveStartToken == null) {
+      return false;
+    }
+    return recordedStartToken === liveStartToken;
   }
 
   return true;

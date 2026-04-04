@@ -89,6 +89,17 @@ describe('ao action executor', () => {
         executable: true,
         reason: 'class_a_allowlist',
       },
+      execution_contract: {
+        automation_boundary: 'class_a_only',
+        durable_policy_required: true,
+        runtime_preflight_required: true,
+        runtime_preflight_status: 'clean',
+        idempotency_mode: 'action_status_gate',
+        rollback_mode: 'audit_only',
+        executable: true,
+        reason: 'class_a_allowlist',
+        blocking_precondition_codes: [],
+      },
     });
     expect(notifyModel.preconditions).toEqual(expect.arrayContaining([
       expect.objectContaining({
@@ -134,6 +145,14 @@ describe('ao action executor', () => {
         executable: false,
         reason: 'runtime_preflight_clean',
       },
+      execution_contract: {
+        runtime_preflight_status: 'missing_dependency',
+        idempotency_mode: 'action_status_gate',
+        rollback_mode: 'audit_only',
+        executable: false,
+        reason: 'runtime_preflight_clean',
+        blocking_precondition_codes: ['runtime_preflight_clean'],
+      },
     });
     expect(missingPreflightModel.preconditions).toEqual(expect.arrayContaining([
       expect.objectContaining({
@@ -166,6 +185,17 @@ describe('ao action executor', () => {
       phase4_assist: {
         executable: false,
         reason: 'runtime_ownership_change_forbidden',
+      },
+      execution_contract: {
+        automation_boundary: 'class_a_only',
+        durable_policy_required: true,
+        runtime_preflight_required: true,
+        runtime_preflight_status: 'missing',
+        idempotency_mode: 'action_status_gate',
+        rollback_mode: 'manual_only',
+        executable: false,
+        reason: 'runtime_ownership_change_forbidden',
+        blocking_precondition_codes: ['runtime_preflight_clean'],
       },
     });
   });

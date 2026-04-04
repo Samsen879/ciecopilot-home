@@ -1,6 +1,8 @@
 import { createCheckpointStore } from './checkpoint-store.js';
+import { buildTaskContinuityFromSnapshot } from './continuity.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
 import { normalizeIssueIntake } from './issue-intake.js';
+import { deriveReviewPosture } from './review-contracts.js';
 import {
   buildManagedTaskExecutionAttemptMetric,
   completeManagedTaskExecutionAttemptMetric,
@@ -97,6 +99,99 @@ function latestTaskOwnershipLease(snapshot, taskId) {
     .sort((left, right) => String(right?.acquired_at ?? '').localeCompare(String(left?.acquired_at ?? '')))[0] ?? null;
 }
 
+function latestTaskReviewRecord(snapshot, taskId) {
+  return [...(snapshot?.state?.review_records ?? [])]
+    .filter((record) => record?.task_id === taskId)
+    .sort((left, right) => {
+      const byTimestamp = String(right?.updated_at ?? '').localeCompare(String(left?.updated_at ?? ''));
+      if (byTimestamp !== 0) return byTimestamp;
+      return String(right?.review_id ?? '').localeCompare(String(left?.review_id ?? ''));
+    })[0] ?? null;
+}
+
+function deriveReviewBlockingReason(posture) {
+  if (posture === 'review_pending') return 'independent_review_active';
+  if (posture === 'review_changes_required') return 'changes_requested';
+  if (posture === 'review_escalated') return 'human_escalation_required';
+  return null;
+}
+
+function buildTaskReviewInspection(snapshot, taskId) {
+  const reviewRecord = latestTaskReviewRecord(snapshot, taskId);
+  if (!reviewRecord) return null;
+
+  const posture = deriveReviewPosture(reviewRecord);
+  return {
+    review_id: reviewRecord.review_id,
+    task_id: reviewRecord.task_id,
+    issue_number: reviewRecord.issue_number ?? null,
+    implementation_session_name: reviewRecord.implementation_session_name ?? null,
+    reviewer_session_name: reviewRecord.reviewer_session_name ?? null,
+    target_branch: reviewRecord.target_branch ?? null,
+    target_head_sha: reviewRecord.target_head_sha ?? null,
+    status: reviewRecord.status,
+    verdict: reviewRecord.verdict,
+    freeze_status: reviewRecord.freeze_status,
+    posture: posture.posture,
+    freeze_active: posture.freeze_active,
+    blocking_reason: deriveReviewBlockingReason(posture.posture),
+  };
+}
+
+function latestActivePrBinding(snapshot, taskId) {
+  return (snapshot?.state?.pr_bindings ?? []).find((binding) => (
+    binding?.task_id === taskId && binding?.status === 'bound'
+  )) ?? null;
+}
+
+function assertReviewFreezeAllowsManageCommand({
+  snapshot,
+  command,
+  existingTask,
+  taskId,
+  ownerSessionName = null,
+  branchName = null,
+  worktreePath = null,
+  prNumber = null,
+} = {}) {
+  if (!existingTask || !['adopt', 'resume'].includes(command)) {
+    return;
+  }
+
+  const review = buildTaskReviewInspection(snapshot, taskId);
+  if (review?.freeze_active !== true) {
+    return;
+  }
+
+  if (command === 'resume') {
+    throw new Error(`Cannot resume ${taskId} while independent review is active`);
+  }
+
+  const activeOwnershipLeases = snapshot.state.ownership_leases.filter(
+    (lease) => lease.task_id === taskId && lease.status === 'active',
+  );
+  const activePrBinding = latestActivePrBinding(snapshot, taskId);
+  const ownerPreserved = ownerSessionName == null
+    ? activeOwnershipLeases.length <= 1
+    : activeOwnershipLeases.length === 1
+      && activeOwnershipLeases[0].owner_session_name === ownerSessionName;
+  const branchPreserved = branchName == null || branchName === existingTask.branch_name;
+  const worktreePreserved = worktreePath == null || worktreePath === existingTask.worktree_path;
+  const prPreserved = prNumber == null || prNumber === activePrBinding?.pr_number;
+
+  if (
+    existingTask.status === 'active'
+    && ownerPreserved
+    && branchPreserved
+    && worktreePreserved
+    && prPreserved
+  ) {
+    return;
+  }
+
+  throw new Error(`Cannot adopt ${taskId} while independent review is active`);
+}
+
 function releaseBoundPrBindings(repository, taskId, now, reason) {
   const snapshot = repository.getSnapshot();
   const activeBindings = snapshot.state.pr_bindings.filter(
@@ -187,6 +282,16 @@ export async function runManageCommand({
   const resolvedWorktreePath = worktreePath ?? checkpointTaskRef?.worktree_path ?? existingTask?.worktree_path ?? null;
   const resolvedPrNumber = prNumber ?? checkpointPrBinding?.pr_number ?? null;
   const resolvedBaseBranch = baseBranch ?? checkpointPrBinding?.base_branch ?? 'main';
+  assertReviewFreezeAllowsManageCommand({
+    snapshot,
+    command,
+    existingTask,
+    taskId: resolvedTaskId,
+    ownerSessionName,
+    branchName: resolvedBranchName,
+    worktreePath: resolvedWorktreePath,
+    prNumber: resolvedPrNumber,
+  });
   const nextMetadata = command === 'resume'
     ? {
         ...(isPlainObject(existingTask?.metadata) ? existingTask.metadata : {}),
@@ -394,6 +499,19 @@ export async function runManageCommand({
     }
   }
 
+  const inspectionSnapshot = repository.getSnapshot();
+  const continuity = buildTaskContinuityFromSnapshot({
+    snapshot: inspectionSnapshot,
+    taskId: task.task_id,
+    checkpointInspection: checkpointStore.inspectCheckpoint({
+      taskId: task.task_id,
+    }),
+    handoffInspection: handoffProtocol.inspectTaskHandoff({
+      taskId: task.task_id,
+    }),
+  });
+  const review = buildTaskReviewInspection(inspectionSnapshot, task.task_id);
+
   return {
     project_id: projectId,
     cwd,
@@ -408,6 +526,8 @@ export async function runManageCommand({
       state: resumeCheckpoint.state,
       reason_codes: resumeCheckpoint.reason_codes,
     },
+    continuity,
+    review,
     releasedOwnershipLeaseIds,
     releasedPrBindingIds,
   };

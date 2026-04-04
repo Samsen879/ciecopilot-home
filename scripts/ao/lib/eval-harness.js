@@ -6,6 +6,7 @@ import path from 'node:path';
 import { runControllerLoop } from './controller-loop.js';
 import { loadAoProjectObservation } from './ao-observation-source.js';
 import { createCheckpointStore } from './checkpoint-store.js';
+import { buildTaskContinuityFromSnapshot } from './continuity.js';
 import { createDoctorPrScope } from './doctor-contracts.js';
 import { buildDoctorReport } from './doctor-engine.js';
 import { loadDoctorLocalState } from './doctor-local-state-source.js';
@@ -113,6 +114,107 @@ function createFinding(code, summary, details = null) {
   };
 }
 
+function resolveScenarioTaskId(scenario) {
+  if (scenario?.task?.task_id) return String(scenario.task.task_id);
+  if (scenario?.task?.issue_number != null) return `issue-${scenario.task.issue_number}`;
+  throw new Error(`Scenario ${scenario?.scenario_id ?? 'unknown'} is missing task identity`);
+}
+
+function resolveContinuityKindForRunner(runner = null) {
+  switch (runner) {
+    case 'managed_resume_continuity':
+      return 'resume';
+    case 'managed_successor_handoff':
+      return 'handoff';
+    case 'managed_ambiguous_continuity':
+      return 'human_gate';
+    default:
+      return 'none';
+  }
+}
+
+function inspectScenarioContinuity({
+  repository,
+  taskId,
+  checkpointStore,
+  handoffProtocol,
+} = {}) {
+  const snapshot = repository.getSnapshot();
+  const checkpointInspection = checkpointStore.inspectCheckpoint({
+    taskId,
+  });
+  const handoffInspection = handoffProtocol.inspectTaskHandoff({
+    taskId,
+  });
+  const continuityInspection = buildTaskContinuityFromSnapshot({
+    snapshot,
+    taskId,
+    checkpointInspection,
+    handoffInspection,
+  });
+
+  return {
+    snapshot,
+    checkpointInspection,
+    handoffInspection,
+    continuityInspection,
+  };
+}
+
+function verifyContinuityExpectation(findings, {
+  scenario,
+  continuityInspection,
+} = {}) {
+  const expected = scenario?.expected?.continuity ?? null;
+  if (!expected) return;
+
+  if (!continuityInspection) {
+    findings.push(createFinding(
+      'continuity_inspection_missing',
+      `Scenario ${scenario.scenario_id} did not produce a continuity inspection.`,
+    ));
+    return;
+  }
+
+  if (
+    expected.posture != null
+      && continuityInspection.posture !== expected.posture
+  ) {
+    findings.push(createFinding(
+      'continuity_posture_mismatch',
+      `Expected continuity posture ${expected.posture} but received ${continuityInspection.posture}.`,
+    ));
+  }
+
+  if (
+    expected.recommended_action != null
+      && continuityInspection.recommended_action !== expected.recommended_action
+  ) {
+    findings.push(createFinding(
+      'continuity_action_mismatch',
+      `Expected continuity action ${expected.recommended_action} but received ${continuityInspection.recommended_action}.`,
+    ));
+  }
+}
+
+function buildContinuityResult({
+  scenario,
+  continuityInspection,
+  status,
+} = {}) {
+  const expected = scenario?.expected?.continuity ?? {};
+  return {
+    kind: expected.kind ?? resolveContinuityKindForRunner(scenario?.runner),
+    status,
+    outcome: status === 'success'
+      ? (expected.outcome ?? 'none')
+      : 'failed',
+    posture: continuityInspection?.posture ?? null,
+    recommended_action: continuityInspection?.recommended_action ?? null,
+    checkpoint_state: continuityInspection?.checkpoint_state ?? null,
+  };
+}
+
 function buildHarnessSummary(scenarioResults = []) {
   const continuityScenarios = scenarioResults.filter((scenario) => scenario.continuity.kind !== 'none');
   return {
@@ -168,6 +270,11 @@ function resolveScenarioIds(packRegistry, resolvedPackIds) {
 
 function loadScenarioDefinition(fixtureRoot, scenarioId) {
   return readJsonFile(path.join(fixtureRoot, 'scenarios', `${scenarioId}.json`));
+}
+
+function resolveEvalHolderId(scenario) {
+  const controllerId = String(scenario?.controller?.controller_id ?? 'default').trim() || 'default';
+  return `ao-eval-${controllerId}`;
 }
 
 function buildControllerTaskSeed(repository, scenario, now, { withCredentials = false } = {}) {
@@ -258,9 +365,18 @@ async function executeControllerParityScenario({
       cwd: repoRoot,
       projectId,
       controllerId: scenario.controller.controller_id,
+      holderId: resolveEvalHolderId(scenario),
       mode: scenario.controller.mode,
       now: scenario.timing.run_at,
       deps: {
+        loadAoProjectObservation: ({ projectId: activeProjectId, now }) => loadAoProjectObservation({
+          projectId: activeProjectId,
+          now,
+        }),
+        loadGitHubObservationSet: ({ now }) => loadGitHubObservationSet({
+          scope: createPrScope(scenario.pr_binding.pr_number),
+          now,
+        }),
         ensureRuntimePreflights: ({ repository, cwd, now }) => repository.ensureRuntimePreflights({
           cwd,
           now,
@@ -410,6 +526,7 @@ async function executeControllerPolicyScenario({
       cwd: repoRoot,
       projectId,
       controllerId: scenario.controller.controller_id,
+      holderId: resolveEvalHolderId(scenario),
       mode: scenario.controller.mode,
       now: scenario.timing.run_at,
       deps: {
@@ -542,6 +659,7 @@ async function executeResumeContinuityScenario({
   projectId,
 } = {}) {
   const repoRoot = createTempRepo('ao-eval-resume-', { git: true });
+  const taskId = resolveScenarioTaskId(scenario);
 
   try {
     await runManageCommand({
@@ -572,11 +690,16 @@ async function executeResumeContinuityScenario({
         capability: () => true,
       },
     });
-    const checkpoint = createCheckpointStore({
+    const checkpointStore = createCheckpointStore({
       repository,
       now: () => scenario.timing.checkpoint_at,
-    }).captureCheckpoint({
-      taskId: `issue-${scenario.task.issue_number}`,
+    });
+    const handoffProtocol = createHandoffProtocol({
+      repository,
+      now: () => scenario.timing.resume_at,
+    });
+    const checkpoint = checkpointStore.captureCheckpoint({
+      taskId,
       controllerId: 'default',
       derivedTrigger: 'manual',
       observedAt: scenario.timing.checkpoint_at,
@@ -592,6 +715,18 @@ async function executeResumeContinuityScenario({
       reason: 'worker_exited',
     });
 
+    const inspectedContinuity = inspectScenarioContinuity({
+      repository,
+      taskId,
+      checkpointStore,
+      handoffProtocol,
+    });
+
+    const findings = [];
+    verifyContinuityExpectation(findings, {
+      scenario,
+      continuityInspection: inspectedContinuity.continuityInspection,
+    });
     const result = await runManageCommand({
       repoRoot,
       projectId,
@@ -604,7 +739,6 @@ async function executeResumeContinuityScenario({
 
     const snapshot = repository.getSnapshot();
     const executionAttempts = sortExecutionAttempts(snapshot.state.execution_attempt_metrics);
-    const findings = [];
     if (result.resume?.state !== 'valid') {
       findings.push(createFinding(
         'resume_checkpoint_invalid',
@@ -640,13 +774,18 @@ async function executeResumeContinuityScenario({
 
     return {
       verification: buildVerification(findings),
-      continuity: {
-        kind: 'resume',
+      continuity: buildContinuityResult({
+        scenario,
+        continuityInspection: inspectedContinuity.continuityInspection,
         status: findings.length === 0 ? 'success' : 'failed',
-        outcome: findings.length === 0 ? 'explicit_resume' : 'failed',
-      },
+      }),
       metrics: summarizeMetrics(snapshot, projectId),
       stabilityVector: {
+        continuity_pre_action: {
+          posture: inspectedContinuity.continuityInspection?.posture ?? null,
+          recommended_action: inspectedContinuity.continuityInspection?.recommended_action ?? null,
+          checkpoint_state: inspectedContinuity.continuityInspection?.checkpoint_state ?? null,
+        },
         task: {
           status: result.task?.status ?? null,
           branch_name: result.task?.branch_name ?? null,
@@ -678,6 +817,7 @@ async function executeSuccessorHandoffScenario({
   projectId,
 } = {}) {
   const repoRoot = createTempRepo('ao-eval-handoff-', { git: true });
+  const taskId = resolveScenarioTaskId(scenario);
 
   try {
     await runManageCommand({
@@ -708,11 +848,12 @@ async function executeSuccessorHandoffScenario({
         capability: () => true,
       },
     });
-    createCheckpointStore({
+    const checkpointStore = createCheckpointStore({
       repository,
       now: () => scenario.timing.checkpoint_at,
-    }).captureCheckpoint({
-      taskId: `issue-${scenario.task.issue_number}`,
+    });
+    checkpointStore.captureCheckpoint({
+      taskId,
       controllerId: 'default',
       derivedTrigger: 'agent_exited',
       observedAt: scenario.timing.checkpoint_at,
@@ -757,6 +898,18 @@ async function executeSuccessorHandoffScenario({
       grantExpiresAt: scenario.timing.grant_expires_at,
     });
 
+    const inspectedContinuity = inspectScenarioContinuity({
+      repository,
+      taskId,
+      checkpointStore,
+      handoffProtocol,
+    });
+
+    const findings = [];
+    verifyContinuityExpectation(findings, {
+      scenario,
+      continuityInspection: inspectedContinuity.continuityInspection,
+    });
     const result = await runManageCommand({
       repoRoot,
       projectId,
@@ -769,7 +922,6 @@ async function executeSuccessorHandoffScenario({
 
     const snapshot = repository.getSnapshot();
     const executionAttempts = sortExecutionAttempts(snapshot.state.execution_attempt_metrics);
-    const findings = [];
     if (result.handoffTransfer == null) {
       findings.push(createFinding(
         'handoff_transfer_missing',
@@ -795,13 +947,18 @@ async function executeSuccessorHandoffScenario({
 
     return {
       verification: buildVerification(findings),
-      continuity: {
-        kind: 'handoff',
+      continuity: buildContinuityResult({
+        scenario,
+        continuityInspection: inspectedContinuity.continuityInspection,
         status: findings.length === 0 ? 'success' : 'failed',
-        outcome: findings.length === 0 ? 'successor_handoff' : 'failed',
-      },
+      }),
       metrics: summarizeMetrics(snapshot, projectId),
       stabilityVector: {
+        continuity_pre_action: {
+          posture: inspectedContinuity.continuityInspection?.posture ?? null,
+          recommended_action: inspectedContinuity.continuityInspection?.recommended_action ?? null,
+          checkpoint_state: inspectedContinuity.continuityInspection?.checkpoint_state ?? null,
+        },
         ownership_lease: {
           owner_session_name: result.ownershipLease?.owner_session_name ?? null,
           status: result.ownershipLease?.status ?? null,
@@ -811,6 +968,162 @@ async function executeSuccessorHandoffScenario({
           reason: result.handoffTransfer?.reason ?? null,
         },
         handoff_request_statuses: snapshot.state.handoff_requests.map((record) => record.status).sort(),
+        execution_attempts: executionAttempts.map((record) => ({
+          command: record.command,
+          status: record.status,
+          retry_cause: record.retry_cause,
+          failure_class: record.failure_class,
+        })),
+      },
+    };
+  } finally {
+    removeTempRepo(repoRoot);
+  }
+}
+
+async function executeAmbiguousContinuityScenario({
+  scenario,
+  projectId,
+} = {}) {
+  const repoRoot = createTempRepo('ao-eval-ambiguous-', { git: true });
+  const taskId = resolveScenarioTaskId(scenario);
+
+  try {
+    await runManageCommand({
+      repoRoot,
+      projectId,
+      command: 'enroll',
+      issueNumber: scenario.task.issue_number,
+      title: scenario.task.title,
+      branchName: scenario.task.branch_name,
+      worktreePath: scenario.task.worktree_path,
+      prNumber: scenario.task.pr_number,
+      ownerSessionName: scenario.task.owner_session_name,
+      ownerSessionId: scenario.task.owner_session_id,
+      taskSpecBody: joinTaskSpecBody(scenario.task_spec_body),
+      now: scenario.timing.enroll_at,
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId,
+    });
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: scenario.timing.preflight_at,
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    const checkpointStore = createCheckpointStore({
+      repository,
+      now: () => scenario.timing.checkpoint_at,
+    });
+    checkpointStore.captureCheckpoint({
+      taskId,
+      controllerId: 'default',
+      derivedTrigger: 'agent_exited',
+      observedAt: scenario.timing.checkpoint_at,
+      actionIds: ['proposal-ambiguous-continuity'],
+    });
+
+    await runManageCommand({
+      repoRoot,
+      projectId,
+      command: 'unmanage',
+      issueNumber: scenario.task.issue_number,
+      now: scenario.timing.pause_at,
+      reason: 'worker_stale',
+    });
+
+    const handoffProtocol = createHandoffProtocol({
+      repository,
+      now: () => scenario.timing.handoff_at,
+    });
+    const request = handoffProtocol.requestHandoff({
+      taskId,
+      requestedBySessionName: scenario.task.operator_session_name,
+      requestedBySessionId: scenario.task.operator_session_id,
+      operatorSessionName: scenario.task.operator_session_name,
+      operatorSessionId: scenario.task.operator_session_id,
+      successorSessionName: null,
+      successorSessionId: null,
+      reason: 'open_successor_selection',
+    });
+
+    const successorCandidates = Array.isArray(scenario.task.successor_candidates)
+      ? scenario.task.successor_candidates
+      : [];
+    if (successorCandidates.length < 2) {
+      throw new Error(`Scenario ${scenario.scenario_id} requires at least two successor candidates`);
+    }
+
+    for (const candidate of successorCandidates) {
+      handoffProtocol.claimHandoff({
+        requestId: request.request_id,
+        successorSessionName: candidate.session_name,
+        successorSessionId: candidate.session_id,
+        reason: 'candidate_ready',
+      });
+    }
+
+    const inspectedContinuity = inspectScenarioContinuity({
+      repository,
+      taskId,
+      checkpointStore,
+      handoffProtocol,
+    });
+    const snapshot = inspectedContinuity.snapshot;
+    const executionAttempts = sortExecutionAttempts(snapshot.state.execution_attempt_metrics);
+    const findings = [];
+    verifyContinuityExpectation(findings, {
+      scenario,
+      continuityInspection: inspectedContinuity.continuityInspection,
+    });
+
+    if (inspectedContinuity.handoffInspection?.top_status !== 'ambiguous') {
+      findings.push(createFinding(
+        'handoff_status_mismatch',
+        `Expected ambiguous handoff inspection but received ${inspectedContinuity.handoffInspection?.top_status ?? 'none'}.`,
+      ));
+    }
+    if (snapshot.state.handoff_transfers.length !== 0) {
+      findings.push(createFinding(
+        'unexpected_handoff_transfer',
+        'Ambiguous continuity scenario should not complete any handoff transfer.',
+      ));
+    }
+    if (executionAttempts.some((record) => record.command === 'resume')) {
+      findings.push(createFinding(
+        'unexpected_resume_attempt',
+        'Ambiguous continuity scenario should not execute a resume attempt.',
+      ));
+    }
+
+    return {
+      verification: buildVerification(findings),
+      continuity: buildContinuityResult({
+        scenario,
+        continuityInspection: inspectedContinuity.continuityInspection,
+        status: findings.length === 0 ? 'success' : 'failed',
+      }),
+      metrics: summarizeMetrics(snapshot, projectId),
+      stabilityVector: {
+        continuity_pre_action: {
+          posture: inspectedContinuity.continuityInspection?.posture ?? null,
+          recommended_action: inspectedContinuity.continuityInspection?.recommended_action ?? null,
+          checkpoint_state: inspectedContinuity.continuityInspection?.checkpoint_state ?? null,
+        },
+        handoff_status: {
+          top_status: inspectedContinuity.handoffInspection?.top_status ?? null,
+          reason_codes: inspectedContinuity.handoffInspection?.reason_codes ?? [],
+        },
+        handoff_claims: (inspectedContinuity.handoffInspection?.claims ?? []).map((claim) => ({
+          successor_session_name: claim.successor_session_name,
+          status: claim.status,
+        })),
         execution_attempts: executionAttempts.map((record) => ({
           command: record.command,
           status: record.status,
@@ -848,6 +1161,11 @@ async function executeScenario({
       });
     case 'managed_successor_handoff':
       return executeSuccessorHandoffScenario({
+        scenario,
+        projectId,
+      });
+    case 'managed_ambiguous_continuity':
+      return executeAmbiguousContinuityScenario({
         scenario,
         projectId,
       });
@@ -918,7 +1236,7 @@ export async function runAoEvalHarness({
           replay_fingerprint: null,
         },
         continuity: {
-          kind: scenario.runner.startsWith('managed_') ? (scenario.runner === 'managed_resume_continuity' ? 'resume' : 'handoff') : 'none',
+          kind: resolveContinuityKindForRunner(scenario.runner),
           status: 'failed',
           outcome: 'failed',
         },

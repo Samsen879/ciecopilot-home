@@ -68,6 +68,11 @@ describe('ao doctor cli', () => {
       report: buildReport({
         top_status: 'warning',
       }),
+      reconciliationReport: {
+        top_status: 'healthy',
+        automation_disposition: 'continue',
+        findings: [],
+      },
     });
     const stdout = [];
 
@@ -84,6 +89,32 @@ describe('ao doctor cli', () => {
     });
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       top_status: 'warning',
+      decision_chain: expect.objectContaining({
+        contract_status: 'authoritative_pr_chain',
+        scope: expect.objectContaining({
+          mode: 'pr',
+          project_id: 'ciecopilot-home',
+          pr_number: 44,
+          trigger: 'manual',
+        }),
+        stages: expect.arrayContaining([
+          expect.objectContaining({
+            stage: 'reconcile',
+            executed: true,
+            authority: 'authoritative',
+          }),
+          expect.objectContaining({
+            stage: 'doctor',
+            executed: true,
+            authority: 'diagnose_only',
+          }),
+          expect.objectContaining({
+            stage: 'lifecycle',
+            executed: false,
+            authority: 'authoritative',
+          }),
+        ]),
+      }),
     });
   });
 

@@ -149,9 +149,18 @@ describe('ao controller shadow parity', () => {
       cwd: repoRoot,
       projectId: PROJECT_ID,
       controllerId: 'default',
+      holderId: 'test-controller-parity',
       mode: 'shadow',
       now: '2026-03-29T06:51:00.000Z',
       deps: {
+        loadAoProjectObservation: ({ projectId, now }) => loadAoProjectObservation({
+          projectId,
+          now,
+        }),
+        loadGitHubObservationSet: ({ now }) => loadGitHubObservationSet({
+          scope: createPrScope(prNumber),
+          now,
+        }),
         ensureRuntimePreflights: ({ repository: activeRepository, cwd, now }) => activeRepository.ensureRuntimePreflights({
           cwd,
           now,

@@ -67,9 +67,15 @@ npm run workflow:task:closeout -- --branch task/142-governance-v1
 - 先检查 hook 是否已安装
 - 打印 closeout plan
 - 等待明确确认
+- 如果当前 repo 存在 `scripts/ao-manage.js`，先执行 AO `retire`
 - 删除本地 task worktree
 - 删除本地 task branch
 - 最后同步 baseline
+
+AO phase-5 rule：
+
+- closeout 不再只清 Git 痕迹，也要同步把 AO durable task state 收口到 `retired`
+- closeout 不删除 AO durable 历史记录；durable state 仍然保留给 `ao-state` / 审计 / incident 回放使用
 
 ### 4. closeout 的确认方式
 

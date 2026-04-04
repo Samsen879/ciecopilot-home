@@ -25,11 +25,18 @@ import {
   createLifecyclePrScope,
   createLifecycleProjectScope,
 } from './lifecycle-contracts.js';
-import { buildLifecycleReport as buildLifecycleReportModel } from './lifecycle-engine.js';
+import {
+  applyReviewGateToLifecycleReport,
+  buildLifecycleReport as buildLifecycleReportModel,
+} from './lifecycle-engine.js';
 import {
   buildAssistActionModel,
   executeAssistActions,
+  summarizeAssistActionRecord,
 } from './action-executor.js';
+import { buildTaskContinuityFromSnapshot } from './continuity.js';
+import { buildDecisionChainReport } from './decision-chain.js';
+import { deriveReviewPosture } from './review-contracts.js';
 import { buildControllerRunMetric } from './run-metrics.js';
 import {
   buildPolicyInputForAction,
@@ -77,6 +84,10 @@ function resolveNow(now) {
   return new Date().toISOString();
 }
 
+function compareIsoDescending(left, right) {
+  return String(right ?? '').localeCompare(String(left ?? ''));
+}
+
 function addMilliseconds(isoTimestamp, durationMs) {
   const date = new Date(isoTimestamp);
   if (Number.isNaN(date.getTime())) {
@@ -84,6 +95,42 @@ function addMilliseconds(isoTimestamp, durationMs) {
   }
 
   return new Date(date.getTime() + durationMs).toISOString();
+}
+
+function latestTaskReviewRecord(snapshot, taskId) {
+  return [...(snapshot?.state?.review_records ?? [])]
+    .filter((record) => record?.task_id === taskId)
+    .sort((left, right) => {
+      const byTimestamp = compareIsoDescending(left?.updated_at, right?.updated_at);
+      if (byTimestamp !== 0) return byTimestamp;
+      return String(right?.review_id ?? '').localeCompare(String(left?.review_id ?? ''));
+    })[0] ?? null;
+}
+
+function buildTaskReviewInspection(snapshot, taskId) {
+  const reviewRecord = latestTaskReviewRecord(snapshot, taskId);
+  if (!reviewRecord) return null;
+
+  const posture = deriveReviewPosture(reviewRecord);
+  return {
+    review_id: reviewRecord.review_id,
+    task_id: reviewRecord.task_id,
+    issue_number: reviewRecord.issue_number ?? null,
+    implementation_session_name: reviewRecord.implementation_session_name ?? null,
+    reviewer_session_name: reviewRecord.reviewer_session_name ?? null,
+    target_branch: reviewRecord.target_branch ?? null,
+    target_head_sha: reviewRecord.target_head_sha ?? null,
+    status: reviewRecord.status,
+    verdict: reviewRecord.verdict,
+    freeze_status: reviewRecord.freeze_status,
+    posture: posture.posture,
+    freeze_active: posture.freeze_active,
+  };
+}
+
+function resolveCurrentHeadSha(githubObservation, prNumber) {
+  if (!Number.isInteger(Number(prNumber))) return null;
+  return (githubObservation?.prs ?? []).find((pr) => pr?.pr_number === Number(prNumber))?.head_sha ?? null;
 }
 
 function resolveHolderIdentity({
@@ -1016,18 +1063,33 @@ async function resolveLifecycleReportForTask({
     localState,
     controlPlaneSnapshot: deps.controlPlaneSnapshot ?? null,
   });
+  const reviewInspection = buildTaskReviewInspection(deps.controlPlaneSnapshot ?? null, task.task_id);
+  const reviewRequired = reviewInspection != null;
   const lifecycleReport = deps.buildLifecycleReport({
         scope: prNumber != null
           ? createLifecyclePrScope({ projectId, prNumber, trigger: derivedTrigger })
           : createLifecycleProjectScope({ projectId, trigger: derivedTrigger }),
         reconciliationReport,
         doctorReport,
+        reviewRequired,
+        reviewInspection,
+        currentHeadSha: resolveCurrentHeadSha(githubObservation, prNumber),
+  });
+  const decisionChain = buildDecisionChainReport({
+    scope: lifecycleReport.scope,
+    reconciliationReport,
+    doctorReport,
+    lifecycleReport,
   });
 
   return {
-    lifecycleReport,
+    lifecycleReport: {
+      ...lifecycleReport,
+      decision_chain: decisionChain,
+    },
     reconciliationReport,
     doctorReport,
+    decisionChain,
   };
 }
 
@@ -1143,6 +1205,11 @@ async function executeControllerPass({
     let policyBlockedActionIds = [];
     let deniedActionIds = [];
     let downgradedActionIds = [];
+    let lifecycleReport = null;
+    let decisionChain = null;
+    let routingDecision = null;
+    let releaseDecision = null;
+    let continuity = null;
 
     if (resolvedMode === 'shadow' || resolvedMode === 'assist') {
       const resolvedLifecycle = await runStepWithShutdownBudget('resolve_lifecycle_report', ({ abortSignal }) => (
@@ -1170,13 +1237,49 @@ async function executeControllerPass({
                 abortSignal,
                 controlPlaneSnapshot: repository.getSnapshot(),
               },
-            })
+          })
       ), {
         stopSignal,
         shutdownTimeoutMs,
       });
-      const lifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
+      const controlPlaneSnapshot = repository.getSnapshot();
+      const reviewInspection = buildTaskReviewInspection(controlPlaneSnapshot, task.task_id);
+      const reviewRequired = reviewInspection != null;
+      const originalLifecycleReport = resolvedLifecycle.lifecycleReport ?? resolvedLifecycle;
+      lifecycleReport = applyReviewGateToLifecycleReport({
+        lifecycleReport: originalLifecycleReport,
+        reviewRequired,
+        reviewInspection,
+        currentHeadSha: resolveCurrentHeadSha(githubObservation, prNumber),
+      });
+      decisionChain = lifecycleReport === originalLifecycleReport
+        ? (resolvedLifecycle.decisionChain
+          ?? lifecycleReport.decision_chain
+          ?? buildDecisionChainReport({
+            scope: prNumber != null
+              ? createLifecyclePrScope({ projectId, prNumber, trigger: derivedTrigger })
+              : createLifecycleProjectScope({ projectId, trigger: derivedTrigger }),
+            reconciliationReport: resolvedLifecycle.reconciliationReport ?? null,
+            doctorReport: resolvedLifecycle.doctorReport ?? null,
+            lifecycleReport,
+          }))
+        : buildDecisionChainReport({
+          scope: prNumber != null
+            ? createLifecyclePrScope({ projectId, prNumber, trigger: derivedTrigger })
+            : createLifecycleProjectScope({ projectId, trigger: derivedTrigger }),
+          reconciliationReport: resolvedLifecycle.reconciliationReport ?? null,
+          doctorReport: resolvedLifecycle.doctorReport ?? null,
+          lifecycleReport,
+        });
+      routingDecision = lifecycleReport.routing_decision ?? null;
+      releaseDecision = lifecycleReport.release_decision ?? null;
       lifecycleTopStatus = lifecycleReport.top_status ?? null;
+      continuity = buildTaskContinuityFromSnapshot({
+        snapshot: repository.getSnapshot(),
+        taskId: task.task_id,
+        lifecycleReport,
+        reconciliationReport: resolvedLifecycle.reconciliationReport ?? null,
+      });
       const proposalResult = await persistShadowActions({
         repository,
         task,
@@ -1245,6 +1348,9 @@ async function executeControllerPass({
     const actionRecords = [...new Set(proposedActionIds)]
       .map((actionId) => repository.getSnapshot().state.actions.find((record) => record.action_id === actionId) ?? null)
       .filter(Boolean);
+    const assistActions = actionRecords
+      .map((record) => summarizeAssistActionRecord(record))
+      .filter(Boolean);
     repository.upsertControllerRunMetric(buildControllerRunMetric({
       task,
       controllerId,
@@ -1287,6 +1393,15 @@ async function executeControllerPass({
       downgraded_action_count: downgradedActionIds.length,
       downgraded_action_ids: downgradedActionIds,
       lifecycle_top_status: lifecycleTopStatus,
+      continuity,
+      decision_chain: decisionChain,
+      routing_decision: routingDecision,
+      release_decision: releaseDecision,
+      key_findings: decisionChain?.key_findings ?? [],
+      blocking_reasons: decisionChain?.blocking_reasons ?? [],
+      next_actions: decisionChain?.next_actions ?? [],
+      next_commands: decisionChain?.next_commands ?? [],
+      assist_actions: assistActions,
     });
   }
 

@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import {
   DOCTOR_STRICT_EXIT_CODES,
 } from './ao/lib/doctor-contracts.js';
+import { buildDecisionChainReport } from './ao/lib/decision-chain.js';
+import { createDecisionChainScope } from './ao/lib/decision-chain-contracts.js';
 import { renderDoctorHumanSummary } from './ao/lib/doctor-report.js';
 import {
   DEFAULT_PROJECT_ID,
@@ -120,11 +122,22 @@ export async function runCli(argv, io = createDefaultIo()) {
     };
   }
 
-  const { report } = await runDoctor({
+  const doctorResult = await runDoctor({
     projectId: options.projectId,
     prNumber: options.prNumber,
     cwd: process.cwd(),
   });
+  const report = {
+    ...doctorResult.report,
+    decision_chain: buildDecisionChainReport({
+      scope: createDecisionChainScope({
+        projectId: options.projectId,
+        prNumber: options.prNumber,
+      }),
+      reconciliationReport: doctorResult.reconciliationReport,
+      doctorReport: doctorResult.report,
+    }),
+  };
 
   if (options.json) {
     io.writeStdout(JSON.stringify(report, null, 2));

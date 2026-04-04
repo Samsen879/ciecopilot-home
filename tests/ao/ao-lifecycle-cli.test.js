@@ -104,7 +104,71 @@ describe('ao lifecycle cli', () => {
     }));
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       top_status: 'hold',
+      decision_chain: expect.objectContaining({
+        contract_status: 'authoritative_pr_chain',
+        scope: expect.objectContaining({
+          mode: 'pr',
+          pr_number: 44,
+          trigger: 'ci_failed',
+        }),
+      }),
     });
+  });
+
+  it('passes repo-local review gate context into lifecycle report building', async () => {
+    mockRunDoctor.mockResolvedValue({
+      reconciliationReport: {
+        top_status: 'healthy',
+      },
+      localState: {
+        head_sha: 'abc123',
+      },
+      controlPlaneSnapshot: {
+        state: {
+          pr_bindings: [
+            {
+              task_id: 'issue-44',
+              pr_number: 44,
+              status: 'bound',
+            },
+          ],
+          review_records: [
+            {
+              review_id: 'review-44',
+              task_id: 'issue-44',
+              issue_number: 44,
+              status: 'claimed',
+              reviewer_session_name: 'cie-44-review',
+              target_head_sha: 'abc123',
+              freeze_status: 'active',
+              updated_at: '2026-04-03T15:10:00.000Z',
+            },
+          ],
+        },
+      },
+      report: {
+        top_status: 'healthy',
+        findings: [],
+        suggestions: [],
+      },
+    });
+
+    await runCli(['--pr', '44', '--json'], {
+      writeStdout: () => {},
+      writeStderr: () => {},
+    });
+
+    expect(mockBuildLifecycleReport).toHaveBeenCalledWith(expect.objectContaining({
+      reviewRequired: true,
+      reviewInspection: expect.objectContaining({
+        task_id: 'issue-44',
+        review_id: 'review-44',
+        posture: 'review_pending',
+        freeze_active: true,
+        target_head_sha: 'abc123',
+      }),
+      currentHeadSha: 'abc123',
+    }));
   });
 
   it('uses fixed strict exit-code mapping in human and JSON modes', async () => {

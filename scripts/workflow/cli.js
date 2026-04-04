@@ -235,15 +235,31 @@ function currentWorktreePath(cwd = process.cwd()) {
   return trimText(result.stdout);
 }
 
+function resolveAoRetireCommand(repoRoot, identity) {
+  const aoManageScript = path.join(repoRoot, 'scripts', 'ao-manage.js');
+  if (!fs.existsSync(aoManageScript)) {
+    return null;
+  }
+
+  const issueNumber = Number.parseInt(String(identity?.id ?? '').trim(), 10);
+  if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
+    return null;
+  }
+
+  return ['node', 'scripts/ao-manage.js', 'retire', '--issue', String(issueNumber), '--reason', 'workflow_task_closeout'];
+}
+
 async function handleTaskCloseout(options) {
   const repoRoot = resolveRepoRoot();
   ensureHooksInstalled();
   const identity = resolveTaskIdentity(options);
+  const aoRetireCommand = resolveAoRetireCommand(repoRoot, identity);
 
   const plan = buildTaskCloseoutPlan({
     repoRoot,
     branchName: identity.branchName,
     worktreeName: identity.worktreeName,
+    aoRetireCommand: aoRetireCommand == null ? null : aoRetireCommand.join(' '),
   });
 
   if (!fs.existsSync(plan.worktreePath)) {
@@ -268,6 +284,9 @@ async function handleTaskCloseout(options) {
     return;
   }
 
+  if (aoRetireCommand) {
+    execOrPreview(aoRetireCommand, repoRoot, false);
+  }
   execOrPreview(['git', 'worktree', 'remove', plan.worktreePath], repoRoot, false);
   execOrPreview(['git', 'branch', '-d', plan.branchName], repoRoot, false);
   execOrPreview(['git', 'fetch', 'origin', '--prune'], repoRoot, false);

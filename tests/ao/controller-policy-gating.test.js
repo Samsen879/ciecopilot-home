@@ -9,6 +9,7 @@ import {
   createCredentialProvenanceRecord,
   createManagedTask,
   createPrBinding,
+  createReviewRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
@@ -124,6 +125,7 @@ describe('ao controller policy gating', () => {
       cwd: repository.getSnapshot().paths.repoRoot,
       projectId: PROJECT_ID,
       controllerId: 'default',
+      holderId: 'test-controller-policy',
       now: '2026-03-30T10:11:00.000Z',
       deps: {
         loadAoProjectObservation: async () => ({
@@ -303,6 +305,125 @@ describe('ao controller policy gating', () => {
     ]));
   });
 
+  it('treats explicit review freeze as an advisory hold instead of a policy block', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'assist');
+    seedCleanRuntimePreflight(repository);
+    repository.upsertReviewRecord(createReviewRecord({
+      review_id: 'review-issue-107-1',
+      task_id: 'issue-107',
+      issue_number: 107,
+      pr_number: 107,
+      status: 'claimed',
+      trigger_kind: 'ready_for_review',
+      target_branch: 'feat/107',
+      target_head_sha: 'abc107',
+      requested_by_session_name: 'cie-54',
+      requested_by_session_id: 'cie-54',
+      implementation_session_name: 'cie-54',
+      implementation_session_id: 'cie-54',
+      reviewer_session_name: 'cie-107-review',
+      reviewer_session_id: 'cie-107-review',
+      verification_baseline: [
+        {
+          category: 'workspace_sanity',
+          commands: ['git status --short'],
+        },
+      ],
+      freeze_status: 'active',
+      created_at: '2026-04-03T15:20:00.000Z',
+      updated_at: '2026-04-03T15:21:00.000Z',
+    }));
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      holderId: 'test-controller-policy',
+      now: '2026-04-03T15:22:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-04-03T15:22:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-54',
+              session_runtime_id: 'cie-54',
+              issue_number: 107,
+              branch_name: 'feat/107',
+              pr_number: 107,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-04-03T15:21:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-04-03T15:22:00.000Z',
+          prs: [
+            {
+              pr_number: 107,
+              state: 'OPEN',
+              head_branch: 'feat/107',
+              head_sha: 'abc107',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/107',
+            },
+          ],
+        }),
+        resolveLifecycleReport: async () => ({
+          top_status: 'continue',
+          routing_decision: {
+            action: 'continue_current_worker',
+          },
+          release_decision: {
+            disposition: 'notify_human_ready',
+          },
+          actions: [
+            {
+              id: 'notify_human_ready',
+              action_class: 'notify_human',
+              summary: 'Notify the human that the PR appears ready.',
+              commands: ['gh pr view 107 --json mergeable,reviewDecision,isDraft,url'],
+              rationale: 'Human approval remains required even when the PR appears ready.',
+            },
+          ],
+        }),
+        ensureRuntimePreflights: () => repository.getSnapshot().state.runtime_preflights,
+      },
+    });
+
+    expect(result).toMatchObject({
+      mode: 'assist',
+      proposed_action_count: 1,
+      executed_action_count: 0,
+      blocked_action_count: 1,
+      policy_blocked_action_count: 0,
+      task_results: [
+        expect.objectContaining({
+          release_decision: expect.objectContaining({
+            disposition: 'await_review',
+            basis: ['review_pending'],
+          }),
+          assist_actions: [
+            expect.objectContaining({
+              action_kind: 'hold_review',
+              status: 'blocked',
+              policy_decision: 'allow',
+              execution_reason: 'advisory_hold_non_executable',
+            }),
+          ],
+        }),
+      ],
+    });
+  });
+
   it('keeps policy-blocked actions out of assist execution', async () => {
     const repository = createStateRepository({
       repoRoot: createTempRepo(),
@@ -316,6 +437,7 @@ describe('ao controller policy gating', () => {
       cwd: repository.getSnapshot().paths.repoRoot,
       projectId: PROJECT_ID,
       controllerId: 'default',
+      holderId: 'test-controller-policy',
       now: '2026-03-30T10:12:00.000Z',
       deps: {
         loadAoProjectObservation: async () => ({

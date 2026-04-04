@@ -459,6 +459,111 @@ describe('lifecycle engine', () => {
     ]));
   });
 
+  it('fails closed when independent review is required and no matching pass exists', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'approved_and_green',
+      }),
+      reconciliationReport: buildReconciliationReport(),
+      doctorReport: buildDoctorReport(),
+      reviewRequired: true,
+      reviewInspection: null,
+      currentHeadSha: 'abc123',
+    });
+
+    expect(report.top_status).toBe('hold');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'await_review',
+      basis: ['review_missing'],
+      authoritative: true,
+    });
+    expect(report.actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'hold_review',
+        action_class: 'hold',
+      }),
+    ]));
+    expect(report.actions).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'notify_human_ready',
+      }),
+    ]));
+  });
+
+  it('returns review changes_required verdicts back to implementation flow', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'approved_and_green',
+      }),
+      reconciliationReport: buildReconciliationReport(),
+      doctorReport: buildDoctorReport(),
+      reviewRequired: true,
+      reviewInspection: {
+        review_id: 'review-44',
+        task_id: 'issue-44',
+        status: 'changes_required',
+        posture: 'review_changes_required',
+        target_head_sha: 'abc123',
+        freeze_status: 'released',
+        freeze_active: false,
+      },
+      currentHeadSha: 'abc123',
+    });
+
+    expect(report.top_status).toBe('continue');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'no_release_action',
+      basis: ['review_changes_required'],
+      authoritative: true,
+    });
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'review_changes_required',
+        origin: 'lifecycle',
+      }),
+    ]));
+    expect(report.actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'continue_worker',
+        action_class: 'continue_worker',
+      }),
+    ]));
+  });
+
+  it('converts escalated review verdicts into a human gate', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'approved_and_green',
+      }),
+      reconciliationReport: buildReconciliationReport(),
+      doctorReport: buildDoctorReport(),
+      reviewRequired: true,
+      reviewInspection: {
+        review_id: 'review-44',
+        task_id: 'issue-44',
+        status: 'escalated',
+        posture: 'review_escalated',
+        target_head_sha: 'abc123',
+        freeze_status: 'active',
+        freeze_active: true,
+      },
+      currentHeadSha: 'abc123',
+    });
+
+    expect(report.top_status).toBe('human_gate');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'human_gate',
+      basis: ['review_escalated'],
+      authoritative: false,
+    });
+  });
+
   it('treats bugbot review comments as a deterministic review hold', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({

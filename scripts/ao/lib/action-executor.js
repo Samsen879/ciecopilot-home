@@ -4,6 +4,8 @@ import { buildAssistExecutionAttemptMetric } from './run-metrics.js';
 export const ASSIST_ACTION_MODEL_SCHEMA_VERSION = 'ao.control-plane.action-model.v1alpha1';
 export const ASSIST_ACTION_MODEL_FORMAT = 'ao_control_plane_action_model';
 export const ACTION_RISK_CLASSES = ['class_a', 'class_b', 'class_c'];
+export const ASSIST_AUTOMATION_BOUNDARY = 'class_a_only';
+export const ASSIST_IDEMPOTENCY_MODE = 'action_status_gate';
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -179,6 +181,33 @@ function buildExecutionDecision({
   };
 }
 
+function resolveRollbackMode(riskClass) {
+  if (riskClass === 'class_a') return 'audit_only';
+  if (riskClass === 'class_b') return 'not_applicable';
+  return 'manual_only';
+}
+
+function buildExecutionContract({
+  riskClass,
+  runtimePreflightRecord,
+  preconditions,
+  phase4Assist,
+} = {}) {
+  return {
+    automation_boundary: ASSIST_AUTOMATION_BOUNDARY,
+    durable_policy_required: true,
+    runtime_preflight_required: true,
+    runtime_preflight_status: runtimePreflightRecord?.status ?? 'missing',
+    idempotency_mode: ASSIST_IDEMPOTENCY_MODE,
+    rollback_mode: resolveRollbackMode(riskClass),
+    executable: phase4Assist?.executable === true,
+    reason: phase4Assist?.reason ?? 'phase4_assist_not_executable',
+    blocking_precondition_codes: preconditions
+      .filter((item) => item?.satisfied !== true)
+      .map((item) => item.code),
+  };
+}
+
 export function buildAssistActionModel({
   controllerId,
   task,
@@ -206,6 +235,12 @@ export function buildAssistActionModel({
     preconditions,
     nonExecutableReason: policy.nonExecutableReason,
   });
+  const executionContract = buildExecutionContract({
+    riskClass: policy.riskClass,
+    runtimePreflightRecord,
+    preconditions,
+    phase4Assist,
+  });
 
   return {
     schema_version: ASSIST_ACTION_MODEL_SCHEMA_VERSION,
@@ -224,6 +259,7 @@ export function buildAssistActionModel({
     runtime_preflight: runtimePreflightRecord,
     preconditions,
     phase4_assist: phase4Assist,
+    execution_contract: executionContract,
   };
 }
 
@@ -341,6 +377,8 @@ function buildBlockedActionRecord(record, model, timestamp, {
         blocked_at: timestamp,
         executor: 'assist_controller',
         matched_override_ids: matchedOverrideIds,
+        idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
+        rollback_mode: model?.execution_contract?.rollback_mode ?? null,
       },
     },
   });
@@ -359,6 +397,8 @@ function buildExecutedActionRecord(record, model, timestamp) {
         reason: 'class_a_assist_execution',
         executed_at: timestamp,
         executor: 'assist_controller',
+        idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
+        rollback_mode: model?.execution_contract?.rollback_mode ?? null,
       },
     },
   });
@@ -389,6 +429,57 @@ function persistExecutionAttemptMetric(repository, {
     reason,
     now: timestamp,
   }));
+}
+
+function normalizeExecutionReason(record, model) {
+  const explicitReason = record?.payload?.execution?.reason ?? null;
+  if (explicitReason != null) return explicitReason;
+
+  const policyDecision = record?.payload?.policy?.decision ?? null;
+  if (policyDecision === 'deny') return 'policy_denied';
+  if (policyDecision === 'downgrade') return 'policy_downgraded';
+
+  return model?.execution_contract?.reason
+    ?? model?.phase4_assist?.reason
+    ?? null;
+}
+
+export function summarizeAssistActionRecord(record) {
+  if (!isPlainObject(record)) return null;
+
+  const model = isPlainObject(record?.payload?.action_model)
+    ? record.payload.action_model
+    : null;
+  const executionContract = isPlainObject(model?.execution_contract)
+    ? model.execution_contract
+    : null;
+
+  return {
+    action_id: record?.action_id ?? null,
+    task_id: record?.task_id ?? null,
+    action_kind: record?.action_kind ?? null,
+    action_class: model?.action_class ?? record?.payload?.action_class ?? null,
+    status: record?.status ?? null,
+    requested_by: record?.requested_by ?? null,
+    risk_class: model?.risk_class ?? null,
+    policy_decision: record?.payload?.policy?.decision ?? null,
+    policy_decision_id: record?.payload?.policy_decision_id ?? null,
+    model_executable: executionContract?.executable
+      ?? model?.phase4_assist?.executable
+      ?? null,
+    model_reason: executionContract?.reason
+      ?? model?.phase4_assist?.reason
+      ?? null,
+    execution_outcome: record?.payload?.execution?.outcome ?? null,
+    execution_reason: normalizeExecutionReason(record, model),
+    runtime_preflight_status: executionContract?.runtime_preflight_status
+      ?? model?.runtime_preflight?.status
+      ?? null,
+    blocking_precondition_codes: executionContract?.blocking_precondition_codes ?? [],
+    idempotency_mode: executionContract?.idempotency_mode ?? null,
+    rollback_mode: executionContract?.rollback_mode ?? null,
+    updated_at: record?.updated_at ?? null,
+  };
 }
 
 export async function executeAssistActions({
@@ -431,6 +522,8 @@ export async function executeAssistActions({
           action_kind: record.action_kind,
           reason: 'policy_allow_required',
           policy_decision_id: record?.payload?.policy_decision_id ?? null,
+          idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
+          rollback_mode: model?.execution_contract?.rollback_mode ?? null,
         },
         recordedAt: timestamp,
       });
@@ -473,6 +566,8 @@ export async function executeAssistActions({
           action_kind: record.action_kind,
           reason: blockingOverrides[0].reason,
           matched_override_ids: blockingOverrides.map((entry) => entry.override.override_id),
+          idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
+          rollback_mode: model?.execution_contract?.rollback_mode ?? null,
         },
         recordedAt: timestamp,
       });
@@ -508,6 +603,8 @@ export async function executeAssistActions({
           reason: model.phase4_assist?.reason ?? 'phase4_assist_not_executable',
           risk_class: model.risk_class,
           runtime_preflight: cloneJsonValue(model.runtime_preflight ?? null),
+          idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
+          rollback_mode: model?.execution_contract?.rollback_mode ?? null,
         },
         recordedAt: timestamp,
       });
@@ -541,6 +638,8 @@ export async function executeAssistActions({
         pr_number: model.pr_number ?? null,
         runtime_preflight: cloneJsonValue(model.runtime_preflight ?? null),
         policy_decision_id: record?.payload?.policy_decision_id ?? null,
+        idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
+        rollback_mode: model?.execution_contract?.rollback_mode ?? null,
       },
       recordedAt: timestamp,
     });

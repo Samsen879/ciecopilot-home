@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from '@jest/globals';
 
 import { createCheckpointStore } from '../../scripts/ao/lib/checkpoint-store.js';
 import { createHandoffProtocol } from '../../scripts/ao/lib/handoff-protocol.js';
+import { createReviewProtocol } from '../../scripts/ao/lib/review-protocol.js';
 import { resolveControlPlanePaths } from '../../scripts/ao/lib/state-migrations.js';
 import { runManageCommand } from '../../scripts/ao/lib/manage-runner.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
@@ -68,6 +69,12 @@ describe('ao manage runner', () => {
       task_id: 'issue-89',
       owner_session_name: 'cie-50',
       status: 'active',
+    });
+    expect(result.continuity).toMatchObject({
+      posture: 'active_owner',
+      recommended_action: 'continue_current_worker',
+      owner_session_name: 'cie-50',
+      reason_codes: ['ownership_clear'],
     });
     expect(result.taskSpec).toMatchObject({
       task_id: 'issue-89',
@@ -382,6 +389,207 @@ describe('ao manage runner', () => {
     })).rejects.toThrow(/stale checkpoint/i);
   });
 
+  it('surfaces review_pending posture when an active task is frozen behind an independent review request', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 125,
+      title: 'feat(ao): add independent reviewer gate',
+      branchName: 'task/125-reviewer-gate',
+      worktreePath: '/tmp/cie-125-impl',
+      prNumber: 225,
+      ownerSessionName: 'cie-125-impl',
+      ownerSessionId: 'session-125-impl',
+      taskSpecBody: [
+        '## Problem Type',
+        'issue_delivery',
+        '',
+        '## Acceptance Contract',
+        '- independent review gate exists',
+        '',
+        '## Runtime Ref',
+        'runtime.github_local',
+        '',
+        '## Policy Ref',
+        'policy.operator_gated',
+        '',
+        '## Human Gates',
+        '- operator_review',
+      ].join('\n'),
+      now: '2026-04-03T14:30:00.000Z',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    const review = createReviewProtocol({
+      repository,
+      now: () => '2026-04-03T14:35:00.000Z',
+    }).requestReview({
+      taskId: 'issue-125',
+      requestedBySessionName: 'cie-125-impl',
+      requestedBySessionId: 'session-125-impl',
+      implementationSessionName: 'cie-125-impl',
+      implementationSessionId: 'session-125-impl',
+      targetHeadSha: 'abc123',
+      verificationBaseline: [
+        {
+          category: 'workspace_sanity',
+          commands: ['git status --short'],
+        },
+      ],
+    });
+
+    expect(review).toMatchObject({
+      status: 'open',
+      freeze_status: 'active',
+    });
+
+    const inspection = await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'adopt',
+      issueNumber: 125,
+      branchName: 'task/125-reviewer-gate',
+      worktreePath: '/tmp/cie-125-impl',
+      prNumber: 225,
+      ownerSessionName: 'cie-125-impl',
+      ownerSessionId: 'session-125-impl',
+      now: '2026-04-03T14:36:00.000Z',
+    });
+
+    expect(inspection.continuity).toMatchObject({
+      posture: 'active_owner',
+      recommended_action: 'continue_current_worker',
+    });
+    expect(inspection.review).toMatchObject({
+      review_id: review.review_id,
+      task_id: 'issue-125',
+      status: 'open',
+      posture: 'review_pending',
+      freeze_status: 'active',
+      freeze_active: true,
+      blocking_reason: 'independent_review_active',
+      target_head_sha: 'abc123',
+    });
+
+    const inspectRepository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    expect(inspectRepository.getSnapshot().state.review_records).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-125',
+        status: 'open',
+      }),
+    ]);
+  });
+
+  it('fails closed on resume while an independent review freeze is active', async () => {
+    const repoRoot = createTempRepo();
+
+    await runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'enroll',
+      issueNumber: 126,
+      title: 'feat(ao): freeze implementation while reviewer owns the slice',
+      branchName: 'task/126-review-freeze',
+      worktreePath: '/tmp/cie-126-impl',
+      prNumber: 226,
+      ownerSessionName: 'cie-126-impl',
+      ownerSessionId: 'session-126-impl',
+      taskSpecBody: [
+        '## Problem Type',
+        'issue_delivery',
+        '',
+        '## Acceptance Contract',
+        '- review freeze blocks implementation resume',
+        '',
+        '## Runtime Ref',
+        'runtime.github_local',
+        '',
+        '## Policy Ref',
+        'policy.operator_gated',
+        '',
+        '## Human Gates',
+        '- operator_review',
+      ].join('\n'),
+      now: '2026-04-03T15:00:00.000Z',
+    });
+
+    const repository = createStateRepository({
+      repoRoot,
+      projectId: PROJECT_ID,
+    });
+    repository.ensureRuntimePreflights({
+      cwd: repoRoot,
+      now: '2026-04-03T15:01:00.000Z',
+      probes: {
+        commandExists: () => true,
+        pathExists: () => true,
+        capability: () => true,
+      },
+    });
+    createCheckpointStore({
+      repository,
+      now: () => '2026-04-03T15:02:00.000Z',
+    }).captureCheckpoint({
+      taskId: 'issue-126',
+      controllerId: 'default',
+      derivedTrigger: 'manual',
+      observedAt: '2026-04-03T15:02:00.000Z',
+      actionIds: [],
+    });
+
+    createReviewProtocol({
+      repository,
+      now: () => '2026-04-03T15:03:00.000Z',
+    }).requestReview({
+      taskId: 'issue-126',
+      requestedBySessionName: 'cie-126-impl',
+      requestedBySessionId: 'session-126-impl',
+      implementationSessionName: 'cie-126-impl',
+      implementationSessionId: 'session-126-impl',
+      targetHeadSha: 'def126',
+      verificationBaseline: [
+        {
+          category: 'workspace_sanity',
+          commands: ['git status --short'],
+        },
+      ],
+    });
+
+    await expect(runManageCommand({
+      repoRoot,
+      projectId: PROJECT_ID,
+      command: 'resume',
+      issueNumber: 126,
+      ownerSessionName: 'cie-126-impl',
+      ownerSessionId: 'session-126-impl',
+      now: '2026-04-03T15:04:00.000Z',
+    })).rejects.toThrow(/independent review is active/i);
+
+    const state = readState(repoRoot);
+    expect(state.managed_tasks).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-126',
+        status: 'active',
+      }),
+    ]);
+    expect(state.ownership_leases).toEqual([
+      expect.objectContaining({
+        task_id: 'issue-126',
+        owner_session_name: 'cie-126-impl',
+        status: 'active',
+      }),
+    ]);
+  });
+
   it('blocks successor resume until an accepted handoff grant exists', async () => {
     const repoRoot = createTempRepo();
 
@@ -574,6 +782,13 @@ describe('ao manage runner', () => {
       claim_id: claim.claim_id,
       successor_session_name: 'cie-59',
       checkpoint_id: expect.stringMatching(/^checkpoint-issue-117-/),
+    });
+    expect(result.continuity).toMatchObject({
+      posture: 'active_owner',
+      recommended_action: 'continue_current_worker',
+      owner_session_name: 'cie-59',
+      successor_session_name: 'cie-59',
+      reason_codes: ['ownership_clear'],
     });
 
     const state = readState(repoRoot);

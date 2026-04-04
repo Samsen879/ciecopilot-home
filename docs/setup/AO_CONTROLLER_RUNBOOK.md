@@ -90,6 +90,90 @@ Interpretation:
 - `idle`: the controller mode is on, but no active leader is running
 - `off`: the durable controller mode is off
 
+## Read Controller Decision Chains
+
+In shadow or assist mode, each controller `task_results[*]` now carries a shared `decision_chain` summary.
+
+Read these fields before re-deriving anything from prompt text:
+
+- `decision_chain.contract_status`
+- `decision_chain.blocking_reasons`
+- `decision_chain.next_actions`
+- `decision_chain.next_commands`
+
+This is the stable bridge between:
+
+- reconcile truth
+- doctor diagnosis
+- lifecycle control decisions
+
+Project-mode advisory passes may still show advisory chain posture. PR-scoped trigger passes should show `authoritative_pr_chain`.
+
+## Read Controller Continuity
+
+Controller `task_results[*]` now also carry a phase-3 `continuity` summary.
+
+Read these fields together with the decision chain:
+
+- `continuity.posture`
+- `continuity.recommended_action`
+- `continuity.owner_session_name`
+- `continuity.successor_session_name`
+- `continuity.checkpoint_state`
+
+Interpretation:
+
+- use `decision_chain` to understand why the controller reached its phase-1/2/3 conclusion
+- use `continuity` to understand whether the current task is in active-owner, restore-ready, successor-handoff, orphaned, or ambiguous posture
+- if `decision_chain.next_actions` and `continuity.recommended_action` disagree, stop and inspect the underlying task state before executing anything higher-risk
+- if `continuity.posture` is `restore_ready`, only treat that as resumable when `continuity.checkpoint_state` is `valid`
+- if `continuity.posture` is `handoff_granted`, the next safe manual follow-up is `ao-manage resume` for the accepted successor, not a fresh enroll/adopt
+
+## Read Controller Review Gate
+
+Once a durable `ao-review` request exists, controller release-facing advancement is gated by that review state.
+
+Read these fields together:
+
+- `task_results[*].release_decision.disposition`
+- `task_results[*].release_decision.basis`
+- `task_results[*].decision_chain.next_actions`
+- `task_results[*].decision_chain.blocking_reasons`
+- `ao-state --json`: `reviews.summary`
+- `ao-state --json`: `reviews.inspections[*]`
+
+Interpretation:
+
+- `release_decision.disposition = await_review` with basis such as `review_pending`, `review_missing`, or `review_target_mismatch` means the controller must not advance to `notify_human_ready`
+- `release_decision.disposition = no_release_action` with basis `review_changes_required` means the slice has been sent back to implementation
+- `release_decision.disposition = human_gate` with basis `review_escalated` means reviewer authority ended and a human must decide next
+- when the review gate is active, expect `decision_chain.next_actions` to show `hold_review` or `human_gate`, not `notify_human_ready`
+- first release is explicit only: the gate activates from durable review state created by `ao-review request`; the controller does not auto-spawn reviewers
+
+## Read Assist Execution Verdict
+
+In assist mode, each controller `task_results[*]` now also carries `assist_actions[*]`.
+
+Read these fields first:
+
+- `risk_class`
+- `policy_decision`
+- `model_executable`
+- `model_reason`
+- `execution_reason`
+- `runtime_preflight_status`
+- `idempotency_mode`
+- `rollback_mode`
+
+Interpretation:
+
+- `model_executable=true` means the action passed the phase-4 Class A allowlist and its structural preconditions
+- `execution_reason` is the concrete operator answer for the final execution outcome
+- `idempotency_mode=action_status_gate` means assist will not re-execute an action after it has left `proposed`
+- `rollback_mode=audit_only` means the action is intentionally limited to low-risk control-plane side effects, not auto-reversal
+- if `policy_decision` is `deny` or `downgrade`, the action remains blocked even if `model_executable=true`
+- if a review freeze is active, assist should surface `hold_review` as an advisory blocked action instead of auto-running `continue_worker` or `notify_human_ready`
+
 ## Stop The Controller
 
 Use `Ctrl-C` in the foreground process, or send `SIGTERM` / `SIGINT` to the controller process.

@@ -25,7 +25,33 @@ describe('ao handoff cli', () => {
     mockCreateHandoffProtocol.mockReset();
 
     mockFindRepoRoot.mockReturnValue('/repo');
-    mockCreateStateRepository.mockReturnValue({ kind: 'repository' });
+    mockCreateStateRepository.mockReturnValue({
+      kind: 'repository',
+      getSnapshot: () => ({
+        state: {
+          managed_tasks: [
+            {
+              task_id: 'issue-117',
+              issue_number: 117,
+              status: 'active',
+            },
+          ],
+          pr_bindings: [
+            {
+              task_id: 'issue-117',
+              pr_number: 117,
+              status: 'bound',
+            },
+          ],
+          ownership_leases: [],
+          checkpoints: [],
+          handoff_requests: [],
+          handoff_claims: [],
+          handoff_decisions: [],
+          handoff_transfers: [],
+        },
+      }),
+    });
     mockCreateHandoffProtocol.mockReturnValue({
       requestHandoff: jest.fn().mockReturnValue({
         request_id: 'handoff-issue-117',
@@ -41,6 +67,20 @@ describe('ao handoff cli', () => {
         task_id: 'issue-117',
         top_status: 'accepted',
         reason_codes: [],
+        request_id: 'handoff-issue-117',
+        request: {
+          selected_claim_id: 'claim-1',
+        },
+        claims: [
+          {
+            claim_id: 'claim-1',
+            successor_session_name: 'cie-59',
+          },
+        ],
+        checkpoint: {
+          checkpoint_id: 'checkpoint-issue-117-abc',
+          state: 'valid',
+        },
       }),
       inspectAllHandoffs: jest.fn().mockReturnValue([]),
     });
@@ -104,7 +144,24 @@ describe('ao handoff cli', () => {
     expect(JSON.parse(stdout.join(''))).toMatchObject({
       task_id: 'issue-117',
       top_status: 'accepted',
+      continuity: expect.objectContaining({
+        posture: 'handoff_granted',
+        recommended_action: 'handoff_to_successor',
+        successor_session_name: 'cie-59',
+      }),
     });
+  });
+
+  it('renders continuity posture in the human inspect summary', async () => {
+    const stdout = [];
+
+    const result = await runCli(['inspect', '--issue', '117'], {
+      writeStdout: (text) => stdout.push(text),
+      writeStderr: () => {},
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(stdout.join('')).toContain('continuity: handoff_granted -> handoff_to_successor');
   });
 
   it('rejects unsupported commands before touching the repo', async () => {

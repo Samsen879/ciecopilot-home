@@ -6,6 +6,8 @@ import {
   DEFAULT_PROJECT_ID,
   runReconciliation,
 } from './ao/lib/reconciliation-runner.js';
+import { buildDecisionChainReport } from './ao/lib/decision-chain.js';
+import { createDecisionChainScope } from './ao/lib/decision-chain-contracts.js';
 import { renderHumanSummary } from './ao/lib/reconciliation-report.js';
 
 function createDefaultIo() {
@@ -120,11 +122,21 @@ export async function runCli(argv, io = createDefaultIo()) {
     };
   }
 
-  const { report } = await runReconciliation({
+  const { report: reconciliationReport } = await runReconciliation({
     projectId: options.projectId,
     prNumber: options.prNumber,
     cwd: process.cwd(),
   });
+  const report = {
+    ...reconciliationReport,
+    decision_chain: buildDecisionChainReport({
+      scope: createDecisionChainScope({
+        projectId: options.projectId,
+        prNumber: options.prNumber,
+      }),
+      reconciliationReport,
+    }),
+  };
 
   if (options.json) {
     io.writeStdout(JSON.stringify(report, null, 2));

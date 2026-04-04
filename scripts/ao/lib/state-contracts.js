@@ -23,7 +23,7 @@ export const CONTROL_PLANE_STATE_SCHEMA_VERSION = 'ao.control-plane.state.v1alph
 export const CONTROL_PLANE_STATE_FORMAT = 'ao_control_plane_state';
 export const CONTROL_PLANE_AUDIT_SCHEMA_VERSION = 'ao.control-plane.audit.v1alpha1';
 export const CONTROL_PLANE_AUDIT_FORMAT = 'ao_control_plane_audit_entry';
-export const CONTROL_PLANE_LATEST_VERSION = 9;
+export const CONTROL_PLANE_LATEST_VERSION = 10;
 export const CONTROL_PLANE_DEFAULT_CONTROLLER_ID = 'default';
 export const CHECKPOINT_SCHEMA_VERSION = 'ao.checkpoint.v1alpha1';
 export const CHECKPOINT_FORMAT = 'ao_checkpoint';
@@ -35,6 +35,8 @@ export const HANDOFF_DECISION_SCHEMA_VERSION = 'ao.handoff-decision.v1alpha1';
 export const HANDOFF_DECISION_FORMAT = 'ao_handoff_decision';
 export const HANDOFF_TRANSFER_SCHEMA_VERSION = 'ao.handoff-transfer.v1alpha1';
 export const HANDOFF_TRANSFER_FORMAT = 'ao_handoff_transfer';
+export const REVIEW_RECORD_SCHEMA_VERSION = 'ao.review-record.v1alpha1';
+export const REVIEW_RECORD_FORMAT = 'ao_review_record';
 export const AO_EVAL_HARNESS_RUN_SCHEMA_VERSION = 'ao.eval-harness-run.v1alpha1';
 export const AO_EVAL_HARNESS_RUN_FORMAT = 'ao_eval_harness_run';
 export const AO_EVAL_SCORECARD_SCHEMA_VERSION = 'ao.eval-scorecard.v1alpha1';
@@ -58,6 +60,15 @@ export const CREDENTIAL_PROVENANCE_TRUST_DECISIONS = ['trusted', 'untrusted'];
 export const HANDOFF_REQUEST_STATUSES = ['open', 'accepted', 'rejected', 'expired', 'completed'];
 export const HANDOFF_CLAIM_STATUSES = ['pending', 'blocked', 'accepted', 'rejected', 'expired'];
 export const HANDOFF_DECISION_OUTCOMES = ['accept', 'reject', 'expire'];
+export const REVIEW_RECORD_STATUSES = ['open', 'claimed', 'passed', 'changes_required', 'escalated', 'cancelled'];
+export const REVIEW_VERDICTS = ['pass', 'changes_required', 'escalate_human'];
+export const REVIEW_FREEZE_STATUSES = ['active', 'released'];
+export const REVIEW_BASELINE_CATEGORIES = [
+  'workspace_sanity',
+  'control_plane_sanity',
+  'scoped_verification',
+  'pr_readonly',
+];
 export const EXECUTION_ATTEMPT_KINDS = ['assist_action', 'managed_task'];
 export const EXECUTION_ATTEMPT_STATUSES = ['active', 'executed', 'blocked', 'paused', 'retired', 'completed'];
 
@@ -172,6 +183,57 @@ function normalizeCountMap(values, fieldName, keys) {
   }
 
   return createMeasurementCountMap(keys, nextValues);
+}
+
+function normalizeVerificationBaseline(values) {
+  if (!Array.isArray(values) || values.length === 0) {
+    throw new Error('Invalid verification_baseline');
+  }
+
+  return values.map((value, index) => {
+    if (!isPlainObject(value)) {
+      throw new Error(`Invalid verification_baseline[${index}]`);
+    }
+
+    return {
+      category: normalizeEnum(
+        value.category,
+        `verification_baseline[${index}].category`,
+        REVIEW_BASELINE_CATEGORIES,
+      ),
+      commands: normalizeStringArray(value.commands, `verification_baseline[${index}].commands`),
+    };
+  });
+}
+
+function normalizeBaselineExecution(value) {
+  if (value == null) return null;
+  if (!isPlainObject(value)) {
+    throw new Error('Invalid baseline_execution');
+  }
+
+  return {
+    status: normalizeRequiredString(value.status, 'baseline_execution.status'),
+    summary: normalizeOptionalString(value.summary),
+    recorded_at: normalizeIsoTimestamp(
+      value.recorded_at,
+      'baseline_execution.recorded_at',
+      { nullable: true },
+    ),
+    attested_by_session_name: normalizeOptionalString(value.attested_by_session_name),
+    attested_by_session_id: normalizeOptionalString(value.attested_by_session_id),
+    commands_run: value.commands_run == null
+      ? []
+      : normalizeStringArray(value.commands_run, 'baseline_execution.commands_run'),
+  };
+}
+
+function normalizeFindingsSummary(values = []) {
+  if (!Array.isArray(values)) {
+    throw new Error('Invalid findings_summary');
+  }
+
+  return values.map((value, index) => normalizeRequiredString(value, `findings_summary[${index}]`));
 }
 
 function normalizeActionClassCounts(values) {
@@ -303,6 +365,7 @@ export function createEmptyControlPlaneState({
     task_specs: [],
     runtime_preflights: [],
     repo_knowledge: [],
+    review_records: [],
     checkpoints: [],
     handoff_requests: [],
     handoff_claims: [],
@@ -713,6 +776,64 @@ export function createRepoKnowledgeRecord({
     recorded_at: normalizeIsoTimestamp(recorded_at, 'recorded_at'),
     replay_key: normalizeRequiredString(normalizedSnapshot.replay_key, 'replay_key'),
     snapshot: normalizedSnapshot,
+  };
+}
+
+export function createReviewRecord({
+  review_id,
+  task_id,
+  issue_number = null,
+  pr_number = null,
+  status,
+  trigger_kind,
+  target_branch,
+  target_head_sha,
+  requested_by_session_name,
+  requested_by_session_id = null,
+  implementation_session_name,
+  implementation_session_id = null,
+  reviewer_session_name = null,
+  reviewer_session_id = null,
+  verification_baseline,
+  findings_summary = [],
+  verdict = null,
+  baseline_execution = null,
+  freeze_status,
+  created_at,
+  updated_at,
+  metadata = {},
+} = {}) {
+  return {
+    schema_version: REVIEW_RECORD_SCHEMA_VERSION,
+    format: REVIEW_RECORD_FORMAT,
+    review_id: normalizeRequiredString(review_id, 'review_id'),
+    task_id: normalizeRequiredString(task_id, 'task_id'),
+    issue_number: normalizePositiveInteger(issue_number, 'issue_number', { nullable: true }),
+    pr_number: normalizePositiveInteger(pr_number, 'pr_number', { nullable: true }),
+    status: normalizeEnum(status, 'status', REVIEW_RECORD_STATUSES),
+    trigger_kind: normalizeRequiredString(trigger_kind, 'trigger_kind'),
+    target_branch: normalizeRequiredString(target_branch, 'target_branch'),
+    target_head_sha: normalizeRequiredString(target_head_sha, 'target_head_sha'),
+    requested_by_session_name: normalizeRequiredString(
+      requested_by_session_name,
+      'requested_by_session_name',
+    ),
+    requested_by_session_id: normalizeOptionalString(requested_by_session_id),
+    implementation_session_name: normalizeRequiredString(
+      implementation_session_name,
+      'implementation_session_name',
+    ),
+    implementation_session_id: normalizeOptionalString(implementation_session_id),
+    reviewer_session_name: normalizeOptionalString(reviewer_session_name),
+    reviewer_session_id: normalizeOptionalString(reviewer_session_id),
+    verification_baseline: normalizeVerificationBaseline(verification_baseline),
+    findings_summary: normalizeFindingsSummary(findings_summary),
+    verdict: verdict == null ? null : normalizeEnum(verdict, 'verdict', REVIEW_VERDICTS),
+    baseline_execution: normalizeBaselineExecution(baseline_execution),
+    freeze_status: normalizeEnum(freeze_status, 'freeze_status', REVIEW_FREEZE_STATUSES),
+    created_at: normalizeIsoTimestamp(created_at, 'created_at'),
+    updated_at: normalizeIsoTimestamp(updated_at, 'updated_at'),
+    metadata: normalizeMetadata(metadata),
   };
 }
 

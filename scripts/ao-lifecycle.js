@@ -12,8 +12,10 @@ import {
   DEFAULT_PROJECT_ID,
   runDoctor,
 } from './ao/lib/doctor-runner.js';
+import { buildDecisionChainReport } from './ao/lib/decision-chain.js';
 import { buildLifecycleReport } from './ao/lib/lifecycle-engine.js';
 import { renderLifecycleHumanSummary } from './ao/lib/lifecycle-report.js';
+import { deriveReviewPosture } from './ao/lib/review-contracts.js';
 
 function createDefaultIo() {
   return {
@@ -119,6 +121,58 @@ function renderHelp() {
   ].join('\n');
 }
 
+function compareIsoDescending(left, right) {
+  return String(right ?? '').localeCompare(String(left ?? ''));
+}
+
+function resolveReviewInspection({ controlPlaneSnapshot, prNumber } = {}) {
+  if (!controlPlaneSnapshot || !Number.isInteger(prNumber)) {
+    return {
+      reviewRequired: false,
+      reviewInspection: null,
+    };
+  }
+
+  const taskId = (controlPlaneSnapshot.state?.pr_bindings ?? []).find((binding) => (
+    binding?.pr_number === prNumber && binding?.status === 'bound'
+  ))?.task_id ?? null;
+  if (!taskId) {
+    return {
+      reviewRequired: false,
+      reviewInspection: null,
+    };
+  }
+
+  const reviewRecord = [...(controlPlaneSnapshot.state?.review_records ?? [])]
+    .filter((record) => record?.task_id === taskId)
+    .sort((left, right) => {
+      const byTimestamp = compareIsoDescending(left?.updated_at, right?.updated_at);
+      if (byTimestamp !== 0) return byTimestamp;
+      return String(right?.review_id ?? '').localeCompare(String(left?.review_id ?? ''));
+    })[0] ?? null;
+  if (!reviewRecord) {
+    return {
+      reviewRequired: false,
+      reviewInspection: null,
+    };
+  }
+
+  const posture = deriveReviewPosture(reviewRecord);
+  return {
+    reviewRequired: true,
+    reviewInspection: {
+      task_id: reviewRecord.task_id,
+      issue_number: reviewRecord.issue_number ?? null,
+      review_id: reviewRecord.review_id,
+      reviewer_session_name: reviewRecord.reviewer_session_name ?? null,
+      target_head_sha: reviewRecord.target_head_sha ?? null,
+      freeze_status: reviewRecord.freeze_status ?? null,
+      posture: posture.posture,
+      freeze_active: posture.freeze_active,
+    },
+  };
+}
+
 export async function runCli(argv, io = createDefaultIo()) {
   const parsed = parseArgs(argv);
   if (!parsed.ok) {
@@ -154,11 +208,27 @@ export async function runCli(argv, io = createDefaultIo()) {
     prNumber: options.prNumber,
     cwd: process.cwd(),
   });
-  const report = buildLifecycleReport({
+  const { reviewRequired, reviewInspection } = resolveReviewInspection({
+    controlPlaneSnapshot: doctorResult.controlPlaneSnapshot ?? null,
+    prNumber: options.prNumber,
+  });
+  const lifecycleReport = buildLifecycleReport({
     scope,
     reconciliationReport: doctorResult.reconciliationReport,
     doctorReport: doctorResult.report,
+    reviewRequired,
+    reviewInspection,
+    currentHeadSha: doctorResult.localState?.head_sha ?? null,
   });
+  const report = {
+    ...lifecycleReport,
+    decision_chain: buildDecisionChainReport({
+      scope,
+      reconciliationReport: doctorResult.reconciliationReport,
+      doctorReport: doctorResult.report,
+      lifecycleReport,
+    }),
+  };
 
   if (options.json) {
     io.writeStdout(JSON.stringify(report, null, 2));

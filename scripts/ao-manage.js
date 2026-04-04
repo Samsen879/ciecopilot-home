@@ -173,6 +173,8 @@ function renderHumanSummary(result) {
     `ownership_lease: ${result.ownershipLease ? `${result.ownershipLease.owner_session_name}/${result.ownershipLease.status}` : 'none'}`,
     `resume_checkpoint: ${result.resume ? `${result.resume.checkpoint_id}/${result.resume.state}` : 'none'}`,
     `handoff_transfer: ${result.handoffTransfer ? `${result.handoffTransfer.request_id}/${result.handoffTransfer.transfer_id}` : 'none'}`,
+    `continuity: ${result.continuity ? `${result.continuity.posture} -> ${result.continuity.recommended_action} owner=${result.continuity.owner_session_name ?? 'none'} successor=${result.continuity.successor_session_name ?? 'none'} checkpoint=${result.continuity.checkpoint_state ?? 'none'}` : 'none'}`,
+    `review: ${result.review ? `${result.review.posture ?? 'idle'} freeze=${result.review.freeze_status ?? 'released'} reviewer=${result.review.reviewer_session_name ?? 'none'} target=${result.review.target_head_sha ?? 'none'} reason=${result.review.blocking_reason ?? 'none'}` : 'none'}`,
     `released_ownership_leases: ${result.releasedOwnershipLeaseIds.length ? result.releasedOwnershipLeaseIds.join(', ') : 'none'}`,
     `released_pr_bindings: ${result.releasedPrBindingIds.length ? result.releasedPrBindingIds.join(', ') : 'none'}`,
   ].join('\n');

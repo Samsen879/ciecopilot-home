@@ -2,6 +2,7 @@
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildTaskContinuityFromSnapshot } from './ao/lib/continuity.js';
 import { createHandoffProtocol } from './ao/lib/handoff-protocol.js';
 import { findRepoRoot } from './ao/lib/repo-root.js';
 import { createStateRepository } from './ao/lib/state-repository.js';
@@ -156,10 +157,41 @@ function renderHumanSummary(result) {
       `task: ${result.task_id}`,
       `status: ${result.status ?? result.top_status ?? 'unknown'}`,
       `successor: ${result.successor_session_name ?? 'none'}`,
+      `continuity: ${result.continuity ? `${result.continuity.posture} -> ${result.continuity.recommended_action}` : 'none'}`,
     ].join('\n');
   }
 
   return JSON.stringify(result, null, 2);
+}
+
+function attachContinuity(snapshot, result) {
+  if (Array.isArray(result)) {
+    return result.map((inspection) => ({
+      ...inspection,
+      continuity: inspection?.task_id == null
+        ? null
+        : buildTaskContinuityFromSnapshot({
+            snapshot,
+            taskId: inspection.task_id,
+            checkpointInspection: inspection.checkpoint,
+            handoffInspection: inspection,
+          }),
+    }));
+  }
+
+  if (result?.task_id == null || result?.top_status == null) {
+    return result;
+  }
+
+  return {
+    ...result,
+    continuity: buildTaskContinuityFromSnapshot({
+      snapshot,
+      taskId: result.task_id,
+      checkpointInspection: result.checkpoint,
+      handoffInspection: result,
+    }),
+  };
 }
 
 export async function runCli(argv, io = createDefaultIo()) {
@@ -229,8 +261,10 @@ export async function runCli(argv, io = createDefaultIo()) {
         issueNumber: options.issueNumber,
         requestId: options.requestId,
       });
+      result = attachContinuity(repository.getSnapshot(), result);
     } else {
       result = protocol.inspectAllHandoffs();
+      result = attachContinuity(repository.getSnapshot(), result);
     }
 
     if (options.json) {

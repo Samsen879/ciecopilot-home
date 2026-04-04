@@ -1,6 +1,13 @@
 import { createCheckpointStore } from './checkpoint-store.js';
+import { summarizeAssistActionRecord } from './action-executor.js';
+import {
+  buildTaskContinuityFromSnapshot,
+  summarizeContinuityReports,
+} from './continuity.js';
+import { buildHistoricalDebtReport } from './debt-report.js';
 import { createHandoffProtocol } from './handoff-protocol.js';
 import { inspectRepoKnowledgeRecordState } from './repo-knowledge.js';
+import { deriveReviewPosture } from './review-contracts.js';
 import { buildAoMetricsReport } from './run-metrics.js';
 import * as fs from 'node:fs';
 import path from 'node:path';
@@ -31,10 +38,139 @@ function summarizeControllerModes(controllerModes) {
     .sort((left, right) => left.localeCompare(right));
 }
 
+function summarizeCountMap(keys, records = [], keyName) {
+  const summary = Object.fromEntries(keys.map((key) => [key, 0]));
+  for (const record of records) {
+    const key = record?.[keyName];
+    if (key == null || !Object.hasOwn(summary, key)) continue;
+    summary[key] += 1;
+  }
+  return summary;
+}
+
 function compareTimestampDescending(left, right) {
   const leftTime = left ? new Date(left).getTime() : 0;
   const rightTime = right ? new Date(right).getTime() : 0;
   return rightTime - leftTime;
+}
+
+function compareIsoDescending(left, right) {
+  return String(right ?? '').localeCompare(String(left ?? ''));
+}
+
+function deriveReviewBlockingReason(posture) {
+  if (posture === 'review_pending') return 'independent_review_active';
+  if (posture === 'review_changes_required') return 'changes_requested';
+  if (posture === 'review_escalated') return 'human_escalation_required';
+  return null;
+}
+
+function latestTaskReviewRecord(snapshot, taskId) {
+  return [...(snapshot?.state?.review_records ?? [])]
+    .filter((record) => record?.task_id === taskId)
+    .sort((left, right) => {
+      const byTimestamp = compareIsoDescending(left?.updated_at, right?.updated_at);
+      if (byTimestamp !== 0) return byTimestamp;
+      return String(right?.review_id ?? '').localeCompare(String(left?.review_id ?? ''));
+    })[0] ?? null;
+}
+
+function buildTaskReviewInspection(snapshot, taskId) {
+  const reviewRecord = latestTaskReviewRecord(snapshot, taskId);
+  if (!reviewRecord) return null;
+
+  const posture = deriveReviewPosture(reviewRecord);
+  if (posture.posture === 'idle') return null;
+
+  return {
+    task_id: reviewRecord.task_id,
+    issue_number: reviewRecord.issue_number ?? null,
+    review_id: reviewRecord.review_id,
+    implementation_session_name: reviewRecord.implementation_session_name ?? null,
+    reviewer_session_name: reviewRecord.reviewer_session_name ?? null,
+    target_branch: reviewRecord.target_branch ?? null,
+    target_head_sha: reviewRecord.target_head_sha ?? null,
+    status: reviewRecord.status,
+    verdict: reviewRecord.verdict,
+    freeze_status: reviewRecord.freeze_status,
+    posture: posture.posture,
+    freeze_active: posture.freeze_active,
+    blocking_reason: deriveReviewBlockingReason(posture.posture),
+  };
+}
+
+function summarizeReviewInspections(reviewInspections = []) {
+  return {
+    open_count: reviewInspections.filter((inspection) => inspection.status === 'open').length,
+    claimed_count: reviewInspections.filter((inspection) => inspection.status === 'claimed').length,
+    passed_count: reviewInspections.filter((inspection) => inspection.status === 'passed').length,
+    changes_required_count: reviewInspections.filter((inspection) => inspection.status === 'changes_required').length,
+    escalated_count: reviewInspections.filter((inspection) => inspection.status === 'escalated').length,
+    freeze_active_count: reviewInspections.filter((inspection) => inspection.freeze_active === true).length,
+  };
+}
+
+function buildTaskCloseoutInspection({
+  snapshot,
+  task,
+  continuityInspection = null,
+  handoffInspection = null,
+  reviewInspection = null,
+} = {}) {
+  const boundPrCount = snapshot.state.pr_bindings.filter(
+    (binding) => binding.task_id === task.task_id && binding.status === 'bound',
+  ).length;
+  const activeOwnershipLeaseCount = snapshot.state.ownership_leases.filter(
+    (lease) => lease.task_id === task.task_id && lease.status === 'active',
+  ).length;
+  const activeHandoffCount = handoffInspection && ['open', 'claimed', 'accepted'].includes(handoffInspection.top_status)
+    ? 1
+    : 0;
+
+  let closeoutStatus = 'active';
+  let recommendedAction = 'continue_management';
+
+  if (task.status === 'retired') {
+    closeoutStatus = 'retired';
+    recommendedAction = 'none';
+  } else if (
+    reviewInspection?.freeze_active === true
+  ) {
+    closeoutStatus = 'hold';
+    recommendedAction = 'hold';
+  } else if (
+    task.status === 'paused'
+    && boundPrCount === 0
+    && activeOwnershipLeaseCount === 0
+    && activeHandoffCount === 0
+  ) {
+    closeoutStatus = 'ready_to_retire';
+    recommendedAction = 'retire_managed_task';
+  } else if (
+    task.status === 'paused'
+    || continuityInspection?.recommended_action === 'hold_for_human'
+  ) {
+    closeoutStatus = 'hold';
+    recommendedAction = 'hold';
+  }
+
+  return {
+    task_id: task.task_id,
+    issue_number: task.issue_number ?? null,
+    task_status: task.status,
+    continuity_posture: continuityInspection?.posture ?? null,
+    continuity_recommended_action: continuityInspection?.recommended_action ?? null,
+    bound_pr_count: boundPrCount,
+    active_ownership_lease_count: activeOwnershipLeaseCount,
+    active_handoff_count: activeHandoffCount,
+    closeout_status: closeoutStatus,
+    recommended_action: recommendedAction,
+    review_posture: reviewInspection?.posture ?? null,
+    review_freeze_status: reviewInspection?.freeze_status ?? null,
+    review_blocking_reason: reviewInspection?.blocking_reason ?? null,
+    review_reviewer_session_name: reviewInspection?.reviewer_session_name ?? null,
+    review_target_head_sha: reviewInspection?.target_head_sha ?? null,
+  };
 }
 
 function buildControllerRuntimeSummary({
@@ -104,6 +240,7 @@ export async function loadAoStateReport({
   projectId = DEFAULT_PROJECT_ID,
   auditLimit = 5,
   now = new Date().toISOString(),
+  repoInventory = null,
 } = {}) {
   const resolvedRepoRoot = repoRoot ?? findRepoRoot(cwd);
   if (!resolvedRepoRoot) {
@@ -143,6 +280,51 @@ export async function loadAoStateReport({
   const controllerRuntime = buildControllerRuntimeSummary({
     snapshot,
     projectId,
+    now,
+  });
+  const continuityInspections = snapshot.state.managed_tasks
+    .map((task) => buildTaskContinuityFromSnapshot({
+      snapshot,
+      taskId: task.task_id,
+      checkpointInspections,
+      handoffInspections,
+    }))
+    .filter(Boolean);
+  const continuityByTaskId = new Map(
+    continuityInspections.map((inspection) => [inspection.task_id, inspection]),
+  );
+  const handoffByTaskId = new Map(
+    handoffInspections.map((inspection) => [inspection.task_id, inspection]),
+  );
+  const reviewInspections = snapshot.state.managed_tasks
+    .map((task) => buildTaskReviewInspection(snapshot, task.task_id))
+    .filter(Boolean)
+    .sort((left, right) => String(left.task_id).localeCompare(String(right.task_id)));
+  const reviewByTaskId = new Map(
+    reviewInspections.map((inspection) => [inspection.task_id, inspection]),
+  );
+  const taskInspections = snapshot.state.managed_tasks
+    .map((task) => buildTaskCloseoutInspection({
+      snapshot,
+      task,
+      continuityInspection: continuityByTaskId.get(task.task_id) ?? null,
+      handoffInspection: handoffByTaskId.get(task.task_id) ?? null,
+      reviewInspection: reviewByTaskId.get(task.task_id) ?? null,
+    }))
+    .sort((left, right) => String(left.task_id).localeCompare(String(right.task_id)));
+  const recentActions = [...(snapshot.state.actions ?? [])]
+    .sort((left, right) => compareTimestampDescending(
+      left?.updated_at ?? left?.created_at ?? null,
+      right?.updated_at ?? right?.created_at ?? null,
+    ))
+    .slice(0, auditLimit)
+    .map((record) => summarizeAssistActionRecord(record))
+    .filter(Boolean);
+  const debtReport = buildHistoricalDebtReport({
+    repoRoot: resolvedRepoRoot,
+    snapshot,
+    taskInspections,
+    repoInventory,
     now,
   });
 
@@ -185,6 +367,28 @@ export async function loadAoStateReport({
       audit_entry_count: auditEntries.length,
     },
     controllers: controllerRuntime.controllers,
+    continuity: {
+      summary: summarizeContinuityReports(continuityInspections),
+      inspections: continuityInspections,
+    },
+    reviews: {
+      summary: summarizeReviewInspections(reviewInspections),
+      inspections: reviewInspections,
+    },
+    tasks: {
+      summary: {
+        closeout_status_counts: summarizeCountMap(
+          ['active', 'hold', 'ready_to_retire', 'retired'],
+          taskInspections,
+          'closeout_status',
+        ),
+      },
+      inspections: taskInspections,
+    },
+    debt: debtReport,
+    actions: {
+      recent: recentActions,
+    },
     checkpoints: {
       inspections: checkpointInspections,
     },

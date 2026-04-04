@@ -15,6 +15,7 @@ import {
   createOwnershipLease,
   createPolicyDecisionRecord,
   createPrBinding,
+  createReviewRecord,
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
 import { createStateRepository } from '../../scripts/ao/lib/state-repository.js';
@@ -96,6 +97,7 @@ describe('ao state repository', () => {
       credential_provenances: [],
       task_specs: [],
       runtime_preflights: [],
+      review_records: [],
     });
     expect(repository.listAuditEntries()).toEqual([]);
     expect(fs.existsSync(path.join(repoRoot, '.ao-control-plane'))).toBe(false);
@@ -284,9 +286,10 @@ describe('ao state repository', () => {
       'schema:migrate:v5',
       'schema:migrate:v6',
       'schema:migrate:v7',
-      'schema:migrate:v8',
-      'schema:migrate:v9',
-      'managed_task:upsert:task-1',
+        'schema:migrate:v8',
+        'schema:migrate:v9',
+        'schema:migrate:v10',
+        'managed_task:upsert:task-1',
       'pr_binding:upsert:binding-1',
       'ownership_lease:upsert:ownership-1',
       'controller_lease:upsert:controller-1',
@@ -298,6 +301,56 @@ describe('ao state repository', () => {
       'credential_provenance:upsert:cred-gh-cli',
       'policy_decision:upsert:policy-1',
     ]);
+  });
+
+  it('writes and reads durable review records with append-only audit history', () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      clock: createClock(
+        '2026-04-03T14:20:00.000Z',
+        '2026-04-03T14:21:00.000Z',
+      ),
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+
+    repository.upsertReviewRecord(createReviewRecord({
+      review_id: 'review-1',
+      task_id: 'task-1',
+      issue_number: 88,
+      pr_number: 101,
+      status: 'open',
+      trigger_kind: 'ready_for_review',
+      target_branch: 'feat/88',
+      target_head_sha: 'abc123',
+      requested_by_session_name: 'cie-48',
+      requested_by_session_id: 'session-48',
+      implementation_session_name: 'cie-48',
+      implementation_session_id: 'session-48',
+      verification_baseline: [
+        {
+          category: 'workspace_sanity',
+          commands: ['git status --short'],
+        },
+      ],
+      freeze_status: 'active',
+      created_at: '2026-04-03T14:20:00.000Z',
+      updated_at: '2026-04-03T14:20:00.000Z',
+    }));
+
+    expect(repository.getSnapshot().state.review_records).toEqual([
+      expect.objectContaining({
+        review_id: 'review-1',
+        task_id: 'task-1',
+        status: 'open',
+        target_head_sha: 'abc123',
+      }),
+    ]);
+    expect(repository.listAuditEntries().at(-1)).toMatchObject({
+      entity_kind: 'review_record',
+      operation: 'upsert',
+      entity_id: 'review-1',
+    });
   });
 
   it('keeps state upserts idempotent while audit log writes remain append-only', () => {

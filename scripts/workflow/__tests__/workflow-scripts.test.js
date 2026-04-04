@@ -200,4 +200,48 @@ describe('workflow scripts', () => {
       fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
     }
   });
+
+  test('task closeout retires the managed AO task before git cleanup when ao-manage exists', () => {
+    const fixture = createRepoFixture();
+
+    try {
+      runGit(
+        ['worktree', 'add', '.worktrees/task-142--governance-v1', '-b', 'task/142-governance-v1', 'origin/main'],
+        fixture.repoDir,
+      );
+      fs.mkdirSync(path.join(fixture.repoDir, 'scripts'), { recursive: true });
+      fs.writeFileSync(
+        path.join(fixture.repoDir, 'scripts', 'ao-manage.js'),
+        [
+          "import fs from 'node:fs';",
+          "fs.writeFileSync('.ao-manage-invocation.json', JSON.stringify(process.argv.slice(2)));",
+        ].join('\n'),
+        'utf8',
+      );
+
+      const result = runCommand('bash', [
+        TASK_CLOSEOUT_SCRIPT,
+        '--id',
+        '142',
+        '--slug',
+        'governance-v1',
+        '--confirm',
+        'closeout',
+      ], {
+        cwd: fixture.repoDir,
+      });
+
+      expect(result.status).toBe(0);
+      expect(fs.existsSync(path.join(fixture.repoDir, '.worktrees', 'task-142--governance-v1'))).toBe(false);
+      expect(JSON.parse(fs.readFileSync(path.join(fixture.repoDir, '.ao-manage-invocation.json'), 'utf8'))).toEqual([
+        'retire',
+        '--issue',
+        '142',
+        '--reason',
+        'workflow_task_closeout',
+      ]);
+    } finally {
+      fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
+    }
+  });
 });

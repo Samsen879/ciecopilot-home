@@ -51,6 +51,47 @@ function buildReport(overrides = {}) {
         last_run_status: 'completed',
       },
     ],
+    continuity: {
+      summary: {
+        posture_counts: {
+          active_owner: 1,
+          restore_ready: 0,
+          handoff_pending: 0,
+          handoff_granted: 0,
+          orphaned: 0,
+          ambiguous: 0,
+          retired: 0,
+        },
+      },
+      inspections: [
+        {
+          task_id: 'issue-117',
+          posture: 'active_owner',
+          recommended_action: 'continue_current_worker',
+          owner_session_name: 'cie-59',
+        },
+      ],
+    },
+    reviews: {
+      summary: {
+        open_count: 0,
+        claimed_count: 1,
+        passed_count: 0,
+        changes_required_count: 0,
+        escalated_count: 0,
+        freeze_active_count: 1,
+      },
+      inspections: [
+        {
+          task_id: 'issue-117',
+          posture: 'review_pending',
+          reviewer_session_name: 'cie-125-review',
+          target_head_sha: 'abc123',
+          freeze_status: 'active',
+          blocking_reason: 'independent_review_active',
+        },
+      ],
+    },
     audit: {
       recent_entries: [],
     },
@@ -102,6 +143,32 @@ describe('ao state cli', () => {
       schema_version: 'ao.state.v1alpha1',
       summary: {
         managed_task_count: 1,
+      },
+      continuity: {
+        summary: {
+          posture_counts: expect.objectContaining({
+            active_owner: 1,
+          }),
+        },
+        inspections: [
+          expect.objectContaining({
+            task_id: 'issue-117',
+            posture: 'active_owner',
+          }),
+        ],
+      },
+      reviews: {
+        summary: {
+          claimed_count: 1,
+          freeze_active_count: 1,
+        },
+        inspections: [
+          expect.objectContaining({
+            task_id: 'issue-117',
+            posture: 'review_pending',
+            target_head_sha: 'abc123',
+          }),
+        ],
       },
       controllers: [
         expect.objectContaining({

@@ -27,6 +27,14 @@ describe('AO phase1 entry topology contract', () => {
     expect(configText).toContain('baseline/origin-main');
   });
 
+  it('keeps agent rules aligned with the stable baseline branch name', () => {
+    const agentRulesText = read('.agent-rules.md');
+
+    expect(agentRulesText).toContain('baseline/origin-main');
+    expect(agentRulesText).not.toContain('baseline/origin-main-20260402');
+    expect(agentRulesText).not.toContain('.worktrees/baseline-origin-main-20260402');
+  });
+
   it('keeps start-clean script discovery repo-local only', () => {
     const startCleanText = read('scripts/ao/start-clean.sh');
 

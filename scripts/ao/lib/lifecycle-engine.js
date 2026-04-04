@@ -32,6 +32,94 @@ function uniqueStrings(values) {
     .filter((value) => value !== ''))];
 }
 
+function sameReleaseDecision(left, right) {
+  return JSON.stringify(left ?? null) === JSON.stringify(right ?? null);
+}
+
+function normalizeLifecycleReleaseDecision(releaseDecision) {
+  return releaseDecision == null
+    ? {
+        disposition: 'no_release_action',
+        basis: [],
+        authoritative: false,
+      }
+    : {
+        ...releaseDecision,
+        basis: uniqueStrings(releaseDecision.basis ?? []),
+      };
+}
+
+function resolveReviewGateReleaseDecision({
+  releaseDecision,
+  reviewRequired = false,
+  reviewInspection = null,
+  currentHeadSha = null,
+} = {}) {
+  const originalReleaseDecision = releaseDecision ?? {
+    disposition: 'no_release_action',
+    basis: [],
+    authoritative: false,
+  };
+  const normalizedReleaseDecision = normalizeLifecycleReleaseDecision(releaseDecision);
+  if (!reviewRequired && reviewInspection == null) {
+    return originalReleaseDecision;
+  }
+
+  const reviewPosture = reviewInspection?.posture ?? 'idle';
+  const reviewTargetSha = reviewInspection?.target_head_sha ?? null;
+  const targetMismatch = (
+    currentHeadSha != null
+      && reviewTargetSha != null
+      && reviewTargetSha !== currentHeadSha
+  );
+
+  if (reviewPosture === 'review_escalated') {
+    return {
+      disposition: 'human_gate',
+      basis: ['review_escalated'],
+      authoritative: false,
+    };
+  }
+
+  if (reviewPosture === 'review_changes_required') {
+    return {
+      disposition: 'no_release_action',
+      basis: ['review_changes_required'],
+      authoritative: true,
+    };
+  }
+
+  if (reviewPosture === 'review_pending') {
+    return {
+      disposition: 'await_review',
+      basis: [targetMismatch ? 'review_target_mismatch' : 'review_pending'],
+      authoritative: true,
+    };
+  }
+
+  if (reviewPosture === 'review_passed') {
+    if (targetMismatch) {
+      return {
+        disposition: 'await_review',
+        basis: ['review_target_mismatch'],
+        authoritative: true,
+      };
+    }
+
+    return originalReleaseDecision;
+  }
+
+  if (reviewRequired && normalizedReleaseDecision.disposition === 'notify_human_ready') {
+    return {
+      disposition: 'await_review',
+      basis: ['review_missing'],
+      authoritative: true,
+    };
+  }
+
+  return originalReleaseDecision;
+}
+
 function deriveDoctorControlStatus(doctorReport) {
   const doctorFindings = (doctorReport?.findings ?? []).filter((finding) => finding.origin === 'doctor');
 
@@ -555,6 +643,21 @@ function buildLifecycleFindings({
     }));
   }
 
+  if (releaseDecision.basis?.includes('review_changes_required')) {
+    findings.push(createLifecycleFinding({
+      code: 'review_changes_required',
+      severity: 'warning',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'release_control',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'Independent review returned this task to implementation.',
+      details: releaseDecision.basis,
+      evidence_refs: [],
+      action_ids: ['continue_worker'],
+    }));
+  }
+
   if (releaseDecision.disposition === 'await_mergeability') {
     findings.push(createLifecycleFinding({
       code: 'release_waiting_on_mergeability',
@@ -722,10 +825,62 @@ function deriveTopStatus({
   return 'continue';
 }
 
+export function applyReviewGateToLifecycleReport({
+  lifecycleReport,
+  reviewRequired = false,
+  reviewInspection = null,
+  currentHeadSha = null,
+} = {}) {
+  if (!lifecycleReport) return lifecycleReport;
+
+  const nextReleaseDecision = resolveReviewGateReleaseDecision({
+    releaseDecision: lifecycleReport.release_decision,
+    reviewRequired,
+    reviewInspection,
+    currentHeadSha,
+  });
+  if (sameReleaseDecision(lifecycleReport.release_decision, nextReleaseDecision)) {
+    return lifecycleReport;
+  }
+
+  const normalizedRoutingDecision = {
+    action: lifecycleReport?.routing_decision?.action ?? 'no_action',
+    owner_session: lifecycleReport?.routing_decision?.owner_session ?? null,
+    target_pr_number: lifecycleReport?.routing_decision?.target_pr_number ?? lifecycleReport?.scope?.pr_number ?? null,
+    reason_codes: lifecycleReport?.routing_decision?.reason_codes ?? [],
+    authoritative: lifecycleReport?.routing_decision?.authoritative ?? false,
+  };
+  const nextFindings = [
+    ...(lifecycleReport.findings ?? []).filter((finding) => finding?.origin !== 'lifecycle'),
+    ...buildLifecycleFindings({
+      scope: lifecycleReport.scope,
+      routingDecision: normalizedRoutingDecision,
+      releaseDecision: nextReleaseDecision,
+    }),
+  ];
+  const nextActions = buildActions(nextFindings, lifecycleReport.scope);
+
+  return {
+    ...lifecycleReport,
+    top_status: deriveTopStatus({
+      scope: lifecycleReport.scope,
+      sourceHealth: lifecycleReport.source_health ?? {},
+      routingDecision: normalizedRoutingDecision,
+      releaseDecision: nextReleaseDecision,
+    }),
+    release_decision: nextReleaseDecision,
+    findings: nextFindings,
+    actions: nextActions,
+  };
+}
+
 export function buildLifecycleReport({
   scope,
   reconciliationReport,
   doctorReport,
+  reviewRequired = false,
+  reviewInspection = null,
+  currentHeadSha = null,
 } = {}) {
   const sourceHealth = deriveLifecycleSourceHealth(reconciliationReport, doctorReport);
   const doctorControlStatus = deriveDoctorControlStatus(doctorReport);
@@ -754,7 +909,7 @@ export function buildLifecycleReport({
   ];
   const actions = buildActions(findings, scope);
 
-  return {
+  const lifecycleReport = {
     schema_version: LIFECYCLE_SCHEMA_VERSION,
     report_format: LIFECYCLE_REPORT_FORMAT,
     engine_version: 'phase3-lifecycle',
@@ -783,4 +938,11 @@ export function buildLifecycleReport({
     findings,
     actions,
   };
+
+  return applyReviewGateToLifecycleReport({
+    lifecycleReport,
+    reviewRequired,
+    reviewInspection,
+    currentHeadSha,
+  });
 }

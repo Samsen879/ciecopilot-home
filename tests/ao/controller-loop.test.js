@@ -9,6 +9,7 @@ import {
   createControllerModeRecord,
   createManagedTask,
   createPrBinding,
+  createReviewRecord,
   createRuntimePreflightRecord,
   createTaskSpecRecord,
 } from '../../scripts/ao/lib/state-contracts.js';
@@ -277,6 +278,7 @@ describe('ao controller loop', () => {
       top_status: 'hold',
       routing_decision: {
         action: 'continue_current_worker',
+        owner_session: 'cie-92',
       },
       release_decision: {
         disposition: 'await_ci',
@@ -357,6 +359,14 @@ describe('ao controller loop', () => {
           new_delivery_event_count: 3,
           proposed_action_count: 2,
           lifecycle_top_status: 'hold',
+          continuity: expect.objectContaining({
+            posture: 'active_owner',
+            recommended_action: 'continue_current_worker',
+            owner_session_name: 'cie-92',
+          }),
+          decision_chain: expect.objectContaining({
+            contract_status: 'authoritative_pr_chain',
+          }),
         }),
       ],
     });
@@ -816,6 +826,7 @@ describe('ao controller loop', () => {
       top_status: 'continue',
       routing_decision: {
         action: 'continue_current_worker',
+        owner_session: 'cie-92',
       },
       release_decision: {
         disposition: 'notify_human_ready',
@@ -907,6 +918,57 @@ describe('ao controller loop', () => {
           executed_action_count: 1,
           blocked_action_count: 2,
           policy_blocked_action_count: 1,
+          continuity: expect.objectContaining({
+            posture: 'active_owner',
+            recommended_action: 'continue_current_worker',
+          }),
+          decision_chain: expect.objectContaining({
+            contract_status: 'authoritative_pr_chain',
+          }),
+          assist_actions: expect.arrayContaining([
+            expect.objectContaining({
+              action_kind: 'continue_worker',
+              status: 'executed',
+              risk_class: 'class_a',
+              policy_decision: 'allow',
+              model_executable: true,
+              model_reason: 'class_a_allowlist',
+              execution_reason: 'class_a_assist_execution',
+              runtime_preflight_status: 'clean',
+              idempotency_mode: 'action_status_gate',
+              rollback_mode: 'audit_only',
+            }),
+            expect.objectContaining({
+              action_kind: 'restore_worker',
+              status: 'blocked',
+              risk_class: 'class_c',
+              policy_decision: 'allow',
+              model_executable: false,
+              model_reason: 'runtime_ownership_change_forbidden',
+              execution_reason: 'runtime_ownership_change_forbidden',
+              rollback_mode: 'manual_only',
+            }),
+            expect.objectContaining({
+              action_kind: 'hold_ci',
+              status: 'blocked',
+              risk_class: 'class_b',
+              policy_decision: 'allow',
+              model_executable: false,
+              model_reason: 'advisory_hold_non_executable',
+              execution_reason: 'advisory_hold_non_executable',
+              rollback_mode: 'not_applicable',
+            }),
+            expect.objectContaining({
+              action_kind: 'notify_human_ready',
+              status: 'blocked',
+              risk_class: 'class_a',
+              policy_decision: 'deny',
+              model_executable: true,
+              model_reason: 'class_a_allowlist',
+              execution_reason: 'policy_denied',
+              rollback_mode: 'audit_only',
+            }),
+          ]),
         }),
       ],
     });
@@ -971,6 +1033,142 @@ describe('ao controller loop', () => {
         }),
       }),
     ]);
+  });
+
+  it('blocks notify_human_ready in assist mode when independent review has not passed for the current head sha', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+    });
+    seedActiveTask(repository, 'assist');
+    seedCleanRuntimePreflight(repository);
+    repository.upsertReviewRecord(createReviewRecord({
+      review_id: 'review-issue-92-1',
+      task_id: 'issue-92',
+      issue_number: 92,
+      pr_number: 92,
+      status: 'claimed',
+      trigger_kind: 'ready_for_review',
+      target_branch: 'feat/issue-92',
+      target_head_sha: 'stale-review-sha',
+      requested_by_session_name: 'cie-92',
+      requested_by_session_id: 'cie-92',
+      implementation_session_name: 'cie-92',
+      implementation_session_id: 'cie-92',
+      reviewer_session_name: 'cie-92-review',
+      reviewer_session_id: 'cie-92-review',
+      verification_baseline: [
+        {
+          category: 'workspace_sanity',
+          commands: ['git status --short'],
+        },
+      ],
+      freeze_status: 'active',
+      created_at: '2026-04-03T15:00:00.000Z',
+      updated_at: '2026-04-03T15:01:00.000Z',
+    }));
+
+    const lifecycleReport = {
+      top_status: 'continue',
+      routing_decision: {
+        action: 'continue_current_worker',
+        owner_session: 'cie-92',
+      },
+      release_decision: {
+        disposition: 'notify_human_ready',
+      },
+      actions: [
+        {
+          id: 'continue_worker',
+          action_class: 'continue_worker',
+          summary: 'Continue the current worker owner.',
+          commands: ['ao status -p ciecopilot-home --json'],
+          rationale: 'Ownership continuity is clear enough to continue the current worker.',
+        },
+        {
+          id: 'notify_human_ready',
+          action_class: 'notify_human',
+          summary: 'Notify the human that the PR appears ready.',
+          commands: ['gh pr view 92 --json mergeable,reviewDecision,isDraft,url'],
+          rationale: 'Human approval remains required even when the PR appears ready.',
+        },
+      ],
+    };
+
+    const result = await runControllerLoop({
+      repoRoot: repository.getSnapshot().paths.repoRoot,
+      cwd: repository.getSnapshot().paths.repoRoot,
+      projectId: PROJECT_ID,
+      controllerId: 'default',
+      now: '2026-04-03T15:02:00.000Z',
+      deps: {
+        loadAoProjectObservation: async () => ({
+          observed_at: '2026-04-03T15:02:00.000Z',
+          workers: [
+            {
+              session_name: 'cie-92',
+              session_runtime_id: 'cie-92',
+              issue_number: 92,
+              branch_name: 'feat/issue-92',
+              pr_number: 92,
+              lifecycle_state: 'idle',
+              last_seen_at: '2026-04-03T15:01:45.000Z',
+              freshness: { status: 'fresh' },
+            },
+          ],
+        }),
+        loadGitHubObservationSet: async () => ({
+          observed_at: '2026-04-03T15:02:00.000Z',
+          prs: [
+            {
+              pr_number: 92,
+              state: 'OPEN',
+              head_branch: 'feat/issue-92',
+              head_sha: 'abc123',
+              review_status: 'approved',
+              ci_status: 'passing',
+              mergeability: 'mergeable',
+              is_draft: false,
+              url: 'https://example.test/pr/92',
+            },
+          ],
+        }),
+        resolveLifecycleReport: async () => lifecycleReport,
+        ensureRuntimePreflights: () => repository.getSnapshot().state.runtime_preflights,
+      },
+    });
+
+    expect(result).toMatchObject({
+      mode: 'assist',
+      proposed_action_count: 1,
+      executed_action_count: 0,
+      blocked_action_count: 1,
+      task_results: [
+        expect.objectContaining({
+          blocking_reasons: expect.arrayContaining([
+            expect.objectContaining({
+              code: 'release_waiting_on_review',
+            }),
+          ]),
+          release_decision: expect.objectContaining({
+            disposition: 'await_review',
+            basis: ['review_target_mismatch'],
+          }),
+          next_actions: [
+            expect.objectContaining({
+              id: 'hold_review',
+            }),
+          ],
+          assist_actions: [
+            expect.objectContaining({
+              action_kind: 'hold_review',
+              status: 'blocked',
+              execution_reason: 'advisory_hold_non_executable',
+            }),
+          ],
+        }),
+      ],
+    });
   });
 
   it('assist mode blocks class A actions until runtime preflight has passed', async () => {

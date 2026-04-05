@@ -37,6 +37,7 @@ test('runtime enums are frozen to the March 20 contract', () => {
     'my_notes',
     'review_queue',
   ]);
+  expect(Object.isFrozen(ANCHOR_KINDS)).toBe(true);
 });
 
 test('slot compatibility freezes artifact residency by stable slot', () => {
@@ -48,6 +49,8 @@ test('slot compatibility freezes artifact residency by stable slot', () => {
     my_notes: ['free_note'],
     review_queue: [],
   });
+  expect(Object.isFrozen(SLOT_COMPATIBILITY)).toBe(true);
+  expect(Object.isFrozen(SLOT_COMPATIBILITY.core_method_derivation)).toBe(true);
   expect(isCompatibleArtifactKindForSlot('overview_map', 'summary_card')).toBe(true);
   expect(isCompatibleArtifactKindForSlot('review_queue', 'summary_card')).toBe(false);
 });

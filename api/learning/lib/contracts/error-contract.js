@@ -10,13 +10,36 @@ export const LEARNING_ERROR_CODES = Object.freeze({
   SESSION_STATE_CONFLICT: 'session_state_conflict',
   QUESTION_NOT_FOUND: 'question_not_found',
   WORKSPACE_NOT_FOUND: 'workspace_not_found',
-  REVIEW_TASK_NOT_FOUND: 'review_task_not_found',
-  REVIEW_TASK_STATE_CONFLICT: 'review_task_state_conflict',
   ARTIFACT_NOT_FOUND: 'artifact_not_found',
   ARTIFACT_STATE_CONFLICT: 'artifact_state_conflict',
-  SUBJECT_ADAPTER_NOT_ENABLED: 'subject_adapter_not_enabled',
   IDEMPOTENCY_CONFLICT: 'idempotency_conflict',
 });
+
+function cloneValue(value) {
+  if (Array.isArray(value)) {
+    return value.map(cloneValue);
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, nestedValue]) => [key, cloneValue(nestedValue)]),
+    );
+  }
+
+  return value;
+}
+
+function deepFreeze(value) {
+  if (!value || typeof value !== 'object' || Object.isFrozen(value)) {
+    return value;
+  }
+
+  for (const nestedValue of Object.values(value)) {
+    deepFreeze(nestedValue);
+  }
+
+  return Object.freeze(value);
+}
 
 const DEFAULT_ERROR_DEFINITION = Object.freeze({
   status: 500,
@@ -80,16 +103,6 @@ const LEARNING_ERROR_DEFINITIONS = Object.freeze({
     message: 'Workspace not found.',
     retryable: false,
   }),
-  [LEARNING_ERROR_CODES.REVIEW_TASK_NOT_FOUND]: Object.freeze({
-    status: 404,
-    message: 'Review task not found.',
-    retryable: false,
-  }),
-  [LEARNING_ERROR_CODES.REVIEW_TASK_STATE_CONFLICT]: Object.freeze({
-    status: 409,
-    message: 'The review task state conflicts with this request.',
-    retryable: false,
-  }),
   [LEARNING_ERROR_CODES.ARTIFACT_NOT_FOUND]: Object.freeze({
     status: 404,
     message: 'Artifact not found.',
@@ -98,11 +111,6 @@ const LEARNING_ERROR_DEFINITIONS = Object.freeze({
   [LEARNING_ERROR_CODES.ARTIFACT_STATE_CONFLICT]: Object.freeze({
     status: 409,
     message: 'The artifact state conflicts with this request.',
-    retryable: false,
-  }),
-  [LEARNING_ERROR_CODES.SUBJECT_ADAPTER_NOT_ENABLED]: Object.freeze({
-    status: 409,
-    message: 'The requested subject adapter is not enabled for the learning runtime.',
     retryable: false,
   }),
   [LEARNING_ERROR_CODES.IDEMPOTENCY_CONFLICT]: Object.freeze({
@@ -122,13 +130,15 @@ export function getLearningErrorStatus(code) {
 
 export function buildLearningError(requestId, code, options = {}) {
   const definition = getLearningErrorDefinition(code);
-  return {
+  const details = cloneValue(options.details ?? {});
+
+  return deepFreeze({
     request_id: requestId ?? null,
     error: {
       code,
       message: options.message || definition.message,
       retryable: options.retryable ?? definition.retryable,
-      details: options.details || {},
+      details,
     },
-  };
+  });
 }

@@ -1,11 +1,17 @@
 import {
   buildChildSessionLineage,
 } from '../lib/session-runtime/session-handoff.js';
-import { getSession, insertSession } from '../lib/repositories/session-repository.js';
+import {
+  findSessionById,
+  getSession,
+  insertSession,
+  updateSessionState,
+} from '../lib/repositories/session-repository.js';
 
 function createSessionDb() {
   const inserts = [];
   const selects = [];
+  const updates = [];
 
   const resumeProjectionRow = {
     session_id: 'session-1',
@@ -49,6 +55,7 @@ function createSessionDb() {
   return {
     inserts,
     selects,
+    updates,
     from(table) {
       return {
         insert(payload) {
@@ -85,6 +92,36 @@ function createSessionDb() {
               throw new Error(`Unexpected insert table: ${table}`);
             },
           };
+        },
+        update(payload) {
+          const filters = [];
+
+          const builder = {
+            eq(column, value) {
+              filters.push({ column, value });
+              return builder;
+            },
+            select() {
+              return builder;
+            },
+            async single() {
+              updates.push({ table, payload, filters });
+
+              if (table !== 'learning_sessions') {
+                throw new Error(`Unexpected update table: ${table}`);
+              }
+
+              return {
+                data: {
+                  ...resumeProjectionRow,
+                  ...payload,
+                },
+                error: null,
+              };
+            },
+          };
+
+          return builder;
         },
         select(selection) {
           const filters = [];
@@ -338,6 +375,39 @@ describe('session-repository', () => {
     });
   });
 
+  test('findSessionById reads the resume projection and preserves lineage handoff data for resume flows', async () => {
+    const db = createSessionDb();
+
+    const session = await findSessionById(db, {
+      sessionId: 'session-1',
+      userId: 'user-1',
+    });
+
+    expect(db.selects).toEqual([
+      {
+        table: 'learning_session_resume_projection',
+        selection: '*',
+        filters: [
+          { column: 'session_id', value: 'session-1' },
+          { column: 'user_id', value: 'user-1' },
+        ],
+      },
+    ]);
+
+    expect(session).toMatchObject({
+      session_id: 'session-1',
+      lineage_ref: {
+        parent_session_id: null,
+        handoff_kind: null,
+      },
+      lineage: {
+        parent_session_id: null,
+        handoff_kind: null,
+        summary_snapshot: { progress: 'started' },
+      },
+    });
+  });
+
   test('getSession reads the resume projection and preserves lineage handoff data for resume flows', async () => {
     const db = createSessionDb();
 
@@ -359,6 +429,50 @@ describe('session-repository', () => {
 
     expect(session).toMatchObject({
       session_id: 'session-1',
+      lineage_ref: {
+        parent_session_id: null,
+        handoff_kind: null,
+      },
+      lineage: {
+        parent_session_id: null,
+        handoff_kind: null,
+        summary_snapshot: { progress: 'started' },
+      },
+    });
+  });
+
+  test('updateSessionState patches the stored session row and preserves the lineage stub shape', async () => {
+    const db = createSessionDb();
+
+    const session = await updateSessionState(db, {
+      sessionId: 'session-1',
+      userId: 'user-1',
+      state: 'handed_off',
+      summary_state: {
+        progress: 'started',
+        handoff: { kind: 'explicit_new_session' },
+      },
+    });
+
+    expect(db.updates).toEqual([
+      {
+        table: 'learning_sessions',
+        payload: {
+          state: 'handed_off',
+          summary_state: {
+            progress: 'started',
+            handoff: { kind: 'explicit_new_session' },
+          },
+        },
+        filters: [
+          { column: 'session_id', value: 'session-1' },
+          { column: 'user_id', value: 'user-1' },
+        ],
+      },
+    ]);
+    expect(session).toMatchObject({
+      session_id: 'session-1',
+      state: 'handed_off',
       lineage_ref: {
         parent_session_id: null,
         handoff_kind: null,

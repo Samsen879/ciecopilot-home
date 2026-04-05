@@ -1,12 +1,43 @@
-import { fetchWorkspaceProjection } from '../lib/repositories/workspace-repository.js';
+import {
+  ensureWorkspaceExists,
+  fetchWorkspaceProjection,
+} from '../lib/repositories/workspace-repository.js';
 
 function createWorkspaceDb() {
+  const inserts = [];
   const selects = [];
+  let existingWorkspace = null;
 
   return {
+    inserts,
     selects,
+    setExistingWorkspace(workspace) {
+      existingWorkspace = workspace;
+    },
     from(table) {
       return {
+        insert(payload) {
+          return {
+            select() {
+              return this;
+            },
+            async single() {
+              inserts.push({ table, payload });
+
+              if (table !== 'learning_workspaces') {
+                throw new Error(`Unexpected insert table: ${table}`);
+              }
+
+              const row = {
+                workspace_id: 'workspace-created-1',
+                updated_at: '2026-03-21T10:10:00.000Z',
+                ...payload,
+              };
+              existingWorkspace = row;
+              return { data: row, error: null };
+            },
+          };
+        },
         select(selection) {
           const filters = [];
 
@@ -17,6 +48,13 @@ function createWorkspaceDb() {
             },
             async maybeSingle() {
               selects.push({ table, selection, filters });
+
+              if (table === 'learning_workspaces') {
+                return {
+                  data: existingWorkspace,
+                  error: null,
+                };
+              }
 
               if (table !== 'learning_workspace_projection') {
                 throw new Error(`Unexpected select table: ${table}`);
@@ -72,6 +110,45 @@ function createWorkspaceDb() {
 }
 
 describe('workspace-repository', () => {
+  test('ensureWorkspaceExists creates a canonical workspace row when one does not exist yet', async () => {
+    const db = createWorkspaceDb();
+
+    const workspace = await ensureWorkspaceExists(db, {
+      userId: 'user-1',
+      topicId: 'topic-1',
+      topicPath: '9709/trigonometry/equations',
+    });
+
+    expect(db.selects).toEqual([
+      {
+        table: 'learning_workspaces',
+        selection: '*',
+        filters: [
+          { column: 'user_id', value: 'user-1' },
+          { column: 'topic_id', value: 'topic-1' },
+        ],
+      },
+    ]);
+    expect(db.inserts).toEqual([
+      {
+        table: 'learning_workspaces',
+        payload: {
+          user_id: 'user-1',
+          topic_id: 'topic-1',
+          topic_path: '9709/trigonometry/equations',
+          slot_state: {},
+          linked_reference_summary: {},
+        },
+      },
+    ]);
+    expect(workspace).toMatchObject({
+      workspace_id: 'workspace-created-1',
+      user_id: 'user-1',
+      topic_id: 'topic-1',
+      topic_path: '9709/trigonometry/equations',
+    });
+  });
+
   test('fetchWorkspaceProjection returns stable slot payloads and linked references separately', async () => {
     const db = createWorkspaceDb();
 

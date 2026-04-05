@@ -2,16 +2,7 @@ import {
   buildLineageSummarySnapshot,
   normalizeSessionHandoffKind,
 } from '../session-runtime/session-handoff.js';
-
-function buildLineageRef({
-  parent_session_id = null,
-  handoff_kind = null,
-} = {}) {
-  return {
-    parent_session_id,
-    handoff_kind: normalizeSessionHandoffKind(handoff_kind),
-  };
-}
+import { buildSessionLineageRef } from '../contracts/runtime-contract.js';
 
 function buildLineageSummary(summaryState) {
   return buildLineageSummarySnapshot(summaryState);
@@ -33,9 +24,9 @@ function hydrateSession(sessionRow, lineageRow) {
 }
 
 export async function insertSession(client, input) {
-  const lineage_ref = buildLineageRef({
-    parent_session_id: input.parent_session_id ?? null,
-    handoff_kind: input.handoff_kind ?? null,
+  const lineage_ref = buildSessionLineageRef({
+    parentSessionId: input.parent_session_id ?? null,
+    handoffKind: normalizeSessionHandoffKind(input.handoff_kind ?? null),
   });
   const sessionRow = {
     session_id: input.session_id ?? undefined,
@@ -94,7 +85,7 @@ export async function insertSession(client, input) {
   return hydrateSession(insertedSession, insertedLineage);
 }
 
-export async function getSession(client, { sessionId, userId } = {}) {
+export async function findSessionById(client, { sessionId, userId } = {}) {
   let query = client
     .from('learning_session_resume_projection')
     .select('*')
@@ -118,5 +109,47 @@ export async function getSession(client, { sessionId, userId } = {}) {
     parent_session_id: data.parent_session_id ?? null,
     handoff_kind: data.handoff_kind ?? null,
     summary_snapshot: data.summary_snapshot ?? buildLineageSummary(data.summary_state),
+  });
+}
+
+export const getSession = findSessionById;
+
+export async function updateSessionState(client, {
+  sessionId,
+  userId,
+  state,
+  summary_state,
+} = {}) {
+  const updateRow = {};
+
+  if (typeof state !== 'undefined') {
+    updateRow.state = state;
+  }
+
+  if (typeof summary_state !== 'undefined') {
+    updateRow.summary_state = summary_state;
+  }
+
+  let query = client
+    .from('learning_sessions')
+    .update(updateRow)
+    .eq('session_id', sessionId);
+
+  if (userId) {
+    query = query.eq('user_id', userId);
+  }
+
+  const { data, error } = await query.select('*').single();
+
+  if (error || !data) {
+    throw new Error(
+      `Failed to update learning session: ${error?.message || 'no data returned'}`,
+    );
+  }
+
+  return hydrateSession(data, {
+    parent_session_id: data.lineage_ref?.parent_session_id ?? null,
+    handoff_kind: data.lineage_ref?.handoff_kind ?? null,
+    summary_snapshot: buildLineageSummary(data.summary_state),
   });
 }

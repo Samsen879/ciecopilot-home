@@ -33,6 +33,56 @@ function separateWorkspaceSlots(slotRows) {
   return { slots, linked_references };
 }
 
+async function getWorkspaceByTopic(client, { userId, topicId } = {}) {
+  const { data, error } = await client
+    .from('learning_workspaces')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('topic_id', topicId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load learning workspace: ${error.message}`);
+  }
+
+  return data || null;
+}
+
+export async function ensureWorkspaceExists(client, {
+  userId,
+  topicId,
+  topicPath,
+} = {}) {
+  const existing = await getWorkspaceByTopic(client, {
+    userId,
+    topicId,
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  const { data, error } = await client
+    .from('learning_workspaces')
+    .insert({
+      user_id: userId,
+      topic_id: topicId,
+      topic_path: topicPath,
+      slot_state: {},
+      linked_reference_summary: {},
+    })
+    .select('*')
+    .single();
+
+  if (error || !data) {
+    throw new Error(
+      `Failed to create learning workspace: ${error?.message || 'no data returned'}`,
+    );
+  }
+
+  return data;
+}
+
 export async function fetchWorkspaceProjection(client, { userId, topicId } = {}) {
   const { data, error } = await client
     .from('learning_workspace_projection')

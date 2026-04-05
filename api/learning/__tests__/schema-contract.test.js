@@ -71,6 +71,7 @@ describe('learning runtime schema contract', () => {
 
     expect(sql).toContain('alter column storage_key drop not null');
     expect(sql).toContain('alter column q_number drop not null');
+    expect(sql).toContain('unique (storage_key, q_number)');
     expect(sql).toContain('where storage_key is not null and q_number is not null');
     expect(sql).toContain('create table if not exists public.learning_question_families');
     expect(sql).toContain('create table if not exists public.learning_question_types');
@@ -192,5 +193,16 @@ describe('learning runtime schema contract', () => {
 
     expect(sql).toContain('on conflict (family_id) do nothing');
     expect(sql).toContain('on conflict (question_type_id) do nothing');
+  });
+
+  test('question_bank keeps a compatibility arbiter for legacy storage key upserts', () => {
+    const sql = normalizeSql(readMigration(
+      'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql'
+    ));
+
+    expect(sql).toContain('add constraint uq_question_bank_storage_q unique (storage_key, q_number)');
+    expect(sql).toContain(
+      'create unique index if not exists uq_question_bank_storage_q_present on public.question_bank (storage_key, q_number) where storage_key is not null and q_number is not null'
+    );
   });
 });

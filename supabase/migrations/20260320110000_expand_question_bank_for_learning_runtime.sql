@@ -23,6 +23,21 @@ ALTER TABLE IF EXISTS public.question_bank
   DROP CONSTRAINT IF EXISTS uq_question_bank_storage_q;
 
 DROP INDEX IF EXISTS public.uq_question_bank_storage_q;
+DROP INDEX IF EXISTS public.uq_question_bank_storage_q_present;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_constraint
+    WHERE conname = 'uq_question_bank_storage_q'
+      AND conrelid = 'public.question_bank'::regclass
+  ) THEN
+    ALTER TABLE public.question_bank
+      ADD CONSTRAINT uq_question_bank_storage_q
+      UNIQUE (storage_key, q_number);
+  END IF;
+END $$;
 
 CREATE UNIQUE INDEX IF NOT EXISTS uq_question_bank_storage_q_present
   ON public.question_bank (storage_key, q_number)

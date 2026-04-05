@@ -39,6 +39,10 @@ BEGIN
   END IF;
 END $$;
 
+CREATE UNIQUE INDEX IF NOT EXISTS uq_question_bank_storage_q_present
+  ON public.question_bank (storage_key, q_number)
+  WHERE storage_key IS NOT NULL AND q_number IS NOT NULL;
+
 UPDATE public.question_bank
 SET
   source_kind = COALESCE(source_kind, 'paper_question'),

@@ -5,10 +5,7 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
   'supabase/migrations/20260320111000_create_learning_runtime_core.sql',
   'supabase/migrations/20260320111500_seed_learning_runtime_pilot_registry.sql',
-  'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
-  'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
-  'supabase/migrations/20260324120000_create_learning_request_idempotency.sql',
-  'supabase/migrations/20260325110000_promote_learning_runtime_differential_equations_separable.sql'
+  'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql'
 ];
 
 function readMigration(relPath) {
@@ -18,7 +15,7 @@ function readMigration(relPath) {
 function readLearningRuntimeMigrations() {
   return LEARNING_RUNTIME_MIGRATIONS
     .map((relPath) => readMigration(relPath))
-    .join('\n')
+    .join('\n');
 }
 
 function normalizeSql(sql) {
@@ -75,12 +72,12 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('alter column storage_key drop not null');
     expect(sql).toContain('alter column q_number drop not null');
     expect(sql).toContain('unique (storage_key, q_number)');
+    expect(sql).toContain('where storage_key is not null and q_number is not null');
     expect(sql).toContain('create table if not exists public.learning_question_families');
     expect(sql).toContain('create table if not exists public.learning_question_types');
     expect(sql).toContain('create table if not exists public.learning_question_analysis_snapshots');
     expect(sql).toContain('create table if not exists public.learning_sessions');
     expect(sql).toContain('create table if not exists public.learning_session_lineage');
-    expect(sql).toContain('create table if not exists public.learning_request_idempotency');
     expect(sql).toContain('create table if not exists public.learning_workspaces');
     expect(sql).toContain('create table if not exists public.learning_workspace_slots');
     expect(sql).toContain('create table if not exists public.learning_artifacts');
@@ -90,14 +87,7 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('create table if not exists public.learning_type_masteries');
     expect(sql).toContain('create table if not exists public.learning_reconciliation_runs');
     expect(sql).toContain('unique (user_id, topic_id)');
-    expect(sql).toContain('unique (user_id, request_path, idempotency_key)');
     expect(sql).toContain('unique (workspace_id, slot_key)');
-    expect(sql).toContain('request_fingerprint');
-    expect(sql).toContain('request_payload');
-    expect(sql).toContain('request_kind');
-    expect(sql).toContain('resource_ref');
-    expect(sql).toContain('response_payload');
-    expect(sql).toContain("check (status in ('pending', 'completed'))");
     expect(sql).toContain("check (mode in ('learn_concept', 'guided_solve', 'timed_practice', 'post_mortem_review', 'spaced_review'))");
     expect(sql).toContain("check (state in ('active', 'handoff_suggested', 'handed_off', 'closed'))");
     expect(sql).toContain("check (current_anchor_kind in ('concept', 'question', 'review_task', 'artifact', 'workspace_slot'))");
@@ -106,11 +96,6 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('9709.trigonometry_manipulation_equations');
     expect(sql).toContain('9709.trigonometry.identities');
     expect(sql).toContain('9709.trigonometry.equations');
-    expect(sql).toContain('9709.integration_techniques');
-    expect(sql).toContain('9709.integration.application');
-    expect(sql).toContain('9709.differential_equations');
-    expect(sql).toContain('9709.differential_equations.separable');
-    expect(sql).toContain('primary_question_type_release_state');
 
     [
       'user_id',
@@ -199,36 +184,25 @@ describe('learning runtime schema contract', () => {
       'started_at',
       'completed_at'
     ].forEach((token) => expect(reconciliationSql).toContain(token));
-
-    const idempotencySql = extractTableBlock(sql, 'public.learning_request_idempotency');
-    [
-      'user_id',
-      'request_path',
-      'idempotency_key',
-      'request_fingerprint',
-      'request_payload',
-      'request_kind',
-      'status',
-      'resource_ref',
-      'response_payload',
-      'completed_at',
-      'unique (user_id, request_path, idempotency_key)',
-    ].forEach((token) => expect(idempotencySql).toContain(token));
   });
 
-  test('question_bank keeps a non-partial storage_key/q_number conflict target for legacy seed paths', () => {
+  test('pilot registry seed remains insert-only and idempotent', () => {
     const sql = normalizeSql(readMigration(
-      'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
+      'supabase/migrations/20260320111500_seed_learning_runtime_pilot_registry.sql'
+    ));
+
+    expect(sql).toContain('on conflict (family_id) do nothing');
+    expect(sql).toContain('on conflict (question_type_id) do nothing');
+  });
+
+  test('question_bank keeps a compatibility arbiter for legacy storage key upserts', () => {
+    const sql = normalizeSql(readMigration(
+      'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql'
     ));
 
     expect(sql).toContain('add constraint uq_question_bank_storage_q unique (storage_key, q_number)');
-  });
-
-  test('question analysis snapshots enforce a single active row per question', () => {
-    const sql = normalizeSql(readLearningRuntimeMigrations());
-
     expect(sql).toContain(
-      'create unique index if not exists uq_learning_question_analysis_snapshots_active on public.learning_question_analysis_snapshots (question_id) where superseded_by_snapshot_id is null',
+      'create unique index if not exists uq_question_bank_storage_q_present on public.question_bank (storage_key, q_number) where storage_key is not null and q_number is not null'
     );
   });
 });

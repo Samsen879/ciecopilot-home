@@ -14,13 +14,7 @@ VALUES (
   'Canonical pilot family for the first 9709 learning-runtime scoring slice.',
   'released'
 )
-ON CONFLICT (family_id) DO UPDATE
-SET
-  subject_code = EXCLUDED.subject_code,
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  release_state = EXCLUDED.release_state,
-  updated_at = now();
+ON CONFLICT (family_id) DO NOTHING;
 
 INSERT INTO public.learning_question_types (
   question_type_id,
@@ -50,12 +44,4 @@ VALUES
     '["paper:p1", "paper:p3", "answer_form:exact", "answer_form:interval", "structure:solve_in_domain"]'::jsonb,
     'released'
   )
-ON CONFLICT (question_type_id) DO UPDATE
-SET
-  family_id = EXCLUDED.family_id,
-  subject_code = EXCLUDED.subject_code,
-  title = EXCLUDED.title,
-  description = EXCLUDED.description,
-  allowed_variant_tags = EXCLUDED.allowed_variant_tags,
-  release_state = EXCLUDED.release_state,
-  updated_at = now();
+ON CONFLICT (question_type_id) DO NOTHING;

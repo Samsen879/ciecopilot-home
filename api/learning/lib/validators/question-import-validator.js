@@ -1,5 +1,7 @@
-import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
-import { LearningHttpError } from '../http/learning-http.js';
+import {
+  LEARNING_ERROR_CODES,
+  getLearningErrorStatus,
+} from '../contracts/error-contract.js';
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -9,10 +11,21 @@ function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+function createValidationError(code, message, { details = {}, status } = {}) {
+  const error = new Error(`${code}: ${message}`);
+  error.name = 'LearningHttpError';
+  error.code = code;
+  error.status = status ?? getLearningErrorStatus(code);
+  error.details = details;
+  error.retryable = false;
+  error.publicMessage = message;
+  return error;
+}
+
 function normalizeRequiredString(value, fieldName) {
   const normalized = normalizeString(value);
   if (!normalized) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       `${fieldName} is required.`,
       { details: { field: fieldName } },
@@ -24,7 +37,7 @@ function normalizeRequiredString(value, fieldName) {
 
 function normalizePromptRepresentation(value) {
   if (!isPlainObject(value)) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'prompt_representation is required.',
       { details: { field: 'prompt_representation' } },
@@ -34,7 +47,7 @@ function normalizePromptRepresentation(value) {
   const type = normalizeRequiredString(value.type, 'prompt_representation.type');
 
   if (!Object.prototype.hasOwnProperty.call(value, 'value')) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'prompt_representation.value is required.',
       { details: { field: 'prompt_representation.value' } },
@@ -49,7 +62,7 @@ function normalizePromptRepresentation(value) {
 
 export function validateQuestionImportInput(input = {}) {
   if (!isPlainObject(input)) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'Request body must be an object.',
       { details: { field: 'body' } },
@@ -58,7 +71,7 @@ export function validateQuestionImportInput(input = {}) {
 
   const sourceKind = normalizeString(input.source_kind);
   if (sourceKind && sourceKind !== 'imported_question') {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'source_kind must be imported_question when using the import endpoint.',
       { details: { field: 'source_kind', value: sourceKind } },

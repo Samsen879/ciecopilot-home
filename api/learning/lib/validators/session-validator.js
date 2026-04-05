@@ -8,8 +8,10 @@ import {
   isSessionMode,
   isStableSlotKey,
 } from '../contracts/runtime-contract.js';
-import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
-import { LearningHttpError } from '../http/learning-http.js';
+import {
+  LEARNING_ERROR_CODES,
+  getLearningErrorStatus,
+} from '../contracts/error-contract.js';
 
 const ALLOWED_CREATE_MODES = Object.freeze({
   concept: Object.freeze(['learn_concept']),
@@ -32,10 +34,21 @@ function normalizeNullableString(value) {
   return normalized || null;
 }
 
+function createValidationError(code, message, { details = {}, status } = {}) {
+  const error = new Error(`${code}: ${message}`);
+  error.name = 'LearningHttpError';
+  error.code = code;
+  error.status = status ?? getLearningErrorStatus(code);
+  error.details = details;
+  error.retryable = false;
+  error.publicMessage = message;
+  return error;
+}
+
 function normalizeRequiredString(value, fieldName, code = LEARNING_ERROR_CODES.INVALID_PAYLOAD) {
   const normalized = normalizeString(value);
   if (!normalized) {
-    throw new LearningHttpError(code, `${fieldName} is required.`, {
+    throw createValidationError(code, `${fieldName} is required.`, {
       details: { field: fieldName },
     });
   }
@@ -44,7 +57,7 @@ function normalizeRequiredString(value, fieldName, code = LEARNING_ERROR_CODES.I
 
 function normalizePayload(input) {
   if (!isPlainObject(input)) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'Request body must be an object.',
       { details: { field: 'body' } },
@@ -57,7 +70,7 @@ function normalizePayload(input) {
 function normalizeAnchorKind(anchorKind) {
   const normalized = normalizeString(anchorKind);
   if (!isAnchorKind(normalized)) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_ANCHOR_KIND,
       'anchor_kind is not part of the frozen learning contract.',
       { details: { field: 'anchor_kind', value: anchorKind ?? null } },
@@ -70,7 +83,7 @@ function normalizeAnchorKind(anchorKind) {
 function normalizeMode(mode) {
   const normalized = normalizeString(mode);
   if (!isSessionMode(normalized)) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'mode is invalid.',
       { details: { field: 'mode', value: mode ?? null } },
@@ -82,7 +95,7 @@ function normalizeMode(mode) {
 
 function normalizeAnchorRef(anchorKind, anchorRef) {
   if (!isPlainObject(anchorRef)) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_ANCHOR_REF,
       'anchor_ref must be an object.',
       { details: { field: 'anchor_ref' } },
@@ -90,7 +103,7 @@ function normalizeAnchorRef(anchorKind, anchorRef) {
   }
 
   if (anchorRef.kind !== anchorKind) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_ANCHOR_REF,
       'anchor_ref.kind must match anchor_kind.',
       { details: { field: 'anchor_ref.kind', anchor_kind: anchorKind } },
@@ -128,7 +141,7 @@ function normalizeAnchorRef(anchorKind, anchorRef) {
       );
 
       if (!isStableSlotKey(slotKey)) {
-        throw new LearningHttpError(
+        throw createValidationError(
           LEARNING_ERROR_CODES.INVALID_ANCHOR_REF,
           'anchor_ref.slot_key is not part of the frozen slot contract.',
           { details: { field: 'anchor_ref.slot_key', value: slotKey } },
@@ -138,7 +151,7 @@ function normalizeAnchorRef(anchorKind, anchorRef) {
       return buildWorkspaceSlotAnchorRef(workspaceId, slotKey);
     }
     default:
-      throw new LearningHttpError(
+      throw createValidationError(
         LEARNING_ERROR_CODES.INVALID_ANCHOR_KIND,
         'anchor_kind is not part of the frozen learning contract.',
         { details: { field: 'anchor_kind', value: anchorKind } },
@@ -148,7 +161,7 @@ function normalizeAnchorRef(anchorKind, anchorRef) {
 
 function assertModeAllowed(anchorKind, anchorRef, mode) {
   if (!ALLOWED_CREATE_MODES[anchorKind]?.includes(mode)) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.UNSUPPORTED_MODE_FOR_ANCHOR,
       `mode ${mode} is not allowed for ${anchorKind} anchors.`,
       {
@@ -163,7 +176,7 @@ function assertModeAllowed(anchorKind, anchorRef, mode) {
     && mode === 'spaced_review'
     && anchorRef.slot_key !== 'review_queue'
   ) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.UNSUPPORTED_MODE_FOR_ANCHOR,
       'workspace_slot anchors may start spaced_review only from review_queue.',
       {
@@ -180,7 +193,7 @@ function assertModeAllowed(anchorKind, anchorRef, mode) {
 
 function assertQuestionContextRules(anchorKind, anchorRef, currentQuestionId) {
   if (anchorKind === 'concept' && currentQuestionId !== null) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'concept anchors must start questionless on create.',
       { details: { field: 'current_question_id', anchor_kind: anchorKind } },
@@ -188,7 +201,7 @@ function assertQuestionContextRules(anchorKind, anchorRef, currentQuestionId) {
   }
 
   if (anchorKind === 'question' && currentQuestionId !== anchorRef.question_id) {
-    throw new LearningHttpError(
+    throw createValidationError(
       LEARNING_ERROR_CODES.INVALID_PAYLOAD,
       'question anchors require current_question_id to match anchor_ref.question_id.',
       {
@@ -203,7 +216,6 @@ function assertQuestionContextRules(anchorKind, anchorRef, currentQuestionId) {
 
 export function validateCreateSessionInput(input = {}) {
   const payload = normalizePayload(input);
-  const subjectCode = normalizeRequiredString(payload.subject_code, 'subject_code');
   const mode = normalizeMode(payload.mode);
   const anchorKind = normalizeAnchorKind(payload.anchor_kind);
   const anchorRef = normalizeAnchorRef(anchorKind, payload.anchor_ref);
@@ -217,7 +229,6 @@ export function validateCreateSessionInput(input = {}) {
   return {
     ok: true,
     normalized: {
-      subject_code: subjectCode,
       mode,
       session_goal: sessionGoal,
       anchor_kind: anchorKind,

@@ -11,6 +11,14 @@ function isPlainObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
+function isLearningHttpErrorLike(value) {
+  return Boolean(value)
+    && typeof value === 'object'
+    && typeof value.code === 'string'
+    && typeof value.status === 'number'
+    && typeof value.publicMessage === 'string';
+}
+
 function normalizeLearningErrorCode(code, fallbackCode = LEARNING_ERROR_CODES.INVALID_PAYLOAD) {
   const normalizedFallbackCode = FROZEN_LEARNING_ERROR_CODES.has(fallbackCode)
     ? fallbackCode
@@ -42,6 +50,10 @@ function setRequestIdHeader(res, requestId) {
 }
 
 export class LearningHttpError extends Error {
+  static [Symbol.hasInstance](value) {
+    return isLearningHttpErrorLike(value);
+  }
+
   constructor(
     code,
     publicMessage,
@@ -62,14 +74,18 @@ export class LearningHttpError extends Error {
   }
 }
 
-export function sendLearningJson(res, requestId, payload = {}, status = 200) {
+export function sendLearningSuccess(res, requestId, payload = {}, status = 200) {
   ensureResponseHelpers(res);
   setRequestIdHeader(res, requestId);
   return res.status(status).json(withRequestId(requestId, payload));
 }
 
+export function sendLearningJson(res, requestId, payload = {}, status = 200) {
+  return sendLearningSuccess(res, requestId, payload, status);
+}
+
 export function sendLearningCreated(res, requestId, payload = {}) {
-  return sendLearningJson(res, requestId, payload, 201);
+  return sendLearningSuccess(res, requestId, payload, 201);
 }
 
 export function sendLearningError(res, requestId, code, options = {}) {

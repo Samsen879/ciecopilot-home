@@ -147,7 +147,28 @@ export async function updateSessionState(client, {
     );
   }
 
-  return hydrateSession(data, {
+  let lineageRow = null;
+
+  if (typeof summary_state !== 'undefined') {
+    const { data: updatedLineage, error: lineageError } = await client
+      .from('learning_session_lineage')
+      .update({
+        summary_snapshot: buildLineageSummary(data.summary_state),
+      })
+      .eq('child_session_id', data.session_id ?? sessionId)
+      .select('*')
+      .single();
+
+    if (lineageError || !updatedLineage) {
+      throw new Error(
+        `Failed to update learning session lineage snapshot: ${lineageError?.message || 'no data returned'}`,
+      );
+    }
+
+    lineageRow = updatedLineage;
+  }
+
+  return hydrateSession(data, lineageRow ?? {
     parent_session_id: data.lineage_ref?.parent_session_id ?? null,
     handoff_kind: data.lineage_ref?.handoff_kind ?? null,
     summary_snapshot: buildLineageSummary(data.summary_state),

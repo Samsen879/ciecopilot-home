@@ -6,6 +6,8 @@ import {
 function createWorkspaceDb() {
   const inserts = [];
   const selects = [];
+  let insertError = null;
+  let workspaceAfterInsertError = null;
   let existingWorkspace = null;
 
   return {
@@ -13,6 +15,10 @@ function createWorkspaceDb() {
     selects,
     setExistingWorkspace(workspace) {
       existingWorkspace = workspace;
+    },
+    setInsertError(error, nextWorkspace = null) {
+      insertError = error;
+      workspaceAfterInsertError = nextWorkspace;
     },
     from(table) {
       return {
@@ -26,6 +32,14 @@ function createWorkspaceDb() {
 
               if (table !== 'learning_workspaces') {
                 throw new Error(`Unexpected insert table: ${table}`);
+              }
+
+              if (insertError) {
+                if (workspaceAfterInsertError) {
+                  existingWorkspace = workspaceAfterInsertError;
+                }
+
+                return { data: null, error: insertError };
               }
 
               const row = {
@@ -146,6 +160,55 @@ describe('workspace-repository', () => {
       user_id: 'user-1',
       topic_id: 'topic-1',
       topic_path: '9709/trigonometry/equations',
+    });
+  });
+
+  test('ensureWorkspaceExists retries by re-reading when the insert loses a unique-key race', async () => {
+    const db = createWorkspaceDb();
+    db.setInsertError(
+      {
+        code: '23505',
+        message:
+          'duplicate key value violates unique constraint "learning_workspaces_user_id_topic_id_key"',
+      },
+      {
+        workspace_id: 'workspace-raced-1',
+        user_id: 'user-1',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+        slot_state: {},
+        linked_reference_summary: {},
+      },
+    );
+
+    const workspace = await ensureWorkspaceExists(db, {
+      userId: 'user-1',
+      topicId: 'topic-1',
+      topicPath: '9709/trigonometry/equations',
+    });
+
+    expect(db.selects).toEqual([
+      {
+        table: 'learning_workspaces',
+        selection: '*',
+        filters: [
+          { column: 'user_id', value: 'user-1' },
+          { column: 'topic_id', value: 'topic-1' },
+        ],
+      },
+      {
+        table: 'learning_workspaces',
+        selection: '*',
+        filters: [
+          { column: 'user_id', value: 'user-1' },
+          { column: 'topic_id', value: 'topic-1' },
+        ],
+      },
+    ]);
+    expect(workspace).toMatchObject({
+      workspace_id: 'workspace-raced-1',
+      user_id: 'user-1',
+      topic_id: 'topic-1',
     });
   });
 

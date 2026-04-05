@@ -48,6 +48,11 @@ async function getWorkspaceByTopic(client, { userId, topicId } = {}) {
   return data || null;
 }
 
+function isWorkspaceUniqueConflict(error) {
+  return error?.code === '23505'
+    || String(error?.message || '').includes('duplicate key value');
+}
+
 export async function ensureWorkspaceExists(client, {
   userId,
   topicId,
@@ -75,6 +80,17 @@ export async function ensureWorkspaceExists(client, {
     .single();
 
   if (error || !data) {
+    if (isWorkspaceUniqueConflict(error)) {
+      const racedWorkspace = await getWorkspaceByTopic(client, {
+        userId,
+        topicId,
+      });
+
+      if (racedWorkspace) {
+        return racedWorkspace;
+      }
+    }
+
     throw new Error(
       `Failed to create learning workspace: ${error?.message || 'no data returned'}`,
     );

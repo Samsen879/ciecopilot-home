@@ -12,6 +12,7 @@ function createSessionDb() {
   const inserts = [];
   const selects = [];
   const updates = [];
+  const lineageUpdates = [];
 
   const resumeProjectionRow = {
     session_id: 'session-1',
@@ -56,6 +57,7 @@ function createSessionDb() {
     inserts,
     selects,
     updates,
+    lineageUpdates,
     from(table) {
       return {
         insert(payload) {
@@ -105,19 +107,33 @@ function createSessionDb() {
               return builder;
             },
             async single() {
-              updates.push({ table, payload, filters });
+              if (table === 'learning_sessions') {
+                updates.push({ table, payload, filters });
 
-              if (table !== 'learning_sessions') {
-                throw new Error(`Unexpected update table: ${table}`);
+                return {
+                  data: {
+                    ...resumeProjectionRow,
+                    ...payload,
+                  },
+                  error: null,
+                };
               }
 
-              return {
-                data: {
-                  ...resumeProjectionRow,
-                  ...payload,
-                },
-                error: null,
-              };
+              if (table === 'learning_session_lineage') {
+                lineageUpdates.push({ table, payload, filters });
+
+                return {
+                  data: {
+                    parent_session_id: resumeProjectionRow.parent_session_id,
+                    child_session_id: resumeProjectionRow.session_id,
+                    handoff_kind: resumeProjectionRow.handoff_kind,
+                    summary_snapshot: payload.summary_snapshot,
+                  },
+                  error: null,
+                };
+              }
+
+              throw new Error(`Unexpected update table: ${table}`);
             },
           };
 
@@ -468,6 +484,17 @@ describe('session-repository', () => {
           { column: 'session_id', value: 'session-1' },
           { column: 'user_id', value: 'user-1' },
         ],
+      },
+    ]);
+    expect(db.lineageUpdates).toEqual([
+      {
+        table: 'learning_session_lineage',
+        payload: {
+          summary_snapshot: {
+            progress: 'started',
+          },
+        },
+        filters: [{ column: 'child_session_id', value: 'session-1' }],
       },
     ]);
     expect(session).toMatchObject({

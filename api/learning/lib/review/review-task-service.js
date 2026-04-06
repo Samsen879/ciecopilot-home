@@ -12,6 +12,11 @@ import {
   resolveSubjectCodeFromRuntimeInput,
 } from '../subjects/subject-adapter-registry.js';
 
+const REVIEW_TASK_ERROR_CODES = Object.freeze({
+  NOT_FOUND: 'review_task_not_found',
+  STATE_CONFLICT: 'review_task_state_conflict',
+});
+
 const REVIEW_TASK_INTENTS = new Set(['complete', 'reschedule', 'snooze', 'reopen']);
 const REVIEW_TASK_COMPLETION_OUTCOMES = new Set(['completed', 'partial']);
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
@@ -76,7 +81,7 @@ function buildInvalidPayload(message, details) {
 
 function buildReviewTaskNotFound() {
   return new LearningHttpError(
-    LEARNING_ERROR_CODES.REVIEW_TASK_NOT_FOUND,
+    REVIEW_TASK_ERROR_CODES.NOT_FOUND,
     'Review task not found.',
     {
       status: 404,
@@ -86,7 +91,7 @@ function buildReviewTaskNotFound() {
 
 function buildReviewTaskConflict(message, details) {
   return new LearningHttpError(
-    LEARNING_ERROR_CODES.REVIEW_TASK_STATE_CONFLICT,
+    REVIEW_TASK_ERROR_CODES.STATE_CONFLICT,
     message,
     {
       status: 409,

@@ -308,15 +308,18 @@ function hasRepairSignal(input = {}) {
     return true;
   }
 
+  if (
+    markingSummary.conservative_part_mapping === true
+    || Number(markingSummary.ambiguous_rubric_point_result_count ?? 0) > 0
+  ) {
+    return true;
+  }
+
   if (hasPositiveDecision) {
     return false;
   }
 
-  if (markingSummary.local_signal_only === true || markingSummary.conservative_part_mapping === true) {
-    return true;
-  }
-
-  if (Number(markingSummary.ambiguous_rubric_point_result_count ?? 0) > 0) {
+  if (markingSummary.local_signal_only === true) {
     return true;
   }
 

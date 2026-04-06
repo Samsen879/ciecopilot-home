@@ -130,6 +130,10 @@
       "**/__tests__/**/*.js",
       "**/?(*.)+(spec|test).js"
     ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/\\.worktrees/"
+    ],
     "transform": {}
   },
   "engines": {

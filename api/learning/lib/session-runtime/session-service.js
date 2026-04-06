@@ -15,38 +15,14 @@ import {
   createSessionHandoff,
   normalizeSessionHandoffKind,
 } from './session-handoff.js';
-
-const VALID_SESSION_MODES = new Set([
-  'learn_concept',
-  'guided_solve',
-  'timed_practice',
-  'post_mortem_review',
-  'spaced_review',
-]);
-
-const VALID_ANCHOR_KINDS = new Set([
-  'concept',
-  'question',
-  'review_task',
-  'artifact',
-  'workspace_slot',
-]);
-
-const VALID_WORKSPACE_SLOT_KEYS = new Set([
-  'overview_map',
-  'core_method_derivation',
-  'canonical_worked_example',
-  'common_traps',
-  'my_notes',
-  'review_queue',
-]);
+import { validateCreateSessionInput } from '../validators/session-validator.js';
 
 const LEARNING_ERROR_SPECS = {
   auth_required: { status: 401, message: 'Authentication required.' },
   auth_forbidden: { status: 403, message: 'Authenticated user cannot access this resource.' },
   invalid_payload: { status: 400, message: 'Invalid request payload.' },
   invalid_anchor_kind: { status: 400, message: 'Anchor kind is invalid.' },
-  invalid_anchor_ref: { status: 400, message: 'Anchor ref is invalid.' },
+  invalid_anchor_ref: { status: 400, message: 'The anchor ref is malformed.' },
   anchor_target_not_found: { status: 404, message: 'Anchor target not found.' },
   unsupported_mode_for_anchor: {
     status: 409,
@@ -511,68 +487,6 @@ function assertRequiredString(value, field) {
   return normalized;
 }
 
-function validateAnchorRef(anchorKind, anchorRef) {
-  if (!isPlainObject(anchorRef)) {
-    throw createLearningError('invalid_payload', {
-      message: 'anchor_ref must be an object.',
-      details: { field: 'anchor_ref' },
-    });
-  }
-
-  if (anchorRef.kind !== anchorKind) {
-    throw createLearningError('invalid_payload', {
-      message: 'anchor_ref.kind must match anchor_kind.',
-      details: { field: 'anchor_ref.kind' },
-    });
-  }
-
-  if (anchorKind === 'concept') {
-    if (!normalizeString(anchorRef.topic_id) || !normalizeString(anchorRef.topic_path)) {
-      throw createLearningError('invalid_payload', {
-        message: 'concept anchors require topic_id and topic_path.',
-        details: { field: 'anchor_ref' },
-      });
-    }
-    return;
-  }
-
-  if (anchorKind === 'question' && !normalizeString(anchorRef.question_id)) {
-    throw createLearningError('invalid_payload', {
-      message: 'question anchors require question_id.',
-      details: { field: 'anchor_ref.question_id' },
-    });
-  }
-
-  if (anchorKind === 'review_task' && !normalizeString(anchorRef.review_task_id)) {
-    throw createLearningError('invalid_payload', {
-      message: 'review_task anchors require review_task_id.',
-      details: { field: 'anchor_ref.review_task_id' },
-    });
-  }
-
-  if (anchorKind === 'artifact' && !normalizeString(anchorRef.artifact_id)) {
-    throw createLearningError('invalid_payload', {
-      message: 'artifact anchors require artifact_id.',
-      details: { field: 'anchor_ref.artifact_id' },
-    });
-  }
-
-  if (anchorKind === 'workspace_slot') {
-    if (!normalizeString(anchorRef.workspace_id) || !normalizeString(anchorRef.slot_key)) {
-      throw createLearningError('invalid_payload', {
-        message: 'workspace_slot anchors require workspace_id and slot_key.',
-        details: { field: 'anchor_ref' },
-      });
-    }
-    if (!VALID_WORKSPACE_SLOT_KEYS.has(anchorRef.slot_key)) {
-      throw createLearningError('invalid_payload', {
-        message: 'workspace_slot slot_key is invalid.',
-        details: { field: 'anchor_ref.slot_key' },
-      });
-    }
-  }
-}
-
 function validateCreateSessionPayload(body = {}) {
   if (!isPlainObject(body)) {
     throw createLearningError('invalid_payload', {
@@ -581,28 +495,11 @@ function validateCreateSessionPayload(body = {}) {
   }
 
   const subjectCode = assertRequiredString(body.subject_code, 'subject_code');
-  const mode = assertRequiredString(body.mode, 'mode');
-
-  if (!VALID_SESSION_MODES.has(mode)) {
-    throw createLearningError('invalid_payload', {
-      message: 'mode is invalid.',
-      details: { field: 'mode' },
-    });
-  }
-
-  const anchorKind = assertRequiredString(body.anchor_kind, 'anchor_kind');
-  if (!VALID_ANCHOR_KINDS.has(anchorKind)) {
-    throw createLearningError('invalid_anchor_kind', {
-      details: { field: 'anchor_kind' },
-    });
-  }
-
   const currentQuestionId = normalizeNullableString(body.current_question_id);
   const currentQuestionTypeId = normalizeNullableString(body.current_question_type_id);
   const sessionGoal = normalizeNullableString(body.session_goal);
   const parentSessionId = normalizeNullableString(body.parent_session_id);
   let handoffKind = normalizeSessionHandoffKind(body.handoff_kind);
-  const anchorRef = cloneJson(body.anchor_ref);
 
   if (normalizeString(body.handoff_kind) && !handoffKind) {
     throw createLearningError('invalid_payload', {
@@ -629,49 +526,20 @@ function validateCreateSessionPayload(body = {}) {
     handoffKind = 'explicit_new_session';
   }
 
-  validateAnchorRef(anchorKind, anchorRef);
+  const validated = validateCreateSessionInput({
+    mode: body.mode,
+    anchor_kind: body.anchor_kind,
+    anchor_ref: body.anchor_ref,
+    current_question_id: currentQuestionId,
+    current_question_type_id: currentQuestionTypeId,
+    session_goal: sessionGoal,
+  });
 
-  if (anchorKind === 'concept') {
-    if (mode !== 'learn_concept') {
-      throw createLearningError('unsupported_mode_for_anchor');
-    }
-    if (currentQuestionId !== null) {
-      throw createLearningError('invalid_payload', {
-        message: 'concept anchors cannot declare current_question_id on create.',
-        details: { field: 'current_question_id' },
-      });
-    }
-  }
-
-  if (anchorKind === 'question') {
-    if (!['guided_solve', 'timed_practice', 'post_mortem_review'].includes(mode)) {
-      throw createLearningError('unsupported_mode_for_anchor');
-    }
-    if (currentQuestionId !== anchorRef.question_id) {
-      throw createLearningError('invalid_payload', {
-        message: 'question anchors require current_question_id to match the anchor.',
-        details: { field: 'current_question_id' },
-      });
-    }
-  }
-
-  if (anchorKind === 'review_task' && mode !== 'spaced_review') {
-    throw createLearningError('unsupported_mode_for_anchor');
-  }
-
-  if (anchorKind === 'artifact' &&
-      !['learn_concept', 'spaced_review', 'post_mortem_review'].includes(mode)) {
-    throw createLearningError('unsupported_mode_for_anchor');
-  }
-
-  if (anchorKind === 'workspace_slot') {
-    if (!['learn_concept', 'spaced_review'].includes(mode)) {
-      throw createLearningError('unsupported_mode_for_anchor');
-    }
-    if (mode === 'spaced_review' && anchorRef.slot_key !== 'review_queue') {
-      throw createLearningError('unsupported_mode_for_anchor');
-    }
-  }
+  const {
+    mode,
+    anchor_kind: anchorKind,
+    anchor_ref: anchorRef,
+  } = validated.normalized;
 
   return {
     subjectCode,

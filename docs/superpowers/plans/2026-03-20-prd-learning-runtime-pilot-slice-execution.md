@@ -1,8 +1,10 @@
 # PRD Learning Runtime Pilot Slice Implementation Plan
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
+>
+> **Historical note (2026-04-06):** This execution plan was written before the later released-family promotions for `9709.integration.application` and `9709.differential_equations.separable`. When older examples below mention trig-only pilot released scope, the current frozen contract should instead follow the promoted released-family gate set recorded in [2026-03-20-prd-learning-runtime-contract-design.md](/home/samsen/code/ciecopilot-home/docs/superpowers/specs/2026-03-20-prd-learning-runtime-contract-design.md) and [learning_runtime_released_family_gate_2026-03-25.md](/home/samsen/code/ciecopilot-home/docs/reports/learning_runtime_released_family_gate_2026-03-25.md).
 
-**Goal:** Implement the first `9709` learning-runtime slice defined by the frozen contract: session-centric AskAI, typed anchors, persistent `active_scope_bundle`, pilot trigonometry scoring scope, conservative fallback/orchestration, topic workspace, artifact lifecycle, and review queue projection without building on legacy Study Hub tables or pages.
+**Goal:** Implement the first `9709` learning-runtime slice defined by the frozen contract: session-centric AskAI, typed anchors, persistent `active_scope_bundle`, released-scope scoring, conservative fallback/orchestration, topic workspace, artifact lifecycle, and review queue projection without building on legacy Study Hub tables or pages.
 
 **Architecture:** Add a new `api/learning/**` and `src/pages/learning-runtime/**` domain layer that wraps the existing ledger, evidence, and RAG primitives rather than rewriting them. Freeze the serial trunk first: runtime contract enums, canonical repositories/migrations, typed refs, session/anchor legality, and registry-backed released-scope posture helpers. Only after that split into safe backend and frontend parallel blocks, with all workers consuming the same contract from [2026-03-20-prd-learning-runtime-contract-design.md](/home/samsen/code/ciecopilot-home/docs/superpowers/specs/2026-03-20-prd-learning-runtime-contract-design.md).
 
@@ -16,7 +18,7 @@
 
 - `api/learning/lib/contracts/runtime-contract.js`: runtime enums, typed ref builders/guards, and slot compatibility map only.
 - `api/learning/lib/contracts/error-contract.js`: machine-readable error codes and envelope helpers for `/api/learning/**`.
-- `api/learning/lib/contracts/released-scope.js`: seeded pilot type membership helpers plus registry-backed released-scope posture helpers.
+- `api/learning/lib/contracts/released-scope.js`: released-scope membership helpers plus registry-backed released-scope posture helpers.
 - `api/learning/lib/validators/session-validator.js`: create/read/ask payload validation, anchor legality matrix.
 - `api/learning/lib/validators/question-import-validator.js`: import payload normalization and validation.
 - `api/learning/lib/http/learning-http.js`: JSON success/error helpers reused by every learning handler.
@@ -157,9 +159,10 @@ test('learning error registry exposes the frozen stage codes', () => {
   });
 });
 
-test('seeded pilot question-type membership is trigonometry only', () => {
+test('released authoritative question-type membership follows the promoted released-family gate', () => {
   expect(isSeededPilotQuestionType('9709.trigonometry.identities')).toBe(true);
-  expect(isSeededPilotQuestionType('9709.integration.application')).toBe(false);
+  expect(isSeededPilotQuestionType('9709.integration.application')).toBe(true);
+  expect(isSeededPilotQuestionType('9709.differential_equations.separable')).toBe(true);
 });
 ```
 
@@ -172,8 +175,8 @@ Expected: FAIL because the contract modules do not exist yet.
 
 ```js
 // runtime-contract.js owns refs, enums, slot compatibility, and typed builders only.
-// released-scope.js owns seeded pilot membership helpers and released-scope posture helpers only.
-// seeded pilot membership alone must not unlock authoritative scoring.
+// released-scope.js owns promoted released question-type membership helpers and released-scope posture helpers only.
+// released-scope membership alone must not unlock authoritative scoring.
 // error-contract.js owns stable stage error codes and envelope builders only.
 ```
 
@@ -819,7 +822,7 @@ git commit -m "feat(learning): add dynamic session routes and skeleton handlers"
 - [ ] **Step 1: Extend the failing import tests to cover pilot trigonometry typing and fallback posture**
 
 ```js
-test('imported trigonometry identity question gets pilot released scope posture', async () => {
+test('imported trigonometry identity question gets released scoring posture', async () => {
   const result = await importQuestion(fakeDb, importedTrigIdentityInput);
   expect(result.scoring_scope_posture.authoritative_scoring_allowed).toBe(true);
 });
@@ -830,14 +833,12 @@ test('trigonometry type without a released rubric ref still falls back', async (
   expect(result.scoring_scope_posture.fallback_mode).toBe('non_released_fallback');
 });
 
-test('imported integration question remains fallback-only', async () => {
+test('imported integration application question gets released scoring posture', async () => {
   const result = await importQuestion(fakeDb, importedIntegrationInput);
   expect(result.scoring_scope_posture).toMatchObject({
-    fallback_mode: 'non_released_fallback',
-    authoritative_scoring_allowed: false,
-    fallback_reason_code: expect.any(String),
-    classification_confidence: expect.any(Number),
-    learning_signal_posture: expect.any(String),
+    authoritative_scoring_allowed: true,
+    release_scope_status: 'released_scoring',
+    fallback_mode: null,
   });
 });
 
@@ -860,7 +861,7 @@ test('POST /api/learning/questions/import returns 409 idempotency_conflict on co
 - [ ] **Step 2: Run the import suite and verify it fails**
 
 Run: `npm test -- --runInBand api/learning/__tests__/question-import-service.test.js --verbose`
-Expected: FAIL until pilot family classification and posture logic exist.
+Expected: FAIL until released-scope classification and posture logic exist.
 
 - [ ] **Step 3: Implement import service and consume the canonical pilot registry**
 
@@ -904,7 +905,7 @@ test('session ask consumes persisted active_scope_bundle instead of route-only s
   expect(res.session_delta).toBeDefined();
 });
 
-test('non-pilot family ask returns successful fallback posture, not an API error', async () => {
+test('question-type-only ask without released question metadata returns successful fallback posture, not an API error', async () => {
   const res = await askWithinSession(fakeDeps, integrationSession, 'mark this');
   expect(res.fallback_posture).toMatchObject({
     fallback_mode: 'non_released_fallback',

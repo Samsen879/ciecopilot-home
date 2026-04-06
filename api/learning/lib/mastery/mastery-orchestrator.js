@@ -1,6 +1,4 @@
 import { buildAttemptRef, buildMarkRunRef } from '../contracts/runtime-contract.js';
-import { evaluateReleasedFamilyEvidenceGate } from '../contracts/released-family-gate.js';
-import { resolveInlineReleasedScoringPosture } from '../contracts/released-scope-core.js';
 import { createReviewTaskService } from '../review/review-task-service.js';
 import { createDefaultReviewTaskService } from '../review/review-task-service.js';
 import { createArtifactService } from '../artifacts/artifact-service.js';
@@ -76,7 +74,7 @@ function resolveLearningEffectsPosture({
   questionContext,
   adapter,
 } = {}) {
-  const basePosture = input.release_scope_posture || adapter.marking.resolveReleasedScoringPosture({
+  return input.release_scope_posture || adapter.marking.resolveReleasedScoringPosture({
     questionTypeId: questionContext.question_type_id,
     questionTypeReleaseState:
       questionContext.question_type_release_state
@@ -86,31 +84,6 @@ function resolveLearningEffectsPosture({
     classificationConfidence: questionContext.classification_confidence,
     uncertaintyValidated: input.uncertainty_validated ?? false,
   });
-
-  if (basePosture?.fallback_reason_code !== 'non_pilot_question_type') {
-    return basePosture;
-  }
-
-  const releaseEvidence = evaluateReleasedFamilyEvidenceGate(questionContext.question_type_id);
-  const releaseEvidencePosture = releaseEvidence.ok
-    ? resolveInlineReleasedScoringPosture({
-      questionTypeId: questionContext.question_type_id,
-      questionTypeReleaseState:
-        questionContext.question_type_release_state
-        ?? questionContext.primary_question_type_release_state
-        ?? null,
-      candidateRubricRefs: questionContext.candidate_rubric_refs,
-      classificationConfidence: questionContext.classification_confidence,
-      uncertaintyValidated: input.uncertainty_validated ?? false,
-      isPilotQuestionType: true,
-    })
-    : null;
-
-  if (!releaseEvidencePosture?.authoritative_scoring_allowed) {
-    return basePosture;
-  }
-
-  return releaseEvidencePosture;
 }
 
 export function createMasteryOrchestrator({

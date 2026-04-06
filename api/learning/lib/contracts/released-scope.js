@@ -14,8 +14,6 @@ import {
   withReleasedScopeExplanation,
 } from './released-scope-core.js';
 
-const FROZEN_PILOT_FAMILY_ID = '9709.trigonometry_manipulation_equations';
-
 function normalizeSeedMembershipInput(questionTypeId) {
   return normalizeQuestionTypeId(
     typeof questionTypeId === 'object' && questionTypeId !== null
@@ -24,7 +22,11 @@ function normalizeSeedMembershipInput(questionTypeId) {
   );
 }
 
-function loadSeededPilotQuestionTypeIds() {
+function normalizeReleaseState(value) {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
+}
+
+function loadReleasedScoringQuestionTypeIds() {
   let receipt;
 
   try {
@@ -33,24 +35,31 @@ function loadSeededPilotQuestionTypeIds() {
     return Object.freeze([]);
   }
 
-  const frozenPilotFamily = Array.isArray(receipt?.family_results)
-    ? receipt.family_results.find((family) => family?.family_id === FROZEN_PILOT_FAMILY_ID)
-    : null;
-
-  const questionTypeIds = Array.isArray(frozenPilotFamily?.released_question_type_ids)
-    ? [...new Set(frozenPilotFamily.released_question_type_ids
-      .map((questionTypeId) => normalizeQuestionTypeId(questionTypeId))
+  const questionTypeIds = Array.isArray(receipt?.question_type_results)
+    ? [...new Set(receipt.question_type_results
+      .filter((entry) => entry?.status === 'pass')
+      .map((entry) => normalizeQuestionTypeId(entry?.question_type_id))
       .filter(Boolean))]
     : [];
 
   return Object.freeze(questionTypeIds);
 }
 
-const SEEDED_PILOT_QUESTION_TYPE_IDS = loadSeededPilotQuestionTypeIds();
+const RELEASED_SCORING_QUESTION_TYPE_IDS = loadReleasedScoringQuestionTypeIds();
 
-function resolvePilotQuestionTypeMatch(questionTypeId, isPilotQuestionType = null) {
-  const registryMatch = isSeededPilotQuestionType(questionTypeId);
-  return registryMatch && (typeof isPilotQuestionType === 'boolean' ? isPilotQuestionType : true);
+function resolveReleasedQuestionTypeMatch(
+  questionTypeId,
+  questionTypeReleaseState = null,
+  isPilotQuestionType = null,
+) {
+  const releasedScopeMatch = isReleasedScoringQuestionType(questionTypeId);
+  const releasedStateMatch = normalizeReleaseState(questionTypeReleaseState) === 'released';
+
+  return (
+    releasedScopeMatch
+    && releasedStateMatch
+    && (typeof isPilotQuestionType === 'boolean' ? isPilotQuestionType : true)
+  );
 }
 
 export {
@@ -60,19 +69,29 @@ export {
   RELEASE_SCOPE_STATUSES,
 };
 
+export function isReleasedScoringQuestionType(questionTypeId) {
+  return RELEASED_SCORING_QUESTION_TYPE_IDS.includes(normalizeSeedMembershipInput(questionTypeId));
+}
+
 export function isSeededPilotQuestionType(questionTypeId) {
-  return SEEDED_PILOT_QUESTION_TYPE_IDS.includes(normalizeSeedMembershipInput(questionTypeId));
+  return isReleasedScoringQuestionType(questionTypeId);
 }
 
 export function resolveInlineReleasedScoringPosture({
   questionTypeId,
+  questionTypeReleaseState = null,
   isPilotQuestionType = null,
   ...rest
 } = {}) {
   return resolveCoreInlineReleasedScoringPosture({
     questionTypeId,
+    questionTypeReleaseState,
     ...rest,
-    isPilotQuestionType: resolvePilotQuestionTypeMatch(questionTypeId, isPilotQuestionType),
+    isPilotQuestionType: resolveReleasedQuestionTypeMatch(
+      questionTypeId,
+      questionTypeReleaseState,
+      isPilotQuestionType,
+    ),
   });
 }
 
@@ -88,8 +107,9 @@ export function resolveReleasedScoringPosture({
 } = {}) {
   const normalizedQuestionTypeId = normalizeQuestionTypeId(questionTypeId);
   const normalizedClassificationConfidence = normalizeClassificationConfidence(classificationConfidence);
-  const pilotQuestionTypeMatch = resolvePilotQuestionTypeMatch(
+  const releasedQuestionTypeMatch = resolveReleasedQuestionTypeMatch(
     normalizedQuestionTypeId,
+    questionTypeReleaseState,
     isPilotQuestionType,
   );
 
@@ -110,7 +130,7 @@ export function resolveReleasedScoringPosture({
     );
   }
 
-  if (!pilotQuestionTypeMatch) {
+  if (!releasedQuestionTypeMatch) {
     return withReleasedScopeExplanation(
       buildFallbackPosture(
         FALLBACK_REASON_CODES.NON_PILOT_QUESTION_TYPE,
@@ -156,7 +176,7 @@ export function resolveReleasedScoringPosture({
     uncertaintyValidated,
     uncertaintyPosture,
     classificationConfidence: normalizedClassificationConfidence,
-    isPilotQuestionType: pilotQuestionTypeMatch,
+    isPilotQuestionType: releasedQuestionTypeMatch,
   }), {
     questionTypeId: normalizedQuestionTypeId,
     questionTypeReleaseState,

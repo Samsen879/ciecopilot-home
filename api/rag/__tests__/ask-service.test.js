@@ -2135,7 +2135,7 @@ describe('askWithinLearningSession', () => {
     });
   });
 
-  test('non-pilot family ask returns successful fallback posture, not an API error', async () => {
+  test('question-type-only ask without released question metadata returns successful fallback posture, not an API error', async () => {
     const supabase = createLearningSessionSupabaseStub({
       workspaceRow: null,
       evidenceContext: null,

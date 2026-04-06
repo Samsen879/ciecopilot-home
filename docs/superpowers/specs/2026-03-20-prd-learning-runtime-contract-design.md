@@ -95,26 +95,23 @@ If a proposed change needs one of those behaviors, it belongs in the new learnin
 
 The pilot subject is fixed to `9709`.
 
-### Runtime pilot family
+### Released authoritative question types
 
-The first scoring-enabled runtime pilot family is fixed to:
-
-- `Trigonometric manipulation / equations`
-
-This choice is based on current repo truth, not taste:
-
-- it is already inside the PRD's released family envelope
-- it has the strongest blind marking-eval presence among the released families
-- it spans both identity manipulation and interval-bounded equation solving, which is enough to exercise canonical-home, post-mark review, artifact promotion, and review-task generation without jumping to whole-paper complexity
-
-### Frozen pilot type seed
-
-The first runtime slice `MUST` seed exactly these two question types:
+The first runtime slice started with the trigonometry family, but the frozen released-scope contract is now defined by the promoted `9709` question types that pass the released-family evidence gate:
 
 - `9709.trigonometry.identities`
 - `9709.trigonometry.equations`
+- `9709.integration.application`
+- `9709.differential_equations.separable`
 
-The first runtime slice `MAY` attach variant tags such as:
+These promotions stay narrow:
+
+- `Trigonometric manipulation / equations` remains fully released inside the runtime slice
+- `Integration techniques` is released only for `9709.integration.application`
+- `Differential equations` is released only for `9709.differential_equations.separable`
+- broader `9709.integration.*` and `9709.differential_equations.*` variants remain explicit `non_released_fallback` until they earn separate release evidence
+
+The current runtime slice `MAY` attach variant tags such as:
 
 - `paper:p1`
 - `paper:p3`
@@ -123,17 +120,13 @@ The first runtime slice `MAY` attach variant tags such as:
 - `structure:identity_rewrite`
 - `structure:solve_in_domain`
 
-### On-deck families
-
-- `Integration techniques` is the next candidate after the first pilot slice is stable.
-- `Differential equations` remains inside the PRD release envelope but is **not** part of the first runtime scoring slice because local runtime evidence is currently thinner.
-
 ### Important clarification
 
 For this stage:
 
-- authoritative scoring is allowed only for the pilot family
-- `integration` and `differential_equations` still go through the same runtime, but they remain `non-released fallback` until separately promoted by release evidence
+- authoritative scoring is allowed only for the promoted released question types listed above
+- pilot/released-scope membership alone is insufficient; released rubric, confidence, and validated uncertainty gates still apply
+- non-promoted `9709` questions still go through the same runtime, but they remain `non_released_fallback`
 
 This is an execution cutline, not a PRD contradiction.
 
@@ -328,13 +321,13 @@ Rules:
 
 For this stage, authoritative scoring is allowed only when all of the following are true:
 
-- the `question_type_id` is inside the seeded pilot runtime slice
+- the `question_type_id` is inside the promoted released-family runtime slice
 - the question analysis snapshot carries at least one matching `RubricReleaseRef` with `release_state = released`
 - the scoring path has validated uncertainty behavior for that question/rubric path
 
 Additional clarification:
 
-- pilot type match alone is insufficient
+- released-scope type match alone is insufficient
 - draft or validated-but-not-released rubric refs still force `non_released_fallback`
 - missing released rubric coverage, missing gold-set confidence, or missing validated uncertainty behavior all force `non_released_fallback`
 
@@ -1140,7 +1133,7 @@ Frontend code `SHOULD`:
 
 Before implementation fans out, these three things must be frozen and treated as authoritative:
 
-1. pilot family slice
+1. released-scope contract
 2. domain/persistence/API contract
 3. canonical-home and questionless-session semantics
 
@@ -1166,8 +1159,8 @@ The slice is not ready unless all of the following pass:
 1. a user can start sessions from `concept`, `question`, `review_task`, `artifact`, and `workspace_slot`
 2. questionless sessions work without fake IDs
 3. AskAI reads persisted `active_scope_bundle`
-4. the pilot trigonometry family supports end-to-end scoring and post-mark learning effects
-5. imported questions outside pilot scoring scope produce explicit `non-released fallback`
+4. the promoted released `9709` question types support end-to-end scoring and post-mark learning effects
+5. imported questions outside released scoring scope produce explicit `non_released_fallback`
 6. workspace canonical-home behavior does not duplicate long-lived objects
 7. reconciliation can revise derived state without mutating historical attempts/mark runs
 8. legacy Study Hub remains compatibility-only and does not regain canonical logic
@@ -1176,8 +1169,8 @@ The slice is not ready unless all of the following pass:
 
 These items are intentionally deferred until after the first pilot slice is proven:
 
-- promoting `integration` into authoritative runtime scoring
-- promoting `differential_equations` into authoritative runtime scoring
+- widening additional `integration` question types beyond `9709.integration.application`
+- widening additional `differential_equations` question types beyond `9709.differential_equations.separable`
 - widening question-type granularity inside the trigonometry family
 - replacing the old entry surfaces globally
 - expanding beyond `9709`

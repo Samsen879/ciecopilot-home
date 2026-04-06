@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
-import { resolveInlineReleasedScoringPosture } from '../contracts/released-scope-core.js';
+import { resolveReleasedScoringPosture as resolveContractReleasedScoringPosture } from '../contracts/released-scope.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
   getCanonicalReleasedScopeContext,
@@ -22,7 +22,6 @@ import { validateQuestionImportInput } from '../validators/question-import-valid
 const IDEMPOTENCY_POLL_ATTEMPTS = 10;
 const IDEMPOTENCY_POLL_INTERVAL_MS = 250;
 const IDEMPOTENCY_ABANDONED_AGE_MS = 5 * 60 * 1000;
-const FROZEN_PILOT_FAMILY_ID = '9709.trigonometry_manipulation_equations';
 const RELEASED_STATE = 'released';
 const COMPAT_RUNTIME_TOPIC_ALIAS_BY_QUESTION_TYPE = Object.freeze({
   '9709.trigonometry.equations': new Set(['topic-trig-equations']),
@@ -179,7 +178,7 @@ function isPendingReservationAbandoned(row) {
   return (Date.now() - createdAt) >= IDEMPOTENCY_ABANDONED_AGE_MS;
 }
 
-function isReleasedPilotRegistryContext({
+function isReleasedRegistryContext({
   canonicalQuestionType,
   canonicalQuestionFamily,
 } = {}) {
@@ -192,8 +191,7 @@ function isReleasedPilotRegistryContext({
 
   return Boolean(
     familyId
-    && familyId === FROZEN_PILOT_FAMILY_ID
-    && questionTypeFamilyId === FROZEN_PILOT_FAMILY_ID
+    && familyId === questionTypeFamilyId
     && familySubjectCode
     && familySubjectCode === questionTypeSubjectCode
     && familyReleaseState === RELEASED_STATE
@@ -241,14 +239,14 @@ export async function resolveReleasedScoringPosture(client, {
     canonicalQuestionType,
     canonicalQuestionFamily,
   });
-  const scoringScopePosture = resolveInlineReleasedScoringPosture({
+  const scoringScopePosture = resolveContractReleasedScoringPosture({
     questionTypeId: mergedClassification.primary_question_type_id,
     questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
     candidateRubricRefs: mergedClassification.candidate_rubric_refs,
     uncertaintyValidated: mergedClassification.uncertainty_validated,
     uncertaintyPosture: mergedClassification.uncertainty_posture,
     classificationConfidence: mergedClassification.classification_confidence,
-    isPilotQuestionType: isReleasedPilotRegistryContext({
+    isPilotQuestionType: isReleasedRegistryContext({
       canonicalQuestionType,
       canonicalQuestionFamily,
     }),

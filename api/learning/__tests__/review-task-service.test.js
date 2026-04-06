@@ -246,6 +246,65 @@ describe('learning orchestration', () => {
     expect(reconciliationService.calls).toHaveLength(1);
   });
 
+  test('promoted differential-equations scoring run can create a type-level positive update', async () => {
+    const reviewTaskService = createSpyService('generateTasksFromOutcome', async () => []);
+    const artifactService = createSpyService('buildArtifactCandidates', async () => []);
+    const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({
+      reconciliation_run_id: 'recon-1c',
+      status: 'completed',
+      derived_state: derivedState,
+    }));
+
+    const result = await applyLearningEffects(
+      {
+        user_id: 'student-1',
+        question_id: 'question-1c',
+        question_context: {
+          family_id: '9709.differential_equations',
+          question_type_id: '9709.differential_equations.separable',
+          question_type_release_state: 'released',
+          primary_topic_id: 'topic-differential-1',
+          primary_topic_path: '9709/differential_equations/separable',
+          classification_confidence: 0.91,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'differential-separable-v1',
+              release_state: 'released',
+            },
+          ],
+        },
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1c' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-1c' },
+        decisions: [
+          {
+            awarded: true,
+            awarded_marks: 4,
+            alignment_confidence: 0.93,
+          },
+        ],
+        uncertainty_validated: true,
+      },
+      {
+        reviewTaskService,
+        artifactService,
+        reconciliationService,
+      },
+    );
+
+    expect(result.release_scope_status).toBe('released_scoring');
+    expect(result.mastery_updates[0]).toMatchObject({
+      level: 'question_type',
+      topic_id: 'topic-differential-1',
+      family_id: '9709.differential_equations',
+      question_type_id: '9709.differential_equations.separable',
+      signal_direction: 'positive',
+    });
+    expect(reviewTaskService.calls).toHaveLength(0);
+    expect(artifactService.calls).toHaveLength(1);
+    expect(reconciliationService.calls).toHaveLength(1);
+  });
+
   test('learning effects fail closed for 9702 without reusing math mastery defaults', async () => {
     const artifactService = createSpyService('buildArtifactCandidates', async () => []);
     const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({

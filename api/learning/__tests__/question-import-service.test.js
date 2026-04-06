@@ -41,6 +41,14 @@ function seedCanonicalRegistry() {
         release_state: 'released',
       },
     ],
+    [
+      '9709.differential_equations',
+      {
+        family_id: '9709.differential_equations',
+        subject_code: '9709',
+        release_state: 'released',
+      },
+    ],
   ]);
 
   clientState.registryTypes = new Map([
@@ -67,6 +75,15 @@ function seedCanonicalRegistry() {
       {
         question_type_id: '9709.integration.application',
         family_id: '9709.integration_techniques',
+        subject_code: '9709',
+        release_state: 'released',
+      },
+    ],
+    [
+      '9709.differential_equations.separable',
+      {
+        question_type_id: '9709.differential_equations.separable',
+        family_id: '9709.differential_equations',
         subject_code: '9709',
         release_state: 'released',
       },
@@ -480,6 +497,56 @@ function buildIntegrationInput(overrides = {}) {
   };
 }
 
+function buildDifferentialInput(overrides = {}) {
+  const classification = overrides.classification || {};
+
+  return {
+    subject_code: '9709',
+    prompt_representation: {
+      type: 'text',
+      value: 'Solve the differential equation dy/dx = 2xy given that y = 1 when x = 0.',
+    },
+    provenance_summary: {
+      import_source: 'manual_paste',
+    },
+    classification: {
+      primary_question_type_id: '9709.differential_equations.separable',
+      classification_confidence: 0.82,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.differential_equations.separable',
+          rubric_version_id: 'differential-separable-v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      uncertainty_posture: {
+        status: 'validated',
+      },
+      variant_tags: ['paper:p3'],
+      ...classification,
+    },
+    ...overrides,
+    classification: {
+      primary_question_type_id: '9709.differential_equations.separable',
+      classification_confidence: 0.82,
+      candidate_rubric_refs: [
+        buildReleasedRubricRef({
+          rubric_set_id: '9709.differential_equations.separable',
+          rubric_version_id: 'differential-separable-v1',
+          release_state: 'released',
+        }),
+      ],
+      uncertainty_validated: true,
+      uncertainty_posture: {
+        status: 'validated',
+      },
+      variant_tags: ['paper:p3'],
+      ...classification,
+    },
+  };
+}
+
 describe('question import service', () => {
   let harness;
 
@@ -546,23 +613,39 @@ describe('question import service', () => {
     expect(result.question.release_scope_status).toBe('non_released_fallback');
   });
 
-  test('imported integration question remains fallback-only even with released rubric metadata', async () => {
+  test('imported integration application question gets authoritative scoring when released gates are satisfied', async () => {
     const result = await importQuestion(createClient(), {
       userId: 'student-1',
       body: buildIntegrationInput(),
     });
 
     expect(result.scoring_scope_posture).toMatchObject({
-      fallback_mode: 'non_released_fallback',
-      authoritative_scoring_allowed: false,
-      fallback_reason_code: expect.any(String),
-      classification_confidence: expect.any(Number),
-      learning_signal_posture: expect.any(String),
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      fallback_mode: null,
     });
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
       primary_question_type_id: '9709.integration.application',
-      release_scope_status: 'non_released_fallback',
+      release_scope_status: 'released_scoring',
+    });
+  });
+
+  test('imported differential equations separable question gets authoritative scoring when released gates are satisfied', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildDifferentialInput(),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      fallback_mode: null,
+    });
+    expect(result.question).toMatchObject({
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.separable',
+      release_scope_status: 'released_scoring',
     });
   });
 

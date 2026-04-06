@@ -12,4 +12,12 @@ describe('s1 metric gate workflow defaults', () => {
     expect(workflow).toContain("VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL || 'text-embedding-v4' }}");
     expect(workflow).toContain("CHAT_MODEL: ${{ secrets.CHAT_MODEL || 'qwen-plus' }}");
   });
+
+  test('required workflow triggers for learning-runtime evidence-only PRs', () => {
+    const workflow = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(workflow).toContain('- "data/learning_runtime/release_evidence/**"');
+    expect(workflow).toContain('- "docs/reports/learning_runtime*.md"');
+    expect(workflow).toContain('- "docs/reports/*learning-runtime*.md"');
+  });
 });

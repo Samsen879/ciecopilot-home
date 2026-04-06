@@ -439,6 +439,168 @@ describe('learning orchestration', () => {
       repair_target_topic_id: 'repair-target-topic',
     });
   });
+
+  test('incorrect released-scoring outcomes still emit repair tasks without positive type mastery', async () => {
+    const reviewTaskService = createSpyService('generateTasksFromOutcome', async (input) => [
+      {
+        review_task_id: 'review-task-1',
+        target_kind: 'question_type',
+        target_topic_id: input.repair_target_topic_id,
+        target_question_type_id: input.repair_target_question_type_id,
+        status: 'open',
+      },
+    ]);
+    const artifactService = createSpyService('buildArtifactCandidates', async () => []);
+    const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({
+      reconciliation_run_id: 'recon-3',
+      status: 'completed',
+      derived_state: derivedState,
+    }));
+
+    const result = await applyLearningEffects(
+      {
+        user_id: 'student-1',
+        question_id: 'question-3',
+        question_context: {
+          family_id: '9709.integration_techniques',
+          question_type_id: '9709.integration.application',
+          question_type_release_state: 'released',
+          primary_topic_id: 'source-topic',
+          primary_topic_path: '9709/integration/source',
+          classification_confidence: 0.78,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'integration-v1',
+              release_state: 'released',
+            },
+          ],
+        },
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-3' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-3' },
+        decisions: [
+          {
+            awarded: false,
+            awarded_marks: 0,
+            alignment_confidence: 0.86,
+          },
+        ],
+        uncertainty_validated: true,
+        misconception_tags: ['domain:interval'],
+        repair_target_topic_id: 'repair-target-topic',
+        repair_target_topic_path: '9709/integration/repair',
+        repair_target_question_type_id: '9709.integration.application',
+      },
+      {
+        reviewTaskService,
+        artifactService,
+        reconciliationService,
+      },
+    );
+
+    expect(result.release_scope_status).toBe('released_scoring');
+    expect(result.authoritative_scoring_allowed).toBe(true);
+    expect(result.review_tasks).toHaveLength(1);
+    expect(result.review_tasks[0]).toMatchObject({
+      review_task_id: 'review-task-1',
+      target_topic_id: 'repair-target-topic',
+      target_question_type_id: '9709.integration.application',
+    });
+    expect(result.mastery_updates.every((item) => item.level !== 'question_type')).toBe(true);
+    expect(reviewTaskService.calls).toHaveLength(1);
+    expect(reviewTaskService.calls[0]).toMatchObject({
+      authoritative_scoring_allowed: true,
+      repair_target_topic_id: 'repair-target-topic',
+      misconception_tags: ['domain:interval'],
+    });
+  });
+
+  test('released-scoring outcomes with conservative mapping ambiguity still emit repair tasks', async () => {
+    const reviewTaskService = createSpyService('generateTasksFromOutcome', async (input) => [
+      {
+        review_task_id: 'review-task-ambiguous-1',
+        target_kind: 'question_type',
+        target_topic_id: input.repair_target_topic_id,
+        target_question_type_id: input.repair_target_question_type_id,
+        status: 'open',
+      },
+    ]);
+    const artifactService = createSpyService('buildArtifactCandidates', async () => []);
+    const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({
+      reconciliation_run_id: 'recon-4',
+      status: 'completed',
+      derived_state: derivedState,
+    }));
+
+    const result = await applyLearningEffects(
+      {
+        user_id: 'student-1',
+        question_id: 'question-4',
+        question_context: {
+          family_id: '9709.integration_techniques',
+          question_type_id: '9709.integration.application',
+          question_type_release_state: 'released',
+          primary_topic_id: 'source-topic',
+          primary_topic_path: '9709/integration/source',
+          classification_confidence: 0.78,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'integration-v1',
+              release_state: 'released',
+            },
+          ],
+        },
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-4' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-4' },
+        decisions: [
+          {
+            awarded: true,
+            awarded_marks: 1,
+            alignment_confidence: 0.74,
+          },
+        ],
+        marking_result: {
+          marking_summary: {
+            coverage_scope: 'question',
+            local_signal_only: false,
+            conservative_part_mapping: true,
+            ambiguous_rubric_point_result_count: 1,
+          },
+        },
+        uncertainty_validated: true,
+        repair_target_topic_id: 'repair-target-topic',
+        repair_target_topic_path: '9709/integration/repair',
+        repair_target_question_type_id: '9709.integration.application',
+      },
+      {
+        reviewTaskService,
+        artifactService,
+        reconciliationService,
+      },
+    );
+
+    expect(result.release_scope_status).toBe('released_scoring');
+    expect(result.authoritative_scoring_allowed).toBe(true);
+    expect(result.review_tasks).toHaveLength(1);
+    expect(result.review_tasks[0]).toMatchObject({
+      review_task_id: 'review-task-ambiguous-1',
+      target_topic_id: 'repair-target-topic',
+      target_question_type_id: '9709.integration.application',
+    });
+    expect(result.mastery_updates.every((item) => item.level !== 'question_type')).toBe(true);
+    expect(reviewTaskService.calls).toHaveLength(1);
+    expect(reviewTaskService.calls[0]).toMatchObject({
+      authoritative_scoring_allowed: true,
+      repair_target_topic_id: 'repair-target-topic',
+      marking_result: {
+        marking_summary: {
+          conservative_part_mapping: true,
+          ambiguous_rubric_point_result_count: 1,
+        },
+      },
+    });
+  });
 });
 
 describe('review task service generation', () => {

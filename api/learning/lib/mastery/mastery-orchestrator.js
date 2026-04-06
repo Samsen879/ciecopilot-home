@@ -1,6 +1,7 @@
 import { buildAttemptRef, buildMarkRunRef } from '../contracts/runtime-contract.js';
 import { createReviewTaskService } from '../review/review-task-service.js';
 import { createDefaultReviewTaskService } from '../review/review-task-service.js';
+import { shouldGenerateReviewTaskFromOutcome } from '../review/review-task-service.js';
 import { createArtifactService } from '../artifacts/artifact-service.js';
 import { createArtifactRepository } from '../repositories/artifact-repository.js';
 import { createReconciliationService } from '../reconciliation/reconciliation-service.js';
@@ -152,8 +153,8 @@ export function createMasteryOrchestrator({
       const masteryUpdates = masteryProjection.masteryUpdates;
       const reviewCapabilityPosture = adapter.meta.capability_posture?.review
         ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
-      const reviewTasks = releaseScopePosture.authoritative_scoring_allowed
-        || reviewCapabilityPosture !== SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED
+      const reviewTasks = reviewCapabilityPosture !== SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED
+        || !shouldGenerateReviewTaskFromOutcome(reviewTaskInput)
         ? []
         : await reviewTaskService.generateTasksFromOutcome(reviewTaskInput);
       const artifactCandidates = await artifactService.buildArtifactCandidates(artifactInput);

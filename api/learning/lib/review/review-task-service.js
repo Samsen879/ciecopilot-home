@@ -286,11 +286,67 @@ function pickTargetKind({ targetQuestionTypeId, familyId } = {}) {
   return 'misconception_tag';
 }
 
+function hasPositiveAwardDecision(decision = {}) {
+  return decision?.awarded === true && Number(decision?.awarded_marks ?? 0) > 0;
+}
+
+function hasRepairSignal(input = {}) {
+  if (input.regression_recovery === true) {
+    return true;
+  }
+
+  if (normalizeArray(input.misconception_tags).length > 0) {
+    return true;
+  }
+
+  const markingSummary = input.marking_result?.marking_summary ?? {};
+  const decisions = normalizeArray(input.decisions);
+  const hasPositiveDecision = decisions.some(hasPositiveAwardDecision);
+
+  if (decisions.some((decision) =>
+    decision?.awarded === false || Number(decision?.awarded_marks ?? 0) <= 0)) {
+    return true;
+  }
+
+  if (
+    markingSummary.conservative_part_mapping === true
+    || Number(markingSummary.ambiguous_rubric_point_result_count ?? 0) > 0
+  ) {
+    return true;
+  }
+
+  if (hasPositiveDecision) {
+    return false;
+  }
+
+  if (markingSummary.local_signal_only === true) {
+    return true;
+  }
+
+  return decisions.length > 0 && !hasPositiveDecision;
+}
+
+export function shouldGenerateReviewTaskFromOutcome(input = {}) {
+  if (!input.repair_target_topic_id) {
+    return false;
+  }
+
+  if (!input.authoritative_scoring_allowed) {
+    return true;
+  }
+
+  return hasRepairSignal(input);
+}
+
 function buildReviewTaskPayload(input = {}, now = new Date()) {
   const targetQuestionTypeId =
     input.repair_target_question_type_id
     || input.question_context?.question_type_id
     || null;
+  if (!shouldGenerateReviewTaskFromOutcome(input)) {
+    return null;
+  }
+
   const subjectCode = resolveSubjectCodeFromRuntimeInput(input, input.question_context);
   const adapter = getSubjectAdapter(subjectCode);
   const scheduler = adapter.review.buildSchedulerSeed({
@@ -318,10 +374,15 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
     input.marking_result?.marking_summary?.ambiguous_rubric_point_result_count ?? 0,
   );
   const schedulerPolicy = scheduler.policy;
+  const reviewTaskPosture = input.authoritative_scoring_allowed
+    ? 'released_scoring_repair'
+    : 'conservative_fallback';
   const explainability = buildReviewTaskExplainabilitySeed({
     sourceQuestionId: input.question_id ?? null,
     sourceAttemptRef: input.source_attempt_ref ?? null,
     targetMisconceptionTags: input.misconception_tags,
+    posture: reviewTaskPosture,
+    postureReasonCode: input.authoritative_scoring_allowed ? 'released_scoring_repair' : null,
     fallbackReasonCode: input.fallback_reason_code ?? null,
     schedulerPolicy,
     coverageScope: input.marking_result?.marking_summary?.coverage_scope ?? 'question',
@@ -346,8 +407,8 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
     priority: scheduler.priority,
     estimated_minutes: 15,
     success_criteria: {
-      posture: 'conservative_fallback',
-      authoritative_scoring_allowed: false,
+      posture: reviewTaskPosture,
+      authoritative_scoring_allowed: input.authoritative_scoring_allowed === true,
       coverage_scope: input.marking_result?.marking_summary?.coverage_scope ?? 'question',
       local_signal_only: input.marking_result?.marking_summary?.local_signal_only === true,
       ambiguous_part_mapping_count: ambiguousPartMappingCount,
@@ -368,14 +429,6 @@ export function createReviewTaskService({
 } = {}) {
   return {
     async generateTasksFromOutcome(input = {}) {
-      if (input.authoritative_scoring_allowed) {
-        return [];
-      }
-
-      if (!input.repair_target_topic_id) {
-        return [];
-      }
-
       const payload = buildReviewTaskPayload(input, now());
       if (!payload) {
         return [];

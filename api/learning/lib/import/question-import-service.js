@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
+import { resolveInlineReleasedScoringPosture } from '../contracts/released-scope-core.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
-  getCanonicalQuestionType,
+  getCanonicalReleasedScopeContext,
   getQuestionById,
   insertImportedQuestion,
 } from '../repositories/question-registry-repository.js';
@@ -21,6 +22,8 @@ import { validateQuestionImportInput } from '../validators/question-import-valid
 const IDEMPOTENCY_POLL_ATTEMPTS = 10;
 const IDEMPOTENCY_POLL_INTERVAL_MS = 250;
 const IDEMPOTENCY_ABANDONED_AGE_MS = 5 * 60 * 1000;
+const FROZEN_PILOT_FAMILY_ID = '9709.trigonometry_manipulation_equations';
+const RELEASED_STATE = 'released';
 const COMPAT_RUNTIME_TOPIC_ALIAS_BY_QUESTION_TYPE = Object.freeze({
   '9709.trigonometry.equations': new Set(['topic-trig-equations']),
   '9709.trigonometry.identities': new Set(['topic-trig-identities']),
@@ -176,6 +179,89 @@ function isPendingReservationAbandoned(row) {
   return (Date.now() - createdAt) >= IDEMPOTENCY_ABANDONED_AGE_MS;
 }
 
+function isReleasedPilotRegistryContext({
+  canonicalQuestionType,
+  canonicalQuestionFamily,
+} = {}) {
+  const familyId = normalizeNullableString(canonicalQuestionFamily?.family_id);
+  const questionTypeFamilyId = normalizeNullableString(canonicalQuestionType?.family_id);
+  const familySubjectCode = normalizeNullableString(canonicalQuestionFamily?.subject_code);
+  const questionTypeSubjectCode = normalizeNullableString(canonicalQuestionType?.subject_code);
+  const familyReleaseState = normalizeString(canonicalQuestionFamily?.release_state).toLowerCase();
+  const questionTypeReleaseState = normalizeString(canonicalQuestionType?.release_state).toLowerCase();
+
+  return Boolean(
+    familyId
+    && familyId === FROZEN_PILOT_FAMILY_ID
+    && questionTypeFamilyId === FROZEN_PILOT_FAMILY_ID
+    && familySubjectCode
+    && familySubjectCode === questionTypeSubjectCode
+    && familyReleaseState === RELEASED_STATE
+    && questionTypeReleaseState === RELEASED_STATE
+  );
+}
+
+function mergeCanonicalClassification({
+  subjectCode,
+  classification,
+  canonicalQuestionType,
+  canonicalQuestionFamily,
+} = {}) {
+  const adapter = getSubjectAdapter(subjectCode);
+  const mergedClassification = adapter.classification.mergeCanonicalClassification({
+    classification,
+    canonicalQuestionType,
+  });
+
+  return {
+    ...mergedClassification,
+    family_id:
+      canonicalQuestionFamily?.family_id
+      ?? canonicalQuestionType?.family_id
+      ?? mergedClassification.family_id
+      ?? null,
+  };
+}
+
+export async function resolveReleasedScoringPosture(client, {
+  subjectCode,
+  classification,
+} = {}) {
+  const normalizedSubjectCode = normalizeNullableString(subjectCode);
+  const normalizedClassification = isPlainObject(classification) ? cloneJson(classification) : {};
+  const canonicalContext = await getCanonicalReleasedScopeContext(client, {
+    subjectCode: normalizedSubjectCode,
+    questionTypeId: normalizedClassification.primary_question_type_id ?? null,
+  });
+  const canonicalQuestionType = canonicalContext?.questionType ?? null;
+  const canonicalQuestionFamily = canonicalContext?.family ?? null;
+  const mergedClassification = mergeCanonicalClassification({
+    subjectCode: normalizedSubjectCode,
+    classification: normalizedClassification,
+    canonicalQuestionType,
+    canonicalQuestionFamily,
+  });
+  const scoringScopePosture = resolveInlineReleasedScoringPosture({
+    questionTypeId: mergedClassification.primary_question_type_id,
+    questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
+    candidateRubricRefs: mergedClassification.candidate_rubric_refs,
+    uncertaintyValidated: mergedClassification.uncertainty_validated,
+    uncertaintyPosture: mergedClassification.uncertainty_posture,
+    classificationConfidence: mergedClassification.classification_confidence,
+    isPilotQuestionType: isReleasedPilotRegistryContext({
+      canonicalQuestionType,
+      canonicalQuestionFamily,
+    }),
+  });
+
+  return {
+    classification: mergedClassification,
+    canonicalQuestionType,
+    canonicalQuestionFamily,
+    scoringScopePosture,
+  };
+}
+
 async function buildQuestionImportResponse(client, {
   question,
   requestPayload,
@@ -183,26 +269,16 @@ async function buildQuestionImportResponse(client, {
   const requestClassification = isPlainObject(requestPayload?.classification)
     ? requestPayload.classification
     : {};
-  const adapter = getSubjectAdapter(
-    question?.subject_code ?? requestPayload?.subject_code ?? null,
-  );
-  const canonicalQuestionType = await getCanonicalQuestionType(client, {
+  const { scoringScopePosture } = await resolveReleasedScoringPosture(client, {
     subjectCode: question?.subject_code ?? requestPayload?.subject_code ?? null,
-    questionTypeId:
-      question?.primary_question_type_id ?? requestClassification.primary_question_type_id ?? null,
-  });
-  const classification = adapter.classification.mergeCanonicalClassification({
-    classification: requestClassification,
-    canonicalQuestionType,
-  });
-  const scoringScopePosture = adapter.marking.resolveReleasedScoringPosture({
-    questionTypeId:
-      question?.primary_question_type_id ?? classification.primary_question_type_id ?? null,
-    questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
-    candidateRubricRefs: classification.candidate_rubric_refs,
-    uncertaintyValidated: classification.uncertainty_validated,
-    uncertaintyPosture: classification.uncertainty_posture,
-    classificationConfidence: classification.classification_confidence,
+    classification: {
+      ...requestClassification,
+      family_id: question?.family_id ?? requestClassification.family_id ?? null,
+      primary_question_type_id:
+        question?.primary_question_type_id
+        ?? requestClassification.primary_question_type_id
+        ?? null,
+    },
   });
 
   return {
@@ -302,27 +378,17 @@ async function performQuestionImport(client, {
   normalizedInput,
   questionId = null,
 } = {}) {
-  const adapter = getSubjectAdapter(normalizedInput.subject_code);
-  const canonicalQuestionType = await getCanonicalQuestionType(client, {
+  const {
+    classification,
+    scoringScopePosture,
+  } = await resolveReleasedScoringPosture(client, {
     subjectCode: normalizedInput.subject_code,
-    questionTypeId: normalizedInput.classification.primary_question_type_id,
-  });
-  const classification = adapter.classification.mergeCanonicalClassification({
     classification: normalizedInput.classification,
-    canonicalQuestionType,
   });
   classification.primary_topic_id = normalizeCompatibleRuntimeTopicId(
     classification.primary_topic_id,
     classification.primary_question_type_id,
   );
-  const scoringScopePosture = adapter.marking.resolveReleasedScoringPosture({
-    questionTypeId: classification.primary_question_type_id,
-    questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
-    candidateRubricRefs: classification.candidate_rubric_refs,
-    uncertaintyValidated: classification.uncertainty_validated,
-    uncertaintyPosture: classification.uncertainty_posture,
-    classificationConfidence: classification.classification_confidence,
-  });
 
   const question = await insertImportedQuestion(client, {
     question_id: questionId,

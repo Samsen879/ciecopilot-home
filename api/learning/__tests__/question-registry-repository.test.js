@@ -1,11 +1,17 @@
-import { insertImportedQuestion } from '../lib/repositories/question-registry-repository.js';
+import {
+  findQuestionById,
+  findQuestionsByType,
+  insertImportedQuestion,
+} from '../lib/repositories/question-registry-repository.js';
 
 function createQuestionRegistryDb() {
   const inserts = [];
+  const selects = [];
   const updates = [];
 
   return {
     inserts,
+    selects,
     updates,
     from(table) {
       return {
@@ -41,6 +47,61 @@ function createQuestionRegistryDb() {
             },
           };
         },
+        select(selection) {
+          const filters = [];
+
+          const builder = {
+            eq(column, value) {
+              filters.push({ column, value });
+              return builder;
+            },
+            async maybeSingle() {
+              selects.push({ table, selection, filters });
+
+              if (table === 'question_bank') {
+                return {
+                  data: {
+                    question_id: 'question-1',
+                    source_kind: 'imported_question',
+                    subject_code: '9709',
+                    primary_question_type_id: '9709.trigonometry.equations',
+                    classification_snapshot_ref: {
+                      kind: 'classification_snapshot',
+                      classification_snapshot_id: 'snapshot-1',
+                    },
+                  },
+                  error: null,
+                };
+              }
+
+              throw new Error(`Unexpected select table: ${table}`);
+            },
+            then(resolve, reject) {
+              selects.push({ table, selection, filters });
+
+              if (table === 'learning_question_registry_projection') {
+                return Promise.resolve({
+                  data: [
+                    {
+                      question_id: 'question-1',
+                      source_kind: 'imported_question',
+                      subject_code: '9709',
+                      primary_question_type_id: '9709.trigonometry.equations',
+                    },
+                  ],
+                  error: null,
+                }).then(resolve, reject);
+              }
+
+              return Promise.reject(new Error(`Unexpected select table: ${table}`)).then(
+                resolve,
+                reject,
+              );
+            },
+          };
+
+          return builder;
+        },
         update(payload) {
           return {
             async eq(column, value) {
@@ -55,6 +116,56 @@ function createQuestionRegistryDb() {
 }
 
 describe('question-registry-repository', () => {
+  test('findQuestionById reads the stored durable question by id', async () => {
+    const db = createQuestionRegistryDb();
+
+    const question = await findQuestionById(db, {
+      questionId: 'question-1',
+    });
+
+    expect(db.selects).toEqual([
+      {
+        table: 'question_bank',
+        selection:
+          'question_id, source_kind, subject_code, paper_scope, primary_topic_id, secondary_topic_ids, family_id, primary_question_type_id, secondary_question_type_ids, variant_tags, release_scope_status, prompt_representation, provenance_summary, classification_snapshot_ref',
+        filters: [{ column: 'question_id', value: 'question-1' }],
+      },
+    ]);
+    expect(question).toMatchObject({
+      question_id: 'question-1',
+      classification_snapshot_ref: {
+        kind: 'classification_snapshot',
+        classification_snapshot_id: 'snapshot-1',
+      },
+    });
+  });
+
+  test('findQuestionsByType reads the registry projection for the requested question type', async () => {
+    const db = createQuestionRegistryDb();
+
+    const questions = await findQuestionsByType(db, {
+      subjectCode: '9709',
+      questionTypeId: '9709.trigonometry.equations',
+    });
+
+    expect(db.selects).toEqual([
+      {
+        table: 'learning_question_registry_projection',
+        selection: '*',
+        filters: [
+          { column: 'subject_code', value: '9709' },
+          { column: 'primary_question_type_id', value: '9709.trigonometry.equations' },
+        ],
+      },
+    ]);
+    expect(questions).toEqual([
+      expect.objectContaining({
+        question_id: 'question-1',
+        primary_question_type_id: '9709.trigonometry.equations',
+      }),
+    ]);
+  });
+
   test('insertImportedQuestion stores a durable question without storage_key/q_number requirements and persists a typed snapshot ref', async () => {
     const db = createQuestionRegistryDb();
 

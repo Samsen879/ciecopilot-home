@@ -1,9 +1,4 @@
-function buildClassificationSnapshotRef(classificationSnapshotId) {
-  return {
-    kind: 'classification_snapshot',
-    classification_snapshot_id: classificationSnapshotId,
-  };
-}
+import { buildClassificationSnapshotRef } from '../contracts/runtime-contract.js';
 
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
@@ -82,7 +77,7 @@ export async function getCanonicalQuestionType(client, {
   return data || null;
 }
 
-export async function getQuestionById(client, { questionId } = {}) {
+export async function findQuestionById(client, { questionId } = {}) {
   const normalizedQuestionId = typeof questionId === 'string' ? questionId.trim() : '';
 
   if (!normalizedQuestionId) {
@@ -102,6 +97,32 @@ export async function getQuestionById(client, { questionId } = {}) {
   }
 
   return data || null;
+}
+
+export const getQuestionById = findQuestionById;
+
+export async function findQuestionsByType(client, {
+  subjectCode,
+  questionTypeId,
+} = {}) {
+  const normalizedSubjectCode = typeof subjectCode === 'string' ? subjectCode.trim() : '';
+  const normalizedQuestionTypeId = typeof questionTypeId === 'string' ? questionTypeId.trim() : '';
+
+  if (!normalizedSubjectCode || !normalizedQuestionTypeId) {
+    return [];
+  }
+
+  const { data, error } = await client
+    .from('learning_question_registry_projection')
+    .select('*')
+    .eq('subject_code', normalizedSubjectCode)
+    .eq('primary_question_type_id', normalizedQuestionTypeId);
+
+  if (error) {
+    throw new Error(`Failed to load questions for question type: ${error.message}`);
+  }
+
+  return Array.isArray(data) ? data : [];
 }
 
 export async function insertImportedQuestion(client, input) {

@@ -77,6 +77,83 @@ export async function getCanonicalQuestionType(client, {
   return data || null;
 }
 
+export async function getCanonicalQuestionTypeTruth(client, {
+  subjectCode,
+  questionTypeId,
+} = {}) {
+  const normalizedSubjectCode = typeof subjectCode === 'string' ? subjectCode.trim() : '';
+  const normalizedQuestionTypeId = typeof questionTypeId === 'string' ? questionTypeId.trim() : '';
+
+  if (!normalizedSubjectCode || !normalizedQuestionTypeId) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from('learning_question_types')
+    .select('question_type_id, family_id, subject_code, release_state')
+    .eq('question_type_id', normalizedQuestionTypeId)
+    .eq('subject_code', normalizedSubjectCode)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load canonical question type truth: ${error.message}`);
+  }
+
+  return data || null;
+}
+
+export async function getCanonicalQuestionFamilyTruth(client, {
+  subjectCode,
+  familyId,
+} = {}) {
+  const normalizedSubjectCode = typeof subjectCode === 'string' ? subjectCode.trim() : '';
+  const normalizedFamilyId = typeof familyId === 'string' ? familyId.trim() : '';
+
+  if (!normalizedSubjectCode || !normalizedFamilyId) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from('learning_question_families')
+    .select('family_id, subject_code, release_state')
+    .eq('family_id', normalizedFamilyId)
+    .eq('subject_code', normalizedSubjectCode)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load canonical question family truth: ${error.message}`);
+  }
+
+  return data || null;
+}
+
+export async function getCanonicalReleasedScopeContext(client, {
+  subjectCode,
+  questionTypeId,
+} = {}) {
+  const questionType = await getCanonicalQuestionTypeTruth(client, {
+    subjectCode,
+    questionTypeId,
+  });
+
+  if (!questionType?.family_id) {
+    return {
+      questionType,
+      family: null,
+    };
+  }
+
+  const family = await getCanonicalQuestionFamilyTruth(client, {
+    subjectCode,
+    familyId: questionType.family_id,
+  });
+
+  return {
+    questionType,
+    family,
+  };
+}
+
 export async function findQuestionById(client, { questionId } = {}) {
   const normalizedQuestionId = typeof questionId === 'string' ? questionId.trim() : '';
 

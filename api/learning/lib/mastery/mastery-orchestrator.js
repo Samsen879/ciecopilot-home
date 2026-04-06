@@ -87,6 +87,10 @@ function resolveLearningEffectsPosture({
     uncertaintyValidated: input.uncertainty_validated ?? false,
   });
 
+  if (basePosture?.fallback_reason_code !== 'non_pilot_question_type') {
+    return basePosture;
+  }
+
   const releaseEvidence = evaluateReleasedFamilyEvidenceGate(questionContext.question_type_id);
   const releaseEvidencePosture = releaseEvidence.ok
     ? resolveInlineReleasedScoringPosture({
@@ -102,10 +106,7 @@ function resolveLearningEffectsPosture({
     })
     : null;
 
-  if (
-    basePosture?.fallback_reason_code !== 'non_pilot_question_type'
-    || !releaseEvidencePosture?.authoritative_scoring_allowed
-  ) {
+  if (!releaseEvidencePosture?.authoritative_scoring_allowed) {
     return basePosture;
   }
 

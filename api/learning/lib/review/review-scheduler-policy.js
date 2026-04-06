@@ -219,6 +219,10 @@ function summarizeExplainability(task = {}, explainability = {}) {
       ? `${normalizeString(explainability.evidence.coverage_scope)}-level`
       : 'runtime';
 
+  if (normalizeString(explainability?.posture) === 'released_scoring_repair') {
+    return `Queued from ${evidenceLabel} evidence while released scoring stays active.`;
+  }
+
   return `Queued from ${evidenceLabel} evidence while authoritative mastery stays conservative.`;
 }
 
@@ -226,6 +230,8 @@ export function buildReviewTaskExplainabilitySeed({
   sourceQuestionId = null,
   sourceAttemptRef = null,
   targetMisconceptionTags = [],
+  posture = 'conservative_fallback',
+  postureReasonCode = null,
   fallbackReasonCode = null,
   schedulerPolicy = {},
   coverageScope = 'question',
@@ -237,10 +243,11 @@ export function buildReviewTaskExplainabilitySeed({
   const sourceQuestionIds = uniqueStrings(sourceQuestionId ? [sourceQuestionId] : []);
 
   return {
-    posture: 'conservative_fallback',
-    posture_reason_code: fallbackReasonCode ?? null,
+    posture,
+    posture_reason_code: postureReasonCode ?? fallbackReasonCode ?? null,
     creation_reason_codes: uniqueStrings([
       fallbackReasonCode,
+      posture === 'released_scoring_repair' ? 'released_scoring_repair' : null,
       normalizeArray(targetMisconceptionTags).length > 0 ? 'misconception_tag_trigger' : null,
       localSignalOnly ? 'local_signal_only' : null,
     ]),

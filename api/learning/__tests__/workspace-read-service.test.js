@@ -1249,6 +1249,7 @@ describe('workspace read service', () => {
         question_context: {
           family_id: '9709.integration_techniques',
           question_type_id: '9709.integration.application',
+          question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709.integration.application.source',
           classification_confidence: 0.77,
@@ -1280,6 +1281,9 @@ describe('workspace read service', () => {
         now,
       },
     );
+
+    expect(outcome.release_scope_status).toBe('released_scoring');
+    expect(outcome.authoritative_scoring_allowed).toBe(true);
 
     await patchLearningArtifact({
       client: db,

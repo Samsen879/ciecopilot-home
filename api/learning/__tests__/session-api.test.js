@@ -788,7 +788,7 @@ describe('learning session api', () => {
     expect(res.body.error.code).toBe('auth_forbidden');
   });
 
-  test('POST /api/learning/sessions returns 400 invalid_payload for malformed anchor refs', async () => {
+  test('POST /api/learning/sessions returns 400 invalid_anchor_ref for malformed anchor refs', async () => {
     const res = await harness.request
       .post('/api/learning/sessions')
       .set('Origin', 'http://localhost:3000')
@@ -800,7 +800,7 @@ describe('learning session api', () => {
       }));
 
     expect(res.status).toBe(400);
-    expect(res.body.error.code).toBe('invalid_payload');
+    expect(res.body.error.code).toBe('invalid_anchor_ref');
   });
 
   test('POST /api/learning/sessions returns 400 invalid_anchor_kind for unknown anchors', async () => {

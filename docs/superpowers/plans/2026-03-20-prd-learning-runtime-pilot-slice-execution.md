@@ -695,10 +695,10 @@ test('POST /api/learning/sessions returns 403 auth_forbidden when the anchor bel
   expect(res.body.error.code).toBe('auth_forbidden');
 });
 
-test('POST /api/learning/sessions returns 400 invalid_payload for malformed anchor refs', async () => {
+test('POST /api/learning/sessions returns 400 invalid_anchor_ref for malformed anchor refs', async () => {
   const res = await callLearningHandler('POST', '/api/learning/sessions', malformedAnchorPayload);
   expect(res.statusCode).toBe(400);
-  expect(res.body.error.code).toBe('invalid_payload');
+  expect(res.body.error.code).toBe('invalid_anchor_ref');
 });
 
 test('POST /api/learning/sessions returns 400 invalid_anchor_kind for unknown anchors', async () => {

@@ -43,6 +43,16 @@ test('review_task anchor may start spaced_review with type context but no concre
   }).ok).toBe(true);
 });
 
+test('malformed anchor refs use the frozen invalid_anchor_ref code', () => {
+  expect(() => validateCreateSessionInput({
+    mode: 'spaced_review',
+    anchor_kind: 'review_task',
+    anchor_ref: { kind: 'review_task' },
+    current_question_id: null,
+    current_question_type_id: null,
+  })).toThrow(/invalid_anchor_ref/);
+});
+
 test('artifact anchor may resume post_mortem_review without inventing a question id', () => {
   expect(validateCreateSessionInput({
     mode: 'post_mortem_review',

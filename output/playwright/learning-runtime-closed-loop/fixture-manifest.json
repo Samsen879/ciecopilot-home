@@ -1,0 +1,81 @@
+{
+  "scope": "learning_runtime_browser_closed_loop_fixture",
+  "generatedAt": "2026-04-10T16:29:00.919Z",
+  "outputPath": "/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/fixture-manifest.json",
+  "operator": {
+    "preferred": "Codex CLI"
+  },
+  "user": {
+    "userId": "3edd52fc-22fa-4ce3-bd75-8f36a1f1bd89",
+    "email": "student-1@example.test",
+    "authToken": "Bearer test-user:student-1:student"
+  },
+  "routes": {
+    "reviewQueue": "http://localhost:5173/learn/review-queue",
+    "workspace": "http://localhost:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001",
+    "postMortemSession": "http://localhost:5173/learn/session/0c100001-7a3e-4d82-9d7c-1f1000010501",
+    "continuitySession": "http://localhost:5173/learn/session/0c100001-7a3e-4d82-9d7c-1f1000010503"
+  },
+  "api": {
+    "reopenReviewTask": "http://127.0.0.1:3001/api/learning/review-tasks/0c100001-7a3e-4d82-9d7c-1f1000010303",
+    "supersedeArtifact": "http://127.0.0.1:3001/api/learning/artifacts/0c100001-7a3e-4d82-9d7c-1f1000010402"
+  },
+  "ids": {
+    "workspaceId": "0c100001-7a3e-4d82-9d7c-1f1000010101",
+    "topicIds": {
+      "workspace": "0c100001-7a3e-4d82-9d7c-1f1000010001",
+      "alternateQueue": "0c100001-7a3e-4d82-9d7c-1f1000010002",
+      "continuity": "0c100001-7a3e-4d82-9d7c-1f1000010003"
+    },
+    "reviewTaskIds": {
+      "launchOpen": "0c100001-7a3e-4d82-9d7c-1f1000010301",
+      "partialOpen": "0c100001-7a3e-4d82-9d7c-1f1000010302",
+      "completedReopen": "0c100001-7a3e-4d82-9d7c-1f1000010303",
+      "alternateQueueOpen": "0c100001-7a3e-4d82-9d7c-1f1000010304"
+    },
+    "artifactIds": {
+      "commonTrapsPinned": "0c100001-7a3e-4d82-9d7c-1f1000010401",
+      "derivationSourcePinned": "0c100001-7a3e-4d82-9d7c-1f1000010402",
+      "derivationSuccessor": "0c100001-7a3e-4d82-9d7c-1f1000010403"
+    },
+    "sessionIds": {
+      "postMortem": "0c100001-7a3e-4d82-9d7c-1f1000010501",
+      "continuityParent": "0c100001-7a3e-4d82-9d7c-1f1000010502",
+      "continuityChild": "0c100001-7a3e-4d82-9d7c-1f1000010503"
+    },
+    "questionIds": {
+      "repairSource": "0c100001-7a3e-4d82-9d7c-1f1000010201",
+      "continuitySource": "0c100001-7a3e-4d82-9d7c-1f1000010202"
+    }
+  },
+  "coverage": {
+    "seededBrowserReady": [
+      "LR-BCL-04",
+      "LR-BCL-05",
+      "LR-BCL-06",
+      "LR-BCL-07",
+      "LR-BCL-08",
+      "LR-BCL-09",
+      "LR-BCL-11",
+      "LR-BCL-13",
+      "LR-BCL-14",
+      "LR-BCL-15"
+    ],
+    "browserBlockedOnFreshLoad": [
+      "LR-BCL-10",
+      "LR-BCL-12"
+    ],
+    "renderOnly": [
+      "LR-BCL-15"
+    ],
+    "backendOwned": [
+      "Gate 4 authoritative scoring / post-mark learning effects"
+    ]
+  },
+  "notes": [
+    "LR-BCL-10 and LR-BCL-12 are not independently browser-executable from a fresh workspace load because the current workspace payload does not project visible artifact inbox items.",
+    "LR-BCL-13 remains executable because the supersede sheet accepts a manually typed successor artifact id.",
+    "LR-BCL-15 is currently a render-only continuity check on the session page; actionable continuation lives on workspace revisit surfaces instead.",
+    "Gate 4 remains backend-owned because current browser entry surfaces do not deterministically surface the released-scope rubric, confidence, and validated-uncertainty inputs required for authoritative scoring."
+  ]
+}

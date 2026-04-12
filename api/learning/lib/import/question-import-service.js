@@ -3,6 +3,12 @@ import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { resolveReleasedScoringPosture as resolveContractReleasedScoringPosture } from '../contracts/released-scope.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
+  buildQuestionAnalysisResult,
+} from '../question-analysis/analysis-result-contract.js';
+import {
+  normalizeQuestionEnvelope,
+} from '../question-analysis/question-envelope-contract.js';
+import {
   getCanonicalReleasedScopeContext,
   getQuestionById,
   insertImportedQuestion,
@@ -121,6 +127,7 @@ function normalizeClassification(body = {}) {
     secondary_topic_ids: normalizeStringArray(
       rawClassification.secondary_topic_ids ?? body.secondary_topic_ids,
     ),
+    prerequisite_topic_ids: normalizeStringArray(rawClassification.prerequisite_topic_ids),
     family_id: normalizeNullableString(rawClassification.family_id ?? body.family_id),
     primary_question_type_id: normalizeNullableString(
       rawClassification.primary_question_type_id ?? body.primary_question_type_id,
@@ -134,7 +141,16 @@ function normalizeClassification(body = {}) {
     classification_confidence: normalizeClassificationConfidence(
       rawClassification.classification_confidence,
     ),
+    confidence_band: normalizeNullableString(rawClassification.confidence_band),
     candidate_rubric_refs: normalizeCandidateRubricRefs(rawClassification.candidate_rubric_refs),
+    canonical_step_skeleton_summary: normalizeObjectOrNull(
+      rawClassification.canonical_step_skeleton_summary,
+    ),
+    difficulty_signal: normalizeObjectOrNull(rawClassification.difficulty_signal),
+    analysis_audit_metadata: normalizeObjectOrEmpty(rawClassification.analysis_audit_metadata),
+    analysis_version: normalizeNullableString(rawClassification.analysis_version),
+    evidence_source_event_ref: normalizeObjectOrNull(rawClassification.evidence_source_event_ref),
+    analysis_provenance_kind: normalizeNullableString(rawClassification.analysis_provenance_kind),
     uncertainty_validated:
       typeof rawClassification.uncertainty_validated === 'boolean'
         ? rawClassification.uncertainty_validated
@@ -145,12 +161,16 @@ function normalizeClassification(body = {}) {
 
 function normalizeQuestionImportBody(body = {}) {
   const validated = validateQuestionImportInput(body);
-
-  return {
+  const questionEnvelope = normalizeQuestionEnvelope({
     ...validated.normalized,
     paper_scope: normalizeObjectOrNull(body.paper_scope),
     provenance_summary: normalizeObjectOrEmpty(body.provenance_summary),
+  });
+
+  return {
+    ...questionEnvelope,
     classification: normalizeClassification(body),
+    question_envelope: questionEnvelope,
   };
 }
 
@@ -224,6 +244,7 @@ function mergeCanonicalClassification({
 export async function resolveReleasedScoringPosture(client, {
   subjectCode,
   classification,
+  questionEnvelope = null,
 } = {}) {
   const normalizedSubjectCode = normalizeNullableString(subjectCode);
   const normalizedClassification = isPlainObject(classification) ? cloneJson(classification) : {};
@@ -239,13 +260,18 @@ export async function resolveReleasedScoringPosture(client, {
     canonicalQuestionType,
     canonicalQuestionFamily,
   });
+  const enrichedClassification = buildQuestionAnalysisResult({
+    envelope: questionEnvelope,
+    classification: mergedClassification,
+  });
   const scoringScopePosture = resolveContractReleasedScoringPosture({
-    questionTypeId: mergedClassification.primary_question_type_id,
+    questionTypeId: enrichedClassification.primary_question_type_id,
     questionTypeReleaseState: canonicalQuestionType?.release_state ?? null,
-    candidateRubricRefs: mergedClassification.candidate_rubric_refs,
-    uncertaintyValidated: mergedClassification.uncertainty_validated,
-    uncertaintyPosture: mergedClassification.uncertainty_posture,
-    classificationConfidence: mergedClassification.classification_confidence,
+    candidateRubricRefs: enrichedClassification.candidate_rubric_refs,
+    uncertaintyValidated: enrichedClassification.uncertainty_validated,
+    uncertaintyPosture: enrichedClassification.uncertainty_posture,
+    classificationConfidence: enrichedClassification.classification_confidence,
+    confidenceBand: enrichedClassification.confidence_band,
     isPilotQuestionType: isReleasedRegistryContext({
       canonicalQuestionType,
       canonicalQuestionFamily,
@@ -253,7 +279,7 @@ export async function resolveReleasedScoringPosture(client, {
   });
 
   return {
-    classification: mergedClassification,
+    classification: enrichedClassification,
     canonicalQuestionType,
     canonicalQuestionFamily,
     scoringScopePosture,
@@ -267,6 +293,13 @@ async function buildQuestionImportResponse(client, {
   const requestClassification = isPlainObject(requestPayload?.classification)
     ? requestPayload.classification
     : {};
+  const questionEnvelope = normalizeQuestionEnvelope({
+    source_kind: requestPayload?.source_kind,
+    subject_code: question?.subject_code ?? requestPayload?.subject_code ?? null,
+    prompt_representation: requestPayload?.prompt_representation,
+    paper_scope: requestPayload?.paper_scope ?? null,
+    provenance_summary: requestPayload?.provenance_summary ?? {},
+  });
   const { scoringScopePosture } = await resolveReleasedScoringPosture(client, {
     subjectCode: question?.subject_code ?? requestPayload?.subject_code ?? null,
     classification: {
@@ -277,6 +310,7 @@ async function buildQuestionImportResponse(client, {
         ?? requestClassification.primary_question_type_id
         ?? null,
     },
+    questionEnvelope,
   });
 
   return {
@@ -382,6 +416,7 @@ async function performQuestionImport(client, {
   } = await resolveReleasedScoringPosture(client, {
     subjectCode: normalizedInput.subject_code,
     classification: normalizedInput.classification,
+    questionEnvelope: normalizedInput.question_envelope,
   });
   classification.primary_topic_id = normalizeCompatibleRuntimeTopicId(
     classification.primary_topic_id,

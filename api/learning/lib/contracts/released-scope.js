@@ -102,6 +102,7 @@ export function resolveReleasedScoringPosture({
   uncertaintyValidated = false,
   uncertaintyPosture = null,
   classificationConfidence = null,
+  confidenceBand = null,
   isPilotQuestionType = null,
   releaseEvidenceReceipt = null,
 } = {}) {
@@ -176,6 +177,7 @@ export function resolveReleasedScoringPosture({
     uncertaintyValidated,
     uncertaintyPosture,
     classificationConfidence: normalizedClassificationConfidence,
+    confidenceBand,
     isPilotQuestionType: releasedQuestionTypeMatch,
   }), {
     questionTypeId: normalizedQuestionTypeId,

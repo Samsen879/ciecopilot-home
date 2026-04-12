@@ -68,6 +68,34 @@ test('low confidence pilot classifications stay in explicit fallback posture', (
   });
 });
 
+test('explicit calibrated confidence bands are honored by the exported released-scope resolver', () => {
+  expect(
+    resolveReleasedScoringPosture({
+      questionTypeId: '9709.integration.application',
+      questionTypeReleaseState: 'released',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.integration.application',
+          rubric_version_id: 'integration-application-v1',
+          scope_level: 'question_type',
+          release_state: 'released',
+        },
+      ],
+      uncertaintyValidated: true,
+      classificationConfidence: 0.79,
+      confidenceBand: 'medium',
+    }),
+  ).toMatchObject({
+    release_scope_status: RELEASE_SCOPE_STATUSES.RELEASED_SCORING,
+    authoritative_scoring_allowed: true,
+    fallback_mode: null,
+    fallback_reason_code: null,
+    classification_confidence: 0.79,
+    learning_signal_posture: LEARNING_SIGNAL_POSTURES.AUTHORITATIVE_SCORING,
+  });
+});
+
 test.each([
   [
     '9709.trigonometry.identities',

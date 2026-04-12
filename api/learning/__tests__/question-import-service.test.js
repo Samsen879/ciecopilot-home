@@ -641,6 +641,37 @@ describe('question import service', () => {
     });
   });
 
+  test('imported questions preserve explicit non-low confidence bands through released-scope evaluation', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildIntegrationInput({
+        classification: {
+          classification_confidence: 0.79,
+          confidence_band: 'medium',
+        },
+      }),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      fallback_mode: null,
+      fallback_reason_code: null,
+      classification_confidence: 0.79,
+    });
+    expect(result.question).toMatchObject({
+      family_id: '9709.integration_techniques',
+      primary_question_type_id: '9709.integration.application',
+      release_scope_status: 'released_scoring',
+    });
+    expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
+      confidence_band: 'medium',
+      analysis_audit_metadata: expect.not.objectContaining({
+        low_confidence_posture: expect.anything(),
+      }),
+    });
+  });
+
   test('imported differential equations separable question gets authoritative scoring when released gates are satisfied', async () => {
     const result = await importQuestion(createClient(), {
       userId: 'student-1',

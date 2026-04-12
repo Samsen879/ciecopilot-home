@@ -227,7 +227,7 @@ describe('learning runtime schema contract', () => {
     ].forEach((token) => expect(registryProjectionSql).toContain(token));
 
     expect(registryProjectionSql).toContain(
-      'qb.provenance_summary, lqas.classification_confidence, lqas.candidate_rubric_refs, lqas.classification_source, lqas.confidence_band'
+      'qb.provenance_summary, lqas.classification_confidence, lqas.candidate_rubric_refs, lqt.release_state as primary_question_type_release_state, lqas.classification_source, lqas.confidence_band'
     );
   });
 

@@ -44,6 +44,7 @@ SELECT
   qb.provenance_summary,
   lqas.classification_confidence,
   lqas.candidate_rubric_refs,
+  lqt.release_state AS primary_question_type_release_state,
   lqas.classification_source,
   lqas.confidence_band,
   lqas.prerequisite_topic_ids,
@@ -52,8 +53,7 @@ SELECT
   lqas.analysis_audit_metadata,
   lqas.analysis_version,
   lqas.evidence_source_event_ref,
-  lqas.analysis_provenance_kind,
-  lqt.release_state AS primary_question_type_release_state
+  lqas.analysis_provenance_kind
 FROM public.question_bank qb
 LEFT JOIN public.learning_question_families lf
   ON lf.family_id = qb.family_id

@@ -225,6 +225,10 @@ describe('learning runtime schema contract', () => {
       'lqas.evidence_source_event_ref',
       'lqas.analysis_provenance_kind'
     ].forEach((token) => expect(registryProjectionSql).toContain(token));
+
+    expect(registryProjectionSql).toContain(
+      'qb.provenance_summary, lqas.classification_confidence, lqas.candidate_rubric_refs, lqas.classification_source, lqas.confidence_band'
+    );
   });
 
   test('pilot registry seed remains insert-only and idempotent', () => {

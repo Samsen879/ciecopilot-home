@@ -36,21 +36,28 @@ Schema and test coverage were extended for the slice:
 - `api/learning/__tests__/released-scope.test.js`
 - `api/learning/__tests__/schema-contract.test.js`
 
+The follow-up CI repair for this slice preserved the established column order of
+`learning_question_registry_projection` so migration replay can append the new
+Phase A columns without breaking the existing view contract.
+
 ## Verification
 
 Command run from the task worktree:
 
 ```bash
-node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand api/learning/__tests__/schema-contract.test.js api/learning/__tests__/question-registry-repository.test.js api/learning/__tests__/question-analysis.test.js api/learning/__tests__/released-scope.test.js api/learning/__tests__/question-import-service.test.js
+node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand api/learning/__tests__/schema-contract.test.js api/learning/__tests__/question-registry-repository.test.js api/learning/__tests__/question-analysis.test.js api/learning/__tests__/released-scope.test.js api/learning/__tests__/question-import-service.test.js api/marking/__tests__/evaluate-v1.test.js
 ```
 
 Observed result:
 
-- `5` test suites passed
-- `25` tests passed
+- `6` test suites passed
+- `46` tests passed
 - no snapshot changes
 
-The only takeover repair needed after restoring the branch state was in `api/learning/__tests__/schema-contract.test.js`: the contract test now matches the migration's intended nullable `confidence_band` constraint.
+The takeover required two narrow repairs after restoring the branch state:
+
+- `api/learning/__tests__/schema-contract.test.js` now matches the migration's intended nullable `confidence_band` constraint.
+- `supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql` now preserves the original view column order and appends the new Phase A fields after the established projection columns.
 
 ## Residual Risks
 

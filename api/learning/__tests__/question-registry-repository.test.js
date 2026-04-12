@@ -183,12 +183,32 @@ describe('question-registry-repository', () => {
       classification: {
         primary_topic_id: 'topic-1',
         secondary_topic_ids: ['topic-2'],
+        prerequisite_topic_ids: ['topic-prereq-1'],
         family_id: '9709.trigonometry_manipulation_equations',
         primary_question_type_id: '9709.trigonometry.equations',
         secondary_question_type_ids: ['9709.trigonometry.identities'],
         variant_tags: ['paper:p1', 'answer_form:interval'],
         classification_source: 'manual_import',
         classification_confidence: 0.82,
+        confidence_band: 'medium',
+        canonical_step_skeleton_summary: {
+          version: 'pilot.v1',
+          steps: ['isolate trigonometric term', 'apply reference angle'],
+        },
+        difficulty_signal: {
+          source: 'heuristic',
+          band: 'medium',
+        },
+        analysis_audit_metadata: {
+          intake_mode: 'manual_paste',
+        },
+        analysis_version: 'phase_a.v1',
+        evidence_source_event_ref: {
+          kind: 'event',
+          event_id: 'event-question-classified-1',
+          event_type: 'QuestionClassified',
+        },
+        analysis_provenance_kind: 'real',
         candidate_rubric_refs: [
           {
             kind: 'rubric_release',
@@ -229,12 +249,20 @@ describe('question-registry-repository', () => {
         question_id: 'question-fixed-1',
         primary_topic_id: 'topic-1',
         secondary_topic_ids: ['topic-2'],
+        prerequisite_topic_ids: ['topic-prereq-1'],
         family_id: '9709.trigonometry_manipulation_equations',
         primary_question_type_id: '9709.trigonometry.equations',
         secondary_question_type_ids: ['9709.trigonometry.identities'],
         variant_tags: ['paper:p1', 'answer_form:interval'],
         classification_source: 'manual_import',
         classification_confidence: 0.82,
+        confidence_band: 'medium',
+        canonical_step_skeleton_summary: importedInput.classification.canonical_step_skeleton_summary,
+        difficulty_signal: importedInput.classification.difficulty_signal,
+        analysis_audit_metadata: importedInput.classification.analysis_audit_metadata,
+        analysis_version: 'phase_a.v1',
+        evidence_source_event_ref: importedInput.classification.evidence_source_event_ref,
+        analysis_provenance_kind: 'real',
         candidate_rubric_refs: importedInput.classification.candidate_rubric_refs,
       },
     });

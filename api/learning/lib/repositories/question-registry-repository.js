@@ -4,6 +4,12 @@ function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function normalizeObject(value, fallback = null) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? JSON.parse(JSON.stringify(value))
+    : fallback;
+}
+
 function buildQuestionInsertRow(input) {
   const classification = input.classification || {};
 
@@ -38,6 +44,7 @@ function buildClassificationSnapshotRow(questionId, input) {
     secondary_topic_ids: normalizeArray(
       classification.secondary_topic_ids ?? input.secondary_topic_ids,
     ),
+    prerequisite_topic_ids: normalizeArray(classification.prerequisite_topic_ids),
     family_id: classification.family_id ?? input.family_id ?? null,
     primary_question_type_id:
       classification.primary_question_type_id ?? input.primary_question_type_id ?? null,
@@ -47,7 +54,15 @@ function buildClassificationSnapshotRow(questionId, input) {
     variant_tags: normalizeArray(classification.variant_tags ?? input.variant_tags),
     classification_source: classification.classification_source ?? 'imported_question',
     classification_confidence: classification.classification_confidence ?? null,
+    confidence_band: classification.confidence_band ?? null,
     candidate_rubric_refs: normalizeArray(classification.candidate_rubric_refs),
+    canonical_step_skeleton_summary:
+      normalizeObject(classification.canonical_step_skeleton_summary),
+    difficulty_signal: normalizeObject(classification.difficulty_signal),
+    analysis_audit_metadata: normalizeObject(classification.analysis_audit_metadata, {}),
+    analysis_version: classification.analysis_version ?? 'phase_a.v1',
+    evidence_source_event_ref: normalizeObject(classification.evidence_source_event_ref),
+    analysis_provenance_kind: classification.analysis_provenance_kind ?? 'real',
   };
 }
 

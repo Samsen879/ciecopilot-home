@@ -40,6 +40,34 @@ test('pilot type membership alone does not unlock authoritative scoring', () => 
   });
 });
 
+test('low confidence pilot classifications stay in explicit fallback posture', () => {
+  expect(
+    resolveReleasedScoringPosture({
+      questionTypeId: '9709.integration.application',
+      questionTypeReleaseState: 'released',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.integration.application',
+          rubric_version_id: 'integration-application-v1',
+          scope_level: 'question_type',
+          release_state: 'released',
+        },
+      ],
+      uncertaintyValidated: true,
+      classificationConfidence: 0.77,
+      confidenceBand: 'low',
+    }),
+  ).toMatchObject({
+    release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
+    authoritative_scoring_allowed: false,
+    fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
+    fallback_reason_code: FALLBACK_REASON_CODES.LOW_CLASSIFICATION_CONFIDENCE,
+    classification_confidence: 0.77,
+    learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+  });
+});
+
 test.each([
   [
     '9709.trigonometry.identities',

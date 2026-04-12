@@ -620,14 +620,24 @@ describe('question import service', () => {
     });
 
     expect(result.scoring_scope_posture).toMatchObject({
-      authoritative_scoring_allowed: true,
-      release_scope_status: 'released_scoring',
-      fallback_mode: null,
+      authoritative_scoring_allowed: false,
+      release_scope_status: 'non_released_fallback',
+      fallback_mode: 'non_released_fallback',
+      fallback_reason_code: 'low_classification_confidence',
+      classification_confidence: 0.77,
     });
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
       primary_question_type_id: '9709.integration.application',
-      release_scope_status: 'released_scoring',
+      release_scope_status: 'non_released_fallback',
+    });
+    expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
+      confidence_band: 'low',
+      analysis_audit_metadata: expect.objectContaining({
+        low_confidence_posture: expect.objectContaining({
+          posture: 'low_confidence',
+        }),
+      }),
     });
   });
 
@@ -646,6 +656,32 @@ describe('question import service', () => {
       family_id: '9709.differential_equations',
       primary_question_type_id: '9709.differential_equations.separable',
       release_scope_status: 'released_scoring',
+    });
+  });
+
+  test('seeded pilot rubric refs are filled when import input omits explicit candidate refs', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildTrigIdentityInput({
+        classification: {
+          candidate_rubric_refs: [],
+        },
+      }),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+    });
+    expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
+      candidate_rubric_refs: [
+        expect.objectContaining({
+          rubric_set_id: '9709.trigonometry.identities',
+          release_state: 'released',
+        }),
+      ],
+      confidence_band: 'high',
+      analysis_provenance_kind: 'real',
     });
   });
 

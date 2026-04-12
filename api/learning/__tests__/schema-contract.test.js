@@ -5,7 +5,9 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
   'supabase/migrations/20260320111000_create_learning_runtime_core.sql',
   'supabase/migrations/20260320111500_seed_learning_runtime_pilot_registry.sql',
-  'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql'
+  'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
+  'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
+  'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql'
 ];
 
 function readMigration(relPath) {
@@ -59,10 +61,18 @@ describe('learning runtime schema contract', () => {
       'paper_scope',
       'primary_topic_id',
       'secondary_topic_ids',
+      'prerequisite_topic_ids',
       'family_id',
       'primary_question_type_id',
       'secondary_question_type_ids',
       'variant_tags',
+      'canonical_step_skeleton_summary',
+      'difficulty_signal',
+      'confidence_band',
+      'analysis_audit_metadata',
+      'analysis_version',
+      'evidence_source_event_ref',
+      'analysis_provenance_kind',
       'release_scope_status',
       'classification_snapshot_ref',
       'prompt_representation',
@@ -174,6 +184,22 @@ describe('learning runtime schema contract', () => {
     ['family_id', 'references public.learning_question_families']
       .forEach((token) => expect(questionTypesSql).toContain(token));
 
+    const questionAnalysisSql = normalizeSql(readMigration(
+      'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql'
+    ));
+    [
+      'prerequisite_topic_ids',
+      'canonical_step_skeleton_summary',
+      'difficulty_signal',
+      'confidence_band',
+      'analysis_audit_metadata',
+      'analysis_version',
+      'evidence_source_event_ref',
+      'analysis_provenance_kind',
+      "check (confidence_band is null or confidence_band in ('low', 'medium', 'high'))",
+      "check (analysis_provenance_kind in ('real', 'synthetic', 'mixed', 'unknown'))"
+    ].forEach((token) => expect(questionAnalysisSql).toContain(token));
+
     const reconciliationSql = extractTableBlock(sql, 'public.learning_reconciliation_runs');
     [
       'trigger_source',
@@ -184,6 +210,21 @@ describe('learning runtime schema contract', () => {
       'started_at',
       'completed_at'
     ].forEach((token) => expect(reconciliationSql).toContain(token));
+
+    const registryProjectionSql = normalizeSql(readMigration(
+      'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql'
+    ));
+
+    [
+      'lqas.prerequisite_topic_ids',
+      'lqas.canonical_step_skeleton_summary',
+      'lqas.difficulty_signal',
+      'lqas.confidence_band',
+      'lqas.analysis_audit_metadata',
+      'lqas.analysis_version',
+      'lqas.evidence_source_event_ref',
+      'lqas.analysis_provenance_kind'
+    ].forEach((token) => expect(registryProjectionSql).toContain(token));
   });
 
   test('pilot registry seed remains insert-only and idempotent', () => {

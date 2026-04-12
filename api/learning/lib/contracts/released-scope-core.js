@@ -13,6 +13,7 @@ export const FALLBACK_REASON_CODES = Object.freeze({
   MISSING_RELEASED_FAMILY_EVIDENCE: 'missing_released_family_evidence',
   MISSING_RELEASED_RUBRIC: 'missing_released_rubric',
   MISSING_CLASSIFICATION_CONFIDENCE: 'missing_classification_confidence',
+  LOW_CLASSIFICATION_CONFIDENCE: 'low_classification_confidence',
   UNVALIDATED_UNCERTAINTY_POSTURE: 'unvalidated_uncertainty_posture',
   SUBJECT_ADAPTER_CAPABILITY_NOT_ENABLED: 'subject_adapter_capability_not_enabled',
 });
@@ -21,6 +22,9 @@ export const LEARNING_SIGNAL_POSTURES = Object.freeze({
   AUTHORITATIVE_SCORING: 'authoritative_scoring',
   CONSERVATIVE_FALLBACK: 'conservative_fallback',
 });
+
+export const CONFIDENCE_BANDS = Object.freeze(['low', 'medium', 'high']);
+export const LOW_CLASSIFICATION_CONFIDENCE_THRESHOLD = 0.8;
 
 export function normalizeQuestionTypeId(questionTypeId) {
   return typeof questionTypeId === 'string' ? questionTypeId.trim() : '';
@@ -37,6 +41,28 @@ export function normalizeClassificationConfidence(value) {
 
   const parsed = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function normalizeConfidenceBand(value) {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  return CONFIDENCE_BANDS.includes(normalized) ? normalized : null;
+}
+
+export function deriveConfidenceBand(classificationConfidence) {
+  const normalizedClassification = normalizeClassificationConfidence(classificationConfidence);
+  if (normalizedClassification === null) {
+    return null;
+  }
+
+  if (normalizedClassification < LOW_CLASSIFICATION_CONFIDENCE_THRESHOLD) {
+    return 'low';
+  }
+
+  if (normalizedClassification < 0.85) {
+    return 'medium';
+  }
+
+  return 'high';
 }
 
 function hasReleasedRubricRef(candidateRubricRefs) {
@@ -83,6 +109,8 @@ function summarizeFallbackReason(fallbackReasonCode) {
       return 'a released rubric is still missing';
     case FALLBACK_REASON_CODES.MISSING_CLASSIFICATION_CONFIDENCE:
       return 'classification confidence is still missing';
+    case FALLBACK_REASON_CODES.LOW_CLASSIFICATION_CONFIDENCE:
+      return 'classification confidence is too low for authoritative scoring';
     case FALLBACK_REASON_CODES.UNVALIDATED_UNCERTAINTY_POSTURE:
       return 'validated uncertainty posture is still missing';
     case FALLBACK_REASON_CODES.SUBJECT_ADAPTER_CAPABILITY_NOT_ENABLED:
@@ -222,10 +250,13 @@ export function resolveInlineReleasedScoringPosture({
   uncertaintyValidated = false,
   uncertaintyPosture = null,
   classificationConfidence = null,
+  confidenceBand = null,
   isPilotQuestionType = null,
 } = {}) {
   const normalizedQuestionType = normalizeQuestionTypeId(questionTypeId);
   const normalizedClassification = normalizeClassificationConfidence(classificationConfidence);
+  const normalizedConfidenceBand = normalizeConfidenceBand(confidenceBand)
+    || deriveConfidenceBand(normalizedClassification);
   const validatedUncertainty = hasValidatedUncertaintyPosture(
     uncertaintyPosture ?? uncertaintyValidated,
   );
@@ -288,6 +319,23 @@ export function resolveInlineReleasedScoringPosture({
     return withReleasedScopeExplanation(
       buildFallbackPosture(
         FALLBACK_REASON_CODES.MISSING_CLASSIFICATION_CONFIDENCE,
+        normalizedClassification,
+      ),
+      {
+        questionTypeId: normalizedQuestionType,
+        questionTypeReleaseState,
+        candidateRubricRefs,
+        uncertaintyValidated,
+        uncertaintyPosture,
+        classificationConfidence: normalizedClassification,
+      },
+    );
+  }
+
+  if (normalizedConfidenceBand === 'low') {
+    return withReleasedScopeExplanation(
+      buildFallbackPosture(
+        FALLBACK_REASON_CODES.LOW_CLASSIFICATION_CONFIDENCE,
         normalizedClassification,
       ),
       {

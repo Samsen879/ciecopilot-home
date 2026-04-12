@@ -2,7 +2,7 @@
 
 Generated: 2026-04-10T16:29:14.548Z
 Browser path: C:/Program Files/Google/Chrome/Application/chrome.exe
-Execution path: Windows node.exe + Playwright package bundled inside Windows global @playwright/cli install
+Execution path: Windows node.exe + portable Playwright resolution (@playwright/cli-bundled playwright on operator machine)
 Frontend: http://172.30.25.37:5173
 Backend: http://172.30.25.37:3001
 
@@ -35,8 +35,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Imported question posture banner rendered with a durable question id and explicit scoring posture.
 - Before URL: about:blank
 - After URL: http://172.30.25.37:5173/learn/session/new?entry=imported_question
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-01.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-01-snapshot.txt
+- Screenshot: lr-bcl-01.png
+- Snapshot: lr-bcl-01-snapshot.txt
 - Visible evidence: Imported question ready | Question ID | Question type | Release scope status
 - Dynamic IDs: {"questionId":"1d363a66-cc10-4aff-8aaa-a0f9a15710b3"}
 - Requests:
@@ -47,8 +47,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Imported-question handoff created a live session and the first ask updated the session timeline.
 - Before URL: http://172.30.25.37:5173/learn/session/new?entry=imported_question
 - After URL: http://172.30.25.37:5173/learn/session/5888f0f8-8f0c-4b98-85bf-b49dfa91d274
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-02.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-02-snapshot.txt
+- Screenshot: lr-bcl-02.png
+- Snapshot: lr-bcl-02-snapshot.txt
 - Visible evidence: Learning runtime session | Anchor: question | Session flow
 - Dynamic IDs: {"sessionId":"5888f0f8-8f0c-4b98-85bf-b49dfa91d274","createdSessionStatus":200}
 - Requests:
@@ -60,8 +60,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Concept launch is a real product failure: POST /api/learning/sessions returned 500 and the browser stayed on the launcher instead of opening a real session.
 - Before URL: http://172.30.25.37:5173/learn/session/5888f0f8-8f0c-4b98-85bf-b49dfa91d274
 - After URL: http://172.30.25.37:5173/learn/session/new
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-03.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-03-snapshot.txt
+- Screenshot: lr-bcl-03.png
+- Snapshot: lr-bcl-03-snapshot.txt
 - Requests:
   - POST /api/learning/sessions 500 request_id=99730a10-74cb-4589-bcd4-562e3721008b
 - Notes: product_fail=true | error_code=internal_error
@@ -72,8 +72,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Seeded workspace fresh-load is blocked by a real frontend defect: the workspace route fell into a component load error before the review queue rendered.
 - Before URL: http://172.30.25.37:5173/learn/session/new
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-04.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-04-snapshot.txt
+- Screenshot: lr-bcl-04.png
+- Snapshot: lr-bcl-04-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/lib/contracts/runtime-contract.js 404
@@ -85,8 +85,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Illegal workspace_slot + spaced_review + common_traps is a real product failure: the browser created a session (200) instead of returning 409 fail-closed.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/session/16cd45ed-bba8-49ef-8f95-57e7b6fad357
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-05.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-05-snapshot.txt
+- Screenshot: lr-bcl-05.png
+- Snapshot: lr-bcl-05-snapshot.txt
 - Requests:
   - POST /api/learning/sessions 200
 - Notes: product_fail=true | expected_status=409 | observed_status=200
@@ -97,8 +97,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Canonical queue vs workspace projection could not be verified because the fresh-load workspace route hit the same component load error before rendering.
 - Before URL: http://172.30.25.37:5173/learn/session/16cd45ed-bba8-49ef-8f95-57e7b6fad357
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-06.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-06-snapshot.txt
+- Screenshot: lr-bcl-06.png
+- Snapshot: lr-bcl-06-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/review-tasks 200 request_id=777fa3e5-e692-40a1-943f-d2f739e1ada1
@@ -112,8 +112,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Workspace completion could not be exercised because the fresh-load workspace route hit the same component load error before review controls rendered.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-07.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-07-snapshot.txt
+- Screenshot: lr-bcl-07.png
+- Snapshot: lr-bcl-07-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/lib/contracts/runtime-contract.js 404
@@ -125,8 +125,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Canonical queue preserved both the partial result and the updated due time after refresh.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/review-queue
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-08.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-08-snapshot.txt
+- Screenshot: lr-bcl-08.png
+- Snapshot: lr-bcl-08-snapshot.txt
 - Visible evidence: Partial result recorded. | Rescheduled for
 - Dynamic IDs: {"reviewTaskId":"0c100001-7a3e-4d82-9d7c-1f1000010302"}
 - Requests:
@@ -145,8 +145,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Reopen returned 200 through the API, but the workspace-side verification failed because the fresh-load workspace route hit the same component load error.
 - Before URL: http://172.30.25.37:5173/learn/review-queue
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-09.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-09-snapshot.txt
+- Screenshot: lr-bcl-09.png
+- Snapshot: lr-bcl-09-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/review-tasks 200 request_id=77d79c03-ad46-4862-bae7-f55c3f6237ea
@@ -160,8 +160,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Pin-from-inbox remains conservatively blocked on fresh load and is not counted as browser-covered; this run also observed the higher-level workspace component load error on the fresh workspace route.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-10.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-10-snapshot.txt
+- Screenshot: lr-bcl-10.png
+- Snapshot: lr-bcl-10-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/lib/contracts/runtime-contract.js 404
@@ -172,8 +172,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Contested-artifact closure remains conservatively blocked on fresh load and is not counted as browser-covered; this run also observed the higher-level workspace component load error on the fresh workspace route.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-12.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-12-snapshot.txt
+- Screenshot: lr-bcl-12.png
+- Snapshot: lr-bcl-12-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/lib/contracts/runtime-contract.js 404
@@ -184,8 +184,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Supersede could not be exercised because the fresh-load workspace route hit the same component load error before artifact controls rendered.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-13.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-13-snapshot.txt
+- Screenshot: lr-bcl-13.png
+- Snapshot: lr-bcl-13-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/lib/contracts/runtime-contract.js 404
@@ -197,8 +197,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Unpin could not be exercised because the fresh-load workspace route hit the same component load error before artifact controls rendered.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-11.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-11-snapshot.txt
+- Screenshot: lr-bcl-11.png
+- Snapshot: lr-bcl-11-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/lib/contracts/runtime-contract.js 404
@@ -210,8 +210,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Post-mortem rendered diagnostics plus repair handoff, and the repair CTA launched a new runtime session.
 - Before URL: http://172.30.25.37:5173/learn/workspace/0c100001-7a3e-4d82-9d7c-1f1000010001
 - After URL: http://172.30.25.37:5173/learn/session/0bee30b5-7f5b-404b-9276-1c762affd10e
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-14.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-14-snapshot.txt
+- Screenshot: lr-bcl-14.png
+- Snapshot: lr-bcl-14-snapshot.txt
 - Visible evidence: Post-mortem review | Misconceptions in focus | Launch repair session
 - Dynamic IDs: {"sourceSessionId":"0c100001-7a3e-4d82-9d7c-1f1000010501","repairSessionId":"0bee30b5-7f5b-404b-9276-1c762affd10e"}
 - Requests:
@@ -224,8 +224,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Continuity metadata rendered clearly, but this surface remains render-first rather than a closed-loop continuation flow.
 - Before URL: http://172.30.25.37:5173/learn/session/0bee30b5-7f5b-404b-9276-1c762affd10e
 - After URL: http://172.30.25.37:5173/learn/session/0c100001-7a3e-4d82-9d7c-1f1000010503
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-15.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-15-snapshot.txt
+- Screenshot: lr-bcl-15.png
+- Snapshot: lr-bcl-15-snapshot.txt
 - Visible evidence: Resume and handoff | Session lineage | Suggested handoff
 - Dynamic IDs: {"sessionId":"0c100001-7a3e-4d82-9d7c-1f1000010503"}
 - Requests:
@@ -238,8 +238,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Missing-session handling is a real product failure: bad session URLs returned 500 internal_error instead of the runbook-expected 404.
 - Before URL: http://172.30.25.37:5173/learn/session/0c100001-7a3e-4d82-9d7c-1f1000010503
 - After URL: http://172.30.25.37:5173/learn/session/not-a-real-session
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-16.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-16-snapshot.txt
+- Screenshot: lr-bcl-16.png
+- Snapshot: lr-bcl-16-snapshot.txt
 - Requests:
   - GET /api/learning/sessions/not-a-real-session 500 request_id=9211c1d8-a8b6-48fd-bbc7-e89a736778b0
   - GET /api/learning/sessions/not-a-real-session 500 request_id=04904416-1779-43f9-87c6-0eb2c84c53ab
@@ -251,8 +251,8 @@ Backend: http://172.30.25.37:3001
 - Summary: Missing-workspace handling could not reach the 404 path because the fresh-load workspace route hit the same higher-level component load error first.
 - Before URL: http://172.30.25.37:5173/learn/session/not-a-real-session
 - After URL: http://172.30.25.37:5173/learn/workspace/not-a-real-topic
-- Screenshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-17.png
-- Snapshot: //wsl.localhost/Ubuntu/home/samsen/code/ciecopilot-home/output/playwright/learning-runtime-closed-loop/lr-bcl-17-snapshot.txt
+- Screenshot: lr-bcl-17.png
+- Snapshot: lr-bcl-17-snapshot.txt
 - Visible evidence: 组件加载错误 | 错误详情 (开发模式)
 - Requests:
   - GET /api/learning/lib/contracts/runtime-contract.js 404
@@ -273,7 +273,7 @@ Backend: http://172.30.25.37:3001
 
 ## Non-browser-covered Scope
 
-- LR-BCL-10 and LR-BCL-12 remain blocked on fresh load and are not counted as browser-covered in this run.
+- LR-BCL-10 and LR-BCL-12 remain blocked from a clean workspace load; inspect those scenario notes for whether the immediate blocker was missing inbox projection or a workspace component-load failure.
 - LR-BCL-15 is render-only; it confirms continuity visibility but not actionable continuation from the session card.
 - Gate 4 authoritative scoring / post-mark learning effects remain backend-owned and are not counted as browser-covered in this run.
 

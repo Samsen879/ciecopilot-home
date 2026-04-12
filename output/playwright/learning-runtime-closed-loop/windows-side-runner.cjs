@@ -1,15 +1,12 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
 
-const PLAYWRIGHT_MODULE = process.env.PLAYWRIGHT_WINDOWS_MODULE
-  || 'C:/Users/Samsen/AppData/Roaming/npm/node_modules/@playwright/cli/node_modules/playwright';
-const { chromium } = require(PLAYWRIGHT_MODULE);
-
 const ROOT_DIR = process.cwd();
 const OUTPUT_DIR = path.join(ROOT_DIR, 'output', 'playwright', 'learning-runtime-closed-loop');
 const RESULTS_JSON_PATH = path.join(OUTPUT_DIR, 'closed-loop-results.json');
 const RESULTS_MD_PATH = path.join(OUTPUT_DIR, 'closed-loop-results.md');
 const FIXTURE_PATH = path.join(OUTPUT_DIR, 'fixture-manifest.json');
+const BUNDLE_PATH_MARKER = '/output/playwright/learning-runtime-closed-loop/';
 
 const BASE_URL = process.env.LEARNING_RUNTIME_FRONTEND_BASE_URL || 'http://172.30.25.37:5173';
 const API_BASE_URL = process.env.LEARNING_RUNTIME_API_BASE_URL || 'http://172.30.25.37:3001';
@@ -60,6 +57,82 @@ function isoNow() {
 
 function toPosixPath(filePath) {
   return filePath.split(path.sep).join('/');
+}
+
+function uniqueValues(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function buildPlaywrightModuleCandidates(env = process.env) {
+  const appData = env?.APPDATA;
+  const windowsGlobalCandidates = appData
+    ? [
+        path.win32.join(appData, 'npm', 'node_modules', 'playwright'),
+        path.win32.join(appData, 'npm', 'node_modules', 'playwright-core'),
+        path.win32.join(appData, 'npm', 'node_modules', '@playwright', 'cli', 'node_modules', 'playwright'),
+        path.win32.join(appData, 'npm', 'node_modules', '@playwright', 'cli', 'node_modules', 'playwright-core'),
+      ]
+    : [];
+
+  return uniqueValues([
+    env?.PLAYWRIGHT_WINDOWS_MODULE,
+    'playwright',
+    'playwright-core',
+    ...windowsGlobalCandidates,
+  ]);
+}
+
+function resolvePlaywrightModule({
+  env = process.env,
+  resolve = require.resolve,
+} = {}) {
+  const candidates = buildPlaywrightModuleCandidates(env);
+
+  for (const candidate of candidates) {
+    try {
+      resolve(candidate);
+      return candidate;
+    } catch (error) {
+      if (error?.code !== 'MODULE_NOT_FOUND') {
+        throw error;
+      }
+    }
+  }
+
+  throw new Error(
+    `Unable to resolve Playwright module. Tried: ${candidates.join(', ')}. Set PLAYWRIGHT_WINDOWS_MODULE to override.`,
+  );
+}
+
+function loadChromium({
+  env = process.env,
+  requireFn = require,
+  resolve = requireFn.resolve ? requireFn.resolve.bind(requireFn) : require.resolve,
+} = {}) {
+  const playwrightModule = resolvePlaywrightModule({ env, resolve });
+  return {
+    chromium: requireFn(playwrightModule).chromium,
+    playwrightModule,
+  };
+}
+
+function toBundleRelativePath(filePath, bundleDir = OUTPUT_DIR) {
+  if (!filePath) {
+    return filePath;
+  }
+
+  const relativePath = toPosixPath(path.relative(bundleDir, filePath));
+  if (relativePath && relativePath !== '..' && !relativePath.startsWith('../')) {
+    return relativePath;
+  }
+
+  const normalizedPath = toPosixPath(filePath);
+  const markerIndex = normalizedPath.lastIndexOf(BUNDLE_PATH_MARKER);
+  if (markerIndex !== -1) {
+    return normalizedPath.slice(markerIndex + BUNDLE_PATH_MARKER.length);
+  }
+
+  return relativePath;
 }
 
 function compactRequest(entry = {}) {
@@ -304,7 +377,7 @@ async function writeSnapshot(page, id) {
   const snapshotPath = path.join(OUTPUT_DIR, `${id}.txt`);
   const text = await page.locator('body').innerText();
   await fs.writeFile(snapshotPath, `${text}\n`);
-  return toPosixPath(snapshotPath);
+  return toBundleRelativePath(snapshotPath);
 }
 
 async function writeScreenshot(page, id) {
@@ -313,7 +386,7 @@ async function writeScreenshot(page, id) {
     path: screenshotPath,
     fullPage: true,
   });
-  return toPosixPath(screenshotPath);
+  return toBundleRelativePath(screenshotPath);
 }
 
 async function bodyText(page) {
@@ -368,11 +441,13 @@ async function saveScenarioArtifacts(page, id) {
   return { screenshotPath, snapshotPath };
 }
 
-function createResultsSkeleton() {
+function createResultsSkeleton({
+  executionPath = 'Windows node.exe + portable Playwright resolution (PLAYWRIGHT_WINDOWS_MODULE -> playwright -> playwright-core -> %APPDATA% npm global fallbacks)',
+} = {}) {
   return {
     generatedAt: isoNow(),
     environment: {
-      executionPath: 'Windows node.exe + Playwright package bundled inside Windows global @playwright/cli install',
+      executionPath,
       browserPath: WINDOWS_CHROME,
       frontendBaseUrl: BASE_URL,
       backendBaseUrl: API_BASE_URL,
@@ -426,7 +501,10 @@ async function main() {
   await ensureOutputDir();
   const fixture = await readFixture();
   const titleMap = buildScenarioTitleMap();
-  const results = createResultsSkeleton();
+  const { chromium, playwrightModule } = loadChromium();
+  const results = createResultsSkeleton({
+    executionPath: `Windows node.exe + portable Playwright resolution (${playwrightModule})`,
+  });
   const browser = await chromium.launch({
     headless: false,
     executablePath: WINDOWS_CHROME,
@@ -1022,7 +1100,7 @@ async function main() {
   await browser.close();
 }
 
-main().catch(async (error) => {
+async function handleMainError(error) {
   const results = createResultsSkeleton();
   results.scenarios.push({
     id: 'runner',
@@ -1044,4 +1122,19 @@ main().catch(async (error) => {
   await ensureOutputDir();
   await writeResults(results);
   process.exitCode = 1;
-});
+}
+
+if (require.main === module) {
+  main().catch(handleMainError);
+}
+
+module.exports = {
+  buildPlaywrightModuleCandidates,
+  createResultsSkeleton,
+  handleMainError,
+  loadChromium,
+  main,
+  resolvePlaywrightModule,
+  toBundleRelativePath,
+  writeResults,
+};

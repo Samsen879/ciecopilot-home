@@ -52,14 +52,14 @@ SELECT
   lqt.release_state AS primary_question_type_release_state,
   lqas.classification_source,
   lqas.confidence_band,
-  lqas.low_confidence_posture,
   lqas.prerequisite_topic_ids,
   lqas.canonical_step_skeleton_summary,
   lqas.difficulty_signal,
   lqas.analysis_audit_metadata,
   lqas.analysis_version,
   lqas.evidence_source_event_ref,
-  lqas.analysis_provenance_kind
+  lqas.analysis_provenance_kind,
+  lqas.low_confidence_posture
 FROM public.question_bank qb
 LEFT JOIN public.learning_question_families lf
   ON lf.family_id = qb.family_id

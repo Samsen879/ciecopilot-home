@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { buildClassificationSnapshotRef } from '../../../api/learning/lib/contracts/runtime-contract.js';
 import { appendQuestionClassifiedEvent } from '../../../api/learning/lib/events/question-event-service.js';
 import { resolveReleasedScoringPosture } from '../../../api/learning/lib/import/question-import-service.js';
@@ -49,9 +50,51 @@ function buildEnvelopeFromQuestion(question) {
   });
 }
 
+async function findActiveSnapshotId(client, { questionId } = {}) {
+  if (!questionId) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from('learning_question_analysis_snapshots')
+    .select('classification_snapshot_id')
+    .eq('question_id', questionId)
+    .is('superseded_by_snapshot_id', null)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load active question classification snapshot: ${error.message}`);
+  }
+
+  return data?.classification_snapshot_id ?? null;
+}
+
+async function supersedeActiveSnapshot(client, {
+  activeSnapshotId,
+  replacementSnapshotId,
+} = {}) {
+  if (!activeSnapshotId) {
+    return;
+  }
+
+  const { error } = await client
+    .from('learning_question_analysis_snapshots')
+    .update({
+      superseded_by_snapshot_id: replacementSnapshotId,
+    })
+    .eq('classification_snapshot_id', activeSnapshotId);
+
+  if (error) {
+    throw new Error(
+      `Failed to supersede active question classification snapshot: ${error.message}`,
+    );
+  }
+}
+
 export async function backfillQuestionAnalysisRecord(client, {
   question,
   analysisHints = null,
+  force = false,
 } = {}) {
   const envelope = buildEnvelopeFromQuestion(question);
   const rawClassification = analyzeQuestionEnvelope({
@@ -70,7 +113,22 @@ export async function backfillQuestionAnalysisRecord(client, {
     envelope,
     classification,
   });
+  const activeSnapshotId = force
+    ? await findActiveSnapshotId(client, { questionId: question?.question_id ?? null })
+    : null;
+  const replacementSnapshotId = activeSnapshotId ? randomUUID() : null;
+
+  if (force && activeSnapshotId) {
+    await supersedeActiveSnapshot(client, {
+      activeSnapshotId,
+      replacementSnapshotId,
+    });
+  }
+
   const snapshotRow = buildSnapshotRow(question.question_id, materializedClassification);
+  if (replacementSnapshotId) {
+    snapshotRow.classification_snapshot_id = replacementSnapshotId;
+  }
 
   const { data: insertedSnapshot, error: snapshotError } = await client
     .from('learning_question_analysis_snapshots')
@@ -156,6 +214,7 @@ export async function runQuestionAnalysisBackfill(client, {
 
     const result = await backfillQuestionAnalysisRecord(client, {
       question,
+      force,
     });
     summary.backfilled += 1;
     summary.items.push({

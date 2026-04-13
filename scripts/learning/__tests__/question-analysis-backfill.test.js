@@ -53,6 +53,11 @@ function createBackfillClient() {
       return this;
     }
 
+    is(field, value) {
+      this.filters.push({ field, value, operator: 'is' });
+      return this;
+    }
+
     single() {
       return this.#resolve();
     }
@@ -81,15 +86,55 @@ function createBackfillClient() {
       }
 
       if (this.table === 'learning_question_analysis_snapshots' && this.operation === 'insert') {
-        const snapshotId = `snapshot-${state.nextSnapshotId++}`;
-        const row = { classification_snapshot_id: snapshotId, ...this.payload };
+        const activeSnapshot = [...state.snapshots.values()].find(
+          (snapshot) => snapshot.question_id === this.payload.question_id
+            && (snapshot.superseded_by_snapshot_id ?? null) === null,
+        );
+        if (activeSnapshot) {
+          return Promise.resolve({
+            data: null,
+            error: {
+              message:
+                'duplicate key value violates unique constraint "uq_learning_question_analysis_snapshots_active"',
+            },
+          });
+        }
+
+        const snapshotId = this.payload.classification_snapshot_id || `snapshot-${state.nextSnapshotId++}`;
+        const row = {
+          superseded_by_snapshot_id: null,
+          classification_snapshot_id: snapshotId,
+          ...this.payload,
+        };
         state.snapshots.set(snapshotId, row);
+        return Promise.resolve({ data: row, error: null });
+      }
+
+      if (this.table === 'learning_question_analysis_snapshots' && this.operation === 'select') {
+        const questionId = findFilter(this.filters, 'question_id');
+        const supersededBySnapshotIdFilter = this.filters.find(
+          (filter) => filter.field === 'superseded_by_snapshot_id' && filter.operator === 'is',
+        );
+        const row = [...state.snapshots.values()].find((snapshot) => (
+          snapshot.question_id === questionId
+          && (
+            !supersededBySnapshotIdFilter
+            || (snapshot.superseded_by_snapshot_id ?? null) === supersededBySnapshotIdFilter.value
+          )
+        )) || null;
+
         return Promise.resolve({ data: row, error: null });
       }
 
       if (this.table === 'learning_question_analysis_snapshots' && this.operation === 'update') {
         const snapshotId = findFilter(this.filters, 'classification_snapshot_id');
         const current = state.snapshots.get(snapshotId);
+        if (!current) {
+          return Promise.resolve({
+            data: null,
+            error: { message: `Snapshot not found for ${snapshotId}` },
+          });
+        }
         state.snapshots.set(snapshotId, { ...current, ...this.payload });
         return Promise.resolve({ data: null, error: null });
       }
@@ -200,6 +245,67 @@ describe('question-analysis backfill', () => {
           status: 'skipped_existing_snapshot',
         },
       ],
+    });
+  });
+
+  test('force backfill supersedes the existing active snapshot before inserting the replacement', async () => {
+    const { client, state } = createBackfillClient();
+    state.snapshots.set('snapshot-existing', {
+      classification_snapshot_id: 'snapshot-existing',
+      question_id: 'question-force',
+      primary_question_type_id: '9709.trigonometry.identities',
+      superseded_by_snapshot_id: null,
+    });
+
+    const summary = await runQuestionAnalysisBackfill(client, {
+      force: true,
+      questions: [
+        {
+          question_id: 'question-force',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          prompt_representation: {
+            type: 'text',
+            value: 'Solve the differential equation dy/dx = 2xy given that y = 1 when x = 0.',
+          },
+          provenance_summary: {
+            import_source: 'manual_paste',
+          },
+          classification_snapshot_ref: {
+            kind: 'classification_snapshot',
+            classification_snapshot_id: 'snapshot-existing',
+          },
+        },
+      ],
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      backfilled: 1,
+      skipped: 0,
+      items: [
+        {
+          question_id: 'question-force',
+          status: 'backfilled',
+        },
+      ],
+    });
+    const replacementSnapshotId = summary.items[0].classification_snapshot_id;
+    expect(typeof replacementSnapshotId).toBe('string');
+    expect(replacementSnapshotId).not.toBe('snapshot-existing');
+    expect(state.snapshots.get('snapshot-existing')).toMatchObject({
+      superseded_by_snapshot_id: replacementSnapshotId,
+    });
+    expect(state.snapshots.get(replacementSnapshotId)).toMatchObject({
+      question_id: 'question-force',
+      superseded_by_snapshot_id: null,
+      primary_question_type_id: '9709.differential_equations.separable',
+    });
+    expect(state.questions.get('question-force')).toMatchObject({
+      classification_snapshot_ref: {
+        kind: 'classification_snapshot',
+        classification_snapshot_id: replacementSnapshotId,
+      },
     });
   });
 });

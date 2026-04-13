@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getServiceClient } from '../../api/lib/supabase/client.js';
 import { runQuestionAnalysisBackfill } from './lib/question-analysis-backfill.js';
 
@@ -37,8 +39,15 @@ export async function main(argv = process.argv.slice(2)) {
   console.log(JSON.stringify(summary, null, 2));
 }
 
-const isEntrypoint = process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href;
-if (isEntrypoint) {
+export function isQuestionAnalysisBackfillEntrypoint(entryScriptPath, metaUrl = import.meta.url) {
+  if (!entryScriptPath) {
+    return false;
+  }
+
+  return path.resolve(entryScriptPath) === fileURLToPath(metaUrl);
+}
+
+if (isQuestionAnalysisBackfillEntrypoint(process.argv[1], import.meta.url)) {
   main().catch((error) => {
     console.error(error.message);
     process.exitCode = 1;

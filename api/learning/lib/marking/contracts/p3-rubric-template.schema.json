@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ciecopilot.dev/schemas/p3-rubric-template.schema.json",
+  "title": "RubricTemplate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "rubric_template_id",
+    "question_type_id",
+    "title",
+    "release_state",
+    "adapter_key",
+    "score_max",
+    "provenance",
+    "parts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "p3.rubric_template.v1"
+    },
+    "rubric_template_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "question_type_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "release_state": {
+      "enum": ["draft", "validated", "released"]
+    },
+    "adapter_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "score_max": {
+      "type": "number",
+      "minimum": 0
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_type", "source_refs"],
+      "properties": {
+        "source_type": {
+          "enum": ["official_mark_scheme_excerpt", "manual_authoring", "mixed"]
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "authoring_notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "global_uncertainty_rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/UncertaintyTrigger"
+      }
+    },
+    "parts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/RubricPart"
+      }
+    }
+  },
+  "$defs": {
+    "VerificationCondition": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "adapter_method"],
+          "properties": {
+            "kind": { "const": "adapter_call" },
+            "adapter_method": { "type": "string", "minLength": 1 },
+            "params": { "type": "object" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "conditions"],
+          "properties": {
+            "kind": { "enum": ["all", "any"] },
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/VerificationCondition" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "condition"],
+          "properties": {
+            "kind": { "const": "not" },
+            "condition": { "$ref": "#/$defs/VerificationCondition" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "min_count", "conditions"],
+          "properties": {
+            "kind": { "const": "count_at_least" },
+            "min_count": { "type": "integer", "minimum": 1 },
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/VerificationCondition" }
+            }
+          }
+        }
+      ]
+    },
+    "DependencyChain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prerequisite_point_ids", "prerequisite_policy", "strict"],
+      "properties": {
+        "prerequisite_point_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "prerequisite_policy": {
+          "enum": ["all", "any"]
+        },
+        "strict": {
+          "type": "boolean"
+        }
+      }
+    },
+    "FollowThroughPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "mode", "allow_incorrect_source"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "mode": {
+          "enum": [
+            "reuse_student_binding",
+            "symbolic_substitution",
+            "numeric_substitution",
+            "algebraic_consistency"
+          ]
+        },
+        "allow_incorrect_source": { "type": "boolean" },
+        "binding_sources": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "source_point_ids": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "UncertaintyTrigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trigger_id", "trigger_type", "severity", "message"],
+      "properties": {
+        "trigger_id": { "type": "string", "minLength": 1 },
+        "trigger_type": {
+          "enum": [
+            "adapter_confidence_below",
+            "multiple_branch_match",
+            "missing_binding",
+            "ambiguous_parse",
+            "manual_review_required"
+          ]
+        },
+        "severity": {
+          "enum": ["low", "medium", "high"]
+        },
+        "message": { "type": "string", "minLength": 1 },
+        "threshold": { "type": "number" },
+        "params": { "type": "object" }
+      }
+    },
+    "MarkPoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "point_id",
+        "official_mark_notation",
+        "mark_family",
+        "max_score",
+        "verification_condition"
+      ],
+      "properties": {
+        "point_id": { "type": "string", "minLength": 1 },
+        "official_mark_notation": { "type": "string", "minLength": 1 },
+        "mark_family": { "enum": ["M", "A", "B"] },
+        "max_score": { "type": "number", "minimum": 0 },
+        "verification_condition": { "$ref": "#/$defs/VerificationCondition" },
+        "dependency_chain": { "$ref": "#/$defs/DependencyChain" },
+        "follow_through": { "$ref": "#/$defs/FollowThroughPolicy" },
+        "uncertainty_triggers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UncertaintyTrigger" }
+        }
+      }
+    },
+    "RubricPart": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["part_id", "label", "score_max", "points"],
+      "properties": {
+        "part_id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "score_max": { "type": "number", "minimum": 0 },
+        "points": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/MarkPoint" }
+        },
+        "uncertainty_triggers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/UncertaintyTrigger" }
+        },
+        "subparts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RubricPart" }
+        }
+      }
+    }
+  }
+}

@@ -43,6 +43,16 @@ function createQuestionRegistryDb() {
                 };
               }
 
+              if (table === 'learning_question_events') {
+                return {
+                  data: {
+                    question_event_id: 'question-event-1',
+                    ...payload,
+                  },
+                  error: null,
+                };
+              }
+
               throw new Error(`Unexpected insert table: ${table}`);
             },
           };
@@ -223,7 +233,7 @@ describe('question-registry-repository', () => {
 
     const result = await insertImportedQuestion(db, importedInput);
 
-    expect(db.inserts).toHaveLength(2);
+    expect(db.inserts).toHaveLength(3);
     expect(db.inserts[0]).toMatchObject({
       table: 'question_bank',
       payload: {
@@ -257,17 +267,42 @@ describe('question-registry-repository', () => {
         classification_source: 'manual_import',
         classification_confidence: 0.82,
         confidence_band: 'medium',
+        low_confidence_posture: null,
         canonical_step_skeleton_summary: importedInput.classification.canonical_step_skeleton_summary,
         difficulty_signal: importedInput.classification.difficulty_signal,
         analysis_audit_metadata: importedInput.classification.analysis_audit_metadata,
         analysis_version: 'phase_a.v1',
-        evidence_source_event_ref: importedInput.classification.evidence_source_event_ref,
         analysis_provenance_kind: 'real',
         candidate_rubric_refs: importedInput.classification.candidate_rubric_refs,
       },
     });
 
+    expect(db.inserts[2]).toMatchObject({
+      table: 'learning_question_events',
+      payload: {
+        event_type: 'QuestionClassified',
+        question_id: 'question-fixed-1',
+        classification_snapshot_id: 'snapshot-1',
+        event_payload: expect.objectContaining({
+          question_id: 'question-fixed-1',
+          classification_snapshot_id: 'snapshot-1',
+          primary_question_type_id: '9709.trigonometry.equations',
+        }),
+      },
+    });
+
     expect(db.updates).toEqual([
+      {
+        table: 'learning_question_analysis_snapshots',
+        payload: {
+          evidence_source_event_ref: {
+            kind: 'question_event',
+            question_event_id: 'question-event-1',
+            event_type: 'QuestionClassified',
+          },
+        },
+        filters: [{ column: 'classification_snapshot_id', value: 'snapshot-1' }],
+      },
       {
         table: 'question_bank',
         payload: {

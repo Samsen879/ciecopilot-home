@@ -17,10 +17,12 @@ const clientState = {
   nextIdempotencyId: 1,
   nextQuestionId: 1,
   nextSnapshotId: 1,
+  nextQuestionEventId: 1,
   registryFamilies: new Map(),
   registryTypes: new Map(),
   questions: new Map(),
   snapshots: new Map(),
+  questionEvents: new Map(),
 };
 
 function seedCanonicalRegistry() {
@@ -97,8 +99,10 @@ function resetClientState() {
   clientState.nextIdempotencyId = 1;
   clientState.nextQuestionId = 1;
   clientState.nextSnapshotId = 1;
+  clientState.nextQuestionEventId = 1;
   clientState.questions = new Map();
   clientState.snapshots = new Map();
+  clientState.questionEvents = new Map();
   seedCanonicalRegistry();
 }
 
@@ -263,6 +267,32 @@ function resolveQuery(query) {
       ...query.payload,
     };
     clientState.snapshots.set(snapshotId, row);
+    return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_question_analysis_snapshots' && query.operation === 'update') {
+    const snapshotId = findFilter(query, 'classification_snapshot_id');
+    const current = clientState.snapshots.get(snapshotId) || null;
+
+    if (!current) {
+      return { data: null, error: null };
+    }
+
+    const next = {
+      ...current,
+      ...query.payload,
+    };
+    clientState.snapshots.set(snapshotId, next);
+    return { data: next, error: null };
+  }
+
+  if (query.table === 'learning_question_events' && query.operation === 'insert') {
+    const questionEventId = `question-event-${clientState.nextQuestionEventId++}`;
+    const row = {
+      question_event_id: questionEventId,
+      ...query.payload,
+    };
+    clientState.questionEvents.set(questionEventId, row);
     return { data: row, error: null };
   }
 
@@ -547,6 +577,41 @@ function buildDifferentialInput(overrides = {}) {
   };
 }
 
+function buildAnalysisHints(overrides = {}) {
+  return {
+    runtime_context_id: '9709.trigonometry.equations',
+    question_type_hint_id: '9709.trigonometry.equations',
+    ...overrides,
+  };
+}
+
+function buildPromptOnlyInput({
+  promptValue,
+  analysisHints = null,
+  classification = undefined,
+} = {}) {
+  const body = {
+    subject_code: '9709',
+    prompt_representation: {
+      type: 'text',
+      value: promptValue,
+    },
+    provenance_summary: {
+      import_source: 'manual_paste',
+    },
+  };
+
+  if (analysisHints) {
+    body.analysis_hints = analysisHints;
+  }
+
+  if (typeof classification !== 'undefined') {
+    body.classification = classification;
+  }
+
+  return body;
+}
+
 describe('question import service', () => {
   let harness;
 
@@ -598,50 +663,116 @@ describe('question import service', () => {
     ).toBe(true);
   });
 
-  test('trigonometry type without a released rubric ref falls back to non_released_fallback', async () => {
+  test('import analysis derives canonical type from prompt text even when caller classification disagrees', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildPromptOnlyInput({
+        promptValue: 'Solve the differential equation dy/dx = 2xy given that y = 1 when x = 0.',
+        analysisHints: buildAnalysisHints({
+          runtime_context_id: '9709.trigonometry.equations',
+          question_type_hint_id: '9709.trigonometry.equations',
+        }),
+        classification: {
+          primary_question_type_id: '9709.trigonometry.equations',
+          classification_confidence: 0.99,
+          candidate_rubric_refs: [buildReleasedRubricRef()],
+          uncertainty_validated: true,
+          uncertainty_posture: {
+            status: 'validated',
+          },
+        },
+      }),
+    });
+
+    expect(result.question).toMatchObject({
+      family_id: '9709.differential_equations',
+      primary_question_type_id: '9709.differential_equations.separable',
+    });
+    expect(result.scoring_scope_posture).toMatchObject({
+      release_scope_status: 'released_scoring',
+      authoritative_scoring_allowed: true,
+    });
+    expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
+      analysis_audit_metadata: expect.objectContaining({
+        analysis_mode: 'question_intelligence',
+        analysis_hints: expect.objectContaining({
+          question_type_hint_id: '9709.trigonometry.equations',
+        }),
+      }),
+    });
+  });
+
+  test('import analysis can classify prompt-only trig identities without caller-supplied classification', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildPromptOnlyInput({
+        promptValue: 'Prove that 1 - tan^2(x) = cos(2x) / cos^2(x).',
+        analysisHints: buildAnalysisHints({
+          runtime_context_id: '9709.trigonometry.identities',
+          question_type_hint_id: '9709.trigonometry.identities',
+        }),
+      }),
+    });
+
+    expect(result.question).toMatchObject({
+      family_id: '9709.trigonometry_manipulation_equations',
+      primary_question_type_id: '9709.trigonometry.identities',
+      release_scope_status: 'released_scoring',
+    });
+    expect(result.scoring_scope_posture).toMatchObject({
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+    });
+  });
+
+  test('caller-supplied rubric refs do not override the analyzer-selected pilot rubric package', async () => {
     const result = await importQuestion(createClient(), {
       userId: 'student-1',
       body: buildTrigWithoutReleasedRubricInput(),
     });
 
     expect(result.scoring_scope_posture).toMatchObject({
-      authoritative_scoring_allowed: false,
-      fallback_mode: 'non_released_fallback',
-      fallback_reason_code: 'missing_released_rubric',
-      classification_confidence: 0.88,
+      authoritative_scoring_allowed: true,
+      fallback_mode: null,
+      fallback_reason_code: null,
+      classification_confidence: 0.95,
     });
-    expect(result.question.release_scope_status).toBe('non_released_fallback');
+    expect(result.question.release_scope_status).toBe('released_scoring');
+    expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
+      candidate_rubric_refs: [
+        expect.objectContaining({
+          rubric_set_id: '9709.trigonometry.identities',
+          release_state: 'released',
+        }),
+      ],
+    });
   });
 
-  test('imported integration application question gets authoritative scoring when released gates are satisfied', async () => {
+  test('imported integration application question gets authoritative scoring from analyzer output when released gates are satisfied', async () => {
     const result = await importQuestion(createClient(), {
       userId: 'student-1',
       body: buildIntegrationInput(),
     });
 
     expect(result.scoring_scope_posture).toMatchObject({
-      authoritative_scoring_allowed: false,
-      release_scope_status: 'non_released_fallback',
-      fallback_mode: 'non_released_fallback',
-      fallback_reason_code: 'low_classification_confidence',
-      classification_confidence: 0.77,
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      fallback_mode: null,
+      fallback_reason_code: null,
+      classification_confidence: 0.89,
     });
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
       primary_question_type_id: '9709.integration.application',
-      release_scope_status: 'non_released_fallback',
+      release_scope_status: 'released_scoring',
     });
     expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
-      confidence_band: 'low',
-      analysis_audit_metadata: expect.objectContaining({
-        low_confidence_posture: expect.objectContaining({
-          posture: 'low_confidence',
-        }),
-      }),
+      confidence_band: 'high',
+      low_confidence_posture: null,
     });
   });
 
-  test('imported questions preserve explicit non-low confidence bands through released-scope evaluation', async () => {
+  test('imported questions record analysis hints but keep analyzer-owned confidence posture', async () => {
     const result = await importQuestion(createClient(), {
       userId: 'student-1',
       body: buildIntegrationInput({
@@ -657,7 +788,7 @@ describe('question import service', () => {
       release_scope_status: 'released_scoring',
       fallback_mode: null,
       fallback_reason_code: null,
-      classification_confidence: 0.79,
+      classification_confidence: 0.89,
     });
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
@@ -665,9 +796,11 @@ describe('question import service', () => {
       release_scope_status: 'released_scoring',
     });
     expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
-      confidence_band: 'medium',
-      analysis_audit_metadata: expect.not.objectContaining({
-        low_confidence_posture: expect.anything(),
+      confidence_band: 'high',
+      analysis_audit_metadata: expect.objectContaining({
+        analysis_hints: expect.objectContaining({
+          question_type_hint_id: '9709.integration.application',
+        }),
       }),
     });
   });
@@ -713,6 +846,41 @@ describe('question import service', () => {
       ],
       confidence_band: 'high',
       analysis_provenance_kind: 'real',
+    });
+  });
+
+  test('import persists a real QuestionClassified event and links the active snapshot to it', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildPromptOnlyInput({
+        promptValue: 'Find the value of integral of (2x+1)(x^2+x)^4 dx.',
+        analysisHints: buildAnalysisHints({
+          runtime_context_id: '9709.integration.application',
+          question_type_hint_id: '9709.integration.application',
+        }),
+      }),
+    });
+
+    expect(result.question.classification_snapshot_ref).toEqual({
+      kind: 'classification_snapshot',
+      classification_snapshot_id: 'snapshot-1',
+    });
+    expect(clientState.questionEvents.get('question-event-1')).toMatchObject({
+      event_type: 'QuestionClassified',
+      question_id: 'question-1',
+      classification_snapshot_id: 'snapshot-1',
+      event_payload: expect.objectContaining({
+        question_id: 'question-1',
+        classification_snapshot_id: 'snapshot-1',
+        primary_question_type_id: '9709.integration.application',
+      }),
+    });
+    expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
+      evidence_source_event_ref: {
+        kind: 'question_event',
+        question_event_id: 'question-event-1',
+        event_type: 'QuestionClassified',
+      },
     });
   });
 

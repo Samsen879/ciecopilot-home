@@ -76,6 +76,7 @@ export function validateQuestionAnalysisResult(result = {}) {
   [
     'canonical_step_skeleton_summary',
     'difficulty_signal',
+    'low_confidence_posture',
     'analysis_audit_metadata',
     'evidence_source_event_ref',
     'uncertainty_posture',

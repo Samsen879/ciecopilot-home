@@ -1,0 +1,90 @@
+{
+  "schema_version": "p3.rubric_template.v1",
+  "rubric_template_id": "9709.integration.application.v1",
+  "question_type_id": "9709.integration.application",
+  "title": "Pilot rubric for integration applications",
+  "release_state": "released",
+  "adapter_key": "math.symbolic.v1",
+  "score_max": 2,
+  "provenance": {
+    "source_type": "official_mark_scheme_excerpt",
+    "source_refs": [
+      "docs/reports/gpt5.4pro-deep-thinking/P3.md"
+    ]
+  },
+  "global_uncertainty_rules": [
+    {
+      "trigger_id": "integration-manual-review",
+      "trigger_type": "missing_binding",
+      "severity": "medium",
+      "message": "Trigger fallback when the substitution binding cannot be recovered."
+    }
+  ],
+  "parts": [
+    {
+      "part_id": "main",
+      "label": "main",
+      "score_max": 2,
+      "points": [
+        {
+          "point_id": "identify-substitution",
+          "official_mark_notation": "M1",
+          "mark_family": "M",
+          "max_score": 1,
+          "verification_condition": {
+            "kind": "adapter_call",
+            "adapter_method": "transform_bundle_check",
+            "params": {
+              "requires_substitution": true
+            }
+          },
+          "uncertainty_triggers": [
+            {
+              "trigger_id": "integration-low-confidence",
+              "trigger_type": "adapter_confidence_below",
+              "threshold": 0.8,
+              "severity": "high",
+              "message": "Integration structure confidence is too low."
+            }
+          ]
+        },
+        {
+          "point_id": "complete-integration",
+          "official_mark_notation": "A1",
+          "mark_family": "A",
+          "max_score": 1,
+          "verification_condition": {
+            "kind": "adapter_call",
+            "adapter_method": "symbolic_check",
+            "params": {
+              "expects_exact_integral": true
+            }
+          },
+          "dependency_chain": {
+            "prerequisite_point_ids": [
+              "identify-substitution"
+            ],
+            "prerequisite_policy": "all",
+            "strict": true
+          },
+          "follow_through": {
+            "enabled": true,
+            "mode": "algebraic_consistency",
+            "allow_incorrect_source": true,
+            "source_point_ids": [
+              "identify-substitution"
+            ]
+          },
+          "uncertainty_triggers": [
+            {
+              "trigger_id": "integration-branch-match",
+              "trigger_type": "multiple_branch_match",
+              "severity": "medium",
+              "message": "Multiple equivalent antiderivatives were detected."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

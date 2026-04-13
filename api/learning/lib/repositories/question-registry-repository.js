@@ -1,4 +1,5 @@
 import { buildClassificationSnapshotRef } from '../contracts/runtime-contract.js';
+import { appendQuestionClassifiedEvent } from '../events/question-event-service.js';
 
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
@@ -55,13 +56,14 @@ function buildClassificationSnapshotRow(questionId, input) {
     classification_source: classification.classification_source ?? 'imported_question',
     classification_confidence: classification.classification_confidence ?? null,
     confidence_band: classification.confidence_band ?? null,
+    low_confidence_posture: normalizeObject(classification.low_confidence_posture),
     candidate_rubric_refs: normalizeArray(classification.candidate_rubric_refs),
     canonical_step_skeleton_summary:
       normalizeObject(classification.canonical_step_skeleton_summary),
     difficulty_signal: normalizeObject(classification.difficulty_signal),
     analysis_audit_metadata: normalizeObject(classification.analysis_audit_metadata, {}),
     analysis_version: classification.analysis_version ?? 'phase_a.v1',
-    evidence_source_event_ref: normalizeObject(classification.evidence_source_event_ref),
+    evidence_source_event_ref: null,
     analysis_provenance_kind: classification.analysis_provenance_kind ?? 'real',
   };
 }
@@ -253,6 +255,24 @@ export async function insertImportedQuestion(client, input) {
   const classification_snapshot_ref = buildClassificationSnapshotRef(
     insertedSnapshot.classification_snapshot_id,
   );
+
+  const { eventRef } = await appendQuestionClassifiedEvent(client, {
+    questionId: insertedQuestion.question_id,
+    classificationSnapshotId: insertedSnapshot.classification_snapshot_id,
+    question: insertedQuestion,
+    classification: snapshotRow,
+  });
+
+  const { error: snapshotUpdateError } = await client
+    .from('learning_question_analysis_snapshots')
+    .update({ evidence_source_event_ref: eventRef })
+    .eq('classification_snapshot_id', insertedSnapshot.classification_snapshot_id);
+
+  if (snapshotUpdateError) {
+    throw new Error(
+      `Failed to link classification snapshot to QuestionClassified event: ${snapshotUpdateError.message}`,
+    );
+  }
 
   const { error: updateError } = await client
     .from('question_bank')

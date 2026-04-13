@@ -6,6 +6,9 @@ import {
   buildQuestionAnalysisResult,
 } from '../question-analysis/analysis-result-contract.js';
 import {
+  analyzeQuestionEnvelope,
+} from '../question-analysis/question-intelligence-service.js';
+import {
   normalizeQuestionEnvelope,
 } from '../question-analysis/question-envelope-contract.js';
 import {
@@ -117,46 +120,29 @@ function normalizeCandidateRubricRefs(value) {
     .map((entry) => cloneJson(entry));
 }
 
-function normalizeClassification(body = {}) {
+function normalizeAnalysisHints(body = {}, validatedAnalysisHints = null) {
   const rawClassification = isPlainObject(body.classification) ? body.classification : {};
-
-  return {
-    primary_topic_id: normalizeNullableString(
-      rawClassification.primary_topic_id ?? body.primary_topic_id,
+  const normalizedHints = {
+    runtime_context_id: normalizeNullableString(
+      validatedAnalysisHints?.runtime_context_id ?? body.runtime_context_id,
     ),
-    secondary_topic_ids: normalizeStringArray(
-      rawClassification.secondary_topic_ids ?? body.secondary_topic_ids,
+    question_type_hint_id: normalizeNullableString(
+      validatedAnalysisHints?.question_type_hint_id
+      ?? rawClassification.primary_question_type_id
+      ?? body.primary_question_type_id,
     ),
-    prerequisite_topic_ids: normalizeStringArray(rawClassification.prerequisite_topic_ids),
-    family_id: normalizeNullableString(rawClassification.family_id ?? body.family_id),
-    primary_question_type_id: normalizeNullableString(
-      rawClassification.primary_question_type_id ?? body.primary_question_type_id,
+    topic_path_hint: normalizeNullableString(
+      validatedAnalysisHints?.topic_path_hint ?? body.topic_path,
     ),
-    secondary_question_type_ids: normalizeStringArray(
-      rawClassification.secondary_question_type_ids ?? body.secondary_question_type_ids,
-    ),
-    variant_tags: normalizeStringArray(rawClassification.variant_tags ?? body.variant_tags),
-    classification_source:
-      normalizeNullableString(rawClassification.classification_source) || 'imported_question',
-    classification_confidence: normalizeClassificationConfidence(
-      rawClassification.classification_confidence,
-    ),
-    confidence_band: normalizeNullableString(rawClassification.confidence_band),
-    candidate_rubric_refs: normalizeCandidateRubricRefs(rawClassification.candidate_rubric_refs),
-    canonical_step_skeleton_summary: normalizeObjectOrNull(
-      rawClassification.canonical_step_skeleton_summary,
-    ),
-    difficulty_signal: normalizeObjectOrNull(rawClassification.difficulty_signal),
-    analysis_audit_metadata: normalizeObjectOrEmpty(rawClassification.analysis_audit_metadata),
-    analysis_version: normalizeNullableString(rawClassification.analysis_version),
-    evidence_source_event_ref: normalizeObjectOrNull(rawClassification.evidence_source_event_ref),
-    analysis_provenance_kind: normalizeNullableString(rawClassification.analysis_provenance_kind),
-    uncertainty_validated:
-      typeof rawClassification.uncertainty_validated === 'boolean'
-        ? rawClassification.uncertainty_validated
-        : false,
-    uncertainty_posture: normalizeObjectOrNull(rawClassification.uncertainty_posture),
   };
+
+  if (!normalizedHints.runtime_context_id
+    && !normalizedHints.question_type_hint_id
+    && !normalizedHints.topic_path_hint) {
+    return null;
+  }
+
+  return normalizedHints;
 }
 
 function normalizeQuestionImportBody(body = {}) {
@@ -169,7 +155,7 @@ function normalizeQuestionImportBody(body = {}) {
 
   return {
     ...questionEnvelope,
-    classification: normalizeClassification(body),
+    analysis_hints: normalizeAnalysisHints(body, validated.normalized.analysis_hints),
     question_envelope: questionEnvelope,
   };
 }
@@ -410,12 +396,16 @@ async function performQuestionImport(client, {
   normalizedInput,
   questionId = null,
 } = {}) {
+  const analyzedClassification = analyzeQuestionEnvelope({
+    envelope: normalizedInput.question_envelope,
+    analysisHints: normalizedInput.analysis_hints,
+  });
   const {
     classification,
     scoringScopePosture,
   } = await resolveReleasedScoringPosture(client, {
     subjectCode: normalizedInput.subject_code,
-    classification: normalizedInput.classification,
+    classification: analyzedClassification,
     questionEnvelope: normalizedInput.question_envelope,
   });
   classification.primary_topic_id = normalizeCompatibleRuntimeTopicId(

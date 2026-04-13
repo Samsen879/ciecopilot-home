@@ -7,7 +7,8 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320111500_seed_learning_runtime_pilot_registry.sql',
   'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
   'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
-  'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql'
+  'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql',
+  'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'
 ];
 
 function readMigration(relPath) {
@@ -69,6 +70,7 @@ describe('learning runtime schema contract', () => {
       'canonical_step_skeleton_summary',
       'difficulty_signal',
       'confidence_band',
+      'low_confidence_posture',
       'analysis_audit_metadata',
       'analysis_version',
       'evidence_source_event_ref',
@@ -86,6 +88,7 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('create table if not exists public.learning_question_families');
     expect(sql).toContain('create table if not exists public.learning_question_types');
     expect(sql).toContain('create table if not exists public.learning_question_analysis_snapshots');
+    expect(sql).toContain('create table if not exists public.learning_question_events');
     expect(sql).toContain('create table if not exists public.learning_sessions');
     expect(sql).toContain('create table if not exists public.learning_session_lineage');
     expect(sql).toContain('create table if not exists public.learning_workspaces');
@@ -185,19 +188,14 @@ describe('learning runtime schema contract', () => {
       .forEach((token) => expect(questionTypesSql).toContain(token));
 
     const questionAnalysisSql = normalizeSql(readMigration(
-      'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql'
+      'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'
     ));
     [
-      'prerequisite_topic_ids',
-      'canonical_step_skeleton_summary',
-      'difficulty_signal',
-      'confidence_band',
-      'analysis_audit_metadata',
-      'analysis_version',
-      'evidence_source_event_ref',
-      'analysis_provenance_kind',
-      "check (confidence_band is null or confidence_band in ('low', 'medium', 'high'))",
-      "check (analysis_provenance_kind in ('real', 'synthetic', 'mixed', 'unknown'))"
+      'low_confidence_posture',
+      'create table if not exists public.learning_question_events',
+      'question_event_id uuid primary key default gen_random_uuid()',
+      'classification_snapshot_id uuid not null references public.learning_question_analysis_snapshots(classification_snapshot_id)',
+      "check (low_confidence_posture is null or jsonb_typeof(low_confidence_posture) = 'object')"
     ].forEach((token) => expect(questionAnalysisSql).toContain(token));
 
     const reconciliationSql = extractTableBlock(sql, 'public.learning_reconciliation_runs');
@@ -212,7 +210,7 @@ describe('learning runtime schema contract', () => {
     ].forEach((token) => expect(reconciliationSql).toContain(token));
 
     const registryProjectionSql = normalizeSql(readMigration(
-      'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql'
+      'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'
     ));
 
     [
@@ -220,6 +218,7 @@ describe('learning runtime schema contract', () => {
       'lqas.canonical_step_skeleton_summary',
       'lqas.difficulty_signal',
       'lqas.confidence_band',
+      'lqas.low_confidence_posture',
       'lqas.analysis_audit_metadata',
       'lqas.analysis_version',
       'lqas.evidence_source_event_ref',

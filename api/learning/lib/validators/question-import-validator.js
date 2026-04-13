@@ -60,6 +60,34 @@ function normalizePromptRepresentation(value) {
   };
 }
 
+function normalizeOptionalAnalysisHints(value) {
+  if (typeof value === 'undefined' || value === null) {
+    return null;
+  }
+
+  if (!isPlainObject(value)) {
+    throw createValidationError(
+      LEARNING_ERROR_CODES.INVALID_PAYLOAD,
+      'analysis_hints must be an object when provided.',
+      { details: { field: 'analysis_hints' } },
+    );
+  }
+
+  const runtimeContextId = normalizeString(value.runtime_context_id);
+  const questionTypeHintId = normalizeString(value.question_type_hint_id);
+  const topicPathHint = normalizeString(value.topic_path_hint);
+
+  if (!runtimeContextId && !questionTypeHintId && !topicPathHint) {
+    return null;
+  }
+
+  return {
+    runtime_context_id: runtimeContextId || null,
+    question_type_hint_id: questionTypeHintId || null,
+    topic_path_hint: topicPathHint || null,
+  };
+}
+
 export function validateQuestionImportInput(input = {}) {
   if (!isPlainObject(input)) {
     throw createValidationError(
@@ -84,6 +112,7 @@ export function validateQuestionImportInput(input = {}) {
       source_kind: 'imported_question',
       subject_code: normalizeRequiredString(input.subject_code, 'subject_code'),
       prompt_representation: normalizePromptRepresentation(input.prompt_representation),
+      analysis_hints: normalizeOptionalAnalysisHints(input.analysis_hints),
     },
   };
 }

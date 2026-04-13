@@ -1,0 +1,93 @@
+{
+  "schema_version": "p3.rubric_template.v1",
+  "rubric_template_id": "9709.trigonometry.identities.v1",
+  "question_type_id": "9709.trigonometry.identities",
+  "title": "Pilot rubric for trigonometric identities",
+  "release_state": "released",
+  "adapter_key": "math.symbolic.v1",
+  "score_max": 2,
+  "provenance": {
+    "source_type": "official_mark_scheme_excerpt",
+    "source_refs": [
+      "docs/reports/gpt5.4pro-deep-thinking/P3.md"
+    ],
+    "authoring_notes": [
+      "Phase A pilot executable rubric template."
+    ]
+  },
+  "global_uncertainty_rules": [
+    {
+      "trigger_id": "identity-ambiguous-parse",
+      "trigger_type": "ambiguous_parse",
+      "severity": "medium",
+      "message": "Trigger fallback when the symbolic parse is ambiguous."
+    }
+  ],
+  "parts": [
+    {
+      "part_id": "main",
+      "label": "main",
+      "score_max": 2,
+      "points": [
+        {
+          "point_id": "identity-rewrite",
+          "official_mark_notation": "M1",
+          "mark_family": "M",
+          "max_score": 1,
+          "verification_condition": {
+            "kind": "adapter_call",
+            "adapter_method": "proof_structure_check",
+            "params": {
+              "requires_identity_rewrite": true
+            }
+          },
+          "uncertainty_triggers": [
+            {
+              "trigger_id": "identity-low-confidence",
+              "trigger_type": "adapter_confidence_below",
+              "threshold": 0.8,
+              "severity": "high",
+              "message": "Symbolic proof match confidence is too low."
+            }
+          ]
+        },
+        {
+          "point_id": "identity-result",
+          "official_mark_notation": "A1",
+          "mark_family": "A",
+          "max_score": 1,
+          "verification_condition": {
+            "kind": "adapter_call",
+            "adapter_method": "symbolic_check",
+            "params": {
+              "expects_target_identity": true
+            }
+          },
+          "dependency_chain": {
+            "prerequisite_point_ids": [
+              "identity-rewrite"
+            ],
+            "prerequisite_policy": "all",
+            "strict": true
+          },
+          "follow_through": {
+            "enabled": true,
+            "mode": "symbolic_substitution",
+            "allow_incorrect_source": true,
+            "source_point_ids": [
+              "identity-rewrite"
+            ]
+          },
+          "uncertainty_triggers": [
+            {
+              "trigger_id": "identity-branch-match",
+              "trigger_type": "multiple_branch_match",
+              "severity": "medium",
+              "message": "Multiple equivalent proof branches matched."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

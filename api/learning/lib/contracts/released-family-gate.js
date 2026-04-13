@@ -2,6 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  validateP3RubricTemplateFile,
+} from '../marking/contracts/p3-rubric-validator.js';
+import {
   FALLBACK_REASON_CODES,
   resolveInlineReleasedScoringPosture,
 } from './released-scope-core.js';
@@ -186,11 +189,32 @@ function validateRubricCoverage(rootDir, family) {
 
   const questionTypeResults = releasedQuestionTypeIds.map((questionTypeId) => {
     const entry = entryMap.get(questionTypeId) || null;
-    const releasedRubricRefs = Array.isArray(entry?.released_rubric_refs)
-      ? entry.released_rubric_refs.filter((ref) => ref?.release_state === 'released')
-      : [];
+    const templatePaths = normalizeStringArray(entry?.rubric_template_paths);
+    const templateResults = templatePaths.map((relPath) => {
+      if (!fileExists(rootDir, relPath)) {
+        return {
+          relPath,
+          ok: false,
+          missing: true,
+          errors: ['rubric_template_missing'],
+        };
+      }
 
-    if (releasedRubricRefs.length > 0) {
+      const validation = validateP3RubricTemplateFile(resolveFromRoot(rootDir, relPath));
+      return {
+        relPath,
+        ok: validation.ok,
+        missing: false,
+        errors: validation.errors,
+        template: validation.template,
+      };
+    });
+    const matchingReleasedTemplates = templateResults.filter((result) =>
+      result.ok
+      && result.template?.question_type_id === questionTypeId
+      && result.template?.release_state === 'released');
+
+    if (matchingReleasedTemplates.length > 0) {
       coveredQuestionTypeIds.push(questionTypeId);
       return {
         question_type_id: questionTypeId,
@@ -199,10 +223,27 @@ function validateRubricCoverage(rootDir, family) {
       };
     }
 
+    const questionTypeBlockedReasons = [];
+    if (templatePaths.length === 0) {
+      uniquePush(questionTypeBlockedReasons, 'rubric_template_path_missing');
+    }
+    if (templateResults.some((result) => result.missing)) {
+      uniquePush(questionTypeBlockedReasons, 'rubric_template_missing');
+    }
+    if (templateResults.some((result) => !result.missing && !result.ok)) {
+      uniquePush(questionTypeBlockedReasons, 'rubric_template_invalid');
+    }
+    if (
+      templateResults.some((result) =>
+        result.ok && result.template?.question_type_id !== questionTypeId)
+    ) {
+      uniquePush(questionTypeBlockedReasons, 'rubric_template_question_type_mismatch');
+    }
+
     return {
       question_type_id: questionTypeId,
       status: 'fail',
-      blocked_reasons: ['rubric_coverage_missing_released_ref'],
+      blocked_reasons: questionTypeBlockedReasons,
     };
   });
 

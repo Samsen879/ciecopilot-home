@@ -152,6 +152,7 @@ export function buildQuestionAnalysisResult({
       || 'question_analysis',
     classification_confidence: classificationConfidence,
     confidence_band: confidenceBand,
+    low_confidence_posture: lowConfidencePosture,
     candidate_rubric_refs: candidateRubricRefs,
     canonical_step_skeleton_summary: normalizeObjectOrNull(
       classification.canonical_step_skeleton_summary,

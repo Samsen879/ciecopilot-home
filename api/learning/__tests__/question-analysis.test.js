@@ -71,6 +71,11 @@ describe('question-analysis foundation', () => {
       family_id: '9709.integration_techniques',
       primary_question_type_id: '9709.integration.application',
       confidence_band: 'low',
+      low_confidence_posture: expect.objectContaining({
+        posture: 'low_confidence',
+        authoritative_scoring_allowed: false,
+        fallback_reason_code: 'low_classification_confidence',
+      }),
       candidate_rubric_refs: [
         expect.objectContaining({
           kind: 'rubric_release',

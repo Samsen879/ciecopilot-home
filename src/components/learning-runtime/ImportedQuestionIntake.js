@@ -28,7 +28,15 @@ export const IMPORTED_QUESTION_RUNTIME_CONTEXT_OPTIONS = Object.freeze([
     topicId: 'topic-integration-1',
     topicPath: '9709.integration.application',
     questionTypeId: '9709.integration.application',
-    postureLabel: 'fallback-only family',
+    postureLabel: 'pilot question type',
+  },
+  {
+    value: '9709.differential_equations.separable',
+    label: 'Separable differential equations',
+    topicId: 'topic-differential-separable',
+    topicPath: '9709.differential_equations.separable',
+    questionTypeId: '9709.differential_equations.separable',
+    postureLabel: 'pilot question type',
   },
 ]);
 
@@ -123,9 +131,10 @@ export function buildImportQuestionPayload(draft = {}) {
     provenance_summary: {
       import_source: 'manual_paste',
     },
-    classification: {
-      primary_question_type_id: normalizedDraft.questionTypeId || null,
-      primary_topic_id: null,
+    analysis_hints: {
+      runtime_context_id: normalizedDraft.runtimeContextId || null,
+      question_type_hint_id: normalizedDraft.questionTypeId || null,
+      topic_path_hint: normalizedDraft.topicPath || null,
     },
   };
 }

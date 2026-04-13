@@ -1,0 +1,90 @@
+{
+  "schema_version": "p3.rubric_template.v1",
+  "rubric_template_id": "9709.differential_equations.separable.v1",
+  "question_type_id": "9709.differential_equations.separable",
+  "title": "Pilot rubric for separable differential equations",
+  "release_state": "released",
+  "adapter_key": "math.symbolic.v1",
+  "score_max": 2,
+  "provenance": {
+    "source_type": "official_mark_scheme_excerpt",
+    "source_refs": [
+      "docs/reports/gpt5.4pro-deep-thinking/P3.md"
+    ]
+  },
+  "global_uncertainty_rules": [
+    {
+      "trigger_id": "de-manual-review",
+      "trigger_type": "manual_review_required",
+      "severity": "high",
+      "message": "Manual review required when the separable form is not explicit."
+    }
+  ],
+  "parts": [
+    {
+      "part_id": "main",
+      "label": "main",
+      "score_max": 2,
+      "points": [
+        {
+          "point_id": "separate-variables",
+          "official_mark_notation": "M1",
+          "mark_family": "M",
+          "max_score": 1,
+          "verification_condition": {
+            "kind": "adapter_call",
+            "adapter_method": "transform_bundle_check",
+            "params": {
+              "requires_separation": true
+            }
+          },
+          "uncertainty_triggers": [
+            {
+              "trigger_id": "de-ambiguous-parse",
+              "trigger_type": "ambiguous_parse",
+              "severity": "medium",
+              "message": "The separated-variable parse is ambiguous."
+            }
+          ]
+        },
+        {
+          "point_id": "apply-initial-condition",
+          "official_mark_notation": "A1",
+          "mark_family": "A",
+          "max_score": 1,
+          "verification_condition": {
+            "kind": "adapter_call",
+            "adapter_method": "numeric_check",
+            "params": {
+              "requires_initial_condition": true
+            }
+          },
+          "dependency_chain": {
+            "prerequisite_point_ids": [
+              "separate-variables"
+            ],
+            "prerequisite_policy": "all",
+            "strict": true
+          },
+          "follow_through": {
+            "enabled": true,
+            "mode": "numeric_substitution",
+            "allow_incorrect_source": true,
+            "source_point_ids": [
+              "separate-variables"
+            ]
+          },
+          "uncertainty_triggers": [
+            {
+              "trigger_id": "de-low-confidence",
+              "trigger_type": "adapter_confidence_below",
+              "threshold": 0.8,
+              "severity": "high",
+              "message": "Initial-condition application confidence is too low."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

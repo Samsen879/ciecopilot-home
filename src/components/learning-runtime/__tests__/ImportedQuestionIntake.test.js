@@ -28,7 +28,7 @@ function findElement(node, predicate) {
 }
 
 describe('ImportedQuestionIntake', () => {
-  test('builds import payloads from pasted content and runtime context selection', () => {
+  test('builds import payloads from pasted content and runtime context selection without sending canonical classification truth', () => {
     const payload = buildImportQuestionPayload(createImportedQuestionDraft({
       promptValue: 'Solve 2sinx = 1 for 0 <= x <= 360.',
       runtimeContextId: '9709.trigonometry.equations',
@@ -43,11 +43,21 @@ describe('ImportedQuestionIntake', () => {
       provenance_summary: {
         import_source: 'manual_paste',
       },
-      classification: {
-        primary_question_type_id: '9709.trigonometry.equations',
-        primary_topic_id: null,
+      analysis_hints: {
+        runtime_context_id: '9709.trigonometry.equations',
+        question_type_hint_id: '9709.trigonometry.equations',
+        topic_path_hint: '9709/trigonometry/equations',
       },
     });
+  });
+
+  test('keeps the approved differential-equations pilot context available in the intake draft', () => {
+    const draft = createImportedQuestionDraft({
+      runtimeContextId: '9709.differential_equations.separable',
+    });
+
+    expect(draft.runtimeContextId).toBe('9709.differential_equations.separable');
+    expect(draft.questionTypeId).toBe('9709.differential_equations.separable');
   });
 
   test('builds guided-solve session payloads anchored to imported questions', () => {

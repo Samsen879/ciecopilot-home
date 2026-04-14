@@ -10,6 +10,7 @@
 - `2026-04-03-ao-reviewer-gate-rehearsal.md` - repo-local independent reviewer gate rehearsal showing request, claim, verdict, and durable freeze/release posture.
 - `2026-04-12-phase-a-question-intelligence-slice-1-report.md` - takeover closeout report for the first Phase A question-intelligence slice, including scope, touched modules, focused verification, and residual risks.
 - `2026-04-14-phase-a-reassessment-report.md` - follow-up reassessment confirming current main still satisfies the approved Phase A runtime/rubric landing contract and recording the supporting focused verification.
+- `2026-04-14-phase-a-close-contract-landing-review.md` - independent review of PR #180 confirming the narrowed Phase A close wording is directionally right but still blocked by missing authority-document references.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.

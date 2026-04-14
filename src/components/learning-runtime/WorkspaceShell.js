@@ -1,5 +1,5 @@
 import React from 'react';
-import { isCompatibleArtifactKindForSlot } from '../../../api/learning/lib/contracts/runtime-contract.js';
+import { isCompatibleArtifactKindForSlot } from '../../lib/contracts/runtime-contract-client.js';
 import {
   markArtifactContested,
   pinArtifact,

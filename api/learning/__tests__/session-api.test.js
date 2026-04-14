@@ -24,6 +24,17 @@ const clientState = {
 
 const PARENT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
 const GRANDPARENT_SESSION_ID = '22222222-2222-4222-8222-222222222222';
+const DEFAULT_STORED_SESSION_ID = '33333333-3333-4333-8333-333333333333';
+const RECOVERED_SESSION_ID = '44444444-4444-4444-8444-444444444444';
+const SUGGESTED_SESSION_ID = '55555555-5555-4555-8555-555555555555';
+const POST_MORTEM_SESSION_ID = '66666666-6666-4666-8666-666666666666';
+const MISSING_SESSION_ID = '77777777-7777-4777-8777-777777777777';
+
+function isUuidString(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    String(value ?? '').trim(),
+  );
+}
 
 function createDeferred() {
   let resolve;
@@ -145,8 +156,14 @@ function createNowTimestamp() {
   return new Date().toISOString();
 }
 
+function createGeneratedSessionId() {
+  const suffix = clientState.nextSessionId.toString(16).padStart(12, '0');
+  clientState.nextSessionId += 1;
+  return `00000000-0000-4000-8000-${suffix}`;
+}
+
 function createSessionRow(payload) {
-  const sessionId = `session-${clientState.nextSessionId++}`;
+  const sessionId = createGeneratedSessionId();
   const now = '2026-03-21T13:30:00.000Z';
   return {
     session_id: sessionId,
@@ -294,6 +311,17 @@ function resolveQuery(query) {
   if (query.table === 'learning_session_resume_projection' && query.operation === 'select') {
     const sessionId = findFilter(query, 'session_id');
     const userId = findFilter(query, 'user_id');
+
+    if (sessionId && !isUuidString(sessionId)) {
+      return {
+        data: null,
+        error: {
+          code: '22P02',
+          message: `invalid input syntax for type uuid: "${sessionId}"`,
+        },
+      };
+    }
+
     const row = buildResumeProjection(sessionId);
 
     if (!row) {
@@ -373,7 +401,7 @@ function buildNormalizedSessionIdempotencyPayload(overrides = {}) {
 
 function buildStoredSession(overrides = {}) {
   return {
-    session_id: overrides.session_id ?? 'session-parent-1',
+    session_id: overrides.session_id ?? DEFAULT_STORED_SESSION_ID,
     user_id: overrides.user_id ?? 'student-1',
     subject_code: '9709',
     session_goal: 'Repair trigonometric equation solving',
@@ -801,6 +829,7 @@ describe('learning session api', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.error.code).toBe('invalid_anchor_ref');
+    expect(res.body.error.message).toBe('anchor_ref.review_task_id is required.');
   });
 
   test('POST /api/learning/sessions returns 400 invalid_anchor_kind for unknown anchors', async () => {
@@ -827,6 +856,24 @@ describe('learning session api', () => {
       .set('Authorization', 'Bearer test-user:student-1:student')
       .send(buildSessionPayload({
         mode: 'guided_solve',
+      }));
+
+    expect(res.status).toBe(409);
+    expect(res.body.error.code).toBe('unsupported_mode_for_anchor');
+  });
+
+  test('POST /api/learning/sessions returns 409 unsupported_mode_for_anchor for workspace_slot common_traps spaced_review creates', async () => {
+    const res = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildSessionPayload({
+        anchor_kind: 'workspace_slot',
+        anchor_ref: {
+          kind: 'workspace_slot',
+          workspace_id: '0c100001-7a3e-4d82-9d7c-1f1000010001',
+          slot_key: 'common_traps',
+        },
       }));
 
     expect(res.status).toBe(409);
@@ -957,13 +1004,13 @@ describe('learning session api', () => {
   });
 
   test('POST /api/learning/sessions recovers a pending durable reservation when the reserved session already exists', async () => {
-    clientState.sessions.set('session-recovered-1', buildStoredSession({
-      session_id: 'session-recovered-1',
+    clientState.sessions.set(RECOVERED_SESSION_ID, buildStoredSession({
+      session_id: RECOVERED_SESSION_ID,
     }));
-    clientState.lineage.set('session-recovered-1', {
-      lineage_id: 'lineage-session-recovered-1',
+    clientState.lineage.set(RECOVERED_SESSION_ID, {
+      lineage_id: `lineage-${RECOVERED_SESSION_ID}`,
       parent_session_id: null,
-      child_session_id: 'session-recovered-1',
+      child_session_id: RECOVERED_SESSION_ID,
       handoff_kind: null,
       summary_snapshot: {
         recap: 'Repair the factoring and angle-isolation mistakes before speeding up.',
@@ -985,7 +1032,7 @@ describe('learning session api', () => {
         status: 'pending',
         resource_ref: {
           kind: 'learning_session',
-          session_id: 'session-recovered-1',
+          session_id: RECOVERED_SESSION_ID,
         },
         response_payload: null,
         created_at: '2026-03-21T13:20:00.000Z',
@@ -1002,7 +1049,7 @@ describe('learning session api', () => {
       .send(buildSessionPayload());
 
     expect(res.status).toBe(200);
-    expect(res.body.session.session_id).toBe('session-recovered-1');
+    expect(res.body.session.session_id).toBe(RECOVERED_SESSION_ID);
     expect(
       clientState.calls.filter(
         (call) => call.table === 'learning_sessions' && call.operation === 'insert',
@@ -1043,8 +1090,8 @@ describe('learning session api', () => {
   });
 
   test('GET /api/learning/sessions/:id returns suggested handoff metadata and questionless resume guidance', async () => {
-    clientState.sessions.set('session-suggested-1', buildStoredSession({
-      session_id: 'session-suggested-1',
+    clientState.sessions.set(SUGGESTED_SESSION_ID, buildStoredSession({
+      session_id: SUGGESTED_SESSION_ID,
       mode: 'learn_concept',
       state: 'handoff_suggested',
       session_goal: 'Summarise trig identities before returning later',
@@ -1080,10 +1127,10 @@ describe('learning session api', () => {
         suggested_handoff_message: 'Compact the runtime context before the next session.',
       },
     }));
-    clientState.lineage.set('session-suggested-1', {
-      lineage_id: 'lineage-session-suggested-1',
+    clientState.lineage.set(SUGGESTED_SESSION_ID, {
+      lineage_id: `lineage-${SUGGESTED_SESSION_ID}`,
       parent_session_id: null,
-      child_session_id: 'session-suggested-1',
+      child_session_id: SUGGESTED_SESSION_ID,
       handoff_kind: null,
       summary_snapshot: {
         recap: 'Worked through multiple identities and need a compact restart point.',
@@ -1092,7 +1139,7 @@ describe('learning session api', () => {
     });
 
     const res = await harness.request
-      .get('/api/learning/sessions/session-suggested-1')
+      .get(`/api/learning/sessions/${SUGGESTED_SESSION_ID}`)
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student');
 
@@ -1123,8 +1170,8 @@ describe('learning session api', () => {
   });
 
   test('GET /api/learning/sessions/:id derives explicit post-mortem diagnostics, misconception focus, artifacts, and repair handoff from runtime truth', async () => {
-    clientState.sessions.set('session-post-mortem-1', buildStoredSession({
-      session_id: 'session-post-mortem-1',
+    clientState.sessions.set(POST_MORTEM_SESSION_ID, buildStoredSession({
+      session_id: POST_MORTEM_SESSION_ID,
       mode: 'post_mortem_review',
       state: 'handoff_suggested',
       session_goal: 'Review the scored attempt before starting repair',
@@ -1159,10 +1206,10 @@ describe('learning session api', () => {
       current_question_type_id: '9709.trigonometry.equations',
       summary_state: {},
     }));
-    clientState.lineage.set('session-post-mortem-1', {
-      lineage_id: 'lineage-session-post-mortem-1',
+    clientState.lineage.set(POST_MORTEM_SESSION_ID, {
+      lineage_id: `lineage-${POST_MORTEM_SESSION_ID}`,
       parent_session_id: null,
-      child_session_id: 'session-post-mortem-1',
+      child_session_id: POST_MORTEM_SESSION_ID,
       handoff_kind: null,
       summary_snapshot: {},
       created_at: '2026-03-21T13:30:00.000Z',
@@ -1189,7 +1236,7 @@ describe('learning session api', () => {
     }));
 
     const res = await harness.request
-      .get('/api/learning/sessions/session-post-mortem-1')
+      .get(`/api/learning/sessions/${POST_MORTEM_SESSION_ID}`)
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student');
 
@@ -1256,7 +1303,21 @@ describe('learning session api', () => {
 
   test('GET /api/learning/sessions/:id returns 404 session_not_found with the frozen envelope', async () => {
     const res = await harness.request
-      .get('/api/learning/sessions/missing-session')
+      .get(`/api/learning/sessions/${MISSING_SESSION_ID}`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student');
+
+    expect(res.status).toBe(404);
+    expect(res.body.error).toMatchObject({
+      code: 'session_not_found',
+      retryable: false,
+    });
+    expect(res.body.request_id).toEqual(expect.any(String));
+  });
+
+  test('GET /api/learning/sessions/:id returns 404 session_not_found when :id is not a UUID', async () => {
+    const res = await harness.request
+      .get('/api/learning/sessions/not-a-real-session')
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student');
 

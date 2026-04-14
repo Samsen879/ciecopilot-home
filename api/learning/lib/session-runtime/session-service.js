@@ -15,31 +15,16 @@ import {
   createSessionHandoff,
   normalizeSessionHandoffKind,
 } from './session-handoff.js';
+import { getLearningErrorDefinition } from '../contracts/error-contract.js';
+import {
+  sendLearningError as sendCanonicalLearningError,
+} from '../http/learning-http.js';
 import { validateCreateSessionInput } from '../validators/session-validator.js';
 
-const LEARNING_ERROR_SPECS = {
-  auth_required: { status: 401, message: 'Authentication required.' },
-  auth_forbidden: { status: 403, message: 'Authenticated user cannot access this resource.' },
-  invalid_payload: { status: 400, message: 'Invalid request payload.' },
-  invalid_anchor_kind: { status: 400, message: 'Anchor kind is invalid.' },
-  invalid_anchor_ref: { status: 400, message: 'The anchor ref is malformed.' },
-  anchor_target_not_found: { status: 404, message: 'Anchor target not found.' },
-  unsupported_mode_for_anchor: {
-    status: 409,
-    message: 'This mode is not allowed for the anchor kind.',
-  },
-  session_not_found: { status: 404, message: 'Learning session not found.' },
-  session_state_conflict: { status: 409, message: 'Learning session state conflict.' },
-  question_not_found: { status: 404, message: 'Question not found.' },
-  workspace_not_found: { status: 404, message: 'Workspace not found.' },
-  artifact_not_found: { status: 404, message: 'Artifact not found.' },
-  artifact_state_conflict: { status: 409, message: 'Artifact state conflict.' },
-  idempotency_conflict: {
-    status: 409,
-    message: 'Idempotency key was replayed with a different payload.',
-  },
-  internal_error: { status: 500, message: 'Internal server error.' },
-};
+// Enum validation and error definitions are now delegated to canonical modules:
+// - session-validator.js (anchor legality matrix)
+// - error-contract.js (error code definitions)
+// - learning-http.js (error response envelope)
 
 const IDEMPOTENCY_POLL_ATTEMPTS = 10;
 const IDEMPOTENCY_POLL_INTERVAL_MS = 250;
@@ -81,10 +66,10 @@ function createLearningError(code, {
   message,
   details = {},
 } = {}) {
-  const spec = LEARNING_ERROR_SPECS[code] || LEARNING_ERROR_SPECS.internal_error;
-  const error = new Error(message || spec.message);
+  const definition = getLearningErrorDefinition(code);
+  const error = new Error(message || definition.message);
   error.code = code;
-  error.status = status || spec.status;
+  error.status = status || definition.status;
   error.retryable = false;
   error.details = details;
   return error;
@@ -495,9 +480,22 @@ function validateCreateSessionPayload(body = {}) {
   }
 
   const subjectCode = assertRequiredString(body.subject_code, 'subject_code');
-  const currentQuestionId = normalizeNullableString(body.current_question_id);
-  const currentQuestionTypeId = normalizeNullableString(body.current_question_type_id);
-  const sessionGoal = normalizeNullableString(body.session_goal);
+
+  // Delegate core anchor/mode/ref validation to the canonical session-validator.
+  let coreResult;
+  try {
+    coreResult = validateCreateSessionInput(body);
+  } catch (validationError) {
+    throw createLearningError(validationError.code || 'invalid_payload', {
+      status: validationError.status,
+      message: validationError.publicMessage || validationError.message,
+      details: validationError.details,
+    });
+  }
+
+  const { normalized } = coreResult;
+
+  // Parent session / handoff handling (session-service-specific scope).
   const parentSessionId = normalizeNullableString(body.parent_session_id);
   let handoffKind = normalizeSessionHandoffKind(body.handoff_kind);
 
@@ -526,29 +524,14 @@ function validateCreateSessionPayload(body = {}) {
     handoffKind = 'explicit_new_session';
   }
 
-  const validated = validateCreateSessionInput({
-    mode: body.mode,
-    anchor_kind: body.anchor_kind,
-    anchor_ref: body.anchor_ref,
-    current_question_id: currentQuestionId,
-    current_question_type_id: currentQuestionTypeId,
-    session_goal: sessionGoal,
-  });
-
-  const {
-    mode,
-    anchor_kind: anchorKind,
-    anchor_ref: anchorRef,
-  } = validated.normalized;
-
   return {
     subjectCode,
-    mode,
-    sessionGoal,
-    anchorKind,
-    anchorRef,
-    currentQuestionId,
-    currentQuestionTypeId,
+    mode: normalized.mode,
+    sessionGoal: normalized.session_goal,
+    anchorKind: normalized.anchor_kind,
+    anchorRef: normalized.anchor_ref,
+    currentQuestionId: normalized.current_question_id,
+    currentQuestionTypeId: normalized.current_question_type_id,
     parentSessionId,
     handoffKind,
   };
@@ -776,18 +759,11 @@ async function performCreateLearningSession(client, {
 }
 
 export function sendLearningError(req, res, code, overrides = {}) {
-  const spec = LEARNING_ERROR_SPECS[code] || LEARNING_ERROR_SPECS.internal_error;
-  const status = overrides.status || spec.status;
-  const message = overrides.message || spec.message;
-  const details = overrides.details || {};
-  return res.status(status).json({
-    error: {
-      code,
-      message,
-      retryable: false,
-      details,
-    },
-    request_id: req?.request_id || null,
+  return sendCanonicalLearningError(res, req?.request_id || null, code, {
+    status: overrides.status,
+    message: overrides.message,
+    retryable: overrides.retryable,
+    details: overrides.details,
   });
 }
 
@@ -887,6 +863,10 @@ export async function readLearningSession(client, { userId, sessionId } = {}) {
       message: 'sessionId is required.',
       details: { field: 'sessionId' },
     });
+  }
+
+  if (!isUuidString(normalizedSessionId)) {
+    throw createLearningError('session_not_found');
   }
 
   const session = await getSession(client, {

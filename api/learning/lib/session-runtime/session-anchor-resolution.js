@@ -21,6 +21,12 @@ function createLearningError(code, {
   return error;
 }
 
+function isUuidString(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    String(value || '').trim(),
+  );
+}
+
 async function maybeSingle(query, fallbackMessage) {
   const { data, error } = await query;
   if (error) {
@@ -49,7 +55,22 @@ async function resolveConceptAnchor(client, {
   anchorRef,
   currentQuestionTypeId,
 } = {}) {
-  const topic = await loadTopic(client, anchorRef.topic_id);
+  let topic = null;
+
+  if (isUuidString(anchorRef.topic_id)) {
+    topic = await loadTopic(client, anchorRef.topic_id);
+  }
+
+  if (!topic && anchorRef.topic_path) {
+    topic = await maybeSingle(
+      client
+        .from('curriculum_nodes')
+        .select('node_id, topic_path')
+        .eq('topic_path', anchorRef.topic_path)
+        .maybeSingle(),
+      'Failed to load curriculum node by topic_path.',
+    );
+  }
 
   if (!topic) {
     throw createLearningError('anchor_target_not_found', {

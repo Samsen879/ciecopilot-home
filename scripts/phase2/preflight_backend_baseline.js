@@ -12,7 +12,6 @@ const MODULE_ENTRYPOINTS = {
   auth: ['api/auth/index.js'],
   'user-profile': ['api/user-profile.js'],
   recommendations: ['api/recommendations/index.js'],
-  ai: ['api/ai/tutor/chat.js'],
   rag: ['api/rag/search.js', 'api/rag/chat.js'],
   marking: ['api/marking/evaluate-v1.js', 'api/marking/evaluate.js'],
   'error-book': ['api/error-book/index.js', 'api/error-book/[id].js'],

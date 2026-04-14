@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -53,6 +53,11 @@ const ToolsStudySuggestions = React.lazy(() => import('./pages/ToolsStudySuggest
 // Pricing page - lazy loaded
 const Pricing = React.lazy(() => import('./pages/Pricing'));
 
+function CommunityRedirect() {
+  const { subjectCode } = useParams();
+  return <Navigate to={`/recommendations/${subjectCode || ''}`} replace />;
+}
+
 // Loading component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center min-h-[400px]">
@@ -81,6 +86,7 @@ function ContentWithChatShift() {
               {/* Learning Path compatibility handoff */}
               <Route path="/learning-path/:subjectCode" element={<LearningPath />} />
               {/* Recommendations Page */}
+              <Route path="/community/:subjectCode" element={<CommunityRedirect />} />
               <Route path="/recommendations/:subjectCode" element={<CommunityAndRecommendations />} />
               {/* Subject Selection Page */}
               <Route path="/topics" element={<SubjectSelection />} />

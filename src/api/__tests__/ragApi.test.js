@@ -1,5 +1,20 @@
 import { jest } from '@jest/globals';
 
+const mockRequireSessionAccessToken = jest.fn();
+const mockSupabase = {
+  auth: {
+    getSession: jest.fn(),
+  },
+};
+
+jest.unstable_mockModule('../../services/utils/sessionAccessToken.js', () => ({
+  requireSessionAccessToken: mockRequireSessionAccessToken,
+}));
+
+jest.unstable_mockModule('../../utils/supabase.js', () => ({
+  supabase: mockSupabase,
+}));
+
 describe('ragApi chat compatibility adapter', () => {
   let createRagApi;
   let buildAskChatPayload;
@@ -11,6 +26,8 @@ describe('ragApi chat compatibility adapter', () => {
 
   beforeEach(() => {
     global.fetch = jest.fn();
+    mockRequireSessionAccessToken.mockReset();
+    mockRequireSessionAccessToken.mockResolvedValue('test-token-abc');
   });
 
   afterEach(() => {
@@ -102,9 +119,16 @@ describe('ragApi chat compatibility adapter', () => {
       topic_id: '9709.M1.Momentum',
     });
 
+    expect(mockRequireSessionAccessToken).toHaveBeenCalledWith(mockSupabase);
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch.mock.calls[0][0]).toBe('/api/rag/ask');
-    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
+
+    const init = global.fetch.mock.calls[0][1];
+    expect(init.headers).toMatchObject({
+      Authorization: 'Bearer test-token-abc',
+    });
+
+    const body = JSON.parse(init.body);
     expect(body.subject_code).toBe('9709');
     expect(body.syllabus_node_id).toBe('9709.M1.Momentum');
     expect(body.query).toContain('Latest user question: Explain conservation of momentum.');
@@ -117,6 +141,32 @@ describe('ragApi chat compatibility adapter', () => {
       sources: [{ title: '9709 Mechanics', page_from: 3 }],
       request_id: 'req-123',
       retrieval_version: 'v-current',
+    });
+  });
+
+  test('search sends Authorization header with Bearer token', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        results: [{ title: 'Test result' }],
+        total: 1,
+      }),
+    });
+
+    const api = createRagApi();
+    await api.search({
+      q: 'differentiation',
+      subject_code: '9709',
+    });
+
+    expect(mockRequireSessionAccessToken).toHaveBeenCalledWith(mockSupabase);
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch.mock.calls[0][0]).toBe('/api/rag/search');
+
+    const init = global.fetch.mock.calls[0][1];
+    expect(init.headers).toMatchObject({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer test-token-abc',
     });
   });
 

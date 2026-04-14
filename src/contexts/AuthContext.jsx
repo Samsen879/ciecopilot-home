@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
 
 // 创建认证上下文
-const AuthContext = createContext({});
+const AuthContext = createContext(undefined);
 
 // 自定义Hook用于使用认证上下文
 export const useAuth = () => {

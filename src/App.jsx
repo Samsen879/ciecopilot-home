@@ -28,7 +28,6 @@ const SubjectPage = React.lazy(() => import('./pages/SubjectPage'));
 const Search = React.lazy(() => import('./pages/Search'));
 const LearningPath = React.lazy(() => import('./pages/LearningPath'));
 const CommunityAndRecommendations = React.lazy(() => import('./pages/CommunityAndRecommendations'));
-const QuestionDetail = React.lazy(() => import('./pages/QuestionDetail'));
 const LearningSessionPage = React.lazy(() => import('./pages/learning-runtime/LearningSessionPage'));
 const TopicWorkspacePage = React.lazy(() => import('./pages/learning-runtime/TopicWorkspacePage'));
 const ReviewQueuePage = React.lazy(() => import('./pages/learning-runtime/ReviewQueuePage'));
@@ -79,11 +78,10 @@ function ContentWithChatShift() {
               {/* Study Hub - The new central page */}
               <Route path="/study-hub" element={<StudyHub />} />
               <Route path="/study-hub/:subjectCode" element={<SubjectPage />} />
-                              {/* Learning Path Page */}
-                <Route path="/learning-path/:subjectCode" element={<LearningPath />} />
-                {/* Community and Recommendations Page */}
-                <Route path="/community/:subjectCode" element={<CommunityAndRecommendations />} />
-                <Route path="/recommendations/:subjectCode" element={<CommunityAndRecommendations />} />
+              {/* Learning Path compatibility handoff */}
+              <Route path="/learning-path/:subjectCode" element={<LearningPath />} />
+              {/* Recommendations Page */}
+              <Route path="/recommendations/:subjectCode" element={<CommunityAndRecommendations />} />
               {/* Subject Selection Page */}
               <Route path="/topics" element={<SubjectSelection />} />
               {/* Paper Selection Pages */}
@@ -115,7 +113,6 @@ function ContentWithChatShift() {
               {/* Dynamic Pages */}
               <Route path="/paper/:subject/:paper" element={<PaperPage />} />
               <Route path="/topic/:subject/:paper/:topicId" element={<TopicDetail />} />
-              <Route path="/community/question/:questionId" element={<QuestionDetail />} />
               {/* Physics Topic Detail Page */}
               <Route path="/topic/physics/:paper/:topicId" element={<PhysicsTopicDetail />} />
               {/* 404 Page */}

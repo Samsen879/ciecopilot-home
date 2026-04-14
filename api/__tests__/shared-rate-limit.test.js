@@ -102,7 +102,7 @@ describe('shared rate limit gate coverage', () => {
     }
   });
 
-  it('does not rate limit safe reads for write-only policies', () => {
+  it('does not rate limit safe reads for the error-book write-only policy', () => {
     const errorBookRoute = findRoute('/api/error-book', 'POST').route;
     const errorBookWrite = resolveRateLimitDescriptor(
       {
@@ -122,29 +122,8 @@ describe('shared rate limit gate coverage', () => {
       },
       errorBookRoute,
     );
-    const communityRoute = findRoute('/api/community', 'POST').route;
-    const communityRead = resolveRateLimitDescriptor(
-      {
-        method: 'GET',
-        auth_user_id: 'student-1',
-        headers: {},
-        socket: { remoteAddress: '127.0.0.1' },
-      },
-      communityRoute,
-    );
-    const communityWrite = resolveRateLimitDescriptor(
-      {
-        method: 'POST',
-        auth_user_id: 'student-1',
-        headers: {},
-        socket: { remoteAddress: '127.0.0.1' },
-      },
-      communityRoute,
-    );
 
     expect(errorBookWrite?.profile?.limit).toBe(12);
     expect(errorBookRead).toBeNull();
-    expect(communityRead).toBeNull();
-    expect(communityWrite?.profile?.limit).toBe(20);
   });
 });

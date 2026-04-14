@@ -50,5 +50,5 @@ export function getStudyHubSurfaceMode(options = {}, env = META_ENV) {
 }
 
 export function getLearningPathSurfaceMode(options = {}, env = META_ENV) {
-  return isLearningRuntimeEnabled(options, env) ? 'compatibility_shell' : 'legacy_path';
+  return 'compatibility_shell';
 }

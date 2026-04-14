@@ -1,4 +1,4 @@
-import { isCompatibleArtifactKindForSlot } from '../../../../api/learning/lib/contracts/runtime-contract.js';
+import { isCompatibleArtifactKindForSlot } from '../../../lib/contracts/runtime-contract-client.js';
 import { buildReviewQueueViewModel } from './review-queue-view-model.js';
 
 const SLOT_DEFINITIONS = Object.freeze([

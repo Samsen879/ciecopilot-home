@@ -13,12 +13,16 @@ describe('event pipeline gate', () => {
       gates: {
         migration_contract: { status: 'pass' },
         ordered_pipeline: { status: 'pass' },
+        replay_revision: { status: 'pass' },
         dedupe_guard: { status: 'pass' },
         effect_idempotency: { status: 'pass' },
         attempt_stream_lock: { status: 'pass' },
       },
     });
     expect(result.schema_version).toBe('learning_runtime_event_pipeline_gate_receipt_v1');
+    expect(result.gates.migration_contract.required_tokens).toContain(
+      'unique (aggregate_id, truth_revision, sequence_no)',
+    );
   });
 
   test('cli writes auditable json and markdown outputs', async () => {
@@ -48,6 +52,7 @@ describe('event pipeline gate', () => {
       expect(markdown).toContain('# Learning Event Pipeline Gate');
       expect(markdown).toContain('learning_events');
       expect(markdown).toContain('ordered_pipeline');
+      expect(markdown).toContain('replay_revision');
       expect(markdown).toContain('effect_idempotency');
       expect(markdown).toContain('attempt_stream_lock');
     } finally {

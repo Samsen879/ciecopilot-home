@@ -24,8 +24,8 @@ function dedupeRef(eventType, dedupeKey) {
   return `${eventType}::${dedupeKey}`;
 }
 
-function streamRef(aggregateId, sequenceNo) {
-  return `${aggregateId}::${sequenceNo}`;
+function streamRef(aggregateId, truthRevision, sequenceNo) {
+  return `${aggregateId}::${truthRevision}::${sequenceNo}`;
 }
 
 function revisionStageRef(aggregateId, truthRevision, eventType) {
@@ -186,7 +186,15 @@ function assertOrderedAppend(store, event) {
   }
 
   if (event.truth_revision !== state.current_truth_revision) {
-    throw new Error('out_of_order_event');
+    const isNextTruthRevisionStart = event.truth_revision === state.current_truth_revision + 1
+      && event.event_type === 'AttemptSubmitted'
+      && event.sequence_no === 1;
+
+    if (!isNextTruthRevisionStart) {
+      throw new Error('out_of_order_event');
+    }
+
+    return;
   }
 
   const expectedStageOrdinal = getLearningEventStageOrdinal(state.current_stage) + 1;
@@ -197,9 +205,8 @@ function assertOrderedAppend(store, event) {
 }
 
 function buildNextPipelineState(previousState, event) {
-  const nextState = previousState
-    ? { ...previousState }
-    : {
+  const nextState = !previousState || previousState.current_truth_revision !== event.truth_revision
+    ? {
       attempt_id: event.aggregate_id,
       learner_id: event.learner_id,
       session_id: event.session_id ?? null,
@@ -218,7 +225,8 @@ function buildNextPipelineState(previousState, event) {
       last_error_code: null,
       last_error_message: null,
       updated_at: null,
-    };
+    }
+    : { ...previousState };
 
   nextState.learner_id = event.learner_id;
   nextState.session_id = event.session_id ?? null;
@@ -330,7 +338,7 @@ export function buildSyntheticAttemptEventFlow({
 export function buildReplayLearningEvent(sourceEvent, {
   eventId = randomUUID(),
   truthRevision = Number(sourceEvent?.truth_revision ?? 0) + 1,
-  sequenceNo = Number(sourceEvent?.sequence_no ?? 0) + 1,
+  sequenceNo,
   emittedBy = 'phase0-event-replay',
   replayOfEventId = sourceEvent?.event_id ?? null,
   supersedesEventId = sourceEvent?.event_id ?? null,
@@ -345,6 +353,12 @@ export function buildReplayLearningEvent(sourceEvent, {
   if (!sourceEvent || !sourceEvent.event_type) {
     throw new Error('missing_replay_source_event');
   }
+
+  const normalizedSequenceNo = Number.isInteger(sequenceNo)
+    ? sequenceNo
+    : (truthRevision === Number(sourceEvent.truth_revision)
+        ? Number(sourceEvent.sequence_no ?? 0) + 1
+        : Number(sourceEvent.sequence_no ?? 0));
 
   const replayPayload = cloneJson(payload ?? sourceEvent.payload);
   const replayProvenance = cloneJson(provenance ?? sourceEvent.provenance) ?? {};
@@ -365,7 +379,7 @@ export function buildReplayLearningEvent(sourceEvent, {
     session_id: sourceEvent.session_id ?? null,
     subject_code: sourceEvent.subject_code,
     truth_revision: truthRevision,
-    sequence_no: sequenceNo,
+    sequence_no: normalizedSequenceNo,
     correlation_id: sourceEvent.correlation_id,
     causation_event_id: causationEventId,
     replay_of_event_id: replayOfEventId,
@@ -402,7 +416,7 @@ export function appendLearningEvent(store, candidateEvent) {
 
   assertOrderedAppend(store, event);
 
-  const streamKey = streamRef(event.aggregate_id, event.sequence_no);
+  const streamKey = streamRef(event.aggregate_id, event.truth_revision, event.sequence_no);
   if (store.streamRefs.has(streamKey)) {
     throw new Error('duplicate_stream_sequence');
   }

@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS public.learning_events (
   provenance JSONB NOT NULL,
   emitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT uq_learning_events_stream_seq
-    UNIQUE (aggregate_id, sequence_no),
+    UNIQUE (aggregate_id, truth_revision, sequence_no),
   CONSTRAINT uq_learning_events_revision_stage
     UNIQUE (aggregate_id, truth_revision, event_type),
   CONSTRAINT uq_learning_events_dedupe

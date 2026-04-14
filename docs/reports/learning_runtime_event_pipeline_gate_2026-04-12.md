@@ -2,7 +2,7 @@
 
 - status: `pass`
 - phase0_ready: `true`
-- generated_at: `2026-04-14T05:49:53.626Z`
+- generated_at: `2026-04-14T07:25:59.769Z`
 - migration_path: `supabase/migrations/20260412090000_phase0_learning_events_core.sql`
 
 ## Gates
@@ -10,7 +10,7 @@
 ### migration_contract
 - status: `pass`
 - checked_path: `"supabase/migrations/20260412090000_phase0_learning_events_core.sql"`
-- required_tokens: `["create table if not exists public.learning_events","create table if not exists public.learning_event_effects","create table if not exists public.attempt_pipeline_state","unique (aggregate_id, sequence_no)","unique (aggregate_id, truth_revision, event_type)","unique (event_type, dedupe_key)","unique (handler_name, effect_key)","attemptsubmitted","artifactsuggestionscreated"]`
+- required_tokens: `["create table if not exists public.learning_events","create table if not exists public.learning_event_effects","create table if not exists public.attempt_pipeline_state","unique (aggregate_id, truth_revision, sequence_no)","unique (aggregate_id, truth_revision, event_type)","unique (event_type, dedupe_key)","unique (handler_name, effect_key)","attemptsubmitted","artifactsuggestionscreated"]`
 - missing_tokens: `[]`
 
 ### ordered_pipeline
@@ -19,6 +19,15 @@
 - final_stage: `"ArtifactSuggestionsCreated"`
 - final_status: `"completed"`
 - last_sequence_no: `7`
+
+### replay_revision
+- status: `pass`
+- inserted_count: `7`
+- current_truth_revision: `2`
+- final_stage: `"ArtifactSuggestionsCreated"`
+- final_status: `"completed"`
+- last_sequence_no: `7`
+- event_count: `14`
 
 ### dedupe_guard
 - status: `pass`

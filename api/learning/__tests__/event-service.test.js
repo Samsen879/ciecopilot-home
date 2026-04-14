@@ -135,6 +135,49 @@ describe('learning event service', () => {
     expect(store.effects).toHaveLength(1);
   });
 
+  test('replay can append a new truth revision that restarts sequence numbering', async () => {
+    const {
+      appendLearningEvent,
+      buildReplayLearningEvent,
+      buildSyntheticAttemptEventFlow,
+      createEmptyLearningEventStore,
+    } = await import('../lib/events/event-service.js');
+
+    const store = createEmptyLearningEventStore();
+    const flow = buildSyntheticAttemptEventFlow({
+      attemptId: 'attempt-revision-replay',
+      learnerId: 'learner-1',
+      sessionId: 'session-1',
+      subjectCode: '9709',
+      emittedBy: 'jest',
+    });
+
+    flow.forEach((event) => appendLearningEvent(store, event));
+
+    const replayFlow = flow.map((sourceEvent) => buildReplayLearningEvent(sourceEvent, {
+      truthRevision: 2,
+      sequenceNo: sourceEvent.sequence_no,
+      emittedBy: 'jest-replay',
+      replayOfEventId: sourceEvent.event_id,
+      supersedesEventId: sourceEvent.event_id,
+      causationEventId: sourceEvent.event_id,
+      reconciliationId: 'reconciliation-run-1',
+      dedupeKey: `${sourceEvent.aggregate_id}:2:${sourceEvent.event_type}:replay`,
+    }));
+
+    const replayResults = replayFlow.map((event) => appendLearningEvent(store, event));
+
+    expect(replayResults.every((result) => result.inserted)).toBe(true);
+    expect(store.pipelineStateByAttempt.get('attempt-revision-replay')).toMatchObject({
+      attempt_id: 'attempt-revision-replay',
+      current_truth_revision: 2,
+      current_stage: 'ArtifactSuggestionsCreated',
+      current_status: 'completed',
+      last_sequence_no: 7,
+    });
+    expect(store.events).toHaveLength(14);
+  });
+
   test('attempt stream lock rejects re-entry and can be acquired again after release', async () => {
     const {
       acquireAttemptStreamLock,

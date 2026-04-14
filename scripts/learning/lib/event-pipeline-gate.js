@@ -60,7 +60,7 @@ function evaluateMigrationContract(rootDir, migrationPath) {
     'create table if not exists public.learning_events',
     'create table if not exists public.learning_event_effects',
     'create table if not exists public.attempt_pipeline_state',
-    'unique (aggregate_id, sequence_no)',
+    'unique (aggregate_id, truth_revision, sequence_no)',
     'unique (aggregate_id, truth_revision, event_type)',
     'unique (event_type, dedupe_key)',
     'unique (handler_name, effect_key)',
@@ -125,6 +125,48 @@ function evaluateDedupeGuard() {
     first_inserted: first.inserted,
     duplicate_inserted: second.inserted,
     duplicate_reason_code: second.reason_code,
+  };
+}
+
+function evaluateReplayRevision() {
+  const store = createEmptyLearningEventStore();
+  const flow = buildSyntheticAttemptEventFlow({
+    attemptId: 'phase0-replay',
+    learnerId: 'phase0-learner',
+    sessionId: 'phase0-session',
+    subjectCode: '9709',
+    emittedBy: 'event-pipeline-gate',
+  });
+  flow.forEach((event) => appendLearningEvent(store, event));
+
+  const replayFlow = flow.map((sourceEvent) => buildReplayLearningEvent(sourceEvent, {
+    truthRevision: 2,
+    sequenceNo: sourceEvent.sequence_no,
+    emittedBy: 'event-pipeline-gate-replay',
+    replayOfEventId: sourceEvent.event_id,
+    supersedesEventId: sourceEvent.event_id,
+    causationEventId: sourceEvent.event_id,
+    reconciliationId: 'phase0-reconciliation-1',
+    dedupeKey: `${sourceEvent.aggregate_id}:2:${sourceEvent.event_type}:replay`,
+  }));
+  const replayResults = replayFlow.map((event) => appendLearningEvent(store, event));
+  const finalState = store.pipelineStateByAttempt.get('phase0-replay') ?? null;
+  const passed = replayResults.every((result) => result.inserted)
+    && finalState?.current_truth_revision === 2
+    && finalState?.current_stage === 'ArtifactSuggestionsCreated'
+    && finalState?.current_status === 'completed'
+    && finalState?.last_sequence_no === 7
+    && store.events.length === 14;
+
+  return {
+    status: toGateStatus(passed),
+    blocked_reasons: passed ? [] : ['replay_revision_failed'],
+    inserted_count: replayResults.filter((result) => result.inserted).length,
+    current_truth_revision: finalState?.current_truth_revision ?? null,
+    final_stage: finalState?.current_stage ?? null,
+    final_status: finalState?.current_status ?? null,
+    last_sequence_no: finalState?.last_sequence_no ?? null,
+    event_count: store.events.length,
   };
 }
 
@@ -241,6 +283,7 @@ export function buildEventPipelineGateReceipt({
 } = {}) {
   const migrationContract = evaluateMigrationContract(rootDir, migrationPath);
   const orderedPipeline = evaluateOrderedPipeline();
+  const replayRevision = evaluateReplayRevision();
   const dedupeGuard = evaluateDedupeGuard();
   const effectIdempotency = evaluateEffectIdempotency();
   const attemptStreamLock = evaluateAttemptStreamLock();
@@ -248,6 +291,7 @@ export function buildEventPipelineGateReceipt({
   const gates = {
     migration_contract: migrationContract,
     ordered_pipeline: orderedPipeline,
+    replay_revision: replayRevision,
     dedupe_guard: dedupeGuard,
     effect_idempotency: effectIdempotency,
     attempt_stream_lock: attemptStreamLock,

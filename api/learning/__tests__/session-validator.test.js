@@ -212,6 +212,34 @@ test('resolveCreateSessionAnchor falls back to topic_path when concept topic_id 
   ]);
 });
 
+test('resolveCreateSessionAnchor does not fall back to topic_path when concept topic_id is a missing uuid', async () => {
+  const client = createCurriculumClient([
+    { node_id: TOPIC_UUID, topic_path: TOPIC_PATH },
+  ]);
+
+  await expect(resolveCreateSessionAnchor(client, {
+    anchorKind: 'concept',
+    subjectCode: '9709',
+    anchorRef: {
+      kind: 'concept',
+      topic_id: '22222222-2222-4222-8222-222222222222',
+      topic_path: TOPIC_PATH,
+    },
+    currentQuestionTypeId: '9709.trigonometry.equations',
+  })).rejects.toMatchObject({
+    code: 'anchor_target_not_found',
+    status: 404,
+  });
+
+  expect(client.calls).toEqual([
+    {
+      table: 'curriculum_nodes',
+      columns: 'node_id, topic_path',
+      filters: [{ field: 'node_id', value: '22222222-2222-4222-8222-222222222222' }],
+    },
+  ]);
+});
+
 test('resolveCreateSessionAnchor returns 404 when concept topic is missing by both uuid and topic_path', async () => {
   const client = createCurriculumClient([]);
 

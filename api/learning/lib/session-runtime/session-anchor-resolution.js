@@ -55,13 +55,14 @@ async function resolveConceptAnchor(client, {
   anchorRef,
   currentQuestionTypeId,
 } = {}) {
+  const topicIdIsUuid = isUuidString(anchorRef.topic_id);
   let topic = null;
 
-  if (isUuidString(anchorRef.topic_id)) {
+  if (topicIdIsUuid) {
     topic = await loadTopic(client, anchorRef.topic_id);
   }
 
-  if (!topic && anchorRef.topic_path) {
+  if (!topic && !topicIdIsUuid && anchorRef.topic_path) {
     topic = await maybeSingle(
       client
         .from('curriculum_nodes')

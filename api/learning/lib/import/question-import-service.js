@@ -6,6 +6,9 @@ import {
   buildQuestionAnalysisResult,
 } from '../question-analysis/analysis-result-contract.js';
 import {
+  evaluateHitlRoutingDecision,
+} from '../question-analysis/hitl-routing-contract.js';
+import {
   analyzeQuestionEnvelope,
 } from '../question-analysis/question-intelligence-service.js';
 import {
@@ -396,6 +399,9 @@ async function performQuestionImport(client, {
   normalizedInput,
   questionId = null,
 } = {}) {
+  const callerQuestionTypeId = normalizeNullableString(
+    normalizedInput.analysis_hints?.question_type_hint_id,
+  );
   const analyzedClassification = analyzeQuestionEnvelope({
     envelope: normalizedInput.question_envelope,
     analysisHints: normalizedInput.analysis_hints,
@@ -413,6 +419,32 @@ async function performQuestionImport(client, {
     classification.primary_question_type_id,
   );
 
+  // #14: Track whether the analyzer overrode the caller's classification.
+  const analyzerQuestionTypeId = normalizeNullableString(
+    classification.primary_question_type_id,
+  );
+  const classificationOverridden = Boolean(
+    callerQuestionTypeId
+    && analyzerQuestionTypeId
+    && callerQuestionTypeId !== analyzerQuestionTypeId,
+  );
+  if (classificationOverridden) {
+    classification.analysis_audit_metadata = {
+      ...classification.analysis_audit_metadata,
+      classification_overridden: true,
+      caller_question_type_id: callerQuestionTypeId,
+    };
+  }
+
+  // #15: Evaluate HITL routing decision for low-confidence cases.
+  const hitlRoutingDecision = evaluateHitlRoutingDecision(classification);
+  if (hitlRoutingDecision.hitl_required) {
+    classification.analysis_audit_metadata = {
+      ...classification.analysis_audit_metadata,
+      hitl_routing_decision: hitlRoutingDecision,
+    };
+  }
+
   const question = await insertImportedQuestion(client, {
     question_id: questionId,
     source_kind: normalizedInput.source_kind,
@@ -427,6 +459,7 @@ async function performQuestionImport(client, {
   return {
     question,
     scoring_scope_posture: scoringScopePosture,
+    hitl_routing_decision: hitlRoutingDecision,
   };
 }
 

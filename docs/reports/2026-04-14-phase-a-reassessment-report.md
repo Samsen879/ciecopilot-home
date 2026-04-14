@@ -12,9 +12,10 @@
 
 ## Authority
 
-- `docs/reports/2026-04-11-ao-next-phase-execution-roadmap.md`
-- `docs/reports/2026-04-12-phase-a-product-decision-record.md`
 - `docs/superpowers/specs/2026-03-20-prd-learning-runtime-contract-design.md`
+- `docs/superpowers/plans/2026-03-20-prd-learning-runtime-pilot-slice-execution.md`
+- `docs/superpowers/plans/2026-04-13-phase-a-remediation.md`
+- `docs/reports/2026-04-13-phase-a-remediation-report.md`
 
 ## Conclusion
 
@@ -109,4 +110,4 @@ Outcome:
 
 - `npm run workflow:baseline:sync` failed in the preserved root workspace because its local branch did not have upstream tracking configured.
 - `npm run workflow:task:create -- --id phase-a-followup --slug runtime-rubric-landing-followup --base baseline/origin-main` still succeeded and created this task worktree from `baseline/origin-main`, so the reassessment artifact is on a compliant `task/*` branch.
-- This report intentionally closes Phase A at the contract boundary described in the roadmap and product decision record. Phase C remains the authority for wiring the P3 contract into end-to-end runtime orchestration.
+- This report intentionally closes Phase A at the contract boundary described in the tracked runtime contract, pilot-slice execution plan, and Phase A remediation plan/report. Later runtime orchestration remains out of scope for this close.

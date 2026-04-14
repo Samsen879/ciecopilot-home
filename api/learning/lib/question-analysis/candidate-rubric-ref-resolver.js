@@ -45,6 +45,20 @@ const SEEDED_CANDIDATE_RUBRIC_REFS = Object.freeze({
   ]),
 });
 
+/**
+ * Resolves candidate rubric refs for a question type.
+ *
+ * Design intent: `providedRefs` takes priority over seeded refs when non-empty.
+ * This is intentional — in the import pipeline, the question-intelligence-service
+ * analyzer resolves rubric refs *before* calling this function, so by the time
+ * this is invoked, `providedRefs` already contains the analyzer's output (not
+ * the raw caller input). If you call this function directly (outside the import
+ * pipeline), be aware that any non-empty `providedRefs` array will bypass the
+ * seeded pilot refs entirely.
+ *
+ * @param {{ questionTypeId?: string, providedRefs?: Array }} options
+ * @returns {Array} cloned rubric refs
+ */
 export function resolveCandidateRubricRefs({
   questionTypeId,
   providedRefs = [],

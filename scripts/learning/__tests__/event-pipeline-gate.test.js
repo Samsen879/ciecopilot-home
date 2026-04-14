@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 describe('event pipeline gate', () => {
   test('phase 0 gate passes when migration and in-memory pipeline invariants hold', async () => {
@@ -58,6 +59,39 @@ describe('event pipeline gate', () => {
     } finally {
       fs.rmSync(path.join(process.cwd(), outJson), { force: true });
       fs.rmSync(path.join(process.cwd(), outMd), { force: true });
+    }
+  });
+
+  test('cli resolves gate paths from the repo root even when launched from a subdirectory', async () => {
+    const repoRoot = process.cwd();
+    const subdir = path.join(repoRoot, 'scripts');
+    const outJson = 'tmp/event-pipeline-gate-subdir.json';
+    const outMd = 'tmp/event-pipeline-gate-subdir.md';
+
+    try {
+      execFileSync('node', [
+        'learning/run_event_pipeline_gate.js',
+        '--out-json',
+        outJson,
+        '--out-md',
+        outMd,
+      ], {
+        cwd: subdir,
+      });
+
+      expect(fs.existsSync(path.join(repoRoot, outJson))).toBe(true);
+      expect(fs.existsSync(path.join(repoRoot, outMd))).toBe(true);
+
+      const payload = JSON.parse(fs.readFileSync(path.join(repoRoot, outJson), 'utf8'));
+      expect(payload).toMatchObject({
+        status: 'pass',
+        phase0_ready: true,
+      });
+    } finally {
+      fs.rmSync(path.join(repoRoot, outJson), { force: true });
+      fs.rmSync(path.join(repoRoot, outMd), { force: true });
+      fs.rmSync(path.join(subdir, outJson), { force: true });
+      fs.rmSync(path.join(subdir, outMd), { force: true });
     }
   });
 });

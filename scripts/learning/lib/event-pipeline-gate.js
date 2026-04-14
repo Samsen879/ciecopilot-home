@@ -206,6 +206,7 @@ function evaluateEffectIdempotency() {
     subjectCode: '9709',
     emittedBy: 'event-pipeline-gate',
   });
+  flow.forEach((event) => appendLearningEvent(store, event));
   const originalEvent = flow.at(-1);
   const replayEvent = buildReplayLearningEvent(originalEvent, {
     truthRevision: 2,

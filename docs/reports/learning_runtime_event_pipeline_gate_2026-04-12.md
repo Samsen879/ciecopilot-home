@@ -2,7 +2,7 @@
 
 - status: `pass`
 - phase0_ready: `true`
-- generated_at: `2026-04-14T07:25:59.769Z`
+- generated_at: `2026-04-14T07:35:23.117Z`
 - migration_path: `supabase/migrations/20260412090000_phase0_learning_events_core.sql`
 
 ## Gates

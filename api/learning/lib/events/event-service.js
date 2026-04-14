@@ -286,6 +286,7 @@ function cloneEffect(effect) {
 export function createEmptyLearningEventStore() {
   return {
     events: [],
+    eventsById: new Map(),
     effects: [],
     dedupeRefs: new Set(),
     streamRefs: new Set(),
@@ -427,6 +428,7 @@ export function appendLearningEvent(store, candidateEvent) {
   }
 
   store.events.push(event);
+  store.eventsById.set(event.event_id, event);
   store.dedupeRefs.add(dedupeKey);
   store.streamRefs.add(streamKey);
   store.revisionStageRefs.add(revisionStageKey);
@@ -455,6 +457,10 @@ export function tryStartLearningEventEffect(store, input) {
       reason_code: 'duplicate_effect_key',
       effect: cloneEffect(existing),
     };
+  }
+
+  if (!store.eventsById.has(normalizedInput.event_id)) {
+    throw new Error('unknown_effect_event_id');
   }
 
   const effect = {

@@ -9,8 +9,8 @@ import {
   writeEventPipelineGateOutputs,
 } from './lib/event-pipeline-gate.js';
 
-const ROOT = process.cwd();
 const __filename = fileURLToPath(import.meta.url);
+const ROOT = path.resolve(fileURLToPath(new URL('../../', import.meta.url)));
 
 function parseCliArgs(args) {
   const output = {};

@@ -74,6 +74,7 @@ describe('learning event service', () => {
 
   test('replay with the same effect_key stays idempotent in the effect ledger', async () => {
     const {
+      appendLearningEvent,
       buildReplayLearningEvent,
       buildSyntheticAttemptEventFlow,
       createEmptyLearningEventStore,
@@ -89,6 +90,7 @@ describe('learning event service', () => {
       subjectCode: '9709',
       emittedBy: 'jest',
     });
+    flow.forEach((event) => appendLearningEvent(store, event));
     const originalEvent = flow.at(-1);
     const replayEvent = buildReplayLearningEvent(originalEvent, {
       truthRevision: 2,
@@ -203,5 +205,22 @@ describe('learning event service', () => {
       reason_code: null,
       attempt_id: 'attempt-lock',
     });
+  });
+
+  test('effect start rejects unknown event ids that are not present in the stream', async () => {
+    const {
+      createEmptyLearningEventStore,
+      tryStartLearningEventEffect,
+    } = await import('../lib/events/event-service.js');
+
+    const store = createEmptyLearningEventStore();
+
+    expect(() => tryStartLearningEventEffect(store, {
+      eventId: 'missing-event-id',
+      handlerName: 'project:artifact-suggestions',
+      effectKey: 'artifact-slot:review_queue:stable-output',
+      aggregateId: 'attempt-missing-event',
+      truthRevision: 1,
+    })).toThrow('unknown_effect_event_id');
   });
 });

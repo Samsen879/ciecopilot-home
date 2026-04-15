@@ -119,4 +119,12 @@ describe('learning route registry', () => {
       params: {},
     });
   });
+
+  test('does not let the learning questions search route match deeper subtree paths', () => {
+    expect(findRoute('/api/learning/questions/foo', 'GET')).toEqual({
+      route: null,
+      allowed: false,
+      params: {},
+    });
+  });
 });

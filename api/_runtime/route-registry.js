@@ -62,6 +62,7 @@ const ROUTES = [
   {
     module: 'learning-questions',
     pathPrefix: '/api/learning/questions',
+    pattern: /^\/api\/learning\/questions$/,
     importPath: '../learning/questions/index.js',
     auth: 'jwt_required',
     authMode: 'authenticated',

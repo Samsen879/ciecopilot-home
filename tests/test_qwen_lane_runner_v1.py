@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.vlm.contracts import validate_qwen_wave1_output  # noqa: E402
 from scripts.vlm.qwen_lane_runner_v1 import (  # noqa: E402
     build_provider_for_job,
+    main,
     run_lane_job,
 )
 
@@ -100,3 +102,20 @@ def test_run_lane_job_surfaces_provider_failures_in_contract_envelope(tmp_path):
     assert payload["confidence"] == 0.0
     assert payload["output"]["summary"] is None
     assert "lazy_attach_original_image" in payload["output"]["warnings"]
+
+
+def test_main_loads_project_env_before_running_manifest(capsys):
+    with patch("scripts.vlm.qwen_lane_runner_v1.load_project_env") as mock_load_env:
+        with patch(
+            "scripts.vlm.qwen_lane_runner_v1._build_jobs_from_args",
+            return_value=[],
+        ):
+            exit_code = main([
+                "--manifest",
+                "data/manifests/9709_question_search_recovery_v1.json",
+                "--dry-run",
+            ])
+
+    assert exit_code == 0
+    mock_load_env.assert_called_once()
+    assert "jobs_planned: 0" in capsys.readouterr().out

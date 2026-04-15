@@ -12,6 +12,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Callable
 
+from scripts.common.env import load_project_env
+
 DEFAULT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
 
@@ -189,6 +191,8 @@ def call_qwen_openai_v1(
     timeout: int = 90,
     temp_dir: str | Path | None = None,
 ) -> dict[str, Any]:
+    if env is None:
+        load_project_env()
     base_env = dict(env if env is not None else os.environ)
     api_key = get_dashscope_api_key(base_env)
     effective_path_converter = bind_path_converter(runner, path_converter)

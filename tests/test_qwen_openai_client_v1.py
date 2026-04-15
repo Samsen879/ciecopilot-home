@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -138,6 +139,46 @@ def test_call_qwen_openai_v1_routes_path_conversion_through_injected_runner(tmp_
     assert commands[2][0] == "powershell.exe"
     assert commands[2][5].startswith("WIN::")
     assert commands[2][6].startswith("WIN::")
+
+
+def test_call_qwen_openai_v1_honors_dashscope_api_key_loaded_from_dotenv(tmp_path, monkeypatch):
+    captured = {"load_calls": 0}
+
+    def fake_runner(cmd, *, capture_output, text, env=None, timeout=None, check=False):
+        if cmd[0] == "wslpath":
+            return SimpleNamespace(returncode=0, stdout=f"WIN::{cmd[-1]}", stderr="")
+        captured["env"] = env
+        return SimpleNamespace(
+            returncode=0,
+            stdout='{"model":"qwen-vl-ocr","choices":[{"message":{"content":"ok"}}]}',
+            stderr="",
+        )
+
+    def fake_load_project_env():
+        captured["load_calls"] += 1
+        os.environ["DASHSCOPE_API_KEY"] = "dotenv-secret"
+
+    monkeypatch.delenv("DASHSCOPE_API_KEY", raising=False)
+    monkeypatch.setattr(
+        "scripts.vlm.qwen_openai_client_v1.load_project_env",
+        fake_load_project_env,
+        raising=False,
+    )
+
+    response = call_qwen_openai_v1(
+        {
+            "model": "qwen-vl-ocr",
+            "messages": [{"role": "user", "content": "Reply with exactly: ok"}],
+            "enable_thinking": False,
+            "response_format": {"type": "json_object"},
+        },
+        runner=fake_runner,
+        temp_dir=tmp_path,
+    )
+
+    assert response["choices"][0]["message"]["content"] == "ok"
+    assert captured["load_calls"] == 1
+    assert captured["env"]["DASHSCOPE_API_KEY"] == "dotenv-secret"
 
 
 def test_main_builds_image_request_and_json_object_flag(capsys):

@@ -12,7 +12,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from scripts.common.env import resolve_assets_root
+from scripts.common.env import load_project_env, resolve_assets_root
 from scripts.vlm.contracts import validate_qwen_wave1_output
 from scripts.vlm.create_jobs_from_manifest import build_manifest_jobs, load_manifest
 from scripts.vlm.providers import get_provider
@@ -151,6 +151,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_project_env()
     args = parse_args(argv)
     jobs = _build_jobs_from_args(args)
 

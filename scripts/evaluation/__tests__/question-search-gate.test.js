@@ -169,6 +169,7 @@ describe('question-search-gate', () => {
       selected_branch: 'question_descriptions_v0_status_ok',
       surfaces: {
         question_descriptions_prod_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v1: { exists: false, count: null, count_9709: null },
         question_descriptions_v0: { exists: true, count: 24, count_9709: 24 },
         learning_question_search_projection: { count: 24, count_9709: 24 },
         question_bank_9709: { total: 24, paper_question: 22, imported_question: 2 },
@@ -216,7 +217,10 @@ describe('question-search-gate', () => {
       'imported-fallback-browser-repair',
       'paper-pin-s19-p1-q6',
     ]);
+    expect(result.report_markdown).toContain('## Runner Output');
     expect(result.report_markdown).toContain('Descriptor Source');
+    expect(result.report_markdown).toContain('question_descriptions_v1');
+    expect(result.report_markdown).toContain('Frozen Descriptor Fallback Contract');
     expect(result.report_markdown).toContain('Threshold Results');
     expect(result.report_markdown).toContain('Residual Risks');
   });
@@ -325,6 +329,7 @@ describe('question-search-gate', () => {
       selected_branch: 'question_descriptions_v0_status_ok',
       surfaces: {
         question_descriptions_prod_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v1: { exists: false, count: null, count_9709: null },
         question_descriptions_v0: { exists: true, count: 0, count_9709: 0 },
         learning_question_search_projection: { count: 11, count_9709: 11 },
         question_bank_9709: { total: 11, paper_question: 0, imported_question: 11 },
@@ -361,7 +366,10 @@ describe('question-search-gate', () => {
       summary_required: true,
       summary_present: false,
     });
+    expect(result.report_markdown).toContain('## Runner Output');
     expect(result.report_markdown).toContain('question_descriptions_v0');
+    expect(result.report_markdown).toContain('question_descriptions_v1');
+    expect(result.report_markdown).toContain('Prefer `public.question_descriptions_prod_v1`');
     expect(result.report_markdown).toContain('paper_question: 0');
     expect(result.report_markdown).toContain('paper-backed pinned cases cannot pass');
   });

@@ -67,4 +67,18 @@ describe('run_question_analysis_backfill cli', () => {
       }),
     ]);
   });
+
+  test('fails loudly when --evidence-bundles is passed without a value', () => {
+    const result = runCli(['--evidence-bundles']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('--evidence-bundles requires a file path');
+  });
+
+  test('fails loudly when --evidence-bundles is followed by another flag instead of a value', () => {
+    const result = runCli(['--evidence-bundles', '--force']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('--evidence-bundles requires a file path');
+  });
 });

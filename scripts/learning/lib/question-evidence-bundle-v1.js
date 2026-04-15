@@ -192,21 +192,39 @@ function firstNonNull(...values) {
 function buildStructuredEvidence(manifestItem, laneOutputs) {
   const ocrOutput = laneOutputs.find((entry) => entry.route === 'ocr_lane');
   const diagramOutput = laneOutputs.find((entry) => entry.route === 'diagram_lane');
+  const reviewOutput = laneOutputs.find((entry) => entry.route === 'review_lane');
 
   const ocrEvidence = laneEvidenceMap(ocrOutput);
   const diagramEvidence = laneEvidenceMap(diagramOutput);
+  const reviewEvidence = laneEvidenceMap(reviewOutput);
 
   return {
-    ocr_text: pickFirstString(ocrEvidence.ocr_text),
-    formula_latex_list: pickArray(ocrEvidence.formula_latex_list),
-    subquestion_blocks: pickArray(ocrEvidence.subquestion_blocks),
-    layout_hints: pickArray(ocrEvidence.layout_hints),
+    ocr_text: pickFirstString(ocrEvidence.ocr_text, reviewEvidence.ocr_text),
+    formula_latex_list: pickArray(
+      ocrEvidence.formula_latex_list,
+      reviewEvidence.formula_latex_list,
+    ),
+    subquestion_blocks: pickArray(
+      ocrEvidence.subquestion_blocks,
+      reviewEvidence.subquestion_blocks,
+    ),
+    layout_hints: pickArray(
+      ocrEvidence.layout_hints,
+      reviewEvidence.layout_hints,
+    ),
     diagram_present: firstNonNull(
       normalizeNullableBoolean(diagramEvidence.diagram_present),
+      normalizeNullableBoolean(reviewEvidence.diagram_present),
       normalizeNullableBoolean(manifestItem.diagram_present),
     ),
-    diagram_elements: pickArray(diagramEvidence.diagram_elements),
-    spatial_evidence: pickArray(diagramEvidence.spatial_evidence),
+    diagram_elements: pickArray(
+      diagramEvidence.diagram_elements,
+      reviewEvidence.diagram_elements,
+    ),
+    spatial_evidence: pickArray(
+      diagramEvidence.spatial_evidence,
+      reviewEvidence.spatial_evidence,
+    ),
   };
 }
 
@@ -286,22 +304,22 @@ function deriveLazyAttachReasons({
 }
 
 function buildSelectedRoute(routeDecision, manifestItem, laneOutputs) {
-  const selectedOutput = laneOutputs.find((entry) => entry.route === routeDecision.route) ?? laneOutputs[0] ?? {};
+  const selectedOutput = laneOutputs.find((entry) => entry.route === routeDecision.route) ?? null;
 
   return {
     route: routeDecision.route,
-    model: selectedOutput.model ?? routeDecision.model ?? null,
-    region: selectedOutput.region ?? routeDecision.region ?? null,
-    base_url: selectedOutput.base_url ?? routeDecision.base_url ?? null,
-    api_key_scope: selectedOutput.api_key_scope ?? routeDecision.api_key_scope ?? null,
+    model: routeDecision.model ?? null,
+    region: routeDecision.region ?? null,
+    base_url: routeDecision.base_url ?? null,
+    api_key_scope: routeDecision.api_key_scope ?? null,
     prompt_template_version:
-      selectedOutput.prompt_template_version ?? routeDecision.prompt_template_version ?? null,
+      routeDecision.prompt_template_version ?? null,
     response_schema_version:
-      selectedOutput.response_schema_version ?? routeDecision.response_schema_version ?? null,
-    input_asset_id: selectedOutput.input_asset_id ?? manifestItem.storage_key ?? null,
-    input_asset_hash: selectedOutput.input_asset_hash ?? null,
-    confidence: typeof selectedOutput.confidence === 'number' ? selectedOutput.confidence : null,
-    failure_reason: normalizeNullableString(selectedOutput.failure_reason),
+      routeDecision.response_schema_version ?? null,
+    input_asset_id: selectedOutput?.input_asset_id ?? manifestItem.storage_key ?? null,
+    input_asset_hash: selectedOutput?.input_asset_hash ?? null,
+    confidence: typeof selectedOutput?.confidence === 'number' ? selectedOutput.confidence : null,
+    failure_reason: normalizeNullableString(selectedOutput?.failure_reason),
     decision_reasons: cloneJson(routeDecision.decision_reasons ?? []),
   };
 }

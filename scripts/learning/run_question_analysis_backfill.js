@@ -96,6 +96,12 @@ export async function main(argv = process.argv.slice(2)) {
   const evidenceBundlePath = evidenceBundlesIndex >= 0
     ? argv[evidenceBundlesIndex + 1] ?? null
     : null;
+  if (
+    evidenceBundlesIndex >= 0
+    && (!evidenceBundlePath || evidenceBundlePath.startsWith('--'))
+  ) {
+    throw new Error('--evidence-bundles requires a file path.');
+  }
   const client = getServiceClient();
   let questions = await loadCandidateQuestions(client);
   if (evidenceBundlePath) {

@@ -17,9 +17,168 @@ from scripts.vlm.qc_common import (
     safe_float,
     write_json,
 )
+from scripts.vlm.contracts import extract_qwen_wave1_provenance
+from scripts.vlm.create_jobs_from_manifest import build_manifest_jobs, load_manifest
 
 
-def collect_stats() -> dict[str, Any]:
+def _load_lane_results(path: Path | None) -> list[dict[str, Any]]:
+    if path is None:
+        return []
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, list):
+        raise ValueError("lane_results_json must contain a JSON array")
+    return [row for row in payload if isinstance(row, dict)]
+
+
+def _extract_evidence_map(evidence: list[dict[str, Any]] | None) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for entry in evidence or []:
+        if not isinstance(entry, dict):
+            continue
+        field = entry.get("field")
+        if isinstance(field, str) and field not in result:
+            result[field] = entry.get("value")
+    return result
+
+
+def _summary_present(value: Any) -> bool:
+    return isinstance(value, str) and value.strip() != ""
+
+
+def _bool_bucket(value: Any) -> str:
+    if value is True:
+        return "true"
+    if value is False:
+        return "false"
+    return "unknown"
+
+
+def _count_labels(values: list[str]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _classify_descriptor_readiness(
+    route: str | None,
+    summary: str | None,
+    requires_review: bool,
+    failure_reason: str | None,
+) -> str:
+    if failure_reason:
+        return "failed"
+    if route in {"ocr_lane", "diagram_lane"} and _summary_present(summary) and not requires_review:
+        return "descriptor_candidate"
+    return "review_bucket"
+
+
+def build_wave1_pilot_rows(
+    manifest: dict[str, Any],
+    lane_results: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    jobs = {
+        job["storage_key"]: job
+        for job in build_manifest_jobs(manifest)
+    }
+    results_by_key = {
+        row.get("input_asset_id"): row
+        for row in (lane_results or [])
+        if isinstance(row.get("input_asset_id"), str)
+    }
+    rows: list[dict[str, Any]] = []
+
+    for item in manifest.get("items", []):
+        if not isinstance(item, dict):
+            continue
+        storage_key = item["storage_key"]
+        job = jobs.get(storage_key, {})
+        lane_result = results_by_key.get(storage_key, {})
+        job_wave1 = extract_qwen_wave1_provenance(job) or {}
+        result_wave1 = extract_qwen_wave1_provenance(lane_result) or {}
+        output = lane_result.get("output") if isinstance(lane_result.get("output"), dict) else {}
+        evidence = output.get("evidence") if isinstance(output.get("evidence"), list) else []
+        evidence_map = _extract_evidence_map(evidence)
+        warnings = result_wave1.get("warnings") or []
+        summary = result_wave1.get("summary")
+        diagram_present = item.get("diagram_present")
+        if diagram_present is None and isinstance(evidence_map.get("diagram_present"), bool):
+            diagram_present = evidence_map["diagram_present"]
+
+        requires_review = bool(item.get("requires_review"))
+        if isinstance(evidence_map.get("requires_review"), bool):
+            requires_review = requires_review or evidence_map["requires_review"]
+        if "requires_review" in warnings:
+            requires_review = True
+
+        lazy_attach = result_wave1.get("lazy_attach_original_image")
+        if lazy_attach is None:
+            lazy_attach = job_wave1.get("lazy_attach_original_image")
+
+        route = result_wave1.get("route") or job_wave1.get("route")
+        lane = result_wave1.get("lane") or job_wave1.get("lane")
+        failure_reason = lane_result.get("failure_reason") or result_wave1.get("failure_reason")
+
+        rows.append(
+            {
+                "storage_key": storage_key,
+                "manifest_position": job.get("manifest_position"),
+                "route": route,
+                "lane": lane,
+                "model": lane_result.get("model") or job.get("model"),
+                "decision_reasons": list(job_wave1.get("decision_reasons") or []),
+                "route_hint": item.get("route_hint"),
+                "gate_critical": bool(item.get("gate_critical")),
+                "diagram_present": diagram_present,
+                "requires_review": requires_review,
+                "lazy_attach_original_image": bool(lazy_attach),
+                "summary": summary,
+                "warnings": list(warnings),
+                "evidence": list(evidence),
+                "failure_reason": failure_reason,
+                "confidence": safe_float(lane_result.get("confidence")),
+                "descriptor_readiness": _classify_descriptor_readiness(
+                    route,
+                    summary,
+                    requires_review,
+                    failure_reason,
+                ),
+            }
+        )
+
+    return rows
+
+
+def summarize_wave1_pilot_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    decision_reasons: list[str] = []
+    for row in rows:
+        decision_reasons.extend(row.get("decision_reasons") or [])
+
+    failure_reasons = [row["failure_reason"] for row in rows if row.get("failure_reason")]
+
+    return {
+        "total_rows": len(rows),
+        "rows_by_route": _count_labels([row["route"] for row in rows if row.get("route")]),
+        "rows_by_lane": _count_labels([row["lane"] for row in rows if row.get("lane")]),
+        "model_counts": _count_labels([row["model"] for row in rows if row.get("model")]),
+        "decision_reasons": _count_labels(decision_reasons),
+        "diagram_present": _count_labels([_bool_bucket(row.get("diagram_present")) for row in rows]),
+        "requires_review": _count_labels([_bool_bucket(row.get("requires_review")) for row in rows]),
+        "lazy_attach_original_image": _count_labels([_bool_bucket(row.get("lazy_attach_original_image")) for row in rows]),
+        "descriptor_readiness": _count_labels([row["descriptor_readiness"] for row in rows]),
+        "summary_presence": {
+            "present": sum(1 for row in rows if _summary_present(row.get("summary"))),
+            "missing": sum(1 for row in rows if not _summary_present(row.get("summary"))),
+        },
+        "failure_reason_counts": _count_labels(failure_reasons),
+    }
+
+
+def collect_stats(
+    *,
+    manifest_path: Path | None = None,
+    lane_results_json: Path | None = None,
+) -> dict[str, Any]:
     with get_connection() as conn:
         with conn.cursor() as cur:
             overview = {
@@ -295,7 +454,7 @@ def collect_stats() -> dict[str, Any]:
     for row in anomalies["low_confidence_records"]:
         row["confidence"] = safe_float(row.get("confidence"))
 
-    return {
+    stats = {
         "overview": overview,
         "field_distributions": {
             "question_type_by_syllabus": question_type_dist,
@@ -307,6 +466,22 @@ def collect_stats() -> dict[str, Any]:
         "anomaly_detection": anomalies,
         "cross_validation": cross_validation,
     }
+
+    if manifest_path is not None:
+        manifest = load_manifest(manifest_path)
+        wave1_rows = build_wave1_pilot_rows(
+            manifest,
+            _load_lane_results(lane_results_json),
+        )
+        stats["wave1_pilot"] = {
+            "manifest_id": manifest.get("manifest_id"),
+            "manifest_path": str(manifest_path),
+            "lane_results_json": str(lane_results_json) if lane_results_json else None,
+            "summary": summarize_wave1_pilot_rows(wave1_rows),
+            "rows": wave1_rows,
+        }
+
+    return stats
 
 
 def print_stats(stats: dict[str, Any]) -> None:
@@ -387,6 +562,36 @@ def print_stats(stats: dict[str, Any]) -> None:
         for row in cv["done_missing_in_descriptions"]:
             print(f"  - {row['storage_key']}")
 
+    wave1 = stats.get("wave1_pilot")
+    if wave1:
+        summary = wave1["summary"]
+        print("\n=== 6) Wave-1 Pilot ===")
+        print(f"manifest_id: {wave1['manifest_id']}")
+        print(f"pilot rows: {summary['total_rows']}")
+        print("rows by route:")
+        for key, value in summary["rows_by_route"].items():
+            print(f"  - {key}: {value}")
+        print("rows by lane:")
+        for key, value in summary["rows_by_lane"].items():
+            print(f"  - {key}: {value}")
+        print("diagram_present:")
+        for key, value in summary["diagram_present"].items():
+            print(f"  - {key}: {value}")
+        print("requires_review:")
+        for key, value in summary["requires_review"].items():
+            print(f"  - {key}: {value}")
+        print("lazy_attach_original_image:")
+        for key, value in summary["lazy_attach_original_image"].items():
+            print(f"  - {key}: {value}")
+        print("descriptor_readiness:")
+        for key, value in summary["descriptor_readiness"].items():
+            print(f"  - {key}: {value}")
+        print(
+            "summary presence: "
+            f"present={summary['summary_presence']['present']}, "
+            f"missing={summary['summary_presence']['missing']}"
+        )
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="VLM QC stats for question_descriptions_v0")
@@ -396,9 +601,14 @@ def main() -> int:
         default=DEFAULT_STATS_JSON,
         help=f"Path to write stats json (default: {DEFAULT_STATS_JSON})",
     )
+    parser.add_argument("--manifest", type=Path, help="Optional pilot manifest to overlay wave-1 routing metadata.")
+    parser.add_argument("--lane-results-json", type=Path, help="Optional qwen_lane_runner_v1 JSON output.")
     args = parser.parse_args()
 
-    stats = collect_stats()
+    stats = collect_stats(
+        manifest_path=args.manifest,
+        lane_results_json=args.lane_results_json,
+    )
     print_stats(stats)
     write_json(args.output_json, stats)
     print(f"\nStats JSON 已写入: {args.output_json}")

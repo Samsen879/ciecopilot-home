@@ -6,6 +6,7 @@ import base64
 import json
 import os
 import random
+import re
 import sys
 import time
 from collections import Counter, defaultdict
@@ -25,6 +26,7 @@ from scripts.vlm.qc_common import (
     today_str,
     write_json,
 )
+from scripts.vlm.qc_stats import build_wave1_pilot_rows
 
 load_project_env()
 
@@ -37,6 +39,8 @@ BAND_TARGET = 5
 SLEEP_SECONDS = 1.0
 
 JSON_BLOCK_REPLACEMENTS = ("```json", "```")
+INVALID_JSON_ESCAPE_RE = re.compile(r"\\x[0-9a-fA-F]{2}")
+CONTROL_CHAR_RE = re.compile(r"[\x00-\x1f\x7f-\x9f]")
 
 
 def make_prompt(row: dict[str, Any]) -> str:
@@ -65,6 +69,53 @@ def make_prompt(row: dict[str, Any]) -> str:
 }}"""
 
 
+def build_wave1_prompt(row: dict[str, Any]) -> str:
+    return f"""你是一个 CIE A-Level 单题恢复结果的抽检审核员。我会给你一张题目截图和一条 wave-1 lane 运行结果。
+请判断这条结果是否已经足够作为 descriptor 候选，还是应该继续留在 review bucket。
+
+当前结果：
+- route: {row.get("route")}
+- lane: {row.get("lane")}
+- gate_critical: {row.get("gate_critical")}
+- diagram_present: {row.get("diagram_present")}
+- requires_review: {row.get("requires_review")}
+- lazy_attach_original_image: {row.get("lazy_attach_original_image")}
+- confidence: {row.get("confidence")}
+- failure_reason: {row.get("failure_reason")}
+- summary: {row.get("summary")}
+- warnings: {row.get("warnings")}
+- evidence: {row.get("evidence")}
+
+请只返回 JSON，不要输出其他内容：
+{{
+  "descriptor_readiness": "descriptor_ready|review_bucket|unreadable",
+  "route_verdict": "appropriate|over_conservative|under_conservative|cannot_judge",
+  "review_bucket_verdict": "correct|incorrect|cannot_judge",
+  "comment": "简短说明",
+  "issues": ["issue1", "issue2"]
+}}"""
+
+
+def select_wave1_spot_check_rows(
+    rows: list[dict[str, Any]],
+    sample_size: int | None = None,
+) -> list[dict[str, Any]]:
+    ranked = sorted(
+        rows,
+        key=lambda row: (
+            0 if row.get("gate_critical") else 1,
+            0 if row.get("diagram_present") is True or row.get("route") == "diagram_lane" else 1,
+            0 if row.get("failure_reason") else 1,
+            0 if row.get("requires_review") else 1,
+            row.get("manifest_position") if row.get("manifest_position") is not None else 10**9,
+            row.get("storage_key") or "",
+        ),
+    )
+    if sample_size is None or sample_size >= len(ranked):
+        return ranked
+    return ranked[:sample_size]
+
+
 def parse_json_response(text: str) -> dict[str, Any] | None:
     if not text:
         return None
@@ -75,7 +126,7 @@ def parse_json_response(text: str) -> dict[str, Any] | None:
         pass
     for marker in JSON_BLOCK_REPLACEMENTS:
         candidate = candidate.replace(marker, "")
-    candidate = candidate.strip()
+    candidate = CONTROL_CHAR_RE.sub(" ", INVALID_JSON_ESCAPE_RE.sub("", candidate)).strip()
     try:
         return json.loads(candidate)
     except Exception:
@@ -253,6 +304,114 @@ def compute_aggregates(records: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def compute_wave1_aggregates(records: list[dict[str, Any]]) -> dict[str, Any]:
+    descriptor_readiness = Counter()
+    route_verdict = Counter()
+    review_bucket_verdict = Counter()
+    follow_up: list[dict[str, Any]] = []
+
+    for record in records:
+        review = record.get("review")
+        if not isinstance(review, dict):
+            continue
+        if review.get("descriptor_readiness"):
+            descriptor_readiness[review["descriptor_readiness"]] += 1
+        if review.get("route_verdict"):
+            route_verdict[review["route_verdict"]] += 1
+        if review.get("review_bucket_verdict"):
+            review_bucket_verdict[review["review_bucket_verdict"]] += 1
+        if review.get("descriptor_readiness") != "descriptor_ready":
+            follow_up.append(
+                {
+                    "storage_key": record["storage_key"],
+                    "route": record.get("route"),
+                    "comment": review.get("comment"),
+                    "issues": review.get("issues") or [],
+                }
+            )
+
+    return {
+        "descriptor_readiness_counts": dict(sorted(descriptor_readiness.items())),
+        "route_verdict_counts": dict(sorted(route_verdict.items())),
+        "review_bucket_verdict_counts": dict(sorted(review_bucket_verdict.items())),
+        "follow_up_cases": follow_up,
+    }
+
+
+def run_wave1_spot_check(
+    manifest_path: Path,
+    lane_results_json: Path,
+    *,
+    sample_size: int | None = None,
+) -> dict[str, Any]:
+    api_key = os.environ.get("DASHSCOPE_API_KEY")
+    if not api_key:
+        raise RuntimeError("DASHSCOPE_API_KEY is required (loaded from .env or environment)")
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    lane_results = json.loads(lane_results_json.read_text(encoding="utf-8"))
+    if not isinstance(lane_results, list):
+        raise ValueError("lane_results_json must contain a JSON array")
+
+    sampled = select_wave1_spot_check_rows(
+        build_wave1_pilot_rows(manifest, lane_results),
+        sample_size=sample_size,
+    )
+    client = OpenAI(api_key=api_key, base_url=BASE_URL)
+    results: list[dict[str, Any]] = []
+
+    for idx, row in enumerate(sampled, start=1):
+        storage_key = row["storage_key"]
+        image_path = ASSETS_ROOT / storage_key
+        base_row = {
+            "index": idx,
+            "storage_key": storage_key,
+            "route": row.get("route"),
+            "lane": row.get("lane"),
+            "gate_critical": row.get("gate_critical"),
+            "diagram_present": row.get("diagram_present"),
+            "requires_review": row.get("requires_review"),
+            "lazy_attach_original_image": row.get("lazy_attach_original_image"),
+            "confidence": safe_float(row.get("confidence")),
+            "failure_reason": row.get("failure_reason"),
+            "summary": row.get("summary"),
+            "warnings": row.get("warnings") or [],
+            "evidence": row.get("evidence") or [],
+        }
+        if not image_path.exists():
+            base_row["error"] = "image_not_found"
+            base_row["image_path"] = str(image_path)
+            results.append(base_row)
+            continue
+
+        prompt = build_wave1_prompt(row)
+        try:
+            call_result = call_vlm_with_retry(client, image_path, prompt)
+            if call_result.get("parse_failed"):
+                base_row["error"] = "review_parse_failed"
+                base_row["raw_text"] = call_result.get("raw_text")
+            else:
+                base_row["review"] = call_result["result"]
+        except Exception as exc:
+            base_row["error"] = f"api_error: {exc}"
+
+        results.append(base_row)
+        time.sleep(SLEEP_SECONDS)
+
+    return {
+        "date": today_str(),
+        "mode": "wave1_lane",
+        "manifest_id": manifest.get("manifest_id"),
+        "manifest_path": str(manifest_path),
+        "lane_results_json": str(lane_results_json),
+        "model": MODEL,
+        "assets_root": str(ASSETS_ROOT),
+        "sample_size": len(results),
+        "records": results,
+        "aggregates": compute_wave1_aggregates(results),
+    }
+
+
 def run_spot_check(table: str = "question_descriptions_v0") -> dict[str, Any]:
     api_key = os.environ.get("DASHSCOPE_API_KEY")
     if not api_key:
@@ -326,6 +485,23 @@ def print_summary(data: dict[str, Any]) -> None:
     print(f"成功评审: {ok}")
     print(f"失败/缺失: {err}")
 
+    if data.get("mode") == "wave1_lane":
+        print(f"manifest_id: {data['manifest_id']}")
+        print("descriptor_readiness 计数:")
+        for field, value in data["aggregates"]["descriptor_readiness_counts"].items():
+            print(f"  - {field}: {value}")
+        print("route_verdict 计数:")
+        for field, value in data["aggregates"]["route_verdict_counts"].items():
+            print(f"  - {field}: {value}")
+        print("review_bucket_verdict 计数:")
+        for field, value in data["aggregates"]["review_bucket_verdict_counts"].items():
+            print(f"  - {field}: {value}")
+        follow_up = data["aggregates"]["follow_up_cases"]
+        print(f"需后续处理样本数: {len(follow_up)}")
+        for case in follow_up:
+            print(f"  - {case['storage_key']} | {case['route']} | {case.get('comment')}")
+        return
+
     print("字段 verdict 计数:")
     for field, counts in data["aggregates"]["field_verdict_counts"].items():
         print(
@@ -354,9 +530,19 @@ def main() -> int:
         default=DEFAULT_SPOT_CHECK_JSON,
         help=f"Path to write spot-check json (default: {DEFAULT_SPOT_CHECK_JSON})",
     )
+    parser.add_argument("--manifest", type=Path, help="Optional pilot manifest for wave-1 lane spot-check mode.")
+    parser.add_argument("--lane-results-json", type=Path, help="Optional qwen_lane_runner_v1 JSON output for wave-1 spot-check mode.")
+    parser.add_argument("--sample-size", type=int, help="Optional deterministic cap for wave-1 spot-check mode.")
     args = parser.parse_args()
 
-    data = run_spot_check(args.table)
+    if args.manifest and args.lane_results_json:
+        data = run_wave1_spot_check(
+            args.manifest,
+            args.lane_results_json,
+            sample_size=args.sample_size,
+        )
+    else:
+        data = run_spot_check(args.table)
     print_summary(data)
     write_json(args.output_json, data)
     print(f"\nSpot-check JSON 已写入: {args.output_json}")

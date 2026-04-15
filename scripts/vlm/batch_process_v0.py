@@ -790,6 +790,10 @@ def parse_response(raw_text: str, job: dict) -> dict | None:
         if key in job:
             result[key] = job[key]
 
+    wave1 = extract_qwen_wave1_provenance(job)
+    if wave1 is not None:
+        result["wave1"] = wave1
+
     # Step 5: Normalize list fields and enums
     result["math_expressions_latex"] = _list_of_strings(result.get("math_expressions_latex"))
     result["variables"] = _list_of_strings(result.get("variables"))
@@ -848,7 +852,11 @@ def parse_response(raw_text: str, job: dict) -> dict | None:
 # Result submission
 # ---------------------------------------------------------------------------
 
-from scripts.vlm.contracts import leakage_guard, compute_response_sha256
+from scripts.vlm.contracts import (
+    compute_response_sha256,
+    extract_qwen_wave1_provenance,
+    leakage_guard,
+)
 
 _UPSERT_SQL = """
     INSERT INTO question_descriptions_v0 (

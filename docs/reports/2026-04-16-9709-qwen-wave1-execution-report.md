@@ -1,202 +1,170 @@
 # 9709 Qwen Wave 1 Execution Report
 
 Date: 2026-04-16
+Issue: `#201`
+Status: executed on real pilot assets; not descriptor-ready
 
-This report freezes the wave-1 execution posture for issue `#198`. It is a supplemental overlay on top of the main `9709` recovery plan, not a replacement for the later `question_bank` repair, lane execution, or gate rerun work.
+This report supersedes the earlier `#198` freeze-only posture for the deterministic `9709` wave-1 pilot. The earlier report froze the manifest, router contract, and execution policy. This report captures the actual pilot run, the lane-aware QC outputs, and the checked-in spot-check evidence.
 
 ## Source Documents
-
-These are the frozen planning inputs used for this issue. They are now checked into this branch so the artifact set is replayable without any local-only path dependency.
 
 - `docs/superpowers/plans/2026-04-15-9709-question-bank-data-recovery-and-gate-rerun.md`
 - `docs/superpowers/specs/2026-04-15-9709-qwen-api-ao-vlm-architecture-design.md`
 - `docs/superpowers/plans/2026-04-16-9709-qwen-api-wave1-ao-execution-runbook.md`
 
-## Scope Frozen By This Issue
+## Focused Verification
 
-This issue freezes only the following inputs for the `9709` recovery program:
-
-- the deterministic pilot manifest
-- the narrow curriculum seed
-- the wave-1 router and output contracts
-- the baseline red posture and execution policy freeze
-
-This issue does not implement router code, execute Qwen lanes, assemble evidence bundles, or repair `question_bank`.
-
-## Preflight
-
-### Retrieval-Slice Preconditions
-
-The current branch already contains the merged retrieval slice files required by the recovery plan:
-
-- `supabase/migrations/20260415152950_create_learning_question_search_projection.sql`
-- `scripts/evaluation/run_question_search_gate.js`
-- `api/learning/questions/index.js`
-- `api/learning/lib/questions/question-search-service.js`
-- `api/learning/lib/repositories/question-search-repository.js`
-
-### Baseline Sync Note
-
-`npm run workflow:baseline:sync` was attempted because the repo-local workflow scripts exist on this branch. The command failed in the root worktree because the local `task/post-cleanup-baseline` branch has no upstream tracking configured:
-
-```text
-There is no tracking information for the current branch.
-Please specify which branch you want to merge with.
-```
-
-For issue `#198`, that workflow deviation is explicitly waived rather than silently ignored, because the required retrieval-slice files and the live database baseline were verified directly from this task worktree.
-
-## Baseline Red Posture
-
-The starting database posture was captured with:
+The runtime and QC changes were verified with:
 
 ```bash
-psql "$DATABASE_URL" \
-  -c "select source_kind, count(*) from public.question_bank where subject_code = '9709' group by 1 order by 1;" \
-  -c "select count(*) as qd_9709_ok from public.question_descriptions_v0 where syllabus_code = '9709' and status = 'ok';" \
-  -c "select topic_path::text from public.curriculum_nodes where syllabus_code = '9709' and version_tag = '2025-2027_v1' order by 1;"
+.venv/bin/python -m pytest tests/test_qwen_openai_client_v1.py tests/test_qwen_lane_runner_v1.py tests/test_qwen_windows_host_provider.py tests/test_qwen_wave1_qc.py -q
 ```
 
-Observed results:
+Observed result:
 
-- `question_bank`: `11 imported_question`, `0 paper_question`
-- `question_descriptions_v0`: `0` rows with `status = 'ok'` for `9709`
-- `curriculum_nodes`: only the three browser-fixture topic paths were present
+- `23 passed in 0.41s`
 
-The current gate was re-run with:
+The QC CLIs were also verified after the additive manifest/lane-result work:
 
 ```bash
-node scripts/evaluation/run_question_search_gate.js \
-  --fixture data/eval/question_search_gold_9709_v1.json \
-  --report docs/reports/2026-04-16-9709-question-search-gate-baseline-report.md
+.venv/bin/python scripts/vlm/qc_stats.py --help
+.venv/bin/python scripts/vlm/qc_vlm_spot_check.py --help
 ```
 
-Observed fail posture:
+## Commands Run
 
-- `exact_structured_match_rate=0.5`
-- `subject_leakage_rate=0`
-- `metadata_completeness_rate=0.5`
-- `null_summary_rate=1`
-- `descriptor_source=question_descriptions_v0_status_ok`
-- `gate_pass=false`
-- `failing_metrics=exact_structured_match_rate, metadata_completeness_rate, null_summary_rate`
+Pilot execution:
 
-Durable gate evidence is checked in at `docs/reports/2026-04-16-9709-question-search-gate-baseline-report.md`.
+```bash
+.venv/bin/python scripts/vlm/qwen_lane_runner_v1.py \
+  --manifest data/manifests/9709_question_search_recovery_v1.json \
+  --output docs/reports/2026-04-16-9709-qwen-wave1-pilot-results.json
+```
 
-## Frozen Pilot Manifest
+Lane-aware QC:
 
-`data/manifests/9709_question_search_recovery_v1.json` now freezes the wave-1 pilot slice.
+```bash
+.venv/bin/python scripts/vlm/qc_stats.py \
+  --manifest data/manifests/9709_question_search_recovery_v1.json \
+  --lane-results-json docs/reports/2026-04-16-9709-qwen-wave1-pilot-results.json \
+  --output-json docs/reports/2026-04-16-9709-qwen-wave1-qc-stats.json
+```
 
-Manifest summary:
+Wave-1 spot-check:
 
-- `17` deterministic rows
-- topic coverage:
-  - `9709.p1.trigonometry`: `6`
-  - `9709.p3.integration`: `6`
-  - `9709.p3.trigonometry`: `5`
-- route coverage:
-  - `review_lane`: `17`
-- gate-critical rows:
-  - `9709/s19_qp_11/questions/q06.png`
-  - `9709/s16_qp_33/questions/q07.png`
+```bash
+.venv/bin/python scripts/vlm/qc_vlm_spot_check.py \
+  --manifest data/manifests/9709_question_search_recovery_v1.json \
+  --lane-results-json docs/reports/2026-04-16-9709-qwen-wave1-pilot-results.json \
+  --output-json docs/reports/2026-04-16-9709-qwen-wave1-spot-check.json
+```
 
-Every manifest item includes the exact paper identity fields required for replay:
+## Pilot Execution Outcome
 
-- `year`
-- `session`
-- `paper`
-- `variant`
-- `q_number`
+The pilot ran against all `17` canonical single-question images in `data/manifests/9709_question_search_recovery_v1.json`.
 
-Every manifest item also includes the wave-1 route fields frozen by this issue:
+Observed wave-1 runtime counts:
 
-- `route_hint`
-- `diagram_present`
-- `formula_dense`
-- `table_heavy`
-- `gate_critical`
-- `requires_review`
+- rows: `17`
+- route: `review_lane=17`
+- lane: `review=17`
+- model: `qwen3.6-plus=17`
+- decision reasons: `requires_review=17`, `unknown_surface_flags=17`, `gate_critical=2`
+- `diagram_present`: `unknown=17`
+- `lazy_attach_original_image`: `true=17`
+- top-level `failure_reason`: `0` non-null rows
 
-### Routing Assumptions
+Observed descriptor surface quality:
 
-The route metadata is intentionally review-gated because the question image assets are not checked into this branch and this issue does not attempt a primary-asset surface re-audit.
+- `summary` present: `1`
+- `summary` missing: `16`
+- confidence `0.95`: `1`
+- confidence `0.0`: `16`
 
-- all seeded rows currently carry `route_hint=review_lane`
-- all seeded rows currently carry `requires_review=true`
-- `diagram_present`, `formula_dense`, and `table_heavy` are frozen as `null`, which means unknown rather than false
-- `surface_evidence_status=unknown_requires_primary_asset_replay` records why the surface flags remain unresolved
-- the only evidence-backed routing distinction frozen in this issue is `gate_critical=true` for the two pinned gate rows
+The only non-empty summary came from the gate-critical row `9709/s19_qp_11/questions/q06.png`. Even there, the runtime itself called out notation/rendering ambiguity around `tan 2x`, so the output was still not clean descriptor evidence.
 
-## Frozen Curriculum Seed
+## Lane-Aware QC Findings
 
-`data/curriculum/9709_question_search_recovery_nodes_v1.json` now freezes the minimum curriculum seed required for the pilot topic paths under `version_tag = 2025-2027_v1`.
+The checked-in QC JSON is `docs/reports/2026-04-16-9709-qwen-wave1-qc-stats.json`.
 
-Frozen nodes:
+Key findings:
 
-- `9709`
-- `9709.p1`
-- `9709.p1.trigonometry`
-- `9709.p3`
-- `9709.p3.integration`
-- `9709.p3.trigonometry`
+- `question_descriptions_v0` still has `0` `9709` rows and `0` `status='ok'` rows in this environment.
+- This issue did not silently mirror wave-1 lane outputs into `question_descriptions_v0`.
+- The pilot stayed entirely in the review bucket: `descriptor_readiness.review_bucket=17`.
+- The runtime transport layer is not the blocker. All `17` calls returned a top-level envelope with `failure_reason=null`.
+- The blocker is output quality and posture consistency inside the returned evidence.
 
-This file is intentionally narrow and does not widen into a full-subject curriculum import.
+The strongest internal inconsistency is the review flag posture:
 
-## Frozen Contracts
+- warnings flagged `requires_review` on `17/17` rows
+- manifest routing also required review on `17/17` rows
+- the lane evidence itself returned `requires_review=false` on `16/17` rows and `true` on only `1/17` rows
 
-### Router Contract
+That means the current runtime is not failing because the API is down or because assets are missing. It is failing because the structured review output is mostly empty while also disagreeing with the route-level review posture.
 
-`data/contracts/9709_qwen_wave1_router_contract_v1.json` freezes:
+## Spot-Check Evidence
 
-- the required router input fields from the manifest
-- the allowed route outputs: `ocr_lane`, `diagram_lane`, `review_lane`
-- the rule that unknown manifest surface flags remain unknown and therefore stay review-gated
-- the `lazy_attach_original_image` switch
-- the required route provenance fields: `region`, `base_url`, `api_key_scope`
+The checked-in spot-check JSON is `docs/reports/2026-04-16-9709-qwen-wave1-spot-check.json`.
 
-### Output Contract
+The spot-check was run on all `17` pilot rows with `qwen3-vl-flash` as the reviewer.
 
-`data/contracts/9709_qwen_wave1_output_contract_v1.json` freezes the machine-consumable output envelope for wave 1.
+Observed outcomes:
 
-Required top-level provenance fields:
+- reviewed rows: `17/17`
+- `descriptor_readiness.review_bucket=17`
+- `descriptor_readiness.descriptor_ready=0`
+- `route_verdict.appropriate=11`
+- `route_verdict.over_conservative=6`
+- `review_bucket_verdict.correct=8`
+- `review_bucket_verdict.cannot_judge=7`
+- `review_bucket_verdict.incorrect=2`
 
-- `model`
-- `route`
-- `prompt_template_version`
-- `region`
-- `base_url`
-- `input_asset_id`
-- `input_asset_hash`
-- `response_schema_version`
-- `confidence`
-- `failure_reason`
-- `output`
+Interpretation:
 
-Free-text reasoning is not a machine-consumable contract field in wave 1.
+- The spot-check did not find a single row that should be promoted as descriptor-ready.
+- The `over_conservative=6` signal does not mean those rows are ready. It means the reviewer believes some rows may be readable enough for a narrower OCR/diagram route, but the current run still did not produce descriptor-quality structured output for them.
+- The two `incorrect` review-bucket verdicts do not justify promotion. They flag contradictory output posture on:
+  - `9709/s20_qp_33/questions/q07.png`
+  - `9709/s21_qp_31/questions/q03.png`
 
-## Frozen Execution Policy
+In both cases the returned output stayed empty (`summary=None`, `confidence=0.0`) while also claiming `requires_review=false` inside evidence, which is an output-consistency bug rather than recovery success.
 
-The wave-1 pilot is frozen against one region label and one base URL for the full manifest/backfill/gate-replay batch.
+## Descriptor Readiness Posture
 
-- `region`: `dashscope-cn`
-- `base_url`: `https://dashscope.aliyuncs.com/compatible-mode/v1`
-- `api_key_scope`: `DASHSCOPE_API_KEY`
-- `enable_thinking=false`
-- `response_format={"type":"json_object"}`
-- `stateless=true`
-- `caller_context_policy=caller_managed`
+The pilot is not ready for descriptor promotion.
 
-Interpretation note:
+Explicit posture for this slice:
 
-- `dashscope-cn` is an AO-side execution-region label for the single China-hosted DashScope compatible endpoint used by the existing prototype scripts in this repo.
-- The pilot must not mix regions or endpoints within the same manifest, backfill, or gate replay batch.
+- real pilot execution: `yes`
+- canonical single-question assets used: `yes`
+- lane-aware QC evidence checked in: `yes`
+- spot-check evidence checked in: `yes`
+- descriptor-ready pilot rows: `0/17`
+- rows silently promoted out of review: `0/17`
 
-## Blockers And Residual Risk
+Residual failure buckets:
 
-Observed but non-blocking issues for this freeze task:
+- ambiguous or degraded notation: the gate-critical trigonometry row `9709/s19_qp_11/questions/q06.png` is the clearest example; it produced the only substantial summary and still remained ambiguous.
+- empty review outputs: `16/17` rows returned `summary=None` and `confidence=0.0`.
+- inconsistent review signaling: `16/17` rows returned evidence-level `requires_review=false` while the route, warnings, and manifest all required review.
+- unresolved surface metadata: `diagram_present`, `formula_dense`, and `table_heavy` remain `null` across the pilot manifest, so the current router posture still collapses the entire slice into `review_lane`.
 
-- the repo-local baseline sync helper cannot fast-forward until the root-worktree baseline branch has upstream tracking configured
-- the question image assets for the pilot rows are not checked into this task branch
-- no local PDF text extraction tool was available, but this issue now leaves surface fields null and review-gated instead of inventing false negatives
+## Honest Conclusion
 
-These did not block the acceptance criteria for issue `#198`, but they should be kept visible for the later router-execution and evidence-bundle tasks.
+Wave-1 can now be run deterministically on the real `9709` pilot assets, and the repository now contains durable lane-aware QC plus spot-check evidence for that run.
+
+It did not recover usable descriptor outputs for the pilot slice.
+
+The correct posture after this execution is:
+
+- keep all current pilot rows bucketed for review
+- do not backfill `question_descriptions_v0` from these lane outputs
+- do not claim descriptor readiness from the current wave-1 run
+- treat the next step as route/surface-resolution work, not as a hidden soft-pass
+
+## Checked-In Evidence
+
+- `docs/reports/2026-04-16-9709-qwen-wave1-pilot-results.json`
+- `docs/reports/2026-04-16-9709-qwen-wave1-qc-stats.json`
+- `docs/reports/2026-04-16-9709-qwen-wave1-spot-check.json`

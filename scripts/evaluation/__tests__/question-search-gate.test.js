@@ -1,0 +1,368 @@
+import path from 'node:path';
+import { jest } from '@jest/globals';
+
+import {
+  DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
+  loadQuestionSearchGoldFixture,
+  runQuestionSearchGate,
+} from '../run_question_search_gate.js';
+
+const FIXTURE_PATH = path.join(
+  process.cwd(),
+  'data',
+  'eval',
+  'question_search_gold_9709_v1.json',
+);
+
+describe('question-search-gate', () => {
+  test('checked-in gold fixture stays small and includes pinned paper-backed and imported fallback cases', () => {
+    const fixture = loadQuestionSearchGoldFixture(FIXTURE_PATH);
+
+    expect(fixture.subject_code).toBe('9709');
+    expect(fixture.cases.length).toBeLessThanOrEqual(6);
+    expect(
+      fixture.cases.some((testCase) => (
+        testCase.expected.match.source_kind === 'imported_question'
+        && testCase.expected.summary_policy === 'allow_null'
+      )),
+    ).toBe(true);
+    expect(
+      fixture.cases.some((testCase) => (
+        typeof testCase.query.topic_path === 'string'
+        && Number.isInteger(testCase.query.year)
+        && Number.isInteger(testCase.query.paper_number)
+      )),
+    ).toBe(true);
+  });
+
+  test('runQuestionSearchGate computes release metrics and passes when thresholds are met', async () => {
+    const fixture = {
+      subject_code: '9709',
+      thresholds: {
+        exact_structured_match_rate: 0.9,
+        subject_leakage_rate: 0,
+        metadata_completeness_rate: 0.95,
+        null_summary_rate: 0.05,
+      },
+      cases: [
+        {
+          id: 'imported-fallback-browser-repair',
+          description: 'Imported fallback rows stay retrievable through prompt-backed search_text.',
+          query: {
+            topic_path: '9709.codex_cli.browser_fixture.repair',
+            primary_question_type_id: '9709.trigonometry.equations',
+            q_number: 1,
+            query: '2cos(2x)-3sin x',
+          },
+          expected: {
+            match: {
+              question_id: 'question-imported-1',
+              source_kind: 'imported_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.codex_cli.browser_fixture.repair',
+              primary_question_type_id: '9709.trigonometry.equations',
+              family_id: '9709.trigonometry_manipulation_equations',
+              q_number: 1,
+            },
+            required_metadata: [
+              'question_id',
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'primary_question_type_id',
+              'family_id',
+              'q_number',
+              'search_text',
+            ],
+            summary_policy: 'allow_null',
+          },
+        },
+        {
+          id: 'paper-pin-s19-p1-q6',
+          description: 'Paper-backed trigonometry retrieval keeps topic, paper, year, and question number aligned.',
+          query: {
+            topic_path: '9709.p1.trigonometry',
+            year: 2019,
+            session: 's',
+            paper_number: 1,
+            q_number: 6,
+            query: 'Prove trigonometric identity',
+          },
+          expected: {
+            match: {
+              question_id: 'question-paper-1',
+              source_kind: 'paper_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.p1.trigonometry',
+              year: 2019,
+              session: 's',
+              paper_number: 1,
+              q_number: 6,
+            },
+            required_metadata: [
+              'question_id',
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'year',
+              'session',
+              'paper_number',
+              'q_number',
+              'summary',
+            ],
+            summary_policy: 'require_non_null',
+          },
+        },
+      ],
+    };
+
+    const searchQuestionsFn = jest.fn()
+      .mockResolvedValueOnce({
+        items: [
+          {
+            question_id: 'question-imported-1',
+            source_kind: 'imported_question',
+            subject_code: '9709',
+            primary_topic_path: '9709.codex_cli.browser_fixture.repair',
+            primary_question_type_id: '9709.trigonometry.equations',
+            family_id: '9709.trigonometry_manipulation_equations',
+            q_number: 1,
+            summary: null,
+            search_text: 'Solve 2cos(2x)-3sin x=0 for 0<=x<=180 degrees.',
+          },
+        ],
+        total: 1,
+        page: 1,
+        page_size: 20,
+      })
+      .mockResolvedValueOnce({
+        items: [
+          {
+            question_id: 'question-paper-1',
+            source_kind: 'paper_question',
+            subject_code: '9709',
+            primary_topic_path: '9709.p1.trigonometry',
+            year: 2019,
+            session: 's',
+            paper_number: 1,
+            q_number: 6,
+            summary: 'Prove a trigonometric identity and solve the resulting equation.',
+            search_text: 'Prove trigonometric identity and solve equation using it within given domain.',
+          },
+        ],
+        total: 1,
+        page: 1,
+        page_size: 20,
+      });
+
+    const resolveTopicPathFn = jest.fn((topicPath) => {
+      if (topicPath === '9709.codex_cli.browser_fixture.repair') {
+        return Promise.resolve('topic-browser-repair');
+      }
+      if (topicPath === '9709.p1.trigonometry') {
+        return Promise.resolve('topic-paper-trigonometry');
+      }
+      return Promise.resolve(null);
+    });
+
+    const inspectDescriptorSourceFn = jest.fn().mockResolvedValue({
+      selected_branch: 'question_descriptions_v0_status_ok',
+      surfaces: {
+        question_descriptions_prod_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v0: { exists: true, count: 24, count_9709: 24 },
+        learning_question_search_projection: { count: 24, count_9709: 24 },
+        question_bank_9709: { total: 24, paper_question: 22, imported_question: 2 },
+      },
+    });
+
+    const result = await runQuestionSearchGate({
+      fixture,
+      fixturePath: 'data/eval/question_search_gold_9709_v1.json',
+      gateCommand: 'node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question_search_gold_9709_v1.json --report docs/reports/2026-04-15-question-search-slice-v1-report.md',
+      searchQuestionsFn,
+      resolveTopicPathFn,
+      inspectDescriptorSourceFn,
+      nowIso: '2026-04-15T08:30:00Z',
+    });
+
+    expect(resolveTopicPathFn).toHaveBeenCalledWith('9709.codex_cli.browser_fixture.repair');
+    expect(resolveTopicPathFn).toHaveBeenCalledWith('9709.p1.trigonometry');
+    expect(searchQuestionsFn).toHaveBeenNthCalledWith(1, {
+      subject_code: '9709',
+      primary_topic_id: 'topic-browser-repair',
+      primary_question_type_id: '9709.trigonometry.equations',
+      q_number: 1,
+      query: '2cos(2x)-3sin x',
+    });
+    expect(searchQuestionsFn).toHaveBeenNthCalledWith(2, {
+      subject_code: '9709',
+      primary_topic_id: 'topic-paper-trigonometry',
+      year: 2019,
+      session: 's',
+      paper_number: 1,
+      q_number: 6,
+      query: 'Prove trigonometric identity',
+    });
+
+    expect(result.metrics).toEqual({
+      exact_structured_match_rate: 1,
+      subject_leakage_rate: 0,
+      metadata_completeness_rate: 1,
+      null_summary_rate: 0,
+    });
+    expect(result.gate.pass).toBe(true);
+    expect(result.gate.failing_checks).toEqual([]);
+    expect(result.case_results.map((item) => item.id)).toEqual([
+      'imported-fallback-browser-repair',
+      'paper-pin-s19-p1-q6',
+    ]);
+    expect(result.report_markdown).toContain('Descriptor Source');
+    expect(result.report_markdown).toContain('Threshold Results');
+    expect(result.report_markdown).toContain('Residual Risks');
+  });
+
+  test('runQuestionSearchGate records explicit failure posture when paper-backed cases cannot be satisfied', async () => {
+    const fixture = {
+      subject_code: '9709',
+      thresholds: DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
+      cases: [
+        {
+          id: 'imported-fallback-browser-continuity',
+          description: 'Imported continuity fixture remains retrievable.',
+          query: {
+            topic_path: '9709.codex_cli.browser_fixture.continuity',
+            primary_question_type_id: '9709.trigonometry.identities',
+            q_number: 2,
+            query: 'tan^2',
+          },
+          expected: {
+            match: {
+              question_id: 'question-imported-2',
+              source_kind: 'imported_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.codex_cli.browser_fixture.continuity',
+              primary_question_type_id: '9709.trigonometry.identities',
+              family_id: '9709.trigonometry_manipulation_equations',
+              q_number: 2,
+            },
+            required_metadata: [
+              'question_id',
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'primary_question_type_id',
+              'family_id',
+              'q_number',
+              'search_text',
+            ],
+            summary_policy: 'allow_null',
+          },
+        },
+        {
+          id: 'paper-pin-s16-p3-q7',
+          description: 'Paper-backed integration case must have topic, paper, year, and summary coverage.',
+          query: {
+            topic_path: '9709.p3.integration',
+            year: 2016,
+            session: 's',
+            paper_number: 3,
+            q_number: 7,
+            query: 'Evaluate integral I using substitution',
+          },
+          expected: {
+            match: {
+              source_kind: 'paper_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.p3.integration',
+              year: 2016,
+              session: 's',
+              paper_number: 3,
+              q_number: 7,
+            },
+            required_metadata: [
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'year',
+              'session',
+              'paper_number',
+              'q_number',
+              'summary',
+            ],
+            summary_policy: 'require_non_null',
+          },
+        },
+      ],
+    };
+
+    const searchQuestionsFn = jest.fn().mockResolvedValue({
+      items: [
+        {
+          question_id: 'question-imported-2',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          primary_topic_path: '9709.codex_cli.browser_fixture.continuity',
+          primary_question_type_id: '9709.trigonometry.identities',
+          family_id: '9709.trigonometry_manipulation_equations',
+          q_number: 2,
+          summary: null,
+          search_text: 'Prove that 1 - tan^2(x) = cos(2x) / cos^2(x).',
+        },
+      ],
+      total: 1,
+      page: 1,
+      page_size: 20,
+    });
+
+    const resolveTopicPathFn = jest.fn((topicPath) => {
+      if (topicPath === '9709.codex_cli.browser_fixture.continuity') {
+        return Promise.resolve('topic-browser-continuity');
+      }
+      return Promise.resolve(null);
+    });
+
+    const inspectDescriptorSourceFn = jest.fn().mockResolvedValue({
+      selected_branch: 'question_descriptions_v0_status_ok',
+      surfaces: {
+        question_descriptions_prod_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v0: { exists: true, count: 0, count_9709: 0 },
+        learning_question_search_projection: { count: 11, count_9709: 11 },
+        question_bank_9709: { total: 11, paper_question: 0, imported_question: 11 },
+      },
+    });
+
+    const result = await runQuestionSearchGate({
+      fixture,
+      fixturePath: 'data/eval/question_search_gold_9709_v1.json',
+      gateCommand: 'node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question_search_gold_9709_v1.json --report docs/reports/2026-04-15-question-search-slice-v1-report.md',
+      searchQuestionsFn,
+      resolveTopicPathFn,
+      inspectDescriptorSourceFn,
+      nowIso: '2026-04-15T08:45:00Z',
+    });
+
+    expect(searchQuestionsFn).toHaveBeenCalledTimes(1);
+    expect(result.metrics).toEqual({
+      exact_structured_match_rate: 0.5,
+      subject_leakage_rate: 0,
+      metadata_completeness_rate: 0.5,
+      null_summary_rate: 1,
+    });
+    expect(result.gate.pass).toBe(false);
+    expect(result.gate.failing_checks.map((check) => check.metric)).toEqual([
+      'exact_structured_match_rate',
+      'metadata_completeness_rate',
+      'null_summary_rate',
+    ]);
+    expect(result.case_results[1]).toMatchObject({
+      id: 'paper-pin-s16-p3-q7',
+      resolution_error: 'topic_path_not_found',
+      exact_structured_match: false,
+      summary_required: true,
+      summary_present: false,
+    });
+    expect(result.report_markdown).toContain('question_descriptions_v0');
+    expect(result.report_markdown).toContain('paper_question: 0');
+    expect(result.report_markdown).toContain('paper-backed pinned cases cannot pass');
+  });
+});

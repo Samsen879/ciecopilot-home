@@ -1,0 +1,160 @@
+{
+  "suite_id": "question_search_gold_9709_v1",
+  "subject_code": "9709",
+  "thresholds": {
+    "exact_structured_match_rate": 0.9,
+    "subject_leakage_rate": 0.0,
+    "metadata_completeness_rate": 0.95,
+    "null_summary_rate": 0.05
+  },
+  "cases": [
+    {
+      "id": "imported-fallback-browser-repair",
+      "description": "Imported browser-repair fixture must stay retrievable through prompt-backed fallback text.",
+      "query": {
+        "topic_path": "9709.codex_cli.browser_fixture.repair",
+        "primary_question_type_id": "9709.trigonometry.equations",
+        "q_number": 1,
+        "query": "2cos(2x)-3sin x"
+      },
+      "expected": {
+        "match": {
+          "question_id": "0c100001-7a3e-4d82-9d7c-1f1000010201",
+          "source_kind": "imported_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.codex_cli.browser_fixture.repair",
+          "primary_question_type_id": "9709.trigonometry.equations",
+          "family_id": "9709.trigonometry_manipulation_equations",
+          "q_number": 1
+        },
+        "required_metadata": [
+          "question_id",
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "primary_question_type_id",
+          "family_id",
+          "q_number",
+          "search_text"
+        ],
+        "summary_policy": "allow_null"
+      },
+      "source_reference": {
+        "kind": "question_bank_fixture",
+        "storage_key": "fixture/browser-closed-loop/repair-source"
+      }
+    },
+    {
+      "id": "imported-fallback-browser-continuity",
+      "description": "Imported browser-continuity fixture must stay retrievable with identity metadata intact.",
+      "query": {
+        "topic_path": "9709.codex_cli.browser_fixture.continuity",
+        "primary_question_type_id": "9709.trigonometry.identities",
+        "q_number": 2,
+        "query": "tan^2"
+      },
+      "expected": {
+        "match": {
+          "question_id": "0c100001-7a3e-4d82-9d7c-1f1000010202",
+          "source_kind": "imported_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.codex_cli.browser_fixture.continuity",
+          "primary_question_type_id": "9709.trigonometry.identities",
+          "family_id": "9709.trigonometry_manipulation_equations",
+          "q_number": 2
+        },
+        "required_metadata": [
+          "question_id",
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "primary_question_type_id",
+          "family_id",
+          "q_number",
+          "search_text"
+        ],
+        "summary_policy": "allow_null"
+      },
+      "source_reference": {
+        "kind": "question_bank_fixture",
+        "storage_key": "fixture/browser-closed-loop/continuity-source"
+      }
+    },
+    {
+      "id": "paper-pin-s19-p1-q6",
+      "description": "Paper-backed p1 trigonometry retrieval should pin topic + year + session + paper + q_number together.",
+      "query": {
+        "topic_path": "9709.p1.trigonometry",
+        "year": 2019,
+        "session": "s",
+        "paper_number": 1,
+        "q_number": 6,
+        "query": "Prove trigonometric identity and solve equation"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p1.trigonometry",
+          "year": 2019,
+          "session": "s",
+          "paper_number": 1,
+          "q_number": 6
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "manual_audit_review_sheet",
+        "storage_key": "9709/s19_qp_11/questions/q06.png"
+      }
+    },
+    {
+      "id": "paper-pin-s16-p3-q7",
+      "description": "Paper-backed p3 integration retrieval should pin topic + year + session + paper + q_number together.",
+      "query": {
+        "topic_path": "9709.p3.integration",
+        "year": 2016,
+        "session": "s",
+        "paper_number": 3,
+        "q_number": 7,
+        "query": "Evaluate integral I using substitution"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p3.integration",
+          "year": 2016,
+          "session": "s",
+          "paper_number": 3,
+          "q_number": 7
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "manual_audit_review_sheet",
+        "storage_key": "9709/s16_qp_33/questions/q07.png"
+      }
+    }
+  ]
+}

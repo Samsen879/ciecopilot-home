@@ -9,7 +9,7 @@
 - `2026-04-03-ao-phase6-soak-and-incident-report.md` - fresh phase-6 smoke and incident drill evidence for blocked-path, green-path, stale-leader, stale-worker, ambiguity, and dirty-worktree coverage.
 - `2026-04-03-ao-reviewer-gate-rehearsal.md` - repo-local independent reviewer gate rehearsal showing request, claim, verdict, and durable freeze/release posture.
 - `2026-04-12-phase-a-question-intelligence-slice-1-report.md` - takeover closeout report for the first Phase A question-intelligence slice, including scope, touched modules, focused verification, and residual risks.
-- `2026-04-15-question-search-slice-v1-report.md` - descriptor-source preflight report for the question-search foundation slice, freezing the `question_descriptions_prod_v1` to `question_descriptions_v0 where status='ok'` fallback contract and recording imported-question join caveats.
+- `2026-04-15-question-search-slice-v1-report.md` - stage-3 structured question-search closeout report recording the gold-set gate command, focused verification matrix, descriptor-source branch selection, row counts, threshold results, and the explicit fail posture for the current paper-backed data gap.
 - `2026-04-14-phase-a-reassessment-report.md` - follow-up reassessment confirming current main still satisfies the approved Phase A question-intelligence + P3 contract landing boundary while recording the carry-forward runtime-wiring debt.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.

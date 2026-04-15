@@ -1,0 +1,104 @@
+{
+  "contract_id": "9709_qwen_wave1_router_contract_v1",
+  "schema_version": "v1",
+  "subject_code": "9709",
+  "frozen_on": "2026-04-16",
+  "description": "Wave 1 router contract for the deterministic 9709 recovery pilot manifest.",
+  "router_input_required_fields": [
+    "storage_key",
+    "syllabus_code",
+    "year",
+    "session",
+    "paper",
+    "variant",
+    "q_number",
+    "primary_topic_path",
+    "route_hint",
+    "diagram_present",
+    "formula_dense",
+    "table_heavy",
+    "surface_evidence_status",
+    "gate_critical",
+    "requires_review"
+  ],
+  "route_hint_policy": {
+    "description": "route_hint is an advisory freeze input, not permission to bypass review.",
+    "unknown_surface_rule": "If any surface field is null or the manifest marks the row for review, the row stays review-gated until a replayable primary-asset audit resolves the surface."
+  },
+  "manifest_surface_value_contract": {
+    "diagram_present": [
+      true,
+      false,
+      null
+    ],
+    "formula_dense": [
+      true,
+      false,
+      null
+    ],
+    "table_heavy": [
+      true,
+      false,
+      null
+    ],
+    "null_meaning": "unknown in this freeze; null must not be coerced to false by the router"
+  },
+  "route_output_required_fields": [
+    "route",
+    "model",
+    "lazy_attach_original_image",
+    "region",
+    "base_url",
+    "api_key_scope",
+    "stateless",
+    "response_format",
+    "enable_thinking"
+  ],
+  "routes": {
+    "ocr_lane": {
+      "model": "qwen-vl-ocr",
+      "selected_when": [
+        "requires_review=false",
+        "surface flags are evidence-backed rather than null",
+        "text-dominant question surface",
+        "formula_dense=true and diagram_present=false",
+        "table_heavy=true",
+        "question stem and subquestion boundaries are layout-driven rather than spatially ambiguous"
+      ],
+      "lazy_attach_original_image": false
+    },
+    "diagram_lane": {
+      "model": "qwen3-vl-plus",
+      "selected_when": [
+        "diagram_present=true",
+        "question depends on coordinate graph, geometry diagram, or spatial evidence",
+        "OCR alone cannot recover the question meaning"
+      ],
+      "lazy_attach_original_image": true
+    },
+    "review_lane": {
+      "model": "qwen3.6-plus",
+      "selected_when": [
+        "gate_critical=true",
+        "requires_review=true",
+        "any of diagram_present, formula_dense, or table_heavy is null/unknown",
+        "OCR and diagram evidence conflict",
+        "AO cannot converge on a stable topic candidate"
+      ],
+      "lazy_attach_original_image": true
+    }
+  },
+  "runtime_freeze": {
+    "provider": "dashscope_openai_compatible",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key_scope": "DASHSCOPE_API_KEY",
+    "data_residency_note": "Single China-hosted DashScope compatible endpoint for the whole wave-1 pilot run; do not mix endpoints inside the same manifest/backfill/gate replay batch.",
+    "stateless": true,
+    "caller_context_policy": "caller_managed",
+    "enable_thinking": false,
+    "response_format": {
+      "type": "json_object"
+    }
+  }
+}

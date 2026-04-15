@@ -65,6 +65,19 @@ def normalize_request_for_windows_host(
     return normalized
 
 
+def bind_path_converter(
+    runner: Callable[..., Any],
+    path_converter: Callable[[str | Path], str] | None = None,
+) -> Callable[[str | Path], str]:
+    if path_converter is not None:
+        return path_converter
+
+    def _convert(path: str | Path) -> str:
+        return to_windows_path(path, runner=runner)
+
+    return _convert
+
+
 def build_powershell_command(
     *,
     script_path: str,
@@ -171,17 +184,18 @@ def call_qwen_openai_v1(
     *,
     env: dict[str, str] | None = None,
     runner: Callable[..., Any] = subprocess.run,
-    path_converter: Callable[[str | Path], str] = to_windows_path,
+    path_converter: Callable[[str | Path], str] | None = None,
     base_url: str = DEFAULT_BASE_URL,
     timeout: int = 90,
     temp_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     base_env = dict(env if env is not None else os.environ)
     api_key = get_dashscope_api_key(base_env)
+    effective_path_converter = bind_path_converter(runner, path_converter)
 
     normalized_request = normalize_request_for_windows_host(
         request,
-        path_converter=path_converter,
+        path_converter=effective_path_converter,
     )
 
     with tempfile.NamedTemporaryFile(
@@ -207,8 +221,8 @@ def call_qwen_openai_v1(
         script_path = Path(handle.name)
 
     try:
-        windows_request_path = path_converter(request_path)
-        windows_script_path = path_converter(script_path)
+        windows_request_path = effective_path_converter(request_path)
+        windows_script_path = effective_path_converter(script_path)
         command = build_powershell_command(
             script_path=windows_script_path,
             request_path=windows_request_path,

@@ -68,7 +68,13 @@ def test_build_powershell_script_supports_machine_consumable_fields():
 def test_call_qwen_openai_v1_invokes_powershell_and_parses_json_response(tmp_path):
     captured = {}
 
-    def fake_runner(cmd, *, capture_output, text, env, timeout, check):
+    def fake_runner(cmd, *, capture_output, text, env=None, timeout=None, check=False):
+        if cmd[0] == "wslpath":
+            return SimpleNamespace(
+                returncode=0,
+                stdout=f"WIN::{cmd[-1]}",
+                stderr="",
+            )
         captured["cmd"] = cmd
         captured["env"] = env
         captured["timeout"] = timeout
@@ -97,6 +103,41 @@ def test_call_qwen_openai_v1_invokes_powershell_and_parses_json_response(tmp_pat
     assert captured["env"]["DASHSCOPE_API_KEY"] == "secret-key"
     assert captured["cmd"][0] == "powershell.exe"
     assert captured["timeout"] == 90
+
+
+def test_call_qwen_openai_v1_routes_path_conversion_through_injected_runner(tmp_path):
+    commands = []
+
+    def fake_runner(cmd, *, capture_output, text, env=None, timeout=None, check=False):
+        commands.append(cmd)
+        if cmd[0] == "wslpath":
+            source = cmd[-1]
+            return SimpleNamespace(returncode=0, stdout=f"WIN::{source}", stderr="")
+        return SimpleNamespace(
+            returncode=0,
+            stdout='{"model":"qwen-vl-ocr","choices":[{"message":{"content":"ok"}}]}',
+            stderr="",
+        )
+
+    with patch(
+        "scripts.vlm.qwen_openai_client_v1.get_dashscope_api_key",
+        return_value="secret-key",
+    ):
+        call_qwen_openai_v1(
+            {
+                "model": "qwen-vl-ocr",
+                "messages": [{"role": "user", "content": "Reply with exactly: ok"}],
+                "enable_thinking": False,
+                "response_format": {"type": "json_object"},
+            },
+            runner=fake_runner,
+            temp_dir=tmp_path,
+        )
+
+    assert [cmd[0] for cmd in commands[:2]] == ["wslpath", "wslpath"]
+    assert commands[2][0] == "powershell.exe"
+    assert commands[2][5].startswith("WIN::")
+    assert commands[2][6].startswith("WIN::")
 
 
 def test_main_builds_image_request_and_json_object_flag(capsys):

@@ -1,0 +1,790 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s19_qp_11/questions/q06.png",
+    "input_asset_hash": "7b6e844e18495e1bb0cd33d5543fea46f851bc130d0f6503dbe20706b39ee1b7",
+    "response_schema_version": "v1",
+    "confidence": 0.95,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "The image contains a two-part trigonometry problem. Part (i) asks to prove an identity involving sec x and tan x. Part (ii) asks to solve an equation based on the previous result. The text in part (ii) suffers from rendering artifacts where '2x' inside the tangent function resembles an angle symbol or letter 'L', requiring verification to ensure correct transcription.",
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": true
+        },
+        {
+          "field": "review_reasons",
+          "value": [
+            "Legibility risk in mathematical notation",
+            "Ambiguity in trigonometric arguments"
+          ]
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": [
+            "In part (ii), the term 'tan 2x' appears visually distorted as 'tan â x' or 'tan Lx', creating uncertainty about the argument of the tangent function.",
+            "The fraction on the right-hand side of the equation in part (ii) is slightly blurry, though likely 5/3."
+          ]
+        },
+        {
+          "field": "review_summary",
+          "value": "The image contains a two-part trigonometry problem. Part (i) asks to prove an identity involving sec x and tan x. Part (ii) asks to solve an equation based on the previous result. The text in part (ii) suffers from rendering artifacts where '2x' inside the tangent function resembles an angle symbol or letter 'L', requiring verification to ensure correct transcription."
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.95
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s16_qp_33/questions/q07.png",
+    "input_asset_hash": "df29cc0af00d20577e7a404bed443bae708126c5fce0f3fec000eab5f1b1d72c",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s19_qp_12/questions/q04.png",
+    "input_asset_hash": "6d20e2963b4f782132db49343b24504c9f0d92068ffabc0388ce14cc29d9d4c8",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s20_qp_12/questions/q02.png",
+    "input_asset_hash": "4ba5b8cd2b1a2d43d2dd6327f60358c78636dc7299be365e663a25318f1266dc",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s21_qp_11/questions/q07.png",
+    "input_asset_hash": "847f88bbf053d0e402805edcb2d0bea84c3962c7bd9b53a14af73902c327bcf6",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s22_qp_11/questions/q04.png",
+    "input_asset_hash": "b1516752fa1868b044b4c12131f3edf4c303d96a2d7c685d0bfb6813f0b5c7f3",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w19_qp_11/questions/q05.png",
+    "input_asset_hash": "a9bf26497cb15f3036e595adb84a8e50d640c6c76d09dc03f29a992482e62cbd",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s20_qp_33/questions/q02.png",
+    "input_asset_hash": "e593d2b912971e21abd83e8818b2cc2d6217de78de1a23393a53d028f6546072",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s20_qp_33/questions/q07.png",
+    "input_asset_hash": "eb1c3265627f071b205f6954aa073688c0b305e3af5b4b895a88ab2767ee04cc",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s21_qp_32/questions/q06.png",
+    "input_asset_hash": "7047e61a13f853f7587aa41c5443ea917d5941f65dfb4154a3cef10db73b3bc9",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_31/questions/q08.png",
+    "input_asset_hash": "223aca622dc30f9e7dffbaecad3c7cdcafe03db26117ecf38a0b1534195557e9",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w17_qp_31/questions/q08.png",
+    "input_asset_hash": "d3fd51444638222dc1aaa367ef5a3776f24368903576802177491ab7bb6880f6",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s21_qp_31/questions/q03.png",
+    "input_asset_hash": "260dc1aec2765464d8f1a8fdab01581b4bda474d5d1e19ee7f8428e5c03dc6be",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w16_qp_32/questions/q03.png",
+    "input_asset_hash": "54c7d1e605b4ca94eb8539315808af865f4424f2b30c82641dc31968195967cb",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w17_qp_33/questions/q04.png",
+    "input_asset_hash": "b1730a4ba0348c4ffec2cc44c31d9a44625132be4260f8a0675ffbb0065e16ad",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w18_qp_33/questions/q06.png",
+    "input_asset_hash": "9edc877fa1c75962db17298b33f410bc1589edaa6d5096a9499be56fb9b26709",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w21_qp_31/questions/q02.png",
+    "input_asset_hash": "70987ae3e4bba12131816f64e0565a966148c365a614f56d647cd0d929cc0521",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": null,
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  }
+]

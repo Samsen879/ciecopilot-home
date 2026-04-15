@@ -225,3 +225,49 @@ def validate_qwen_wave1_output(payload: dict) -> dict:
         raise ValueError("output.warnings must be a list of strings")
 
     return payload
+
+
+_QWEN_WAVE1_PROVENANCE_KEYS = (
+    "manifest_id",
+    "manifest_position",
+    "route",
+    "lane",
+    "prompt_template_id",
+    "prompt_template_version",
+    "response_schema_version",
+    "region",
+    "base_url",
+    "api_key_scope",
+    "lazy_attach_original_image",
+    "decision_reasons",
+    "route_hint",
+    "surface_evidence_status",
+    "gate_critical",
+    "requires_review",
+    "failure_reason",
+)
+
+
+def extract_qwen_wave1_provenance(payload: dict | None) -> dict | None:
+    """Extract additive Qwen wave-1 provenance from a job/result/raw_json payload."""
+    if not isinstance(payload, dict):
+        return None
+
+    source = payload.get("wave1")
+    if isinstance(source, dict):
+        payload = source
+
+    extracted: dict = {}
+    for key in _QWEN_WAVE1_PROVENANCE_KEYS:
+        if key in payload:
+            extracted[key] = payload[key]
+
+    output = payload.get("output")
+    if isinstance(output, dict):
+        if "summary" in output:
+            extracted["summary"] = output.get("summary")
+        warnings = output.get("warnings")
+        if isinstance(warnings, list):
+            extracted["warnings"] = list(warnings)
+
+    return extracted or None

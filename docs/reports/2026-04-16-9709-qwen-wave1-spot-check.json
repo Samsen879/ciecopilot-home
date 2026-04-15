@@ -1,0 +1,1063 @@
+{
+  "date": "2026-04-16",
+  "mode": "wave1_lane",
+  "manifest_id": "9709_question_search_recovery_v1",
+  "manifest_path": "data/manifests/9709_question_search_recovery_v1.json",
+  "lane_results_json": "docs/reports/2026-04-16-9709-qwen-wave1-pilot-results.json",
+  "model": "qwen3-vl-flash",
+  "assets_root": "/home/samsen/code/cie-assets",
+  "sample_size": 17,
+  "records": [
+    {
+      "index": 1,
+      "storage_key": "9709/s19_qp_11/questions/q06.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": true,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.95,
+      "failure_reason": null,
+      "summary": "The image contains a two-part trigonometry problem. Part (i) asks to prove an identity involving sec x and tan x. Part (ii) asks to solve an equation based on the previous result. The text in part (ii) suffers from rendering artifacts where '2x' inside the tangent function resembles an angle symbol or letter 'L', requiring verification to ensure correct transcription.",
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": true
+        },
+        {
+          "field": "review_reasons",
+          "value": [
+            "Legibility risk in mathematical notation",
+            "Ambiguity in trigonometric arguments"
+          ]
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": [
+            "In part (ii), the term 'tan 2x' appears visually distorted as 'tan â x' or 'tan Lx', creating uncertainty about the argument of the tangent function.",
+            "The fraction on the right-hand side of the equation in part (ii) is slightly blurry, though likely 5/3."
+          ]
+        },
+        {
+          "field": "review_summary",
+          "value": "The image contains a two-part trigonometry problem. Part (i) asks to prove an identity involving sec x and tan x. Part (ii) asks to solve an equation based on the previous result. The text in part (ii) suffers from rendering artifacts where '2x' inside the tangent function resembles an angle symbol or letter 'L', requiring verification to ensure correct transcription."
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.95
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "图像中存在渲染伪影，特别是第(ii)部分的'tan 2x'被误识别为'tan âx'或'tan Lx'，导致三角函数参数模糊，存在歧义风险；同时右侧分数略模糊但推测为5/3。根据审核标准，此类可读性与歧义问题需人工复核确认，故应留在review bucket。",
+        "issues": [
+          "Legibility risk in mathematical notation",
+          "Ambiguity in trigonometric arguments"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "storage_key": "9709/s16_qp_33/questions/q07.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": true,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "over_conservative",
+        "review_bucket_verdict": "correct",
+        "comment": "结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 warnings 包含 'requires_review', 'lazy_attach_original_image', 'unknown_surface_flags'，表明该结果未通过初步质检，应继续留在 review bucket 待人工复核。",
+        "issues": [
+          "evidence 中 requires_review 标记与 route 的 requires_review: True 矛盾",
+          "confidence=0.0 且无 summary/summary，无法判断是否可作为 descriptor"
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "storage_key": "9709/s19_qp_12/questions/q04.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，符合题目的审核要求；无明显错误或遗漏，无需进一步修改。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "storage_key": "9709/s20_qp_12/questions/q02.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，符合对未完成/需人工复核题目的处理规范；confidence=0.0 及 warnings 中的 'requires_review'、'lazy_attach_original_image' 表明系统识别出该题尚未生成有效描述，应留在 review bucket 待人工补充。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image"
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "storage_key": "9709/s21_qp_11/questions/q07.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "cannot_judge",
+        "comment": "当前结果标记为 requires_review 且 confidence=0.0，说明未生成有效描述；虽 route 为 review_lane，但 evidence 中 requires_review 明确为 False（与实际状态矛盾），存在逻辑不一致；需人工复核原始图像内容。",
+        "issues": [
+          "requires_review 标记与 evidence 中 value: False 矛盾",
+          "confidence=0.0 表明无有效描述生成",
+          "lazy_attach_original_image=True 说明未正确关联原图"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "storage_key": "9709/s22_qp_11/questions/q04.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "cannot_judge",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明未生成有效描述，需退回 review bucket 重新处理。",
+        "issues": [
+          "requires_review_flag_mismatch",
+          "confidence_zero_no_summary",
+          "no_descriptor_generated"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "storage_key": "9709/w19_qp_11/questions/q05.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "cannot_judge",
+        "comment": "图像内容为题目文本（含(i)和(ii)小问），但无任何解题过程或答案，当前结果未提供任何可作为descriptor的实质内容；根据规则，仅包含题目本身且无解答时应留在review bucket。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "storage_key": "9709/s20_qp_33/questions/q02.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "over_conservative",
+        "review_bucket_verdict": "correct",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 warnings 包含 'requires_review' 和 'lazy_attach_original_image'，说明系统未能正确处理原始图像与结果的关联，需人工复核。虽然题目清晰（积分 ∫₀¹ (2−x)e⁻²ˣ dx），但当前 descriptor 未包含任何计算过程或答案，仅返回空状态，不足以作为候选 descriptor。",
+        "issues": [
+          "requires_review 矛盾",
+          "lazy_attach_original_image",
+          "无实际内容"
+        ]
+      }
+    },
+    {
+      "index": 9,
+      "storage_key": "9709/s20_qp_33/questions/q07.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "incorrect",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明未生成有效解题过程，无法作为 descriptor 候选，应返回 review_bucket。",
+        "issues": [
+          "requires_review 标志与 evidence 内容矛盾",
+          "confidence=0.0 且 summary=None，无实质解题内容",
+          "lazy_attach_original_image=True 但未提供图像证据"
+        ]
+      }
+    },
+    {
+      "index": 10,
+      "storage_key": "9709/s21_qp_32/questions/q06.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "cannot_judge",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明无有效推导或结论，无法判断是否已满足 descriptor 要求，应继续留在 review bucket。",
+        "issues": [
+          "requires_review flag mismatch",
+          "confidence is 0.0",
+          "no summary or derivation provided"
+        ]
+      }
+    },
+    {
+      "index": 11,
+      "storage_key": "9709/s24_qp_31/questions/q08.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "over_conservative",
+        "review_bucket_verdict": "cannot_judge",
+        "comment": "当前结果为 review_lane 且 requires_review=True，但 confidence=0.0 且 summary=None，表明未生成任何可验证的解题步骤或答案，无法判断是否已足够作为 descriptor 候选；需补充完整计算过程才能评估。",
+        "issues": [
+          "confidence_0",
+          "no_summary",
+          "no_evidence"
+        ]
+      }
+    },
+    {
+      "index": 12,
+      "storage_key": "9709/w17_qp_31/questions/q08.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "over_conservative",
+        "review_bucket_verdict": "cannot_judge",
+        "comment": "当前结果为 review_lane，但 confidence=0.0 且 requires_review=True，说明系统未成功提取有效内容；summary=None、evidence 中无实际解题步骤，无法判断是否满足题目要求（部分(i)和(ii)），需人工审核原始图像确认解题过程。",
+        "issues": [
+          "confidence 为 0.0，表明模型未能可靠识别或生成答案",
+          "requires_review 为 True 且 lazy_attach_original_image 为 True，说明未处理图像内容，仅依赖默认路由",
+          "evidence 中无任何数学推导或计算步骤，无法验证是否完成部分 (i) 和 (ii)",
+          "缺少对 f(x) 部分的分解或积分过程的呈现"
+        ]
+      }
+    },
+    {
+      "index": 13,
+      "storage_key": "9709/s21_qp_31/questions/q03.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "incorrect",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明未生成有效解题过程，无法作为 descriptor 候选，应继续留在 review bucket。",
+        "issues": [
+          "requires_review 矛盾",
+          "无解题过程",
+          "confidence 为 0.0"
+        ]
+      }
+    },
+    {
+      "index": 14,
+      "storage_key": "9709/w16_qp_32/questions/q03.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "over_conservative",
+        "review_bucket_verdict": "correct",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，说明未生成有效描述，应继续留在 review bucket。",
+        "issues": [
+          "evidence 中 requires_review 标志与 result 的 requires_review 值不一致",
+          "confidence 为 0.0 且无 summary，无法作为 descriptor 候选"
+        ]
+      }
+    },
+    {
+      "index": 15,
+      "storage_key": "9709/w17_qp_33/questions/q04.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，符合审核要求；confidence=0.0 且 summary=None 表明未生成有效描述，需进一步处理，但路由本身正确（因题目含证明与作图两部分，需人工复核），故留在 review bucket 合理。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      }
+    },
+    {
+      "index": 16,
+      "storage_key": "9709/w18_qp_33/questions/q06.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "over_conservative",
+        "review_bucket_verdict": "correct",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 summary 和 evidence 均为空，confidence=0.0，说明未生成有效描述；题目是数学推导与求解题，需完整步骤才能判定是否正确，故应留在 review bucket，且当前路由判断合理（过保守），因系统未提供任何可审核内容。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      }
+    },
+    {
+      "index": 17,
+      "storage_key": "9709/w21_qp_31/questions/q02.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": false,
+      "diagram_present": null,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": null,
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ],
+      "evidence": [
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "cannot_judge",
+        "comment": "结果标记为 requires_review 且 confidence=0.0，无任何有效输出，无法判断是否满足 descriptor 要求；因无实际内容，应留在 review bucket 待人工补充。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      }
+    }
+  ],
+  "aggregates": {
+    "descriptor_readiness_counts": {
+      "review_bucket": 17
+    },
+    "route_verdict_counts": {
+      "appropriate": 11,
+      "over_conservative": 6
+    },
+    "review_bucket_verdict_counts": {
+      "cannot_judge": 7,
+      "correct": 8,
+      "incorrect": 2
+    },
+    "follow_up_cases": [
+      {
+        "storage_key": "9709/s19_qp_11/questions/q06.png",
+        "route": "review_lane",
+        "comment": "图像中存在渲染伪影，特别是第(ii)部分的'tan 2x'被误识别为'tan âx'或'tan Lx'，导致三角函数参数模糊，存在歧义风险；同时右侧分数略模糊但推测为5/3。根据审核标准，此类可读性与歧义问题需人工复核确认，故应留在review bucket。",
+        "issues": [
+          "Legibility risk in mathematical notation",
+          "Ambiguity in trigonometric arguments"
+        ]
+      },
+      {
+        "storage_key": "9709/s16_qp_33/questions/q07.png",
+        "route": "review_lane",
+        "comment": "结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 warnings 包含 'requires_review', 'lazy_attach_original_image', 'unknown_surface_flags'，表明该结果未通过初步质检，应继续留在 review bucket 待人工复核。",
+        "issues": [
+          "evidence 中 requires_review 标记与 route 的 requires_review: True 矛盾",
+          "confidence=0.0 且无 summary/summary，无法判断是否可作为 descriptor"
+        ]
+      },
+      {
+        "storage_key": "9709/s19_qp_12/questions/q04.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，符合题目的审核要求；无明显错误或遗漏，无需进一步修改。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image"
+        ]
+      },
+      {
+        "storage_key": "9709/s20_qp_12/questions/q02.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，符合对未完成/需人工复核题目的处理规范；confidence=0.0 及 warnings 中的 'requires_review'、'lazy_attach_original_image' 表明系统识别出该题尚未生成有效描述，应留在 review bucket 待人工补充。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image"
+        ]
+      },
+      {
+        "storage_key": "9709/s21_qp_11/questions/q07.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 requires_review 且 confidence=0.0，说明未生成有效描述；虽 route 为 review_lane，但 evidence 中 requires_review 明确为 False（与实际状态矛盾），存在逻辑不一致；需人工复核原始图像内容。",
+        "issues": [
+          "requires_review 标记与 evidence 中 value: False 矛盾",
+          "confidence=0.0 表明无有效描述生成",
+          "lazy_attach_original_image=True 说明未正确关联原图"
+        ]
+      },
+      {
+        "storage_key": "9709/s22_qp_11/questions/q04.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明未生成有效描述，需退回 review bucket 重新处理。",
+        "issues": [
+          "requires_review_flag_mismatch",
+          "confidence_zero_no_summary",
+          "no_descriptor_generated"
+        ]
+      },
+      {
+        "storage_key": "9709/w19_qp_11/questions/q05.png",
+        "route": "review_lane",
+        "comment": "图像内容为题目文本（含(i)和(ii)小问），但无任何解题过程或答案，当前结果未提供任何可作为descriptor的实质内容；根据规则，仅包含题目本身且无解答时应留在review bucket。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      },
+      {
+        "storage_key": "9709/s20_qp_33/questions/q02.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 warnings 包含 'requires_review' 和 'lazy_attach_original_image'，说明系统未能正确处理原始图像与结果的关联，需人工复核。虽然题目清晰（积分 ∫₀¹ (2−x)e⁻²ˣ dx），但当前 descriptor 未包含任何计算过程或答案，仅返回空状态，不足以作为候选 descriptor。",
+        "issues": [
+          "requires_review 矛盾",
+          "lazy_attach_original_image",
+          "无实际内容"
+        ]
+      },
+      {
+        "storage_key": "9709/s20_qp_33/questions/q07.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明未生成有效解题过程，无法作为 descriptor 候选，应返回 review_bucket。",
+        "issues": [
+          "requires_review 标志与 evidence 内容矛盾",
+          "confidence=0.0 且 summary=None，无实质解题内容",
+          "lazy_attach_original_image=True 但未提供图像证据"
+        ]
+      },
+      {
+        "storage_key": "9709/s21_qp_32/questions/q06.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明无有效推导或结论，无法判断是否已满足 descriptor 要求，应继续留在 review bucket。",
+        "issues": [
+          "requires_review flag mismatch",
+          "confidence is 0.0",
+          "no summary or derivation provided"
+        ]
+      },
+      {
+        "storage_key": "9709/s24_qp_31/questions/q08.png",
+        "route": "review_lane",
+        "comment": "当前结果为 review_lane 且 requires_review=True，但 confidence=0.0 且 summary=None，表明未生成任何可验证的解题步骤或答案，无法判断是否已足够作为 descriptor 候选；需补充完整计算过程才能评估。",
+        "issues": [
+          "confidence_0",
+          "no_summary",
+          "no_evidence"
+        ]
+      },
+      {
+        "storage_key": "9709/w17_qp_31/questions/q08.png",
+        "route": "review_lane",
+        "comment": "当前结果为 review_lane，但 confidence=0.0 且 requires_review=True，说明系统未成功提取有效内容；summary=None、evidence 中无实际解题步骤，无法判断是否满足题目要求（部分(i)和(ii)），需人工审核原始图像确认解题过程。",
+        "issues": [
+          "confidence 为 0.0，表明模型未能可靠识别或生成答案",
+          "requires_review 为 True 且 lazy_attach_original_image 为 True，说明未处理图像内容，仅依赖默认路由",
+          "evidence 中无任何数学推导或计算步骤，无法验证是否完成部分 (i) 和 (ii)",
+          "缺少对 f(x) 部分的分解或积分过程的呈现"
+        ]
+      },
+      {
+        "storage_key": "9709/s21_qp_31/questions/q03.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，表明未生成有效解题过程，无法作为 descriptor 候选，应继续留在 review bucket。",
+        "issues": [
+          "requires_review 矛盾",
+          "无解题过程",
+          "confidence 为 0.0"
+        ]
+      },
+      {
+        "storage_key": "9709/w16_qp_32/questions/q03.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 evidence 中显示 requires_review=False，存在矛盾；同时 confidence=0.0 且 summary=None，说明未生成有效描述，应继续留在 review bucket。",
+        "issues": [
+          "evidence 中 requires_review 标志与 result 的 requires_review 值不一致",
+          "confidence 为 0.0 且无 summary，无法作为 descriptor 候选"
+        ]
+      },
+      {
+        "storage_key": "9709/w17_qp_33/questions/q04.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，符合审核要求；confidence=0.0 且 summary=None 表明未生成有效描述，需进一步处理，但路由本身正确（因题目含证明与作图两部分，需人工复核），故留在 review bucket 合理。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      },
+      {
+        "storage_key": "9709/w18_qp_33/questions/q06.png",
+        "route": "review_lane",
+        "comment": "当前结果标记为 review_lane 且 requires_review=True，但 summary 和 evidence 均为空，confidence=0.0，说明未生成有效描述；题目是数学推导与求解题，需完整步骤才能判定是否正确，故应留在 review bucket，且当前路由判断合理（过保守），因系统未提供任何可审核内容。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      },
+      {
+        "storage_key": "9709/w21_qp_31/questions/q02.png",
+        "route": "review_lane",
+        "comment": "结果标记为 requires_review 且 confidence=0.0，无任何有效输出，无法判断是否满足 descriptor 要求；因无实际内容，应留在 review bucket 待人工补充。",
+        "issues": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ]
+      }
+    ]
+  }
+}

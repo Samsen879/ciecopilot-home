@@ -1,0 +1,902 @@
+{
+  "overview": {
+    "total_records": 0,
+    "by_status": [],
+    "by_syllabus": []
+  },
+  "field_distributions": {
+    "question_type_by_syllabus": [],
+    "answer_form_by_syllabus": [],
+    "confidence_stats": {
+      "min_confidence": null,
+      "max_confidence": null,
+      "mean_confidence": null,
+      "median_confidence": null,
+      "stddev_confidence": null
+    },
+    "confidence_bins": []
+  },
+  "array_field_stats": {
+    "math_expressions_latex": {
+      "total_rows": 0,
+      "empty_rows": 0,
+      "avg_len_non_empty": null,
+      "empty_ratio": null
+    },
+    "variables": {
+      "total_rows": 0,
+      "empty_rows": 0,
+      "avg_len_non_empty": null,
+      "empty_ratio": null
+    },
+    "units_by_syllabus": [],
+    "diagram_elements": {
+      "total_rows": 0,
+      "empty_rows": 0,
+      "avg_len_non_empty": null,
+      "empty_ratio": null
+    }
+  },
+  "anomaly_detection": {
+    "summary_null_or_empty_count": 0,
+    "summary_len_gt_180_count": 0,
+    "low_confidence_records": [],
+    "leakage_non_empty_count": 0,
+    "leakage_flag_type_distribution": [],
+    "blocked_records": [],
+    "question_type_other_by_syllabus": []
+  },
+  "cross_validation": {
+    "jobs_done_count": 0,
+    "descriptions_count": 0,
+    "done_missing_in_descriptions": []
+  },
+  "wave1_pilot": {
+    "manifest_id": "9709_question_search_recovery_v1",
+    "manifest_path": "data/manifests/9709_question_search_recovery_v1.json",
+    "lane_results_json": "docs/reports/2026-04-16-9709-qwen-wave1-pilot-results.json",
+    "summary": {
+      "total_rows": 17,
+      "rows_by_route": {
+        "review_lane": 17
+      },
+      "rows_by_lane": {
+        "review": 17
+      },
+      "model_counts": {
+        "qwen3.6-plus": 17
+      },
+      "decision_reasons": {
+        "gate_critical": 2,
+        "requires_review": 17,
+        "unknown_surface_flags": 17
+      },
+      "diagram_present": {
+        "unknown": 17
+      },
+      "requires_review": {
+        "true": 17
+      },
+      "lazy_attach_original_image": {
+        "true": 17
+      },
+      "descriptor_readiness": {
+        "review_bucket": 17
+      },
+      "summary_presence": {
+        "present": 1,
+        "missing": 16
+      },
+      "failure_reason_counts": {}
+    },
+    "rows": [
+      {
+        "storage_key": "9709/s19_qp_11/questions/q06.png",
+        "manifest_position": 0,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical",
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": true,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": "The image contains a two-part trigonometry problem. Part (i) asks to prove an identity involving sec x and tan x. Part (ii) asks to solve an equation based on the previous result. The text in part (ii) suffers from rendering artifacts where '2x' inside the tangent function resembles an angle symbol or letter 'L', requiring verification to ensure correct transcription.",
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": true
+          },
+          {
+            "field": "review_reasons",
+            "value": [
+              "Legibility risk in mathematical notation",
+              "Ambiguity in trigonometric arguments"
+            ]
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": [
+              "In part (ii), the term 'tan 2x' appears visually distorted as 'tan â x' or 'tan Lx', creating uncertainty about the argument of the tangent function.",
+              "The fraction on the right-hand side of the equation in part (ii) is slightly blurry, though likely 5/3."
+            ]
+          },
+          {
+            "field": "review_summary",
+            "value": "The image contains a two-part trigonometry problem. Part (i) asks to prove an identity involving sec x and tan x. Part (ii) asks to solve an equation based on the previous result. The text in part (ii) suffers from rendering artifacts where '2x' inside the tangent function resembles an angle symbol or letter 'L', requiring verification to ensure correct transcription."
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.95
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.95,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s16_qp_33/questions/q07.png",
+        "manifest_position": 1,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical",
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": true,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s19_qp_12/questions/q04.png",
+        "manifest_position": 2,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s20_qp_12/questions/q02.png",
+        "manifest_position": 3,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s21_qp_11/questions/q07.png",
+        "manifest_position": 4,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s22_qp_11/questions/q04.png",
+        "manifest_position": 5,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w19_qp_11/questions/q05.png",
+        "manifest_position": 6,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s20_qp_33/questions/q02.png",
+        "manifest_position": 7,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s20_qp_33/questions/q07.png",
+        "manifest_position": 8,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s21_qp_32/questions/q06.png",
+        "manifest_position": 9,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s24_qp_31/questions/q08.png",
+        "manifest_position": 10,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w17_qp_31/questions/q08.png",
+        "manifest_position": 11,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s21_qp_31/questions/q03.png",
+        "manifest_position": 12,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w16_qp_32/questions/q03.png",
+        "manifest_position": 13,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w17_qp_33/questions/q04.png",
+        "manifest_position": 14,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w18_qp_33/questions/q06.png",
+        "manifest_position": 15,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w21_qp_31/questions/q02.png",
+        "manifest_position": 16,
+        "route": "review_lane",
+        "lane": "review",
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags"
+        ],
+        "route_hint": "review_lane",
+        "gate_critical": false,
+        "diagram_present": null,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [
+          "requires_review",
+          "lazy_attach_original_image",
+          "unknown_surface_flags"
+        ],
+        "evidence": [
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      }
+    ]
+  }
+}

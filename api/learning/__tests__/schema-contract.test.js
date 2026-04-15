@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
+const LEARNING_QUESTION_SEARCH_MIGRATION =
+  'supabase/migrations/20260415152950_create_learning_question_search_projection.sql';
+
 const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
   'supabase/migrations/20260320111000_create_learning_runtime_core.sql',
@@ -8,7 +11,8 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
   'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
   'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql',
-  'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'
+  'supabase/migrations/20260413110000_phase_a_question_classified_events.sql',
+  LEARNING_QUESTION_SEARCH_MIGRATION
 ];
 
 function readMigration(relPath) {
@@ -248,5 +252,42 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain(
       'create unique index if not exists uq_question_bank_storage_q_present on public.question_bank (storage_key, q_number) where storage_key is not null and q_number is not null'
     );
+  });
+
+  test('learning_question_search_projection is migration-owned and freezes descriptor fallback semantics', () => {
+    const sql = normalizeSql(readMigration(LEARNING_QUESTION_SEARCH_MIGRATION));
+
+    expect(sql).toContain('create or replace view public.learning_question_search_projection as');
+
+    [
+      'qb.question_id',
+      'qb.source_kind',
+      'qb.subject_code',
+      'qb.release_scope_status',
+      'qb.primary_topic_id',
+      'cn.topic_path::text as primary_topic_path',
+      'cn.title as primary_topic_title',
+      'qb.family_id',
+      'qb.primary_question_type_id',
+      'qb.variant_tags',
+      'qb.storage_key',
+      'qb.q_number',
+      'descriptor_rows.summary',
+      'descriptor_rows.question_type',
+      'descriptor_rows.answer_form',
+      'descriptor_rows.year',
+      'descriptor_rows.session',
+      'descriptor_rows.paper_number',
+      'descriptor_rows.variant',
+      'as search_text'
+    ].forEach((token) => expect(sql).toContain(token));
+
+    expect(sql).toContain("to_regclass('public.question_descriptions_prod_v1') is not null");
+    expect(sql).toContain("public.question_descriptions_prod_v1");
+    expect(sql).toContain("public.question_descriptions_v0 where status = 'ok'");
+    expect(sql).toContain('left join descriptor_rows');
+    expect(sql).toContain('descriptor_rows.storage_key = qb.storage_key');
+    expect(sql).toContain('descriptor_rows.q_number = qb.q_number');
+    expect(sql).toContain("qb.prompt_representation ->> 'value'");
   });
 });

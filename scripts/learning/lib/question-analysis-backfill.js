@@ -3,8 +3,19 @@ import { buildClassificationSnapshotRef } from '../../../api/learning/lib/contra
 import { appendQuestionClassifiedEvent } from '../../../api/learning/lib/events/question-event-service.js';
 import { resolveReleasedScoringPosture } from '../../../api/learning/lib/import/question-import-service.js';
 import { analyzeQuestionEnvelope } from '../../../api/learning/lib/question-analysis/question-intelligence-service.js';
-import { buildQuestionAnalysisResult } from '../../../api/learning/lib/question-analysis/analysis-result-contract.js';
 import { normalizeQuestionEnvelope } from '../../../api/learning/lib/question-analysis/question-envelope-contract.js';
+
+function normalizeString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalizeStringArray(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.map((entry) => normalizeString(entry)).filter(Boolean);
+}
 
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
@@ -14,6 +25,191 @@ function normalizeObject(value, fallback = null) {
   return value && typeof value === 'object' && !Array.isArray(value)
     ? JSON.parse(JSON.stringify(value))
     : fallback;
+}
+
+function normalizeAnalysisHints(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return null;
+  }
+
+  const normalized = {
+    runtime_context_id: normalizeString(value.runtime_context_id),
+    question_type_hint_id: normalizeString(value.question_type_hint_id),
+    topic_path_hint: normalizeString(value.topic_path_hint),
+  };
+
+  return normalized.runtime_context_id
+    || normalized.question_type_hint_id
+    || normalized.topic_path_hint
+    ? normalized
+    : null;
+}
+
+function normalizeQuestionEvidenceBundle(value) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? JSON.parse(JSON.stringify(value))
+    : null;
+}
+
+function normalizeFormulaLatexForPrompt(value) {
+  const normalized = normalizeString(value);
+  if (!normalized) {
+    return '';
+  }
+
+  return normalized
+    .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/gu, '$1/$2')
+    .replace(/\\int\b/gu, 'integral')
+    .replace(/\\([a-zA-Z]+)/gu, '$1')
+    .replace(/[{}]/gu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+}
+
+function buildQuestionEvidenceBundleClassificationInput(questionEvidenceBundle = null) {
+  const evidence = questionEvidenceBundle?.evidence ?? {};
+  const sections = [];
+  const classificationInputSections = [];
+
+  const ocrText = normalizeString(evidence.ocr_text);
+  if (ocrText) {
+    sections.push(ocrText);
+    classificationInputSections.push('ocr_text');
+  }
+
+  const normalizedFormulaLatex = normalizeStringArray(
+    normalizeArray(evidence.formula_latex_list).map(normalizeFormulaLatexForPrompt),
+  );
+  if (normalizedFormulaLatex.length > 0) {
+    sections.push(`Formula LaTeX:\n${normalizedFormulaLatex.join('\n')}`);
+    classificationInputSections.push('formula_latex_list');
+  }
+
+  const subquestionBlocks = normalizeStringArray(evidence.subquestion_blocks);
+  if (subquestionBlocks.length > 0) {
+    sections.push(`Subquestion Blocks:\n${subquestionBlocks.join('\n')}`);
+    classificationInputSections.push('subquestion_blocks');
+  }
+
+  const layoutHints = normalizeStringArray(evidence.layout_hints);
+  if (layoutHints.length > 0) {
+    sections.push(`Layout Hints:\n${layoutHints.join('\n')}`);
+    classificationInputSections.push('layout_hints');
+  }
+
+  if (typeof evidence.diagram_present === 'boolean') {
+    sections.push(`Diagram Present: ${evidence.diagram_present}`);
+    classificationInputSections.push('diagram_present');
+  }
+
+  const diagramElements = normalizeStringArray(evidence.diagram_elements);
+  if (diagramElements.length > 0) {
+    sections.push(`Diagram Elements:\n${diagramElements.join('\n')}`);
+    classificationInputSections.push('diagram_elements');
+  }
+
+  const spatialEvidence = normalizeStringArray(evidence.spatial_evidence);
+  if (spatialEvidence.length > 0) {
+    sections.push(`Spatial Evidence:\n${spatialEvidence.join('\n')}`);
+    classificationInputSections.push('spatial_evidence');
+  }
+
+  return {
+    mode: sections.length > 0 ? 'structured_bundle_prompt' : 'raw_question_prompt_fallback',
+    classification_input_sections: classificationInputSections,
+    prompt_representation: sections.length > 0
+      ? {
+        type: 'text',
+        value: sections.join('\n\n'),
+      }
+      : null,
+  };
+}
+
+function resolveQuestionAnalysisHints({
+  analysisHints = null,
+  question = {},
+  questionEvidenceBundle = null,
+} = {}) {
+  const bundleHints = normalizeAnalysisHints(
+    questionEvidenceBundle?.analysis_hints ?? questionEvidenceBundle?.analysisHints,
+  );
+  const questionHints = normalizeAnalysisHints(question?.analysisHints ?? question?.analysis_hints);
+  const explicitHints = normalizeAnalysisHints(analysisHints);
+
+  return normalizeAnalysisHints({
+    ...bundleHints,
+    ...questionHints,
+    ...explicitHints,
+  });
+}
+
+function buildQuestionEvidenceBundleAuditMetadata(
+  questionEvidenceBundle,
+  questionEvidenceBundleClassificationInput = null,
+) {
+  if (!questionEvidenceBundle) {
+    return {};
+  }
+
+  const evidence = questionEvidenceBundle.evidence ?? {};
+
+  return {
+    ao_input_source: 'question_evidence_bundle_v1',
+    question_evidence_bundle_v1: {
+      schema_version: questionEvidenceBundle.schema_version ?? 'question_evidence_bundle_v1',
+      question_id: questionEvidenceBundle.question_id ?? null,
+      storage_key:
+        questionEvidenceBundle.storage_key
+        ?? questionEvidenceBundle.route?.input_asset_id
+        ?? null,
+      analysis_hints: normalizeAnalysisHints(
+        questionEvidenceBundle.analysis_hints ?? questionEvidenceBundle.analysisHints,
+      ),
+      route: normalizeObject(questionEvidenceBundle.route, {}),
+      model_provenance: normalizeArray(questionEvidenceBundle.model_provenance),
+      lazy_attach_original_image: Boolean(questionEvidenceBundle.lazy_attach_original_image),
+      lazy_attach_reasons: normalizeArray(questionEvidenceBundle.lazy_attach_reasons),
+      original_image_asset: normalizeObject(questionEvidenceBundle.original_image_asset),
+      review_posture: normalizeObject(questionEvidenceBundle.review_posture),
+      classification_input_mode:
+        questionEvidenceBundleClassificationInput?.mode ?? 'raw_question_prompt_fallback',
+      classification_input_sections: normalizeStringArray(
+        questionEvidenceBundleClassificationInput?.classification_input_sections,
+      ),
+      evidence_presence: {
+        ocr_text: Boolean(normalizeString(evidence.ocr_text)),
+        formula_latex_count: normalizeArray(evidence.formula_latex_list).length,
+        subquestion_block_count: normalizeArray(evidence.subquestion_blocks).length,
+        layout_hint_count: normalizeArray(evidence.layout_hints).length,
+        diagram_present:
+          typeof evidence.diagram_present === 'boolean' ? evidence.diagram_present : null,
+        diagram_element_count: normalizeArray(evidence.diagram_elements).length,
+        spatial_evidence_count: normalizeArray(evidence.spatial_evidence).length,
+      },
+    },
+  };
+}
+
+function applyQuestionEvidenceBundle(
+  rawClassification,
+  questionEvidenceBundle,
+  questionEvidenceBundleClassificationInput = null,
+) {
+  if (!questionEvidenceBundle) {
+    return rawClassification;
+  }
+
+  return {
+    ...rawClassification,
+    analysis_audit_metadata: {
+      ...(rawClassification.analysis_audit_metadata ?? {}),
+      ...buildQuestionEvidenceBundleAuditMetadata(
+        questionEvidenceBundle,
+        questionEvidenceBundleClassificationInput,
+      ),
+    },
+  };
 }
 
 function buildSnapshotRow(questionId, classification) {
@@ -40,11 +236,14 @@ function buildSnapshotRow(questionId, classification) {
   };
 }
 
-function buildEnvelopeFromQuestion(question) {
+function buildEnvelopeFromQuestion(question, questionEvidenceBundleClassificationInput = null) {
+  const promptRepresentation = questionEvidenceBundleClassificationInput?.prompt_representation
+    ?? question?.prompt_representation;
+
   return normalizeQuestionEnvelope({
     source_kind: question?.source_kind ?? 'imported_question',
     subject_code: question?.subject_code ?? null,
-    prompt_representation: question?.prompt_representation,
+    prompt_representation: promptRepresentation,
     paper_scope: question?.paper_scope ?? null,
     provenance_summary: question?.provenance_summary ?? {},
   });
@@ -94,13 +293,26 @@ async function supersedeActiveSnapshot(client, {
 export async function backfillQuestionAnalysisRecord(client, {
   question,
   analysisHints = null,
+  questionEvidenceBundle = null,
   force = false,
 } = {}) {
-  const envelope = buildEnvelopeFromQuestion(question);
-  const rawClassification = analyzeQuestionEnvelope({
-    envelope,
+  const normalizedQuestionEvidenceBundle = normalizeQuestionEvidenceBundle(
+    questionEvidenceBundle
+      ?? question?.questionEvidenceBundle
+      ?? question?.question_evidence_bundle,
+  );
+  const questionEvidenceBundleClassificationInput =
+    buildQuestionEvidenceBundleClassificationInput(normalizedQuestionEvidenceBundle);
+  const envelope = buildEnvelopeFromQuestion(question, questionEvidenceBundleClassificationInput);
+  const resolvedAnalysisHints = resolveQuestionAnalysisHints({
     analysisHints,
+    question,
+    questionEvidenceBundle: normalizedQuestionEvidenceBundle,
   });
+  const rawClassification = applyQuestionEvidenceBundle(analyzeQuestionEnvelope({
+    envelope,
+    analysisHints: resolvedAnalysisHints,
+  }), normalizedQuestionEvidenceBundle, questionEvidenceBundleClassificationInput);
   const {
     classification,
     scoringScopePosture,
@@ -109,10 +321,7 @@ export async function backfillQuestionAnalysisRecord(client, {
     classification: rawClassification,
     questionEnvelope: envelope,
   });
-  const materializedClassification = buildQuestionAnalysisResult({
-    envelope,
-    classification,
-  });
+  const materializedClassification = classification;
   const activeSnapshotId = force
     ? await findActiveSnapshotId(client, { questionId: question?.question_id ?? null })
     : null;
@@ -214,6 +423,11 @@ export async function runQuestionAnalysisBackfill(client, {
 
     const result = await backfillQuestionAnalysisRecord(client, {
       question,
+      analysisHints: question?.analysisHints ?? question?.analysis_hints ?? null,
+      questionEvidenceBundle:
+        question?.questionEvidenceBundle
+        ?? question?.question_evidence_bundle
+        ?? null,
       force,
     });
     summary.backfilled += 1;

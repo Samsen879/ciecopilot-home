@@ -211,6 +211,143 @@ describe('question-analysis backfill', () => {
     });
   });
 
+  test('passes per-question analysisHints through the batch runner when no evidence bundle is present', async () => {
+    const { client, state } = createBackfillClient();
+
+    const summary = await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-hints',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          prompt_representation: {
+            type: 'text',
+            value: 'What is the capital of France?',
+          },
+          analysisHints: {
+            runtime_context_id: '9709.integration.application',
+            question_type_hint_id: '9709.integration.application',
+            topic_path_hint: '9709.p3.integration',
+          },
+          provenance_summary: {
+            import_source: 'manual_paste',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      backfilled: 1,
+      skipped: 0,
+    });
+    expect(state.snapshots.get('snapshot-1')).toMatchObject({
+      primary_question_type_id: '9709.integration.application',
+      analysis_audit_metadata: expect.objectContaining({
+        analysis_hints: expect.objectContaining({
+          question_type_hint_id: '9709.integration.application',
+          topic_path_hint: '9709.p3.integration',
+        }),
+      }),
+    });
+  });
+
+  test('prefers question evidence bundle OCR text and persists replay provenance for gate-critical rows', async () => {
+    const { client, state } = createBackfillClient();
+
+    const summary = await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-bundle',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          prompt_representation: {
+            type: 'text',
+            value: 'Unreadable raw image placeholder.',
+          },
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/s19_qp_11/questions/q06.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.differential_equations',
+            },
+            evidence: {
+              ocr_text: 'Solve the differential equation dy/dx = 2xy given that y = 1 when x = 0.',
+              formula_latex_list: ['\\frac{dy}{dx} = 2xy'],
+              subquestion_blocks: ['(a) Solve the differential equation.'],
+              layout_hints: ['single_column_prompt'],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [
+              {
+                route: 'review_lane',
+                model: 'qwen3.6-plus',
+                region: 'dashscope-cn',
+                prompt_template_version: 'v1',
+                response_schema_version: 'v1',
+              },
+            ],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['gate_critical', 'requires_review'],
+            original_image_asset: {
+              input_asset_id: '9709/s19_qp_11/questions/q06.png',
+              input_asset_hash: 'hash-review-1',
+            },
+            review_posture: {
+              requires_review: true,
+              gate_critical: true,
+            },
+          },
+          provenance_summary: {
+            import_source: 'manual_paste',
+            storage_key: '9709/s19_qp_11/questions/q06.png',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      backfilled: 1,
+      skipped: 0,
+    });
+    expect(state.snapshots.get('snapshot-1')).toMatchObject({
+      primary_question_type_id: '9709.differential_equations.separable',
+      analysis_audit_metadata: expect.objectContaining({
+        ao_input_source: 'question_evidence_bundle_v1',
+        question_evidence_bundle_v1: expect.objectContaining({
+          storage_key: '9709/s19_qp_11/questions/q06.png',
+          lazy_attach_original_image: true,
+          route: expect.objectContaining({
+            route: 'review_lane',
+            model: 'qwen3.6-plus',
+            region: 'dashscope-cn',
+            prompt_template_version: 'v1',
+            response_schema_version: 'v1',
+          }),
+        }),
+      }),
+    });
+    expect(state.events.get('question-event-1')).toMatchObject({
+      provenance: expect.objectContaining({
+        audit_metadata: expect.objectContaining({
+          ao_input_source: 'question_evidence_bundle_v1',
+        }),
+      }),
+    });
+  });
+
   test('skips questions that already have an active snapshot unless force is enabled', async () => {
     const { client } = createBackfillClient();
 

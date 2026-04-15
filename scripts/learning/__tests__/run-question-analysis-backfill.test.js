@@ -25,7 +25,46 @@ describe('run_question_analysis_backfill cli', () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain(
-      `Usage: node ${path.join('scripts', 'learning', 'run_question_analysis_backfill.js')} [--force]`,
+      `Usage: node ${path.join('scripts', 'learning', 'run_question_analysis_backfill.js')} [--force] [--evidence-bundles <path>]`,
     );
+  });
+
+  test('attaches evidence bundles to matching questions by storage key or question id', async () => {
+    const module = await import('../run_question_analysis_backfill.js');
+
+    expect(module.attachEvidenceBundlesToQuestions([
+      {
+        question_id: 'question-1',
+        provenance_summary: {
+          storage_key: '9709/s19_qp_11/questions/q06.png',
+        },
+      },
+      {
+        question_id: 'question-2',
+        provenance_summary: {},
+      },
+    ], [
+      {
+        schema_version: 'question_evidence_bundle_v1',
+        storage_key: '9709/s19_qp_11/questions/q06.png',
+      },
+      {
+        schema_version: 'question_evidence_bundle_v1',
+        question_id: 'question-2',
+      },
+    ])).toEqual([
+      expect.objectContaining({
+        question_id: 'question-1',
+        questionEvidenceBundle: expect.objectContaining({
+          storage_key: '9709/s19_qp_11/questions/q06.png',
+        }),
+      }),
+      expect.objectContaining({
+        question_id: 'question-2',
+        questionEvidenceBundle: expect.objectContaining({
+          question_id: 'question-2',
+        }),
+      }),
+    ]);
   });
 });

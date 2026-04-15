@@ -14,8 +14,8 @@ The reproducible runner-emitted content begins at `## Runner Output` below.
 | Command | Outcome |
 | --- | --- |
 | `npm run workflow:baseline:sync` | FAIL. The repo-local preflight hit the known root-worktree fetch/upstream problem and was treated as an environment note only. No root-worktree repair was attempted from this stage-3 branch. |
-| `node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand api/learning/__tests__/schema-contract.test.js api/learning/__tests__/question-search-repository.test.js api/learning/__tests__/question-search-service.test.js api/learning/__tests__/question-search-api.test.js scripts/evaluation/__tests__/question-search-gate.test.js` | PASS. 5 suites, 19 tests. |
-| `node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question_search_gold_9709_v1.json --report docs/reports/2026-04-15-question-search-slice-v1-report.md` | FAIL with exit code `1`. The gate runner completed and wrote the runner-output section below, but the current environment did not satisfy the paper-backed pinned cases or the release thresholds. |
+| `node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand api/learning/__tests__/schema-contract.test.js api/learning/__tests__/question-search-repository.test.js api/learning/__tests__/question-search-service.test.js api/learning/__tests__/question-search-api.test.js scripts/evaluation/__tests__/question-search-gate.test.js` | PASS. 5 suites, 20 tests. |
+| `node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question_search_gold_9709_v1.json --report docs/reports/2026-04-15-question-search-slice-v1-report.md` | FAIL with exit code `1`. The gate runner completed and wrote the runner-output section below, but the current environment still did not satisfy the paper-backed pinned cases or the release thresholds. |
 
 ## Runner Output
 
@@ -31,7 +31,7 @@ node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question
 ## Fixture
 
 - Fixture path: `data/eval/question_search_gold_9709_v1.json`
-- Generated at (UTC): `2026-04-15T08:43:06.758Z`
+- Generated at (UTC): `2026-04-15T08:59:16.282Z`
 - Case count: `4`
 
 | Case | Query | Summary Policy | Expected Source Kind |
@@ -44,6 +44,7 @@ node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question
 ## Descriptor Source
 
 Selected branch: `question_descriptions_v0_status_ok`
+Curriculum version tag for topic resolution: `2025-2027_v1`
 
 | Surface | Exists | Count | 9709 Detail |
 | --- | --- | --- | --- |
@@ -59,6 +60,7 @@ Selected branch: `question_descriptions_v0_status_ok`
 - Prefer `public.question_descriptions_prod_v1` when that relation exists.
 - Otherwise fall back to `public.question_descriptions_v0` filtered to `status = 'ok'`.
 - `question_descriptions_v1` is counted for descriptor-surface visibility only; it is not an independent fallback branch for this gate.
+- Resolve curriculum nodes with `syllabus_code + topic_path + version_tag`, using `2025-2027_v1` for this fixture.
 
 ## Case Results
 

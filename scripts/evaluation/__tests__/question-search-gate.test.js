@@ -2,6 +2,8 @@ import path from 'node:path';
 import { jest } from '@jest/globals';
 
 import {
+  buildCurriculumNodeResolutionSql,
+  DEFAULT_CURRICULUM_VERSION_TAG,
   DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
   loadQuestionSearchGoldFixture,
   runQuestionSearchGate,
@@ -19,6 +21,7 @@ describe('question-search-gate', () => {
     const fixture = loadQuestionSearchGoldFixture(FIXTURE_PATH);
 
     expect(fixture.subject_code).toBe('9709');
+    expect(fixture.curriculum_version_tag).toBe(DEFAULT_CURRICULUM_VERSION_TAG);
     expect(fixture.cases.length).toBeLessThanOrEqual(6);
     expect(
       fixture.cases.some((testCase) => (
@@ -38,6 +41,7 @@ describe('question-search-gate', () => {
   test('runQuestionSearchGate computes release metrics and passes when thresholds are met', async () => {
     const fixture = {
       subject_code: '9709',
+      curriculum_version_tag: DEFAULT_CURRICULUM_VERSION_TAG,
       thresholds: {
         exact_structured_match_rate: 0.9,
         subject_leakage_rate: 0,
@@ -155,7 +159,7 @@ describe('question-search-gate', () => {
         page_size: 20,
       });
 
-    const resolveTopicPathFn = jest.fn((topicPath) => {
+    const resolveTopicPathFn = jest.fn(({ topicPath }) => {
       if (topicPath === '9709.codex_cli.browser_fixture.repair') {
         return Promise.resolve('topic-browser-repair');
       }
@@ -186,8 +190,16 @@ describe('question-search-gate', () => {
       nowIso: '2026-04-15T08:30:00Z',
     });
 
-    expect(resolveTopicPathFn).toHaveBeenCalledWith('9709.codex_cli.browser_fixture.repair');
-    expect(resolveTopicPathFn).toHaveBeenCalledWith('9709.p1.trigonometry');
+    expect(resolveTopicPathFn).toHaveBeenCalledWith({
+      subjectCode: '9709',
+      topicPath: '9709.codex_cli.browser_fixture.repair',
+      curriculumVersionTag: DEFAULT_CURRICULUM_VERSION_TAG,
+    });
+    expect(resolveTopicPathFn).toHaveBeenCalledWith({
+      subjectCode: '9709',
+      topicPath: '9709.p1.trigonometry',
+      curriculumVersionTag: DEFAULT_CURRICULUM_VERSION_TAG,
+    });
     expect(searchQuestionsFn).toHaveBeenNthCalledWith(1, {
       subject_code: '9709',
       primary_topic_id: 'topic-browser-repair',
@@ -228,6 +240,7 @@ describe('question-search-gate', () => {
   test('runQuestionSearchGate records explicit failure posture when paper-backed cases cannot be satisfied', async () => {
     const fixture = {
       subject_code: '9709',
+      curriculum_version_tag: DEFAULT_CURRICULUM_VERSION_TAG,
       thresholds: DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
       cases: [
         {
@@ -318,7 +331,7 @@ describe('question-search-gate', () => {
       page_size: 20,
     });
 
-    const resolveTopicPathFn = jest.fn((topicPath) => {
+    const resolveTopicPathFn = jest.fn(({ topicPath }) => {
       if (topicPath === '9709.codex_cli.browser_fixture.continuity') {
         return Promise.resolve('topic-browser-continuity');
       }
@@ -372,5 +385,20 @@ describe('question-search-gate', () => {
     expect(result.report_markdown).toContain('Prefer `public.question_descriptions_prod_v1`');
     expect(result.report_markdown).toContain('paper_question: 0');
     expect(result.report_markdown).toContain('paper-backed pinned cases cannot pass');
+  });
+
+  test('curriculum node resolution SQL filters by syllabus, topic_path, and explicit version_tag', () => {
+    const sql = buildCurriculumNodeResolutionSql({
+      subjectCode: '9709',
+      topicPath: '9709.p1.trigonometry',
+      curriculumVersionTag: '2025-2027_v1',
+    });
+
+    expect(sql).toContain("FROM public.curriculum_nodes");
+    expect(sql).toContain("syllabus_code = '9709'");
+    expect(sql).toContain("topic_path::text = '9709.p1.trigonometry'");
+    expect(sql).toContain("version_tag = '2025-2027_v1'");
+    expect(sql).toContain('ORDER BY node_id ASC');
+    expect(sql).toContain('LIMIT 1');
   });
 });

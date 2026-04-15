@@ -9,6 +9,7 @@ import { promisify } from 'node:util';
 const execFileAsync = promisify(execFile);
 
 const PROJECT_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+export const DEFAULT_CURRICULUM_VERSION_TAG = '2025-2027_v1';
 
 export const DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS = Object.freeze({
   exact_structured_match_rate: 0.9,
@@ -48,6 +49,11 @@ function normalizeThresholds(input = {}) {
     ...DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
     ...(input || {}),
   };
+}
+
+function normalizeCurriculumVersionTag(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  return normalized || DEFAULT_CURRICULUM_VERSION_TAG;
 }
 
 function isPresent(value) {
@@ -166,6 +172,7 @@ function parseJsonFixture(source, fixturePath) {
 
   return {
     ...fixture,
+    curriculum_version_tag: normalizeCurriculumVersionTag(fixture?.curriculum_version_tag),
     thresholds: normalizeThresholds(fixture?.thresholds),
   };
 }
@@ -179,6 +186,27 @@ export function loadQuestionSearchGoldFixture(fixturePath) {
     fs.readFileSync(resolvedPath, 'utf8'),
     resolvedPath,
   );
+}
+
+export function buildCurriculumNodeResolutionSql({
+  subjectCode,
+  topicPath,
+  curriculumVersionTag = DEFAULT_CURRICULUM_VERSION_TAG,
+}) {
+  return [
+    'SELECT COALESCE(',
+    '  (',
+    '    SELECT to_json(node_id::text)',
+    '    FROM public.curriculum_nodes',
+    `    WHERE syllabus_code = ${sqlLiteral(subjectCode)}`,
+    `      AND topic_path::text = ${sqlLiteral(topicPath)}`,
+    `      AND version_tag = ${sqlLiteral(curriculumVersionTag)}`,
+    '    ORDER BY node_id ASC',
+    '    LIMIT 1',
+    '  ),',
+    '  \'null\'::json',
+    ')::text;',
+  ].join('\n');
 }
 
 function buildSearchInput(subjectCode, query, primaryTopicId) {
@@ -459,6 +487,7 @@ export function renderQuestionSearchGateReport({
     '## Descriptor Source',
     '',
     `Selected branch: \`${environment?.selected_branch || 'unknown'}\``,
+    `Curriculum version tag for topic resolution: \`${fixture.curriculum_version_tag}\``,
     '',
     buildMarkdownTable(
       ['Surface', 'Exists', 'Count', '9709 Detail'],
@@ -470,6 +499,7 @@ export function renderQuestionSearchGateReport({
     '- Prefer `public.question_descriptions_prod_v1` when that relation exists.',
     '- Otherwise fall back to `public.question_descriptions_v0` filtered to `status = \'ok\'`.',
     '- `question_descriptions_v1` is counted for descriptor-surface visibility only; it is not an independent fallback branch for this gate.',
+    `- Resolve curriculum nodes with \`syllabus_code + topic_path + version_tag\`, using \`${fixture.curriculum_version_tag}\` for this fixture.`,
     '',
     '## Case Results',
     '',
@@ -528,6 +558,7 @@ export async function runQuestionSearchGate({
 
   const normalizedFixture = {
     ...fixture,
+    curriculum_version_tag: normalizeCurriculumVersionTag(fixture.curriculum_version_tag),
     thresholds: normalizeThresholds(fixture.thresholds),
     cases: ensureArray(
       fixture.cases,
@@ -552,7 +583,11 @@ export async function runQuestionSearchGate({
     let resolutionError = null;
 
     if (isPresent(testCase.query.topic_path)) {
-      resolvedTopicId = await resolveTopicPathFn(testCase.query.topic_path);
+      resolvedTopicId = await resolveTopicPathFn({
+        subjectCode: caseSubject,
+        topicPath: testCase.query.topic_path,
+        curriculumVersionTag: normalizedFixture.curriculum_version_tag,
+      });
       if (!isPresent(resolvedTopicId)) {
         resolutionError = 'topic_path_not_found';
       }
@@ -675,19 +710,16 @@ async function runPsqlJson(sql) {
   return JSON.parse(raw);
 }
 
-async function resolveTopicPathFromDatabase(topicPath) {
-  const sql = [
-    'SELECT COALESCE(',
-    '  (',
-    '    SELECT to_json(node_id::text)',
-    '    FROM public.curriculum_nodes',
-    `    WHERE topic_path::text = ${sqlLiteral(topicPath)}`,
-    '    LIMIT 1',
-    '  ),',
-    '  \'null\'::json',
-    ')::text;',
-  ].join('\n');
-
+async function resolveTopicPathFromDatabase({
+  subjectCode,
+  topicPath,
+  curriculumVersionTag = DEFAULT_CURRICULUM_VERSION_TAG,
+}) {
+  const sql = buildCurriculumNodeResolutionSql({
+    subjectCode,
+    topicPath,
+    curriculumVersionTag,
+  });
   return JSON.parse(await runPsql(sql));
 }
 

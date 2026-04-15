@@ -1,0 +1,119 @@
+{
+  "contract_id": "9709_qwen_wave1_output_contract_v1",
+  "schema_version": "v1",
+  "subject_code": "9709",
+  "frozen_on": "2026-04-16",
+  "description": "Machine-consumable lane output contract for the deterministic 9709 Qwen wave-1 pilot.",
+  "machine_consumable_policy": {
+    "enable_thinking": false,
+    "response_format": {
+      "type": "json_object"
+    },
+    "stateless": true,
+    "caller_context_policy": "caller_managed"
+  },
+  "required_top_level_fields": [
+    "model",
+    "route",
+    "prompt_template_version",
+    "region",
+    "base_url",
+    "input_asset_id",
+    "input_asset_hash",
+    "response_schema_version",
+    "confidence",
+    "failure_reason",
+    "output"
+  ],
+  "field_contract": {
+    "model": {
+      "type": "string",
+      "enum": [
+        "qwen-vl-ocr",
+        "qwen3-vl-plus",
+        "qwen3.6-plus"
+      ]
+    },
+    "route": {
+      "type": "string",
+      "enum": [
+        "ocr_lane",
+        "diagram_lane",
+        "review_lane"
+      ]
+    },
+    "prompt_template_version": {
+      "type": "string",
+      "pattern": "^v[0-9]+$"
+    },
+    "region": {
+      "type": "string",
+      "enum": [
+        "dashscope-cn"
+      ]
+    },
+    "base_url": {
+      "type": "string",
+      "const": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    },
+    "input_asset_id": {
+      "type": "string",
+      "description": "Canonical asset identifier, normally the manifest storage_key."
+    },
+    "input_asset_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Stable caller-supplied content hash when available."
+    },
+    "response_schema_version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "failure_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "summary",
+        "evidence",
+        "warnings"
+      ],
+      "properties": {
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "provenance_expectations": [
+    "Every output row must retain the chosen route, model, region, prompt_template_version, and response_schema_version.",
+    "Failure paths must still emit the top-level provenance envelope with failure_reason populated.",
+    "Free-text reasoning is not a contract field for wave 1 machine-consumable outputs."
+  ]
+}

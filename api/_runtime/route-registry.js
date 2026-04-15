@@ -60,6 +60,15 @@ const ROUTES = [
     methods: ['POST', 'OPTIONS'],
   },
   {
+    module: 'learning-questions',
+    pathPrefix: '/api/learning/questions',
+    pattern: /^\/api\/learning\/questions$/,
+    importPath: '../learning/questions/index.js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['GET', 'OPTIONS'],
+  },
+  {
     module: 'learning-workspace-topic',
     pathPrefix: '/api/learning/workspaces/:topicId',
     pattern: /^\/api\/learning\/workspaces\/[^/]+$/,

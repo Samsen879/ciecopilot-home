@@ -2,6 +2,8 @@
 from __future__ import annotations
 import hashlib
 import json
+from functools import lru_cache
+from pathlib import Path
 import re
 from dataclasses import dataclass, field, asdict
 from typing import Literal
@@ -144,3 +146,82 @@ def compute_response_sha256(data: dict) -> str:
 
 def validate_sha256(h: str) -> bool:
     return bool(re.fullmatch(r"[a-f0-9]{64}", h))
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+QWEN_WAVE1_OUTPUT_CONTRACT_PATH = PROJECT_ROOT / "data/contracts/9709_qwen_wave1_output_contract_v1.json"
+
+
+@lru_cache(maxsize=1)
+def _load_qwen_wave1_output_contract() -> dict:
+    return json.loads(QWEN_WAVE1_OUTPUT_CONTRACT_PATH.read_text(encoding="utf-8"))
+
+
+def _type_matches(value, expected_type) -> bool:
+    mapping = {
+        "string": lambda v: isinstance(v, str),
+        "number": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool),
+        "object": lambda v: isinstance(v, dict),
+        "array": lambda v: isinstance(v, list),
+        "boolean": lambda v: isinstance(v, bool),
+        "null": lambda v: v is None,
+    }
+    validator = mapping.get(expected_type)
+    return bool(validator and validator(value))
+
+
+def _validate_field(field_name: str, value, rules: dict) -> None:
+    expected_type = rules.get("type")
+    if expected_type is not None:
+        allowed_types = expected_type if isinstance(expected_type, list) else [expected_type]
+        if not any(_type_matches(value, type_name) for type_name in allowed_types):
+            raise ValueError(f"{field_name} has invalid type")
+
+    if "enum" in rules and value not in rules["enum"]:
+        raise ValueError(f"{field_name} has invalid value: {value}")
+
+    if "const" in rules and value != rules["const"]:
+        raise ValueError(f"{field_name} must equal {rules['const']}")
+
+    if "pattern" in rules and value is not None:
+        if not isinstance(value, str) or re.fullmatch(rules["pattern"], value) is None:
+            raise ValueError(f"{field_name} does not match pattern {rules['pattern']}")
+
+    if "minimum" in rules and value is not None and value < rules["minimum"]:
+        raise ValueError(f"{field_name} is below minimum {rules['minimum']}")
+
+    if "maximum" in rules and value is not None and value > rules["maximum"]:
+        raise ValueError(f"{field_name} is above maximum {rules['maximum']}")
+
+
+def validate_qwen_wave1_output(payload: dict) -> dict:
+    """Validate the additive Qwen wave-1 output envelope."""
+    if not isinstance(payload, dict):
+        raise ValueError("payload must be a dict")
+
+    contract = _load_qwen_wave1_output_contract()
+    missing = [field for field in contract["required_top_level_fields"] if field not in payload]
+    if missing:
+        raise ValueError(f"Missing required output fields: {', '.join(missing)}")
+
+    for field_name, rules in contract["field_contract"].items():
+        if field_name not in payload:
+            continue
+        _validate_field(field_name, payload[field_name], rules)
+
+    output = payload["output"]
+    if not isinstance(output, dict):
+        raise ValueError("output must be an object")
+
+    for key in ("summary", "evidence", "warnings"):
+        if key not in output:
+            raise ValueError(f"output missing required field: {key}")
+
+    if output["summary"] is not None and not isinstance(output["summary"], str):
+        raise ValueError("output.summary must be a string or null")
+    if not isinstance(output["evidence"], list) or not all(isinstance(item, dict) for item in output["evidence"]):
+        raise ValueError("output.evidence must be a list of objects")
+    if not isinstance(output["warnings"], list) or not all(isinstance(item, str) for item in output["warnings"]):
+        raise ValueError("output.warnings must be a list of strings")
+
+    return payload

@@ -36,6 +36,14 @@ describe('learning route registry', () => {
       allowed: true,
     });
 
+    expect(findRoute('/api/learning/questions', 'GET')).toMatchObject({
+      route: expect.objectContaining({
+        module: 'learning-questions',
+        importPath: '../learning/questions/index.js',
+      }),
+      allowed: true,
+    });
+
     expect(findRoute('/api/learning/workspaces/topic-1', 'GET')).toMatchObject({
       route: expect.objectContaining({
         module: 'learning-workspace-topic',
@@ -82,6 +90,7 @@ describe('learning route registry', () => {
       'learning-sessions-id',
       'learning-sessions',
       'learning-questions-import',
+      'learning-questions',
       'learning-workspace-topic',
       'learning-review-task-id',
       'learning-review-tasks',

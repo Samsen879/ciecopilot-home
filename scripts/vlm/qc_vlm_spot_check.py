@@ -516,7 +516,7 @@ def print_summary(data: dict[str, Any]) -> None:
         print(f"  - {case['storage_key']} | {case['syllabus_code']} | conf={case['confidence']}")
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="VLM spot-check for question_descriptions table")
     parser.add_argument(
         "--table",
@@ -533,7 +533,10 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, help="Optional pilot manifest for wave-1 lane spot-check mode.")
     parser.add_argument("--lane-results-json", type=Path, help="Optional qwen_lane_runner_v1 JSON output for wave-1 spot-check mode.")
     parser.add_argument("--sample-size", type=int, help="Optional deterministic cap for wave-1 spot-check mode.")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+
+    if (args.manifest is None) != (args.lane_results_json is None):
+        parser.error("--manifest and --lane-results-json must be provided together, or both omitted")
 
     if args.manifest and args.lane_results_json:
         data = run_wave1_spot_check(

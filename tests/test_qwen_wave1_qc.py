@@ -4,6 +4,8 @@ import json
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.vlm.batch_process_v0 import parse_response  # noqa: E402
@@ -14,6 +16,7 @@ from scripts.vlm.qc_stats import (  # noqa: E402
 )
 from scripts.vlm.qc_vlm_spot_check import (  # noqa: E402
     build_wave1_prompt,
+    main,
     parse_json_response,
     select_wave1_spot_check_rows,
 )
@@ -258,3 +261,18 @@ def test_parse_json_response_strips_invalid_control_characters_from_wave1_review
 
     assert parsed["descriptor_readiness"] == "review_bucket"
     assert "character" in parsed["comment"]
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["--manifest", "data/manifests/9709_question_search_recovery_v1.json"],
+        ["--lane-results-json", "docs/reports/2026-04-16-9709-qwen-wave1-pilot-results.json"],
+    ],
+)
+def test_main_rejects_partial_wave1_cli_flags(argv, capsys):
+    with pytest.raises(SystemExit) as exc_info:
+        main(argv)
+
+    assert exc_info.value.code == 2
+    assert "--manifest and --lane-results-json must be provided together" in capsys.readouterr().err

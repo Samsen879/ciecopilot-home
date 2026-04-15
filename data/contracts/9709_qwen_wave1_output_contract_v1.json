@@ -114,6 +114,7 @@
   "provenance_expectations": [
     "Every output row must retain the chosen route, model, region, prompt_template_version, and response_schema_version.",
     "Failure paths must still emit the top-level provenance envelope with failure_reason populated.",
-    "Free-text reasoning is not a contract field for wave 1 machine-consumable outputs."
+    "Free-text reasoning is not a contract field for wave 1 machine-consumable outputs.",
+    "If upstream manifest surface flags are null/unknown, downstream outputs must preserve that unknown posture or surface a review failure; they must not coerce null to false."
   ]
 }

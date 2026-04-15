@@ -6,11 +6,11 @@ This report freezes the wave-1 execution posture for issue `#198`. It is a suppl
 
 ## Source Documents
 
-These were the frozen planning inputs used for this issue. They are not present on `origin/main` in this task worktree, so they were read from the local root worktree paths recorded below.
+These are the frozen planning inputs used for this issue. They are now checked into this branch so the artifact set is replayable without any local-only path dependency.
 
-- `/home/samsen/code/ciecopilot-home/docs/superpowers/plans/2026-04-15-9709-question-bank-data-recovery-and-gate-rerun.md`
-- `/home/samsen/code/ciecopilot-home/docs/superpowers/specs/2026-04-15-9709-qwen-api-ao-vlm-architecture-design.md`
-- `/home/samsen/code/ciecopilot-home/docs/superpowers/plans/2026-04-16-9709-qwen-api-wave1-ao-execution-runbook.md`
+- `docs/superpowers/plans/2026-04-15-9709-question-bank-data-recovery-and-gate-rerun.md`
+- `docs/superpowers/specs/2026-04-15-9709-qwen-api-ao-vlm-architecture-design.md`
+- `docs/superpowers/plans/2026-04-16-9709-qwen-api-wave1-ao-execution-runbook.md`
 
 ## Scope Frozen By This Issue
 
@@ -44,7 +44,7 @@ There is no tracking information for the current branch.
 Please specify which branch you want to merge with.
 ```
 
-That failure did not block issue `#198`, because the required retrieval-slice files and the live database baseline were verified directly from this task worktree.
+For issue `#198`, that workflow deviation is explicitly waived rather than silently ignored, because the required retrieval-slice files and the live database baseline were verified directly from this task worktree.
 
 ## Baseline Red Posture
 
@@ -68,7 +68,7 @@ The current gate was re-run with:
 ```bash
 node scripts/evaluation/run_question_search_gate.js \
   --fixture data/eval/question_search_gold_9709_v1.json \
-  --report /tmp/9709_question_search_gate_issue198_report.md
+  --report docs/reports/2026-04-16-9709-question-search-gate-baseline-report.md
 ```
 
 Observed fail posture:
@@ -80,6 +80,8 @@ Observed fail posture:
 - `descriptor_source=question_descriptions_v0_status_ok`
 - `gate_pass=false`
 - `failing_metrics=exact_structured_match_rate, metadata_completeness_rate, null_summary_rate`
+
+Durable gate evidence is checked in at `docs/reports/2026-04-16-9709-question-search-gate-baseline-report.md`.
 
 ## Frozen Pilot Manifest
 
@@ -93,8 +95,7 @@ Manifest summary:
   - `9709.p3.integration`: `6`
   - `9709.p3.trigonometry`: `5`
 - route coverage:
-  - `review_lane`: `2`
-  - `ocr_lane`: `15`
+  - `review_lane`: `17`
 - gate-critical rows:
   - `9709/s19_qp_11/questions/q06.png`
   - `9709/s16_qp_33/questions/q07.png`
@@ -118,12 +119,13 @@ Every manifest item also includes the wave-1 route fields frozen by this issue:
 
 ### Routing Assumptions
 
-The route metadata was frozen conservatively because the question image assets are not checked into this branch and no local PDF text extraction tool was available in the environment.
+The route metadata is intentionally review-gated because the question image assets are not checked into this branch and this issue does not attempt a primary-asset surface re-audit.
 
-- gate-critical rows are pre-routed to `review_lane`
-- the remaining seeded rows are pre-routed to `ocr_lane`
-- `diagram_present=false` for all current pilot rows until a later manifest delta is backed by checked-in evidence or replayable asset inspection
-- `formula_dense=true` and `table_heavy=false` are frozen as the starting posture for the current mathematics pilot
+- all seeded rows currently carry `route_hint=review_lane`
+- all seeded rows currently carry `requires_review=true`
+- `diagram_present`, `formula_dense`, and `table_heavy` are frozen as `null`, which means unknown rather than false
+- `surface_evidence_status=unknown_requires_primary_asset_replay` records why the surface flags remain unresolved
+- the only evidence-backed routing distinction frozen in this issue is `gate_critical=true` for the two pinned gate rows
 
 ## Frozen Curriculum Seed
 
@@ -148,6 +150,7 @@ This file is intentionally narrow and does not widen into a full-subject curricu
 
 - the required router input fields from the manifest
 - the allowed route outputs: `ocr_lane`, `diagram_lane`, `review_lane`
+- the rule that unknown manifest surface flags remain unknown and therefore stay review-gated
 - the `lazy_attach_original_image` switch
 - the required route provenance fields: `region`, `base_url`, `api_key_scope`
 
@@ -193,8 +196,7 @@ Interpretation note:
 Observed but non-blocking issues for this freeze task:
 
 - the repo-local baseline sync helper cannot fast-forward until the root-worktree baseline branch has upstream tracking configured
-- the three required planning docs are only available in the local root worktree, not on `origin/main`
 - the question image assets for the pilot rows are not checked into this task branch
-- no local PDF text extraction tool was available, so diagram classification could not be re-audited from primary assets inside this session
+- no local PDF text extraction tool was available, but this issue now leaves surface fields null and review-gated instead of inventing false negatives
 
 These did not block the acceptance criteria for issue `#198`, but they should be kept visible for the later router-execution and evidence-bundle tasks.

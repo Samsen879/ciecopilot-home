@@ -17,9 +17,32 @@
     "diagram_present",
     "formula_dense",
     "table_heavy",
+    "surface_evidence_status",
     "gate_critical",
     "requires_review"
   ],
+  "route_hint_policy": {
+    "description": "route_hint is an advisory freeze input, not permission to bypass review.",
+    "unknown_surface_rule": "If any surface field is null or the manifest marks the row for review, the row stays review-gated until a replayable primary-asset audit resolves the surface."
+  },
+  "manifest_surface_value_contract": {
+    "diagram_present": [
+      true,
+      false,
+      null
+    ],
+    "formula_dense": [
+      true,
+      false,
+      null
+    ],
+    "table_heavy": [
+      true,
+      false,
+      null
+    ],
+    "null_meaning": "unknown in this freeze; null must not be coerced to false by the router"
+  },
   "route_output_required_fields": [
     "route",
     "model",
@@ -35,6 +58,8 @@
     "ocr_lane": {
       "model": "qwen-vl-ocr",
       "selected_when": [
+        "requires_review=false",
+        "surface flags are evidence-backed rather than null",
         "text-dominant question surface",
         "formula_dense=true and diagram_present=false",
         "table_heavy=true",
@@ -56,6 +81,7 @@
       "selected_when": [
         "gate_critical=true",
         "requires_review=true",
+        "any of diagram_present, formula_dense, or table_heavy is null/unknown",
         "OCR and diagram evidence conflict",
         "AO cannot converge on a stable topic candidate"
       ],

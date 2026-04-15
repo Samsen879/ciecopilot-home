@@ -348,6 +348,155 @@ describe('question-analysis backfill', () => {
     });
   });
 
+  test('classifies from non-OCR bundle evidence when formula_latex_list carries the signal', async () => {
+    const { client, state } = createBackfillClient();
+
+    const summary = await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-formula-only',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          prompt_representation: {
+            type: 'text',
+            value: 'Unreadable raw image placeholder.',
+          },
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/s19_qp_11/questions/q06.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.differential_equations',
+            },
+            evidence: {
+              ocr_text: '',
+              formula_latex_list: ['dy/dx = 2xy'],
+              subquestion_blocks: [],
+              layout_hints: ['single_column_prompt'],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [
+              {
+                route: 'review_lane',
+                model: 'qwen3.6-plus',
+                region: 'dashscope-cn',
+                prompt_template_version: 'v1',
+                response_schema_version: 'v1',
+              },
+            ],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['requires_review'],
+            original_image_asset: {
+              input_asset_id: '9709/s19_qp_11/questions/q06.png',
+              input_asset_hash: 'hash-review-1',
+            },
+            review_posture: {
+              requires_review: true,
+              gate_critical: false,
+            },
+          },
+          provenance_summary: {
+            import_source: 'manual_paste',
+            storage_key: '9709/s19_qp_11/questions/q06.png',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      backfilled: 1,
+      skipped: 0,
+    });
+    expect(state.snapshots.get('snapshot-1')).toMatchObject({
+      primary_question_type_id: '9709.differential_equations.separable',
+      analysis_audit_metadata: expect.objectContaining({
+        ao_input_source: 'question_evidence_bundle_v1',
+      }),
+    });
+  });
+
+  test('records which structured bundle sections were serialized into the AO classification input', async () => {
+    const { client, state } = createBackfillClient();
+
+    await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-structured-sections',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          prompt_representation: {
+            type: 'text',
+            value: 'Unreadable raw image placeholder.',
+          },
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/s20_qp_33/questions/q02.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.integration',
+            },
+            evidence: {
+              ocr_text: '',
+              formula_latex_list: ['\\int (2x+1)(x^2+x)^4 \\, dx'],
+              subquestion_blocks: ['(a) Evaluate the integral.'],
+              layout_hints: ['single_column_prompt'],
+              diagram_present: true,
+              diagram_elements: ['curve C labelled y=f(x)'],
+              spatial_evidence: ['bounded by the x-axis'],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['requires_review'],
+            original_image_asset: {
+              input_asset_id: '9709/s20_qp_33/questions/q02.png',
+              input_asset_hash: 'hash-review-2',
+            },
+            review_posture: {
+              requires_review: true,
+              gate_critical: false,
+            },
+          },
+          provenance_summary: {
+            import_source: 'manual_paste',
+            storage_key: '9709/s20_qp_33/questions/q02.png',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(state.snapshots.get('snapshot-1')).toMatchObject({
+      analysis_audit_metadata: expect.objectContaining({
+        question_evidence_bundle_v1: expect.objectContaining({
+          classification_input_sections: expect.arrayContaining([
+            'formula_latex_list',
+            'subquestion_blocks',
+            'layout_hints',
+            'diagram_present',
+            'diagram_elements',
+            'spatial_evidence',
+          ]),
+        }),
+      }),
+    });
+  });
+
   test('skips questions that already have an active snapshot unless force is enabled', async () => {
     const { client } = createBackfillClient();
 

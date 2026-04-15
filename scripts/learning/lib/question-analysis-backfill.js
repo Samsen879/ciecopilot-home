@@ -9,6 +9,14 @@ function normalizeString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+function normalizeStringArray(value) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.map((entry) => normalizeString(entry)).filter(Boolean);
+}
+
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -43,6 +51,81 @@ function normalizeQuestionEvidenceBundle(value) {
     : null;
 }
 
+function normalizeFormulaLatexForPrompt(value) {
+  const normalized = normalizeString(value);
+  if (!normalized) {
+    return '';
+  }
+
+  return normalized
+    .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/gu, '$1/$2')
+    .replace(/\\int\b/gu, 'integral')
+    .replace(/\\([a-zA-Z]+)/gu, '$1')
+    .replace(/[{}]/gu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+}
+
+function buildQuestionEvidenceBundleClassificationInput(questionEvidenceBundle = null) {
+  const evidence = questionEvidenceBundle?.evidence ?? {};
+  const sections = [];
+  const classificationInputSections = [];
+
+  const ocrText = normalizeString(evidence.ocr_text);
+  if (ocrText) {
+    sections.push(ocrText);
+    classificationInputSections.push('ocr_text');
+  }
+
+  const normalizedFormulaLatex = normalizeStringArray(
+    normalizeArray(evidence.formula_latex_list).map(normalizeFormulaLatexForPrompt),
+  );
+  if (normalizedFormulaLatex.length > 0) {
+    sections.push(`Formula LaTeX:\n${normalizedFormulaLatex.join('\n')}`);
+    classificationInputSections.push('formula_latex_list');
+  }
+
+  const subquestionBlocks = normalizeStringArray(evidence.subquestion_blocks);
+  if (subquestionBlocks.length > 0) {
+    sections.push(`Subquestion Blocks:\n${subquestionBlocks.join('\n')}`);
+    classificationInputSections.push('subquestion_blocks');
+  }
+
+  const layoutHints = normalizeStringArray(evidence.layout_hints);
+  if (layoutHints.length > 0) {
+    sections.push(`Layout Hints:\n${layoutHints.join('\n')}`);
+    classificationInputSections.push('layout_hints');
+  }
+
+  if (typeof evidence.diagram_present === 'boolean') {
+    sections.push(`Diagram Present: ${evidence.diagram_present}`);
+    classificationInputSections.push('diagram_present');
+  }
+
+  const diagramElements = normalizeStringArray(evidence.diagram_elements);
+  if (diagramElements.length > 0) {
+    sections.push(`Diagram Elements:\n${diagramElements.join('\n')}`);
+    classificationInputSections.push('diagram_elements');
+  }
+
+  const spatialEvidence = normalizeStringArray(evidence.spatial_evidence);
+  if (spatialEvidence.length > 0) {
+    sections.push(`Spatial Evidence:\n${spatialEvidence.join('\n')}`);
+    classificationInputSections.push('spatial_evidence');
+  }
+
+  return {
+    mode: sections.length > 0 ? 'structured_bundle_prompt' : 'raw_question_prompt_fallback',
+    classification_input_sections: classificationInputSections,
+    prompt_representation: sections.length > 0
+      ? {
+        type: 'text',
+        value: sections.join('\n\n'),
+      }
+      : null,
+  };
+}
+
 function resolveQuestionAnalysisHints({
   analysisHints = null,
   question = {},
@@ -61,7 +144,10 @@ function resolveQuestionAnalysisHints({
   });
 }
 
-function buildQuestionEvidenceBundleAuditMetadata(questionEvidenceBundle) {
+function buildQuestionEvidenceBundleAuditMetadata(
+  questionEvidenceBundle,
+  questionEvidenceBundleClassificationInput = null,
+) {
   if (!questionEvidenceBundle) {
     return {};
   }
@@ -86,6 +172,11 @@ function buildQuestionEvidenceBundleAuditMetadata(questionEvidenceBundle) {
       lazy_attach_reasons: normalizeArray(questionEvidenceBundle.lazy_attach_reasons),
       original_image_asset: normalizeObject(questionEvidenceBundle.original_image_asset),
       review_posture: normalizeObject(questionEvidenceBundle.review_posture),
+      classification_input_mode:
+        questionEvidenceBundleClassificationInput?.mode ?? 'raw_question_prompt_fallback',
+      classification_input_sections: normalizeStringArray(
+        questionEvidenceBundleClassificationInput?.classification_input_sections,
+      ),
       evidence_presence: {
         ocr_text: Boolean(normalizeString(evidence.ocr_text)),
         formula_latex_count: normalizeArray(evidence.formula_latex_list).length,
@@ -100,7 +191,11 @@ function buildQuestionEvidenceBundleAuditMetadata(questionEvidenceBundle) {
   };
 }
 
-function applyQuestionEvidenceBundle(rawClassification, questionEvidenceBundle) {
+function applyQuestionEvidenceBundle(
+  rawClassification,
+  questionEvidenceBundle,
+  questionEvidenceBundleClassificationInput = null,
+) {
   if (!questionEvidenceBundle) {
     return rawClassification;
   }
@@ -109,7 +204,10 @@ function applyQuestionEvidenceBundle(rawClassification, questionEvidenceBundle) 
     ...rawClassification,
     analysis_audit_metadata: {
       ...(rawClassification.analysis_audit_metadata ?? {}),
-      ...buildQuestionEvidenceBundleAuditMetadata(questionEvidenceBundle),
+      ...buildQuestionEvidenceBundleAuditMetadata(
+        questionEvidenceBundle,
+        questionEvidenceBundleClassificationInput,
+      ),
     },
   };
 }
@@ -138,14 +236,9 @@ function buildSnapshotRow(questionId, classification) {
   };
 }
 
-function buildEnvelopeFromQuestion(question, questionEvidenceBundle = null) {
-  const evidencePrompt = normalizeString(questionEvidenceBundle?.evidence?.ocr_text);
-  const promptRepresentation = evidencePrompt
-    ? {
-      type: 'text',
-      value: evidencePrompt,
-    }
-    : question?.prompt_representation;
+function buildEnvelopeFromQuestion(question, questionEvidenceBundleClassificationInput = null) {
+  const promptRepresentation = questionEvidenceBundleClassificationInput?.prompt_representation
+    ?? question?.prompt_representation;
 
   return normalizeQuestionEnvelope({
     source_kind: question?.source_kind ?? 'imported_question',
@@ -208,7 +301,9 @@ export async function backfillQuestionAnalysisRecord(client, {
       ?? question?.questionEvidenceBundle
       ?? question?.question_evidence_bundle,
   );
-  const envelope = buildEnvelopeFromQuestion(question, normalizedQuestionEvidenceBundle);
+  const questionEvidenceBundleClassificationInput =
+    buildQuestionEvidenceBundleClassificationInput(normalizedQuestionEvidenceBundle);
+  const envelope = buildEnvelopeFromQuestion(question, questionEvidenceBundleClassificationInput);
   const resolvedAnalysisHints = resolveQuestionAnalysisHints({
     analysisHints,
     question,
@@ -217,7 +312,7 @@ export async function backfillQuestionAnalysisRecord(client, {
   const rawClassification = applyQuestionEvidenceBundle(analyzeQuestionEnvelope({
     envelope,
     analysisHints: resolvedAnalysisHints,
-  }), normalizedQuestionEvidenceBundle);
+  }), normalizedQuestionEvidenceBundle, questionEvidenceBundleClassificationInput);
   const {
     classification,
     scoringScopePosture,

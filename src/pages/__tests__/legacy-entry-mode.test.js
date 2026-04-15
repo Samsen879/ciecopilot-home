@@ -17,7 +17,7 @@ describe('legacy runtime entry modes', () => {
   test('legacy surfaces only recover their pre-runtime modes when rollback is explicit', () => {
     expect(getAskAiEntryMode({ learningRuntimeRollback: true })).toBe('legacy_chat');
     expect(getStudyHubSurfaceMode({ learningRuntimeRollback: true })).toBe('legacy_hub');
-    expect(getLearningPathSurfaceMode({ learningRuntimeRollback: true })).toBe('legacy_path');
+    expect(getLearningPathSurfaceMode({ learningRuntimeRollback: true })).toBe('compatibility_shell');
   });
 
   test('rollback env flag restores legacy entry surfaces', () => {
@@ -27,7 +27,7 @@ describe('legacy runtime entry modes', () => {
 
     expect(getAskAiEntryMode({}, rollbackEnv)).toBe('legacy_chat');
     expect(getStudyHubSurfaceMode({}, rollbackEnv)).toBe('legacy_hub');
-    expect(getLearningPathSurfaceMode({}, rollbackEnv)).toBe('legacy_path');
+    expect(getLearningPathSurfaceMode({}, rollbackEnv)).toBe('compatibility_shell');
   });
 
   test('retired frontend pilot flag no longer controls the canonical runtime entry', () => {

@@ -34,11 +34,14 @@ function isJsonContentType(req) {
 function readBody(req, limitBytes = DEFAULT_BODY_LIMIT_BYTES) {
   return new Promise((resolve, reject) => {
     let total = 0;
+    let settled = false;
     const chunks = [];
 
     req.on('data', (chunk) => {
+      if (settled) return;
       total += chunk.length;
       if (total > limitBytes) {
+        settled = true;
         reject(Object.assign(new Error('Payload too large'), { status: 413, code: 'payload_too_large' }));
         req.destroy();
         return;
@@ -46,9 +49,13 @@ function readBody(req, limitBytes = DEFAULT_BODY_LIMIT_BYTES) {
       chunks.push(chunk);
     });
     req.on('end', () => {
+      if (settled) return;
+      settled = true;
       resolve(Buffer.concat(chunks).toString('utf8'));
     });
     req.on('error', (error) => {
+      if (settled) return;
+      settled = true;
       reject(error);
     });
   });
@@ -84,4 +91,3 @@ export async function ensureParsedJsonBody(req, { limitBytes = DEFAULT_BODY_LIMI
     throw Object.assign(new Error('Invalid JSON payload'), { status: 400, code: 'bad_json_payload' });
   }
 }
-

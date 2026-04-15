@@ -16,6 +16,15 @@ export const useChat = (initialMessages = [], requestContext = {}) => {
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
+  const messagesRef = useRef(messages);
+
+  const setMessagesAndRef = useCallback((updater) => {
+    setMessages(prev => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      messagesRef.current = next;
+      return next;
+    });
+  }, []);
 
   // Auto scroll to bottom when new message is added
   const scrollToBottom = useCallback(() => {
@@ -59,9 +68,9 @@ export const useChat = (initialMessages = [], requestContext = {}) => {
   // Send a message
   const sendMessage = useCallback(async (content, options = {}) => {
     if (!content.trim()) return;
-    const baseMessages = Array.isArray(options.history) ? options.history : messages;
+    const baseMessages = Array.isArray(options.history) ? options.history : messagesRef.current;
     const nextMessages = appendUserMessage(baseMessages, content, new Date().toLocaleTimeString());
-    setMessages(nextMessages);
+    setMessagesAndRef(nextMessages);
     setIsTyping(true);
     setError(null);
 
@@ -74,7 +83,7 @@ export const useChat = (initialMessages = [], requestContext = {}) => {
         timestamp: new Date().toLocaleTimeString()
       };
       
-      setMessages(prev => [...prev, aiResponse]);
+      setMessagesAndRef(prev => [...prev, aiResponse]);
     } catch (error) {
       console.error('Error getting AI response:', error);
       const errorResponse = {
@@ -84,33 +93,35 @@ export const useChat = (initialMessages = [], requestContext = {}) => {
         timestamp: new Date().toLocaleTimeString(),
         isError: true
       };
-      setMessages(prev => [...prev, errorResponse]);
+      setMessagesAndRef(prev => [...prev, errorResponse]);
       setError(error.message);
     } finally {
       setIsTyping(false);
     }
-  }, [getAIResponse, messages]);
+  }, [getAIResponse, setMessagesAndRef]);
 
   // Clear chat history
   const clearMessages = useCallback(() => {
-    setMessages([{
+    const initial = [{
       id: 1,
       type: 'ai',
       content: "Hello! I'm your AI learning assistant. How can I help you with your CIE studies today?",
       timestamp: new Date().toLocaleTimeString()
-    }]);
+    }];
+    setMessagesAndRef(initial);
     setError(null);
-  }, []);
+  }, [setMessagesAndRef]);
 
   // Retry last message
   const retryLastMessage = useCallback(() => {
-    if (messages.length < 2) return;
+    const currentMessages = messagesRef.current;
+    if (currentMessages.length < 2) return;
 
-    const { retryContent, history } = prepareRetry(messages);
+    const { retryContent, history } = prepareRetry(currentMessages);
     if (retryContent) {
       sendMessage(retryContent, { history });
     }
-  }, [messages, sendMessage]);
+  }, [sendMessage]);
 
   // Add a message (useful for pre-filling questions)
   const addMessage = useCallback((message) => {
@@ -121,8 +132,8 @@ export const useChat = (initialMessages = [], requestContext = {}) => {
       timestamp: new Date().toLocaleTimeString(),
       ...message
     };
-    setMessages(prev => [...prev, newMessage]);
-  }, []);
+    setMessagesAndRef(prev => [...prev, newMessage]);
+  }, [setMessagesAndRef]);
 
   return {
     // State

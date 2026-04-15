@@ -1,4 +1,6 @@
 import { resolveChatScope } from './chatScope.js';
+import { requireSessionAccessToken } from '../services/utils/sessionAccessToken.js';
+import { supabase } from '../utils/supabase.js';
 
 const META_ENV = import.meta.env || {};
 const RAG_API_BASE = META_ENV.VITE_RAG_API_BASE || '/api/rag';
@@ -128,10 +130,12 @@ export function createRagApi() {
         min_similarity: typeof params.min_similarity !== 'undefined' ? params.min_similarity : undefined,
       };
 
+      const accessToken = await requireSessionAccessToken(supabase);
+
       return withRetry(async () => {
         const resp = await fetchWithTimeout(`${RAG_API_BASE}/search`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
           body: JSON.stringify(body),
         }, DEFAULT_TIMEOUT, signal);
 
@@ -155,10 +159,12 @@ export function createRagApi() {
         throw new Error(MISSING_CHAT_SCOPE_ERROR);
       }
 
+      const accessToken = await requireSessionAccessToken(supabase);
+
       return withRetry(async () => {
         const resp = await fetchWithTimeout(`${RAG_API_BASE}/ask`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
           body: JSON.stringify(body),
         }, DEFAULT_TIMEOUT, signal);
 

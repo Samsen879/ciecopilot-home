@@ -7,7 +7,7 @@ import {
 describe('chat scope helpers', () => {
   test('derives subject from numeric study hub routes', () => {
     expect(deriveRouteSubjectCode('/study-hub/9702')).toBe('9702');
-    expect(deriveRouteSubjectCode('/community/9231')).toBe('9231');
+    expect(deriveRouteSubjectCode('/recommendations/9231')).toBe('9231');
   });
 
   test('derives subject from named subject routes', () => {

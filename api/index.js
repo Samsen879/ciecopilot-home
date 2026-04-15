@@ -10,7 +10,7 @@ import { applyRateLimitGuard } from './lib/security/rate-limit-middleware.js';
 import { safeLog } from './lib/security/redaction.js';
 
 function parseAllowedOrigins() {
-  const raw = process.env.ALLOWED_ORIGINS || 'http://localhost:3000';
+  const raw = process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:3000';
   return raw
     .split(',')
     .map((v) => v.trim())
@@ -38,6 +38,7 @@ function applyCors(req, res) {
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Request-Id, X-Run-Id');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
     res.status(204).end();

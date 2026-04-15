@@ -242,7 +242,7 @@ describe('auth backend productionization', () => {
       headers: {
         authorization: `Bearer ${token}`,
       },
-      url: '/api/community/questions',
+      url: '/api/rag/search',
     });
 
     const result = await resolveTrustedAuthContext(req);

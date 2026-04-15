@@ -1,18 +1,4 @@
 const POLICY_BY_MODULE = Object.freeze({
-  'users-profile': {
-    authMode: 'authenticated',
-    coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
-  },
-  'users-permissions': {
-    authMode: 'role',
-    coverageActors: ['anonymous', 'invalid_token', 'insufficient_role', 'disallowed_origin'],
-    requiredRoles: ['admin'],
-  },
-  users: {
-    authMode: 'role',
-    coverageActors: ['anonymous', 'invalid_token', 'insufficient_role', 'disallowed_origin'],
-    requiredRoles: ['admin'],
-  },
   'recommendations-preferences': {
     authMode: 'authenticated',
     coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
@@ -22,18 +8,6 @@ const POLICY_BY_MODULE = Object.freeze({
     coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
   },
   recommendations: {
-    authMode: 'authenticated',
-    coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
-  },
-  community: {
-    authMode: 'authenticated',
-    coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
-  },
-  'ai-analysis': {
-    authMode: 'authenticated',
-    coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
-  },
-  'ai-learning-path': {
     authMode: 'authenticated',
     coverageActors: ['anonymous', 'invalid_token', 'disallowed_origin'],
   },

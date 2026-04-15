@@ -9,11 +9,9 @@ export const LEGACY_EXCLUDED_ENDPOINTS = [
 ];
 
 const RAG_AI_RATE_LIMIT_POLICY_ID = 'rag_ai_default_v1';
-const COMMUNITY_WRITE_RATE_LIMIT_POLICY_ID = 'community_write_v1';
 const ERROR_BOOK_WRITE_RATE_LIMIT_POLICY_ID = 'error_book_write_v1';
 const AUTH_PUBLIC_RATE_LIMIT_POLICY_ID = 'auth_public_v1';
 const RAG_AI_RATE_LIMIT = getRateLimitPolicy(RAG_AI_RATE_LIMIT_POLICY_ID);
-const COMMUNITY_WRITE_RATE_LIMIT = getRateLimitPolicy(COMMUNITY_WRITE_RATE_LIMIT_POLICY_ID);
 const ERROR_BOOK_WRITE_RATE_LIMIT = getRateLimitPolicy(ERROR_BOOK_WRITE_RATE_LIMIT_POLICY_ID);
 const AUTH_PUBLIC_RATE_LIMIT = getRateLimitPolicy(AUTH_PUBLIC_RATE_LIMIT_POLICY_ID);
 
@@ -109,30 +107,6 @@ const ROUTES = [
     methods: ['PATCH', 'OPTIONS'],
   },
   {
-    module: 'users-profile',
-    pathPrefix: '/api/users/profile',
-    importPath: '../users/profile.js',
-    auth: 'jwt_required',
-    authMode: 'authenticated',
-    methods: ['GET', 'PUT', 'OPTIONS'],
-  },
-  {
-    module: 'users-permissions',
-    pathPrefix: '/api/users/permissions',
-    importPath: '../users/permissions.js',
-    auth: 'jwt_required',
-    authMode: 'role',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  },
-  {
-    module: 'users',
-    pathPrefix: '/api/users',
-    importPath: '../users/index.js',
-    auth: 'jwt_required',
-    authMode: 'role',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  },
-  {
     module: 'recommendations-preferences',
     pathPrefix: '/api/recommendations/preferences',
     importPath: '../recommendations/preferences.js',
@@ -158,39 +132,6 @@ const ROUTES = [
     authMode: 'authenticated',
     methods: ['*'],
     moduleOwnsMethodRouting: true,
-  },
-  {
-    module: 'community',
-    pathPrefix: '/api/community',
-    importPath: '../community/index.js',
-    auth: 'jwt_required',
-    authMode: 'authenticated',
-    methods: ['*'],
-    moduleOwnsMethodRouting: true,
-    runtime: 'express_router',
-    rateLimitPolicyId: COMMUNITY_WRITE_RATE_LIMIT_POLICY_ID,
-    rateLimitMethods: ['POST', 'PUT', 'PATCH', 'DELETE'],
-    rateLimit: COMMUNITY_WRITE_RATE_LIMIT,
-  },
-  {
-    module: 'ai-analysis',
-    pathPrefix: '/api/ai/analysis/knowledge-gaps',
-    importPath: '../ai/analysis/knowledge-gaps.js',
-    auth: 'jwt_required',
-    authMode: 'authenticated',
-    methods: ['POST', 'OPTIONS'],
-    rateLimitPolicyId: RAG_AI_RATE_LIMIT_POLICY_ID,
-    rateLimit: RAG_AI_RATE_LIMIT,
-  },
-  {
-    module: 'ai-learning-path',
-    pathPrefix: '/api/ai/learning/path-generator',
-    importPath: '../ai/learning/path-generator.js',
-    auth: 'jwt_required',
-    authMode: 'authenticated',
-    methods: ['POST', 'OPTIONS'],
-    rateLimitPolicyId: RAG_AI_RATE_LIMIT_POLICY_ID,
-    rateLimit: RAG_AI_RATE_LIMIT,
   },
   {
     module: 'rag-search',

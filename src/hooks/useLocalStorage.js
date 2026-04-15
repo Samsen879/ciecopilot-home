@@ -18,17 +18,20 @@ export const useLocalStorage = (key, initialValue) => {
 
   // Return a wrapped version of useState's setter function that persists the new value to localStorage
   const setValue = (value) => {
-    try {
-      // Allow value to be a function so we have the same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      // 添加安全检查
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    setStoredValue(prev => {
+      try {
+        // Allow value to be a function so we have the same API as useState
+        const valueToStore = value instanceof Function ? value(prev) : value;
+        // 添加安全检查
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        }
+        return valueToStore;
+      } catch (error) {
+        console.error(`Error setting localStorage key "${key}":`, error);
+        return prev;
       }
-    } catch (error) {
-      console.error(`Error setting localStorage key "${key}":`, error);
-    }
+    });
   };
 
   return [storedValue, setValue];
@@ -56,24 +59,30 @@ export const useTopicProgress = (topicId) => {
   };
 
   const markCompleted = (score = 100) => {
-    updateProgress({
+    setProgress(prev => ({
+      ...prev,
       completed: true,
       score,
-      mastery: Math.min(100, (progress.mastery + score) / 2)
-    });
+      mastery: Math.min(100, (prev.mastery + score) / 2),
+      lastStudied: new Date().toISOString(),
+      attempts: prev.attempts + 1
+    }));
   };
 
   const addError = (question, userAnswer, correctAnswer, errorType) => {
-    updateProgress({
-      errors: [...progress.errors, {
+    setProgress(prev => ({
+      ...prev,
+      errors: [...prev.errors, {
         id: Date.now(),
         question,
         userAnswer,
         correctAnswer,
         errorType,
         timestamp: new Date().toISOString()
-      }]
-    });
+      }],
+      lastStudied: new Date().toISOString(),
+      attempts: prev.attempts
+    }));
   };
 
   return {
@@ -105,7 +114,7 @@ export const useSearchHistory = () => {
   };
 
   const getPopularSearches = (limit = 5) => {
-    return searchHistory
+    return [...searchHistory]
       .sort((a, b) => b.count - a.count)
       .slice(0, limit);
   };

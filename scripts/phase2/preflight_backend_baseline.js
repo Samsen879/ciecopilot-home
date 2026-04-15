@@ -10,10 +10,8 @@ const OUT_FILE = path.join(OUT_DIR, 'preflight_baseline.json');
 
 const MODULE_ENTRYPOINTS = {
   auth: ['api/auth/index.js'],
-  users: ['api/users/index.js', 'api/users/profile.js', 'api/users/permissions.js'],
+  'user-profile': ['api/user-profile.js'],
   recommendations: ['api/recommendations/index.js'],
-  community: ['api/community/index.js'],
-  ai: ['api/ai/tutor/chat.js', 'api/ai/analysis/knowledge-gaps.js', 'api/ai/learning/path-generator.js'],
   rag: ['api/rag/search.js', 'api/rag/chat.js'],
   marking: ['api/marking/evaluate-v1.js', 'api/marking/evaluate.js'],
   'error-book': ['api/error-book/index.js', 'api/error-book/[id].js'],

@@ -321,14 +321,6 @@ export function buildPaperQuestionPromptRepresentation({
   existingQuestion = null,
   descriptorRow = null,
 } = {}) {
-  const existingPrompt = cloneJson(existingQuestion?.prompt_representation);
-  if (existingPrompt?.type && existingPrompt?.value) {
-    return {
-      promptRepresentation: existingPrompt,
-      promptSource: 'existing_prompt_representation',
-    };
-  }
-
   const descriptorSummary = normalizeString(descriptorRow?.summary);
   if (descriptorSummary) {
     return {
@@ -337,6 +329,14 @@ export function buildPaperQuestionPromptRepresentation({
         value: descriptorSummary,
       },
       promptSource: 'question_descriptions_v0',
+    };
+  }
+
+  const existingPrompt = cloneJson(existingQuestion?.prompt_representation);
+  if (existingPrompt?.type && existingPrompt?.value) {
+    return {
+      promptRepresentation: existingPrompt,
+      promptSource: 'existing_prompt_representation',
     };
   }
 

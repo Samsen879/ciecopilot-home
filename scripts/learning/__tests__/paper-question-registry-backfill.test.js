@@ -507,6 +507,100 @@ describe('paper-question registry backfill', () => {
     });
   });
 
+  test('refreshes existing paper_question prompt_representation from the selected descriptor summary on rerun', async () => {
+    const { client, state } = createBackfillClient({
+      curriculumNodes: [
+        {
+          node_id: 'topic-int',
+          syllabus_code: '9709',
+          topic_path: '9709.p3.integration',
+          version_tag: '2025-2027_v1',
+        },
+      ],
+      questionBankRows: [
+        {
+          question_id: 'paper-existing-1',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          q_number: 7,
+          primary_topic_id: 'topic-int',
+          release_scope_status: 'non_released_fallback',
+          prompt_representation: {
+            type: 'text',
+            value: 'Stale paper-backed prompt text.',
+          },
+          provenance_summary: {
+            prompt_representation_source: 'existing_prompt_representation',
+          },
+        },
+      ],
+      descriptorRows: [
+        {
+          id: 'descriptor-older',
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          q_number: 7,
+          status: 'ok',
+          summary: 'Older extraction summary.',
+          updated_at: '2026-04-15T00:00:00.000Z',
+          extractor_version: 'v0',
+          provider: 'provider-a',
+          model: 'model-a',
+          prompt_version: 'prompt-a',
+        },
+        {
+          id: 'descriptor-newer',
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          q_number: 7,
+          status: 'ok',
+          summary: 'Newest deterministic extraction summary.',
+          updated_at: '2026-04-16T00:00:00.000Z',
+          extractor_version: 'v1',
+          provider: 'provider-b',
+          model: 'model-b',
+          prompt_version: 'prompt-b',
+        },
+      ],
+    });
+
+    const summary = await runPaperQuestionRegistryBackfill(client, {
+      manifest: buildManifest([
+        {
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          syllabus_code: '9709',
+          year: 2016,
+          session: 's',
+          paper: 3,
+          variant: 3,
+          q_number: 7,
+          primary_topic_path: '9709.p3.integration',
+          source_reason: 'gate_pin',
+          descriptor_required: true,
+        },
+      ]),
+      curriculumSeed: buildCurriculumSeed([]),
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      inserted: 0,
+      updated: 1,
+      conflicts: 0,
+    });
+
+    expect(state.questionBankRows.get('9709/s16_qp_33/questions/q07.png::7')).toMatchObject({
+      question_id: 'paper-existing-1',
+      prompt_representation: {
+        type: 'text',
+        value: 'Newest deterministic extraction summary.',
+      },
+      provenance_summary: expect.objectContaining({
+        prompt_representation_source: 'question_descriptions_v0',
+        descriptor_summary_status: 'hydrated_from_question_descriptions_v0',
+      }),
+    });
+  });
+
   test('seeds missing pilot curriculum nodes and resolves primary_topic_id deterministically from primary_topic_path', async () => {
     const { client, state } = createBackfillClient();
 

@@ -686,8 +686,93 @@ function getDatabaseUrl() {
     || null;
 }
 
-async function runPsql(sql) {
-  const databaseUrl = getDatabaseUrl();
+function normalizePsqlMode(value) {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (!normalized) {
+    return 'direct';
+  }
+  if (!['direct', 'docker'].includes(normalized)) {
+    throw new Error(`Unsupported --psql-mode: ${value}`);
+  }
+  return normalized;
+}
+
+function normalizeOptionalString(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  return normalized || null;
+}
+
+export function selectSupabaseDbContainerName(containerNames = []) {
+  const match = containerNames.find((name) => /^supabase_db/u.test(name));
+  if (!match) {
+    throw new Error('Supabase DB container not found. Run `supabase start` first or pass --psql-container.');
+  }
+  return match;
+}
+
+export function resolveQuestionSearchGatePsqlConfig(args = {}, env = process.env) {
+  const mode = normalizePsqlMode(
+    args.psqlMode
+    ?? env.QUESTION_SEARCH_GATE_PSQL_MODE
+    ?? env.QUESTION_SEARCH_GATE_DB_MODE
+    ?? 'direct',
+  );
+
+  if (mode === 'docker') {
+    return {
+      mode,
+      databaseUrl: null,
+      containerName: normalizeOptionalString(
+        args.psqlContainer
+        ?? env.QUESTION_SEARCH_GATE_PSQL_CONTAINER
+        ?? env.SUPABASE_DB_CONTAINER,
+      ),
+    };
+  }
+
+  return {
+    mode,
+    databaseUrl: getDatabaseUrl(),
+    containerName: null,
+  };
+}
+
+async function detectSupabaseDbContainerName() {
+  const { stdout } = await execFileAsync(
+    'docker',
+    ['ps', '--format', '{{.Names}}'],
+    {
+      cwd: PROJECT_ROOT,
+      maxBuffer: 1024 * 1024,
+      env: process.env,
+    },
+  );
+
+  return selectSupabaseDbContainerName(
+    stdout
+      .split('\n')
+      .map((entry) => entry.trim())
+      .filter(Boolean),
+  );
+}
+
+async function runPsql(sql, psqlConfig = resolveQuestionSearchGatePsqlConfig()) {
+  if (psqlConfig.mode === 'docker') {
+    const containerName = psqlConfig.containerName ?? await detectSupabaseDbContainerName();
+    const { stdout } = await execFileAsync(
+      'docker',
+      ['exec', '-i', containerName, 'psql', '-U', 'postgres', '-d', 'postgres', '-X', '-A', '-t', '-q', '-c', sql],
+      {
+        cwd: PROJECT_ROOT,
+        maxBuffer: 1024 * 1024 * 4,
+        env: process.env,
+      },
+    );
+
+    return stdout.trim();
+  }
+
+  const databaseUrl = psqlConfig.databaseUrl ?? getDatabaseUrl();
   if (!databaseUrl) {
     throw new Error('DATABASE_URL (or SUPABASE_DB_URL / SUPABASE_DATABASE_URL) is required.');
   }
@@ -705,8 +790,8 @@ async function runPsql(sql) {
   return stdout.trim();
 }
 
-async function runPsqlJson(sql) {
-  const raw = await runPsql(sql);
+async function runPsqlJson(sql, psqlConfig = null) {
+  const raw = await runPsql(sql, psqlConfig ?? resolveQuestionSearchGatePsqlConfig());
   return JSON.parse(raw);
 }
 
@@ -714,16 +799,16 @@ async function resolveTopicPathFromDatabase({
   subjectCode,
   topicPath,
   curriculumVersionTag = DEFAULT_CURRICULUM_VERSION_TAG,
-}) {
+}, psqlConfig = null) {
   const sql = buildCurriculumNodeResolutionSql({
     subjectCode,
     topicPath,
     curriculumVersionTag,
   });
-  return JSON.parse(await runPsql(sql));
+  return JSON.parse(await runPsql(sql, psqlConfig ?? resolveQuestionSearchGatePsqlConfig()));
 }
 
-async function searchProjectionFromDatabase(searchInput) {
+async function searchProjectionFromDatabase(searchInput, psqlConfig = null) {
   const conditions = [];
 
   STRUCTURED_FILTER_FIELDS.forEach((field) => {
@@ -758,13 +843,14 @@ async function searchProjectionFromDatabase(searchInput) {
     ')::text;',
   ].join('\n');
 
-  return runPsqlJson(sql);
+  return runPsqlJson(sql, psqlConfig ?? resolveQuestionSearchGatePsqlConfig());
 }
 
-async function inspectDescriptorSourceFromDatabase(subjectCode) {
-  const prodExists = await relationExists('public.question_descriptions_prod_v1');
-  const v1Exists = await relationExists('public.question_descriptions_v1');
-  const v0Exists = await relationExists('public.question_descriptions_v0');
+async function inspectDescriptorSourceFromDatabase(subjectCode, psqlConfig = null) {
+  const resolvedConfig = psqlConfig ?? resolveQuestionSearchGatePsqlConfig();
+  const prodExists = await relationExists('public.question_descriptions_prod_v1', resolvedConfig);
+  const v1Exists = await relationExists('public.question_descriptions_v1', resolvedConfig);
+  const v0Exists = await relationExists('public.question_descriptions_v0', resolvedConfig);
 
   return {
     selected_branch: prodExists
@@ -773,25 +859,26 @@ async function inspectDescriptorSourceFromDatabase(subjectCode) {
     surfaces: {
       question_descriptions_prod_v1: {
         exists: prodExists,
-        count: prodExists ? await countRows('public.question_descriptions_prod_v1') : null,
+        count: prodExists ? await countRows('public.question_descriptions_prod_v1', null, resolvedConfig) : null,
         count_9709: prodExists
-          ? await countRows('public.question_descriptions_prod_v1', `syllabus_code = ${sqlLiteral(subjectCode)}`)
+          ? await countRows('public.question_descriptions_prod_v1', `syllabus_code = ${sqlLiteral(subjectCode)}`, resolvedConfig)
           : null,
       },
       question_descriptions_v1: {
         exists: v1Exists,
-        count: v1Exists ? await countRows('public.question_descriptions_v1') : null,
+        count: v1Exists ? await countRows('public.question_descriptions_v1', null, resolvedConfig) : null,
         count_9709: v1Exists
-          ? await countRows('public.question_descriptions_v1', `syllabus_code = ${sqlLiteral(subjectCode)}`)
+          ? await countRows('public.question_descriptions_v1', `syllabus_code = ${sqlLiteral(subjectCode)}`, resolvedConfig)
           : null,
       },
       question_descriptions_v0: {
         exists: v0Exists,
-        count: v0Exists ? await countRows('public.question_descriptions_v0') : null,
+        count: v0Exists ? await countRows('public.question_descriptions_v0', null, resolvedConfig) : null,
         count_9709: v0Exists
           ? await countRows(
             'public.question_descriptions_v0',
             `syllabus_code = ${sqlLiteral(subjectCode)} AND status = 'ok'`,
+            resolvedConfig,
           )
           : null,
       },
@@ -799,60 +886,72 @@ async function inspectDescriptorSourceFromDatabase(subjectCode) {
         total: await countRows(
           'public.learning_question_search_projection',
           `subject_code = ${sqlLiteral(subjectCode)}`,
+          resolvedConfig,
         ),
         paper_question: await countRows(
           'public.learning_question_search_projection',
           `subject_code = ${sqlLiteral(subjectCode)} AND source_kind = 'paper_question'`,
+          resolvedConfig,
         ),
         imported_question: await countRows(
           'public.learning_question_search_projection',
           `subject_code = ${sqlLiteral(subjectCode)} AND source_kind = 'imported_question'`,
+          resolvedConfig,
         ),
       },
       question_bank_9709: {
         total: await countRows(
           'public.question_bank',
           `subject_code = ${sqlLiteral(subjectCode)}`,
+          resolvedConfig,
         ),
         paper_question: await countRows(
           'public.question_bank',
           `subject_code = ${sqlLiteral(subjectCode)} AND source_kind = 'paper_question'`,
+          resolvedConfig,
         ),
         imported_question: await countRows(
           'public.question_bank',
           `subject_code = ${sqlLiteral(subjectCode)} AND source_kind = 'imported_question'`,
+          resolvedConfig,
         ),
       },
       curriculum_nodes_9709: {
         count: await countRows(
           'public.curriculum_nodes',
           `topic_path::text LIKE ${sqlLiteral(`${subjectCode}.%`)}`,
+          resolvedConfig,
         ),
       },
     },
   };
 }
 
-async function relationExists(relationName) {
+async function relationExists(relationName, psqlConfig = null) {
   const sql = `SELECT (to_regclass(${sqlLiteral(relationName)}) IS NOT NULL)::text;`;
-  return (await runPsql(sql)) === 'true';
+  return (await runPsql(sql, psqlConfig ?? resolveQuestionSearchGatePsqlConfig())) === 'true';
 }
 
-async function countRows(relationName, whereClause = null) {
+async function countRows(relationName, whereClause = null, psqlConfig = null) {
   const sql = [
     'SELECT COUNT(*)::text',
     `FROM ${relationName}`,
     whereClause ? `WHERE ${whereClause}` : '',
     ';',
   ].join('\n');
-  return Number.parseInt(await runPsql(sql), 10);
+  return Number.parseInt(
+    await runPsql(sql, psqlConfig ?? resolveQuestionSearchGatePsqlConfig()),
+    10,
+  );
 }
 
-function parseArgs(argv) {
+export function parseQuestionSearchGateArgs(argv) {
   const args = {
     fixture: null,
     report: null,
     jsonOut: null,
+    psqlMode: 'direct',
+    psqlContainer: null,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -872,6 +971,16 @@ function parseArgs(argv) {
       index += 1;
       continue;
     }
+    if (token === '--psql-mode') {
+      args.psqlMode = normalizePsqlMode(argv[index + 1] || null);
+      index += 1;
+      continue;
+    }
+    if (token === '--psql-container') {
+      args.psqlContainer = normalizeOptionalString(argv[index + 1] || null);
+      index += 1;
+      continue;
+    }
     throw new Error(`Unknown argument: ${token}`);
   }
 
@@ -885,7 +994,7 @@ function parseArgs(argv) {
   return args;
 }
 
-function buildGateCommand(args) {
+export function buildGateCommand(args) {
   const tokens = [
     'node scripts/evaluation/run_question_search_gate.js',
     '--fixture',
@@ -896,23 +1005,30 @@ function buildGateCommand(args) {
   if (args.jsonOut) {
     tokens.push('--json-out', args.jsonOut);
   }
+  if (args.psqlMode && args.psqlMode !== 'direct') {
+    tokens.push('--psql-mode', args.psqlMode);
+  }
+  if (args.psqlContainer) {
+    tokens.push('--psql-container', args.psqlContainer);
+  }
   return tokens.join(' ');
 }
 
 async function main(argv = process.argv.slice(2)) {
-  const args = parseArgs(argv);
+  const args = parseQuestionSearchGateArgs(argv);
   const fixturePath = resolvePath(args.fixture);
   const reportPath = resolvePath(args.report);
   const jsonOutPath = args.jsonOut ? resolvePath(args.jsonOut) : null;
   const fixture = loadQuestionSearchGoldFixture(fixturePath);
+  const psqlConfig = resolveQuestionSearchGatePsqlConfig(args);
 
   const result = await runQuestionSearchGate({
     fixture,
     fixturePath: path.relative(PROJECT_ROOT, fixturePath),
     gateCommand: buildGateCommand(args),
-    searchQuestionsFn: searchProjectionFromDatabase,
-    resolveTopicPathFn: resolveTopicPathFromDatabase,
-    inspectDescriptorSourceFn: () => inspectDescriptorSourceFromDatabase(fixture.subject_code),
+    searchQuestionsFn: (searchInput) => searchProjectionFromDatabase(searchInput, psqlConfig),
+    resolveTopicPathFn: (topicInput) => resolveTopicPathFromDatabase(topicInput, psqlConfig),
+    inspectDescriptorSourceFn: () => inspectDescriptorSourceFromDatabase(fixture.subject_code, psqlConfig),
   });
 
   fs.mkdirSync(path.dirname(reportPath), { recursive: true });

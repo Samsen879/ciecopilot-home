@@ -3,10 +3,14 @@ import { jest } from '@jest/globals';
 
 import {
   buildCurriculumNodeResolutionSql,
+  buildGateCommand,
   DEFAULT_CURRICULUM_VERSION_TAG,
   DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
   loadQuestionSearchGoldFixture,
+  parseQuestionSearchGateArgs,
+  resolveQuestionSearchGatePsqlConfig,
   runQuestionSearchGate,
+  selectSupabaseDbContainerName,
 } from '../run_question_search_gate.js';
 
 const FIXTURE_PATH = path.join(
@@ -400,5 +404,52 @@ describe('question-search-gate', () => {
     expect(sql).toContain("version_tag = '2025-2027_v1'");
     expect(sql).toContain('ORDER BY node_id ASC');
     expect(sql).toContain('LIMIT 1');
+  });
+
+  test('parse/build gate command preserves docker psql execution flags', () => {
+    const args = parseQuestionSearchGateArgs([
+      '--fixture',
+      'data/eval/question_search_gold_9709_v1.json',
+      '--report',
+      'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun-report.md',
+      '--json-out',
+      'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun.json',
+      '--psql-mode',
+      'docker',
+      '--psql-container',
+      'supabase_db_ciecopilot-home',
+    ]);
+
+    expect(args).toMatchObject({
+      fixture: 'data/eval/question_search_gold_9709_v1.json',
+      report: 'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun-report.md',
+      jsonOut: 'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun.json',
+      psqlMode: 'docker',
+      psqlContainer: 'supabase_db_ciecopilot-home',
+    });
+    expect(buildGateCommand(args)).toContain('--psql-mode docker');
+    expect(buildGateCommand(args)).toContain('--psql-container supabase_db_ciecopilot-home');
+    expect(
+      resolveQuestionSearchGatePsqlConfig(args, {
+        DATABASE_URL: 'postgresql://postgres:postgres@127.0.0.1:54322/postgres',
+      }),
+    ).toEqual({
+      mode: 'docker',
+      databaseUrl: null,
+      containerName: 'supabase_db_ciecopilot-home',
+    });
+  });
+
+  test('selectSupabaseDbContainerName picks the first running supabase db container and fails loudly otherwise', () => {
+    expect(selectSupabaseDbContainerName([
+      'redis_cache_ciecopilot-home',
+      'supabase_db_ciecopilot-home',
+      'supabase_imgproxy_ciecopilot-home',
+    ])).toBe('supabase_db_ciecopilot-home');
+
+    expect(() => selectSupabaseDbContainerName([
+      'redis_cache_ciecopilot-home',
+      'studio_ciecopilot-home',
+    ])).toThrow('Supabase DB container not found');
   });
 });

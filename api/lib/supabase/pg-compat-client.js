@@ -219,6 +219,11 @@ class PgCompatQueryBuilder {
     return this;
   }
 
+  is(column, value) {
+    this.filters.push({ column, value });
+    return this;
+  }
+
   order(column, { ascending = true } = {}) {
     this.orders.push({ column, ascending });
     return this;

@@ -476,4 +476,69 @@ describe('attempt-event-service', () => {
       reconciliation_id: 'recon-auto-1',
     });
   });
+
+  test('retrying a prior pipeline-state failure can recover without re-inserting already-persisted bridge events', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient({
+      existingStreamHead: {
+        truth_revision: 1,
+        sequence_no: 4,
+      },
+      existingDeliveryRow: {
+        delivery_id: 'delivery-retry-1',
+        stable_idempotency_key: 'attempt_event_bridge:mr-bridge-1',
+        attempt_id: 'att-bridge-1',
+        learner_id: 'user-bridge-1',
+        subject_code: '9709',
+        mark_run_id: 'mr-bridge-1',
+        truth_revision: 1,
+        delivery_state: 'retrying',
+        retry_count: 1,
+        last_attempted_at: '2026-04-16T15:01:00.000Z',
+        last_error: {
+          code: 'attempt_event_bridge_failed',
+          message: 'attempt_pipeline_state upsert failed',
+          failed_stage: 'attempt_pipeline_state_upsert',
+        },
+        persisted_event_types: [
+          'AttemptSubmitted',
+          'QuestionClassified',
+          'MarkingCompleted',
+          'LearningUpdateProposed',
+        ],
+        persisted_event_ids: [
+          'event-1',
+          'event-2',
+          'event-3',
+          'event-4',
+        ],
+        reconciliation_id: null,
+      },
+    });
+
+    const result = await persistAttemptEventBridge(client, buildBridgeInput());
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      deduped: false,
+      pipeline_state: {
+        attempt_id: 'att-bridge-1',
+        current_truth_revision: 1,
+        last_sequence_no: 4,
+      },
+      delivery: {
+        delivery_state: 'persisted',
+        retry_count: 1,
+        last_error: null,
+      },
+    });
+    expect(records.learningEventsInsertCount).toBe(0);
+    expect(records.learningEvents).toBeNull();
+    expect(records.pipelineState).toMatchObject({
+      attempt_id: 'att-bridge-1',
+      current_truth_revision: 1,
+      last_sequence_no: 4,
+    });
+  });
 });

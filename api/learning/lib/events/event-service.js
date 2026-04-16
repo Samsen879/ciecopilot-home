@@ -291,6 +291,10 @@ function cloneDelivery(delivery) {
   return cloneJson(delivery);
 }
 
+function isTerminalReconciledDeliveryState(deliveryState) {
+  return ['reconciled', 'needs_manual_review'].includes(normalizeString(deliveryState));
+}
+
 function buildLearningEventDeliveryIdempotencyKey({
   event_id,
   handler_name,
@@ -668,9 +672,12 @@ export async function runLearningEventDelivery(store, {
       inserted: false,
       reason_code: 'duplicate_effect_key',
       delivery: updateLearningEventDelivery(store, stableIdempotencyKey, (delivery) => {
-        delivery.delivery_state = 'persisted';
         delivery.last_attempted_at = attemptedAt;
-        delivery.last_error = null;
+
+        if (!isTerminalReconciledDeliveryState(delivery.delivery_state)) {
+          delivery.delivery_state = 'persisted';
+          delivery.last_error = null;
+        }
       }),
       effect: effectStart.effect,
     };

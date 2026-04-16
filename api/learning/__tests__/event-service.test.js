@@ -396,4 +396,83 @@ describe('learning event service', () => {
       reconciliation_id: 'recon-auto-1',
     });
   });
+
+  test('duplicate replay preserves terminal reconciliation delivery states', async () => {
+    const {
+      appendLearningEvent,
+      buildSyntheticAttemptEventFlow,
+      createEmptyLearningEventStore,
+      reconcileLearningEventDelivery,
+      runLearningEventDelivery,
+    } = await import('../lib/events/event-service.js');
+
+    const store = createEmptyLearningEventStore();
+    const flow = buildSyntheticAttemptEventFlow({
+      attemptId: 'attempt-terminal-replay',
+      learnerId: 'learner-1',
+      sessionId: 'session-1',
+      subjectCode: '9709',
+      emittedBy: 'jest',
+    });
+
+    flow.forEach((event) => appendLearningEvent(store, event));
+    const targetEvent = flow.at(-1);
+    const execute = jest.fn(async () => ({
+      status: 'succeeded',
+      resultRefType: 'artifact_suggestion_version',
+      resultRefId: 'artifact-suggestion-1',
+    }));
+
+    const first = await runLearningEventDelivery(store, {
+      eventId: targetEvent.event_id,
+      handlerName: 'project:artifact-suggestions',
+      effectKey: 'artifact-slot:review_queue:terminal-replay',
+      aggregateId: targetEvent.aggregate_id,
+      truthRevision: targetEvent.truth_revision,
+      execute,
+    });
+
+    const reconciled = reconcileLearningEventDelivery(store, {
+      stableIdempotencyKey: first.delivery.stable_idempotency_key,
+      deliveryState: 'reconciled',
+      reconciliationId: 'recon-keep-1',
+    });
+    const replayAfterReconciled = await runLearningEventDelivery(store, {
+      eventId: targetEvent.event_id,
+      handlerName: 'project:artifact-suggestions',
+      effectKey: 'artifact-slot:review_queue:terminal-replay',
+      aggregateId: targetEvent.aggregate_id,
+      truthRevision: targetEvent.truth_revision,
+      execute,
+    });
+
+    expect(reconciled.delivery_state).toBe('reconciled');
+    expect(replayAfterReconciled.reason_code).toBe('duplicate_effect_key');
+    expect(replayAfterReconciled.delivery).toMatchObject({
+      delivery_state: 'reconciled',
+      reconciliation_id: 'recon-keep-1',
+    });
+
+    const manualReview = reconcileLearningEventDelivery(store, {
+      stableIdempotencyKey: first.delivery.stable_idempotency_key,
+      deliveryState: 'needs_manual_review',
+      reconciliationId: 'recon-keep-2',
+    });
+    const replayAfterManualReview = await runLearningEventDelivery(store, {
+      eventId: targetEvent.event_id,
+      handlerName: 'project:artifact-suggestions',
+      effectKey: 'artifact-slot:review_queue:terminal-replay',
+      aggregateId: targetEvent.aggregate_id,
+      truthRevision: targetEvent.truth_revision,
+      execute,
+    });
+
+    expect(manualReview.delivery_state).toBe('needs_manual_review');
+    expect(replayAfterManualReview.reason_code).toBe('duplicate_effect_key');
+    expect(replayAfterManualReview.delivery).toMatchObject({
+      delivery_state: 'needs_manual_review',
+      reconciliation_id: 'recon-keep-2',
+    });
+    expect(execute).toHaveBeenCalledTimes(1);
+  });
 });

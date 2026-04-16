@@ -343,6 +343,50 @@ function buildProjectionSeedState(attemptId, streamHead) {
   };
 }
 
+function getLastPersistedBridgeEventType(deliveryRow = {}) {
+  const persistedEventTypes = normalizeArray(deliveryRow.persisted_event_types)
+    .filter((eventType) => BRIDGE_EVENT_TYPES.includes(eventType));
+
+  return persistedEventTypes.at(-1) ?? null;
+}
+
+function canRecoverPipelineStateFromDelivery(deliveryRow = {}) {
+  return deliveryRow?.delivery_state === 'retrying'
+    && normalizeString(deliveryRow?.last_error?.failed_stage) === 'attempt_pipeline_state_upsert'
+    && Boolean(getLastPersistedBridgeEventType(deliveryRow))
+    && Number.isInteger(Number(deliveryRow?.truth_revision))
+    && Number(deliveryRow.truth_revision) >= 1;
+}
+
+function buildPipelineStateFromDeliveryRow(deliveryRow = {}) {
+  const currentStage = getLastPersistedBridgeEventType(deliveryRow);
+
+  if (!currentStage) {
+    throw new Error('missing_persisted_delivery_stage');
+  }
+
+  return {
+    attempt_id: deliveryRow.attempt_id,
+    learner_id: deliveryRow.learner_id,
+    session_id: null,
+    subject_code: deliveryRow.subject_code,
+    current_truth_revision: Number(deliveryRow.truth_revision),
+    last_sequence_no: normalizeArray(deliveryRow.persisted_event_types).length,
+    current_stage: currentStage,
+    current_status: currentStage === 'LearningUpdateProposed' ? 'running' : 'completed',
+    last_event_id: null,
+    active_classification_event_id: null,
+    active_marking_event_id: null,
+    active_learning_update_event_id: null,
+    active_mastery_event_id: null,
+    active_review_tasks_event_id: null,
+    active_artifact_suggestions_event_id: null,
+    last_error_code: null,
+    last_error_message: null,
+    updated_at: new Date().toISOString(),
+  };
+}
+
 function buildBridgeEvents(input = {}) {
   const attemptId = assertImmutableAttemptId(input);
   const learnerId = normalizeString(input.learnerId);
@@ -630,6 +674,7 @@ export async function persistAttemptEventBridge(client, input = {}) {
   const learnerId = normalizeString(input.learnerId);
   const subjectCode = normalizeString(input.subjectCode);
   let deliveryReservation = null;
+  let currentDeliveryRow = null;
 
   try {
     deliveryReservation = await reserveAttemptEventBridgeDelivery(client, {
@@ -638,6 +683,7 @@ export async function persistAttemptEventBridge(client, input = {}) {
       subjectCode,
       markRunId,
     });
+    currentDeliveryRow = deliveryReservation.row;
 
     if (deliveryReservation.state === 'replay') {
       if (['persisted', 'reconciled'].includes(deliveryReservation.row.delivery_state)) {
@@ -662,6 +708,29 @@ export async function persistAttemptEventBridge(client, input = {}) {
           delivery: deliveryReservation.row,
         };
       }
+
+      if (canRecoverPipelineStateFromDelivery(deliveryReservation.row)) {
+        const pipelineState = buildPipelineStateFromDeliveryRow(deliveryReservation.row);
+        await upsertAttemptPipelineState(client, pipelineState);
+        const finalizedDelivery = await updateAttemptEventBridgeDelivery(client, {
+          stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
+          patch: {
+            delivery_state: 'persisted',
+            retry_count: Number(deliveryReservation.row.retry_count ?? 0),
+            last_attempted_at: new Date().toISOString(),
+            last_error: null,
+          },
+        });
+
+        return {
+          ok: true,
+          warningRecorded: false,
+          deduped: false,
+          persisted_event_types: normalizeArray(deliveryReservation.row.persisted_event_types),
+          pipeline_state: pipelineState,
+          delivery: finalizedDelivery,
+        };
+      }
     }
 
     const streamHead = await loadExistingStreamHead(client, attemptId);
@@ -675,12 +744,20 @@ export async function persistAttemptEventBridge(client, input = {}) {
     );
 
     await insertLearningEvents(client, events);
+    currentDeliveryRow = await updateAttemptEventBridgeDelivery(client, {
+      stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
+      patch: {
+        truth_revision: events[0]?.truth_revision ?? null,
+        persisted_event_types: events.map((event) => event.event_type),
+        persisted_event_ids: events.map((event) => event.event_id),
+      },
+    });
     await upsertAttemptPipelineState(client, pipelineState);
     const finalizedDelivery = await updateAttemptEventBridgeDelivery(client, {
       stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
       patch: {
         delivery_state: 'persisted',
-        retry_count: Number(deliveryReservation.row.retry_count ?? 0),
+        retry_count: Number(currentDeliveryRow?.retry_count ?? deliveryReservation.row.retry_count ?? 0),
         last_attempted_at: new Date().toISOString(),
         last_error: null,
         truth_revision: pipelineState.current_truth_revision ?? null,
@@ -717,7 +794,7 @@ export async function persistAttemptEventBridge(client, input = {}) {
         stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
         patch: {
           delivery_state: 'retrying',
-          retry_count: Number(deliveryReservation.row.retry_count ?? 0) + 1,
+          retry_count: Number(currentDeliveryRow?.retry_count ?? deliveryReservation.row.retry_count ?? 0) + 1,
           last_attempted_at: new Date().toISOString(),
           last_error: {
             code: 'attempt_event_bridge_failed',

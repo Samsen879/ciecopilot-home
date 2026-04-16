@@ -82,6 +82,10 @@ function ratio(numerator, denominator) {
   return roundRate(numerator / denominator);
 }
 
+function escapeLikePattern(value) {
+  return String(value).replace(/[\\%_]/g, '\\$&');
+}
+
 function sqlLiteral(value) {
   if (value === null || typeof value === 'undefined') {
     return 'NULL';
@@ -703,6 +707,11 @@ async function runPsql(sql) {
   return stdout.trim();
 }
 
+async function runPsqlJson(sql) {
+  const raw = await runPsql(sql);
+  return JSON.parse(raw);
+}
+
 async function resolveTopicPathFromDatabase({
   subjectCode,
   topicPath,
@@ -716,8 +725,72 @@ async function resolveTopicPathFromDatabase({
   return JSON.parse(await runPsql(sql));
 }
 
-async function searchProjectionFromDatabase(searchInput) {
-  return searchQuestions(getServiceClient(), searchInput, {
+function hasServiceSearchEnv(env = process.env) {
+  return Boolean(
+    env.SUPABASE_URL
+      && (env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SERVICE_ROLE),
+  );
+}
+
+export function getProjectionSearchMode(env = process.env) {
+  if (env.SUPABASE_PG_COMPAT === 'true') {
+    return 'psql';
+  }
+
+  if (!hasServiceSearchEnv(env)) {
+    return 'psql';
+  }
+
+  return 'service';
+}
+
+function buildProjectionSearchSql(searchInput) {
+  const conditions = [];
+
+  STRUCTURED_FILTER_FIELDS.forEach((field) => {
+    if (isPresent(searchInput[field])) {
+      conditions.push(`${field} = ${sqlLiteral(searchInput[field])}`);
+    }
+  });
+
+  if (isPresent(searchInput.query)) {
+    const escaped = escapeLikePattern(searchInput.query);
+    conditions.push(`search_text ILIKE '%' || ${sqlLiteral(escaped)} || '%' ESCAPE '\\'`);
+  }
+
+  const whereSql = conditions.length > 0
+    ? `WHERE ${conditions.join(' AND ')}`
+    : '';
+
+  return [
+    'WITH filtered AS (',
+    '  SELECT *',
+    '  FROM public.learning_question_search_projection',
+    `  ${whereSql}`,
+    '), paged AS (',
+    '  SELECT *',
+    '  FROM filtered',
+    '  ORDER BY question_id ASC',
+    '  LIMIT 20',
+    ')',
+    'SELECT json_build_object(',
+    "  'total', (SELECT COUNT(*) FROM filtered),",
+    "  'items', COALESCE((SELECT json_agg(row_to_json(paged)) FROM paged), '[]'::json)",
+    ')::text;',
+  ].join('\n');
+}
+
+export async function searchProjectionFromDatabase(searchInput, {
+  env = process.env,
+  runPsqlJsonFn = runPsqlJson,
+  searchQuestionsFn = searchQuestions,
+  getServiceClientFn = getServiceClient,
+} = {}) {
+  if (getProjectionSearchMode(env) === 'psql') {
+    return runPsqlJsonFn(buildProjectionSearchSql(searchInput));
+  }
+
+  return searchQuestionsFn(getServiceClientFn(), searchInput, {
     productMode: true,
   });
 }

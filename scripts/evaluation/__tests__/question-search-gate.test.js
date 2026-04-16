@@ -5,8 +5,10 @@ import {
   buildCurriculumNodeResolutionSql,
   DEFAULT_CURRICULUM_VERSION_TAG,
   DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
+  getProjectionSearchMode,
   loadQuestionSearchGoldFixture,
   runQuestionSearchGate,
+  searchProjectionFromDatabase,
 } from '../run_question_search_gate.js';
 
 const FIXTURE_PATH = path.join(
@@ -501,5 +503,83 @@ describe('question-search-gate', () => {
     expect(sql).toContain("version_tag = '2025-2027_v1'");
     expect(sql).toContain('ORDER BY node_id ASC');
     expect(sql).toContain('LIMIT 1');
+  });
+
+  test('getProjectionSearchMode falls back to psql for DATABASE_URL-only environments', () => {
+    expect(getProjectionSearchMode({
+      DATABASE_URL: 'postgres://example.test/db',
+    })).toBe('psql');
+  });
+
+  test('getProjectionSearchMode falls back to psql when SUPABASE_PG_COMPAT is enabled', () => {
+    expect(getProjectionSearchMode({
+      DATABASE_URL: 'postgres://example.test/db',
+      SUPABASE_URL: 'https://supabase.example.test',
+      SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',
+      SUPABASE_PG_COMPAT: 'true',
+    })).toBe('psql');
+  });
+
+  test('searchProjectionFromDatabase uses SQL fallback when service env is unavailable', async () => {
+    const runPsqlJsonFn = jest.fn().mockResolvedValue({
+      total: 1,
+      items: [{ question_id: 'question-paper-1' }],
+    });
+    const searchQuestionsFn = jest.fn();
+    const getServiceClientFn = jest.fn();
+
+    const result = await searchProjectionFromDatabase({
+      subject_code: '9709',
+      primary_topic_id: 'topic-paper-trigonometry',
+      query: 'identity solve equation',
+    }, {
+      env: {
+        DATABASE_URL: 'postgres://example.test/db',
+      },
+      runPsqlJsonFn,
+      searchQuestionsFn,
+      getServiceClientFn,
+    });
+
+    expect(result).toEqual({
+      total: 1,
+      items: [{ question_id: 'question-paper-1' }],
+    });
+    expect(searchQuestionsFn).not.toHaveBeenCalled();
+    expect(getServiceClientFn).not.toHaveBeenCalled();
+    expect(runPsqlJsonFn).toHaveBeenCalledTimes(1);
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain('FROM public.learning_question_search_projection');
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("subject_code = '9709'");
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("primary_topic_id = 'topic-paper-trigonometry'");
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("search_text ILIKE '%' || 'identity solve equation' || '%' ESCAPE '\\'");
+  });
+
+  test('searchProjectionFromDatabase uses SQL fallback when pg-compat is enabled', async () => {
+    const runPsqlJsonFn = jest.fn().mockResolvedValue({
+      total: 2,
+      items: [{ question_id: 'question-paper-1' }, { question_id: 'question-imported-1' }],
+    });
+    const searchQuestionsFn = jest.fn();
+    const getServiceClientFn = jest.fn();
+
+    const result = await searchProjectionFromDatabase({
+      subject_code: '9709',
+      query: 'tan^2',
+    }, {
+      env: {
+        DATABASE_URL: 'postgres://example.test/db',
+        SUPABASE_URL: 'https://supabase.example.test',
+        SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',
+        SUPABASE_PG_COMPAT: 'true',
+      },
+      runPsqlJsonFn,
+      searchQuestionsFn,
+      getServiceClientFn,
+    });
+
+    expect(result.total).toBe(2);
+    expect(runPsqlJsonFn).toHaveBeenCalledTimes(1);
+    expect(searchQuestionsFn).not.toHaveBeenCalled();
+    expect(getServiceClientFn).not.toHaveBeenCalled();
   });
 });

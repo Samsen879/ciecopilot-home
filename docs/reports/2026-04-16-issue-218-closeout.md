@@ -24,7 +24,7 @@ Shipped behavior:
 - compact result-card payloads expose grounded title, meta line, and one-line summary data
 - one-line result summaries come only from structured `summary` fields; unsupported summaries remain absent
 - feature-flagged integration into the canonical `/api/learning/questions` flow and the learning runtime API client normalization
-- shared question-search gate coverage extended with mixed-source ranking fixtures so the checked-in evidence exercises the same product-mode service
+- shared question-search gate coverage extended with mixed-source ranking fixtures, using the shared product-mode service when service-role Supabase env is available and preserving the prior SQL fallback for `DATABASE_URL`-only and `SUPABASE_PG_COMPAT=true` environments
 
 ## Boundary Kept
 
@@ -60,14 +60,14 @@ Actual outcome:
 
 - pass
 - `5` suites passed
-- `36` tests passed
+- `40` tests passed
 
 Focused surfaces covered by the passing run:
 
 - repository slice
 - service ranking and grounded-card behavior
 - `/api/learning/questions` API surface
-- shared gate runner unit coverage
+- shared gate runner unit coverage, including `DATABASE_URL`-only and `SUPABASE_PG_COMPAT=true` compatibility
 - learning runtime API client normalization
 
 ## Actual Outcome
@@ -83,4 +83,5 @@ Acceptance-critical outcome on this branch:
 
 - production rollout still depends on explicitly enabling `QUESTION_SEARCH_PRODUCT_ENABLED`
 - retrieval quality remains bounded by the completeness of existing paper metadata and structured descriptor fields; `#218` intentionally did not backfill or repair those data surfaces
+- the gate runner now has an explicit compatibility split between service-backed and SQL-backed search execution, so future retrieval changes need to keep both execution modes aligned
 - the issue does not change release readiness for unrelated search, browse, or answer-generation flows because those were explicitly out of scope

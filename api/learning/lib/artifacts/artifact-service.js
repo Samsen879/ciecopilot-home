@@ -191,10 +191,6 @@ function hasSupersededMarkers(artifact = {}) {
 }
 
 function resolveArtifactLifecycleState(artifact = {}) {
-  if (typeof artifact.artifact_state === 'string' && ARTIFACT_CAPABILITY_MATRIX[artifact.artifact_state]) {
-    return artifact.artifact_state;
-  }
-
   if (hasSupersededMarkers(artifact)) {
     return 'superseded';
   }
@@ -209,6 +205,10 @@ function resolveArtifactLifecycleState(artifact = {}) {
 
   if (hasVerificationAuditEvidence(artifact)) {
     return 'verified';
+  }
+
+  if (typeof artifact.artifact_state === 'string' && ARTIFACT_CAPABILITY_MATRIX[artifact.artifact_state]) {
+    return artifact.artifact_state;
   }
 
   return 'unverified';
@@ -644,9 +644,9 @@ async function handleSupersedeIntent({
     assertLifecycleTransition(artifact, 'superseded');
   }
 
-  const successor = cloneArtifact(
+  const successor = normalizeArtifactResult(cloneArtifact(
     await artifactRepository?.getArtifactById(successorArtifactRef.artifact_id),
-  );
+  ), lifecycleFlagEnabled);
 
   if (!successor) {
     throw buildArtifactConflict('Successor artifact must exist.', {
@@ -685,10 +685,11 @@ async function handleSupersedeIntent({
   let slotTransition = null;
 
   if (artifact.placement_status === 'pinned' && artifact.slot_key) {
-    const successorCanHoldPin =
-      successor.lifecycle_status !== 'superseded'
-      && successor.trust_status !== 'contested'
-      && successor.placement_status !== 'archived';
+    const successorCanHoldPin = lifecycleFlagEnabled
+      ? successor.capabilities.resident_eligible && successor.placement_status !== 'archived'
+      : successor.lifecycle_status !== 'superseded'
+        && successor.trust_status !== 'contested'
+        && successor.placement_status !== 'archived';
 
     if (successorCanHoldPin) {
       await artifactRepository.updateArtifact(successor.artifact_id, {

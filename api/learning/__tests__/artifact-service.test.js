@@ -79,6 +79,30 @@ function createArtifactRepositoryFixture() {
       },
     ],
     [
+      'art-successor-unverified',
+      {
+        artifact_id: 'art-successor-unverified',
+        artifact_kind: 'misconception_card',
+        canonical_home_topic_id: 'repair-target-topic',
+        slot_key: 'common_traps',
+        trust_status: 'unverified',
+        placement_status: 'inbox',
+        lifecycle_status: 'active',
+        artifact_state: 'unverified',
+        verified_by: null,
+        verified_at: null,
+        verification_evidence_ref: null,
+        released_by: null,
+        released_at: null,
+        release_evidence_ref: null,
+        contested_by: null,
+        contested_at: null,
+        contested_reason: null,
+        superseded_by_artifact_id: null,
+        superseded_at: null,
+      },
+    ],
+    [
       'art-contested',
       {
         artifact_id: 'art-contested',
@@ -279,10 +303,31 @@ describe('artifact-service', () => {
       'explicit superseded markers map to superseded',
       {
         artifact_id: 'legacy-superseded',
+        artifact_state: 'unverified',
         trust_status: 'grounded',
         lifecycle_status: 'active',
         superseded_by_artifact_id: 'successor-1',
         superseded_at: '2026-03-20T10:00:00.000Z',
+      },
+      'superseded',
+    ],
+    [
+      'stale unverified artifact_state does not mask contested markers',
+      {
+        artifact_id: 'legacy-contested-stale',
+        artifact_state: 'unverified',
+        trust_status: 'contested',
+        lifecycle_status: 'active',
+      },
+      'contested',
+    ],
+    [
+      'stale unverified artifact_state does not mask superseded lifecycle markers',
+      {
+        artifact_id: 'legacy-superseded-stale',
+        artifact_state: 'unverified',
+        trust_status: 'unverified',
+        lifecycle_status: 'superseded',
       },
       'superseded',
     ],
@@ -465,6 +510,37 @@ describe('artifact-service', () => {
         kind: 'artifact',
         artifact_id: 'art-successor',
       },
+    });
+  });
+
+  test('superseding a pinned artifact with an unverified successor clears the slot instead of transferring the pin', async () => {
+    const repository = createArtifactRepositoryFixture();
+    const service = createArtifactService({
+      artifactRepository: repository,
+      lifecycleFlagEnabled: true,
+    });
+
+    const result = await service.patchArtifact({
+      userId: 'student-1',
+      artifactId: 'art-pinned',
+      intent: 'attach_superseded_by',
+      successorArtifactRef: {
+        kind: 'artifact',
+        artifact_id: 'art-successor-unverified',
+      },
+    });
+
+    expect(result.slot_transition).toMatchObject({
+      outcome: 'slot_cleared_pending_confirmation',
+      slot_key: 'common_traps',
+    });
+
+    const snapshot = repository.snapshot();
+    expect(snapshot.artifacts.get('art-successor-unverified')).toMatchObject({
+      placement_status: 'inbox',
+    });
+    expect(snapshot.workspaceSlots.get('student-1:repair-target-topic:common_traps')).toMatchObject({
+      primary_artifact_ref: null,
     });
   });
 

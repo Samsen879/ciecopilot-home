@@ -1,6 +1,13 @@
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
 const META_ENV = typeof import.meta !== 'undefined' ? import.meta.env || {} : {};
 const SCHEDULER_EXPLANATION_ENV_FLAG = 'VITE_LEARNING_RUNTIME_SCHEDULER_EXPLANATION_ENABLED';
+const FROZEN_STUDENT_EXPLANATION_LABELS = new Set([
+  '最近出错',
+  '间隔已到',
+  '临近考试',
+  '同题型回补',
+  '回归风险',
+]);
 
 function normalizeString(value, fallback = null) {
   if (typeof value !== 'string') {
@@ -176,11 +183,11 @@ function normalizeStudentExplanation(value) {
   const provenance = value.provenance ?? {};
   const labels = (Array.isArray(value.labels) ? value.labels : [])
     .map((label) => normalizeString(label))
-    .filter(Boolean)
+    .filter((label) => Boolean(label) && FROZEN_STUDENT_EXPLANATION_LABELS.has(label))
     .slice(0, 4);
   const summary = normalizeString(value.summary);
 
-  if (!summary && labels.length === 0) {
+  if (!summary || labels.length < 2 || labels.length > 4) {
     return null;
   }
 

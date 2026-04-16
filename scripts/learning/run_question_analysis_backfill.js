@@ -4,19 +4,40 @@ import { fileURLToPath } from 'node:url';
 import { getServiceClient } from '../../api/lib/supabase/client.js';
 import { runQuestionAnalysisBackfill } from './lib/question-analysis-backfill.js';
 
+function writeStdoutLine(message) {
+  fs.writeSync(1, `${message}\n`);
+}
+
+function writeStderrLine(message) {
+  fs.writeSync(2, `${message}\n`);
+}
+
 function printUsage() {
-  console.log(
-    'Usage: node scripts/learning/run_question_analysis_backfill.js [--force] [--evidence-bundles <path>]',
+  writeStdoutLine(
+    'Usage: node scripts/learning/run_question_analysis_backfill.js [--force] [--source-kind <kind>] [--manifest <path>] [--evidence-bundles <path>]',
   );
 }
 
-async function loadCandidateQuestions(client) {
+function normalizeSourceKind(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  if (!normalized) {
+    return 'imported_question';
+  }
+
+  if (!['imported_question', 'paper_question'].includes(normalized)) {
+    throw new Error(`Unsupported --source-kind: ${value}`);
+  }
+
+  return normalized;
+}
+
+async function loadCandidateQuestions(client, { sourceKind = 'imported_question' } = {}) {
   const { data, error } = await client
     .from('question_bank')
     .select(
-      'question_id, source_kind, subject_code, prompt_representation, paper_scope, provenance_summary, classification_snapshot_ref',
+      'question_id, source_kind, subject_code, storage_key, q_number, primary_topic_id, prompt_representation, paper_scope, provenance_summary, classification_snapshot_ref',
     )
-    .eq('source_kind', 'imported_question');
+    .eq('source_kind', sourceKind);
 
   if (error) {
     throw new Error(`Failed to load question bank rows for backfill: ${error.message}`);
@@ -85,37 +106,135 @@ export function attachEvidenceBundlesToQuestions(questions = [], bundles = []) {
   });
 }
 
+function buildManifestQuestionKey(item = {}) {
+  const storageKey = typeof item?.storage_key === 'string' ? item.storage_key.trim() : '';
+  const qNumber = Number.isInteger(item?.q_number) ? item.q_number : null;
+
+  return storageKey ? `${storageKey}#${qNumber ?? ''}` : '';
+}
+
+export function attachManifestMetadataToQuestions(questions = [], manifest = null) {
+  const items = Array.isArray(manifest?.items) ? manifest.items : [];
+  if (items.length === 0) {
+    return questions;
+  }
+
+  const manifestItemsByKey = new Map(
+    items
+      .map((item) => [buildManifestQuestionKey(item), item])
+      .filter(([key]) => Boolean(key)),
+  );
+
+  return questions.flatMap((question) => {
+    const manifestItem = manifestItemsByKey.get(buildManifestQuestionKey(question));
+    if (!manifestItem) {
+      return [];
+    }
+
+    return [{
+      ...question,
+      manifestItem,
+      analysisHints: {
+        ...(question?.analysisHints ?? question?.analysis_hints ?? {}),
+        ...(manifestItem.analysis_hints ?? manifestItem.analysisHints ?? {}),
+        topic_path_hint:
+          (manifestItem.analysis_hints ?? manifestItem.analysisHints ?? {}).topic_path_hint
+          ?? manifestItem.primary_topic_path
+          ?? null,
+      },
+    }];
+  });
+}
+
+function parseArgs(argv = process.argv.slice(2)) {
+  const options = {
+    force: false,
+    sourceKind: 'imported_question',
+    manifestPath: null,
+    evidenceBundlePath: null,
+    help: false,
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const token = argv[index];
+
+    if (token === '--help') {
+      options.help = true;
+      continue;
+    }
+
+    if (token === '--force') {
+      options.force = true;
+      continue;
+    }
+
+    if (token === '--source-kind') {
+      options.sourceKind = normalizeSourceKind(argv[index + 1] ?? null);
+      index += 1;
+      continue;
+    }
+
+    if (token === '--manifest') {
+      options.manifestPath = argv[index + 1] ?? null;
+      index += 1;
+      continue;
+    }
+
+    if (token === '--evidence-bundles') {
+      options.evidenceBundlePath = argv[index + 1] ?? null;
+      index += 1;
+      continue;
+    }
+
+    throw new Error(`Unknown argument: ${token}`);
+  }
+
+  if (options.evidenceBundlePath && options.evidenceBundlePath.startsWith('--')) {
+    throw new Error('--evidence-bundles requires a file path.');
+  }
+  if (argv.includes('--evidence-bundles') && !options.evidenceBundlePath) {
+    throw new Error('--evidence-bundles requires a file path.');
+  }
+  if (options.manifestPath && options.manifestPath.startsWith('--')) {
+    throw new Error('--manifest requires a file path.');
+  }
+  if (argv.includes('--manifest') && !options.manifestPath) {
+    throw new Error('--manifest requires a file path.');
+  }
+
+  return options;
+}
+
 export async function main(argv = process.argv.slice(2)) {
-  if (argv.includes('--help')) {
+  const options = parseArgs(argv);
+
+  if (options.help) {
     printUsage();
     return;
   }
 
-  const force = argv.includes('--force');
-  const evidenceBundlesIndex = argv.findIndex((token) => token === '--evidence-bundles');
-  const evidenceBundlePath = evidenceBundlesIndex >= 0
-    ? argv[evidenceBundlesIndex + 1] ?? null
-    : null;
-  if (
-    evidenceBundlesIndex >= 0
-    && (!evidenceBundlePath || evidenceBundlePath.startsWith('--'))
-  ) {
-    throw new Error('--evidence-bundles requires a file path.');
-  }
   const client = getServiceClient();
-  let questions = await loadCandidateQuestions(client);
-  if (evidenceBundlePath) {
+  let questions = await loadCandidateQuestions(client, {
+    sourceKind: options.sourceKind,
+  });
+  if (options.manifestPath) {
+    questions = attachManifestMetadataToQuestions(
+      questions,
+      readJson(options.manifestPath),
+    );
+  }
+  if (options.evidenceBundlePath) {
     questions = attachEvidenceBundlesToQuestions(
       questions,
-      normalizeEvidenceBundlePayload(readJson(evidenceBundlePath)),
+      normalizeEvidenceBundlePayload(readJson(options.evidenceBundlePath)),
     );
   }
   const summary = await runQuestionAnalysisBackfill(client, {
     questions,
-    force,
+    force: options.force,
   });
 
-  console.log(JSON.stringify(summary, null, 2));
+  writeStdoutLine(JSON.stringify(summary, null, 2));
 }
 
 export function isQuestionAnalysisBackfillEntrypoint(entryScriptPath, metaUrl = import.meta.url) {
@@ -128,7 +247,7 @@ export function isQuestionAnalysisBackfillEntrypoint(entryScriptPath, metaUrl = 
 
 if (isQuestionAnalysisBackfillEntrypoint(process.argv[1], import.meta.url)) {
   main().catch((error) => {
-    console.error(error.message);
+    writeStderrLine(error.message);
     process.exitCode = 1;
   });
 }

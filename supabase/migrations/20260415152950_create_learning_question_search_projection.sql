@@ -45,15 +45,34 @@ BEGIN
       qb.variant_tags,
       qb.storage_key,
       qb.q_number,
-      descriptor_rows.summary,
-      descriptor_rows.question_type,
-      descriptor_rows.answer_form,
-      descriptor_rows.year,
-      descriptor_rows.session,
-      descriptor_rows.paper_number,
-      descriptor_rows.variant,
       COALESCE(
         NULLIF(BTRIM(descriptor_rows.summary), ''),
+        NULLIF(BTRIM(qb.provenance_summary ->> 'summary'), ''),
+        NULLIF(BTRIM(qb.provenance_summary ->> 'title'), ''),
+        NULLIF(BTRIM(qb.prompt_representation ->> 'value'), '')
+      ) AS summary,
+      descriptor_rows.question_type,
+      descriptor_rows.answer_form,
+      COALESCE(
+        descriptor_rows.year,
+        (qb.paper_scope ->> 'year')::INTEGER
+      ) AS year,
+      COALESCE(
+        descriptor_rows.session,
+        qb.paper_scope ->> 'session'
+      ) AS session,
+      COALESCE(
+        descriptor_rows.paper_number,
+        (qb.paper_scope ->> 'paper')::INTEGER
+      ) AS paper_number,
+      COALESCE(
+        descriptor_rows.variant,
+        (qb.paper_scope ->> 'variant')::INTEGER
+      ) AS variant,
+      COALESCE(
+        NULLIF(BTRIM(qb.provenance_summary ->> 'search_text'), ''),
+        NULLIF(BTRIM(descriptor_rows.summary), ''),
+        NULLIF(BTRIM(qb.provenance_summary ->> 'summary'), ''),
         NULLIF(BTRIM(qb.prompt_representation ->> 'value'), ''),
         NULLIF(BTRIM(qb.provenance_summary ->> 'title'), '')
       ) AS search_text

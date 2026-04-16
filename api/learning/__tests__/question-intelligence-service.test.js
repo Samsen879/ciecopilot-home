@@ -51,6 +51,17 @@ describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
     expect(result.family_id).toBe('9709.integration_techniques');
   });
 
+  test('does not misclassify "using substitution" as trigonometry because of the "sin" substring', () => {
+    const result = analyzeQuestionEnvelope({
+      envelope: buildEnvelope(
+        'Let I = integral from 0 to 1 of x^5/(1 + x^2)^3 dx. Using the substitution u = 1 + x^2, show that I = integral from 1 to 2 of (u - 1)^2/(2u^3) du, and hence find the exact value of I.',
+      ),
+    });
+
+    expect(result.primary_question_type_id).toBe('9709.integration.application');
+    expect(result.family_id).toBe('9709.integration_techniques');
+  });
+
   // ─── confidence band thresholds ───
 
   test('differential equation with initial condition gets confidence >= 0.85 (high band)', () => {

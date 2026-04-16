@@ -497,6 +497,184 @@ describe('question-analysis backfill', () => {
     });
   });
 
+  test('paper_question backfill preserves deterministic primary topic and persists evidence-derived summary/search text', async () => {
+    const { client, state } = createBackfillClient();
+
+    const summary = await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-paper-trig',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/s19_qp_11/questions/q06.png',
+          q_number: 6,
+          primary_topic_id: 'topic-trigonometry',
+          paper_scope: {
+            year: 2019,
+            session: 's',
+            paper: 1,
+            q_number: 6,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/s19_qp_11/questions/q06.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p1.trigonometry',
+            },
+            evidence: {
+              ocr_text:
+                '(i) Prove the identity (1/cos x - tan x)^2 = 1/(1 + sin x). (ii) Hence solve the equation (1/cos 2x - tan 2x)^2 = 2/3 for 0 <= x <= pi.',
+              formula_latex_list: [
+                '\\left(\\frac{1}{\\cos x} - \\tan x\\right)^2 = \\frac{1}{1 + \\sin x}',
+                '\\left(\\frac{1}{\\cos 2x} - \\tan 2x\\right)^2 = \\frac{2}{3}',
+              ],
+              subquestion_blocks: [
+                '(i) Prove the identity.',
+                '(ii) Hence solve the equation.',
+              ],
+              layout_hints: ['vertical_subquestions'],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['gate_critical'],
+            original_image_asset: {
+              input_asset_id: '9709/s19_qp_11/questions/q06.png',
+              input_asset_hash: 'hash-paper-1',
+            },
+            review_posture: {
+              requires_review: true,
+              gate_critical: true,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/s19_qp_11/questions/q06.png',
+            q_number: 6,
+            primary_topic_path: '9709.p1.trigonometry',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      backfilled: 1,
+      skipped: 0,
+    });
+    expect(state.questions.get('question-paper-trig')).toMatchObject({
+      primary_topic_id: 'topic-trigonometry',
+      prompt_representation: {
+        type: 'text',
+        value: expect.stringContaining('Prove the identity'),
+      },
+      provenance_summary: expect.objectContaining({
+        summary: expect.stringContaining('Prove the identity'),
+        search_text: expect.stringContaining('trigonometric identity'),
+        descriptor_summary_status: 'evidence_bundle_summary',
+        descriptor_search_text_status: 'evidence_bundle_search_text',
+      }),
+    });
+    expect(state.questions.get('question-paper-trig').provenance_summary.search_text).toEqual(
+      expect.stringContaining('solve equation'),
+    );
+    expect(state.questions.get('question-paper-trig').provenance_summary.search_text).toEqual(
+      expect.stringContaining('Prove trigonometric identity and solve equation'),
+    );
+  });
+
+  test('paper_question search text adds retrieval-oriented integral substitution cues', async () => {
+    const { client, state } = createBackfillClient();
+
+    await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-paper-integral',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          q_number: 7,
+          primary_topic_id: 'topic-integration',
+          paper_scope: {
+            year: 2016,
+            session: 's',
+            paper: 3,
+            q_number: 7,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/s16_qp_33/questions/q07.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.integration',
+            },
+            evidence: {
+              ocr_text:
+                'Let I = integral from 0 to 1 of x^5/(1 + x^2)^3 dx. (i) Using the substitution u = 1 + x^2, show that I = integral from 1 to 2 of (u - 1)^2/(2u^3) du. (ii) Hence find the exact value of I.',
+              formula_latex_list: [
+                'I = \\int_{0}^{1} \\frac{x^5}{(1 + x^2)^3} dx',
+                'u = 1 + x^2',
+                'I = \\int_{1}^{2} \\frac{(u - 1)^2}{2u^3} du',
+              ],
+              subquestion_blocks: [
+                '(i) Using the substitution u = 1 + x^2, show that ...',
+                '(ii) Hence find the exact value of I.',
+              ],
+              layout_hints: ['single_column_prompt'],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'ocr_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: false,
+            lazy_attach_reasons: [],
+            original_image_asset: null,
+            review_posture: {
+              requires_review: false,
+              gate_critical: false,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/s16_qp_33/questions/q07.png',
+            q_number: 7,
+            primary_topic_path: '9709.p3.integration',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(state.questions.get('question-paper-integral').provenance_summary.search_text).toEqual(
+      expect.stringContaining('evaluate integral'),
+    );
+    expect(state.questions.get('question-paper-integral').provenance_summary.search_text).toEqual(
+      expect.stringContaining('using substitution'),
+    );
+    expect(state.questions.get('question-paper-integral').provenance_summary.search_text).toEqual(
+      expect.stringContaining('Evaluate integral I using substitution'),
+    );
+    expect(state.questions.get('question-paper-integral').provenance_summary.search_text).not.toContain(
+      'trigonometric identity',
+    );
+  });
+
   test('skips questions that already have an active snapshot unless force is enabled', async () => {
     const { client } = createBackfillClient();
 

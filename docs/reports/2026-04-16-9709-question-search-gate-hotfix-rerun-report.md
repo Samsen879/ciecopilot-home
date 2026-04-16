@@ -13,13 +13,13 @@ If the checked-in report contains sections above this heading, those sections ar
 ## Commands
 
 ```bash
-node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question_search_gold_9709_v1.json --report docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun-report.md --json-out docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun.json
+node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question_search_gold_9709_v1.json --report docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun-report.md --json-out docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun.json --psql-mode docker
 ```
 
 ## Fixture
 
 - Fixture path: `data/eval/question_search_gold_9709_v1.json`
-- Generated at (UTC): `2026-04-16T10:26:06.921Z`
+- Generated at (UTC): `2026-04-16T11:37:56.017Z`
 - Case count: `4`
 
 | Case | Query | Summary Policy | Expected Source Kind |

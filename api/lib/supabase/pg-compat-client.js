@@ -4,6 +4,31 @@ const JSONB_COLUMNS = new Map([
   ['attempts', new Set(['submitted_steps'])],
   ['mark_runs', new Set(['request_summary', 'response_summary'])],
   ['error_events', new Set(['metadata'])],
+  ['learning_question_analysis_snapshots', new Set([
+    'secondary_topic_ids',
+    'secondary_question_type_ids',
+    'variant_tags',
+    'candidate_rubric_refs',
+    'prerequisite_topic_ids',
+    'canonical_step_skeleton_summary',
+    'difficulty_signal',
+    'analysis_audit_metadata',
+    'evidence_source_event_ref',
+    'low_confidence_posture',
+  ])],
+  ['learning_question_events', new Set([
+    'event_payload',
+    'provenance',
+  ])],
+  ['question_bank', new Set([
+    'paper_scope',
+    'secondary_topic_ids',
+    'secondary_question_type_ids',
+    'variant_tags',
+    'classification_snapshot_ref',
+    'prompt_representation',
+    'provenance_summary',
+  ])],
 ]);
 
 const LTREE_COLUMNS = new Map([

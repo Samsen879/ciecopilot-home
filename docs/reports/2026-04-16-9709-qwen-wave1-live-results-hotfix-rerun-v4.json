@@ -1,0 +1,1208 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s19_qp_11/questions/q06.png",
+    "input_asset_hash": "7b6e844e18495e1bb0cd33d5543fea46f851bc130d0f6503dbe20706b39ee1b7",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "(i) Prove the identity (1/cos x - tan x)^2 = 1/(1 + sin x). [4]\n\n(ii) Hence solve the equation (1/cos 2x - tan 2x)^2 = 2/3 for 0 <= x <= pi. [5]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "(i) Prove the identity (1/cos x - tan x)^2 = 1/(1 + sin x). [4]\n\n(ii) Hence solve the equation (1/cos 2x - tan 2x)^2 = 2/3 for 0 <= x <= pi. [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\left(\\frac{1}{\\cos x} - \\tan x\\right)^2 = \\frac{1}{1 + \\sin x}",
+            "\\left(\\frac{1}{\\cos 2x} - \\tan 2x\\right)^2 = \\frac{2}{3}",
+            "0 \\leqslant x \\leqslant \\pi"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Prove the identity (1/cos x - tan x)^2 = 1/(1 + sin x).', 'marks': '[4]'}",
+            "{'label': '(ii)', 'text': 'Hence solve the equation (1/cos 2x - tan 2x)^2 = 2/3 for 0 <= x <= pi.', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Vertical arrangement of subquestions",
+            "Dotted lines provided for student working space",
+            "Marks indicated in square brackets on the right margin"
+          ]
+        },
+        {
+          "field": "diagram_present",
+          "value": false
+        },
+        {
+          "field": "diagram_elements",
+          "value": []
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "Subquestion (i) is located at the top of the page. Subquestion (ii) is located in the middle of the page, separated by a large block of dotted answer lines."
+          ]
+        },
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "review_lane",
+    "lane": "review",
+    "prompt_template_id": "review_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s16_qp_33/questions/q07.png",
+    "input_asset_hash": "df29cc0af00d20577e7a404bed443bae708126c5fce0f3fec000eab5f1b1d72c",
+    "response_schema_version": "v1",
+    "confidence": 0.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "7 Let I = \\int_{0}^{1} \\frac{x^5}{(1 + x^2)^3} dx.\n\n(i) Using the substitution u = 1 + x^2, show that I = \\int_{1}^{2} \\frac{(u - 1)^2}{2u^3} du. [3]\n\n(ii) Hence find the exact value of I. [5]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "7 Let I = \\int_{0}^{1} \\frac{x^5}{(1 + x^2)^3} dx.\n\n(i) Using the substitution u = 1 + x^2, show that I = \\int_{1}^{2} \\frac{(u - 1)^2}{2u^3} du. [3]\n\n(ii) Hence find the exact value of I. [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "I = \\int_{0}^{1} \\frac{x^5}{(1 + x^2)^3} dx",
+            "u = 1 + x^2",
+            "I = \\int_{1}^{2} \\frac{(u - 1)^2}{2u^3} du"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Using the substitution u = 1 + x^2, show that I = \\\\int_{1}^{2} \\\\frac{(u - 1)^2}{2u^3} du.', 'marks': '[3]'}",
+            "{'label': '(ii)', 'text': 'Hence find the exact value of I.', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 7 at top left",
+            "Main definition followed by two sub-parts (i) and (ii)",
+            "Marks allocated in square brackets on the right margin"
+          ]
+        },
+        {
+          "field": "diagram_present",
+          "value": false
+        },
+        {
+          "field": "diagram_elements",
+          "value": []
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "Standard vertical layout for a multi-part mathematics problem. The integral definition is at the top, followed by instruction (i) to transform the integral, and instruction (ii) to evaluate it. Marks are aligned to the right of each sub-question."
+          ]
+        },
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s19_qp_12/questions/q04.png",
+    "input_asset_hash": "6d20e2963b4f782132db49343b24504c9f0d92068ffabc0388ce14cc29d9d4c8",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "4 Angle x is such that sin x = a + b and cos x = a - b, where a and b are constants.\n(i) Show that a^2 + b^2 has a constant value for all values of x. [3]\n(ii) In the case where tan x = 2, express a in terms of b. [2]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "4 Angle x is such that sin x = a + b and cos x = a - b, where a and b are constants.\n(i) Show that a^2 + b^2 has a constant value for all values of x. [3]\n(ii) In the case where tan x = 2, express a in terms of b. [2]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\sin x = a + b",
+            "\\cos x = a - b",
+            "a^2 + b^2",
+            "\\tan x = 2"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Show that a^2 + b^2 has a constant value for all values of x.', 'marks': '[3]'}",
+            "{'label': '(ii)', 'text': 'In the case where tan x = 2, express a in terms of b.', 'marks': '[2]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 4 at top left",
+            "Main stem followed by two sub-questions (i) and (ii)",
+            "Dotted lines provided for answers below each sub-question",
+            "Mark allocations [3] and [2] aligned to the right of respective sub-questions"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s20_qp_12/questions/q02.png",
+    "input_asset_hash": "4ba5b8cd2b1a2d43d2dd6327f60358c78636dc7299be365e663a25318f1266dc",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "2 (a) Express the equation 3 cos θ = 8 tan θ as a quadratic equation in sin θ. [3]\n\n(b) Hence find the acute angle, in degrees, for which 3 cos θ = 8 tan θ. [2]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "2 (a) Express the equation 3 cos θ = 8 tan θ as a quadratic equation in sin θ. [3]\n\n(b) Hence find the acute angle, in degrees, for which 3 cos θ = 8 tan θ. [2]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "3 \\cos \\theta = 8 \\tan \\theta",
+            "\\sin \\theta",
+            "3 \\cos \\theta = 8 \\tan \\theta"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Express the equation 3 cos θ = 8 tan θ as a quadratic equation in sin θ.', 'marks': '[3]'}",
+            "{'label': '(b)', 'text': 'Hence find the acute angle, in degrees, for which 3 cos θ = 8 tan θ.', 'marks': '[2]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 2 at top left",
+            "Subquestions (a) and (b) vertically stacked",
+            "Mark allocations [3] and [2] aligned to the right",
+            "Dotted lines provided for student answers below each subquestion"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s21_qp_11/questions/q07.png",
+    "input_asset_hash": "847f88bbf053d0e402805edcb2d0bea84c3962c7bd9b53a14af73902c327bcf6",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "7 (a) Prove the identity \\frac{1 - 2 \\sin^2 \\theta}{1 - \\sin^2 \\theta} \\equiv 1 - \\tan^2 \\theta. [2]\n\n(b) Hence solve the equation \\frac{1 - 2 \\sin^2 \\theta}{1 - \\sin^2 \\theta} = 2 \\tan^4 \\theta for 0^\\circ \\leqslant \\theta \\leqslant 180^\\circ. [3]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "7 (a) Prove the identity \\frac{1 - 2 \\sin^2 \\theta}{1 - \\sin^2 \\theta} \\equiv 1 - \\tan^2 \\theta. [2]\n\n(b) Hence solve the equation \\frac{1 - 2 \\sin^2 \\theta}{1 - \\sin^2 \\theta} = 2 \\tan^4 \\theta for 0^\\circ \\leqslant \\theta \\leqslant 180^\\circ. [3]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\frac{1 - 2 \\sin^2 \\theta}{1 - \\sin^2 \\theta} \\equiv 1 - \\tan^2 \\theta",
+            "\\frac{1 - 2 \\sin^2 \\theta}{1 - \\sin^2 \\theta} = 2 \\tan^4 \\theta",
+            "0^\\circ \\leqslant \\theta \\leqslant 180^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Prove the identity \\\\frac{1 - 2 \\\\sin^2 \\\\theta}{1 - \\\\sin^2 \\\\theta} \\\\equiv 1 - \\\\tan^2 \\\\theta.', 'marks': '[2]'}",
+            "{'label': '(b)', 'text': 'Hence solve the equation \\\\frac{1 - 2 \\\\sin^2 \\\\theta}{1 - \\\\sin^2 \\\\theta} = 2 \\\\tan^4 \\\\theta for 0^\\\\circ \\\\leqslant \\\\theta \\\\leqslant 180^\\\\circ.', 'marks': '[3]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 7 at top left",
+            "Subquestions (a) and (b) vertically stacked",
+            "Mark allocations [2] and [3] aligned to the right",
+            "Dotted lines provided for working space below each subquestion"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s22_qp_11/questions/q04.png",
+    "input_asset_hash": "b1516752fa1868b044b4c12131f3edf4c303d96a2d7c685d0bfb6813f0b5c7f3",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "4 (a) Prove the identity \\frac{\\sin^3 \\theta}{\\sin \\theta - 1} - \\frac{\\sin^2 \\theta}{1 + \\sin \\theta} \\equiv -\\tan^2 \\theta(1 + \\sin^2 \\theta). [4]\n\n(b) Hence solve the equation\n\\frac{\\sin^3 \\theta}{\\sin \\theta - 1} - \\frac{\\sin^2 \\theta}{1 + \\sin \\theta} = \\tan^2 \\theta(1 - \\sin^2 \\theta)\nfor 0 < \\theta < 2\\pi. [2]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "4 (a) Prove the identity \\frac{\\sin^3 \\theta}{\\sin \\theta - 1} - \\frac{\\sin^2 \\theta}{1 + \\sin \\theta} \\equiv -\\tan^2 \\theta(1 + \\sin^2 \\theta). [4]\n\n(b) Hence solve the equation\n\\frac{\\sin^3 \\theta}{\\sin \\theta - 1} - \\frac{\\sin^2 \\theta}{1 + \\sin \\theta} = \\tan^2 \\theta(1 - \\sin^2 \\theta)\nfor 0 < \\theta < 2\\pi. [2]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\frac{\\sin^3 \\theta}{\\sin \\theta - 1} - \\frac{\\sin^2 \\theta}{1 + \\sin \\theta} \\equiv -\\tan^2 \\theta(1 + \\sin^2 \\theta)",
+            "\\frac{\\sin^3 \\theta}{\\sin \\theta - 1} - \\frac{\\sin^2 \\theta}{1 + \\sin \\theta} = \\tan^2 \\theta(1 - \\sin^2 \\theta)",
+            "0 < \\theta < 2\\pi"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Prove the identity \\\\frac{\\\\sin^3 \\\\theta}{\\\\sin \\\\theta - 1} - \\\\frac{\\\\sin^2 \\\\theta}{1 + \\\\sin \\\\theta} \\\\equiv -\\\\tan^2 \\\\theta(1 + \\\\sin^2 \\\\theta).', 'marks': '[4]'}",
+            "{'label': '(b)', 'text': 'Hence solve the equation \\\\frac{\\\\sin^3 \\\\theta}{\\\\sin \\\\theta - 1} - \\\\frac{\\\\sin^2 \\\\theta}{1 + \\\\sin \\\\theta} = \\\\tan^2 \\\\theta(1 - \\\\sin^2 \\\\theta) for 0 < \\\\theta < 2\\\\pi.', 'marks': '[2]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 4 at top left",
+            "Subquestions (a) and (b) vertically stacked",
+            "Mark allocations [4] and [2] aligned to the right",
+            "Dotted lines provided for working space below each subquestion"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w19_qp_11/questions/q05.png",
+    "input_asset_hash": "a9bf26497cb15f3036e595adb84a8e50d640c6c76d09dc03f29a992482e62cbd",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "5 (i) Given that 4 tan x + 3 cos x + 1/cos x = 0, show, without using a calculator, that sin x = -1/3. [3]\n\n(ii) Hence, showing all necessary working, solve the equation\n4 tan(2x - 20°) + 3 cos(2x - 20°) + 1/cos(2x - 20°) = 0\nfor 0° ≤ x ≤ 180°. [4]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "5 (i) Given that 4 tan x + 3 cos x + 1/cos x = 0, show, without using a calculator, that sin x = -1/3. [3]\n\n(ii) Hence, showing all necessary working, solve the equation\n4 tan(2x - 20°) + 3 cos(2x - 20°) + 1/cos(2x - 20°) = 0\nfor 0° ≤ x ≤ 180°. [4]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "4 \\tan x + 3 \\cos x + \\frac{1}{\\cos x} = 0",
+            "\\sin x = -\\frac{1}{3}",
+            "4 \\tan(2x - 20^\\circ) + 3 \\cos(2x - 20^\\circ) + \\frac{1}{\\cos(2x - 20^\\circ)} = 0",
+            "0^\\circ \\leqslant x \\leqslant 180^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Given that 4 tan x + 3 cos x + 1/cos x = 0, show, without using a calculator, that sin x = -1/3.', 'marks': '[3]'}",
+            "{'label': '(ii)', 'text': 'Hence, showing all necessary working, solve the equation 4 tan(2x - 20°) + 3 cos(2x - 20°) + 1/cos(2x - 20°) = 0 for 0° ≤ x ≤ 180°.', 'marks': '[4]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 5 at top left",
+            "Subquestions labeled (i) and (ii)",
+            "Dotted lines provided for working space below each subquestion",
+            "Marks indicated in square brackets at the end of each question part"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s20_qp_33/questions/q02.png",
+    "input_asset_hash": "e593d2b912971e21abd83e8818b2cc2d6217de78de1a23393a53d028f6546072",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "2 Find the exact value of ∫₀ (2 - x)e⁻²ˣ dx. [5]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "2 Find the exact value of ∫₀ (2 - x)e⁻²ˣ dx. [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\int_{0} (2 - x)e^{-2x} \\, dx"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": []
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number '2' at top left",
+            "Integral expression centered in line",
+            "Mark allocation '[5]' at top right",
+            "Multiple dotted lines below for working space"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s20_qp_33/questions/q07.png",
+    "input_asset_hash": "eb1c3265627f071b205f6954aa073688c0b305e3af5b4b895a88ab2767ee04cc",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "7 Let f(x) = 2 / ((2x - 1)(2x + 1)).\n(a) Express f(x) in partial fractions. [2]\n(b) Using your answer to part (a), show that\n(f(x))^2 = 1 / (2x - 1)^2 - 1 / (2x - 1) + 1 / (2x + 1) + 1 / (2x + 1)^2. [2]\n(c) Hence show that ∫_1^2 (f(x))^2 dx = 2/5 + 1/2 ln(5/9). [5]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "7 Let f(x) = 2 / ((2x - 1)(2x + 1)).\n(a) Express f(x) in partial fractions. [2]\n(b) Using your answer to part (a), show that\n(f(x))^2 = 1 / (2x - 1)^2 - 1 / (2x - 1) + 1 / (2x + 1) + 1 / (2x + 1)^2. [2]\n(c) Hence show that ∫_1^2 (f(x))^2 dx = 2/5 + 1/2 ln(5/9). [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "f(x) = \\frac{2}{(2x - 1)(2x + 1)}",
+            "(f(x))^2 = \\frac{1}{(2x - 1)^2} - \\frac{1}{2x - 1} + \\frac{1}{2x + 1} + \\frac{1}{(2x + 1)^2}",
+            "\\int_1^2 (f(x))^2 \\, dx = \\frac{2}{5} + \\frac{1}{2} \\ln\\left(\\frac{5}{9}\\right)"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Express f(x) in partial fractions.', 'marks': '[2]'}",
+            "{'label': '(b)', 'text': 'Using your answer to part (a), show that (f(x))^2 = 1/(2x-1)^2 - 1/(2x-1) + 1/(2x+1) + 1/(2x+1)^2.', 'marks': '[2]'}",
+            "{'label': '(c)', 'text': 'Hence show that ∫_1^2 (f(x))^2 dx = 2/5 + 1/2 ln(5/9).', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 7 at top left",
+            "Subparts labeled (a), (b), (c) with vertical spacing and dotted lines for answers",
+            "Marks indicated in square brackets on the right margin for each subpart",
+            "Mathematical expressions centered or inline as appropriate",
+            "Integral limits shown as subscript and superscript on integral sign"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s21_qp_32/questions/q06.png",
+    "input_asset_hash": "7047e61a13f853f7587aa41c5443ea917d5941f65dfb4154a3cef10db73b3bc9",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "6 (a) Prove that cosec 2θ - cot 2θ ≡ tan θ. [3]\n(b) Hence show that ∫(from 1/4 π to 1/3 π) (cosec 2θ - cot 2θ) dθ = 1/2 ln 2. [4]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "6 (a) Prove that cosec 2θ - cot 2θ ≡ tan θ. [3]\n(b) Hence show that ∫(from 1/4 π to 1/3 π) (cosec 2θ - cot 2θ) dθ = 1/2 ln 2. [4]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\text{cosec } 2\\theta - \\cot 2\\theta \\equiv \\tan \\theta",
+            "\\int_{\\frac{1}{4}\\pi}^{\\frac{1}{3}\\pi} (\\text{cosec } 2\\theta - \\cot 2\\theta) \\, \\mathrm{d}\\theta = \\frac{1}{2} \\ln 2"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Prove that cosec 2θ - cot 2θ ≡ tan θ.', 'marks': '[3]'}",
+            "{'label': '(b)', 'text': 'Hence show that ∫(from 1/4 π to 1/3 π) (cosec 2θ - cot 2θ) dθ = 1/2 ln 2.', 'marks': '[4]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 6 at top left",
+            "Subquestions (a) and (b) vertically stacked",
+            "Dotted lines provided for working space below each subquestion",
+            "Mark allocations [3] and [4] aligned to the right"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_31/questions/q08.png",
+    "input_asset_hash": "223aca622dc30f9e7dffbaecad3c7cdcafe03db26117ecf38a0b1534195557e9",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "\\int_{\\pi}^{\\frac{3}{2}\\pi} \\frac{\\sin 2x}{\\sqrt{1 - \\sin x}} dx.\n\nGive your answer in the form a + b\\sqrt{2} where a and b are rational numbers to be determined. [7]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "\\int_{\\pi}^{\\frac{3}{2}\\pi} \\frac{\\sin 2x}{\\sqrt{1 - \\sin x}} dx.\n\nGive your answer in the form a + b\\sqrt{2} where a and b are rational numbers to be determined. [7]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\int_{\\pi}^{\\frac{3}{2}\\pi} \\frac{\\sin 2x}{\\sqrt{1 - \\sin x}} dx",
+            "a + b\\sqrt{2}"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": []
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "centered_integral",
+            "instruction_line",
+            "dotted_answer_lines"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w17_qp_31/questions/q08.png",
+    "input_asset_hash": "d3fd51444638222dc1aaa367ef5a3776f24368903576802177491ab7bb6880f6",
+    "response_schema_version": "v1",
+    "confidence": 0.95,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "8 Let f(x) = (4x^2 + 9x - 8) / ((x + 2)(2x - 1)).\n(i) Express f(x) in the form A + B/(x + 2) + C/(2x - 1). [4]\n(ii) Hence show that ∫_1^? f(x) dx = 6 + 1/2 ln(16/7). [5]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "8 Let f(x) = (4x^2 + 9x - 8) / ((x + 2)(2x - 1)).\n(i) Express f(x) in the form A + B/(x + 2) + C/(2x - 1). [4]\n(ii) Hence show that ∫_1^? f(x) dx = 6 + 1/2 ln(16/7). [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "f(x) = \\frac{4x^2 + 9x - 8}{(x + 2)(2x - 1)}",
+            "A + \\frac{B}{x + 2} + \\frac{C}{2x - 1}",
+            "\\int f(x) \\, dx = 6 + \\frac{1}{2} \\ln\\left(\\frac{16}{7}\\right)"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Express f(x) in the form A + B/(x + 2) + C/(2x - 1).', 'marks': '[4]'}",
+            "{'label': '(ii)', 'text': 'Hence show that ∫ f(x) dx = 6 + 1/2 ln(16/7).', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 8 at top left",
+            "Main function definition followed by two subparts (i) and (ii)",
+            "Marks allocated in square brackets on the right margin",
+            "Dotted lines provided for working space under each subpart"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.95
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s21_qp_31/questions/q03.png",
+    "input_asset_hash": "260dc1aec2765464d8f1a8fdab01581b4bda474d5d1e19ee7f8428e5c03dc6be",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "3 (a) Given that cos(x - 30°) = 2 sin(x + 30°), show that tan x = (2 - √3) / (1 - 2√3). [4]\n\n(b) Hence solve the equation\n\ncos(x - 30°) = 2 sin(x + 30°),\n\nfor 0° < x < 360°. [2]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "3 (a) Given that cos(x - 30°) = 2 sin(x + 30°), show that tan x = (2 - √3) / (1 - 2√3). [4]\n\n(b) Hence solve the equation\n\ncos(x - 30°) = 2 sin(x + 30°),\n\nfor 0° < x < 360°. [2]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\cos(x - 30^\\circ) = 2 \\sin(x + 30^\\circ)",
+            "\\tan x = \\frac{2 - \\sqrt{3}}{1 - 2\\sqrt{3}}",
+            "\\cos(x - 30^\\circ) = 2 \\sin(x + 30^\\circ)",
+            "0^\\circ < x < 360^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Given that cos(x - 30°) = 2 sin(x + 30°), show that tan x = (2 - √3) / (1 - 2√3).', 'marks': '[4]'}",
+            "{'label': '(b)', 'text': 'Hence solve the equation cos(x - 30°) = 2 sin(x + 30°), for 0° < x < 360°.', 'marks': '[2]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number '3' at top left",
+            "Subparts labeled (a) and (b)",
+            "Dotted lines for answer space below each subpart",
+            "Marks indicated in square brackets on right margin: [4] for (a), [2] for (b)",
+            "Equation centered under part (b) instruction"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w16_qp_32/questions/q03.png",
+    "input_asset_hash": "54c7d1e605b4ca94eb8539315808af865f4424f2b30c82641dc31968195967cb",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "3 Express the equation sec θ = 3 cos θ + tan θ as a quadratic equation in sin θ. Hence solve this equation for -90° < θ < 90°. [5]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "3 Express the equation sec θ = 3 cos θ + tan θ as a quadratic equation in sin θ. Hence solve this equation for -90° < θ < 90°. [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\sec \\theta = 3 \\cos \\theta + \\tan \\theta",
+            "-90^\\circ < \\theta < 90^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'text': 'Express the equation sec θ = 3 cos θ + tan θ as a quadratic equation in sin θ.', 'marks': None}",
+            "{'text': 'Hence solve this equation for -90° < θ < 90°.', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 3 is bolded and aligned to the left.",
+            "The main text follows the question number on the same line and wraps to a second line.",
+            "The mark allocation [5] is right-aligned at the end of the question block."
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w17_qp_33/questions/q04.png",
+    "input_asset_hash": "b1730a4ba0348c4ffec2cc44c31d9a44625132be4260f8a0675ffbb0065e16ad",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "4 (i) Prove the identity tan(45° + x) + tan(45° - x) ≡ 2 sec 2x. [4]\n\n(ii) Hence sketch the graph of y = tan(45° + x) + tan(45° - x) for 0° ≤ x ≤ 90°. [3]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "4 (i) Prove the identity tan(45° + x) + tan(45° - x) ≡ 2 sec 2x. [4]\n\n(ii) Hence sketch the graph of y = tan(45° + x) + tan(45° - x) for 0° ≤ x ≤ 90°. [3]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\tan(45^\\circ + x) + \\tan(45^\\circ - x) \\equiv 2 \\sec 2x",
+            "y = \\tan(45^\\circ + x) + \\tan(45^\\circ - x)",
+            "0^\\circ \\leqslant x \\leqslant 90^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Prove the identity tan(45° + x) + tan(45° - x) ≡ 2 sec 2x.', 'marks': '[4]'}",
+            "{'label': '(ii)', 'text': 'Hence sketch the graph of y = tan(45° + x) + tan(45° - x) for 0° ≤ x ≤ 90°.', 'marks': '[3]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 4 at top left",
+            "Subquestions labeled (i) and (ii)",
+            "Marks indicated in square brackets on the right margin",
+            "Dotted lines provided for written answer space between subquestions"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w18_qp_33/questions/q06.png",
+    "input_asset_hash": "9edc877fa1c75962db17298b33f410bc1589edaa6d5096a9499be56fb9b26709",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "6 (i) Show that the equation (√2)cosec x + cot x = √3 can be expressed in the form R sin(x - α) = √2, where R > 0 and 0° < α < 90°. [4]\n\n(ii) Hence solve the equation (√2)cosec x + cot x = √3, for 0° < x < 180°. [4]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "6 (i) Show that the equation (√2)cosec x + cot x = √3 can be expressed in the form R sin(x - α) = √2, where R > 0 and 0° < α < 90°. [4]\n\n(ii) Hence solve the equation (√2)cosec x + cot x = √3, for 0° < x < 180°. [4]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "(\\sqrt{2})\\text{cosec } x + \\cot x = \\sqrt{3}",
+            "R \\sin(x - \\alpha) = \\sqrt{2}",
+            "R > 0",
+            "0^\\circ < \\alpha < 90^\\circ",
+            "0^\\circ < x < 180^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Show that the equation (√2)cosec x + cot x = √3 can be expressed in the form R sin(x - α) = √2, where R > 0 and 0° < α < 90°.', 'marks': '[4]'}",
+            "{'label': '(ii)', 'text': 'Hence solve the equation (√2)cosec x + cot x = √3, for 0° < x < 180°.', 'marks': '[4]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 6 at top left",
+            "Subquestions labeled (i) and (ii)",
+            "Mark allocations [4] aligned to the right of each subquestion",
+            "Dotted lines provided for working space below each subquestion"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/w21_qp_31/questions/q02.png",
+    "input_asset_hash": "70987ae3e4bba12131816f64e0565a966148c365a614f56d647cd0d929cc0521",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "2 (a) Express 5 sin x - 3 cos x in the form R sin(x - α), where R > 0 and 0 < α < 1/2 π. Give the exact value of R and give α correct to 2 decimal places. [3]\n\n(b) Hence state the greatest and least possible values of (5 sin x - 3 cos x)^2. [2]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "2 (a) Express 5 sin x - 3 cos x in the form R sin(x - α), where R > 0 and 0 < α < 1/2 π. Give the exact value of R and give α correct to 2 decimal places. [3]\n\n(b) Hence state the greatest and least possible values of (5 sin x - 3 cos x)^2. [2]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "5 \\sin x - 3 \\cos x",
+            "R \\sin(x - \\alpha)",
+            "R > 0",
+            "0 < \\alpha < \\frac{1}{2}\\pi",
+            "(5 \\sin x - 3 \\cos x)^2"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Express 5 sin x - 3 cos x in the form R sin(x - α), where R > 0 and 0 < α < 1/2 π. Give the exact value of R and give α correct to 2 decimal places.', 'marks': '[3]'}",
+            "{'label': '(b)', 'text': 'Hence state the greatest and least possible values of (5 sin x - 3 cos x)^2.', 'marks': '[2]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 2 at top left",
+            "Subquestions (a) and (b) vertically stacked",
+            "Dotted lines for answer space below each subquestion",
+            "Mark allocation in square brackets on the right margin"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  }
+]

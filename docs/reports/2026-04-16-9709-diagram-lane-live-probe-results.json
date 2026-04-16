@@ -1,0 +1,236 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3-vl-plus",
+    "route": "diagram_lane",
+    "lane": "diagram",
+    "prompt_template_id": "diagram_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_13/questions/q09.png",
+    "input_asset_hash": "da3e874e8dc900407e764acd877da5a587fb02c9696da194d0ae5440a09ab76b",
+    "response_schema_version": "v1",
+    "confidence": 1.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "cartesian_plot",
+      "evidence": [
+        {
+          "field": "diagram_present",
+          "value": true
+        },
+        {
+          "field": "diagram_type",
+          "value": "cartesian_plot"
+        },
+        {
+          "field": "diagram_elements",
+          "value": [
+            "curve",
+            "x-axis",
+            "y-axis",
+            "vertical_lines_at_x=1_and_x=3",
+            "shaded_region"
+          ]
+        },
+        {
+          "field": "axes_labels",
+          "value": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "field": "curve_point_annotations",
+          "value": [
+            "{'x': 1, 'y': 'sqrt(2*1^3+10)', 'label': 'point_on_curve_at_x=1'}",
+            "{'x': 3, 'y': 'sqrt(2*3^3+10)', 'label': 'point_on_curve_at_x=3'}"
+          ]
+        },
+        {
+          "field": "shape_relations",
+          "value": [
+            "shaded_region_bounded_by_curve_and_x_axis_and_vertical_lines_at_x=1_and_x=3"
+          ]
+        },
+        {
+          "field": "object_grounding",
+          "value": [
+            {
+              "curve": "y = sqrt(2x^3 + 10)",
+              "shaded_region": "between x=1 and x=3, under curve and above x-axis"
+            }
+          ]
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "curve passes through (1, sqrt(12)) and (3, sqrt(64)=8)",
+            "shaded region is a vertical strip from x=1 to x=3 under the curve",
+            "x-axis labeled as y=0",
+            "origin O marked at (0,0)"
+          ]
+        },
+        {
+          "field": "diagram_confidence",
+          "value": 1.0
+        }
+      ],
+      "warnings": [
+        "lazy_attach_original_image"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3-vl-plus",
+    "route": "diagram_lane",
+    "lane": "diagram",
+    "prompt_template_id": "diagram_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_33/questions/q09.png",
+    "input_asset_hash": "52ef4b0b258cb3ed4482c8032baff02b037a763009aa41ee940064566fed6275",
+    "response_schema_version": "v1",
+    "confidence": 1.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "3D geometric sketch",
+      "evidence": [
+        {
+          "field": "diagram_present",
+          "value": true
+        },
+        {
+          "field": "diagram_type",
+          "value": "3D geometric sketch"
+        },
+        {
+          "field": "diagram_elements",
+          "value": [
+            "cuboid",
+            "labeled edges"
+          ]
+        },
+        {
+          "field": "axes_labels",
+          "value": []
+        },
+        {
+          "field": "curve_point_annotations",
+          "value": []
+        },
+        {
+          "field": "shape_relations",
+          "value": [
+            "square base of side x",
+            "height labeled as 10−x"
+          ]
+        },
+        {
+          "field": "object_grounding",
+          "value": []
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "visible 3D projection with dashed lines indicating hidden edges",
+            "labels 'x' on two adjacent base edges",
+            "label '10−x' on vertical edge"
+          ]
+        },
+        {
+          "field": "diagram_confidence",
+          "value": 1.0
+        }
+      ],
+      "warnings": [
+        "lazy_attach_original_image"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3-vl-plus",
+    "route": "diagram_lane",
+    "lane": "diagram",
+    "prompt_template_id": "diagram_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s17_qp_63/questions/q07.png",
+    "input_asset_hash": "9cbe447a12a1386ab0b6c7126d97b23b5594d242199a8b1bead99c55d9ff0081",
+    "response_schema_version": "v1",
+    "confidence": 1.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "histogram",
+      "evidence": [
+        {
+          "field": "diagram_present",
+          "value": true
+        },
+        {
+          "field": "diagram_type",
+          "value": "histogram"
+        },
+        {
+          "field": "diagram_elements",
+          "value": [
+            "vertical bars (4)",
+            "x-axis labeled 'Length (cm)'",
+            "y-axis labeled 'Frequency density'",
+            "grid lines"
+          ]
+        },
+        {
+          "field": "axes_labels",
+          "value": []
+        },
+        {
+          "field": "curve_point_annotations",
+          "value": []
+        },
+        {
+          "field": "shape_relations",
+          "value": [
+            "bars are adjacent with no gaps",
+            "bar heights: ~2, ~8, ~12, ~6 (from left to right)",
+            "x-axis intervals: 0–5, 5–10, 10–20, 20–25 cm"
+          ]
+        },
+        {
+          "field": "object_grounding",
+          "value": [
+            {
+              "bars": "represent frequency density for worm length intervals",
+              "x-axis": "worm length in cm",
+              "y-axis": "frequency density (frequency per unit length)"
+            }
+          ]
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "bar 1 spans x=0 to 5, height ≈2",
+            "bar 2 spans x=5 to 10, height ≈8",
+            "bar 3 spans x=10 to 20, height ≈12",
+            "bar 4 spans x=20 to 25, height ≈6"
+          ]
+        },
+        {
+          "field": "diagram_confidence",
+          "value": 1.0
+        }
+      ],
+      "warnings": [
+        "lazy_attach_original_image"
+      ]
+    }
+  }
+]

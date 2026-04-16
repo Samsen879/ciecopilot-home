@@ -66,6 +66,17 @@ def test_build_powershell_script_supports_machine_consumable_fields():
     assert "ConvertTo-Json -Depth 100 -Compress" in script
 
 
+def test_build_powershell_script_forces_utf8_console_and_request_reading():
+    script = build_powershell_script()
+
+    assert "UTF8Encoding" in script
+    assert "OutputEncoding" in script
+    assert "Get-Content -Raw -Encoding UTF8" in script
+    assert "Add-Type -AssemblyName System.Net.Http" in script
+    assert "ReadAsByteArrayAsync" in script
+    assert "UTF8.GetString" in script
+
+
 def test_call_qwen_openai_v1_invokes_powershell_and_parses_json_response(tmp_path):
     captured = {}
 
@@ -81,8 +92,8 @@ def test_call_qwen_openai_v1_invokes_powershell_and_parses_json_response(tmp_pat
         captured["timeout"] = timeout
         return SimpleNamespace(
             returncode=0,
-            stdout='{"model":"qwen3.6-plus","choices":[{"message":{"content":"ok"}}]}',
-            stderr="",
+            stdout=b'{"model":"qwen3.6-plus","choices":[{"message":{"content":"ok"}}]}',
+            stderr=b"",
         )
 
     with patch(
@@ -116,8 +127,8 @@ def test_call_qwen_openai_v1_routes_path_conversion_through_injected_runner(tmp_
             return SimpleNamespace(returncode=0, stdout=f"WIN::{source}", stderr="")
         return SimpleNamespace(
             returncode=0,
-            stdout='{"model":"qwen-vl-ocr","choices":[{"message":{"content":"ok"}}]}',
-            stderr="",
+            stdout=b'{"model":"qwen-vl-ocr","choices":[{"message":{"content":"ok"}}]}',
+            stderr=b"",
         )
 
     with patch(
@@ -150,8 +161,8 @@ def test_call_qwen_openai_v1_honors_dashscope_api_key_loaded_from_dotenv(tmp_pat
         captured["env"] = env
         return SimpleNamespace(
             returncode=0,
-            stdout='{"model":"qwen-vl-ocr","choices":[{"message":{"content":"ok"}}]}',
-            stderr="",
+            stdout=b'{"model":"qwen-vl-ocr","choices":[{"message":{"content":"ok"}}]}',
+            stderr=b"",
         )
 
     def fake_load_project_env():
@@ -179,6 +190,31 @@ def test_call_qwen_openai_v1_honors_dashscope_api_key_loaded_from_dotenv(tmp_pat
     assert response["choices"][0]["message"]["content"] == "ok"
     assert captured["load_calls"] == 1
     assert captured["env"]["DASHSCOPE_API_KEY"] == "dotenv-secret"
+
+
+def test_call_qwen_openai_v1_decodes_utf8_stdout_payloads(tmp_path):
+    def fake_runner(cmd, *, capture_output, text, env=None, timeout=None, check=False):
+        if cmd[0] == "wslpath":
+            return SimpleNamespace(returncode=0, stdout=f"WIN::{cmd[-1]}", stderr="")
+        payload = '{"model":"qwen3.6-plus","choices":[{"message":{"content":"π θ ≤ √ ∫"}}]}'
+        return SimpleNamespace(returncode=0, stdout=payload.encode("utf-8"), stderr=b"")
+
+    with patch(
+        "scripts.vlm.qwen_openai_client_v1.get_dashscope_api_key",
+        return_value="secret-key",
+    ):
+        response = call_qwen_openai_v1(
+            {
+                "model": "qwen3.6-plus",
+                "messages": [{"role": "user", "content": "Reply with symbols"}],
+                "enable_thinking": False,
+                "response_format": {"type": "json_object"},
+            },
+            runner=fake_runner,
+            temp_dir=tmp_path,
+        )
+
+    assert response["choices"][0]["message"]["content"] == "π θ ≤ √ ∫"
 
 
 def test_main_builds_image_request_and_json_object_flag(capsys):

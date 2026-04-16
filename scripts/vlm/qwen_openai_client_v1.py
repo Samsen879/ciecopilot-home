@@ -106,7 +106,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$request = Get-Content -Raw -Path $RequestPath | ConvertFrom-Json
+$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+[Console]::InputEncoding = $utf8NoBom
+[Console]::OutputEncoding = $utf8NoBom
+$OutputEncoding = $utf8NoBom
+Add-Type -AssemblyName System.Net.Http
+$request = Get-Content -Raw -Encoding UTF8 -Path $RequestPath | ConvertFrom-Json
 
 function Convert-ImagePathToPart($part) {
   if ($null -eq $part) { return $null }
@@ -170,15 +175,38 @@ $headers = @{
   'Content-Type' = 'application/json'
 }
 
-$response = Invoke-RestMethod `
-  -Uri ($BaseUrl.TrimEnd('/') + '/chat/completions') `
-  -Method Post `
-  -Headers $headers `
-  -Body ($body | ConvertTo-Json -Depth 100 -Compress) `
-  -TimeoutSec 90
+$uri = $BaseUrl.TrimEnd('/') + '/chat/completions'
+$client = [System.Net.Http.HttpClient]::new()
+$client.Timeout = [TimeSpan]::FromSeconds(90)
+$client.DefaultRequestHeaders.Authorization = [System.Net.Http.Headers.AuthenticationHeaderValue]::new('Bearer', $env:DASHSCOPE_API_KEY)
+$content = [System.Net.Http.StringContent]::new(($body | ConvertTo-Json -Depth 100 -Compress), $utf8NoBom, 'application/json')
+$response = $null
 
-$response | ConvertTo-Json -Depth 100 -Compress
+try {
+  $response = $client.PostAsync($uri, $content).GetAwaiter().GetResult()
+  $responseBytes = $response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult()
+  $responseText = [System.Text.Encoding]::UTF8.GetString($responseBytes)
+
+  if (-not $response.IsSuccessStatusCode) {
+    throw ('DashScope request failed with HTTP ' + [int]$response.StatusCode + ': ' + $responseText)
+  }
+
+  [Console]::Out.Write($responseText)
+}
+finally {
+  if ($null -ne $response) { $response.Dispose() }
+  $content.Dispose()
+  $client.Dispose()
+}
 """.strip()
+
+
+def _decode_windows_host_stream(value: bytes | str | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
 
 
 def call_qwen_openai_v1(
@@ -236,7 +264,7 @@ def call_qwen_openai_v1(
         result = runner(
             command,
             capture_output=True,
-            text=True,
+            text=False,
             env=command_env,
             timeout=timeout,
             check=False,
@@ -246,17 +274,20 @@ def call_qwen_openai_v1(
         script_path.unlink(missing_ok=True)
 
     if result.returncode != 0:
+        stderr = _decode_windows_host_stream(result.stderr).strip()
+        stdout = _decode_windows_host_stream(result.stdout).strip()
         raise QwenOpenAIClientError(
-            result.stderr.strip()
-            or result.stdout.strip()
+            stderr
+            or stdout
             or "Windows-host Qwen request failed",
         )
 
+    stdout = _decode_windows_host_stream(result.stdout)
     try:
-        return json.loads(result.stdout)
+        return json.loads(stdout)
     except json.JSONDecodeError as error:
         raise QwenOpenAIClientError(
-            f"Windows-host Qwen request returned non-JSON stdout: {result.stdout[:200]}",
+            f"Windows-host Qwen request returned non-JSON stdout: {stdout[:200]}",
         ) from error
 
 

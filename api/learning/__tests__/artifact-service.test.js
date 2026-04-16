@@ -1,7 +1,35 @@
-import { createArtifactService } from '../lib/artifacts/artifact-service.js';
+import {
+  createArtifactService,
+  getArtifactLifecycleCapabilities,
+  normalizeArtifactLifecycleArtifact,
+} from '../lib/artifacts/artifact-service.js';
 
 function createArtifactRepositoryFixture() {
   const artifacts = new Map([
+    [
+      'art-unverified',
+      {
+        artifact_id: 'art-unverified',
+        artifact_kind: 'misconception_card',
+        canonical_home_topic_id: 'topic-trig-equations',
+        slot_key: 'common_traps',
+        trust_status: 'unverified',
+        placement_status: 'inbox',
+        lifecycle_status: 'active',
+        artifact_state: 'unverified',
+        verified_by: null,
+        verified_at: null,
+        verification_evidence_ref: null,
+        released_by: null,
+        released_at: null,
+        release_evidence_ref: null,
+        contested_by: null,
+        contested_at: null,
+        contested_reason: null,
+        superseded_by_artifact_id: null,
+        superseded_at: null,
+      },
+    ],
     [
       'art-pinned',
       {
@@ -12,7 +40,18 @@ function createArtifactRepositoryFixture() {
         trust_status: 'grounded',
         placement_status: 'pinned',
         lifecycle_status: 'active',
+        artifact_state: 'verified',
+        verified_by: 'operator-1',
+        verified_at: '2026-03-20T08:00:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+        released_by: null,
+        released_at: null,
+        release_evidence_ref: null,
+        contested_by: null,
+        contested_at: null,
+        contested_reason: null,
         superseded_by_artifact_id: null,
+        superseded_at: null,
       },
     ],
     [
@@ -25,7 +64,18 @@ function createArtifactRepositoryFixture() {
         trust_status: 'grounded',
         placement_status: 'inbox',
         lifecycle_status: 'active',
+        artifact_state: 'verified',
+        verified_by: 'operator-2',
+        verified_at: '2026-03-20T08:05:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-2' },
+        released_by: null,
+        released_at: null,
+        release_evidence_ref: null,
+        contested_by: null,
+        contested_at: null,
+        contested_reason: null,
         superseded_by_artifact_id: null,
+        superseded_at: null,
       },
     ],
     [
@@ -38,7 +88,18 @@ function createArtifactRepositoryFixture() {
         trust_status: 'contested',
         placement_status: 'inbox',
         lifecycle_status: 'active',
+        artifact_state: 'contested',
+        verified_by: 'operator-3',
+        verified_at: '2026-03-20T08:10:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-3' },
+        released_by: null,
+        released_at: null,
+        release_evidence_ref: null,
+        contested_by: 'operator-4',
+        contested_at: '2026-03-20T08:11:00.000Z',
+        contested_reason: 'needs human review',
         superseded_by_artifact_id: null,
+        superseded_at: null,
       },
     ],
     [
@@ -51,7 +112,42 @@ function createArtifactRepositoryFixture() {
         trust_status: 'grounded',
         placement_status: 'inbox',
         lifecycle_status: 'active',
+        artifact_state: 'verified',
+        verified_by: 'operator-5',
+        verified_at: '2026-03-20T08:15:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-5' },
+        released_by: null,
+        released_at: null,
+        release_evidence_ref: null,
+        contested_by: null,
+        contested_at: null,
+        contested_reason: null,
         superseded_by_artifact_id: null,
+        superseded_at: null,
+      },
+    ],
+    [
+      'art-released',
+      {
+        artifact_id: 'art-released',
+        artifact_kind: 'misconception_card',
+        canonical_home_topic_id: 'topic-trig-equations',
+        slot_key: 'common_traps',
+        trust_status: 'grounded',
+        placement_status: 'inbox',
+        lifecycle_status: 'active',
+        artifact_state: 'released',
+        verified_by: 'operator-6',
+        verified_at: '2026-03-20T08:20:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-6' },
+        released_by: 'operator-7',
+        released_at: '2026-03-20T08:21:00.000Z',
+        release_evidence_ref: { kind: 'release_receipt', release_receipt_id: 'release-1' },
+        contested_by: null,
+        contested_at: null,
+        contested_reason: null,
+        superseded_by_artifact_id: null,
+        superseded_at: null,
       },
     ],
   ]);
@@ -112,9 +208,104 @@ function createArtifactRepositoryFixture() {
 }
 
 describe('artifact-service', () => {
+  test.each([
+    [
+      'legacy grounded without operator evidence degrades to unverified',
+      {
+        artifact_id: 'legacy-grounded',
+        trust_status: 'grounded',
+        lifecycle_status: 'active',
+      },
+      'unverified',
+    ],
+    [
+      'legacy user_confirmed without operator evidence degrades to unverified',
+      {
+        artifact_id: 'legacy-user-confirmed',
+        trust_status: 'user_confirmed',
+        lifecycle_status: 'active',
+      },
+      'unverified',
+    ],
+    [
+      'legacy revised without explicit audit evidence degrades to unverified',
+      {
+        artifact_id: 'legacy-revised',
+        trust_status: 'unverified',
+        lifecycle_status: 'revised',
+      },
+      'unverified',
+    ],
+    [
+      'explicit operator verification evidence maps to verified',
+      {
+        artifact_id: 'legacy-verified',
+        trust_status: 'grounded',
+        lifecycle_status: 'active',
+        verified_by: 'operator-1',
+        verified_at: '2026-03-20T09:00:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+      },
+      'verified',
+    ],
+    [
+      'explicit release audit evidence maps to released',
+      {
+        artifact_id: 'legacy-released',
+        trust_status: 'grounded',
+        lifecycle_status: 'active',
+        verified_by: 'operator-1',
+        verified_at: '2026-03-20T09:00:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+        released_by: 'operator-2',
+        released_at: '2026-03-20T09:30:00.000Z',
+        release_evidence_ref: { kind: 'release_receipt', release_receipt_id: 'release-1' },
+      },
+      'released',
+    ],
+    [
+      'explicit contested audit evidence maps to contested',
+      {
+        artifact_id: 'legacy-contested',
+        trust_status: 'grounded',
+        lifecycle_status: 'active',
+        contested_by: 'operator-3',
+        contested_at: '2026-03-20T09:45:00.000Z',
+        contested_reason: 'incorrect derivation',
+      },
+      'contested',
+    ],
+    [
+      'explicit superseded markers map to superseded',
+      {
+        artifact_id: 'legacy-superseded',
+        trust_status: 'grounded',
+        lifecycle_status: 'active',
+        superseded_by_artifact_id: 'successor-1',
+        superseded_at: '2026-03-20T10:00:00.000Z',
+      },
+      'superseded',
+    ],
+  ])('%s', (_label, artifact, expectedState) => {
+    const normalized = normalizeArtifactLifecycleArtifact(artifact);
+
+    expect(normalized.artifact_state).toBe(expectedState);
+  });
+
+  test.each([
+    ['unverified', { shell_visible: true, body_visible: false, resident_eligible: false, authoritative_automation_eligible: false }],
+    ['verified', { shell_visible: true, body_visible: true, resident_eligible: true, authoritative_automation_eligible: false }],
+    ['released', { shell_visible: true, body_visible: true, resident_eligible: true, authoritative_automation_eligible: true }],
+    ['contested', { shell_visible: true, body_visible: false, resident_eligible: false, authoritative_automation_eligible: false }],
+    ['superseded', { shell_visible: false, body_visible: false, resident_eligible: false, authoritative_automation_eligible: false }],
+  ])('capability gating matches the frozen matrix for %s', (artifactState, expected) => {
+    expect(getArtifactLifecycleCapabilities(artifactState)).toEqual(expected);
+  });
+
   test('misconception_card homes to the repair target topic, not the source question topic', async () => {
     const service = createArtifactService({
       artifactRepository: createArtifactRepositoryFixture(),
+      lifecycleFlagEnabled: true,
     });
 
     const candidates = await service.buildArtifactCandidates({
@@ -133,8 +324,107 @@ describe('artifact-service', () => {
     expect(candidates[0]).toMatchObject({
       artifact_kind: 'misconception_card',
       canonical_home_topic_id: 'repair-target-topic',
+      artifact_state: 'unverified',
       slot_key: 'common_traps',
       target_question_type_id: '9709.trigonometry.equations',
+    });
+  });
+
+  test('mark_verified requires explicit operator evidence and keeps released distinct from verified', async () => {
+    const repository = createArtifactRepositoryFixture();
+    const service = createArtifactService({
+      artifactRepository: repository,
+      lifecycleFlagEnabled: true,
+      now: () => new Date('2026-03-22T08:30:00.000Z'),
+    });
+
+    await expect(
+      service.patchArtifact({
+        userId: 'operator-9',
+        artifactId: 'art-unverified',
+        intent: 'mark_released',
+        releaseEvidenceRef: { kind: 'release_receipt', release_receipt_id: 'release-without-review' },
+      }),
+    ).rejects.toMatchObject({
+      code: 'artifact_state_conflict',
+      status: 409,
+    });
+
+    const verified = await service.patchArtifact({
+      userId: 'operator-9',
+      artifactId: 'art-unverified',
+      intent: 'mark_verified',
+      verificationEvidenceRef: { kind: 'review_run', review_run_id: 'review-9' },
+    });
+
+    expect(verified.artifact).toMatchObject({
+      artifact_id: 'art-unverified',
+      artifact_state: 'verified',
+      verified_by: 'operator-9',
+      verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-9' },
+      released_by: null,
+      released_at: null,
+      release_evidence_ref: null,
+    });
+    expect(verified.artifact.capabilities).toEqual({
+      shell_visible: true,
+      body_visible: true,
+      resident_eligible: true,
+      authoritative_automation_eligible: false,
+    });
+  });
+
+  test('mark_released unlocks authoritative automation only after explicit release evidence', async () => {
+    const repository = createArtifactRepositoryFixture();
+    const service = createArtifactService({
+      artifactRepository: repository,
+      lifecycleFlagEnabled: true,
+      now: () => new Date('2026-03-22T08:35:00.000Z'),
+    });
+
+    const released = await service.patchArtifact({
+      userId: 'operator-10',
+      artifactId: 'art-pinned',
+      intent: 'mark_released',
+      releaseEvidenceRef: { kind: 'release_receipt', release_receipt_id: 'release-10' },
+    });
+
+    expect(released.artifact).toMatchObject({
+      artifact_id: 'art-pinned',
+      artifact_state: 'released',
+      released_by: 'operator-10',
+      release_evidence_ref: { kind: 'release_receipt', release_receipt_id: 'release-10' },
+    });
+    expect(released.artifact.capabilities.authoritative_automation_eligible).toBe(true);
+  });
+
+  test('mark_contested moves a released artifact into hold posture with audit fields', async () => {
+    const repository = createArtifactRepositoryFixture();
+    const service = createArtifactService({
+      artifactRepository: repository,
+      lifecycleFlagEnabled: true,
+      now: () => new Date('2026-03-22T08:40:00.000Z'),
+    });
+
+    const result = await service.patchArtifact({
+      userId: 'operator-11',
+      artifactId: 'art-released',
+      intent: 'mark_contested',
+      contestedReason: 'source evidence changed',
+    });
+
+    expect(result.artifact).toMatchObject({
+      artifact_id: 'art-released',
+      artifact_state: 'contested',
+      contested_by: 'operator-11',
+      contested_at: '2026-03-22T08:40:00.000Z',
+      contested_reason: 'source evidence changed',
+    });
+    expect(result.artifact.capabilities).toEqual({
+      shell_visible: true,
+      body_visible: false,
+      resident_eligible: false,
+      authoritative_automation_eligible: false,
     });
   });
 
@@ -142,6 +432,7 @@ describe('artifact-service', () => {
     const repository = createArtifactRepositoryFixture();
     const service = createArtifactService({
       artifactRepository: repository,
+      lifecycleFlagEnabled: true,
     });
 
     const result = await service.patchArtifact({
@@ -156,8 +447,9 @@ describe('artifact-service', () => {
 
     expect(result.artifact).toMatchObject({
       artifact_id: 'art-pinned',
-      lifecycle_status: 'superseded',
+      artifact_state: 'superseded',
       superseded_by_artifact_id: 'art-successor',
+      superseded_at: expect.any(String),
     });
     expect(result.slot_transition).toMatchObject({
       outcome: 'moved_to_successor',
@@ -179,6 +471,7 @@ describe('artifact-service', () => {
   test('set_placement_status rejects pinning a contested artifact', async () => {
     const service = createArtifactService({
       artifactRepository: createArtifactRepositoryFixture(),
+      lifecycleFlagEnabled: true,
     });
 
     await expect(
@@ -194,9 +487,29 @@ describe('artifact-service', () => {
     });
   });
 
+  test('set_placement_status rejects pinning an unverified artifact because it is not resident-eligible', async () => {
+    const service = createArtifactService({
+      artifactRepository: createArtifactRepositoryFixture(),
+      lifecycleFlagEnabled: true,
+    });
+
+    await expect(
+      service.patchArtifact({
+        userId: 'student-1',
+        artifactId: 'art-unverified',
+        intent: 'set_placement_status',
+        placementStatus: 'pinned',
+      }),
+    ).rejects.toMatchObject({
+      code: 'artifact_state_conflict',
+      status: 409,
+    });
+  });
+
   test('set_placement_status rejects pinning an artifact into an incompatible slot', async () => {
     const service = createArtifactService({
       artifactRepository: createArtifactRepositoryFixture(),
+      lifecycleFlagEnabled: true,
     });
 
     await expect(

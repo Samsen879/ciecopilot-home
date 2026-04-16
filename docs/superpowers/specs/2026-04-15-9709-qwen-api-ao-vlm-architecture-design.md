@@ -1,12 +1,12 @@
 # 9709 题库恢复的 Qwen 官方 API + AO/VLM 架构决策文档
 
 **Date:** 2026-04-15  
-**Revision:** 2026-04-16 `v1.1`  
+**Revision:** 2026-04-16 `v1.2`  
 **Scope:** `9709` 题库恢复阶段的官方 API 选型、`AO` / `VLM` 职责边界、模型路由、状态契约与质量控制原则  
-**Status:** revised after technical review  
+**Status:** revised after technical review and live wave-1 validation  
 **Current execution plan remains:** [2026-04-15-9709-question-bank-data-recovery-and-gate-rerun.md](../plans/2026-04-15-9709-question-bank-data-recovery-and-gate-rerun.md)  
-**Supersedes:** 初稿对 `qwen3-vl-plus` 与 `qwen3.6-plus` 的角色排位、线性三级链路、以及 machine-consumable 输出约束的表述  
-**Related:** [2026-04-15-question-bank-retrieval-slice-v1.md](../plans/2026-04-15-question-bank-retrieval-slice-v1.md), [2026-04-15-non-technical-overview.md](../../reports/2026-04-15-non-technical-overview.md)
+**Supersedes:** 初稿对 `qwen3-vl-plus` 与 `qwen3.6-plus` 的角色排位、线性三级链路、machine-consumable 输出约束，以及 `qwen-vl-ocr` 在 wave-1 pilot 中被默认写成首选 OCR lane 模型的表述  
+**Related:** [2026-04-15-question-bank-retrieval-slice-v1.md](../plans/2026-04-15-question-bank-retrieval-slice-v1.md), [2026-04-15-non-technical-overview.md](../../reports/2026-04-15-non-technical-overview.md), [2026-04-16-9709-qwen-wave1-live-results-hotfix-rerun-v4.json](../../reports/2026-04-16-9709-qwen-wave1-live-results-hotfix-rerun-v4.json)
 
 ## 1. 文档目的
 
@@ -131,6 +131,34 @@
 
 > 官方 API 直连优先，不为当前恢复工作引入本地部署复杂度。
 
+### 4.1 官方能力声明不等于当前 pipeline 的默认最优配置
+
+需要明确区分两件事：
+
+- 官方文档中的模型能力定位
+- 当前 `9709 wave-1` pipeline 在 `DashScope compatible API + non-thinking + json_object + Windows host relay` 这条真实执行路径上的 live 稳定性
+
+前者决定“哪些模型值得进入候选池”，后者决定“这一批 pilot 默认该绑定哪个模型”。
+
+因此，官方文档里把 `qwen-vl-ocr` 定义为 OCR specialist，并不自动等于它已经通过本项目当前 machine-consumable 路径的 live 验证。
+
+### 4.2 Live wave-1 验证后的冻结修订
+
+在 `2026-04-16` 的真实 `9709` wave-1 rerun 中，已经观察到：
+
+- 旧配置下，`unknown surface -> review_lane` 会把整批样本短路成纯 triage 空壳结果
+- 将路由改为 extraction-first 之后，`qwen-vl-ocr` 在当前 OCR JSON schema 上多次返回被截断或重复的伪 JSON，无法稳定作为当前 pilot 的默认 `ocr_lane`
+- 同一批样本切换到 `qwen3.6-plus` 承担 `ocr_lane`，并在 PowerShell UTF-8 relay 修复后重跑，最终 `v4` rerun 达到 `17/17` 无 provider failure，且 `17/17` 都产出非空 `summary + ocr_text + formula_latex_list`
+
+因此，这份文档在 `v1.2` 明确冻结：
+
+- 架构原则保持不变，仍然是 `task-based router + structured evidence + AO final truth-maker`
+- 但当前 `9709 wave-1 pilot` 的 live 默认模型分配改为：
+  - `ocr_lane -> qwen3.6-plus`
+  - `review_lane -> qwen3.6-plus`
+  - `diagram_lane -> qwen3-vl-plus`
+- `qwen-vl-ocr` 保留在候选池中，但不再写成当前 pilot 的默认 OCR lane 绑定；只有在后续单独 live 复验通过后，才可以重新升级为默认 extraction model
+
 ## 5. 最终推荐架构
 
 ### 5.1 唯一推荐结论
@@ -138,14 +166,14 @@
 本项目在 `9709` 题库恢复阶段采用以下唯一推荐架构：
 
 - `manifest router` 先做任务识别与路由
-- `qwen-vl-ocr` 负责 `OCR / formula / table / document surface`
+- `ocr_lane` 负责 `OCR / formula / document surface`，当前 `9709 wave-1 pilot` 默认绑定 `qwen3.6-plus`
 - `qwen3-vl-plus` 负责 `diagram / spatial / object-localization / document-like parsing`
-- `qwen3.6-plus` 负责 `general multimodal judgement / ambiguity resolution / conflict review`
+- `review_lane` 默认绑定 `qwen3.6-plus`，负责 `general multimodal judgement / ambiguity resolution / conflict review`
 - `AO worker` 负责 `topic / family / question_type / relationship / release posture` 的最终裁决
 
 用一句话概括就是：
 
-> `VLM 负责看清，AO 负责定性；qwen3.6-plus 不是禁用层，而是 judge / reviewer 层。`
+> `VLM 负责看清，AO 负责定性；lane 和 schema 先拆开，模型绑定再以 live 稳定性冻结。`
 
 ### 5.2 这不是“三级流水线”，而是“任务路由 + 证据汇总”
 
@@ -156,13 +184,35 @@
 - 每层都可以独立重跑
 - 最终真值统一回到 `AO worker`
 
+当前 pilot 中 `ocr_lane` 与 `review_lane` 同时绑定 `qwen3.6-plus`，并不意味着退回“单模型一把梭”。
+
+关键区别在于：
+
+- route 仍然独立
+- prompt 仍然独立
+- response schema 仍然独立
+- provenance 仍然独立
+- AO 消费的仍然是分层结构化证据，而不是一次自由文本长回答
+
 ## 6. 模型角色重定义
 
-### 6.1 `qwen-vl-ocr`：视觉提取专用层
+### 6.1 `qwen-vl-ocr`：候选 OCR specialist，而非当前 pilot 默认 lane 绑定
 
-`qwen-vl-ocr` 是第一优先级的 extraction specialist。
+`qwen-vl-ocr` 仍然应被视为 OCR / 文档解析方向的候选 specialist，但在这份 `v1.2` 冻结版里，它不再被写成当前 `9709 wave-1 pilot` 的默认 `ocr_lane` 绑定。
 
-它最适合承担：
+原因不是它“理论上不适合 OCR”，而是：
+
+- 在本项目当前 machine-consumable 路径中，它还没有通过 live 稳定性验证
+- 已经出现过被截断、重复、无法解析为 JSON object 的真实返回
+- 在同一批 pilot 样本上，`qwen3.6-plus` 的 OCR extraction 稳定性明显更高
+
+因此，`qwen-vl-ocr` 在这份文档里的正确定位是：
+
+- 保留在 OCR / document extraction 候选池
+- 后续可针对更小范围样本、单独 prompt、单独 schema 继续复验
+- 在复验通过前，不作为当前 pilot 默认 lane 绑定
+
+如果后续复验通过，它理论上最适合承担：
 
 - 通用文字识别
 - 高精识别
@@ -252,7 +302,7 @@
 
 适用范围：
 
-- `qwen-vl-ocr` 结构化提取
+- `ocr_lane` 结构化提取
 - `qwen3-vl-plus` diagram / spatial extraction
 - `qwen3.6-plus` review verdict JSON
 
@@ -315,12 +365,16 @@ router 的输入可以来自：
 
 ### 8.3 `OCR lane`
 
-满足以下条件时优先走 `qwen-vl-ocr`：
+满足以下条件时优先走 `OCR lane`：
 
 - 纯文字或文字为主
 - 公式密度高，但空间关系弱
 - 表格或版面解析需求明显
 - 题干与小问边界较清晰
+
+当前 `9709 wave-1 pilot` 中，这条 lane 的 live 默认模型绑定是 `qwen3.6-plus`，不是 `qwen-vl-ocr`。
+
+换句话说，router 决定的是任务 lane，不是先验承诺某个官方 OCR 模型一定就是当前默认实现。
 
 ### 8.4 `diagram / spatial lane`
 
@@ -340,6 +394,12 @@ router 的输入可以来自：
 - 题目存在高歧义
 - 该题属于 gate-critical 样本
 - 该题命中高风险 bucket
+
+对于当前 pilot，还要补一条冻结规则：
+
+- `review lane` 可以输出最小可用 extraction + review posture
+- 但它不能退化成“只产 triage、不产结构化证据”的空壳 lane
+- review 的存在是 second-pass / escalation path，不是遇到 unknown surface 就提前短路掉 extraction
 
 ### 8.6 不允许的路由
 
@@ -504,6 +564,20 @@ wave 1 必须冻结一条规则：
 - 最终定性
 
 混成一次输出，导致错误难定位、真值难审计。
+
+需要明确的是，当前 pilot 里 `ocr_lane` 和 `review_lane` 同时使用 `qwen3.6-plus`，并不等于这里反对的“`qwen3.6-plus` 一把梭”。
+
+这里反对的是：
+
+- 一个统一 prompt
+- 一个统一 schema
+- 一次调用同时直接输出 `文本 + topic + family + release decision`
+
+当前冻结实现不是这样。当前实现仍然坚持：
+
+- `ocr_lane` 只做 extraction
+- `review_lane` 做 extraction + review posture
+- `AO worker` 仍然负责最终逻辑裁决
 
 ### 13.2 不选“`qwen3-vl-plus` 作为所有复杂题的默认总入口”
 

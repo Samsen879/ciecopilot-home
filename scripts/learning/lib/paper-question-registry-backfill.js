@@ -44,6 +44,18 @@ function deriveParentTopicPath(topicPath) {
   return normalized.split('.').slice(0, -1).join('.');
 }
 
+function buildCurriculumNodeIdentity({
+  syllabusCode,
+  topicPath,
+  versionTag,
+} = {}) {
+  return [
+    normalizeString(syllabusCode),
+    normalizeString(topicPath),
+    normalizeString(versionTag),
+  ].join('::');
+}
+
 function normalizeManifestItem(manifestItem, defaultSubjectCode, defaultVersionTag) {
   const storageKey = normalizeString(manifestItem?.storage_key);
   if (!storageKey) {
@@ -198,11 +210,16 @@ export async function ensurePilotCurriculumNodes(client, {
     })),
   );
 
-  const topicNodesByPath = new Map();
+  const topicNodesByIdentity = new Map();
   let inserted = 0;
   let existing = 0;
 
   for (const node of normalizedNodes) {
+    const nodeIdentity = buildCurriculumNodeIdentity({
+      syllabusCode: node.syllabus_code,
+      topicPath: node.topic_path,
+      versionTag: node.version_tag,
+    });
     const found = await findCurriculumNode(client, {
       syllabusCode: node.syllabus_code,
       topicPath: node.topic_path,
@@ -210,17 +227,21 @@ export async function ensurePilotCurriculumNodes(client, {
     });
 
     if (found) {
-      topicNodesByPath.set(node.topic_path, found);
+      topicNodesByIdentity.set(nodeIdentity, found);
       existing += 1;
       continue;
     }
 
     const parentId = node.parent_topic_path
-      ? topicNodesByPath.get(node.parent_topic_path)?.node_id ?? null
+      ? topicNodesByIdentity.get(buildCurriculumNodeIdentity({
+        syllabusCode: node.syllabus_code,
+        topicPath: node.parent_topic_path,
+        versionTag: node.version_tag,
+      }))?.node_id ?? null
       : null;
 
     if (dryRun) {
-      topicNodesByPath.set(node.topic_path, {
+      topicNodesByIdentity.set(nodeIdentity, {
         ...node,
         node_id: null,
         parent_id: parentId,
@@ -241,14 +262,14 @@ export async function ensurePilotCurriculumNodes(client, {
       metadata: node.metadata,
     });
 
-    topicNodesByPath.set(node.topic_path, insertedNode);
+    topicNodesByIdentity.set(nodeIdentity, insertedNode);
     inserted += 1;
   }
 
   return {
     inserted,
     existing,
-    topicNodesByPath,
+    topicNodesByIdentity,
   };
 }
 
@@ -256,16 +277,27 @@ async function findDescriptorRow(client, {
   storageKey,
   qNumber,
 } = {}) {
-  return maybeSingle(
-    client
-      .from('question_descriptions_v0')
-      .select('storage_key, q_number, status, summary, year, session, paper, variant')
-      .eq('storage_key', storageKey)
-      .eq('q_number', qNumber)
-      .eq('status', 'ok')
-      .maybeSingle(),
-    `Failed to load descriptor row for ${storageKey}#${qNumber}.`,
-  );
+  const { data, error } = await client
+    .from('question_descriptions_v0')
+    .select(
+      'id, storage_key, q_number, status, summary, year, session, paper, variant, updated_at, extractor_version, provider, model, prompt_version',
+    )
+    .eq('storage_key', storageKey)
+    .eq('q_number', qNumber)
+    .eq('status', 'ok')
+    .order('updated_at', { ascending: false })
+    .order('extractor_version', { ascending: false })
+    .order('provider', { ascending: false })
+    .order('model', { ascending: false })
+    .order('prompt_version', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(1);
+
+  if (error) {
+    throw new Error(error.message || `Failed to load descriptor row for ${storageKey}#${qNumber}.`);
+  }
+
+  return Array.isArray(data) && data.length > 0 ? data[0] : null;
 }
 
 async function findQuestionBankRow(client, {
@@ -476,7 +508,12 @@ export async function runPaperQuestionRegistryBackfill(client, {
       continue;
     }
 
-    const topicNode = curriculumNodes.topicNodesByPath.get(manifestItem.primary_topic_path)
+    const topicNodeIdentity = buildCurriculumNodeIdentity({
+      syllabusCode: manifestItem.syllabus_code,
+      topicPath: manifestItem.primary_topic_path,
+      versionTag: manifestItem.curriculum_version_tag,
+    });
+    const topicNode = curriculumNodes.topicNodesByIdentity.get(topicNodeIdentity)
       ?? await findCurriculumNode(client, {
         syllabusCode: manifestItem.syllabus_code,
         topicPath: manifestItem.primary_topic_path,

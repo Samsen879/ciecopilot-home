@@ -30,7 +30,7 @@ function createBackfillClient({
     nextQuestionId: 1,
     curriculumNodes: new Map(),
     questionBankRows: new Map(),
-    descriptorRows: new Map(),
+    descriptorRows: [],
   };
 
   for (const node of curriculumNodes) {
@@ -72,8 +72,8 @@ function createBackfillClient({
   }
 
   for (const row of descriptorRows) {
-    const key = `${row.storage_key}::${row.q_number}`;
-    state.descriptorRows.set(key, {
+    state.descriptorRows.push({
+      id: row.id ?? `descriptor-${state.descriptorRows.length + 1}`,
       storage_key: row.storage_key,
       q_number: row.q_number,
       status: row.status ?? 'ok',
@@ -82,6 +82,11 @@ function createBackfillClient({
       session: row.session ?? null,
       paper: row.paper ?? null,
       variant: row.variant ?? null,
+      updated_at: row.updated_at ?? null,
+      extractor_version: row.extractor_version ?? null,
+      provider: row.provider ?? null,
+      model: row.model ?? null,
+      prompt_version: row.prompt_version ?? null,
     });
   }
 
@@ -95,6 +100,8 @@ function createBackfillClient({
       this.operation = 'select';
       this.payload = null;
       this.filters = [];
+      this.orders = [];
+      this.limitValue = null;
     }
 
     select() {
@@ -115,6 +122,16 @@ function createBackfillClient({
 
     eq(field, value) {
       this.filters.push({ field, value });
+      return this;
+    }
+
+    order(field, { ascending = true } = {}) {
+      this.orders.push({ field, ascending });
+      return this;
+    }
+
+    limit(value) {
+      this.limitValue = value;
       return this;
     }
 
@@ -154,11 +171,46 @@ function createBackfillClient({
         const storageKey = findFilter(this.filters, 'storage_key');
         const qNumber = findFilter(this.filters, 'q_number');
         const status = findFilter(this.filters, 'status');
-        const row = state.descriptorRows.get(`${storageKey}::${qNumber}`) ?? null;
-        if (row && status && row.status !== status) {
-          return Promise.resolve({ data: null, error: null });
+        const rows = state.descriptorRows
+          .filter((row) => row.storage_key === storageKey && row.q_number === qNumber)
+          .filter((row) => !status || row.status === status);
+
+        rows.sort((left, right) => {
+          for (const order of this.orders) {
+            const leftValue = left[order.field];
+            const rightValue = right[order.field];
+            if (leftValue === rightValue) {
+              continue;
+            }
+
+            if (leftValue === null || typeof leftValue === 'undefined') {
+              return order.ascending ? -1 : 1;
+            }
+
+            if (rightValue === null || typeof rightValue === 'undefined') {
+              return order.ascending ? 1 : -1;
+            }
+
+            if (leftValue > rightValue) {
+              return order.ascending ? 1 : -1;
+            }
+
+            if (leftValue < rightValue) {
+              return order.ascending ? -1 : 1;
+            }
+          }
+
+          return 0;
+        });
+
+        if (this.limitValue !== null) {
+          return Promise.resolve({
+            data: rows.slice(0, this.limitValue),
+            error: null,
+          });
         }
-        return Promise.resolve({ data: row, error: null });
+
+        return Promise.resolve({ data: rows, error: null });
       }
 
       if (this.table === 'question_bank' && this.operation === 'select') {
@@ -388,6 +440,73 @@ describe('paper-question registry backfill', () => {
     });
   });
 
+  test('selects a deterministic descriptor row when multiple successful extractions exist for the same question', async () => {
+    const { client, state } = createBackfillClient({
+      curriculumNodes: [
+        {
+          node_id: 'topic-int',
+          syllabus_code: '9709',
+          topic_path: '9709.p3.integration',
+          version_tag: '2025-2027_v1',
+        },
+      ],
+      descriptorRows: [
+        {
+          id: 'descriptor-older',
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          q_number: 7,
+          status: 'ok',
+          summary: 'Older extraction summary.',
+          updated_at: '2026-04-15T00:00:00.000Z',
+          extractor_version: 'v0',
+          provider: 'provider-a',
+          model: 'model-a',
+          prompt_version: 'prompt-a',
+        },
+        {
+          id: 'descriptor-newer',
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          q_number: 7,
+          status: 'ok',
+          summary: 'Newest deterministic extraction summary.',
+          updated_at: '2026-04-16T00:00:00.000Z',
+          extractor_version: 'v1',
+          provider: 'provider-b',
+          model: 'model-b',
+          prompt_version: 'prompt-b',
+        },
+      ],
+    });
+
+    await runPaperQuestionRegistryBackfill(client, {
+      manifest: buildManifest([
+        {
+          storage_key: '9709/s16_qp_33/questions/q07.png',
+          syllabus_code: '9709',
+          year: 2016,
+          session: 's',
+          paper: 3,
+          variant: 3,
+          q_number: 7,
+          primary_topic_path: '9709.p3.integration',
+          source_reason: 'gate_pin',
+          descriptor_required: true,
+        },
+      ]),
+      curriculumSeed: buildCurriculumSeed([]),
+    });
+
+    expect(state.questionBankRows.get('9709/s16_qp_33/questions/q07.png::7')).toMatchObject({
+      prompt_representation: {
+        type: 'text',
+        value: 'Newest deterministic extraction summary.',
+      },
+      provenance_summary: expect.objectContaining({
+        descriptor_summary_status: 'hydrated_from_question_descriptions_v0',
+      }),
+    });
+  });
+
   test('seeds missing pilot curriculum nodes and resolves primary_topic_id deterministically from primary_topic_path', async () => {
     const { client, state } = createBackfillClient();
 
@@ -448,6 +567,107 @@ describe('paper-question registry backfill', () => {
 
     expect(state.questionBankRows.get('9709/s21_qp_31/questions/q03.png::3')).toMatchObject({
       primary_topic_id: insertedTopic.node_id,
+    });
+  });
+
+  test('uses version-aware curriculum identity when the same topic_path exists in multiple curriculum versions', async () => {
+    const { client, state } = createBackfillClient();
+
+    const summary = await runPaperQuestionRegistryBackfill(client, {
+      manifest: buildManifest([
+        {
+          storage_key: '9709/s19_qp_11/questions/q06.png',
+          syllabus_code: '9709',
+          year: 2019,
+          session: 's',
+          paper: 1,
+          variant: 1,
+          q_number: 6,
+          primary_topic_path: '9709.p1.trigonometry',
+          curriculum_version_tag: '2024-2026_v1',
+          source_reason: 'gate_pin',
+          descriptor_required: true,
+        },
+        {
+          storage_key: '9709/s20_qp_12/questions/q02.png',
+          syllabus_code: '9709',
+          year: 2020,
+          session: 's',
+          paper: 1,
+          variant: 2,
+          q_number: 2,
+          primary_topic_path: '9709.p1.trigonometry',
+          curriculum_version_tag: '2025-2027_v1',
+          source_reason: 'manual_audit_seed',
+          descriptor_required: true,
+        },
+      ]),
+      curriculumSeed: buildCurriculumSeed([
+        {
+          topic_path: '9709',
+          title: '9709 Mathematics',
+          version_tag: '2024-2026_v1',
+          sort_order: 0,
+        },
+        {
+          topic_path: '9709.p1',
+          title: 'Pure Mathematics 1',
+          version_tag: '2024-2026_v1',
+          paper: 1,
+          parent_topic_path: '9709',
+          sort_order: 100,
+        },
+        {
+          topic_path: '9709.p1.trigonometry',
+          title: 'Trigonometry',
+          version_tag: '2024-2026_v1',
+          paper: 1,
+          parent_topic_path: '9709.p1',
+          sort_order: 150,
+        },
+        {
+          topic_path: '9709',
+          title: '9709 Mathematics',
+          version_tag: '2025-2027_v1',
+          sort_order: 0,
+        },
+        {
+          topic_path: '9709.p1',
+          title: 'Pure Mathematics 1',
+          version_tag: '2025-2027_v1',
+          paper: 1,
+          parent_topic_path: '9709',
+          sort_order: 100,
+        },
+        {
+          topic_path: '9709.p1.trigonometry',
+          title: 'Trigonometry',
+          version_tag: '2025-2027_v1',
+          paper: 1,
+          parent_topic_path: '9709.p1',
+          sort_order: 150,
+        },
+      ]),
+    });
+
+    expect(summary.curriculumNodes).toMatchObject({
+      inserted: 6,
+      existing: 0,
+    });
+
+    const version2024Node = state.curriculumNodes.get(
+      '9709::9709.p1.trigonometry::2024-2026_v1',
+    );
+    const version2025Node = state.curriculumNodes.get(
+      '9709::9709.p1.trigonometry::2025-2027_v1',
+    );
+
+    expect(version2024Node?.node_id).not.toBe(version2025Node?.node_id);
+    expect(state.questionBankRows.get('9709/s19_qp_11/questions/q06.png::6')).toMatchObject({
+      primary_topic_id: version2024Node.node_id,
+    });
+    expect(state.questionBankRows.get('9709/s20_qp_12/questions/q02.png::2')).toMatchObject({
+      primary_topic_id: version2025Node.node_id,
     });
   });
 });

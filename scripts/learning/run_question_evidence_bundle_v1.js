@@ -6,8 +6,16 @@ import {
   summarizeQuestionEvidenceBundlesV1,
 } from './lib/question-evidence-bundle-v1.js';
 
+function writeStdoutLine(message) {
+  fs.writeSync(1, `${message}\n`);
+}
+
+function writeStderrLine(message) {
+  fs.writeSync(2, `${message}\n`);
+}
+
 function printUsage() {
-  console.log(
+  writeStdoutLine(
     'Usage: node scripts/learning/run_question_evidence_bundle_v1.js --manifest <path> [--lane-results <path>] [--output <path>] [--dry-run]',
   );
 }
@@ -102,12 +110,12 @@ export async function main(argv = process.argv.slice(2)) {
   });
   const summary = summarizeQuestionEvidenceBundlesV1(bundles);
 
-  console.log(`manifest_id: ${manifest.manifest_id ?? 'unknown'}`);
-  console.log(`bundles_planned: ${summary.bundles_planned}`);
+  writeStdoutLine(`manifest_id: ${manifest.manifest_id ?? 'unknown'}`);
+  writeStdoutLine(`bundles_planned: ${summary.bundles_planned}`);
   for (const [route, count] of Object.entries(summary.route_counts).sort(([left], [right]) => left.localeCompare(right))) {
-    console.log(`${route}: ${count}`);
+    writeStdoutLine(`${route}: ${count}`);
   }
-  console.log(`lazy_attach_original_image: ${summary.lazy_attach_original_image}`);
+  writeStdoutLine(`lazy_attach_original_image: ${summary.lazy_attach_original_image}`);
 
   if (options.dryRun) {
     return;
@@ -121,11 +129,11 @@ export async function main(argv = process.argv.slice(2)) {
 
   if (options.output) {
     fs.writeFileSync(options.output, JSON.stringify(payload, null, 2));
-    console.log(`wrote_evidence_bundles: ${options.output}`);
+    writeStdoutLine(`wrote_evidence_bundles: ${options.output}`);
     return;
   }
 
-  console.log(JSON.stringify(payload, null, 2));
+  writeStdoutLine(JSON.stringify(payload, null, 2));
 }
 
 export function isQuestionEvidenceBundleEntrypoint(entryScriptPath, metaUrl = import.meta.url) {
@@ -137,8 +145,10 @@ export function isQuestionEvidenceBundleEntrypoint(entryScriptPath, metaUrl = im
 }
 
 if (isQuestionEvidenceBundleEntrypoint(process.argv[1], import.meta.url)) {
-  main().catch((error) => {
-    console.error(error.message);
+  try {
+    await main();
+  } catch (error) {
+    writeStderrLine(error.message);
     process.exitCode = 1;
-  });
+  }
 }

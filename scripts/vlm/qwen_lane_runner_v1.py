@@ -43,12 +43,29 @@ def _confidence_from_output(lane_output: dict[str, Any]) -> float:
 
 
 def _summary_from_output(job: dict[str, Any], lane_output: dict[str, Any]) -> str | None:
+    def _first_non_empty(*values: Any) -> str | None:
+        for value in values:
+            if isinstance(value, str):
+                stripped = value.strip()
+                if stripped:
+                    return stripped
+        return None
+
     if job["route"] == "ocr_lane":
-        return lane_output.get("ocr_text") or None
+        return _first_non_empty(lane_output.get("ocr_text"))
     if job["route"] == "diagram_lane":
-        return lane_output.get("diagram_type") or None
+        return _first_non_empty(
+            lane_output.get("diagram_type"),
+            *(lane_output.get("spatial_evidence") or []),
+            *(lane_output.get("diagram_elements") or []),
+        )
     if job["route"] == "review_lane":
-        return lane_output.get("review_summary") or None
+        return _first_non_empty(
+            lane_output.get("review_summary"),
+            lane_output.get("ocr_text"),
+            *(lane_output.get("spatial_evidence") or []),
+            *(lane_output.get("diagram_elements") or []),
+        )
     return None
 
 

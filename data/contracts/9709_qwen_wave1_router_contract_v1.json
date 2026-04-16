@@ -22,8 +22,8 @@
     "requires_review"
   ],
   "route_hint_policy": {
-    "description": "route_hint is an advisory freeze input, not permission to bypass review.",
-    "unknown_surface_rule": "If any surface field is null or the manifest marks the row for review, the row stays review-gated until a replayable primary-asset audit resolves the surface."
+    "description": "route_hint is an advisory freeze input, not permission to bypass review or to skip extraction.",
+    "unknown_surface_rule": "If any surface field is null, the router preserves review posture but should still attempt extraction-first routing unless a stronger review trigger such as gate_critical applies."
   },
   "manifest_surface_value_contract": {
     "diagram_present": [
@@ -56,14 +56,13 @@
   ],
   "routes": {
     "ocr_lane": {
-      "model": "qwen-vl-ocr",
+      "model": "qwen3.6-plus",
       "selected_when": [
-        "requires_review=false",
-        "surface flags are evidence-backed rather than null",
         "text-dominant question surface",
         "formula_dense=true and diagram_present=false",
         "table_heavy=true",
-        "question stem and subquestion boundaries are layout-driven rather than spatially ambiguous"
+        "question stem and subquestion boundaries are layout-driven rather than spatially ambiguous",
+        "surface flags are still unknown but the row only needs extraction-first review posture rather than immediate triage"
       ],
       "lazy_attach_original_image": false
     },
@@ -80,10 +79,9 @@
       "model": "qwen3.6-plus",
       "selected_when": [
         "gate_critical=true",
-        "requires_review=true",
-        "any of diagram_present, formula_dense, or table_heavy is null/unknown",
         "OCR and diagram evidence conflict",
-        "AO cannot converge on a stable topic candidate"
+        "AO cannot converge on a stable topic candidate",
+        "a second-pass review is required after extraction rather than before extraction"
       ],
       "lazy_attach_original_image": true
     }

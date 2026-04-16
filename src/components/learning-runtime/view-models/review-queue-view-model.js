@@ -1,4 +1,6 @@
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
+const META_ENV = typeof import.meta !== 'undefined' ? import.meta.env || {} : {};
+const SCHEDULER_EXPLANATION_ENV_FLAG = 'VITE_LEARNING_RUNTIME_SCHEDULER_EXPLANATION_ENABLED';
 
 function normalizeString(value, fallback = null) {
   if (typeof value !== 'string') {
@@ -151,6 +153,58 @@ function normalizeExplanationFactors(value) {
   })).filter((factor) => factor.code || factor.summary);
 }
 
+function normalizeReviewQueueFeatureFlags(value, env = META_ENV) {
+  const featureFlags = value && typeof value === 'object' ? value : {};
+  const explicitFlag = featureFlags.schedulerExplanationEnabled;
+  const snakeCaseFlag = featureFlags.scheduler_explanation_enabled;
+
+  return {
+    schedulerExplanationEnabled:
+      typeof explicitFlag === 'boolean'
+        ? explicitFlag
+        : typeof snakeCaseFlag === 'boolean'
+          ? snakeCaseFlag
+          : env[SCHEDULER_EXPLANATION_ENV_FLAG] === 'true',
+  };
+}
+
+function normalizeStudentExplanation(value) {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+
+  const provenance = value.provenance ?? {};
+  const labels = (Array.isArray(value.labels) ? value.labels : [])
+    .map((label) => normalizeString(label))
+    .filter(Boolean)
+    .slice(0, 4);
+  const summary = normalizeString(value.summary);
+
+  if (!summary && labels.length === 0) {
+    return null;
+  }
+
+  return {
+    summary,
+    labels,
+    provenance: {
+      summaryFactorCodes: (
+        Array.isArray(provenance.summaryFactorCodes ?? provenance.summary_factor_codes)
+          ? (provenance.summaryFactorCodes ?? provenance.summary_factor_codes)
+          : []
+      ).map((code) => normalizeString(code)).filter(Boolean),
+      labelMappings: (
+        Array.isArray(provenance.labelMappings ?? provenance.label_mappings)
+          ? (provenance.labelMappings ?? provenance.label_mappings)
+          : []
+      ).map((mapping) => ({
+        label: normalizeString(mapping?.label),
+        factorCode: normalizeString(mapping?.factorCode ?? mapping?.factor_code),
+      })).filter((mapping) => mapping.label || mapping.factorCode),
+    },
+  };
+}
+
 function normalizeReviewTaskExplanation(value) {
   if (!value || typeof value !== 'object') {
     return null;
@@ -297,6 +351,10 @@ export function buildReviewQueueActionDrafts(items = [], currentDrafts = {}, opt
 export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
   const now = normalizeString(options.now) || new Date().toISOString();
   const items = Array.isArray(reviewQueue?.items) ? reviewQueue.items : [];
+  const featureFlags = normalizeReviewQueueFeatureFlags(
+    reviewQueue?.featureFlags ?? reviewQueue?.feature_flags ?? {},
+    options.env,
+  );
   const normalizedItems = items.map((item) => {
     const status = normalizeString(item.status, 'open');
     const schedulerState = normalizeSchedulerState(item.schedulerState ?? item.scheduler_state);
@@ -338,6 +396,9 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
         schedulerReasons,
         schedulerPolicy,
       ),
+      studentExplanation: normalizeStudentExplanation(
+        item.studentExplanation ?? item.student_explanation,
+      ),
       explanation: normalizeReviewTaskExplanation(item.explanation),
       launchPayload: buildLaunchPayload(item),
       workspaceLink: {
@@ -372,6 +433,7 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
     scope: normalizeString(reviewQueue?.scope),
     topicId: normalizeString(reviewQueue?.topicId ?? reviewQueue?.topic_id),
     policy: normalizeSchedulerPolicy(reviewQueue?.policy),
+    featureFlags,
     items: normalizedItems,
     summary,
     actionDrafts: buildReviewQueueActionDrafts(normalizedItems, {}, { now }),

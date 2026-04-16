@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+
 describe('learning event service', () => {
   test('synthetic pipeline preserves strict phase ordering and completes attempt state', async () => {
     const {
@@ -222,5 +224,176 @@ describe('learning event service', () => {
       aggregateId: 'attempt-missing-event',
       truthRevision: 1,
     })).toThrow('unknown_effect_event_id');
+  });
+
+  test('delivery reservation reuses one stable idempotency key and exposes the pending row contract', async () => {
+    const {
+      appendLearningEvent,
+      buildSyntheticAttemptEventFlow,
+      createEmptyLearningEventStore,
+      reserveLearningEventDelivery,
+    } = await import('../lib/events/event-service.js');
+
+    const store = createEmptyLearningEventStore();
+    const [attemptSubmitted] = buildSyntheticAttemptEventFlow({
+      attemptId: 'attempt-delivery-reserve',
+      learnerId: 'learner-1',
+      sessionId: 'session-1',
+      subjectCode: '9709',
+      emittedBy: 'jest',
+    });
+
+    appendLearningEvent(store, attemptSubmitted);
+
+    const input = {
+      eventId: attemptSubmitted.event_id,
+      handlerName: 'bridge:attempt-events',
+      effectKey: 'attempt-delivery:attempt-delivery-reserve:submitted',
+      aggregateId: attemptSubmitted.aggregate_id,
+      truthRevision: attemptSubmitted.truth_revision,
+    };
+
+    const first = reserveLearningEventDelivery(store, input);
+    const second = reserveLearningEventDelivery(store, input);
+
+    expect(first.delivery).toMatchObject({
+      delivery_state: 'pending',
+      retry_count: 0,
+      last_attempted_at: null,
+      last_error: null,
+    });
+    expect(second.delivery.delivery_id).toBe(first.delivery.delivery_id);
+    expect(second.delivery.stable_idempotency_key).toBe(first.delivery.stable_idempotency_key);
+    expect(store.deliveries).toHaveLength(1);
+  });
+
+  test('delivery execution dedupes downstream side effects across repeated attempts', async () => {
+    const {
+      appendLearningEvent,
+      buildSyntheticAttemptEventFlow,
+      createEmptyLearningEventStore,
+      runLearningEventDelivery,
+    } = await import('../lib/events/event-service.js');
+
+    const store = createEmptyLearningEventStore();
+    const flow = buildSyntheticAttemptEventFlow({
+      attemptId: 'attempt-delivery-dedupe',
+      learnerId: 'learner-1',
+      sessionId: 'session-1',
+      subjectCode: '9709',
+      emittedBy: 'jest',
+    });
+
+    flow.forEach((event) => appendLearningEvent(store, event));
+    const targetEvent = flow.at(-1);
+    const execute = jest.fn(async () => ({
+      status: 'succeeded',
+      resultRefType: 'artifact_suggestion_version',
+      resultRefId: 'artifact-suggestion-1',
+    }));
+
+    const first = await runLearningEventDelivery(store, {
+      eventId: targetEvent.event_id,
+      handlerName: 'project:artifact-suggestions',
+      effectKey: 'artifact-slot:review_queue:stable-output',
+      aggregateId: targetEvent.aggregate_id,
+      truthRevision: targetEvent.truth_revision,
+      execute,
+    });
+    const second = await runLearningEventDelivery(store, {
+      eventId: targetEvent.event_id,
+      handlerName: 'project:artifact-suggestions',
+      effectKey: 'artifact-slot:review_queue:stable-output',
+      aggregateId: targetEvent.aggregate_id,
+      truthRevision: targetEvent.truth_revision,
+      execute,
+    });
+
+    expect(execute).toHaveBeenCalledTimes(1);
+    expect(first.delivery).toMatchObject({
+      delivery_state: 'persisted',
+      retry_count: 0,
+      last_error: null,
+    });
+    expect(second.delivery.delivery_id).toBe(first.delivery.delivery_id);
+    expect(second.reason_code).toBe('duplicate_effect_key');
+    expect(store.effects).toHaveLength(1);
+  });
+
+  test('delivery failures record retry metadata and reconciliation can move rows into terminal outcomes', async () => {
+    const {
+      appendLearningEvent,
+      buildSyntheticAttemptEventFlow,
+      createEmptyLearningEventStore,
+      reconcileLearningEventDelivery,
+      runLearningEventDelivery,
+    } = await import('../lib/events/event-service.js');
+
+    const store = createEmptyLearningEventStore();
+    const flow = buildSyntheticAttemptEventFlow({
+      attemptId: 'attempt-delivery-reconcile',
+      learnerId: 'learner-1',
+      sessionId: 'session-1',
+      subjectCode: '9709',
+      emittedBy: 'jest',
+    });
+
+    flow.forEach((event) => appendLearningEvent(store, event));
+
+    const retrying = await runLearningEventDelivery(store, {
+      eventId: flow[3].event_id,
+      handlerName: 'bridge:learning-update',
+      effectKey: 'proposal:attempt-delivery-reconcile',
+      aggregateId: flow[3].aggregate_id,
+      truthRevision: flow[3].truth_revision,
+      execute: async () => {
+        throw new Error('temporary bridge failure');
+      },
+    });
+
+    expect(retrying.delivery).toMatchObject({
+      delivery_state: 'retrying',
+      retry_count: 1,
+      last_attempted_at: expect.any(String),
+      last_error: {
+        code: 'delivery_failed',
+        message: 'temporary bridge failure',
+      },
+    });
+
+    const manualReview = reconcileLearningEventDelivery(store, {
+      stableIdempotencyKey: retrying.delivery.stable_idempotency_key,
+      deliveryState: 'needs_manual_review',
+      reconciliationId: 'recon-manual-1',
+    });
+
+    expect(manualReview).toMatchObject({
+      delivery_state: 'needs_manual_review',
+      reconciliation_id: 'recon-manual-1',
+    });
+
+    const persisted = await runLearningEventDelivery(store, {
+      eventId: flow[4].event_id,
+      handlerName: 'bridge:mastery-update',
+      effectKey: 'mastery:attempt-delivery-reconcile',
+      aggregateId: flow[4].aggregate_id,
+      truthRevision: flow[4].truth_revision,
+      execute: async () => ({
+        status: 'succeeded',
+        resultRefType: 'mastery_update',
+        resultRefId: 'mastery-1',
+      }),
+    });
+
+    const reconciled = reconcileLearningEventDelivery(store, {
+      stableIdempotencyKey: persisted.delivery.stable_idempotency_key,
+      deliveryState: 'reconciled',
+      reconciliationId: 'recon-auto-1',
+    });
+
+    expect(reconciled).toMatchObject({
+      delivery_state: 'reconciled',
+      reconciliation_id: 'recon-auto-1',
+    });
   });
 });

@@ -496,6 +496,127 @@ async function writeBridgeWarning(client, {
   return !error;
 }
 
+function buildAttemptEventBridgeDeliveryIdempotencyKey({
+  attemptId,
+  markRunId,
+} = {}) {
+  return `attempt_event_bridge:${normalizeString(markRunId) || normalizeString(attemptId)}`;
+}
+
+async function getAttemptEventBridgeDelivery(client, {
+  stableIdempotencyKey,
+} = {}) {
+  const normalizedKey = normalizeString(stableIdempotencyKey);
+  if (!normalizedKey) {
+    throw new Error('missing_stable_idempotency_key');
+  }
+
+  const { data, error } = await client
+    .from('learning_event_deliveries')
+    .select('*')
+    .eq('stable_idempotency_key', normalizedKey)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message || 'Failed to load learning_event_deliveries row.');
+  }
+
+  return data ?? null;
+}
+
+async function reserveAttemptEventBridgeDelivery(client, {
+  attemptId,
+  learnerId,
+  subjectCode,
+  markRunId,
+} = {}) {
+  const stableIdempotencyKey = buildAttemptEventBridgeDeliveryIdempotencyKey({
+    attemptId,
+    markRunId,
+  });
+  const existing = await getAttemptEventBridgeDelivery(client, {
+    stableIdempotencyKey,
+  });
+
+  if (existing) {
+    return {
+      state: 'replay',
+      row: existing,
+      stableIdempotencyKey,
+    };
+  }
+
+  const { data, error } = await client
+    .from('learning_event_deliveries')
+    .insert({
+      stable_idempotency_key: stableIdempotencyKey,
+      attempt_id: attemptId,
+      learner_id: learnerId,
+      subject_code: subjectCode,
+      mark_run_id: normalizeString(markRunId) || null,
+      delivery_state: 'pending',
+      retry_count: 0,
+      last_attempted_at: null,
+      last_error: null,
+      truth_revision: null,
+      persisted_event_types: [],
+      persisted_event_ids: [],
+      reconciliation_id: null,
+    })
+    .select('*')
+    .single();
+
+  if (error?.code === '23505') {
+    const replay = await getAttemptEventBridgeDelivery(client, {
+      stableIdempotencyKey,
+    });
+
+    if (replay) {
+      return {
+        state: 'replay',
+        row: replay,
+        stableIdempotencyKey,
+      };
+    }
+  }
+
+  if (error || !data) {
+    throw new Error(error?.message || 'Failed to insert learning_event_deliveries row.');
+  }
+
+  return {
+    state: 'reserved',
+    row: data,
+    stableIdempotencyKey,
+  };
+}
+
+async function updateAttemptEventBridgeDelivery(client, {
+  stableIdempotencyKey,
+  patch,
+} = {}) {
+  const normalizedKey = normalizeString(stableIdempotencyKey);
+  if (!normalizedKey) {
+    throw new Error('missing_stable_idempotency_key');
+  }
+
+  const { data, error } = await client
+    .from('learning_event_deliveries')
+    .update({
+      ...cloneJson(patch),
+      updated_at: new Date().toISOString(),
+    })
+    .eq('stable_idempotency_key', normalizedKey)
+    .select('*')
+    .single();
+
+  if (error || !data) {
+    throw new Error(error?.message || 'Failed to update learning_event_deliveries row.');
+  }
+
+  return data;
+}
+
 export async function persistAttemptEventBridge(client, input = {}) {
   const attemptId = assertImmutableAttemptId(input);
   const authorityPosture = buildRuntimeAuthorityPosture(
@@ -506,8 +627,43 @@ export async function persistAttemptEventBridge(client, input = {}) {
   );
   const attemptContext = cloneJson(input.attemptContext ?? {}) ?? {};
   const markRunId = normalizeString(input.markRunId) || null;
+  const learnerId = normalizeString(input.learnerId);
+  const subjectCode = normalizeString(input.subjectCode);
+  let deliveryReservation = null;
 
   try {
+    deliveryReservation = await reserveAttemptEventBridgeDelivery(client, {
+      attemptId,
+      learnerId,
+      subjectCode,
+      markRunId,
+    });
+
+    if (deliveryReservation.state === 'replay') {
+      if (['persisted', 'reconciled'].includes(deliveryReservation.row.delivery_state)) {
+        return {
+          ok: true,
+          warningRecorded: false,
+          deduped: true,
+          persisted_event_types: normalizeArray(deliveryReservation.row.persisted_event_types),
+          pipeline_state: null,
+          delivery: deliveryReservation.row,
+        };
+      }
+
+      if (deliveryReservation.row.delivery_state === 'needs_manual_review') {
+        return {
+          ok: false,
+          warningRecorded: false,
+          deduped: true,
+          reason_code: 'attempt_event_bridge_needs_manual_review',
+          failed_stage: 'manual_review',
+          error_message: 'attempt-event delivery row already requires manual review',
+          delivery: deliveryReservation.row,
+        };
+      }
+    }
+
     const streamHead = await loadExistingStreamHead(client, attemptId);
     const events = buildBridgeEvents({
       ...input,
@@ -520,12 +676,26 @@ export async function persistAttemptEventBridge(client, input = {}) {
 
     await insertLearningEvents(client, events);
     await upsertAttemptPipelineState(client, pipelineState);
+    const finalizedDelivery = await updateAttemptEventBridgeDelivery(client, {
+      stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
+      patch: {
+        delivery_state: 'persisted',
+        retry_count: Number(deliveryReservation.row.retry_count ?? 0),
+        last_attempted_at: new Date().toISOString(),
+        last_error: null,
+        truth_revision: pipelineState.current_truth_revision ?? null,
+        persisted_event_types: events.map((event) => event.event_type),
+        persisted_event_ids: events.map((event) => event.event_id),
+      },
+    });
 
     return {
       ok: true,
       warningRecorded: false,
+      deduped: false,
       persisted_event_types: events.map((event) => event.event_type),
       pipeline_state: pipelineState,
+      delivery: finalizedDelivery,
     };
   } catch (error) {
     const errorMessage = error?.message || String(error);
@@ -542,6 +712,21 @@ export async function persistAttemptEventBridge(client, input = {}) {
       failedStage,
       errorMessage,
     });
+    const failedDelivery = deliveryReservation
+      ? await updateAttemptEventBridgeDelivery(client, {
+        stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
+        patch: {
+          delivery_state: 'retrying',
+          retry_count: Number(deliveryReservation.row.retry_count ?? 0) + 1,
+          last_attempted_at: new Date().toISOString(),
+          last_error: {
+            code: 'attempt_event_bridge_failed',
+            message: errorMessage,
+            failed_stage: failedStage,
+          },
+        },
+      })
+      : null;
 
     return {
       ok: false,
@@ -549,6 +734,26 @@ export async function persistAttemptEventBridge(client, input = {}) {
       reason_code: 'attempt_event_bridge_failed',
       failed_stage: failedStage,
       error_message: errorMessage,
+      delivery: failedDelivery,
     };
   }
+}
+
+export async function reconcileAttemptEventBridgeDelivery(client, {
+  stableIdempotencyKey,
+  deliveryState,
+  reconciliationId = null,
+} = {}) {
+  const normalizedState = normalizeString(deliveryState);
+  if (!['reconciled', 'needs_manual_review'].includes(normalizedState)) {
+    throw new Error('invalid_reconciliation_delivery_state');
+  }
+
+  return updateAttemptEventBridgeDelivery(client, {
+    stableIdempotencyKey,
+    patch: {
+      delivery_state: normalizedState,
+      reconciliation_id: normalizeString(reconciliationId) || null,
+    },
+  });
 }

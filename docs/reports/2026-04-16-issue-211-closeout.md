@@ -62,7 +62,7 @@ Fallback outcome:
 
 - Passed.
 - Test suites: `2 passed, 2 total`
-- Tests: `25 passed, 25 total`
+- Tests: `26 passed, 26 total`
 
 ### Extra focused test for indirect touch
 
@@ -81,6 +81,26 @@ Outcome:
 - Passed.
 - Test suites: `1 passed, 1 total`
 - Tests: `7 passed, 7 total`
+
+### Review follow-up regression
+
+Command:
+
+```bash
+NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules \
+node --experimental-vm-modules \
+  /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js \
+  --runInBand \
+  api/learning/__tests__/attempt-event-service.test.js \
+  api/marking/__tests__/evaluate-v1.test.js \
+  api/learning/__tests__/event-service.test.js
+```
+
+Outcome:
+
+- Passed after fixing repeated-write revision handling on the bridge path.
+- Test suites: `3 passed, 3 total`
+- Tests: `33 passed, 33 total`
 
 ### Diff hygiene
 

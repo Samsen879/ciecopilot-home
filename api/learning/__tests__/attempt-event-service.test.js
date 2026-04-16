@@ -2,6 +2,7 @@ function createMockClient({
   learningEventsError = null,
   pipelineStateError = null,
   warningError = null,
+  existingStreamHead = null,
 } = {}) {
   const records = {
     learningEvents: null,
@@ -13,7 +14,19 @@ function createMockClient({
     client: {
       from(table) {
         if (table === 'learning_events') {
+          const query = {
+            select: () => query,
+            eq: () => query,
+            order: () => query,
+            limit: () => query,
+            maybeSingle: async () => ({
+              data: existingStreamHead,
+              error: null,
+            }),
+          };
+
           return {
+            ...query,
             insert: async (rows) => {
               records.learningEvents = rows;
               return { error: learningEventsError };
@@ -204,6 +217,47 @@ describe('attempt-event-service', () => {
           learning_signal_posture: 'authoritative_scoring',
         },
       },
+    });
+  });
+
+  test('increments truth revision when the attempt already has persisted bridge events', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient({
+      existingStreamHead: {
+        truth_revision: 1,
+        sequence_no: 4,
+      },
+    });
+
+    const result = await persistAttemptEventBridge(client, buildBridgeInput({
+      markRunId: 'mr-bridge-2',
+      sourceMarkRunRef: {
+        kind: 'mark_run',
+        mark_run_id: 'mr-bridge-2',
+      },
+      markingResult: {
+        attempt_id: 'att-bridge-1',
+        mark_run_id: 'mr-bridge-2',
+        marking_summary: {
+          coverage_scope: 'subpart',
+        },
+      },
+    }));
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      pipeline_state: {
+        attempt_id: 'att-bridge-1',
+        current_truth_revision: 2,
+        last_sequence_no: 4,
+      },
+    });
+
+    expect(records.learningEvents).toHaveLength(4);
+    records.learningEvents.forEach((event, index) => {
+      expect(event.truth_revision).toBe(2);
+      expect(event.sequence_no).toBe(index + 1);
     });
   });
 });

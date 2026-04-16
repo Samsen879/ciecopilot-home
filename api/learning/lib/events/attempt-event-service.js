@@ -301,6 +301,47 @@ function assertImmutableAttemptId({
   return normalizedAttemptId;
 }
 
+async function loadExistingStreamHead(client, attemptId) {
+  const { data, error } = await client
+    .from('learning_events')
+    .select('truth_revision, sequence_no')
+    .eq('aggregate_id', attemptId)
+    .order('truth_revision', { ascending: false })
+    .order('sequence_no', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message || 'Failed to load learning_events stream head.');
+  }
+
+  return data ?? null;
+}
+
+function resolveNextTruthRevision(streamHead) {
+  const currentTruthRevision = Number(streamHead?.truth_revision);
+  return Number.isInteger(currentTruthRevision) && currentTruthRevision >= 1
+    ? currentTruthRevision + 1
+    : 1;
+}
+
+function buildProjectionSeedState(attemptId, streamHead) {
+  const currentTruthRevision = Number(streamHead?.truth_revision);
+  const lastSequenceNo = Number(streamHead?.sequence_no);
+
+  if (!Number.isInteger(currentTruthRevision) || currentTruthRevision < 1) {
+    return null;
+  }
+
+  return {
+    attempt_id: attemptId,
+    current_truth_revision: currentTruthRevision,
+    last_sequence_no: Number.isInteger(lastSequenceNo) && lastSequenceNo >= 0 ? lastSequenceNo : 0,
+    current_stage: 'LearningUpdateProposed',
+    current_status: 'running',
+  };
+}
+
 function buildBridgeEvents(input = {}) {
   const attemptId = assertImmutableAttemptId(input);
   const learnerId = normalizeString(input.learnerId);
@@ -317,6 +358,7 @@ function buildBridgeEvents(input = {}) {
   const attemptContext = cloneJson(input.attemptContext ?? {}) ?? {};
   const sourceAttemptRef = cloneJson(input.sourceAttemptRef ?? null);
   const sourceMarkRunRef = cloneJson(input.sourceMarkRunRef ?? null);
+  const truthRevision = resolveNextTruthRevision(input.streamHead);
 
   if (!learnerId) {
     throw new Error('missing_learner_id');
@@ -380,7 +422,7 @@ function buildBridgeEvents(input = {}) {
     learner_id: learnerId,
     session_id: sessionId,
     subject_code: subjectCode,
-    truth_revision: 1,
+    truth_revision: truthRevision,
     sequence_no: index + 1,
     correlation_id: correlationId,
     causation_event_id: null,
@@ -457,8 +499,15 @@ export async function persistAttemptEventBridge(client, input = {}) {
   const markRunId = normalizeString(input.markRunId) || null;
 
   try {
-    const events = buildBridgeEvents(input);
-    const pipelineState = projectAttemptPipelineState(events);
+    const streamHead = await loadExistingStreamHead(client, attemptId);
+    const events = buildBridgeEvents({
+      ...input,
+      streamHead,
+    });
+    const pipelineState = projectAttemptPipelineState(
+      events,
+      buildProjectionSeedState(attemptId, streamHead),
+    );
 
     await insertLearningEvents(client, events);
     await upsertAttemptPipelineState(client, pipelineState);

@@ -54,6 +54,27 @@ function createArtifactRepositoryFixture() {
         superseded_by_artifact_id: null,
       },
     ],
+    [
+      'art-non-authoritative',
+      {
+        artifact_id: 'art-non-authoritative',
+        artifact_kind: 'misconception_card',
+        canonical_home_topic_id: 'topic-trig-identities',
+        slot_key: 'common_traps',
+        trust_status: 'grounded',
+        placement_status: 'inbox',
+        lifecycle_status: 'active',
+        grounding_refs: [
+          {
+            kind: 'attempt',
+            attempt_id: 'attempt-imported-1',
+            runtime_authority_posture: 'non_authoritative',
+            runtime_authority_reason_code: 'imported_question_attempt',
+          },
+        ],
+        superseded_by_artifact_id: null,
+      },
+    ],
   ]);
 
   const workspaceSlots = new Map([
@@ -203,6 +224,24 @@ describe('artifact-service', () => {
       service.patchArtifact({
         userId: 'student-1',
         artifactId: 'art-incompatible',
+        intent: 'set_placement_status',
+        placementStatus: 'pinned',
+      }),
+    ).rejects.toMatchObject({
+      code: 'artifact_state_conflict',
+      status: 409,
+    });
+  });
+
+  test('set_placement_status rejects pinning an artifact grounded only by a non-authoritative imported attempt', async () => {
+    const service = createArtifactService({
+      artifactRepository: createArtifactRepositoryFixture(),
+    });
+
+    await expect(
+      service.patchArtifact({
+        userId: 'student-1',
+        artifactId: 'art-non-authoritative',
         intent: 'set_placement_status',
         placementStatus: 'pinned',
       }),

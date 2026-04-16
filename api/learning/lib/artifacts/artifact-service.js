@@ -3,6 +3,10 @@ import {
   buildArtifactRef,
   isCompatibleArtifactKindForSlot,
 } from '../contracts/runtime-contract.js';
+import {
+  buildAttemptGroundingRef,
+  hasNonAuthoritativeAttemptGrounding,
+} from '../contracts/runtime-authority-posture.js';
 import { createArtifactRepository } from '../repositories/artifact-repository.js';
 
 const ARTIFACT_INTENTS = new Set([
@@ -57,6 +61,7 @@ function buildCandidateHome(input = {}) {
 
 function buildArtifactCandidate(input = {}, timestamp) {
   const home = buildCandidateHome(input);
+  const sourceAttemptGroundingRef = buildAttemptGroundingRef(input.source_attempt_ref, input);
 
   return {
     artifact_kind: input.artifact_kind || 'misconception_card',
@@ -73,7 +78,7 @@ function buildArtifactCandidate(input = {}, timestamp) {
     lifecycle_status: 'active',
     grounding_refs: [
       ...normalizeArray(input.grounding_refs),
-      ...normalizeArray(input.source_attempt_ref ? [input.source_attempt_ref] : []),
+      ...normalizeArray(sourceAttemptGroundingRef ? [sourceAttemptGroundingRef] : []),
       ...normalizeArray(input.source_mark_run_ref ? [input.source_mark_run_ref] : []),
     ],
     misconception_tags: normalizeArray(input.misconception_tags),
@@ -185,6 +190,15 @@ async function handlePlacementIntent({
     throw buildArtifactConflict('Contested artifacts cannot be pinned.', {
       artifact_id: artifact.artifact_id,
     });
+  }
+
+  if (placementStatus === 'pinned' && hasNonAuthoritativeAttemptGrounding(artifact.grounding_refs)) {
+    throw buildArtifactConflict(
+      'Artifacts grounded by non-authoritative imported attempts cannot gain stable-slot residency.',
+      {
+        artifact_id: artifact.artifact_id,
+      },
+    );
   }
 
   if (
@@ -324,6 +338,15 @@ async function handleSupersedeIntent({
       slot_key: successor.slot_key,
       artifact_kind: successor.artifact_kind,
     });
+  }
+
+  if (artifact.placement_status === 'pinned' && hasNonAuthoritativeAttemptGrounding(successor.grounding_refs)) {
+    throw buildArtifactConflict(
+      'Artifacts grounded by non-authoritative imported attempts cannot gain stable-slot residency.',
+      {
+        artifact_id: successor.artifact_id,
+      },
+    );
   }
 
   const timestamp = now().toISOString();

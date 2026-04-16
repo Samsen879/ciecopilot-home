@@ -12,6 +12,7 @@ import { resolveQuestionId, ValidationError } from './lib/attempt-repository.js'
 import { writeLedger } from './lib/ledger-orchestrator.js';
 import { buildMarkingResult } from './lib/marking-result-contract.js';
 import { resolveReleasedScoringPosture } from '../learning/lib/contracts/released-scope.js';
+import { buildRuntimeAuthorityPosture } from '../learning/lib/contracts/runtime-authority-posture.js';
 import { persistAttemptEventBridge } from '../learning/lib/events/attempt-event-service.js';
 import { applyLearningEffects } from '../learning/lib/mastery/mastery-orchestrator.js';
 
@@ -131,7 +132,7 @@ async function loadLearningQuestionContext(supabase, questionId) {
   const { data, error } = await supabase
     .from('learning_question_registry_projection')
     .select(
-      'question_id, primary_topic_id, family_id, primary_question_type_id, primary_question_type_release_state, classification_confidence, candidate_rubric_refs, release_scope_status',
+      'question_id, source_kind, primary_topic_id, family_id, primary_question_type_id, primary_question_type_release_state, classification_confidence, candidate_rubric_refs, release_scope_status',
     )
     .eq('question_id', questionId)
     .maybeSingle();
@@ -143,6 +144,7 @@ async function loadLearningQuestionContext(supabase, questionId) {
   return data
     ? {
       question_id: data.question_id,
+      source_kind: data.source_kind ?? null,
       primary_topic_id: data.primary_topic_id ?? null,
       family_id: data.family_id ?? null,
       question_type_id: data.primary_question_type_id ?? null,
@@ -155,6 +157,7 @@ async function loadLearningQuestionContext(supabase, questionId) {
     }
     : {
       question_id: questionId,
+      source_kind: null,
       primary_topic_id: null,
       family_id: null,
       question_type_id: null,
@@ -168,6 +171,7 @@ async function loadLearningQuestionContext(supabase, questionId) {
 function getEmptyLearningQuestionContext(questionId) {
   return {
     question_id: questionId,
+    source_kind: null,
     primary_topic_id: null,
     family_id: null,
     question_type_id: null,
@@ -328,6 +332,18 @@ export default async function handler(req, res) {
     let markingResult = null;
     const requestScopedPartId = part_id;
     const requestScopedSubpartId = subpart_id ?? subpart ?? null;
+    const runtimeAuthorityPosture = buildRuntimeAuthorityPosture(
+      resolveReleasedScoringPosture({
+        questionTypeId: questionContext.question_type_id,
+        questionTypeReleaseState: questionContext.question_type_release_state,
+        candidateRubricRefs: questionContext.candidate_rubric_refs,
+        classificationConfidence: questionContext.classification_confidence,
+        uncertaintyValidated: true,
+      }),
+      {
+        questionContext,
+      },
+    );
 
     try {
       const baseMarkingResult = buildMarkingResult({
@@ -362,6 +378,7 @@ export default async function handler(req, res) {
           decisions,
           rubric_rows_used,
           marking_result: baseMarkingResult,
+          authority_posture: runtimeAuthorityPosture,
         },
       });
 
@@ -389,14 +406,6 @@ export default async function handler(req, res) {
       }));
 
       if (ledgerResult.decision_write_status === 'success') {
-        const releaseScopePosture = resolveReleasedScoringPosture({
-          questionTypeId: questionContext.question_type_id,
-          questionTypeReleaseState: questionContext.question_type_release_state,
-          candidateRubricRefs: questionContext.candidate_rubric_refs,
-          classificationConfidence: questionContext.classification_confidence,
-          uncertaintyValidated: true,
-        });
-
         if (isRuntimeBridgeEnabled()) {
           try {
             const bridgeResult = await persistAttemptEventBridge(supabase, {
@@ -415,7 +424,7 @@ export default async function handler(req, res) {
                 primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
               },
               attemptContext: ledgerResult.attempt_context ?? null,
-              authorityPosture: releaseScopePosture,
+              authorityPosture: runtimeAuthorityPosture,
               markingResult: markingResult,
               sourceAttemptRef: {
                 kind: 'attempt',
@@ -460,6 +469,7 @@ export default async function handler(req, res) {
             subject_code: subjectCode,
             question_id,
             question_context: {
+              source_kind: questionContext.source_kind,
               family_id: questionContext.family_id,
               question_type_id: questionContext.question_type_id,
               question_type_release_state: questionContext.question_type_release_state,
@@ -484,7 +494,7 @@ export default async function handler(req, res) {
             decisions,
             marking_result: markingResult,
             uncertainty_validated: true,
-            release_scope_posture: releaseScopePosture,
+            release_scope_posture: runtimeAuthorityPosture,
           }, {
             supabase,
           });

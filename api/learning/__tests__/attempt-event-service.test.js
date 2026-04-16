@@ -80,6 +80,7 @@ function buildBridgeInput(overrides = {}) {
       },
     ],
     questionContext: {
+      source_kind: 'paper_question',
       family_id: '9709.trigonometry_manipulation_equations',
       question_type_id: '9709.trigonometry.equations',
       question_type_release_state: 'released',
@@ -258,6 +259,66 @@ describe('attempt-event-service', () => {
     records.learningEvents.forEach((event, index) => {
       expect(event.truth_revision).toBe(2);
       expect(event.sequence_no).toBe(index + 1);
+    });
+  });
+
+  test('imported-question attempts stay durable while persisting explicit non-authoritative posture', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient();
+
+    const result = await persistAttemptEventBridge(client, buildBridgeInput({
+      questionContext: {
+        source_kind: 'imported_question',
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.identities',
+        question_type_release_state: 'released',
+        primary_topic_id: 'topic-trig-identities',
+        primary_topic_path: '9709/trigonometry/identities',
+        classification_confidence: 0.95,
+        candidate_rubric_refs: [
+          {
+            kind: 'rubric_release',
+            rubric_version_id: 'trig-identities-v1',
+            release_state: 'released',
+          },
+        ],
+        release_scope_status: 'released_scoring',
+      },
+      authorityPosture: {
+        release_scope_status: 'released_scoring',
+        authoritative_scoring_allowed: true,
+        fallback_mode: null,
+        fallback_reason_code: null,
+        classification_confidence: 0.95,
+        learning_signal_posture: 'authoritative_scoring',
+      },
+    }));
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      persisted_event_types: [
+        'AttemptSubmitted',
+        'QuestionClassified',
+        'MarkingCompleted',
+        'LearningUpdateProposed',
+      ],
+    });
+
+    expect(records.learningEvents).toHaveLength(4);
+    records.learningEvents.forEach((event) => {
+      expect(event.payload.authority_posture).toMatchObject({
+        authoritative_scoring_allowed: false,
+        runtime_authority_posture: 'non_authoritative',
+        runtime_authority_reason_code: 'imported_question_attempt',
+        question_source_kind: 'imported_question',
+      });
+      expect(event.provenance.trust.authority_posture).toMatchObject({
+        authoritative_scoring_allowed: false,
+        runtime_authority_posture: 'non_authoritative',
+        runtime_authority_reason_code: 'imported_question_attempt',
+        question_source_kind: 'imported_question',
+      });
     });
   });
 });

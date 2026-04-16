@@ -1,5 +1,6 @@
 import { createReviewTaskRepository } from '../repositories/review-task-repository.js';
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
+import { isNonAuthoritativeRuntimeInput } from '../contracts/runtime-authority-posture.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
   buildReviewTaskExplainabilitySeed,
@@ -328,6 +329,10 @@ function hasRepairSignal(input = {}) {
 
 export function shouldGenerateReviewTaskFromOutcome(input = {}) {
   if (!input.repair_target_topic_id) {
+    return false;
+  }
+
+  if (isNonAuthoritativeRuntimeInput(input)) {
     return false;
   }
 

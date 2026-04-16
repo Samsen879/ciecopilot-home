@@ -445,6 +445,21 @@ export function appendLearningEvent(store, candidateEvent) {
   };
 }
 
+export function projectAttemptPipelineState(events = []) {
+  const store = createEmptyLearningEventStore();
+  let pipelineState = null;
+
+  for (const event of events) {
+    const result = appendLearningEvent(store, event);
+    if (!result.inserted) {
+      throw new Error(result.reason_code || 'learning_event_not_inserted');
+    }
+    pipelineState = result.pipeline_state;
+  }
+
+  return pipelineState;
+}
+
 export function tryStartLearningEventEffect(store, input) {
   const normalizedInput = assertEffectInput(input);
   const nowIso = getNowIso();

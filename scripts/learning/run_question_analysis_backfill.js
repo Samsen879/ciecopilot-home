@@ -31,6 +31,14 @@ function normalizeSourceKind(value) {
   return normalized;
 }
 
+function readRequiredOptionValue(argv, index, token, message) {
+  const value = argv[index + 1] ?? null;
+  if (!value || value.startsWith('--')) {
+    throw new Error(message);
+  }
+  return value;
+}
+
 async function loadCandidateQuestions(client, { sourceKind = 'imported_question' } = {}) {
   const { data, error } = await client
     .from('question_bank')
@@ -169,37 +177,31 @@ function parseArgs(argv = process.argv.slice(2)) {
     }
 
     if (token === '--source-kind') {
-      options.sourceKind = normalizeSourceKind(argv[index + 1] ?? null);
+      options.sourceKind = normalizeSourceKind(
+        readRequiredOptionValue(argv, index, token, '--source-kind requires a value.'),
+      );
       index += 1;
       continue;
     }
 
     if (token === '--manifest') {
-      options.manifestPath = argv[index + 1] ?? null;
+      options.manifestPath = readRequiredOptionValue(argv, index, token, '--manifest requires a file path.');
       index += 1;
       continue;
     }
 
     if (token === '--evidence-bundles') {
-      options.evidenceBundlePath = argv[index + 1] ?? null;
+      options.evidenceBundlePath = readRequiredOptionValue(
+        argv,
+        index,
+        token,
+        '--evidence-bundles requires a file path.',
+      );
       index += 1;
       continue;
     }
 
     throw new Error(`Unknown argument: ${token}`);
-  }
-
-  if (options.evidenceBundlePath && options.evidenceBundlePath.startsWith('--')) {
-    throw new Error('--evidence-bundles requires a file path.');
-  }
-  if (argv.includes('--evidence-bundles') && !options.evidenceBundlePath) {
-    throw new Error('--evidence-bundles requires a file path.');
-  }
-  if (options.manifestPath && options.manifestPath.startsWith('--')) {
-    throw new Error('--manifest requires a file path.');
-  }
-  if (argv.includes('--manifest') && !options.manifestPath) {
-    throw new Error('--manifest requires a file path.');
   }
 
   return options;

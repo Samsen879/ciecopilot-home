@@ -543,7 +543,7 @@ describe('question-search-gate', () => {
     });
   });
 
-  test('selectSupabaseDbContainerName picks the first running supabase db container and fails loudly otherwise', () => {
+  test('selectSupabaseDbContainerName returns the sole matching container and fails loudly when missing or ambiguous', () => {
     expect(selectSupabaseDbContainerName([
       'redis_cache_ciecopilot-home',
       'supabase_db_ciecopilot-home',
@@ -554,6 +554,11 @@ describe('question-search-gate', () => {
       'redis_cache_ciecopilot-home',
       'studio_ciecopilot-home',
     ])).toThrow('Supabase DB container not found');
+
+    expect(() => selectSupabaseDbContainerName([
+      'supabase_db_alpha',
+      'supabase_db_beta',
+    ])).toThrow('Multiple Supabase DB containers found');
   });
 
   test('getProjectionSearchMode falls back to psql for DATABASE_URL-only environments', () => {

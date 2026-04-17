@@ -126,4 +126,18 @@ describe('run_question_analysis_backfill cli', () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('--evidence-bundles requires a file path');
   });
+
+  test('fails loudly when --source-kind is passed without a value', () => {
+    const result = runCli(['--source-kind']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('--source-kind requires a value');
+  });
+
+  test('fails loudly when --source-kind is followed by another flag instead of a value', () => {
+    const result = runCli(['--source-kind', '--force']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('--source-kind requires a value');
+  });
 });

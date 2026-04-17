@@ -705,11 +705,16 @@ function normalizeOptionalString(value) {
 }
 
 export function selectSupabaseDbContainerName(containerNames = []) {
-  const match = containerNames.find((name) => /^supabase_db/u.test(name));
-  if (!match) {
+  const matches = containerNames.filter((name) => /^supabase_db/u.test(name));
+  if (matches.length === 0) {
     throw new Error('Supabase DB container not found. Run `supabase start` first or pass --psql-container.');
   }
-  return match;
+  if (matches.length > 1) {
+    throw new Error(
+      `Multiple Supabase DB containers found (${matches.join(', ')}). Pass --psql-container explicitly.`,
+    );
+  }
+  return matches[0];
 }
 
 export function resolveQuestionSearchGatePsqlConfig(args = {}, env = process.env) {

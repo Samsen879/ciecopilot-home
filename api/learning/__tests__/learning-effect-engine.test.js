@@ -1,5 +1,7 @@
 import { jest } from '@jest/globals';
 
+const EFFECT_RECEIPT_STATUSES = new Set(['started', 'succeeded', 'failed', 'noop', 'superseded']);
+
 function clone(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 }
@@ -75,6 +77,10 @@ function createInMemoryEffectRepository() {
       result_ref_type: resultRefType = null,
       result_ref_id: resultRefId = null,
     } = {}) {
+      if (!EFFECT_RECEIPT_STATUSES.has(status)) {
+        throw new Error(`invalid_effect_receipt_status:${status}`);
+      }
+
       const receipt = receipts.get(keyFor(handlerName, effectKey));
       receipt.status = status;
       receipt.receipt_state = 'persisted';
@@ -458,6 +464,57 @@ describe('learning-effect-engine', () => {
           handler_name: 'artifact_suggestions',
           status: 'succeeded',
           receipt_state: 'persisted',
+        }),
+      ]),
+    );
+  });
+
+  test('review-task domain status does not leak into the effect receipt status enum', async () => {
+    const { applyLearningUpdateProposal } = await import('../lib/events/learning-effect-engine.js');
+    const effectRepository = createInMemoryEffectRepository();
+    const reviewTaskService = {
+      async materializeProposedTask() {
+        return [{
+          review_task_id: 'review-task-1',
+          status: 'open',
+        }];
+      },
+    };
+    const masteryHandler = jest.fn(async () => ({
+      status: 'succeeded',
+      result_ref_type: 'family_mastery',
+      result_ref_id: 'family-mastery-1',
+    }));
+    const artifactHandler = jest.fn(async () => ({
+      status: 'succeeded',
+      result_ref_type: 'artifact',
+      result_ref_id: 'artifact-1',
+    }));
+
+    const result = await applyLearningUpdateProposal(
+      { proposalEvent: buildProposalEvent() },
+      {
+        effectRepository,
+        reviewTaskService,
+        handlers: {
+          mastery: masteryHandler,
+          artifact_suggestions: artifactHandler,
+        },
+      },
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      status: 'applied',
+    });
+    expect(await effectRepository.listEffectReceiptsByEventId('learning-update-event-1')).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          handler_name: 'review_tasks',
+          status: 'succeeded',
+          receipt_state: 'persisted',
+          result_ref_type: 'review_task',
+          result_ref_id: 'review-task-1',
         }),
       ]),
     );

@@ -22,6 +22,8 @@ const HANDLER_CONFIG = Object.freeze([
   },
 ]);
 
+const EFFECT_RECEIPT_SUCCESS_STATUSES = new Set(['succeeded', 'noop', 'superseded']);
+
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -40,8 +42,15 @@ function buildReceiptSummary(receipts = []) {
 }
 
 function normalizeHandlerResult(result = {}, fallback = {}) {
+  const effectStatusCandidate =
+    normalizeString(result?.effect_status)
+    || normalizeString(result?.effectStatus)
+    || normalizeString(result?.status);
+
   return {
-    status: normalizeString(result?.status) || fallback.status || 'succeeded',
+    effect_status: EFFECT_RECEIPT_SUCCESS_STATUSES.has(effectStatusCandidate)
+      ? effectStatusCandidate
+      : (fallback.effect_status || 'succeeded'),
     result_ref_type:
       normalizeString(result?.result_ref_type)
       || normalizeString(result?.resultRefType)
@@ -204,7 +213,7 @@ export function createLearningEffectEngine({
             const receipt = await resolvedEffectRepository.markEffectReceiptSucceeded({
               handler_name: config.handlerName,
               effect_key: effect.effect_key,
-              status: normalizedResult.status,
+              status: normalizedResult.effect_status,
               result_ref_type: normalizedResult.result_ref_type,
               result_ref_id: normalizedResult.result_ref_id,
             });

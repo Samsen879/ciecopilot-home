@@ -90,6 +90,22 @@ function normalizeRoute(task = {}) {
   return 'short_delay';
 }
 
+function reviewTargetKey(task = {}) {
+  const successCriteria = normalizeObject(task?.success_criteria);
+  const storedKey = normalizeString(successCriteria.review_target_key);
+  if (storedKey) {
+    return storedKey;
+  }
+
+  return [
+    normalizeString(task?.target_kind, 'untyped'),
+    normalizeString(task?.target_topic_id, 'untopic'),
+    normalizeString(task?.target_family_id, 'unfamily'),
+    normalizeString(task?.target_question_type_id, 'untype'),
+    normalizeString(successCriteria.posture, 'unknown_posture'),
+  ].join('|');
+}
+
 function buildReason(code, summary) {
   return { code, summary };
 }
@@ -761,7 +777,16 @@ export function buildMergedSchedulerPolicy(existingTask = {}, candidateTask = {}
   }, candidatePolicy.fallback_reason_code ?? existingPolicy.fallback_reason_code ?? null);
 }
 
-export function pickReviewTaskMergeCandidate(tasks = [], candidateTask = {}) {
+export function pickReviewTaskMergeCandidate(tasks = [], candidateTask = {}, options = {}) {
+  if (options.reviewActionContractEnabled) {
+    const candidateKey = reviewTargetKey(candidateTask);
+
+    return normalizeArray(tasks)
+      .filter((task) => ACTIVE_REVIEW_TASK_STATUSES.has(task?.status))
+      .filter((task) => reviewTargetKey(task) === candidateKey)
+      .sort(compareTaskRank)[0] ?? null;
+  }
+
   const candidateMisconceptionTags = new Set(
     normalizeArray(candidateTask?.target_misconception_tags).map((tag) => normalizeString(tag)).filter(Boolean),
   );

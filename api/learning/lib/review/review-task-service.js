@@ -3,6 +3,7 @@ import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { isNonAuthoritativeRuntimeInput } from '../contracts/runtime-authority-posture.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
+  REVIEW_SCHEDULER_POLICY,
   buildReviewTaskExplainabilitySeed,
   mergeReviewTaskPayload,
   normalizeSchedulerProjectionItem,
@@ -18,22 +19,29 @@ const REVIEW_TASK_ERROR_CODES = Object.freeze({
   STATE_CONFLICT: 'review_task_state_conflict',
 });
 
+const REVIEW_ACTION_CONTRACT_ENV_FLAG = 'LEARNING_REVIEW_ACTION_CONTRACT';
 const REVIEW_TASK_INTENTS = new Set(['complete', 'reschedule', 'snooze', 'reopen']);
+const REVIEW_TASK_OPERATOR_INTENTS = new Set(['invalidate', 'withdraw']);
 const REVIEW_TASK_COMPLETION_OUTCOMES = new Set(['completed', 'partial']);
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
 const REOPENABLE_REVIEW_TASK_STATUSES = new Set(['completed', 'partial']);
+const REVIEW_TASK_BACKEND_DISPOSITIONS = Object.freeze({
+  invalidate: 'invalidated',
+  withdraw: 'withdrawn_by_policy',
+  mergedIntoSuccessor: 'merged_into_successor',
+});
 
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
-function normalizeString(value) {
+function normalizeString(value, fallback = null) {
   if (value === null || value === undefined) {
-    return null;
+    return fallback;
   }
 
   const normalized = String(value).trim();
-  return normalized || null;
+  return normalized || fallback;
 }
 
 function isPlainObject(value) {
@@ -71,6 +79,28 @@ function hasCompletionEvidenceSignal(evidence) {
 
 function clone(value) {
   return value ? JSON.parse(JSON.stringify(value)) : value;
+}
+
+function addHours(date, hours) {
+  return new Date(date.getTime() + (hours * 60 * 60 * 1000));
+}
+
+function parseTimestamp(value) {
+  const normalized = normalizeString(value);
+  if (!normalized) {
+    return null;
+  }
+
+  const parsed = new Date(normalized);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function isReviewActionContractEnabled(value) {
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
+  return process.env[REVIEW_ACTION_CONTRACT_ENV_FLAG] === 'true';
 }
 
 function buildInvalidPayload(message, details) {
@@ -137,18 +167,130 @@ function normalizeCompletionEvidence(input = {}) {
   return clone(input);
 }
 
+function normalizeOptionalCompletionEvidence(input = null) {
+  if (input === null || input === undefined) {
+    return {};
+  }
+
+  return normalizeCompletionEvidence(input);
+}
+
+function resolveReviewTaskPosture(input = {}) {
+  const successCriteria = isPlainObject(input?.success_criteria) ? input.success_criteria : {};
+  const storedPosture = normalizeString(successCriteria.posture);
+  if (storedPosture) {
+    return storedPosture;
+  }
+
+  return input.authoritative_scoring_allowed ? 'released_scoring_repair' : 'conservative_fallback';
+}
+
+function buildReviewTargetKey({
+  targetKind,
+  targetTopicId,
+  targetFamilyId,
+  targetQuestionTypeId,
+  posture,
+} = {}) {
+  return [
+    normalizeString(targetKind, 'untyped'),
+    normalizeString(targetTopicId, 'untopic'),
+    normalizeString(targetFamilyId, 'unfamily'),
+    normalizeString(targetQuestionTypeId, 'untype'),
+    normalizeString(posture, 'unknown_posture'),
+  ].join('|');
+}
+
+function getReviewTargetKey(task = {}) {
+  const successCriteria = isPlainObject(task?.success_criteria) ? task.success_criteria : {};
+  const storedKey = normalizeString(successCriteria.review_target_key);
+  if (storedKey) {
+    return storedKey;
+  }
+
+  return buildReviewTargetKey({
+    targetKind: task?.target_kind,
+    targetTopicId: task?.target_topic_id,
+    targetFamilyId: task?.target_family_id,
+    targetQuestionTypeId: task?.target_question_type_id,
+    posture: resolveReviewTaskPosture(task),
+  });
+}
+
+function buildReviewActionContractState(reviewTask = {}) {
+  const successCriteria = isPlainObject(reviewTask?.success_criteria) ? reviewTask.success_criteria : {};
+  const existing = isPlainObject(successCriteria.review_action_contract)
+    ? clone(successCriteria.review_action_contract)
+    : {};
+  const reviewTargetKey = getReviewTargetKey(reviewTask);
+
+  return {
+    ...existing,
+    review_target_key: reviewTargetKey,
+    lineage_key:
+      normalizeString(existing.lineage_key)
+      || `${reviewTargetKey}:${normalizeString(reviewTask.review_task_id, 'pending')}`,
+    last_lineage_action: normalizeString(existing.last_lineage_action),
+    schedule_provenance: normalizeArray(existing.schedule_provenance).map((entry) => clone(entry)),
+  };
+}
+
+function withReviewActionContract(reviewTask, patch = {}) {
+  const existingSuccessCriteria = isPlainObject(reviewTask?.success_criteria)
+    ? clone(reviewTask.success_criteria)
+    : {};
+  const existingContract = buildReviewActionContractState(reviewTask);
+
+  return {
+    ...existingSuccessCriteria,
+    review_target_key: normalizeString(
+      patch.review_target_key,
+      existingSuccessCriteria.review_target_key ?? getReviewTargetKey(reviewTask),
+    ),
+    posture: normalizeString(
+      patch.posture,
+      existingSuccessCriteria.posture ?? resolveReviewTaskPosture(reviewTask),
+    ),
+    review_action_contract: {
+      ...existingContract,
+      ...patch,
+      review_target_key: normalizeString(
+        patch.review_target_key,
+        patch.review_target_key ?? existingContract.review_target_key,
+      ),
+      lineage_key: normalizeString(
+        patch.lineage_key,
+        patch.lineage_key ?? existingContract.lineage_key,
+      ),
+      last_lineage_action: normalizeString(
+        patch.last_lineage_action,
+        patch.last_lineage_action ?? existingContract.last_lineage_action,
+      ),
+      schedule_provenance:
+        patch.schedule_provenance
+          ? normalizeArray(patch.schedule_provenance).map((entry) => clone(entry))
+          : existingContract.schedule_provenance,
+    },
+  };
+}
+
 function validatePatchInput({
   reviewTaskId,
   intent,
   completionOutcome,
   completionEvidence,
   dueAt,
+  reviewActionContractEnabled = false,
 } = {}) {
   if (!normalizeString(reviewTaskId)) {
     throw buildInvalidPayload('review_task_id is required.', { field: 'review_task_id' });
   }
 
-  if (!REVIEW_TASK_INTENTS.has(intent)) {
+  const allowedIntents = reviewActionContractEnabled
+    ? new Set([...REVIEW_TASK_INTENTS, ...REVIEW_TASK_OPERATOR_INTENTS])
+    : REVIEW_TASK_INTENTS;
+
+  if (!allowedIntents.has(intent)) {
     throw buildInvalidPayload('Review-task lifecycle writes must use explicit intents.', {
       field: 'intent',
     });
@@ -164,10 +306,17 @@ function validatePatchInput({
     normalizeCompletionEvidence(completionEvidence);
   }
 
-  if ((intent === 'reschedule' || intent === 'snooze') && !normalizeString(dueAt)) {
+  if (
+    (intent === 'reschedule' || (intent === 'snooze' && !reviewActionContractEnabled))
+    && !normalizeString(dueAt)
+  ) {
     throw buildInvalidPayload('due_at is required for schedule changes.', {
       field: 'due_at',
     });
+  }
+
+  if (reviewActionContractEnabled && (intent === 'invalidate' || intent === 'withdraw')) {
+    normalizeOptionalCompletionEvidence(completionEvidence);
   }
 }
 
@@ -179,7 +328,31 @@ function buildCompletionEvidence(input, completionOutcome, timestamp) {
   };
 }
 
-function buildSchedulePatch(reviewTask, intent, dueAt, timestamp) {
+function buildSkipOnceDueAt(reviewTask, timestamp) {
+  const nowDate = parseTimestamp(timestamp) || new Date(timestamp);
+  const currentDueAt = parseTimestamp(reviewTask?.due_at);
+  const baseDate = currentDueAt && currentDueAt.getTime() > nowDate.getTime()
+    ? currentDueAt
+    : nowDate;
+  const route = normalizeString(reviewTask?.success_criteria?.scheduler_policy?.route)
+    || normalizeString(reviewTask?.trigger_type)
+    || 'short_delay';
+  const hours = route === 'spaced_review'
+    ? REVIEW_SCHEDULER_POLICY.SPACED_REVIEW_HOURS
+    : route === 'short_delay'
+      ? REVIEW_SCHEDULER_POLICY.SHORT_DELAY_HOURS
+      : REVIEW_SCHEDULER_POLICY.IMMEDIATE_REPAIR_MAX_DEFERRAL_HOURS;
+
+  return addHours(baseDate, hours).toISOString();
+}
+
+function buildSchedulePatch(
+  reviewTask,
+  intent,
+  dueAt,
+  timestamp,
+  { reviewActionContractEnabled = false } = {},
+) {
   if (!ACTIVE_REVIEW_TASK_STATUSES.has(reviewTask.status)) {
     throw buildReviewTaskConflict('Only open or partial review tasks can change schedule.', {
       review_task_id: reviewTask.review_task_id,
@@ -188,7 +361,26 @@ function buildSchedulePatch(reviewTask, intent, dueAt, timestamp) {
     });
   }
 
-  const normalizedDueAt = normalizeIsoTimestamp(dueAt, 'due_at');
+  const contractState = reviewActionContractEnabled
+    ? buildReviewActionContractState(reviewTask)
+    : null;
+  const requestedDueAt = reviewActionContractEnabled && intent === 'snooze'
+    ? dueAt ?? buildSkipOnceDueAt(reviewTask, timestamp)
+    : dueAt;
+  const lineageAction = intent === 'snooze' ? 'skip_once' : 'reschedule';
+
+  if (
+    reviewActionContractEnabled
+    && intent === 'snooze'
+    && contractState?.last_lineage_action === 'skip_once'
+  ) {
+    throw buildReviewTaskConflict('skip_once cannot be applied consecutively to the same lineage.', {
+      review_task_id: reviewTask.review_task_id,
+      lineage_key: contractState.lineage_key,
+    });
+  }
+
+  const normalizedDueAt = normalizeIsoTimestamp(requestedDueAt, 'due_at');
   const nextDueAtMs = new Date(normalizedDueAt).getTime();
   const nowMs = new Date(timestamp).getTime();
 
@@ -227,9 +419,30 @@ function buildSchedulePatch(reviewTask, intent, dueAt, timestamp) {
     }
   }
 
-  return {
+  const patch = {
     due_at: normalizedDueAt,
     updated_at: timestamp,
+  };
+
+  if (!reviewActionContractEnabled) {
+    return patch;
+  }
+
+  return {
+    ...patch,
+    success_criteria: withReviewActionContract(reviewTask, {
+      last_lineage_action: lineageAction,
+      last_action_recorded_at: timestamp,
+      schedule_provenance: [
+        ...contractState.schedule_provenance,
+        {
+          intent: lineageAction,
+          previous_due_at: normalizeString(reviewTask.due_at),
+          next_due_at: normalizedDueAt,
+          changed_at: timestamp,
+        },
+      ],
+    }),
   };
 }
 
@@ -273,6 +486,146 @@ function buildCompletionPatch(reviewTask, completionOutcome, completionEvidence,
     ),
     updated_at: timestamp,
   };
+}
+
+function buildOperatorDispositionPatch(reviewTask, disposition, completionEvidence, timestamp) {
+  return {
+    status: 'expired',
+    completion_evidence: {
+      ...normalizeOptionalCompletionEvidence(completionEvidence),
+      backend_disposition: disposition,
+      recorded_at: timestamp,
+    },
+    success_criteria: withReviewActionContract(reviewTask, {
+      last_lineage_action: disposition,
+      last_action_recorded_at: timestamp,
+    }),
+    updated_at: timestamp,
+  };
+}
+
+function pickNearestSuccessorDueAt(reviewTask, timestamp) {
+  const nowDate = parseTimestamp(timestamp) || new Date(timestamp);
+  const currentDueAt = parseTimestamp(reviewTask?.due_at);
+  if (!currentDueAt) {
+    return nowDate.toISOString();
+  }
+
+  return currentDueAt.getTime() <= nowDate.getTime()
+    ? currentDueAt.toISOString()
+    : nowDate.toISOString();
+}
+
+function buildPartialSuccessorPayload(reviewTask, timestamp) {
+  const contractState = buildReviewActionContractState(reviewTask);
+  const successCriteria = isPlainObject(reviewTask?.success_criteria)
+    ? clone(reviewTask.success_criteria)
+    : {};
+
+  return {
+    user_id: reviewTask.user_id,
+    target_kind: reviewTask.target_kind,
+    target_topic_id: reviewTask.target_topic_id,
+    target_family_id: reviewTask.target_family_id ?? null,
+    target_question_type_id: reviewTask.target_question_type_id ?? null,
+    target_misconception_tags: normalizeArray(reviewTask.target_misconception_tags),
+    related_artifact_refs: normalizeArray(reviewTask.related_artifact_refs),
+    source_question_id: reviewTask.source_question_id ?? null,
+    source_attempt_ref: reviewTask.source_attempt_ref ?? null,
+    trigger_type: reviewTask.trigger_type,
+    mode: reviewTask.mode,
+    due_at: pickNearestSuccessorDueAt(reviewTask, timestamp),
+    priority: reviewTask.priority ?? 'normal',
+    estimated_minutes: reviewTask.estimated_minutes ?? null,
+    success_criteria: {
+      ...successCriteria,
+      review_target_key: contractState.review_target_key,
+      review_action_contract: {
+        ...contractState,
+        predecessor_review_task_ref: {
+          kind: 'review_task',
+          review_task_id: reviewTask.review_task_id,
+        },
+        last_lineage_action: 'partial',
+        last_action_recorded_at: timestamp,
+      },
+    },
+    completion_evidence: {},
+    status: 'open',
+    target_topic_path: reviewTask.target_topic_path ?? null,
+  };
+}
+
+async function upsertPartialSuccessor(reviewTaskRepository, reviewTask, timestamp) {
+  const successorPayload = buildPartialSuccessorPayload(reviewTask, timestamp);
+  const reviewTargetKey = getReviewTargetKey(reviewTask);
+  const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(reviewTask.user_id) ?? [];
+  const successorCandidate = activeTasks
+    .filter((task) => task?.review_task_id !== reviewTask.review_task_id)
+    .filter((task) => ACTIVE_REVIEW_TASK_STATUSES.has(task?.status))
+    .find((task) => getReviewTargetKey(task) === reviewTargetKey);
+
+  if (successorCandidate?.review_task_id) {
+    const mergedPatch = {
+      ...mergeReviewTaskPayload(successorCandidate, successorPayload, timestamp),
+      success_criteria: withReviewActionContract(successorCandidate, {
+        review_target_key: reviewTargetKey,
+        predecessor_review_task_ref: {
+          kind: 'review_task',
+          review_task_id: reviewTask.review_task_id,
+        },
+        last_lineage_action: 'partial',
+        last_action_recorded_at: timestamp,
+      }),
+    };
+
+    return reviewTaskRepository.updateReviewTask(successorCandidate.review_task_id, mergedPatch);
+  }
+
+  return reviewTaskRepository.insertReviewTask(successorPayload);
+}
+
+async function patchPartialReviewTask(
+  reviewTaskRepository,
+  reviewTask,
+  completionEvidence,
+  timestamp,
+) {
+  if (!reviewTaskRepository?.insertReviewTask || !reviewTaskRepository?.listReviewTaskProjectionsByUser) {
+    throw new Error('reviewTaskRepository must support insert/list for partial lineage writes.');
+  }
+
+  if (!ACTIVE_REVIEW_TASK_STATUSES.has(reviewTask.status)) {
+    throw buildReviewTaskConflict('Only open or partial review tasks can be completed.', {
+      review_task_id: reviewTask.review_task_id,
+      status: reviewTask.status,
+    });
+  }
+
+  const successor = await upsertPartialSuccessor(reviewTaskRepository, reviewTask, timestamp);
+  const currentPatch = {
+    status: 'expired',
+    completion_evidence: {
+      ...buildCompletionEvidence(completionEvidence, 'partial', timestamp),
+      backend_disposition: REVIEW_TASK_BACKEND_DISPOSITIONS.mergedIntoSuccessor,
+      successor_review_task_ref: {
+        kind: 'review_task',
+        review_task_id: successor.review_task_id,
+      },
+    },
+    success_criteria: withReviewActionContract(reviewTask, {
+      last_lineage_action: 'partial',
+      last_action_recorded_at: timestamp,
+      successor_review_task_ref: {
+        kind: 'review_task',
+        review_task_id: successor.review_task_id,
+      },
+    }),
+    updated_at: timestamp,
+  };
+  await reviewTaskRepository.updateReviewTask(reviewTask.review_task_id, currentPatch);
+
+  return successor;
 }
 
 function pickTargetKind({ targetQuestionTypeId, familyId } = {}) {
@@ -343,7 +696,11 @@ export function shouldGenerateReviewTaskFromOutcome(input = {}) {
   return hasRepairSignal(input);
 }
 
-function buildReviewTaskPayload(input = {}, now = new Date()) {
+function buildReviewTaskPayload(
+  input = {},
+  now = new Date(),
+  { reviewActionContractEnabled = false } = {},
+) {
   const targetQuestionTypeId =
     input.repair_target_question_type_id
     || input.question_context?.question_type_id
@@ -382,6 +739,13 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
   const reviewTaskPosture = input.authoritative_scoring_allowed
     ? 'released_scoring_repair'
     : 'conservative_fallback';
+  const reviewTargetKey = buildReviewTargetKey({
+    targetKind,
+    targetTopicId: input.repair_target_topic_id,
+    targetFamilyId: input.question_context?.family_id ?? null,
+    targetQuestionTypeId,
+    posture: reviewTaskPosture,
+  });
   const explainability = buildReviewTaskExplainabilitySeed({
     sourceQuestionId: input.question_id ?? null,
     sourceAttemptRef: input.source_attempt_ref ?? null,
@@ -421,6 +785,7 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
       fallback_reason_code: input.fallback_reason_code ?? null,
       scheduler_policy: schedulerPolicy,
       explainability,
+      ...(reviewActionContractEnabled ? { review_target_key: reviewTargetKey } : {}),
     },
     completion_evidence: {},
     status: 'open',
@@ -431,10 +796,15 @@ function buildReviewTaskPayload(input = {}, now = new Date()) {
 export function createReviewTaskService({
   reviewTaskRepository = null,
   now = () => new Date(),
+  reviewActionContractEnabled = null,
 } = {}) {
+  const contractEnabled = isReviewActionContractEnabled(reviewActionContractEnabled);
+
   return {
     async generateTasksFromOutcome(input = {}) {
-      const payload = buildReviewTaskPayload(input, now());
+      const payload = buildReviewTaskPayload(input, now(), {
+        reviewActionContractEnabled: contractEnabled,
+      });
       if (!payload) {
         return [];
       }
@@ -445,7 +815,9 @@ export function createReviewTaskService({
 
       const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(payload.user_id)
         ?? [];
-      const mergeCandidate = pickReviewTaskMergeCandidate(activeTasks, payload);
+      const mergeCandidate = pickReviewTaskMergeCandidate(activeTasks, payload, {
+        reviewActionContractEnabled: contractEnabled,
+      });
       if (mergeCandidate?.review_task_id) {
         const mergedPatch = mergeReviewTaskPayload(
           mergeCandidate,
@@ -489,6 +861,7 @@ export function createReviewTaskService({
         completionOutcome,
         completionEvidence,
         dueAt,
+        reviewActionContractEnabled: contractEnabled,
       });
 
       if (!reviewTaskRepository?.getReviewTaskById || !reviewTaskRepository?.updateReviewTask) {
@@ -507,24 +880,53 @@ export function createReviewTaskService({
       }
 
       const timestamp = now().toISOString();
-      let patch = null;
+      let updated = null;
+      let projectionId = reviewTask.review_task_id;
 
-      if (intent === 'complete') {
-        patch = buildCompletionPatch(
+      if (contractEnabled && intent === 'complete' && completionOutcome === 'partial') {
+        updated = await patchPartialReviewTask(
+          reviewTaskRepository,
           reviewTask,
-          completionOutcome,
           completionEvidence,
           timestamp,
         );
-      } else if (intent === 'reopen') {
-        patch = buildReopenPatch(reviewTask, timestamp);
+        projectionId = updated.review_task_id;
       } else {
-        patch = buildSchedulePatch(reviewTask, intent, dueAt, timestamp);
-      }
+        let patch = null;
 
-      const updated = await reviewTaskRepository.updateReviewTask(reviewTask.review_task_id, patch);
+        if (intent === 'complete') {
+          patch = buildCompletionPatch(
+            reviewTask,
+            completionOutcome,
+            completionEvidence,
+            timestamp,
+          );
+        } else if (intent === 'reopen') {
+          patch = buildReopenPatch(reviewTask, timestamp);
+        } else if (contractEnabled && intent === 'invalidate') {
+          patch = buildOperatorDispositionPatch(
+            reviewTask,
+            REVIEW_TASK_BACKEND_DISPOSITIONS.invalidate,
+            completionEvidence,
+            timestamp,
+          );
+        } else if (contractEnabled && intent === 'withdraw') {
+          patch = buildOperatorDispositionPatch(
+            reviewTask,
+            REVIEW_TASK_BACKEND_DISPOSITIONS.withdraw,
+            completionEvidence,
+            timestamp,
+          );
+        } else {
+          patch = buildSchedulePatch(reviewTask, intent, dueAt, timestamp, {
+            reviewActionContractEnabled: contractEnabled,
+          });
+        }
+
+        updated = await reviewTaskRepository.updateReviewTask(reviewTask.review_task_id, patch);
+      }
       const projection = await reviewTaskRepository.getReviewTaskProjectionById?.(
-        reviewTask.review_task_id,
+        projectionId,
       );
 
       return {

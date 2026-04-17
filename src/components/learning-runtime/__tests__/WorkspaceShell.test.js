@@ -172,6 +172,23 @@ function createWorkspacePayload() {
               summary: 'Fresh repair evidence should be retried before it is spaced.',
             },
           ],
+          studentExplanation: {
+            summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+            labels: ['最近出错', '同题型回补'],
+            provenance: {
+              summaryFactorCodes: ['recent_error', 'same_question_type_repair'],
+              labelMappings: [
+                {
+                  label: '最近出错',
+                  factorCode: 'recent_error',
+                },
+                {
+                  label: '同题型回补',
+                  factorCode: 'same_question_type_repair',
+                },
+              ],
+            },
+          },
           explanation: {
             summary: 'Queued from interval-repair evidence while authoritative mastery stays conservative.',
             posture: 'conservative_fallback',
@@ -240,6 +257,9 @@ function createWorkspacePayload() {
           },
         ],
       },
+    },
+    featureFlags: {
+      learningRuntimeEnabled: true,
     },
   };
 }
@@ -382,6 +402,37 @@ describe('WorkspaceShell', () => {
     expect(html).toContain('Reschedule');
     expect(html).toContain('Open canonical queue');
     expect(html).toContain('Closed the interval mistake with a fresh variant.');
+  });
+
+  test('renders the compact scheduler explanation contract when the flag is enabled', () => {
+    const payload = createWorkspacePayload();
+    payload.reviewQueue.featureFlags = {
+      schedulerExplanationEnabled: true,
+    };
+
+    const workspaceVm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+    const html = renderToStaticMarkup(
+      React.createElement(WorkspaceShell, {
+        viewModel: workspaceVm,
+        onOpenGlobalQueue: () => {},
+        reviewQueueDrafts: {
+          'review-task-1': {
+            completionSummary: 'Solved one more repair variant.',
+            dueAt: '2026-03-24T09:30',
+          },
+        },
+      }),
+    );
+
+    expect(html).toContain('你最近在这个题型上出错过，所以先安排一次同题型回补。');
+    expect(html).toContain('最近出错');
+    expect(html).toContain('同题型回补');
+    expect(html).not.toContain('Fresh repair evidence should be retried before it is spaced.');
+    expect(html).not.toContain('Queued from interval-repair evidence while authoritative mastery stays conservative.');
+    expect(html).not.toContain('Attempt history');
+    expect(html).not.toContain('Fresh evidence');
   });
 
   test('renders a read-only second-subject runtime posture banner', () => {

@@ -23,6 +23,22 @@ const ROUTE_WEIGHT = Object.freeze({
   regression_recovery: 5,
 });
 
+const STUDENT_EXPLANATION_LABEL_BY_FACTOR = Object.freeze({
+  recent_error: '最近出错',
+  interval_due: '间隔已到',
+  exam_near: '临近考试',
+  same_question_type_repair: '同题型回补',
+  regression_risk: '回归风险',
+});
+
+const STUDENT_EXPLANATION_LABEL_ORDER = Object.freeze([
+  'recent_error',
+  'interval_due',
+  'exam_near',
+  'same_question_type_repair',
+  'regression_risk',
+]);
+
 export const REVIEW_SCHEDULER_POLICY = Object.freeze({
   DAILY_RECOMMENDATION_CAP: 3,
   MAX_HIGH_PRIORITY_OPEN_PER_TYPE: 1,
@@ -92,6 +108,15 @@ function normalizeRoute(task = {}) {
 
 function buildReason(code, summary) {
   return { code, summary };
+}
+
+function buildExplanationFactor(code, summary, value = null) {
+  return {
+    code,
+    status: 'grounded',
+    summary,
+    value,
+  };
 }
 
 function typeGroupingKey(task = {}) {
@@ -198,6 +223,25 @@ function uniqueTypedRefs(refs = []) {
   });
 }
 
+function uniqueExplanationFactors(factors = []) {
+  const seen = new Set();
+  return normalizeArray(factors).flatMap((factor) => {
+    const normalized = normalizeObject(factor);
+    const code = normalizeString(normalized.code);
+    if (!code || seen.has(code)) {
+      return [];
+    }
+
+    seen.add(code);
+    return [{
+      code,
+      status: normalizeString(normalized.status, 'grounded'),
+      summary: normalizeString(normalized.summary),
+      value: normalized.value ?? null,
+    }];
+  });
+}
+
 function labelFromMisconceptionTag(tag) {
   const normalized = normalizeString(tag);
   if (!normalized) {
@@ -224,6 +268,148 @@ function summarizeExplainability(task = {}, explainability = {}) {
   }
 
   return `Queued from ${evidenceLabel} evidence while authoritative mastery stays conservative.`;
+}
+
+function buildStructuredExplainabilityFactors(task = {}, explainability = {}, storedFactors = []) {
+  const attemptHistory = normalizeObject(explainability.attempt_history);
+  const evidence = normalizeObject(explainability.evidence);
+  const freshness = normalizeObject(explainability.freshness);
+  const schedulerState = normalizeObject(task?.scheduler_state);
+  const factors = [];
+
+  const hasRecentError = Boolean(
+    evidence.source_attempt_ref
+    || normalizeString(evidence.source_question_id)
+    || normalizeArray(evidence.misconception_tags).length > 0
+    || Number(attemptHistory.attempt_count ?? 0) > 0,
+  );
+  if (hasRecentError) {
+    factors.push(buildExplanationFactor(
+      'recent_error',
+      'Recent repair evidence exists for this task.',
+      {
+        attempt_count: Number(attemptHistory.attempt_count ?? 0),
+        misconception_tag_count: normalizeArray(evidence.misconception_tags).length,
+      },
+    ));
+  }
+
+  const sameQuestionTypeRepair = Boolean(
+    normalizeString(task?.target_question_type_id)
+    && (
+      evidence.source_attempt_ref
+      || normalizeString(evidence.source_question_id)
+    ),
+  );
+  if (sameQuestionTypeRepair) {
+    factors.push(buildExplanationFactor(
+      'same_question_type_repair',
+      'Repair stays on the same grounded question type.',
+      normalizeString(task?.target_question_type_id),
+    ));
+  }
+
+  const intervalDue = schedulerState?.reason_code === 'due_window_open'
+    || schedulerState?.value === 'due';
+  if (intervalDue) {
+    factors.push(buildExplanationFactor(
+      'interval_due',
+      'The scheduled review interval has opened.',
+      normalizeString(task?.due_at),
+    ));
+  }
+
+  if (freshness.route === 'exam_polish') {
+    factors.push(buildExplanationFactor(
+      'exam_near',
+      'This review was scheduled for exam-near preparation.',
+      normalizeString(task?.due_at),
+    ));
+  }
+
+  if (
+    freshness.route === 'regression_recovery'
+    || schedulerState?.reason_code === 'regression_recovery_due'
+  ) {
+    factors.push(buildExplanationFactor(
+      'regression_risk',
+      'Regression recovery evidence is active for this task.',
+      normalizeString(task?.due_at),
+    ));
+  }
+
+  return uniqueExplanationFactors([
+    ...normalizeArray(storedFactors),
+    ...factors,
+  ]);
+}
+
+function buildStudentExplanationSummary(factorCodes = []) {
+  const factorSet = new Set(normalizeArray(factorCodes));
+
+  if (
+    factorSet.has('regression_risk')
+    && factorSet.has('recent_error')
+    && factorSet.has('same_question_type_repair')
+  ) {
+    return {
+      summary: '这类内容有回归风险，而且你最近在这个题型上出错过，所以安排一次同题型回补。',
+      factor_codes: ['regression_risk', 'recent_error', 'same_question_type_repair'],
+    };
+  }
+
+  if (factorSet.has('exam_near') && factorSet.has('interval_due')) {
+    return {
+      summary: '临近考试，而且现在到了这类内容的复习时间，所以安排一次回顾。',
+      factor_codes: ['exam_near', 'interval_due'],
+    };
+  }
+
+  if (factorSet.has('recent_error') && factorSet.has('same_question_type_repair')) {
+    return {
+      summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+      factor_codes: ['recent_error', 'same_question_type_repair'],
+    };
+  }
+
+  if (factorSet.has('interval_due') && factorSet.has('same_question_type_repair')) {
+    return {
+      summary: '现在到了这类内容的复习时间，所以安排一次回顾。',
+      factor_codes: ['interval_due', 'same_question_type_repair'],
+    };
+  }
+
+  return {
+    summary: null,
+    factor_codes: [],
+  };
+}
+
+function buildStudentExplanation(task = {}, explanation = {}) {
+  const factors = uniqueExplanationFactors(explanation?.factors);
+  const factorCodes = new Set(factors.map((factor) => factor.code));
+  const labelMappings = STUDENT_EXPLANATION_LABEL_ORDER
+    .filter((code) => factorCodes.has(code))
+    .map((code) => ({
+      label: STUDENT_EXPLANATION_LABEL_BY_FACTOR[code],
+      factor_code: code,
+    }))
+    .slice(0, 4);
+  const labels = labelMappings.map((mapping) => mapping.label);
+  const summaryShape = buildStudentExplanationSummary(labelMappings.map((mapping) => mapping.factor_code));
+
+  if (labels.length < 2 || !summaryShape.summary) {
+    return null;
+  }
+
+  return {
+    summary: summaryShape.summary,
+    labels,
+    provenance: {
+      summary_factor_codes: summaryShape.factor_codes,
+      label_mappings: labelMappings,
+    },
+  };
 }
 
 export function buildReviewTaskExplainabilitySeed({
@@ -365,6 +551,7 @@ function mergeReviewTaskExplainability(existingTask = {}, candidateTask = {}) {
 export function buildReviewTaskExplainability(task = {}) {
   const successCriteria = normalizeObject(task?.success_criteria);
   const storedExplainability = normalizeObject(successCriteria.explainability);
+  const storedFactors = uniqueExplanationFactors(storedExplainability.factors);
   const attemptHistory = normalizeObject(storedExplainability.attempt_history);
   const evidence = normalizeObject(storedExplainability.evidence);
   const freshness = normalizeObject(storedExplainability.freshness);
@@ -449,7 +636,10 @@ export function buildReviewTaskExplainability(task = {}) {
       ),
     },
     summary: normalizeString(storedExplainability.summary),
+    factors: storedFactors,
   };
+
+  explanation.factors = buildStructuredExplainabilityFactors(task, explanation, storedFactors);
 
   if (!explanation.summary) {
     explanation.summary = summarizeExplainability(task, explanation);
@@ -627,6 +817,7 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
       scheduler_state: buildSchedulerStateFromTask(task, { now: nowDate.toISOString() }),
       scheduler_reasons: [],
       explanation: null,
+      student_explanation: null,
     };
   });
 
@@ -713,11 +904,15 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
       : null;
     task.scheduler_reasons = reason ? [reason] : [];
     task.explanation = buildReviewTaskExplainability(task);
+    task.student_explanation = buildStudentExplanation(task, task.explanation);
   }
 
   for (const task of items) {
     if (!task.explanation) {
       task.explanation = buildReviewTaskExplainability(task);
+    }
+    if (typeof task.student_explanation === 'undefined' || task.student_explanation === null) {
+      task.student_explanation = buildStudentExplanation(task, task.explanation);
     }
   }
 
@@ -830,17 +1025,19 @@ export function normalizeSchedulerProjectionItem(item = {}) {
   const schedulerPolicy = normalizeObject(item?.scheduler_policy);
   const schedulerState = normalizeObject(item?.scheduler_state);
   const schedulerReasons = normalizeArray(item?.scheduler_reasons);
+  const explanation = buildReviewTaskExplainability({
+    ...item,
+    scheduler_policy: schedulerPolicy,
+    scheduler_state: schedulerState,
+    scheduler_reasons: schedulerReasons,
+  });
 
   return {
     ...item,
     scheduler_policy: schedulerPolicy,
     scheduler_state: schedulerState,
     scheduler_reasons: schedulerReasons,
-    explanation: buildReviewTaskExplainability({
-      ...item,
-      scheduler_policy: schedulerPolicy,
-      scheduler_state: schedulerState,
-      scheduler_reasons: schedulerReasons,
-    }),
+    explanation,
+    student_explanation: buildStudentExplanation(item, explanation),
   };
 }

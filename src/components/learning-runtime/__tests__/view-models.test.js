@@ -279,6 +279,23 @@ function createWorkspacePayload() {
               summary: 'Fresh repair evidence should be retried before it is spaced.',
             },
           ],
+          studentExplanation: {
+            summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+            labels: ['最近出错', '同题型回补'],
+            provenance: {
+              summaryFactorCodes: ['recent_error', 'same_question_type_repair'],
+              labelMappings: [
+                {
+                  label: '最近出错',
+                  factorCode: 'recent_error',
+                },
+                {
+                  label: '同题型回补',
+                  factorCode: 'same_question_type_repair',
+                },
+              ],
+            },
+          },
         },
         {
           reviewTaskId: 'review-task-2',
@@ -306,6 +323,23 @@ function createWorkspacePayload() {
               summary: 'Deferred until the next spaced-review freshness window opens.',
             },
           ],
+          studentExplanation: {
+            summary: '现在到了这类内容的复习时间，所以安排一次回顾。',
+            labels: ['间隔已到', '同题型回补'],
+            provenance: {
+              summaryFactorCodes: ['interval_due', 'same_question_type_repair'],
+              labelMappings: [
+                {
+                  label: '间隔已到',
+                  factorCode: 'interval_due',
+                },
+                {
+                  label: '同题型回补',
+                  factorCode: 'same_question_type_repair',
+                },
+              ],
+            },
+          },
         },
         {
           reviewTaskId: 'review-task-3',
@@ -1015,6 +1049,94 @@ describe('learning runtime session view model', () => {
       completed: 1,
       blocked: 0,
     });
+  });
+
+  test('workspace view-model keeps compact student explanations behind the scheduler explanation flag', () => {
+    const payload = createWorkspacePayload();
+    payload.reviewQueue.featureFlags = {
+      schedulerExplanationEnabled: true,
+    };
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.reviewQueue.featureFlags).toEqual(expect.objectContaining({
+      schedulerExplanationEnabled: true,
+    }));
+    expect(vm.reviewQueue.items[0].studentExplanation).toEqual(expect.objectContaining({
+      summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+      labels: ['最近出错', '同题型回补'],
+      provenance: expect.objectContaining({
+        summaryFactorCodes: ['recent_error', 'same_question_type_repair'],
+      }),
+    }));
+    expect(vm.reviewQueue.items[1].studentExplanation).toEqual(expect.objectContaining({
+      summary: '现在到了这类内容的复习时间，所以安排一次回顾。',
+      labels: ['间隔已到', '同题型回补'],
+    }));
+  });
+
+  test('workspace view-model fail-closes partial or invalid student explanations', () => {
+    const payload = createWorkspacePayload();
+    payload.reviewQueue.featureFlags = {
+      schedulerExplanationEnabled: true,
+    };
+    payload.reviewQueue.items[0].studentExplanation = {
+      summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+      labels: ['最近出错'],
+      provenance: {
+        summaryFactorCodes: ['recent_error'],
+        labelMappings: [
+          {
+            label: '最近出错',
+            factorCode: 'recent_error',
+          },
+        ],
+      },
+    };
+    payload.reviewQueue.items[1].studentExplanation = {
+      summary: null,
+      labels: ['间隔已到', '同题型回补'],
+      provenance: {
+        summaryFactorCodes: ['interval_due', 'same_question_type_repair'],
+        labelMappings: [
+          {
+            label: '间隔已到',
+            factorCode: 'interval_due',
+          },
+          {
+            label: '同题型回补',
+            factorCode: 'same_question_type_repair',
+          },
+        ],
+      },
+    };
+    payload.reviewQueue.items[2].studentExplanation = {
+      summary: '无效标签不应继续暴露。',
+      labels: ['回归风险', '内部 route'],
+      provenance: {
+        summaryFactorCodes: ['regression_risk'],
+        labelMappings: [
+          {
+            label: '回归风险',
+            factorCode: 'regression_risk',
+          },
+          {
+            label: '内部 route',
+            factorCode: 'internal_route',
+          },
+        ],
+      },
+    };
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.reviewQueue.items[0].studentExplanation).toBeNull();
+    expect(vm.reviewQueue.items[1].studentExplanation).toBeNull();
+    expect(vm.reviewQueue.items[2].studentExplanation).toBeNull();
   });
 
   test('workspace view-model exposes read-only runtime posture for second-subject topics', () => {

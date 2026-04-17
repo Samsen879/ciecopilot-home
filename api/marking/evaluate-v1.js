@@ -11,11 +11,17 @@ import { resolveUserId, AuthError } from './lib/auth-helper.js';
 import { resolveQuestionId, ValidationError } from './lib/attempt-repository.js';
 import { writeLedger } from './lib/ledger-orchestrator.js';
 import { buildMarkingResult } from './lib/marking-result-contract.js';
+import { resolveReleasedScoringPosture } from '../learning/lib/contracts/released-scope.js';
+import { persistAttemptEventBridge } from '../learning/lib/events/attempt-event-service.js';
 import { applyLearningEffects } from '../learning/lib/mastery/mastery-orchestrator.js';
 
 // ── Feature flag (evaluated per-request so env changes take effect) ──────────
 function isV1Enabled() {
   return process.env.MARKING_V1_ENABLED === 'true';
+}
+
+function isRuntimeBridgeEnabled() {
+  return process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED === 'true';
 }
 
 // ── Unified error codes ─────────────────────────────────────────────────────
@@ -211,6 +217,7 @@ export default async function handler(req, res) {
       compat_mode = null,
       include_uncertain_reason = false,
     } = body;
+    const subjectCode = storage_key.split('/')[0] || null;
 
     // ── Resolve trusted user_id (JWT required) ─────────────────────────────
     let user_id;
@@ -382,11 +389,75 @@ export default async function handler(req, res) {
       }));
 
       if (ledgerResult.decision_write_status === 'success') {
+        const releaseScopePosture = resolveReleasedScoringPosture({
+          questionTypeId: questionContext.question_type_id,
+          questionTypeReleaseState: questionContext.question_type_release_state,
+          candidateRubricRefs: questionContext.candidate_rubric_refs,
+          classificationConfidence: questionContext.classification_confidence,
+          uncertaintyValidated: true,
+        });
+
+        if (isRuntimeBridgeEnabled()) {
+          try {
+            const bridgeResult = await persistAttemptEventBridge(supabase, {
+              attemptId: ledgerResult.attempt_id,
+              learnerId: user_id,
+              subjectCode,
+              markRunId: ledgerResult.mark_run_id,
+              questionId: question_id,
+              storageKey: storage_key,
+              qNumber: q_number,
+              subpart: requestScopedSubpartId,
+              studentSteps: student_steps,
+              decisions,
+              questionContext: {
+                ...questionContext,
+                primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
+              },
+              attemptContext: ledgerResult.attempt_context ?? null,
+              authorityPosture: releaseScopePosture,
+              markingResult: markingResult,
+              sourceAttemptRef: {
+                kind: 'attempt',
+                attempt_id: ledgerResult.attempt_id,
+              },
+              sourceMarkRunRef: {
+                kind: 'mark_run',
+                mark_run_id: ledgerResult.mark_run_id,
+              },
+              correlationId: run_id,
+              emittedBy: 'evaluate-v1',
+            });
+
+            if (!bridgeResult.ok) {
+              console.warn(JSON.stringify({
+                event: 'evaluate_v1_attempt_event_bridge_warning',
+                run_id,
+                attempt_id: ledgerResult.attempt_id,
+                mark_run_id: ledgerResult.mark_run_id,
+                failed_stage: bridgeResult.failed_stage,
+                warning_recorded: bridgeResult.warningRecorded,
+                error: bridgeResult.error_message,
+                ts: new Date().toISOString(),
+              }));
+            }
+          } catch (attemptBridgeError) {
+            console.warn(JSON.stringify({
+              event: 'evaluate_v1_attempt_event_bridge_error',
+              run_id,
+              attempt_id: ledgerResult.attempt_id,
+              mark_run_id: ledgerResult.mark_run_id,
+              error: attemptBridgeError?.message || String(attemptBridgeError),
+              ts: new Date().toISOString(),
+            }));
+          }
+        }
+
         try {
           learningEffects = await applyLearningEffects({
             supabase,
             user_id,
-            subject_code: storage_key.split('/')[0] || null,
+            subject_code: subjectCode,
             question_id,
             question_context: {
               family_id: questionContext.family_id,
@@ -413,6 +484,7 @@ export default async function handler(req, res) {
             decisions,
             marking_result: markingResult,
             uncertainty_validated: true,
+            release_scope_posture: releaseScopePosture,
           }, {
             supabase,
           });

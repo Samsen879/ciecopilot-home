@@ -110,6 +110,22 @@ const mockApplyLearningEffects = jest.fn(async () => ({
   artifact_candidates: [],
   reconciliation: null,
 }));
+const mockPersistAttemptEventBridge = jest.fn(async () => ({
+  ok: true,
+  warningRecorded: false,
+  persisted_event_types: [
+    'AttemptSubmitted',
+    'QuestionClassified',
+    'MarkingCompleted',
+    'LearningUpdateProposed',
+  ],
+  pipeline_state: {
+    attempt_id: 'att-001',
+    current_stage: 'LearningUpdateProposed',
+    current_status: 'running',
+    last_sequence_no: 4,
+  },
+}));
 
 jest.unstable_mockModule('../lib/auth-helper.js', () => ({
   resolveUserId: mockResolveUserId,
@@ -127,6 +143,10 @@ jest.unstable_mockModule('../lib/ledger-orchestrator.js', () => ({
 
 jest.unstable_mockModule('../../learning/lib/mastery/mastery-orchestrator.js', () => ({
   applyLearningEffects: mockApplyLearningEffects,
+}));
+
+jest.unstable_mockModule('../../learning/lib/events/attempt-event-service.js', () => ({
+  persistAttemptEventBridge: mockPersistAttemptEventBridge,
 }));
 
 // Dynamic import after mocks are set up
@@ -161,6 +181,7 @@ beforeEach(() => {
   process.env.SUPABASE_URL = 'https://test.supabase.co';
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
   process.env.EVIDENCE_LEDGER_ENABLED = 'false';
+  process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'false';
   jest.clearAllMocks();
   mockApplyLearningEffects.mockResolvedValue({
     release_scope_status: 'released_scoring',
@@ -511,5 +532,49 @@ describe('learning-runtime orchestration', () => {
     const body = res.json.mock.calls[0][0];
     expect(body.learning_effects).toBeUndefined();
     expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+  });
+
+  it('calls the attempt-event bridge behind the dedicated runtime flag', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(mockPersistAttemptEventBridge).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        attemptId: 'att-001',
+        markRunId: 'mr-001',
+        authorityPosture: expect.objectContaining({
+          authoritative_scoring_allowed: true,
+          learning_signal_posture: 'authoritative_scoring',
+        }),
+      }),
+    );
+  });
+
+  it('returns 200 when the attempt-event bridge fails after scoring + ledger succeed', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: false,
+      warningRecorded: true,
+      reason_code: 'attempt_event_bridge_failed',
+      failed_stage: 'learning_events_insert',
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json.mock.calls[0][0]).toMatchObject({
+      ledger_write_status: 'success',
+    });
+    expect(mockPersistAttemptEventBridge).toHaveBeenCalled();
+    expect(mockApplyLearningEffects).toHaveBeenCalled();
   });
 });

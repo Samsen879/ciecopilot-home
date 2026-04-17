@@ -11,6 +11,8 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
   'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
   'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql',
+  'supabase/migrations/20260417110000_create_learning_event_deliveries.sql',
+  'supabase/migrations/20260417120000_create_learning_runtime_effect_receipts.sql',
   'supabase/migrations/20260413110000_phase_a_question_classified_events.sql',
   LEARNING_QUESTION_SEARCH_MIGRATION
 ];
@@ -103,6 +105,7 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('create table if not exists public.learning_family_masteries');
     expect(sql).toContain('create table if not exists public.learning_type_masteries');
     expect(sql).toContain('create table if not exists public.learning_reconciliation_runs');
+    expect(sql).toContain('create table if not exists public.learning_event_deliveries');
     expect(sql).toContain('unique (user_id, topic_id)');
     expect(sql).toContain('unique (workspace_id, slot_key)');
     expect(sql).toContain("check (mode in ('learn_concept', 'guided_solve', 'timed_practice', 'post_mortem_review', 'spaced_review'))");
@@ -191,6 +194,25 @@ describe('learning runtime schema contract', () => {
     ['family_id', 'references public.learning_question_families']
       .forEach((token) => expect(questionTypesSql).toContain(token));
 
+    const artifactSql = extractTableBlock(sql, 'public.learning_artifacts');
+    [
+      'artifact_state',
+      'verified_by',
+      'verified_at',
+      'verification_evidence_ref',
+      'released_by',
+      'released_at',
+      'release_evidence_ref',
+      'contested_by',
+      'contested_at',
+      'contested_reason',
+      'superseded_by_artifact_id',
+      'superseded_at',
+    ].forEach((token) => expect(artifactSql).toContain(token));
+    expect(artifactSql).toContain(
+      "check (artifact_state in ('unverified', 'verified', 'released', 'contested', 'superseded'))"
+    );
+
     const questionAnalysisSql = normalizeSql(readMigration(
       'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'
     ));
@@ -212,6 +234,36 @@ describe('learning runtime schema contract', () => {
       'started_at',
       'completed_at'
     ].forEach((token) => expect(reconciliationSql).toContain(token));
+
+    const deliverySql = normalizeSql(extractTableBlock(sql, 'public.learning_event_deliveries'));
+    [
+      'stable_idempotency_key',
+      'attempt_id',
+      'mark_run_id',
+      'delivery_state',
+      'retry_count',
+      'last_attempted_at',
+      'last_error',
+      "delivery_state in ('pending', 'persisted', 'retrying', 'reconciled', 'needs_manual_review')",
+      'unique (stable_idempotency_key)'
+    ].forEach((token) => expect(deliverySql).toContain(token));
+
+    const effectReceiptSql = normalizeSql(readMigration(
+      'supabase/migrations/20260417120000_create_learning_runtime_effect_receipts.sql'
+    ));
+
+    [
+      'alter table public.learning_event_effects',
+      'proposal_key',
+      'receipt_state',
+      "receipt_state in ('pending', 'persisted', 'retrying', 'reconciled', 'needs_manual_review')",
+      'retry_count',
+      'last_attempted_at',
+      'last_error',
+      'completed_at',
+      'idx_learning_event_effects_proposal_receipt',
+      'idx_learning_event_effects_retry_attention'
+    ].forEach((token) => expect(effectReceiptSql).toContain(token));
 
     const registryProjectionSql = normalizeSql(readMigration(
       'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'

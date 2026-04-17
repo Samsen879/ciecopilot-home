@@ -36,6 +36,10 @@ function effectRef(handlerName, effectKey) {
   return `${handlerName}::${effectKey}`;
 }
 
+function deliveryRef(stableIdempotencyKey) {
+  return stableIdempotencyKey;
+}
+
 function getNowIso() {
   return new Date().toISOString();
 }
@@ -283,6 +287,41 @@ function cloneEffect(effect) {
   return cloneJson(effect);
 }
 
+function cloneDelivery(delivery) {
+  return cloneJson(delivery);
+}
+
+function isTerminalReconciledDeliveryState(deliveryState) {
+  return ['reconciled', 'needs_manual_review'].includes(normalizeString(deliveryState));
+}
+
+function buildLearningEventDeliveryIdempotencyKey({
+  event_id,
+  handler_name,
+  effect_key,
+} = {}) {
+  return `${event_id}::${handler_name}::${effect_key}`;
+}
+
+function getLearningEventDelivery(store, stableIdempotencyKey) {
+  return store.deliveryRefs.get(deliveryRef(stableIdempotencyKey)) ?? null;
+}
+
+function assertDeliveryState(value) {
+  const normalized = normalizeString(value);
+  if (![
+    'pending',
+    'persisted',
+    'retrying',
+    'reconciled',
+    'needs_manual_review',
+  ].includes(normalized)) {
+    throw new Error('invalid_delivery_state');
+  }
+
+  return normalized;
+}
+
 export function createEmptyLearningEventStore() {
   return {
     events: [],
@@ -292,6 +331,8 @@ export function createEmptyLearningEventStore() {
     streamRefs: new Set(),
     revisionStageRefs: new Set(),
     effectRefs: new Map(),
+    deliveries: [],
+    deliveryRefs: new Map(),
     attemptLockRefs: new Set(),
     pipelineStateByAttempt: new Map(),
   };
@@ -445,6 +486,25 @@ export function appendLearningEvent(store, candidateEvent) {
   };
 }
 
+export function projectAttemptPipelineState(events = [], seedState = null) {
+  const store = createEmptyLearningEventStore();
+  let pipelineState = null;
+
+  if (seedState && events[0]?.aggregate_id) {
+    store.pipelineStateByAttempt.set(events[0].aggregate_id, cloneJson(seedState));
+  }
+
+  for (const event of events) {
+    const result = appendLearningEvent(store, event);
+    if (!result.inserted) {
+      throw new Error(result.reason_code || 'learning_event_not_inserted');
+    }
+    pipelineState = result.pipeline_state;
+  }
+
+  return pipelineState;
+}
+
 export function tryStartLearningEventEffect(store, input) {
   const normalizedInput = assertEffectInput(input);
   const nowIso = getNowIso();
@@ -452,6 +512,26 @@ export function tryStartLearningEventEffect(store, input) {
   const existing = store.effectRefs.get(ref) ?? null;
 
   if (existing) {
+    if (existing.status === 'failed') {
+      existing.event_id = normalizedInput.event_id;
+      existing.aggregate_id = normalizedInput.aggregate_id;
+      existing.truth_revision = normalizedInput.truth_revision;
+      existing.reconciliation_id = normalizedInput.reconciliation_id;
+      existing.status = 'started';
+      existing.result_ref_type = null;
+      existing.result_ref_id = null;
+      existing.error_code = null;
+      existing.error_message = null;
+      existing.attempt_count += 1;
+      existing.last_updated_at = nowIso;
+
+      return {
+        inserted: true,
+        reason_code: 'retry_failed_effect',
+        effect: cloneEffect(existing),
+      };
+    }
+
     return {
       inserted: false,
       reason_code: 'duplicate_effect_key',
@@ -523,6 +603,159 @@ export function markLearningEventEffectStatus(store, {
   effect.last_updated_at = getNowIso();
 
   return cloneEffect(effect);
+}
+
+export function reserveLearningEventDelivery(store, input) {
+  const normalizedInput = assertEffectInput(input);
+
+  if (!store.eventsById.has(normalizedInput.event_id)) {
+    throw new Error('unknown_effect_event_id');
+  }
+
+  const stableIdempotencyKey = buildLearningEventDeliveryIdempotencyKey(normalizedInput);
+  const existing = getLearningEventDelivery(store, stableIdempotencyKey);
+  if (existing) {
+    return {
+      inserted: false,
+      reason_code: 'duplicate_delivery_key',
+      delivery: cloneDelivery(existing),
+    };
+  }
+
+  const nowIso = getNowIso();
+  const delivery = {
+    delivery_id: randomUUID(),
+    stable_idempotency_key: stableIdempotencyKey,
+    ...normalizedInput,
+    delivery_state: 'pending',
+    retry_count: 0,
+    last_attempted_at: null,
+    last_error: null,
+    reconciliation_id: null,
+    created_at: nowIso,
+    updated_at: nowIso,
+  };
+
+  store.deliveries.push(delivery);
+  store.deliveryRefs.set(deliveryRef(stableIdempotencyKey), delivery);
+
+  return {
+    inserted: true,
+    reason_code: null,
+    delivery: cloneDelivery(delivery),
+  };
+}
+
+function updateLearningEventDelivery(store, stableIdempotencyKey, mutate) {
+  const delivery = getLearningEventDelivery(store, stableIdempotencyKey);
+  if (!delivery) {
+    throw new Error('delivery_not_found');
+  }
+
+  mutate(delivery);
+  delivery.updated_at = getNowIso();
+  return cloneDelivery(delivery);
+}
+
+export async function runLearningEventDelivery(store, {
+  execute,
+  ...input
+} = {}) {
+  const reservation = reserveLearningEventDelivery(store, input);
+  const stableIdempotencyKey = reservation.delivery.stable_idempotency_key;
+  const attemptedAt = getNowIso();
+
+  const effectStart = tryStartLearningEventEffect(store, input);
+
+  if (!effectStart.inserted && effectStart.reason_code === 'duplicate_effect_key') {
+    return {
+      inserted: false,
+      reason_code: 'duplicate_effect_key',
+      delivery: updateLearningEventDelivery(store, stableIdempotencyKey, (delivery) => {
+        delivery.last_attempted_at = attemptedAt;
+
+        if (!isTerminalReconciledDeliveryState(delivery.delivery_state)) {
+          delivery.delivery_state = 'persisted';
+          delivery.last_error = null;
+        }
+      }),
+      effect: effectStart.effect,
+    };
+  }
+
+  try {
+    const result = typeof execute === 'function'
+      ? await execute()
+      : { status: 'succeeded' };
+    const normalizedStatus = LEARNING_EVENT_EFFECT_STATUSES.includes(normalizeString(result?.status))
+      ? normalizeString(result.status)
+      : 'succeeded';
+    const effect = markLearningEventEffectStatus(store, {
+      handlerName: input.handlerName ?? input.handler_name,
+      effectKey: input.effectKey ?? input.effect_key,
+      status: normalizedStatus,
+      resultRefType: result?.resultRefType ?? result?.result_ref_type ?? null,
+      resultRefId: result?.resultRefId ?? result?.result_ref_id ?? null,
+      errorCode: result?.errorCode ?? result?.error_code ?? null,
+      errorMessage: result?.errorMessage ?? result?.error_message ?? null,
+    });
+
+    return {
+      inserted: reservation.inserted || effectStart.reason_code === 'retry_failed_effect',
+      reason_code: effectStart.reason_code === 'retry_failed_effect' ? 'retried_delivery' : null,
+      delivery: updateLearningEventDelivery(store, stableIdempotencyKey, (delivery) => {
+        delivery.delivery_state = 'persisted';
+        delivery.last_attempted_at = attemptedAt;
+        delivery.last_error = null;
+      }),
+      effect,
+    };
+  } catch (error) {
+    const message = error?.message || String(error);
+    const effect = markLearningEventEffectStatus(store, {
+      handlerName: input.handlerName ?? input.handler_name,
+      effectKey: input.effectKey ?? input.effect_key,
+      status: 'failed',
+      errorCode: 'delivery_failed',
+      errorMessage: message,
+    });
+
+    return {
+      inserted: reservation.inserted || effectStart.reason_code === 'retry_failed_effect',
+      reason_code: 'delivery_failed',
+      delivery: updateLearningEventDelivery(store, stableIdempotencyKey, (delivery) => {
+        delivery.delivery_state = 'retrying';
+        delivery.retry_count += 1;
+        delivery.last_attempted_at = attemptedAt;
+        delivery.last_error = {
+          code: 'delivery_failed',
+          message,
+        };
+      }),
+      effect,
+    };
+  }
+}
+
+export function reconcileLearningEventDelivery(store, {
+  stableIdempotencyKey,
+  deliveryState,
+  reconciliationId = null,
+} = {}) {
+  const normalizedKey = normalizeString(stableIdempotencyKey);
+  if (!normalizedKey) {
+    throw new Error('missing_stable_idempotency_key');
+  }
+
+  const normalizedDeliveryState = assertDeliveryState(deliveryState);
+  if (!['reconciled', 'needs_manual_review'].includes(normalizedDeliveryState)) {
+    throw new Error('invalid_reconciliation_delivery_state');
+  }
+
+  return updateLearningEventDelivery(store, normalizedKey, (delivery) => {
+    delivery.delivery_state = normalizedDeliveryState;
+    delivery.reconciliation_id = normalizeString(reconciliationId) || null;
+  });
 }
 
 export function acquireAttemptStreamLock(store, attemptId) {

@@ -1,5 +1,10 @@
-import { STABLE_SLOT_KEYS } from '../contracts/runtime-contract.js';
+import { buildArtifactRef, STABLE_SLOT_KEYS } from '../contracts/runtime-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
+import {
+  isArtifactLifecycleEnabled,
+  normalizeArtifactLifecycleArtifact,
+} from '../artifacts/artifact-service.js';
+import { listArtifactsByTopic } from '../repositories/artifact-repository.js';
 import { fetchWorkspaceProjection } from '../repositories/workspace-repository.js';
 import {
   deriveReviewQueueProjection,
@@ -15,6 +20,7 @@ import {
 } from '../session-runtime/session-handoff.js';
 
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
+const ARTIFACT_SLOT_KEYS = new Set(STABLE_SLOT_KEYS.filter((slotKey) => slotKey !== 'review_queue'));
 
 function normalizeString(value) {
   if (value === null || value === undefined) {
@@ -141,6 +147,152 @@ function buildStableSlots(workspaceProjection, { reviewQueueItems = [] } = {}) {
       ];
     }),
   );
+}
+
+function compareArtifactsForProjection(left = {}, right = {}) {
+  const leftUpdatedAt = parseTimestamp(left.updated_at)?.getTime() ?? 0;
+  const rightUpdatedAt = parseTimestamp(right.updated_at)?.getTime() ?? 0;
+  if (leftUpdatedAt !== rightUpdatedAt) {
+    return rightUpdatedAt - leftUpdatedAt;
+  }
+
+  const leftCreatedAt = parseTimestamp(left.created_at)?.getTime() ?? 0;
+  const rightCreatedAt = parseTimestamp(right.created_at)?.getTime() ?? 0;
+  if (leftCreatedAt !== rightCreatedAt) {
+    return rightCreatedAt - leftCreatedAt;
+  }
+
+  return String(left.artifact_id ?? '').localeCompare(String(right.artifact_id ?? ''));
+}
+
+function normalizeTopicArtifacts(artifacts = []) {
+  return (Array.isArray(artifacts) ? artifacts : [])
+    .map((artifact) => normalizeArtifactLifecycleArtifact(artifact))
+    .sort(compareArtifactsForProjection);
+}
+
+function groupArtifactsBySlot(artifacts = []) {
+  return (Array.isArray(artifacts) ? artifacts : []).reduce((acc, artifact) => {
+    const slotKey = normalizeString(artifact?.slot_key);
+    if (!slotKey || !ARTIFACT_SLOT_KEYS.has(slotKey)) {
+      return acc;
+    }
+
+    if (!acc[slotKey]) {
+      acc[slotKey] = [];
+    }
+
+    acc[slotKey].push(artifact);
+    return acc;
+  }, {});
+}
+
+function isActiveArtifact(artifact = {}) {
+  return artifact.lifecycle_status !== 'superseded'
+    && artifact.placement_status !== 'archived';
+}
+
+function isResidentArtifact(artifact = {}) {
+  return isActiveArtifact(artifact)
+    && artifact.placement_status === 'pinned'
+    && artifact.capabilities?.resident_eligible;
+}
+
+function isPendingVerificationArtifact(artifact = {}) {
+  return isActiveArtifact(artifact)
+    && artifact.artifact_state === 'unverified';
+}
+
+function shouldResetSlotStateToActive(currentState) {
+  const normalizedState = normalizeString(currentState);
+  return !normalizedState
+    || normalizedState === 'idle'
+    || normalizedState === 'awaiting_verification'
+    || normalizedState === 'active';
+}
+
+function resolveResidentArtifact(slot = null, slotArtifacts = []) {
+  const residentArtifacts = (Array.isArray(slotArtifacts) ? slotArtifacts : []).filter(isResidentArtifact);
+  const primaryArtifactId = slot?.primary_artifact_ref?.artifact_id ?? null;
+
+  if (primaryArtifactId) {
+    const pointerResident = residentArtifacts.find((artifact) => artifact.artifact_id === primaryArtifactId);
+    if (pointerResident) {
+      return pointerResident;
+    }
+  }
+
+  return residentArtifacts[0] ?? null;
+}
+
+function buildProjectedArtifactInboxItem(artifact = {}, residentArtifactIds = new Set()) {
+  return {
+    ...artifact,
+    placement_status: residentArtifactIds.has(artifact.artifact_id)
+      ? 'pinned'
+      : artifact.placement_status === 'pinned'
+        ? 'inbox'
+        : artifact.placement_status,
+  };
+}
+
+function buildArtifactInboxProjection(topicArtifacts = [], residentArtifactIds = new Set()) {
+  return {
+    items: (Array.isArray(topicArtifacts) ? topicArtifacts : [])
+      .filter((artifact) =>
+        ARTIFACT_SLOT_KEYS.has(normalizeString(artifact?.slot_key))
+        && isActiveArtifact(artifact)
+        && artifact.capabilities?.shell_visible
+        && !residentArtifactIds.has(artifact.artifact_id))
+      .map((artifact) => buildProjectedArtifactInboxItem(artifact, residentArtifactIds)),
+  };
+}
+
+function projectWorkspaceResidency(workspaceProjection, topicArtifacts = []) {
+  const normalizedArtifacts = normalizeTopicArtifacts(topicArtifacts);
+  const artifactsBySlot = groupArtifactsBySlot(normalizedArtifacts);
+  const projectedSlots = {
+    ...(workspaceProjection?.slots ?? {}),
+  };
+  const projectedSlotState = {
+    ...(workspaceProjection?.slot_state ?? {}),
+  };
+  const residentArtifactIds = new Set();
+
+  ARTIFACT_SLOT_KEYS.forEach((slotKey) => {
+    const slot = projectedSlots[slotKey] ?? null;
+    const slotArtifacts = artifactsBySlot[slotKey] ?? [];
+    const residentArtifact = resolveResidentArtifact(slot, slotArtifacts);
+
+    if (slot) {
+      projectedSlots[slotKey] = {
+        ...slot,
+        primary_artifact_ref: residentArtifact ? buildArtifactRef(residentArtifact.artifact_id) : null,
+      };
+    }
+
+    if (residentArtifact) {
+      residentArtifactIds.add(residentArtifact.artifact_id);
+    }
+
+    if (!residentArtifact && slotArtifacts.some(isPendingVerificationArtifact)) {
+      projectedSlotState[slotKey] = 'awaiting_verification';
+      return;
+    }
+
+    if (residentArtifact && shouldResetSlotStateToActive(projectedSlotState[slotKey])) {
+      projectedSlotState[slotKey] = 'active';
+    }
+  });
+
+  return {
+    workspaceProjection: {
+      ...workspaceProjection,
+      slot_state: projectedSlotState,
+      slots: projectedSlots,
+    },
+    artifactInbox: buildArtifactInboxProjection(normalizedArtifacts, residentArtifactIds),
+  };
 }
 
 function buildWorkspaceNotFound(topicId) {
@@ -381,6 +533,7 @@ export async function getWorkspaceView(
     topicId,
     reviewStatus = null,
     reviewDueBefore = null,
+    residencyFlagEnabled = isArtifactLifecycleEnabled(),
   } = {},
 ) {
   const workspaceProjection = await fetchWorkspaceProjection(client, {
@@ -393,7 +546,10 @@ export async function getWorkspaceView(
   }
 
   const shouldLoadUnfilteredTopicQueue = Boolean(reviewStatus || reviewDueBefore);
-  const [reviewQueue, unfilteredTopicReviewQueue, lastSession] = await Promise.all([
+  const [topicArtifacts, reviewQueue, unfilteredTopicReviewQueue, lastSession] = await Promise.all([
+    residencyFlagEnabled
+      ? listArtifactsByTopic(client, { topicId })
+      : Promise.resolve([]),
     listReviewTasks(client, {
       userId,
       topicId,
@@ -412,29 +568,38 @@ export async function getWorkspaceView(
       topicPath: workspaceProjection.topic_path,
     }),
   ]);
+  const projectedWorkspace = residencyFlagEnabled
+    ? projectWorkspaceResidency(workspaceProjection, topicArtifacts)
+    : {
+      workspaceProjection,
+      artifactInbox: {
+        items: [],
+      },
+    };
   const reviewQueueSlotItems = shouldLoadUnfilteredTopicQueue
     ? unfilteredTopicReviewQueue?.items ?? []
     : reviewQueue.items;
 
   return {
     workspace: {
-      workspace_id: workspaceProjection.workspace_id,
-      user_id: workspaceProjection.user_id,
-      topic_id: workspaceProjection.topic_id,
-      topic_path: workspaceProjection.topic_path,
-      slot_state: workspaceProjection.slot_state ?? {},
-      linked_reference_summary: workspaceProjection.linked_reference_summary ?? {},
-      updated_at: workspaceProjection.updated_at ?? null,
-      slots: buildStableSlots(workspaceProjection, {
+      workspace_id: projectedWorkspace.workspaceProjection.workspace_id,
+      user_id: projectedWorkspace.workspaceProjection.user_id,
+      topic_id: projectedWorkspace.workspaceProjection.topic_id,
+      topic_path: projectedWorkspace.workspaceProjection.topic_path,
+      slot_state: projectedWorkspace.workspaceProjection.slot_state ?? {},
+      linked_reference_summary: projectedWorkspace.workspaceProjection.linked_reference_summary ?? {},
+      ...(residencyFlagEnabled ? { artifact_inbox: projectedWorkspace.artifactInbox } : {}),
+      updated_at: projectedWorkspace.workspaceProjection.updated_at ?? null,
+      slots: buildStableSlots(projectedWorkspace.workspaceProjection, {
         reviewQueueItems: reviewQueueSlotItems,
       }),
     },
-    runtime_posture: buildWorkspaceRuntimePosture(workspaceProjection),
+    runtime_posture: buildWorkspaceRuntimePosture(projectedWorkspace.workspaceProjection),
     review_queue: reviewQueue,
     revisit: buildWorkspaceRevisit({
       lastSession,
       reviewQueueItems: reviewQueueSlotItems,
-      workspaceProjection,
+      workspaceProjection: projectedWorkspace.workspaceProjection,
     }),
   };
 }

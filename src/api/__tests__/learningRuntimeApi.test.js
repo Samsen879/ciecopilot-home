@@ -21,9 +21,11 @@ const {
   normalizeAskResponse,
   normalizeArtifactResponse,
   normalizeImportQuestionResponse,
+  normalizeQuestionSearchResponse,
   normalizeReviewTaskResponse,
   normalizeSessionResponse,
   pinArtifact,
+  searchQuestions,
   supersedeArtifact,
   unpinArtifact,
 } = await import('../learningRuntimeApi.js');
@@ -253,6 +255,56 @@ function createReviewTaskEnvelope() {
   };
 }
 
+function createQuestionSearchEnvelope() {
+  return {
+    items: [
+      {
+        question_id: 'question-paper-1',
+        source_kind: 'paper_question',
+        subject_code: '9709',
+        primary_topic_title: 'Trigonometric equations',
+        primary_question_type_id: '9709.trigonometry.equations',
+        q_number: 6,
+        product_posture: {
+          code: 'paper_backed',
+          label: 'Paper-backed',
+          is_provisional: false,
+        },
+        product_card: {
+          title: 'S19 P1 Q6',
+          meta_line: 'Trigonometric equations',
+          summary_line: 'Prove a trigonometric identity and solve the resulting equation.',
+        },
+      },
+      {
+        question_id: 'question-imported-1',
+        source_kind: 'imported_question',
+        subject_code: '9709',
+        primary_topic_title: 'Trigonometric equations',
+        primary_question_type_id: '9709.trigonometry.equations',
+        q_number: 91,
+        product_posture: {
+          code: 'imported_provisional',
+          label: 'Imported / provisional',
+          is_provisional: true,
+        },
+        product_card: {
+          title: 'Imported question',
+          meta_line: 'Trigonometric equations',
+          summary_line: null,
+        },
+      },
+    ],
+    total: 2,
+    page: 1,
+    page_size: 20,
+    feature_flags: {
+      question_search_product_enabled: true,
+    },
+    request_id: 'req-question-search-1',
+  };
+}
+
 describe('learning runtime api', () => {
   beforeEach(() => {
     global.fetch = jest.fn();
@@ -275,6 +327,7 @@ describe('learning runtime api', () => {
       'listReviewTasks',
       'markArtifactContested',
       'pinArtifact',
+      'searchQuestions',
       'supersedeArtifact',
       'unpinArtifact',
       'updateReviewTask',
@@ -420,6 +473,34 @@ describe('learning runtime api', () => {
     });
   });
 
+  test('normalizes question-search envelopes and preserves product posture/card fields', () => {
+    const payload = normalizeQuestionSearchResponse(createQuestionSearchEnvelope());
+
+    expect(payload.items.map((item) => item.questionId)).toEqual([
+      'question-paper-1',
+      'question-imported-1',
+    ]);
+    expect(payload.items[0].productPosture).toEqual({
+      code: 'paper_backed',
+      label: 'Paper-backed',
+      isProvisional: false,
+    });
+    expect(payload.items[0].productCard).toEqual({
+      title: 'S19 P1 Q6',
+      metaLine: 'Trigonometric equations',
+      summaryLine: 'Prove a trigonometric identity and solve the resulting equation.',
+    });
+    expect(payload.items[1].productPosture).toEqual({
+      code: 'imported_provisional',
+      label: 'Imported / provisional',
+      isProvisional: true,
+    });
+    expect(payload.items[1].productCard.summaryLine).toBeNull();
+    expect(payload.featureFlags).toEqual({
+      questionSearchProductEnabled: true,
+    });
+  });
+
   test('normalizes review-task write envelopes for actionable queue feedback', () => {
     const payload = normalizeReviewTaskResponse(createReviewTaskEnvelope());
 
@@ -559,6 +640,35 @@ describe('learning runtime api', () => {
     });
     expect(response.question.questionId).toBe('question-import-1');
     expect(response.scoringScopePosture.fallbackMode).toBe('non_released_fallback');
+  });
+
+  test('searchQuestions encodes the shared query contract and normalizes product search results', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => createQuestionSearchEnvelope(),
+    });
+
+    const response = await searchQuestions({
+      subjectCode: '9709',
+      primaryQuestionTypeId: '9709.trigonometry.equations',
+      query: 'identity solve equation',
+      page: 1,
+      pageSize: 20,
+    });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch.mock.calls[0][0]).toBe(
+      '/api/learning/questions?subject_code=9709&primary_question_type_id=9709.trigonometry.equations&query=identity+solve+equation&page=1&page_size=20',
+    );
+    expect(global.fetch.mock.calls[0][1]).toMatchObject({
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer token-123',
+      },
+    });
+    expect(response.items[0].productCard.title).toBe('S19 P1 Q6');
+    expect(response.items[1].productPosture.label).toBe('Imported / provisional');
+    expect(response.featureFlags.questionSearchProductEnabled).toBe(true);
   });
 
   test('createSession throws structured learning runtime errors for actionable UI states', async () => {

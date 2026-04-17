@@ -30,6 +30,29 @@ const MOCK_READY_POINT = {
   updated_at: '2026-02-15T10:00:00Z',
 };
 
+function buildLearningQuestionProjectionRow(overrides = {}) {
+  return {
+    question_id: 'q-001',
+    source_kind: 'paper_question',
+    primary_topic_id: 'topic-trig-equations',
+    family_id: '9709.trigonometry_manipulation_equations',
+    primary_question_type_id: '9709.trigonometry.equations',
+    primary_question_type_release_state: 'released',
+    classification_confidence: 0.93,
+    candidate_rubric_refs: [
+      {
+        kind: 'rubric_release',
+        rubric_version_id: 'trig-v1',
+        release_state: 'released',
+      },
+    ],
+    release_scope_status: 'released_scoring',
+    ...overrides,
+  };
+}
+
+let learningQuestionProjectionRow = buildLearningQuestionProjectionRow();
+
 function createChainMock(data) {
   const chain = {};
   const methods = ['select', 'eq', 'or', 'order', 'limit'];
@@ -52,22 +75,7 @@ const mockFrom = jest.fn((table) => {
     return createChainMock([MOCK_READY_POINT]);
   }
   if (table === 'learning_question_registry_projection') {
-    return createChainMock({
-      question_id: 'q-001',
-      primary_topic_id: 'topic-trig-equations',
-      family_id: '9709.trigonometry_manipulation_equations',
-      primary_question_type_id: '9709.trigonometry.equations',
-      primary_question_type_release_state: 'released',
-      classification_confidence: 0.93,
-      candidate_rubric_refs: [
-        {
-          kind: 'rubric_release',
-          rubric_version_id: 'trig-v1',
-          release_state: 'released',
-        },
-      ],
-      release_scope_status: 'released_scoring',
-    });
+    return createChainMock(learningQuestionProjectionRow);
   }
   return createChainMock([]);
 });
@@ -110,6 +118,22 @@ const mockApplyLearningEffects = jest.fn(async () => ({
   artifact_candidates: [],
   reconciliation: null,
 }));
+const mockPersistAttemptEventBridge = jest.fn(async () => ({
+  ok: true,
+  warningRecorded: false,
+  persisted_event_types: [
+    'AttemptSubmitted',
+    'QuestionClassified',
+    'MarkingCompleted',
+    'LearningUpdateProposed',
+  ],
+  pipeline_state: {
+    attempt_id: 'att-001',
+    current_stage: 'LearningUpdateProposed',
+    current_status: 'running',
+    last_sequence_no: 4,
+  },
+}));
 
 jest.unstable_mockModule('../lib/auth-helper.js', () => ({
   resolveUserId: mockResolveUserId,
@@ -127,6 +151,10 @@ jest.unstable_mockModule('../lib/ledger-orchestrator.js', () => ({
 
 jest.unstable_mockModule('../../learning/lib/mastery/mastery-orchestrator.js', () => ({
   applyLearningEffects: mockApplyLearningEffects,
+}));
+
+jest.unstable_mockModule('../../learning/lib/events/attempt-event-service.js', () => ({
+  persistAttemptEventBridge: mockPersistAttemptEventBridge,
 }));
 
 // Dynamic import after mocks are set up
@@ -161,6 +189,8 @@ beforeEach(() => {
   process.env.SUPABASE_URL = 'https://test.supabase.co';
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
   process.env.EVIDENCE_LEDGER_ENABLED = 'false';
+  process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'false';
+  learningQuestionProjectionRow = buildLearningQuestionProjectionRow();
   jest.clearAllMocks();
   mockApplyLearningEffects.mockResolvedValue({
     release_scope_status: 'released_scoring',
@@ -511,5 +541,120 @@ describe('learning-runtime orchestration', () => {
     const body = res.json.mock.calls[0][0];
     expect(body.learning_effects).toBeUndefined();
     expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+  });
+
+  it('calls the attempt-event bridge behind the dedicated runtime flag', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(mockPersistAttemptEventBridge).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        attemptId: 'att-001',
+        markRunId: 'mr-001',
+        authorityPosture: expect.objectContaining({
+          authoritative_scoring_allowed: true,
+          learning_signal_posture: 'authoritative_scoring',
+        }),
+      }),
+    );
+  });
+
+  it('marks imported-question attempts as explicit non-authoritative runtime inputs across ledger, bridge, and learning effects', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      source_kind: 'imported_question',
+      primary_topic_id: 'topic-trig-identities',
+      family_id: '9709.trigonometry_manipulation_equations',
+      primary_question_type_id: '9709.trigonometry.identities',
+    });
+    mockApplyLearningEffects.mockResolvedValueOnce({
+      release_scope_status: 'released_scoring',
+      authoritative_scoring_allowed: false,
+      learning_signal_posture: 'conservative_fallback',
+      runtime_authority_posture: 'non_authoritative',
+      runtime_authority_reason_code: 'imported_question_attempt',
+      mastery_updates: [],
+      review_tasks: [],
+      artifact_candidates: [],
+      reconciliation: null,
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(mockWriteLedger).toHaveBeenCalledWith(
+      expect.objectContaining({
+        response_summary: expect.objectContaining({
+          authority_posture: expect.objectContaining({
+            authoritative_scoring_allowed: false,
+            runtime_authority_posture: 'non_authoritative',
+            runtime_authority_reason_code: 'imported_question_attempt',
+            question_source_kind: 'imported_question',
+          }),
+        }),
+      }),
+    );
+    expect(mockPersistAttemptEventBridge).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        authorityPosture: expect.objectContaining({
+          authoritative_scoring_allowed: false,
+          runtime_authority_posture: 'non_authoritative',
+          runtime_authority_reason_code: 'imported_question_attempt',
+          question_source_kind: 'imported_question',
+        }),
+      }),
+    );
+    expect(mockApplyLearningEffects).toHaveBeenCalledWith(
+      expect.objectContaining({
+        question_context: expect.objectContaining({
+          source_kind: 'imported_question',
+        }),
+        release_scope_posture: expect.objectContaining({
+          authoritative_scoring_allowed: false,
+          runtime_authority_posture: 'non_authoritative',
+          runtime_authority_reason_code: 'imported_question_attempt',
+          question_source_kind: 'imported_question',
+        }),
+      }),
+      expect.any(Object),
+    );
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.learning_effects).toMatchObject({
+      authoritative_scoring_allowed: false,
+      runtime_authority_posture: 'non_authoritative',
+      runtime_authority_reason_code: 'imported_question_attempt',
+    });
+  });
+
+  it('returns 200 when the attempt-event bridge fails after scoring + ledger succeed', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: false,
+      warningRecorded: true,
+      reason_code: 'attempt_event_bridge_failed',
+      failed_stage: 'learning_events_insert',
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json.mock.calls[0][0]).toMatchObject({
+      ledger_write_status: 'success',
+    });
+    expect(mockPersistAttemptEventBridge).toHaveBeenCalled();
+    expect(mockApplyLearningEffects).toHaveBeenCalled();
   });
 });

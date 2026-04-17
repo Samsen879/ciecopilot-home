@@ -140,6 +140,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:56:00.000Z',
@@ -151,7 +158,14 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'my_notes',
             placementStatus: 'inbox',
-            trustStatus: 'user_confirmed',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
+            trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:57:00.000Z',
             title: 'My note candidate',
@@ -162,6 +176,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-identities',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:55:00.000Z',
@@ -172,6 +193,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'contested',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: false,
+              residentEligible: false,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'contested',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:54:00.000Z',
@@ -279,6 +307,23 @@ function createWorkspacePayload() {
               summary: 'Fresh repair evidence should be retried before it is spaced.',
             },
           ],
+          studentExplanation: {
+            summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+            labels: ['最近出错', '同题型回补'],
+            provenance: {
+              summaryFactorCodes: ['recent_error', 'same_question_type_repair'],
+              labelMappings: [
+                {
+                  label: '最近出错',
+                  factorCode: 'recent_error',
+                },
+                {
+                  label: '同题型回补',
+                  factorCode: 'same_question_type_repair',
+                },
+              ],
+            },
+          },
         },
         {
           reviewTaskId: 'review-task-2',
@@ -306,6 +351,23 @@ function createWorkspacePayload() {
               summary: 'Deferred until the next spaced-review freshness window opens.',
             },
           ],
+          studentExplanation: {
+            summary: '现在到了这类内容的复习时间，所以安排一次回顾。',
+            labels: ['间隔已到', '同题型回补'],
+            provenance: {
+              summaryFactorCodes: ['interval_due', 'same_question_type_repair'],
+              labelMappings: [
+                {
+                  label: '间隔已到',
+                  factorCode: 'interval_due',
+                },
+                {
+                  label: '同题型回补',
+                  factorCode: 'same_question_type_repair',
+                },
+              ],
+            },
+          },
         },
         {
           reviewTaskId: 'review-task-3',
@@ -1017,6 +1079,94 @@ describe('learning runtime session view model', () => {
     });
   });
 
+  test('workspace view-model keeps compact student explanations behind the scheduler explanation flag', () => {
+    const payload = createWorkspacePayload();
+    payload.reviewQueue.featureFlags = {
+      schedulerExplanationEnabled: true,
+    };
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.reviewQueue.featureFlags).toEqual(expect.objectContaining({
+      schedulerExplanationEnabled: true,
+    }));
+    expect(vm.reviewQueue.items[0].studentExplanation).toEqual(expect.objectContaining({
+      summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+      labels: ['最近出错', '同题型回补'],
+      provenance: expect.objectContaining({
+        summaryFactorCodes: ['recent_error', 'same_question_type_repair'],
+      }),
+    }));
+    expect(vm.reviewQueue.items[1].studentExplanation).toEqual(expect.objectContaining({
+      summary: '现在到了这类内容的复习时间，所以安排一次回顾。',
+      labels: ['间隔已到', '同题型回补'],
+    }));
+  });
+
+  test('workspace view-model fail-closes partial or invalid student explanations', () => {
+    const payload = createWorkspacePayload();
+    payload.reviewQueue.featureFlags = {
+      schedulerExplanationEnabled: true,
+    };
+    payload.reviewQueue.items[0].studentExplanation = {
+      summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+      labels: ['最近出错'],
+      provenance: {
+        summaryFactorCodes: ['recent_error'],
+        labelMappings: [
+          {
+            label: '最近出错',
+            factorCode: 'recent_error',
+          },
+        ],
+      },
+    };
+    payload.reviewQueue.items[1].studentExplanation = {
+      summary: null,
+      labels: ['间隔已到', '同题型回补'],
+      provenance: {
+        summaryFactorCodes: ['interval_due', 'same_question_type_repair'],
+        labelMappings: [
+          {
+            label: '间隔已到',
+            factorCode: 'interval_due',
+          },
+          {
+            label: '同题型回补',
+            factorCode: 'same_question_type_repair',
+          },
+        ],
+      },
+    };
+    payload.reviewQueue.items[2].studentExplanation = {
+      summary: '无效标签不应继续暴露。',
+      labels: ['回归风险', '内部 route'],
+      provenance: {
+        summaryFactorCodes: ['regression_risk'],
+        labelMappings: [
+          {
+            label: '回归风险',
+            factorCode: 'regression_risk',
+          },
+          {
+            label: '内部 route',
+            factorCode: 'internal_route',
+          },
+        ],
+      },
+    };
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.reviewQueue.items[0].studentExplanation).toBeNull();
+    expect(vm.reviewQueue.items[1].studentExplanation).toBeNull();
+    expect(vm.reviewQueue.items[2].studentExplanation).toBeNull();
+  });
+
   test('workspace view-model exposes read-only runtime posture for second-subject topics', () => {
     const vm = buildWorkspaceViewModel(createReadOnlyPhysicsWorkspacePayload(), {
       now: '2026-03-22T12:00:00.000Z',
@@ -1203,6 +1353,76 @@ describe('learning runtime session view model', () => {
       label: 'Contested artifact',
       tone: 'warning',
       message: 'This artifact is contested and cannot be pinned until the conflict is resolved.',
+    });
+  });
+
+  test('workspace view-model keeps a resident visible while an unverified successor stays in the inbox only', () => {
+    const payload = createWorkspacePayload();
+    payload.workspace.artifactInbox.items.unshift({
+      artifactId: 'artifact-awaiting-verification',
+      artifactKind: 'misconception_card',
+      canonicalHomeTopicId: 'topic-trig-equations',
+      slotKey: 'common_traps',
+      placementStatus: 'inbox',
+      artifactState: 'unverified',
+      capabilities: {
+        shellVisible: true,
+        bodyVisible: false,
+        residentEligible: false,
+        authoritativeAutomationEligible: false,
+      },
+      trustStatus: 'unverified',
+      lifecycleStatus: 'active',
+      updatedAt: '2026-03-22T08:06:00.000Z',
+      summary: 'Pending verification before it can replace the resident.',
+    });
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.slots.common_traps.primaryArtifactCard.artifactId).toBe('artifact-primary');
+    expect(vm.slots.common_traps.emptyState).toBeNull();
+
+    const pendingCandidate = vm.artifactInbox.items.find((card) => card.artifactId === 'artifact-awaiting-verification');
+    expect(pendingCandidate.availableActions.canPin).toBe(false);
+    expect(pendingCandidate.availableActions.pinBlockedReason)
+      .toBe('This artifact is not eligible for stable residency.');
+  });
+
+  test('workspace view-model shows awaiting verification only when the slot has no resident', () => {
+    const payload = createWorkspacePayload();
+    payload.workspace.slotState.commonTraps = 'awaiting_verification';
+    payload.workspace.slots.commonTraps.primaryArtifactRef = null;
+    payload.workspace.artifactInbox.items = [
+      {
+        artifactId: 'artifact-awaiting-verification',
+        artifactKind: 'misconception_card',
+        canonicalHomeTopicId: 'topic-trig-equations',
+        slotKey: 'common_traps',
+        placementStatus: 'inbox',
+        artifactState: 'unverified',
+        capabilities: {
+          shellVisible: true,
+          bodyVisible: false,
+          residentEligible: false,
+          authoritativeAutomationEligible: false,
+        },
+        trustStatus: 'unverified',
+        lifecycleStatus: 'active',
+        updatedAt: '2026-03-22T08:06:00.000Z',
+        summary: 'Pending verification before it can replace the resident.',
+      },
+    ];
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.slots.common_traps.primaryArtifactCard).toBeNull();
+    expect(vm.slots.common_traps.emptyState).toEqual({
+      label: 'Awaiting verification',
+      message: 'A candidate artifact is visible in the inbox, but this slot has no resident until verification completes.',
     });
   });
 

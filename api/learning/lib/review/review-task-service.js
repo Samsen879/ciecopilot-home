@@ -488,7 +488,15 @@ function buildCompletionPatch(reviewTask, completionOutcome, completionEvidence,
   };
 }
 
-function buildOperatorDispositionPatch(reviewTask, disposition, completionEvidence, timestamp) {
+function buildOperatorDispositionPatch(reviewTask, intent, disposition, completionEvidence, timestamp) {
+  if (!ACTIVE_REVIEW_TASK_STATUSES.has(reviewTask.status)) {
+    throw buildReviewTaskConflict('Only open or partial review tasks can be updated by operator disposition.', {
+      review_task_id: reviewTask.review_task_id,
+      status: reviewTask.status,
+      intent,
+    });
+  }
+
   return {
     status: 'expired',
     completion_evidence: {
@@ -568,6 +576,7 @@ async function upsertPartialSuccessor(reviewTaskRepository, reviewTask, timestam
   if (successorCandidate?.review_task_id) {
     const mergedPatch = {
       ...mergeReviewTaskPayload(successorCandidate, successorPayload, timestamp),
+      status: 'open',
       success_criteria: withReviewActionContract(successorCandidate, {
         review_target_key: reviewTargetKey,
         predecessor_review_task_ref: {
@@ -906,6 +915,7 @@ export function createReviewTaskService({
         } else if (contractEnabled && intent === 'invalidate') {
           patch = buildOperatorDispositionPatch(
             reviewTask,
+            intent,
             REVIEW_TASK_BACKEND_DISPOSITIONS.invalidate,
             completionEvidence,
             timestamp,
@@ -913,6 +923,7 @@ export function createReviewTaskService({
         } else if (contractEnabled && intent === 'withdraw') {
           patch = buildOperatorDispositionPatch(
             reviewTask,
+            intent,
             REVIEW_TASK_BACKEND_DISPOSITIONS.withdraw,
             completionEvidence,
             timestamp,

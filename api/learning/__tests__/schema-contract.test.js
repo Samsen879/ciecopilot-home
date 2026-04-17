@@ -11,6 +11,7 @@ const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320112000_create_learning_runtime_read_models.sql',
   'supabase/migrations/20260324110000_promote_learning_runtime_integration_application.sql',
   'supabase/migrations/20260412103000_expand_learning_question_analysis_snapshots_phase_a.sql',
+  'supabase/migrations/20260417110000_create_learning_event_deliveries.sql',
   'supabase/migrations/20260413110000_phase_a_question_classified_events.sql',
   LEARNING_QUESTION_SEARCH_MIGRATION
 ];
@@ -103,6 +104,7 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('create table if not exists public.learning_family_masteries');
     expect(sql).toContain('create table if not exists public.learning_type_masteries');
     expect(sql).toContain('create table if not exists public.learning_reconciliation_runs');
+    expect(sql).toContain('create table if not exists public.learning_event_deliveries');
     expect(sql).toContain('unique (user_id, topic_id)');
     expect(sql).toContain('unique (workspace_id, slot_key)');
     expect(sql).toContain("check (mode in ('learn_concept', 'guided_solve', 'timed_practice', 'post_mortem_review', 'spaced_review'))");
@@ -231,6 +233,19 @@ describe('learning runtime schema contract', () => {
       'started_at',
       'completed_at'
     ].forEach((token) => expect(reconciliationSql).toContain(token));
+
+    const deliverySql = normalizeSql(extractTableBlock(sql, 'public.learning_event_deliveries'));
+    [
+      'stable_idempotency_key',
+      'attempt_id',
+      'mark_run_id',
+      'delivery_state',
+      'retry_count',
+      'last_attempted_at',
+      'last_error',
+      "delivery_state in ('pending', 'persisted', 'retrying', 'reconciled', 'needs_manual_review')",
+      'unique (stable_idempotency_key)'
+    ].forEach((token) => expect(deliverySql).toContain(token));
 
     const registryProjectionSql = normalizeSql(readMigration(
       'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'

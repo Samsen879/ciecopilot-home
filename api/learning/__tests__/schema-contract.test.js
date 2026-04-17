@@ -191,6 +191,25 @@ describe('learning runtime schema contract', () => {
     ['family_id', 'references public.learning_question_families']
       .forEach((token) => expect(questionTypesSql).toContain(token));
 
+    const artifactSql = extractTableBlock(sql, 'public.learning_artifacts');
+    [
+      'artifact_state',
+      'verified_by',
+      'verified_at',
+      'verification_evidence_ref',
+      'released_by',
+      'released_at',
+      'release_evidence_ref',
+      'contested_by',
+      'contested_at',
+      'contested_reason',
+      'superseded_by_artifact_id',
+      'superseded_at',
+    ].forEach((token) => expect(artifactSql).toContain(token));
+    expect(artifactSql).toContain(
+      "check (artifact_state in ('unverified', 'verified', 'released', 'contested', 'superseded'))"
+    );
+
     const questionAnalysisSql = normalizeSql(readMigration(
       'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'
     ));

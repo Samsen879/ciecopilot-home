@@ -89,6 +89,39 @@ function buildWorkspaceSummary(workspace = {}) {
   };
 }
 
+function normalizeCapabilities(capabilities = null) {
+  if (!capabilities || typeof capabilities !== 'object' || Array.isArray(capabilities)) {
+    return null;
+  }
+
+  return {
+    shellVisible:
+      typeof capabilities.shellVisible === 'boolean'
+        ? capabilities.shellVisible
+        : capabilities.shell_visible ?? null,
+    bodyVisible:
+      typeof capabilities.bodyVisible === 'boolean'
+        ? capabilities.bodyVisible
+        : capabilities.body_visible ?? null,
+    residentEligible:
+      typeof capabilities.residentEligible === 'boolean'
+        ? capabilities.residentEligible
+        : capabilities.resident_eligible ?? null,
+    authoritativeAutomationEligible:
+      typeof capabilities.authoritativeAutomationEligible === 'boolean'
+        ? capabilities.authoritativeAutomationEligible
+        : capabilities.authoritative_automation_eligible ?? null,
+  };
+}
+
+function isResidentEligibleRecord(record = {}) {
+  if (typeof record?.capabilities?.residentEligible === 'boolean') {
+    return record.capabilities.residentEligible;
+  }
+
+  return record?.artifactState === 'verified' || record?.artifactState === 'released';
+}
+
 function normalizeCapabilityList(values) {
   return (Array.isArray(values) ? values : [])
     .map((value) => normalizeString(value))
@@ -342,6 +375,8 @@ function normalizeArtifactRecord(artifact = {}, { source = 'artifact_inbox' } = 
     title: normalizeString(artifact.title, artifactId),
     summary: normalizeString(artifact.summary ?? artifact.description, null),
     artifactKind: normalizeString(artifact.artifactKind ?? artifact.artifact_kind, null),
+    artifactState: normalizeString(artifact.artifactState ?? artifact.artifact_state, null),
+    capabilities: normalizeCapabilities(artifact.capabilities),
     canonicalHomeTopicId: normalizeString(
       artifact.canonicalHomeTopicId ?? artifact.canonical_home_topic_id,
       null,
@@ -363,7 +398,7 @@ function normalizeArtifactRecord(artifact = {}, { source = 'artifact_inbox' } = 
 }
 
 function buildArtifactStatusState(record, fallbackState = null) {
-  if (record?.lifecycleStatus === 'superseded') {
+  if (record?.artifactState === 'superseded' || record?.lifecycleStatus === 'superseded') {
     return {
       value: 'superseded',
       label: 'Superseded artifact',
@@ -372,7 +407,7 @@ function buildArtifactStatusState(record, fallbackState = null) {
     };
   }
 
-  if (record?.trustStatus === 'contested') {
+  if (record?.artifactState === 'contested' || record?.trustStatus === 'contested') {
     return {
       value: 'contested',
       label: 'Contested artifact',
@@ -400,12 +435,15 @@ function buildArtifactActionState(record, workspace) {
     Boolean(record?.slotKey)
     && Boolean(record?.artifactKind)
     && isCompatibleArtifactKindForSlot(record.slotKey, record.artifactKind);
+  const residentEligible = isResidentEligibleRecord(record);
+  const contested = record?.artifactState === 'contested' || record?.trustStatus === 'contested';
 
   const canPin =
     record?.source === 'artifact_inbox'
     && record?.placementStatus !== 'pinned'
     && record?.lifecycleStatus !== 'superseded'
-    && record?.trustStatus !== 'contested'
+    && !contested
+    && residentEligible
     && record?.slotKey !== 'review_queue'
     && sameCanonicalHome
     && hasCompatibleSlotMetadata;
@@ -415,7 +453,7 @@ function buildArtifactActionState(record, workspace) {
     canUnpin: record?.placementStatus === 'pinned',
     canMarkContested:
       record?.lifecycleStatus !== 'superseded'
-      && record?.trustStatus !== 'contested'
+      && !contested
       && record?.placementStatus !== 'pinned',
     canSupersede: Boolean(record?.artifactId) && record?.lifecycleStatus !== 'superseded',
     pinBlockedReason:
@@ -423,8 +461,10 @@ function buildArtifactActionState(record, workspace) {
         ? null
         : !sameCanonicalHome
           ? 'Secondary-topic artifacts cannot be pinned into this workspace.'
-          : record?.trustStatus === 'contested'
+          : contested
             ? 'Contested artifacts cannot be pinned.'
+            : !residentEligible
+              ? 'This artifact is not eligible for stable residency.'
             : record?.lifecycleStatus === 'superseded'
               ? 'Superseded artifacts cannot be pinned.'
               : record?.placementStatus === 'pinned'
@@ -453,6 +493,8 @@ function buildArtifactCard(record, {
   return {
     artifactId: record.artifactId,
     artifactKind: record.artifactKind,
+    artifactState: record.artifactState,
+    capabilities: record.capabilities,
     canonicalHomeTopicId: record.canonicalHomeTopicId,
     placementStatus: record.placementStatus,
     trustStatus: record.trustStatus,
@@ -492,6 +534,17 @@ function buildCardViewModel(ref, {
     state,
     launch: launch || buildReferenceLaunch(ref, workspace),
   };
+}
+
+function buildSlotEmptyState(rawState) {
+  if (rawState === 'awaiting_verification') {
+    return {
+      label: 'Awaiting verification',
+      message: 'A candidate artifact is visible in the inbox, but this slot has no resident until verification completes.',
+    };
+  }
+
+  return SLOT_EMPTY_STATE;
 }
 
 function buildSlotViewModel(definition, slots, slotState, workspace) {
@@ -560,7 +613,7 @@ function buildSlotViewModel(definition, slots, slotState, workspace) {
     updatedAtLabel: buildUpdatedAtLabel(updatedAt),
     surfaceState,
     contentState,
-    emptyState: primaryArtifact ? null : SLOT_EMPTY_STATE,
+    emptyState: primaryArtifact ? null : buildSlotEmptyState(rawState),
     slotLaunch: buildSlotLaunch(workspace, definition.key),
   };
 }

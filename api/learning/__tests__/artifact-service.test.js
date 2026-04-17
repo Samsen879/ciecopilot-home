@@ -513,34 +513,91 @@ describe('artifact-service', () => {
     });
   });
 
-  test('superseding a pinned artifact with an unverified successor clears the slot instead of transferring the pin', async () => {
+  test('pinning a new resident-eligible artifact demotes the prior primary so the slot keeps exactly one resident', async () => {
+    const repository = createArtifactRepositoryFixture();
+    const service = createArtifactService({
+      artifactRepository: repository,
+      lifecycleFlagEnabled: true,
+      now: () => new Date('2026-03-22T08:45:00.000Z'),
+    });
+
+    const result = await service.patchArtifact({
+      userId: 'student-1',
+      artifactId: 'art-successor',
+      intent: 'set_placement_status',
+      placementStatus: 'pinned',
+    });
+
+    expect(result.artifact).toMatchObject({
+      artifact_id: 'art-successor',
+      placement_status: 'pinned',
+      artifact_state: 'verified',
+    });
+    expect(result.slot_transition).toMatchObject({
+      outcome: 'pinned_to_slot',
+      slot_key: 'common_traps',
+    });
+
+    const snapshot = repository.snapshot();
+    expect(snapshot.artifacts.get('art-pinned')).toMatchObject({
+      placement_status: 'inbox',
+      artifact_state: 'verified',
+      lifecycle_status: 'active',
+    });
+    expect(snapshot.artifacts.get('art-successor')).toMatchObject({
+      placement_status: 'pinned',
+    });
+    expect(
+      [...snapshot.artifacts.values()].filter((artifact) =>
+        artifact.slot_key === 'common_traps' && artifact.placement_status === 'pinned'
+      ),
+    ).toHaveLength(1);
+    expect(snapshot.workspaceSlots.get('student-1:repair-target-topic:common_traps')).toMatchObject({
+      primary_artifact_ref: {
+        kind: 'artifact',
+        artifact_id: 'art-successor',
+      },
+    });
+  });
+
+  test('superseding a pinned artifact with an unverified successor is rejected and keeps the current resident stable', async () => {
     const repository = createArtifactRepositoryFixture();
     const service = createArtifactService({
       artifactRepository: repository,
       lifecycleFlagEnabled: true,
     });
 
-    const result = await service.patchArtifact({
-      userId: 'student-1',
-      artifactId: 'art-pinned',
-      intent: 'attach_superseded_by',
-      successorArtifactRef: {
-        kind: 'artifact',
-        artifact_id: 'art-successor-unverified',
-      },
-    });
-
-    expect(result.slot_transition).toMatchObject({
-      outcome: 'slot_cleared_pending_confirmation',
-      slot_key: 'common_traps',
+    await expect(
+      service.patchArtifact({
+        userId: 'student-1',
+        artifactId: 'art-pinned',
+        intent: 'attach_superseded_by',
+        successorArtifactRef: {
+          kind: 'artifact',
+          artifact_id: 'art-successor-unverified',
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: 'artifact_state_conflict',
+      status: 409,
     });
 
     const snapshot = repository.snapshot();
+    expect(snapshot.artifacts.get('art-pinned')).toMatchObject({
+      placement_status: 'pinned',
+      artifact_state: 'verified',
+      lifecycle_status: 'active',
+      superseded_by_artifact_id: null,
+    });
     expect(snapshot.artifacts.get('art-successor-unverified')).toMatchObject({
       placement_status: 'inbox',
+      artifact_state: 'unverified',
     });
     expect(snapshot.workspaceSlots.get('student-1:repair-target-topic:common_traps')).toMatchObject({
-      primary_artifact_ref: null,
+      primary_artifact_ref: {
+        kind: 'artifact',
+        artifact_id: 'art-pinned',
+      },
     });
   });
 

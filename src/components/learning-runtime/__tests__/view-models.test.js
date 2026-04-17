@@ -140,6 +140,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:56:00.000Z',
@@ -151,7 +158,14 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'my_notes',
             placementStatus: 'inbox',
-            trustStatus: 'user_confirmed',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
+            trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:57:00.000Z',
             title: 'My note candidate',
@@ -162,6 +176,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-identities',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:55:00.000Z',
@@ -172,6 +193,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'contested',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: false,
+              residentEligible: false,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'contested',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:54:00.000Z',
@@ -1325,6 +1353,76 @@ describe('learning runtime session view model', () => {
       label: 'Contested artifact',
       tone: 'warning',
       message: 'This artifact is contested and cannot be pinned until the conflict is resolved.',
+    });
+  });
+
+  test('workspace view-model keeps a resident visible while an unverified successor stays in the inbox only', () => {
+    const payload = createWorkspacePayload();
+    payload.workspace.artifactInbox.items.unshift({
+      artifactId: 'artifact-awaiting-verification',
+      artifactKind: 'misconception_card',
+      canonicalHomeTopicId: 'topic-trig-equations',
+      slotKey: 'common_traps',
+      placementStatus: 'inbox',
+      artifactState: 'unverified',
+      capabilities: {
+        shellVisible: true,
+        bodyVisible: false,
+        residentEligible: false,
+        authoritativeAutomationEligible: false,
+      },
+      trustStatus: 'unverified',
+      lifecycleStatus: 'active',
+      updatedAt: '2026-03-22T08:06:00.000Z',
+      summary: 'Pending verification before it can replace the resident.',
+    });
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.slots.common_traps.primaryArtifactCard.artifactId).toBe('artifact-primary');
+    expect(vm.slots.common_traps.emptyState).toBeNull();
+
+    const pendingCandidate = vm.artifactInbox.items.find((card) => card.artifactId === 'artifact-awaiting-verification');
+    expect(pendingCandidate.availableActions.canPin).toBe(false);
+    expect(pendingCandidate.availableActions.pinBlockedReason)
+      .toBe('This artifact is not eligible for stable residency.');
+  });
+
+  test('workspace view-model shows awaiting verification only when the slot has no resident', () => {
+    const payload = createWorkspacePayload();
+    payload.workspace.slotState.commonTraps = 'awaiting_verification';
+    payload.workspace.slots.commonTraps.primaryArtifactRef = null;
+    payload.workspace.artifactInbox.items = [
+      {
+        artifactId: 'artifact-awaiting-verification',
+        artifactKind: 'misconception_card',
+        canonicalHomeTopicId: 'topic-trig-equations',
+        slotKey: 'common_traps',
+        placementStatus: 'inbox',
+        artifactState: 'unverified',
+        capabilities: {
+          shellVisible: true,
+          bodyVisible: false,
+          residentEligible: false,
+          authoritativeAutomationEligible: false,
+        },
+        trustStatus: 'unverified',
+        lifecycleStatus: 'active',
+        updatedAt: '2026-03-22T08:06:00.000Z',
+        summary: 'Pending verification before it can replace the resident.',
+      },
+    ];
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.slots.common_traps.primaryArtifactCard).toBeNull();
+    expect(vm.slots.common_traps.emptyState).toEqual({
+      label: 'Awaiting verification',
+      message: 'A candidate artifact is visible in the inbox, but this slot has no resident until verification completes.',
     });
   });
 

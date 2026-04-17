@@ -266,7 +266,6 @@ function buildLearningUpdateProposedPayload({
   markRunId,
   proposal = null,
 } = {}) {
-  const fallbackReason = normalizeString(authorityPosture.fallback_reason_code) || null;
   const normalizedProposal = proposal && typeof proposal === 'object' ? proposal : {};
   const proposalKey = normalizeString(normalizedProposal.proposal_key)
     || (normalizeString(markRunId) ? `mark-run:${markRunId}` : `attempt:${attemptId}`);
@@ -275,14 +274,9 @@ function buildLearningUpdateProposedPayload({
     attempt_id: attemptId,
     authority_posture: cloneJson(authorityPosture),
     proposal_key: proposalKey,
-    guardrail_decisions: cloneJson(normalizedProposal.guardrail_decisions ?? {
-      authoritative_scoring_allowed: Boolean(authorityPosture.authoritative_scoring_allowed),
-      release_scope_status: normalizeString(authorityPosture.release_scope_status) || null,
-      learning_signal_posture: normalizeString(authorityPosture.learning_signal_posture) || null,
-      fallback_mode: normalizeString(authorityPosture.fallback_mode) || null,
-      fallback_reason_code: fallbackReason,
-      reasons: fallbackReason ? [fallbackReason] : ['released_scoring'],
-    }),
+    guardrail_decisions: cloneJson(
+      normalizedProposal.guardrail_decisions ?? buildLearningEffectGuardrailDecisions(authorityPosture),
+    ),
     proposed_mastery_effects: cloneJson(
       normalizedProposal.proposedMasteryEffects
       ?? normalizedProposal.proposed_mastery_effects
@@ -609,6 +603,38 @@ function buildLearningEffectsReceiptSummary(effectExecution = {}) {
   };
 }
 
+function buildLearningEffectGuardrailDecisions(authorityPosture = {}) {
+  const fallbackReason = normalizeString(authorityPosture.fallback_reason_code) || null;
+
+  return {
+    authoritative_scoring_allowed: Boolean(authorityPosture.authoritative_scoring_allowed),
+    release_scope_status: normalizeString(authorityPosture.release_scope_status) || null,
+    learning_signal_posture: normalizeString(authorityPosture.learning_signal_posture) || null,
+    fallback_mode: normalizeString(authorityPosture.fallback_mode) || null,
+    fallback_reason_code: fallbackReason,
+    reasons: fallbackReason ? [fallbackReason] : ['released_scoring'],
+  };
+}
+
+function buildFailedLearningEffectExecution(error = null) {
+  return {
+    ok: false,
+    status: 'failed',
+    debt_pending: true,
+    receipt_summary: {
+      total: 0,
+      persisted: 0,
+      retrying: 0,
+      needs_manual_review: 0,
+    },
+    receipts: [],
+    error: {
+      code: 'effect_execution_failed',
+      message: error?.message || String(error),
+    },
+  };
+}
+
 function buildLearningEffectsResponse(proposalEvent = {}, effectExecution = {}) {
   const payload = proposalEvent?.payload && typeof proposalEvent.payload === 'object'
     ? cloneJson(proposalEvent.payload)
@@ -653,7 +679,10 @@ function buildLearningEffectsResponse(proposalEvent = {}, effectExecution = {}) 
     effect_execution: {
       ok: Boolean(effectExecution?.ok),
       status: normalizeString(effectExecution?.status) || 'unknown',
-      debt_pending: receiptSummary.retrying > 0 || receiptSummary.needs_manual_review > 0,
+      debt_pending:
+        Boolean(effectExecution?.debt_pending)
+        || receiptSummary.retrying > 0
+        || receiptSummary.needs_manual_review > 0,
       receipt_summary: receiptSummary,
       receipts: normalizeArray(effectExecution?.receipts).map((receipt) => cloneJson(receipt)),
       error: effectExecution?.error ? cloneJson(effectExecution.error) : null,
@@ -661,42 +690,34 @@ function buildLearningEffectsResponse(proposalEvent = {}, effectExecution = {}) 
   };
 }
 
-function buildFallbackLearningEffectsResponseFromDeliveryRow(deliveryRow = {}, error = null) {
+function buildFallbackLearningEffectsResponseFromDeliveryRow(
+  deliveryRow = {},
+  {
+    authorityPosture = null,
+    error = null,
+  } = {},
+) {
   const proposalKey = normalizeString(deliveryRow.mark_run_id)
     ? `mark-run:${normalizeString(deliveryRow.mark_run_id)}`
     : (normalizeString(deliveryRow.attempt_id) ? `attempt:${normalizeString(deliveryRow.attempt_id)}` : null);
+  const normalizedAuthorityPosture =
+    authorityPosture && typeof authorityPosture === 'object'
+      ? buildRuntimeAuthorityPosture(authorityPosture, authorityPosture)
+      : {};
 
-  return {
-    proposal_key: proposalKey,
-    guardrail_decisions: {},
-    authoritative_scoring_allowed: false,
-    release_scope_status: null,
-    learning_signal_posture: null,
-    fallback_mode: null,
-    fallback_reason_code: null,
-    runtime_authority_posture: null,
-    runtime_authority_reason_code: null,
-    question_source_kind: null,
-    proposed_mastery_effects: [],
-    proposed_review_tasks: [],
-    proposed_artifact_suggestions: [],
-    effect_execution: {
-      ok: false,
-      status: 'failed',
-      debt_pending: true,
-      receipt_summary: {
-        total: 0,
-        persisted: 0,
-        retrying: 0,
-        needs_manual_review: 0,
-      },
-      receipts: [],
-      error: {
-        code: 'effect_execution_failed',
-        message: error?.message || String(error),
+  return buildLearningEffectsResponse(
+    {
+      payload: {
+        proposal_key: proposalKey,
+        authority_posture: cloneJson(normalizedAuthorityPosture),
+        guardrail_decisions: buildLearningEffectGuardrailDecisions(normalizedAuthorityPosture),
+        proposed_mastery_effects: [],
+        proposed_review_tasks: [],
+        proposed_artifact_suggestions: [],
       },
     },
-  };
+    buildFailedLearningEffectExecution(error),
+  );
 }
 
 function buildReconciliationSourceRef(deliveryRow = {}) {
@@ -797,8 +818,37 @@ async function loadPersistedLearningUpdateProposalEvent(client, deliveryRow = {}
   return proposalEvent;
 }
 
+async function loadPersistedMarkRunAuthorityPosture(client, deliveryRow = {}) {
+  const markRunId = normalizeString(deliveryRow.mark_run_id);
+  if (!markRunId) {
+    return null;
+  }
+
+  try {
+    const { data, error } = await client
+      .from('mark_runs')
+      .select('response_summary')
+      .eq('mark_run_id', markRunId)
+      .maybeSingle();
+
+    if (error) {
+      return null;
+    }
+
+    const authorityPosture = data?.response_summary?.authority_posture;
+    if (!authorityPosture || typeof authorityPosture !== 'object' || Array.isArray(authorityPosture)) {
+      return null;
+    }
+
+    return buildRuntimeAuthorityPosture(authorityPosture, authorityPosture);
+  } catch {
+    return null;
+  }
+}
+
 async function executePersistedLearningUpdateEffectsSafely(client, {
   deliveryRow,
+  fallbackProposalEvent = null,
 } = {}, dependencies = {}) {
   let proposalEvent = null;
 
@@ -819,23 +869,15 @@ async function executePersistedLearningUpdateEffectsSafely(client, {
       learningEffects: buildLearningEffectsResponse(proposalEvent, effectExecution),
     };
   } catch (error) {
+    const failedEffectExecution = buildFailedLearningEffectExecution(error);
     const learningEffects = proposalEvent
-      ? buildLearningEffectsResponse(proposalEvent, {
-        ok: false,
-        status: 'failed',
-        receipt_summary: {
-          total: 0,
-          persisted: 0,
-          retrying: 0,
-          needs_manual_review: 0,
-        },
-        receipts: [],
-        error: {
-          code: 'effect_execution_failed',
-          message: error?.message || String(error),
-        },
-      })
-      : buildFallbackLearningEffectsResponseFromDeliveryRow(deliveryRow, error);
+      ? buildLearningEffectsResponse(proposalEvent, failedEffectExecution)
+      : fallbackProposalEvent
+        ? buildLearningEffectsResponse(fallbackProposalEvent, failedEffectExecution)
+        : buildFallbackLearningEffectsResponseFromDeliveryRow(deliveryRow, {
+          authorityPosture: await loadPersistedMarkRunAuthorityPosture(client, deliveryRow),
+          error,
+        });
 
     return {
       proposalEvent,
@@ -1056,6 +1098,8 @@ export async function persistAttemptEventBridge(client, input = {}, options = {}
     const downstreamLearningEffects = options.applyDownstreamEffects
       ? await executePersistedLearningUpdateEffectsSafely(client, {
         deliveryRow: finalizedDelivery,
+        fallbackProposalEvent:
+          events.find((event) => event.event_type === 'LearningUpdateProposed') ?? null,
       }, options)
       : null;
 

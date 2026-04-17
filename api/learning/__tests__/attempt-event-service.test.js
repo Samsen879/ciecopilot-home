@@ -129,6 +129,7 @@ function createMockClient({
   warningError = null,
   existingStreamHead = null,
   existingDeliveryRow = null,
+  existingMarkRun = null,
   existingLearningEvents = [],
   failLearningEventReads = false,
 } = {}) {
@@ -256,6 +257,33 @@ function createMockClient({
               return { error: pipelineStateError };
             },
           };
+        }
+
+        if (table === 'mark_runs') {
+          const filters = [];
+          const query = {
+            select: () => query,
+            eq: (field, value) => {
+              filters.push({ field, value });
+              return query;
+            },
+            maybeSingle: async () => {
+              const markRunId = filters.find((filter) => filter.field === 'mark_run_id')?.value ?? null;
+              if (markRunId && existingMarkRun?.mark_run_id === markRunId) {
+                return {
+                  data: clone(existingMarkRun),
+                  error: null,
+                };
+              }
+
+              return {
+                data: null,
+                error: null,
+              };
+            },
+          };
+
+          return query;
         }
 
         if (table === 'error_events') {
@@ -943,6 +971,165 @@ describe('attempt-event-service', () => {
         last_error: null,
       },
       learning_effects: {
+        authoritative_scoring_allowed: true,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'authoritative_scoring',
+        runtime_authority_posture: 'default_durable',
+        runtime_authority_reason_code: null,
+        question_source_kind: 'paper_question',
+        effect_execution: {
+          ok: false,
+          status: 'failed',
+          debt_pending: true,
+          error: {
+            code: 'effect_execution_failed',
+            message: 'learning_update_proposed_event_not_found',
+          },
+        },
+      },
+    });
+  });
+
+  test('downstream-effect read failures preserve imported-question non-authoritative posture', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client } = createMockClient({
+      failLearningEventReads: true,
+    });
+
+    const result = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput({
+        questionContext: {
+          source_kind: 'imported_question',
+          family_id: '9709.trigonometry_manipulation_equations',
+          question_type_id: '9709.trigonometry.identities',
+          question_type_release_state: 'released',
+          primary_topic_id: 'topic-trig-identities',
+          primary_topic_path: '9709/trigonometry/identities',
+          classification_confidence: 0.95,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'trig-identities-v1',
+              release_state: 'released',
+            },
+          ],
+          release_scope_status: 'released_scoring',
+        },
+        authorityPosture: {
+          release_scope_status: 'released_scoring',
+          authoritative_scoring_allowed: true,
+          fallback_mode: null,
+          fallback_reason_code: null,
+          classification_confidence: 0.95,
+          learning_signal_posture: 'authoritative_scoring',
+        },
+      }),
+      {
+        applyDownstreamEffects: true,
+      },
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      deduped: false,
+      delivery: {
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_error: null,
+      },
+      learning_effects: {
+        authoritative_scoring_allowed: false,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'conservative_fallback',
+        runtime_authority_posture: 'non_authoritative',
+        runtime_authority_reason_code: 'imported_question_attempt',
+        question_source_kind: 'imported_question',
+        effect_execution: {
+          ok: false,
+          status: 'failed',
+          debt_pending: true,
+          error: {
+            code: 'effect_execution_failed',
+            message: 'learning_update_proposed_event_not_found',
+          },
+        },
+      },
+    });
+  });
+
+  test('replayed persisted deliveries preserve durable authority posture when proposal-event reload fails', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client } = createMockClient({
+      failLearningEventReads: true,
+      existingMarkRun: {
+        mark_run_id: 'mr-bridge-1',
+        response_summary: {
+          authority_posture: {
+            release_scope_status: 'released_scoring',
+            authoritative_scoring_allowed: true,
+            fallback_mode: null,
+            fallback_reason_code: null,
+            learning_signal_posture: 'authoritative_scoring',
+            runtime_authority_posture: 'default_durable',
+            runtime_authority_reason_code: null,
+            question_source_kind: 'paper_question',
+          },
+        },
+      },
+      existingDeliveryRow: {
+        delivery_id: 'delivery-persisted-1',
+        stable_idempotency_key: 'attempt_event_bridge:mr-bridge-1',
+        attempt_id: 'att-bridge-1',
+        learner_id: 'user-bridge-1',
+        subject_code: '9709',
+        mark_run_id: 'mr-bridge-1',
+        truth_revision: 1,
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_attempted_at: '2026-04-17T00:00:00.000Z',
+        last_error: null,
+        persisted_event_types: [
+          'AttemptSubmitted',
+          'QuestionClassified',
+          'MarkingCompleted',
+          'LearningUpdateProposed',
+        ],
+        persisted_event_ids: [
+          'event-1',
+          'event-2',
+          'event-3',
+          'event-4',
+        ],
+        reconciliation_id: null,
+      },
+    });
+
+    const result = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput(),
+      {
+        applyDownstreamEffects: true,
+      },
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      deduped: true,
+      delivery: {
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_error: null,
+      },
+      learning_effects: {
+        authoritative_scoring_allowed: true,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'authoritative_scoring',
+        runtime_authority_posture: 'default_durable',
+        runtime_authority_reason_code: null,
+        question_source_kind: 'paper_question',
         effect_execution: {
           ok: false,
           status: 'failed',

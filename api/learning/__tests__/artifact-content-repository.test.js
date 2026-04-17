@@ -5,6 +5,7 @@ import {
 function createArtifactContentDb() {
   const versions = new Map();
   let nextVersionId = 1;
+  let nextInsertError = null;
 
   function clone(value) {
     return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
@@ -75,6 +76,12 @@ function createArtifactContentDb() {
       }
 
       if (this.operation === 'insert') {
+        if (nextInsertError) {
+          const error = nextInsertError;
+          nextInsertError = null;
+          return Promise.resolve({ data: null, error });
+        }
+
         const row = {
           artifact_content_version_id: `artifact-content-version-${nextVersionId++}`,
           created_at: this.payload.created_at ?? '2026-04-17T12:00:00.000Z',
@@ -119,6 +126,52 @@ function createArtifactContentDb() {
   }
 
   return {
+    setNextInsertError(error) {
+      nextInsertError = error;
+    },
+    async rpc(name, params) {
+      if (name !== 'create_learning_artifact_content_version') {
+        throw new Error(`Unexpected rpc: ${name}`);
+      }
+
+      if (nextInsertError) {
+        const error = nextInsertError;
+        nextInsertError = null;
+        return { data: null, error };
+      }
+
+      const current = listVersions([
+        { type: 'eq', column: 'artifact_id', value: params.p_artifact_id },
+        { type: 'eq', column: 'is_current', value: true },
+      ])[0] ?? null;
+
+      if (params.p_is_current ?? true) {
+        if (current) {
+          versions.set(current.artifact_content_version_id, {
+            ...current,
+            is_current: false,
+          });
+        }
+      }
+
+      const row = {
+        artifact_content_version_id: `artifact-content-version-${nextVersionId++}`,
+        artifact_id: params.p_artifact_id,
+        version_number: params.p_version_number,
+        lineage_parent_version_id: params.p_lineage_parent_version_id,
+        is_current: params.p_is_current,
+        title: params.p_title,
+        summary: params.p_summary,
+        body_markdown: params.p_body_markdown,
+        content_format: params.p_content_format,
+        render_payload: params.p_render_payload,
+        materialization_kind: params.p_materialization_kind,
+        source_refs: params.p_source_refs,
+        created_at: params.p_created_at ?? '2026-04-17T12:00:00.000Z',
+      };
+      versions.set(row.artifact_content_version_id, clone(row));
+      return { data: clone(row), error: null };
+    },
     snapshot() {
       return new Map(versions);
     },
@@ -214,6 +267,40 @@ describe('artifact-content-repository', () => {
 
     expect(db.snapshot().get(first.artifact_content_version_id)).toMatchObject({
       is_current: false,
+    });
+  });
+
+  test('failed replacement inserts do not clear the previous current version', async () => {
+    const db = createArtifactContentDb();
+    const repository = createArtifactContentRepository(db);
+
+    const first = await repository.createArtifactContentVersion({
+      artifact_id: 'artifact-1',
+      title: 'Common trap: sign slip',
+      summary: 'First summary.',
+      body_markdown: 'Initial explanation.',
+    });
+
+    db.setNextInsertError({
+      message: 'simulated insert failure',
+    });
+
+    await expect(repository.createArtifactContentVersion({
+      artifact_id: 'artifact-1',
+      title: 'Common trap: sign slip',
+      summary: 'Replacement summary.',
+      body_markdown: 'Replacement explanation.',
+    })).rejects.toThrow('Failed to insert learning artifact content version');
+
+    await expect(repository.getCurrentArtifactContentByArtifactId('artifact-1')).resolves.toMatchObject({
+      artifact_content_version_id: first.artifact_content_version_id,
+      version_number: 1,
+      is_current: true,
+      summary: 'First summary.',
+    });
+
+    expect(db.snapshot().get(first.artifact_content_version_id)).toMatchObject({
+      is_current: true,
     });
   });
 });

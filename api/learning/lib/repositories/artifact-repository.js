@@ -1,5 +1,6 @@
 import {
   getCurrentArtifactContentByArtifactId,
+  listCurrentArtifactContentsByArtifactIds,
   mergeArtifactWithCurrentContent,
 } from './artifact-content-repository.js';
 
@@ -130,11 +131,16 @@ export async function listArtifactsByTopic(client, { topicId } = {}) {
   }
 
   const rows = Array.isArray(data) ? data : [];
+  const currentContentByArtifactId = await listCurrentArtifactContentsByArtifactIds(
+    client,
+    rows.map((artifact) => artifact.artifact_id),
+  );
 
-  return Promise.all(rows.map(async (artifact) => {
-    const currentContent = await getCurrentArtifactContentByArtifactId(client, artifact.artifact_id);
-    return mergeArtifactWithCurrentContent(artifact, currentContent);
-  }));
+  return rows.map((artifact) =>
+    mergeArtifactWithCurrentContent(
+      artifact,
+      currentContentByArtifactId.get(artifact.artifact_id) ?? null,
+    ));
 }
 
 export async function updateArtifact(client, artifactId, patch = {}) {

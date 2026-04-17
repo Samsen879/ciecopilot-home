@@ -371,6 +371,11 @@ function createLearningDb(overrides = {}) {
       return this;
     }
 
+    in(column, values) {
+      this.filters.push({ type: 'in', column, values });
+      return this;
+    }
+
     lte(column, value) {
       this.filters.push({ type: 'lte', column, value });
       return this;
@@ -396,6 +401,10 @@ function createLearningDb(overrides = {}) {
         for (const filter of this.filters) {
           if (filter.type === 'eq') {
             rows = rows.filter((row) => row[filter.column] === filter.value);
+          }
+
+          if (filter.type === 'in') {
+            rows = rows.filter((row) => filter.values.includes(row[filter.column]));
           }
         }
 
@@ -458,6 +467,10 @@ function createLearningDb(overrides = {}) {
           if (filter.type === 'eq') {
             rows = rows.filter((row) => row[filter.column] === filter.value);
           }
+
+          if (filter.type === 'in') {
+            rows = rows.filter((row) => filter.values.includes(row[filter.column]));
+          }
         }
 
         return Promise.resolve({ data: rows, error: null }).then(resolve, reject);
@@ -469,6 +482,10 @@ function createLearningDb(overrides = {}) {
         for (const filter of this.filters) {
           if (filter.type === 'eq') {
             rows = rows.filter((row) => row[filter.column] === filter.value);
+          }
+
+          if (filter.type === 'in') {
+            rows = rows.filter((row) => filter.values.includes(row[filter.column]));
           }
         }
 
@@ -590,6 +607,10 @@ function createBoundaryLearningDb() {
     for (const filter of filters) {
       if (filter.type === 'eq') {
         rows = rows.filter((row) => row[filter.column] === filter.value);
+      }
+
+      if (filter.type === 'in') {
+        rows = rows.filter((row) => filter.values.includes(row[filter.column]));
       }
     }
 
@@ -913,6 +934,11 @@ function createBoundaryLearningDb() {
       return this;
     }
 
+    in(column, values) {
+      this.filters.push({ type: 'in', column, values });
+      return this;
+    }
+
     lte(column, value) {
       this.filters.push({ type: 'lte', column, value });
       return this;
@@ -954,6 +980,49 @@ function createBoundaryLearningDb() {
 
   return {
     queries,
+    async rpc(name, params) {
+      queries.push({
+        table: `rpc:${name}`,
+        params,
+      });
+
+      if (name !== 'create_learning_artifact_content_version') {
+        throw new Error(`Unhandled rpc: ${name}`);
+      }
+
+      const current = listArtifactContentVersions([
+        { type: 'eq', column: 'artifact_id', value: params.p_artifact_id },
+        { type: 'eq', column: 'is_current', value: true },
+      ])[0] ?? null;
+
+      if (params.p_is_current ?? true) {
+        if (current) {
+          state.artifactContentVersions.set(current.artifact_content_version_id, {
+            ...current,
+            is_current: false,
+          });
+        }
+      }
+
+      const row = {
+        artifact_content_version_id:
+          `artifact-content-version-${state.nextArtifactContentVersionId++}`,
+        artifact_id: params.p_artifact_id,
+        version_number: params.p_version_number,
+        lineage_parent_version_id: params.p_lineage_parent_version_id,
+        is_current: params.p_is_current,
+        title: params.p_title,
+        summary: params.p_summary,
+        body_markdown: params.p_body_markdown,
+        content_format: params.p_content_format,
+        render_payload: params.p_render_payload,
+        materialization_kind: params.p_materialization_kind,
+        source_refs: params.p_source_refs,
+        created_at: params.p_created_at ?? '2026-03-22T09:00:00.000Z',
+      };
+      state.artifactContentVersions.set(row.artifact_content_version_id, row);
+      return { data: row, error: null };
+    },
     from(table) {
       return new QueryBuilder(table);
     },

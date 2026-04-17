@@ -73,6 +73,7 @@ function createEmptySlot() {
   return {
     workspace_slot_id: null,
     primary_artifact_ref: null,
+    primary_artifact: null,
     linked_references: [],
     updated_at: null,
   };
@@ -138,6 +139,7 @@ function buildStableSlots(workspaceProjection, { reviewQueueItems = [] } = {}) {
         {
           workspace_slot_id: slot.workspace_slot_id ?? null,
           primary_artifact_ref: slot.primary_artifact_ref ?? null,
+          primary_artifact: slot.primary_artifact ?? null,
           linked_references: normalizeLinkedReferences(
             linkedReferences,
             slot.primary_artifact_ref ?? null,
@@ -201,6 +203,36 @@ function isResidentArtifact(artifact = {}) {
 function isPendingVerificationArtifact(artifact = {}) {
   return isActiveArtifact(artifact)
     && artifact.artifact_state === 'unverified';
+}
+
+function hasRenderableResidentContent(artifact = {}) {
+  return Boolean(
+    artifact?.has_renderable_content
+    || normalizeString(artifact?.title)
+    || normalizeString(artifact?.summary)
+    || normalizeString(artifact?.body_markdown),
+  );
+}
+
+function buildResidentArtifactProjection(artifact = {}) {
+  return {
+    artifact_id: artifact.artifact_id ?? null,
+    artifact_kind: artifact.artifact_kind ?? null,
+    title: normalizeString(artifact.title),
+    summary: normalizeString(artifact.summary),
+    body_markdown: normalizeString(artifact.body_markdown),
+    content_format: normalizeString(artifact.content_format, 'markdown'),
+    current_content_version_id: artifact.current_content_version_id ?? null,
+    current_content_version_number: artifact.current_content_version_number ?? null,
+    capabilities: artifact.capabilities ?? null,
+    placement_status: artifact.placement_status ?? null,
+    trust_status: artifact.trust_status ?? null,
+    lifecycle_status: artifact.lifecycle_status ?? null,
+    artifact_state: artifact.artifact_state ?? null,
+    slot_key: artifact.slot_key ?? null,
+    target_question_type_id: artifact.target_question_type_id ?? null,
+    updated_at: artifact.updated_at ?? null,
+  };
 }
 
 function shouldResetSlotStateToActive(currentState) {
@@ -268,6 +300,10 @@ function projectWorkspaceResidency(workspaceProjection, topicArtifacts = []) {
       projectedSlots[slotKey] = {
         ...slot,
         primary_artifact_ref: residentArtifact ? buildArtifactRef(residentArtifact.artifact_id) : null,
+        primary_artifact:
+          residentArtifact && hasRenderableResidentContent(residentArtifact)
+            ? buildResidentArtifactProjection(residentArtifact)
+            : null,
       };
     }
 
@@ -277,6 +313,13 @@ function projectWorkspaceResidency(workspaceProjection, topicArtifacts = []) {
 
     if (!residentArtifact && slotArtifacts.some(isPendingVerificationArtifact)) {
       projectedSlotState[slotKey] = 'awaiting_verification';
+      return;
+    }
+
+    if (residentArtifact && !hasRenderableResidentContent(residentArtifact)) {
+      if (shouldResetSlotStateToActive(projectedSlotState[slotKey])) {
+        projectedSlotState[slotKey] = 'missing_artifact_content';
+      }
       return;
     }
 

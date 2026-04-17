@@ -1,3 +1,8 @@
+import {
+  getCurrentArtifactContentByArtifactId,
+  mergeArtifactWithCurrentContent,
+} from './artifact-content-repository.js';
+
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -84,7 +89,7 @@ export function createArtifactRepository(client) {
 }
 
 export async function getArtifactById(client, artifactId) {
-  return maybeSingle(
+  const artifact = await maybeSingle(
     client
       .from('learning_artifacts')
       .select('*')
@@ -92,6 +97,13 @@ export async function getArtifactById(client, artifactId) {
       .maybeSingle(),
     'Failed to load learning artifact',
   );
+
+  if (!artifact) {
+    return null;
+  }
+
+  const currentContent = await getCurrentArtifactContentByArtifactId(client, artifactId);
+  return mergeArtifactWithCurrentContent(artifact, currentContent);
 }
 
 export async function insertArtifact(client, input = {}) {
@@ -117,7 +129,12 @@ export async function listArtifactsByTopic(client, { topicId } = {}) {
     throw new Error(`Failed to load learning artifacts for topic: ${error.message}`);
   }
 
-  return Array.isArray(data) ? data : [];
+  const rows = Array.isArray(data) ? data : [];
+
+  return Promise.all(rows.map(async (artifact) => {
+    const currentContent = await getCurrentArtifactContentByArtifactId(client, artifact.artifact_id);
+    return mergeArtifactWithCurrentContent(artifact, currentContent);
+  }));
 }
 
 export async function updateArtifact(client, artifactId, patch = {}) {

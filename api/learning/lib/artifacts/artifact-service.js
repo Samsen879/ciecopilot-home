@@ -8,6 +8,10 @@ import {
   hasNonAuthoritativeAttemptGrounding,
 } from '../contracts/runtime-authority-posture.js';
 import { createArtifactRepository } from '../repositories/artifact-repository.js';
+import {
+  createArtifactContentRepository,
+  mergeArtifactWithCurrentContent,
+} from '../repositories/artifact-content-repository.js';
 
 const LEGACY_ARTIFACT_INTENTS = new Set([
   'set_placement_status',
@@ -72,6 +76,15 @@ export function isArtifactLifecycleEnabled(env = process.env) {
 
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
+}
+
+function normalizeString(value, fallback = null) {
+  if (typeof value !== 'string') {
+    return fallback;
+  }
+
+  const trimmed = value.trim();
+  return trimmed || fallback;
 }
 
 function isPlainObject(value) {
@@ -160,9 +173,142 @@ export function buildArtifactCandidate(input = {}, timestamp) {
   };
 }
 
+function humanizeArtifactToken(value, fallback = 'artifact') {
+  return normalizeString(value, fallback)
+    .replace(/[:_]/g, ' ')
+    .replace(/\s+/g, ' ');
+}
+
+function buildArtifactContentTitle(candidate = {}) {
+  if (candidate.artifact_kind === 'misconception_card') {
+    const firstTag = normalizeArray(candidate.misconception_tags)[0];
+    return `Common trap: ${humanizeArtifactToken(firstTag, 'repair target')}`;
+  }
+
+  if (candidate.artifact_kind === 'derivation_card') {
+    return `Core derivation: ${humanizeArtifactToken(candidate.target_question_type_id, 'method')}`;
+  }
+
+  if (candidate.artifact_kind === 'worked_example_card') {
+    return `Worked example: ${humanizeArtifactToken(candidate.target_question_type_id, 'topic')}`;
+  }
+
+  if (candidate.artifact_kind === 'summary_card') {
+    return `Topic summary: ${humanizeArtifactToken(candidate.canonical_home_topic_path, 'topic')}`;
+  }
+
+  if (candidate.artifact_kind === 'formula_card') {
+    return `Formula card: ${humanizeArtifactToken(candidate.target_question_type_id, 'formula')}`;
+  }
+
+  if (candidate.artifact_kind === 'free_note') {
+    return `Runtime note: ${humanizeArtifactToken(candidate.canonical_home_topic_path, 'workspace')}`;
+  }
+
+  return humanizeArtifactToken(candidate.artifact_kind, 'artifact');
+}
+
+function buildArtifactContentSummary(candidate = {}) {
+  const parts = [];
+  const tags = normalizeArray(candidate.misconception_tags).map((tag) => humanizeArtifactToken(tag));
+
+  if (candidate.target_question_type_id) {
+    parts.push(`Question type: ${candidate.target_question_type_id}.`);
+  }
+
+  if (tags.length > 0) {
+    parts.push(`Focus: ${tags.join(', ')}.`);
+  }
+
+  if (candidate.canonical_home_topic_path) {
+    parts.push(`Topic: ${candidate.canonical_home_topic_path}.`);
+  }
+
+  return parts.join(' ');
+}
+
+function buildArtifactContentBody(candidate = {}) {
+  const tags = normalizeArray(candidate.misconception_tags).map((tag) => humanizeArtifactToken(tag));
+  const lines = [
+    `## ${buildArtifactContentTitle(candidate)}`,
+    '',
+    '### Focus',
+  ];
+
+  if (tags.length > 0) {
+    for (const tag of tags) {
+      lines.push(`- ${tag}`);
+    }
+  } else {
+    lines.push('- Review the runtime candidate details for this artifact.');
+  }
+
+  lines.push('', '### Applies to');
+  if (candidate.target_question_type_id) {
+    lines.push(`- Question type: ${candidate.target_question_type_id}`);
+  }
+  if (candidate.canonical_home_topic_path) {
+    lines.push(`- Topic: ${candidate.canonical_home_topic_path}`);
+  }
+
+  lines.push('', '### Runtime provenance');
+  if (candidate.source_attempt_id) {
+    lines.push(`- Attempt: ${candidate.source_attempt_id}`);
+  }
+  if (candidate.source_mark_run_id) {
+    lines.push(`- Mark run: ${candidate.source_mark_run_id}`);
+  }
+  if (candidate.source_session_id) {
+    lines.push(`- Session: ${candidate.source_session_id}`);
+  }
+
+  return lines.join('\n');
+}
+
+function buildArtifactContentSourceRefs(candidate = {}) {
+  const refs = [];
+
+  if (candidate.source_attempt_id) {
+    refs.push({ kind: 'attempt', attempt_id: candidate.source_attempt_id });
+  }
+
+  if (candidate.source_mark_run_id) {
+    refs.push({ kind: 'mark_run', mark_run_id: candidate.source_mark_run_id });
+  }
+
+  if (candidate.source_session_id) {
+    refs.push({ kind: 'session', session_id: candidate.source_session_id });
+  }
+
+  return refs;
+}
+
+function buildArtifactContentDraft(candidate = {}, storedArtifact = {}) {
+  const title = buildArtifactContentTitle(candidate);
+  const summary = buildArtifactContentSummary(candidate);
+  const bodyMarkdown = buildArtifactContentBody(candidate);
+
+  return {
+    artifact_id: storedArtifact.artifact_id,
+    title,
+    summary,
+    body_markdown: bodyMarkdown,
+    content_format: 'markdown',
+    render_payload: {
+      schema_version: 'learning_artifact_render.v1',
+      title,
+      summary,
+    },
+    materialization_kind: 'runtime_candidate',
+    source_refs: buildArtifactContentSourceRefs(candidate),
+    created_at: storedArtifact.created_at ?? candidate.created_at ?? null,
+  };
+}
+
 async function materializeArtifactCandidate({
   candidate,
   artifactRepository,
+  artifactContentRepository,
   lifecycleFlagEnabled,
 } = {}) {
   if (!candidate || !candidate.canonical_home_topic_id) {
@@ -174,12 +320,21 @@ async function materializeArtifactCandidate({
   }
 
   const stored = await artifactRepository.insertArtifact(candidate);
+  const currentContent = artifactContentRepository?.createArtifactContentVersion
+    ? await artifactContentRepository.createArtifactContentVersion(
+      buildArtifactContentDraft(candidate, stored),
+    )
+    : null;
+
   return [
-    normalizeArtifactResult({
-      ...stored,
-      canonical_home_topic_path: candidate.canonical_home_topic_path,
-      misconception_tags: candidate.misconception_tags,
-    }, lifecycleFlagEnabled),
+    normalizeArtifactResult(
+      mergeArtifactWithCurrentContent({
+        ...stored,
+        canonical_home_topic_path: candidate.canonical_home_topic_path,
+        misconception_tags: candidate.misconception_tags,
+      }, currentContent),
+      lifecycleFlagEnabled,
+    ),
   ];
 }
 
@@ -312,6 +467,7 @@ function requireContestedReason(value) {
 
 export function createArtifactService({
   artifactRepository = null,
+  artifactContentRepository = null,
   now = () => new Date(),
   lifecycleFlagEnabled = isArtifactLifecycleEnabled(),
 } = {}) {
@@ -328,6 +484,7 @@ export function createArtifactService({
       return materializeArtifactCandidate({
         candidate,
         artifactRepository,
+        artifactContentRepository,
         lifecycleFlagEnabled,
       });
     },
@@ -336,6 +493,7 @@ export function createArtifactService({
       return materializeArtifactCandidate({
         candidate,
         artifactRepository,
+        artifactContentRepository,
         lifecycleFlagEnabled,
       });
     },
@@ -822,6 +980,8 @@ export async function patchLearningArtifact({
   const artifactService = createArtifactService({
     ...options,
     artifactRepository: options.artifactRepository || createArtifactRepository(client),
+    artifactContentRepository:
+      options.artifactContentRepository || createArtifactContentRepository(client),
   });
 
   return artifactService.patchArtifact({

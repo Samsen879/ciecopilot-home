@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { projectAttemptPipelineState } from './event-service.js';
 import { buildRuntimeAuthorityPosture } from '../contracts/runtime-authority-posture.js';
+import { buildLearningUpdateProposal } from '../mastery/mastery-orchestrator.js';
 
 const BRIDGE_EVENT_TYPES = Object.freeze([
   'AttemptSubmitted',
@@ -257,24 +258,40 @@ function buildLearningUpdateProposedPayload({
   attemptId,
   authorityPosture,
   markRunId,
+  proposal = null,
 } = {}) {
   const fallbackReason = normalizeString(authorityPosture.fallback_reason_code) || null;
+  const normalizedProposal = proposal && typeof proposal === 'object' ? proposal : {};
+  const proposalKey = normalizeString(normalizedProposal.proposal_key)
+    || (normalizeString(markRunId) ? `mark-run:${markRunId}` : `attempt:${attemptId}`);
 
   return {
     attempt_id: attemptId,
     authority_posture: cloneJson(authorityPosture),
-    proposal_key: normalizeString(markRunId) ? `mark-run:${markRunId}` : `attempt:${attemptId}`,
-    guardrail_decisions: {
+    proposal_key: proposalKey,
+    guardrail_decisions: cloneJson(normalizedProposal.guardrail_decisions ?? {
       authoritative_scoring_allowed: Boolean(authorityPosture.authoritative_scoring_allowed),
       release_scope_status: normalizeString(authorityPosture.release_scope_status) || null,
       learning_signal_posture: normalizeString(authorityPosture.learning_signal_posture) || null,
       fallback_mode: normalizeString(authorityPosture.fallback_mode) || null,
       fallback_reason_code: fallbackReason,
       reasons: fallbackReason ? [fallbackReason] : ['released_scoring'],
-    },
-    proposed_mastery_effects: [],
-    proposed_review_tasks: [],
-    proposed_artifact_suggestions: [],
+    }),
+    proposed_mastery_effects: cloneJson(
+      normalizedProposal.proposedMasteryEffects
+      ?? normalizedProposal.proposed_mastery_effects
+      ?? [],
+    ),
+    proposed_review_tasks: cloneJson(
+      normalizedProposal.proposedReviewTasks
+      ?? normalizedProposal.proposed_review_tasks
+      ?? [],
+    ),
+    proposed_artifact_suggestions: cloneJson(
+      normalizedProposal.proposedArtifactSuggestions
+      ?? normalizedProposal.proposed_artifact_suggestions
+      ?? [],
+    ),
   };
 }
 
@@ -426,6 +443,34 @@ function buildBridgeEvents(input = {}) {
     questionContext,
     attemptContext,
   });
+  const learningUpdateProposal = buildLearningUpdateProposal({
+    user_id: learnerId,
+    subject_code: subjectCode,
+    question_id: questionId,
+    question_context: {
+      source_kind: questionContext.source_kind,
+      family_id: questionContext.family_id,
+      question_type_id: questionContext.question_type_id,
+      question_type_release_state: questionContext.question_type_release_state,
+      primary_topic_id: questionContext.primary_topic_id,
+      primary_topic_path: questionContext.primary_topic_path,
+      classification_confidence: questionContext.classification_confidence,
+      candidate_rubric_refs: questionContext.candidate_rubric_refs,
+      release_scope_status: questionContext.release_scope_status,
+    },
+    attempt_id: attemptId,
+    mark_run_id: markRunId,
+    source_attempt_ref: sourceAttemptRef,
+    source_mark_run_ref: sourceMarkRunRef,
+    source_attempt_context: attemptContext,
+    source_session_id: sessionId,
+    decisions: input.decisions,
+    marking_result: input.markingResult,
+    truth_revision: truthRevision,
+    uncertainty_validated: input.uncertaintyValidated ?? true,
+    release_scope_posture: runtimeAuthorityPosture,
+    misconception_tags: input.misconceptionTags ?? input.misconception_tags ?? [],
+  });
 
   const payloads = [
     buildAttemptSubmittedPayload({
@@ -459,6 +504,7 @@ function buildBridgeEvents(input = {}) {
       attemptId,
       authorityPosture: runtimeAuthorityPosture,
       markRunId,
+      proposal: learningUpdateProposal,
     }),
   ];
 

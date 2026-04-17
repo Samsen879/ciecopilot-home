@@ -267,6 +267,51 @@ describe('attempt-event-service', () => {
     expect(records.bridgeWarning).toBeNull();
   });
 
+  test('persists normalized downstream effect proposals with stable effect keys inside LearningUpdateProposed', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient();
+
+    await persistAttemptEventBridge(client, buildBridgeInput({
+      misconceptionTags: ['sign_error'],
+    }));
+
+    const learningUpdateEvent = records.learningEvents.at(-1);
+
+    expect(learningUpdateEvent.event_type).toBe('LearningUpdateProposed');
+    expect(learningUpdateEvent.payload).toMatchObject({
+      proposal_key: 'mark-run:mr-bridge-1',
+      proposed_mastery_effects: [
+        expect.objectContaining({
+          effect_key:
+            'mastery:mark-run:mr-bridge-1:r1:family:user-bridge-1:topic-trig-equations:9709.trigonometry_manipulation_equations',
+          user_id: 'user-bridge-1',
+          level: 'family',
+          topic_id: 'topic-trig-equations',
+          family_id: '9709.trigonometry_manipulation_equations',
+        }),
+      ],
+      proposed_review_tasks: [
+        expect.objectContaining({
+          effect_key:
+            'review:mark-run:mr-bridge-1:r1:user-bridge-1:topic-trig-equations:9709.trigonometry.equations:sign_error',
+          user_id: 'user-bridge-1',
+          target_topic_id: 'topic-trig-equations',
+          target_question_type_id: '9709.trigonometry.equations',
+        }),
+      ],
+      proposed_artifact_suggestions: [
+        expect.objectContaining({
+          effect_key:
+            'artifact:mark-run:mr-bridge-1:r1:user-bridge-1:topic-trig-equations:misconception_card:sign_error',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-trig-equations',
+          target_question_type_id: '9709.trigonometry.equations',
+          misconception_tags: ['sign_error'],
+        }),
+      ],
+    });
+  });
+
   test('reuses the same bridge delivery row and does not append duplicate events on repeated delivery', async () => {
     const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
     const { client, records } = createMockClient();
@@ -354,6 +399,7 @@ describe('attempt-event-service', () => {
 
     const result = await persistAttemptEventBridge(client, buildBridgeInput({
       markRunId: 'mr-bridge-2',
+      misconceptionTags: ['sign_error'],
       sourceMarkRunRef: {
         kind: 'mark_run',
         mark_run_id: 'mr-bridge-2',
@@ -382,6 +428,29 @@ describe('attempt-event-service', () => {
     records.learningEvents.forEach((event, index) => {
       expect(event.truth_revision).toBe(2);
       expect(event.sequence_no).toBe(index + 1);
+    });
+
+    const learningUpdateEvent = records.learningEvents.at(-1);
+    expect(learningUpdateEvent.payload).toMatchObject({
+      proposal_key: 'mark-run:mr-bridge-2',
+      proposed_mastery_effects: [
+        expect.objectContaining({
+          effect_key:
+            'mastery:mark-run:mr-bridge-2:r2:family:user-bridge-1:topic-trig-equations:9709.trigonometry_manipulation_equations',
+        }),
+      ],
+      proposed_review_tasks: [
+        expect.objectContaining({
+          effect_key:
+            'review:mark-run:mr-bridge-2:r2:user-bridge-1:topic-trig-equations:9709.trigonometry.equations:sign_error',
+        }),
+      ],
+      proposed_artifact_suggestions: [
+        expect.objectContaining({
+          effect_key:
+            'artifact:mark-run:mr-bridge-2:r2:user-bridge-1:topic-trig-equations:misconception_card:sign_error',
+        }),
+      ],
     });
   });
 

@@ -120,7 +120,7 @@ function buildCandidateHome(input = {}) {
   };
 }
 
-function buildArtifactCandidate(input = {}, timestamp) {
+export function buildArtifactCandidate(input = {}, timestamp) {
   const home = buildCandidateHome(input);
   const sourceAttemptGroundingRef = buildAttemptGroundingRef(input.source_attempt_ref, input);
 
@@ -158,6 +158,29 @@ function buildArtifactCandidate(input = {}, timestamp) {
     created_at: timestamp,
     updated_at: timestamp,
   };
+}
+
+async function materializeArtifactCandidate({
+  candidate,
+  artifactRepository,
+  lifecycleFlagEnabled,
+} = {}) {
+  if (!candidate || !candidate.canonical_home_topic_id) {
+    return [];
+  }
+
+  if (!artifactRepository?.insertArtifact) {
+    return [normalizeArtifactResult(candidate, lifecycleFlagEnabled)];
+  }
+
+  const stored = await artifactRepository.insertArtifact(candidate);
+  return [
+    normalizeArtifactResult({
+      ...stored,
+      canonical_home_topic_path: candidate.canonical_home_topic_path,
+      misconception_tags: candidate.misconception_tags,
+    }, lifecycleFlagEnabled),
+  ];
 }
 
 function hasVerificationAuditEvidence(artifact = {}) {
@@ -302,23 +325,19 @@ export function createArtifactService({
       }
 
       const candidate = buildArtifactCandidate(input, now().toISOString());
+      return materializeArtifactCandidate({
+        candidate,
+        artifactRepository,
+        lifecycleFlagEnabled,
+      });
+    },
 
-      if (!candidate.canonical_home_topic_id) {
-        return [];
-      }
-
-      if (!artifactRepository?.insertArtifact) {
-        return [normalizeArtifactResult(candidate, lifecycleFlagEnabled)];
-      }
-
-      const stored = await artifactRepository.insertArtifact(candidate);
-      return [
-        normalizeArtifactResult({
-          ...stored,
-          canonical_home_topic_path: candidate.canonical_home_topic_path,
-          misconception_tags: candidate.misconception_tags,
-        }, lifecycleFlagEnabled),
-      ];
+    async materializeProposedArtifactSuggestion(candidate = {}) {
+      return materializeArtifactCandidate({
+        candidate,
+        artifactRepository,
+        lifecycleFlagEnabled,
+      });
     },
 
     async patchArtifact({

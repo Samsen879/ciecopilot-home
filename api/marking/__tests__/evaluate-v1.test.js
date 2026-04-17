@@ -138,6 +138,31 @@ const mockPersistAttemptEventBridge = jest.fn(async () => ({
     current_status: 'running',
     last_sequence_no: 4,
   },
+  learning_effects: {
+    proposal_key: 'mark-run:mr-001',
+    guardrail_decisions: {
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      learning_signal_posture: 'authoritative_scoring',
+      fallback_mode: null,
+      fallback_reason_code: null,
+      reasons: ['released_scoring'],
+    },
+    authoritative_scoring_allowed: true,
+    release_scope_status: 'released_scoring',
+    learning_signal_posture: 'authoritative_scoring',
+    effect_execution: {
+      ok: true,
+      status: 'applied',
+      debt_pending: false,
+      receipt_summary: {
+        total: 3,
+        persisted: 3,
+        retrying: 0,
+        needs_manual_review: 0,
+      },
+    },
+  },
 }));
 
 jest.unstable_mockModule('../lib/auth-helper.js', () => ({
@@ -630,7 +655,18 @@ describe('learning-runtime orchestration', () => {
           learning_signal_posture: 'authoritative_scoring',
         }),
       }),
+      {
+        applyDownstreamEffects: true,
+      },
     );
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+    expect(res.json.mock.calls[0][0].learning_effects).toMatchObject({
+      proposal_key: 'mark-run:mr-001',
+      effect_execution: {
+        ok: true,
+        status: 'applied',
+      },
+    });
   });
 
   it('executes a released 9709 pilot rubric through the adapter runtime behind the runtime flag', async () => {
@@ -784,16 +820,49 @@ describe('learning-runtime orchestration', () => {
       family_id: '9709.trigonometry_manipulation_equations',
       primary_question_type_id: '9709.trigonometry.identities',
     });
-    mockApplyLearningEffects.mockResolvedValueOnce({
-      release_scope_status: 'released_scoring',
-      authoritative_scoring_allowed: false,
-      learning_signal_posture: 'conservative_fallback',
-      runtime_authority_posture: 'non_authoritative',
-      runtime_authority_reason_code: 'imported_question_attempt',
-      mastery_updates: [],
-      review_tasks: [],
-      artifact_candidates: [],
-      reconciliation: null,
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: true,
+      warningRecorded: false,
+      persisted_event_types: [
+        'AttemptSubmitted',
+        'QuestionClassified',
+        'MarkingCompleted',
+        'LearningUpdateProposed',
+      ],
+      pipeline_state: {
+        attempt_id: 'att-001',
+        current_stage: 'LearningUpdateProposed',
+        current_status: 'running',
+        last_sequence_no: 4,
+      },
+      learning_effects: {
+        proposal_key: 'mark-run:mr-001',
+        guardrail_decisions: {
+          authoritative_scoring_allowed: false,
+          release_scope_status: 'released_scoring',
+          learning_signal_posture: 'conservative_fallback',
+          fallback_mode: null,
+          fallback_reason_code: 'imported_question_attempt',
+          reasons: ['imported_question_attempt'],
+        },
+        authoritative_scoring_allowed: false,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'conservative_fallback',
+        runtime_authority_posture: 'non_authoritative',
+        runtime_authority_reason_code: 'imported_question_attempt',
+        question_source_kind: 'imported_question',
+        effect_execution: {
+          ok: true,
+          status: 'applied',
+          debt_pending: false,
+          receipt_summary: {
+            total: 0,
+            persisted: 0,
+            retrying: 0,
+            needs_manual_review: 0,
+          },
+        },
+      },
     });
 
     const req = mockReq();
@@ -823,27 +892,89 @@ describe('learning-runtime orchestration', () => {
           question_source_kind: 'imported_question',
         }),
       }),
+      {
+        applyDownstreamEffects: true,
+      },
     );
-    expect(mockApplyLearningEffects).toHaveBeenCalledWith(
-      expect.objectContaining({
-        question_context: expect.objectContaining({
-          source_kind: 'imported_question',
-        }),
-        release_scope_posture: expect.objectContaining({
-          authoritative_scoring_allowed: false,
-          runtime_authority_posture: 'non_authoritative',
-          runtime_authority_reason_code: 'imported_question_attempt',
-          question_source_kind: 'imported_question',
-        }),
-      }),
-      expect.any(Object),
-    );
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
 
     const body = res.json.mock.calls[0][0];
     expect(body.learning_effects).toMatchObject({
       authoritative_scoring_allowed: false,
       runtime_authority_posture: 'non_authoritative',
       runtime_authority_reason_code: 'imported_question_attempt',
+      effect_execution: {
+        ok: true,
+        status: 'applied',
+      },
+    });
+  });
+
+  it('surfaces durable downstream effect retry debt without breaking the scoring response', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: true,
+      warningRecorded: false,
+      persisted_event_types: [
+        'AttemptSubmitted',
+        'QuestionClassified',
+        'MarkingCompleted',
+        'LearningUpdateProposed',
+      ],
+      pipeline_state: {
+        attempt_id: 'att-001',
+        current_stage: 'LearningUpdateProposed',
+        current_status: 'running',
+        last_sequence_no: 4,
+      },
+      learning_effects: {
+        proposal_key: 'mark-run:mr-001',
+        guardrail_decisions: {
+          authoritative_scoring_allowed: true,
+          release_scope_status: 'released_scoring',
+          learning_signal_posture: 'authoritative_scoring',
+          fallback_mode: null,
+          fallback_reason_code: null,
+          reasons: ['released_scoring'],
+        },
+        authoritative_scoring_allowed: true,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'authoritative_scoring',
+        effect_execution: {
+          ok: false,
+          status: 'partial_failure',
+          debt_pending: true,
+          receipt_summary: {
+            total: 3,
+            persisted: 2,
+            retrying: 1,
+            needs_manual_review: 0,
+          },
+        },
+      },
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+    expect(res.json.mock.calls[0][0]).toMatchObject({
+      ledger_write_status: 'success',
+      learning_effects: {
+        effect_execution: {
+          ok: false,
+          status: 'partial_failure',
+          debt_pending: true,
+          receipt_summary: {
+            total: 3,
+            persisted: 2,
+            retrying: 1,
+          },
+        },
+      },
     });
   });
 
@@ -865,7 +996,8 @@ describe('learning-runtime orchestration', () => {
     expect(res.json.mock.calls[0][0]).toMatchObject({
       ledger_write_status: 'success',
     });
+    expect(res.json.mock.calls[0][0].learning_effects).toBeUndefined();
     expect(mockPersistAttemptEventBridge).toHaveBeenCalled();
-    expect(mockApplyLearningEffects).toHaveBeenCalled();
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
   });
 });

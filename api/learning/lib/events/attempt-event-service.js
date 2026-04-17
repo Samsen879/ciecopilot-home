@@ -1,7 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { projectAttemptPipelineState } from './event-service.js';
+import { applyLearningUpdateProposal } from './learning-effect-engine.js';
 import { buildRuntimeAuthorityPosture } from '../contracts/runtime-authority-posture.js';
+import {
+  buildArtifactRef,
+  buildReviewTaskRef,
+} from '../contracts/runtime-contract.js';
 import { buildLearningUpdateProposal } from '../mastery/mastery-orchestrator.js';
+import { createReconciliationRepository } from '../repositories/reconciliation-repository.js';
 
 const BRIDGE_EVENT_TYPES = Object.freeze([
   'AttemptSubmitted',
@@ -593,6 +599,95 @@ function buildAttemptEventBridgeDeliveryIdempotencyKey({
   return `attempt_event_bridge:${normalizeString(markRunId) || normalizeString(attemptId)}`;
 }
 
+function buildLearningEffectsReceiptSummary(effectExecution = {}) {
+  const receiptSummary = effectExecution?.receipt_summary;
+  return {
+    total: Number(receiptSummary?.total ?? 0),
+    persisted: Number(receiptSummary?.persisted ?? 0),
+    retrying: Number(receiptSummary?.retrying ?? 0),
+    needs_manual_review: Number(receiptSummary?.needs_manual_review ?? 0),
+  };
+}
+
+function buildLearningEffectsResponse(proposalEvent = {}, effectExecution = {}) {
+  const payload = proposalEvent?.payload && typeof proposalEvent.payload === 'object'
+    ? cloneJson(proposalEvent.payload)
+    : {};
+  const authorityPosture = payload.authority_posture && typeof payload.authority_posture === 'object'
+    ? cloneJson(payload.authority_posture)
+    : {};
+  const guardrailDecisions = payload.guardrail_decisions && typeof payload.guardrail_decisions === 'object'
+    ? cloneJson(payload.guardrail_decisions)
+    : {};
+  const receiptSummary = buildLearningEffectsReceiptSummary(effectExecution);
+
+  return {
+    proposal_key: normalizeString(payload.proposal_key) || null,
+    guardrail_decisions: guardrailDecisions,
+    authoritative_scoring_allowed: Boolean(
+      guardrailDecisions.authoritative_scoring_allowed ?? authorityPosture.authoritative_scoring_allowed,
+    ),
+    release_scope_status:
+      normalizeString(guardrailDecisions.release_scope_status)
+      || normalizeString(authorityPosture.release_scope_status)
+      || null,
+    learning_signal_posture:
+      normalizeString(guardrailDecisions.learning_signal_posture)
+      || normalizeString(authorityPosture.learning_signal_posture)
+      || null,
+    fallback_mode:
+      normalizeString(guardrailDecisions.fallback_mode)
+      || normalizeString(authorityPosture.fallback_mode)
+      || null,
+    fallback_reason_code:
+      normalizeString(guardrailDecisions.fallback_reason_code)
+      || normalizeString(authorityPosture.fallback_reason_code)
+      || null,
+    runtime_authority_posture: normalizeString(authorityPosture.runtime_authority_posture) || null,
+    runtime_authority_reason_code: normalizeString(authorityPosture.runtime_authority_reason_code) || null,
+    question_source_kind: normalizeString(authorityPosture.question_source_kind) || null,
+    proposed_mastery_effects: normalizeArray(payload.proposed_mastery_effects).map((effect) => cloneJson(effect)),
+    proposed_review_tasks: normalizeArray(payload.proposed_review_tasks).map((effect) => cloneJson(effect)),
+    proposed_artifact_suggestions:
+      normalizeArray(payload.proposed_artifact_suggestions).map((effect) => cloneJson(effect)),
+    effect_execution: {
+      ok: Boolean(effectExecution?.ok),
+      status: normalizeString(effectExecution?.status) || 'unknown',
+      debt_pending: receiptSummary.retrying > 0 || receiptSummary.needs_manual_review > 0,
+      receipt_summary: receiptSummary,
+      receipts: normalizeArray(effectExecution?.receipts).map((receipt) => cloneJson(receipt)),
+      error: effectExecution?.error ? cloneJson(effectExecution.error) : null,
+    },
+  };
+}
+
+function buildReconciliationSourceRef(deliveryRow = {}) {
+  if (normalizeString(deliveryRow.mark_run_id)) {
+    return {
+      kind: 'mark_run',
+      mark_run_id: normalizeString(deliveryRow.mark_run_id),
+    };
+  }
+
+  return {
+    kind: 'attempt',
+    attempt_id: normalizeString(deliveryRow.attempt_id),
+  };
+}
+
+function buildAffectedObjectRefsFromReceipts(receipts = []) {
+  return normalizeArray(receipts).flatMap((receipt) => {
+    switch (normalizeString(receipt?.result_ref_type)) {
+      case 'review_task':
+        return receipt?.result_ref_id ? [buildReviewTaskRef(receipt.result_ref_id)] : [];
+      case 'artifact':
+        return receipt?.result_ref_id ? [buildArtifactRef(receipt.result_ref_id)] : [];
+      default:
+        return [];
+    }
+  });
+}
+
 async function getAttemptEventBridgeDelivery(client, {
   stableIdempotencyKey,
 } = {}) {
@@ -612,6 +707,109 @@ async function getAttemptEventBridgeDelivery(client, {
   }
 
   return data ?? null;
+}
+
+async function loadPersistedLearningEvent(client, {
+  eventId,
+} = {}) {
+  const normalizedEventId = normalizeString(eventId);
+  if (!normalizedEventId) {
+    throw new Error('missing_learning_event_id');
+  }
+
+  const { data, error } = await client
+    .from('learning_events')
+    .select('*')
+    .eq('event_id', normalizedEventId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message || 'Failed to load learning_events row.');
+  }
+
+  return data ?? null;
+}
+
+async function loadPersistedLearningUpdateProposalEvent(client, deliveryRow = {}) {
+  const persistedEventTypes = normalizeArray(deliveryRow.persisted_event_types);
+  const persistedEventIds = normalizeArray(deliveryRow.persisted_event_ids);
+  const learningUpdateIndex = persistedEventTypes.lastIndexOf('LearningUpdateProposed');
+
+  if (learningUpdateIndex === -1) {
+    throw new Error('missing_learning_update_proposed_event');
+  }
+
+  const eventId = normalizeString(persistedEventIds[learningUpdateIndex]);
+  if (!eventId) {
+    throw new Error('missing_learning_update_proposed_event_id');
+  }
+
+  const proposalEvent = await loadPersistedLearningEvent(client, {
+    eventId,
+  });
+
+  if (!proposalEvent) {
+    throw new Error('learning_update_proposed_event_not_found');
+  }
+
+  if (proposalEvent.event_type !== 'LearningUpdateProposed') {
+    throw new Error('learning_update_proposed_event_type_mismatch');
+  }
+
+  return proposalEvent;
+}
+
+async function executePersistedLearningUpdateEffects(client, {
+  deliveryRow,
+} = {}, dependencies = {}) {
+  const proposalEvent = await loadPersistedLearningUpdateProposalEvent(client, deliveryRow);
+  const effectExecution = await applyLearningUpdateProposal(
+    {
+      proposalEvent,
+    },
+    {
+      supabase: client,
+      ...dependencies,
+    },
+  );
+
+  return {
+    proposalEvent,
+    learningEffects: buildLearningEffectsResponse(proposalEvent, effectExecution),
+  };
+}
+
+async function executePersistedLearningUpdateEffectsSafely(client, {
+  deliveryRow,
+} = {}, dependencies = {}) {
+  try {
+    return await executePersistedLearningUpdateEffects(client, {
+      deliveryRow,
+    }, dependencies);
+  } catch (error) {
+    const proposalEvent = await loadPersistedLearningUpdateProposalEvent(client, deliveryRow);
+    const learningEffects = buildLearningEffectsResponse(proposalEvent, {
+      ok: false,
+      status: 'failed',
+      receipt_summary: {
+        total: 0,
+        persisted: 0,
+        retrying: 0,
+        needs_manual_review: 0,
+      },
+      receipts: [],
+      error: {
+        code: 'effect_execution_failed',
+        message: error?.message || String(error),
+      },
+    });
+    learningEffects.effect_execution.debt_pending = true;
+
+    return {
+      proposalEvent,
+      learningEffects,
+    };
+  }
 }
 
 async function reserveAttemptEventBridgeDelivery(client, {
@@ -707,7 +905,7 @@ async function updateAttemptEventBridgeDelivery(client, {
   return data;
 }
 
-export async function persistAttemptEventBridge(client, input = {}) {
+export async function persistAttemptEventBridge(client, input = {}, options = {}) {
   const attemptId = assertImmutableAttemptId(input);
   const authorityPosture = buildRuntimeAuthorityPosture(
     normalizeAuthorityPosture(input.authorityPosture),
@@ -733,6 +931,11 @@ export async function persistAttemptEventBridge(client, input = {}) {
 
     if (deliveryReservation.state === 'replay') {
       if (['persisted', 'reconciled'].includes(deliveryReservation.row.delivery_state)) {
+        const replayLearningEffects = options.applyDownstreamEffects
+          ? await executePersistedLearningUpdateEffectsSafely(client, {
+            deliveryRow: deliveryReservation.row,
+          }, options)
+          : null;
         return {
           ok: true,
           warningRecorded: false,
@@ -740,6 +943,7 @@ export async function persistAttemptEventBridge(client, input = {}) {
           persisted_event_types: normalizeArray(deliveryReservation.row.persisted_event_types),
           pipeline_state: null,
           delivery: deliveryReservation.row,
+          learning_effects: replayLearningEffects?.learningEffects ?? null,
         };
       }
 
@@ -767,6 +971,11 @@ export async function persistAttemptEventBridge(client, input = {}) {
             last_error: null,
           },
         });
+        const recoveredLearningEffects = options.applyDownstreamEffects
+          ? await executePersistedLearningUpdateEffectsSafely(client, {
+            deliveryRow: finalizedDelivery,
+          }, options)
+          : null;
 
         return {
           ok: true,
@@ -775,6 +984,7 @@ export async function persistAttemptEventBridge(client, input = {}) {
           persisted_event_types: normalizeArray(deliveryReservation.row.persisted_event_types),
           pipeline_state: pipelineState,
           delivery: finalizedDelivery,
+          learning_effects: recoveredLearningEffects?.learningEffects ?? null,
         };
       }
     }
@@ -811,6 +1021,11 @@ export async function persistAttemptEventBridge(client, input = {}) {
         persisted_event_ids: events.map((event) => event.event_id),
       },
     });
+    const downstreamLearningEffects = options.applyDownstreamEffects
+      ? await executePersistedLearningUpdateEffectsSafely(client, {
+        deliveryRow: finalizedDelivery,
+      }, options)
+      : null;
 
     return {
       ok: true,
@@ -819,6 +1034,7 @@ export async function persistAttemptEventBridge(client, input = {}) {
       persisted_event_types: events.map((event) => event.event_type),
       pipeline_state: pipelineState,
       delivery: finalizedDelivery,
+      learning_effects: downstreamLearningEffects?.learningEffects ?? null,
     };
   } catch (error) {
     const errorMessage = error?.message || String(error);
@@ -879,4 +1095,48 @@ export async function reconcileAttemptEventBridgeDelivery(client, {
       reconciliation_id: normalizeString(reconciliationId) || null,
     },
   });
+}
+
+export async function reconcileAttemptEventBridgeEffects(client, {
+  stableIdempotencyKey,
+} = {}, dependencies = {}) {
+  const deliveryRow = await getAttemptEventBridgeDelivery(client, {
+    stableIdempotencyKey,
+  });
+
+  if (!deliveryRow) {
+    throw new Error('attempt_event_bridge_delivery_not_found');
+  }
+
+  const { learningEffects } = await executePersistedLearningUpdateEffectsSafely(client, {
+    deliveryRow,
+  }, dependencies);
+  const receiptSummary = learningEffects.effect_execution.receipt_summary;
+  const reconciliationRepository = createReconciliationRepository(client);
+  const timestamp = new Date().toISOString();
+  const run = await reconciliationRepository.insertRun({
+    trigger_source: 'attempt_event_effect_retry',
+    source_ref: buildReconciliationSourceRef(deliveryRow),
+    affected_object_refs: buildAffectedObjectRefsFromReceipts(
+      learningEffects.effect_execution.receipts,
+    ),
+    old_snapshot_refs: [],
+    new_snapshot_refs: [],
+    status: learningEffects.effect_execution.ok ? 'completed' : 'failed',
+    result_summary: {
+      effect_execution_status: learningEffects.effect_execution.status,
+      total_receipt_count: receiptSummary.total,
+      persisted_receipt_count: receiptSummary.persisted,
+      retrying_receipt_count: receiptSummary.retrying,
+      needs_manual_review_receipt_count: receiptSummary.needs_manual_review,
+    },
+    started_at: timestamp,
+    completed_at: timestamp,
+  });
+
+  return {
+    reconciliation_run_id: run?.reconciliation_run_id ?? null,
+    status: run?.status ?? (learningEffects.effect_execution.ok ? 'completed' : 'failed'),
+    learning_effects: learningEffects,
+  };
 }

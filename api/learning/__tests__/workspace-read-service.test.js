@@ -217,6 +217,37 @@ function createLearningDb(overrides = {}) {
     },
   ];
 
+  const artifactRows = overrides.artifactRows ?? [
+    {
+      artifact_id: 'artifact-primary',
+      artifact_kind: 'misconception_card',
+      canonical_home_topic_id: 'topic-1',
+      slot_key: 'common_traps',
+      trust_status: 'grounded',
+      placement_status: 'pinned',
+      lifecycle_status: 'active',
+      artifact_state: 'verified',
+      verified_by: 'operator-1',
+      verified_at: '2026-03-22T07:40:00.000Z',
+      verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+      updated_at: '2026-03-22T08:00:00.000Z',
+    },
+    {
+      artifact_id: 'artifact-successor-unverified',
+      artifact_kind: 'misconception_card',
+      canonical_home_topic_id: 'topic-1',
+      slot_key: 'common_traps',
+      trust_status: 'unverified',
+      placement_status: 'inbox',
+      lifecycle_status: 'active',
+      artifact_state: 'unverified',
+      verified_by: null,
+      verified_at: null,
+      verification_evidence_ref: null,
+      updated_at: '2026-03-22T08:04:00.000Z',
+    },
+  ];
+
   const sessionRows = overrides.sessionRows ?? [
     {
       session_id: 'session-topic-2-later',
@@ -382,6 +413,18 @@ function createLearningDb(overrides = {}) {
 
       if (this.table === 'learning_session_resume_projection') {
         let rows = [...sessionRows];
+
+        for (const filter of this.filters) {
+          if (filter.type === 'eq') {
+            rows = rows.filter((row) => row[filter.column] === filter.value);
+          }
+        }
+
+        return Promise.resolve({ data: rows, error: null }).then(resolve, reject);
+      }
+
+      if (this.table === 'learning_artifacts') {
+        let rows = [...artifactRows];
 
         for (const filter of this.filters) {
           if (filter.type === 'eq') {
@@ -835,6 +878,7 @@ describe('workspace read service', () => {
     const payload = await getWorkspaceView(db, {
       userId: 'student-1',
       topicId: 'topic-1',
+      residencyFlagEnabled: true,
     });
 
     expect(payload.workspace.workspace_id).toBe('workspace-1');
@@ -860,6 +904,153 @@ describe('workspace read service', () => {
     ]);
     expect(payload.review_queue.items).toHaveLength(1);
     expect(payload.review_queue.items[0].review_task_id).toBe('review-queued-1');
+  });
+
+  test.each([
+    {
+      label: 'verified resident stays active when an unverified successor exists',
+      workspaceProjection: {
+        workspace_id: 'workspace-1',
+        user_id: 'student-1',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+        slot_state: {
+          common_traps: 'active',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T08:00:00.000Z',
+        slots: [
+          {
+            workspace_slot_id: 'slot-common-traps',
+            slot_key: 'common_traps',
+            primary_artifact_ref: {
+              kind: 'artifact',
+              artifact_id: 'artifact-primary',
+            },
+            linked_reference_refs: [],
+            updated_at: '2026-03-22T08:00:00.000Z',
+          },
+        ],
+      },
+      artifactRows: [
+        {
+          artifact_id: 'artifact-primary',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          verified_by: 'operator-1',
+          verified_at: '2026-03-22T07:40:00.000Z',
+          verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+          updated_at: '2026-03-22T08:00:00.000Z',
+        },
+        {
+          artifact_id: 'artifact-successor-unverified',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'unverified',
+          placement_status: 'inbox',
+          lifecycle_status: 'active',
+          artifact_state: 'unverified',
+          verified_by: null,
+          verified_at: null,
+          verification_evidence_ref: null,
+          updated_at: '2026-03-22T08:04:00.000Z',
+        },
+      ],
+      expectedPrimaryArtifactId: 'artifact-primary',
+      expectedSlotState: 'active',
+      expectedInboxArtifactId: 'artifact-successor-unverified',
+    },
+    {
+      label: 'awaiting_verification appears only when the slot has no displayable resident',
+      workspaceProjection: {
+        workspace_id: 'workspace-1',
+        user_id: 'student-1',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+        slot_state: {
+          common_traps: 'active',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T08:05:00.000Z',
+        slots: [
+          {
+            workspace_slot_id: 'slot-common-traps',
+            slot_key: 'common_traps',
+            primary_artifact_ref: {
+              kind: 'artifact',
+              artifact_id: 'artifact-awaiting-verification',
+            },
+            linked_reference_refs: [],
+            updated_at: '2026-03-22T08:05:00.000Z',
+          },
+        ],
+      },
+      artifactRows: [
+        {
+          artifact_id: 'artifact-awaiting-verification',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'unverified',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'unverified',
+          verified_by: null,
+          verified_at: null,
+          verification_evidence_ref: null,
+          updated_at: '2026-03-22T08:05:00.000Z',
+        },
+      ],
+      expectedPrimaryArtifactId: null,
+      expectedSlotState: 'awaiting_verification',
+      expectedInboxArtifactId: 'artifact-awaiting-verification',
+    },
+  ])('workspace residency matrix: $label', async ({
+    workspaceProjection,
+    artifactRows,
+    expectedPrimaryArtifactId,
+    expectedSlotState,
+    expectedInboxArtifactId,
+  }) => {
+    const db = createLearningDb({
+      workspaceProjection,
+      artifactRows,
+    });
+
+    const payload = await getWorkspaceView(db, {
+      userId: 'student-1',
+      topicId: 'topic-1',
+      residencyFlagEnabled: true,
+    });
+
+    expect(payload.workspace.slot_state.common_traps).toBe(expectedSlotState);
+    expect(payload.workspace.slots.common_traps.primary_artifact_ref).toEqual(
+      expectedPrimaryArtifactId
+        ? {
+          kind: 'artifact',
+          artifact_id: expectedPrimaryArtifactId,
+        }
+        : null,
+    );
+    expect(payload.workspace.artifact_inbox.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          artifact_id: expectedInboxArtifactId,
+          slot_key: 'common_traps',
+          placement_status: 'inbox',
+        }),
+      ]),
+    );
   });
 
   test('workspace revisit payload keeps last-session continuity separate from slot and queue changes', async () => {

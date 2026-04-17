@@ -55,7 +55,7 @@ function getSlotDescription(slotKey) {
 }
 
 function buildArtifactState(card) {
-  if (card?.lifecycleStatus === 'superseded') {
+  if (card?.artifactState === 'superseded' || card?.lifecycleStatus === 'superseded') {
     return {
       value: 'superseded',
       label: 'Superseded artifact',
@@ -64,7 +64,7 @@ function buildArtifactState(card) {
     };
   }
 
-  if (card?.trustStatus === 'contested') {
+  if (card?.artifactState === 'contested' || card?.trustStatus === 'contested') {
     return {
       value: 'contested',
       label: 'Contested artifact',
@@ -85,6 +85,14 @@ function buildArtifactState(card) {
   return card?.state?.value === 'missing_content' ? card.state : null;
 }
 
+function isResidentEligibleCard(card = {}) {
+  if (typeof card?.capabilities?.residentEligible === 'boolean') {
+    return card.capabilities.residentEligible;
+  }
+
+  return card?.artifactState === 'verified' || card?.artifactState === 'released';
+}
+
 function buildAvailableActions(card, workspaceTopicId) {
   const sameCanonicalHome =
     !card?.canonicalHomeTopicId || card.canonicalHomeTopicId === workspaceTopicId;
@@ -92,12 +100,15 @@ function buildAvailableActions(card, workspaceTopicId) {
     Boolean(card?.slotKey)
     && Boolean(card?.artifactKind)
     && isCompatibleArtifactKindForSlot(card.slotKey, card.artifactKind);
+  const contested = card?.artifactState === 'contested' || card?.trustStatus === 'contested';
+  const residentEligible = isResidentEligibleCard(card);
   const canPin =
     card?.source === 'artifact_inbox'
     && sameCanonicalHome
     && card?.placementStatus !== 'pinned'
     && card?.lifecycleStatus !== 'superseded'
-    && card?.trustStatus !== 'contested'
+    && !contested
+    && residentEligible
     && Boolean(card?.slotKey)
     && card?.slotKey !== 'review_queue'
     && hasCompatibleSlotMetadata;
@@ -107,7 +118,7 @@ function buildAvailableActions(card, workspaceTopicId) {
     canUnpin: card?.placementStatus === 'pinned',
     canMarkContested:
       card?.lifecycleStatus !== 'superseded'
-      && card?.trustStatus !== 'contested'
+      && !contested
       && card?.placementStatus !== 'pinned',
     canSupersede: Boolean(card?.artifactId) && card?.lifecycleStatus !== 'superseded',
     pinBlockedReason:
@@ -115,8 +126,10 @@ function buildAvailableActions(card, workspaceTopicId) {
         ? null
         : !sameCanonicalHome
           ? 'Secondary-topic artifacts cannot be pinned into this workspace.'
-          : card?.trustStatus === 'contested'
+          : contested
             ? 'Contested artifacts cannot be pinned.'
+            : !residentEligible
+              ? 'This artifact is not eligible for stable residency.'
             : card?.lifecycleStatus === 'superseded'
               ? 'Superseded artifacts cannot be pinned.'
               : card?.slotKey === 'review_queue'
@@ -148,6 +161,8 @@ function refreshCard(card, artifact = {}, viewModel, overrides = {}) {
       ?? workspaceTopicId,
     placementStatus:
       artifact.placementStatus ?? overrides.placementStatus ?? card?.placementStatus ?? 'inbox',
+    artifactState: artifact.artifactState ?? overrides.artifactState ?? card?.artifactState ?? null,
+    capabilities: artifact.capabilities ?? overrides.capabilities ?? card?.capabilities ?? null,
     trustStatus: artifact.trustStatus ?? overrides.trustStatus ?? card?.trustStatus ?? null,
     lifecycleStatus:
       artifact.lifecycleStatus ?? overrides.lifecycleStatus ?? card?.lifecycleStatus ?? 'active',
@@ -287,7 +302,9 @@ export function getArtifactSupersedeCandidates(viewModel, artifactCard) {
     && card.slotKey === artifactCard?.slotKey
     && (card.canonicalHomeTopicId ?? workspaceTopicId) === (artifactCard?.canonicalHomeTopicId ?? workspaceTopicId)
     && card.lifecycleStatus !== 'superseded'
+    && card.artifactState !== 'contested'
     && card.trustStatus !== 'contested'
+    && isResidentEligibleCard(card)
     && card.placementStatus !== 'archived'
   ));
 }

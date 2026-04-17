@@ -57,6 +57,10 @@ export function createArtifactRepository(client) {
       return getArtifactById(client, artifactId);
     },
 
+    async listArtifactsByTopic({ topicId }) {
+      return listArtifactsByTopic(client, { topicId });
+    },
+
     async insertArtifact(input) {
       return insertArtifact(client, input);
     },
@@ -99,6 +103,21 @@ export async function insertArtifact(client, input = {}) {
       .single(),
     'Failed to insert learning artifact',
   );
+}
+
+export async function listArtifactsByTopic(client, { topicId } = {}) {
+  const { data, error } = await client
+    .from('learning_artifacts')
+    .select('*')
+    .eq('canonical_home_topic_id', topicId)
+    .order('updated_at', { ascending: false })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to load learning artifacts for topic: ${error.message}`);
+  }
+
+  return Array.isArray(data) ? data : [];
 }
 
 export async function updateArtifact(client, artifactId, patch = {}) {

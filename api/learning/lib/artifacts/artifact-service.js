@@ -441,11 +441,31 @@ async function handlePlacementIntent({
   }
 
   let slotTransition = null;
+  const timestamp = now().toISOString();
   const topic = artifact.slot_key
     ? await artifactRepository?.getTopicById?.(artifact.canonical_home_topic_id)
     : null;
+  const existingSlot = artifact.slot_key
+    ? await artifactRepository?.getWorkspaceSlotByTopicAndKey?.({
+      userId,
+      topicId: artifact.canonical_home_topic_id,
+      slotKey: artifact.slot_key,
+    })
+    : null;
 
   if (artifact.slot_key && placementStatus === 'pinned') {
+    const priorPrimaryArtifactId = existingSlot?.primary_artifact_ref?.artifact_id ?? null;
+
+    if (priorPrimaryArtifactId && priorPrimaryArtifactId !== artifact.artifact_id) {
+      const priorPrimaryArtifact = await artifactRepository?.getArtifactById?.(priorPrimaryArtifactId);
+      if (priorPrimaryArtifact?.placement_status === 'pinned') {
+        await artifactRepository.updateArtifact(priorPrimaryArtifactId, {
+          placement_status: 'inbox',
+          updated_at: timestamp,
+        });
+      }
+    }
+
     const slot = await artifactRepository?.setWorkspaceSlotPrimaryArtifact?.({
       userId,
       topicId: artifact.canonical_home_topic_id,
@@ -483,7 +503,7 @@ async function handlePlacementIntent({
 
   const updated = await artifactRepository.updateArtifact(artifact.artifact_id, {
     placement_status: placementStatus,
-    updated_at: now().toISOString(),
+    updated_at: timestamp,
   });
 
   return {
@@ -675,6 +695,14 @@ async function handleSupersedeIntent({
     throw buildArtifactConflict('Successor artifact kind is not compatible with the slot.', {
       slot_key: successor.slot_key,
       artifact_kind: successor.artifact_kind,
+    });
+  }
+
+  if (lifecycleFlagEnabled && !successor.capabilities.resident_eligible) {
+    throw buildArtifactConflict('Successor artifact is not eligible for stable residency.', {
+      artifact_id: artifact.artifact_id,
+      successor_artifact_id: successor.artifact_id,
+      successor_artifact_state: successor.artifact_state,
     });
   }
 

@@ -121,4 +121,76 @@ describe('adapter-method-dispatcher', () => {
       ]),
     );
   });
+
+  test('builds compat v0 alignments from remaining rubric order when later pilot steps lack direct evidence spans', async () => {
+    const { runPilotAdapterRuntime } = await import('../lib/marking/adapter-method-dispatcher.js');
+
+    const template = {
+      question_type_id: '9709.trigonometry.identities',
+      parts: [
+        {
+          part_id: 'main',
+          points: [
+            {
+              point_id: 'identity-rewrite',
+              official_mark_notation: 'M1',
+              mark_family: 'M',
+              max_score: 1,
+              verification_condition: {
+                kind: 'adapter_call',
+                adapter_method: 'proof_structure_check',
+                params: {
+                  requires_identity_rewrite: true,
+                },
+              },
+            },
+            {
+              point_id: 'identity-result',
+              official_mark_notation: 'A1',
+              mark_family: 'A',
+              max_score: 1,
+              verification_condition: {
+                kind: 'adapter_call',
+                adapter_method: 'symbolic_check',
+                params: {
+                  expects_target_identity: true,
+                },
+              },
+              dependency_chain: {
+                prerequisite_point_ids: ['identity-rewrite'],
+                prerequisite_policy: 'all',
+                strict: true,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    const result = runPilotAdapterRuntime({
+      rubricTemplate: template,
+      compatMode: 'v0',
+      studentSteps: [
+        { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+        { step_id: 's2', text: 'Hence the target identity is proved.' },
+      ],
+    });
+
+    expect(result.alignments).toEqual([
+      expect.objectContaining({
+        step_id: 's1',
+        status: 'aligned',
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        reason: 'pilot_adapter_match',
+      }),
+      expect.objectContaining({
+        step_id: 's2',
+        status: 'aligned',
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        reason: 'pilot_adapter_match',
+      }),
+    ]);
+  });
 });

@@ -279,11 +279,15 @@ function hasReleasedPilotRubricRef(binding, candidateRubricRefs = []) {
       return false;
     }
 
-    if (rubricSetId && rubricSetId === binding.rubric_set_id) {
-      return true;
+    if (!binding.released_rubric_version_ids.includes(rubricVersionId)) {
+      return false;
     }
 
-    return binding.released_rubric_version_ids.includes(rubricVersionId);
+    if (rubricSetId && rubricSetId !== binding.rubric_set_id) {
+      return false;
+    }
+
+    return true;
   });
 }
 

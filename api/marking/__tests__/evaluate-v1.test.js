@@ -408,6 +408,67 @@ describe('v0 compat mode', () => {
     const body = res.json.mock.calls[0][0];
     expect(body.alignments).toBeUndefined();
   });
+
+  it('preserves alignments[] for pilot-bound questions in compat_mode=v0', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        compat_mode: 'v0',
+        student_steps: [
+          { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+          { step_id: 's2', text: 'Hence the target identity is proved.' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.alignments).toEqual([
+      expect.objectContaining({
+        step_id: 's1',
+        status: 'aligned',
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        reason: 'pilot_adapter_match',
+      }),
+      expect.objectContaining({
+        step_id: 's2',
+        status: 'aligned',
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        reason: 'pilot_adapter_match',
+      }),
+    ]);
+  });
 });
 
 describe('learning-runtime orchestration', () => {

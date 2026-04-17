@@ -9,6 +9,7 @@ import {
   buildSubjectRuntimePostureOrNull,
   getSubjectAdapter,
   getSubjectCapabilityPosture,
+  resolvePilotMarkingTemplateBinding,
 } from '../lib/subjects/subject-adapter-registry.js';
 
 describe('subject adapter registry', () => {
@@ -149,5 +150,36 @@ describe('subject adapter registry', () => {
       subject_code: '9702',
       read_only: true,
     });
+  });
+
+  test('pilot template binding requires an approved released rubric version', () => {
+    expect(resolvePilotMarkingTemplateBinding({
+      subjectCode: '9709',
+      questionTypeId: '9709.trigonometry.identities',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    })).toMatchObject({
+      question_type_id: '9709.trigonometry.identities',
+      rubric_set_id: '9709.trigonometry.identities',
+    });
+
+    expect(resolvePilotMarkingTemplateBinding({
+      subjectCode: '9709',
+      questionTypeId: '9709.trigonometry.identities',
+      candidateRubricRefs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v2',
+          release_state: 'released',
+        },
+      ],
+    })).toBeNull();
   });
 });

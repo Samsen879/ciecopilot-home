@@ -189,6 +189,85 @@ function buildDecision({
   return decision;
 }
 
+function buildPilotCompatAlignments(
+  studentSteps = [],
+  decisions = [],
+  { includeUncertainReason = false } = {},
+) {
+  const normalizedDecisions = normalizeArray(decisions);
+  const consumedDecisionIndexes = new Set();
+  const stepDecisionIndexes = normalizeArray(studentSteps).map((step, index) => {
+    const stepId = normalizeString(step?.step_id) || `s${index + 1}`;
+    const directDecisionIndex = normalizedDecisions.findIndex((decision, decisionIndex) =>
+      !consumedDecisionIndexes.has(decisionIndex)
+      && normalizeArray(decision?.evidence_spans).some((span) => normalizeString(span?.step_id) === stepId));
+
+    if (directDecisionIndex >= 0) {
+      consumedDecisionIndexes.add(directDecisionIndex);
+      return directDecisionIndex;
+    }
+
+    return null;
+  });
+
+  let nextFallbackDecisionIndex = 0;
+
+  return normalizeArray(studentSteps).map((step, index) => {
+    const stepId = normalizeString(step?.step_id) || `s${index + 1}`;
+    let matchingDecisionIndex = stepDecisionIndexes[index];
+
+    if (matchingDecisionIndex == null) {
+      while (
+        nextFallbackDecisionIndex < normalizedDecisions.length
+        && consumedDecisionIndexes.has(nextFallbackDecisionIndex)
+      ) {
+        nextFallbackDecisionIndex += 1;
+      }
+
+      if (nextFallbackDecisionIndex < normalizedDecisions.length) {
+        matchingDecisionIndex = nextFallbackDecisionIndex;
+        consumedDecisionIndexes.add(matchingDecisionIndex);
+        nextFallbackDecisionIndex += 1;
+      }
+    }
+
+    const matchingDecision = matchingDecisionIndex == null
+      ? null
+      : normalizedDecisions[matchingDecisionIndex] ?? null;
+
+    if (!matchingDecision) {
+      return {
+        step_id: stepId,
+        status: 'uncertain',
+        confidence: 0,
+        rubric_id: null,
+        mark_label: null,
+        reason: 'no_match',
+        ...(includeUncertainReason
+          ? { uncertain_reason: buildUncertainReason('no_match') }
+          : {}),
+      };
+    }
+
+    const status = matchingDecision.awarded === true ? 'aligned' : 'uncertain';
+    return {
+      step_id: stepId,
+      status,
+      confidence: Number(matchingDecision.alignment_confidence ?? 0),
+      rubric_id: matchingDecision.rubric_id ?? null,
+      mark_label: matchingDecision.mark_label ?? null,
+      reason: matchingDecision.reason ?? null,
+      ...(includeUncertainReason
+        ? {
+          uncertain_reason: buildUncertainReason(matchingDecision.reason, {
+            awarded: status === 'aligned',
+          }),
+        }
+        : {}),
+    };
+  });
+}
+
 export function dispatchAdapterMethod({
   adapterMethod,
   studentSteps = [],
@@ -223,6 +302,7 @@ export function runPilotAdapterRuntime({
   rubricTemplate = {},
   studentSteps = [],
   includeUncertainReason = false,
+  compatMode = null,
 } = {}) {
   const rubricPoints = buildPilotRuntimeRubricPoints(rubricTemplate);
   const decisions = [];
@@ -272,6 +352,13 @@ export function runPilotAdapterRuntime({
 
   return {
     decisions,
+    ...(compatMode === 'v0'
+      ? {
+        alignments: buildPilotCompatAlignments(studentSteps, decisions, {
+          includeUncertainReason,
+        }),
+      }
+      : {}),
     rubric_points: rubricPoints,
     execution_summary: {
       execution_path: 'pilot_adapter_runtime',

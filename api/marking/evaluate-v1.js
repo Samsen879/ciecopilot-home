@@ -334,11 +334,17 @@ export default async function handler(req, res) {
           rubricTemplate: pilot_rubric_template,
           studentSteps: student_steps,
           includeUncertainReason: include_uncertain_reason === true,
+          compatMode: compat_mode,
         });
         rubric_points = pilotResult.rubric_points;
         decisions = pilotResult.decisions.map((decision) => serializeDecisionForResponse(decision, {
           includeUncertainReason: include_uncertain_reason === true,
         }));
+        if (pilotResult.alignments) {
+          alignments = pilotResult.alignments.map((alignment) => serializeAlignmentForResponse(alignment, {
+            includeUncertainReason: include_uncertain_reason === true,
+          }));
+        }
       } else {
         const engineResult = runDecisionEngine({
           student_steps,

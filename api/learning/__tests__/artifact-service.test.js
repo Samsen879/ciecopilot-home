@@ -79,6 +79,38 @@ function createArtifactRepositoryFixture() {
       },
     ],
     [
+      'art-successor-non-authoritative',
+      {
+        artifact_id: 'art-successor-non-authoritative',
+        artifact_kind: 'misconception_card',
+        canonical_home_topic_id: 'repair-target-topic',
+        slot_key: 'common_traps',
+        trust_status: 'grounded',
+        placement_status: 'inbox',
+        lifecycle_status: 'active',
+        artifact_state: 'verified',
+        verified_by: 'operator-8',
+        verified_at: '2026-03-20T08:07:00.000Z',
+        verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-8' },
+        released_by: null,
+        released_at: null,
+        release_evidence_ref: null,
+        contested_by: null,
+        contested_at: null,
+        contested_reason: null,
+        grounding_refs: [
+          {
+            kind: 'attempt',
+            attempt_id: 'attempt-imported-successor-1',
+            runtime_authority_posture: 'non_authoritative',
+            runtime_authority_reason_code: 'imported_question_attempt',
+          },
+        ],
+        superseded_by_artifact_id: null,
+        superseded_at: null,
+      },
+    ],
+    [
       'art-successor-unverified',
       {
         artifact_id: 'art-successor-unverified',
@@ -172,6 +204,27 @@ function createArtifactRepositoryFixture() {
         contested_reason: null,
         superseded_by_artifact_id: null,
         superseded_at: null,
+      },
+    ],
+    [
+      'art-non-authoritative',
+      {
+        artifact_id: 'art-non-authoritative',
+        artifact_kind: 'misconception_card',
+        canonical_home_topic_id: 'topic-trig-identities',
+        slot_key: 'common_traps',
+        trust_status: 'grounded',
+        placement_status: 'inbox',
+        lifecycle_status: 'active',
+        grounding_refs: [
+          {
+            kind: 'attempt',
+            attempt_id: 'attempt-imported-1',
+            runtime_authority_posture: 'non_authoritative',
+            runtime_authority_reason_code: 'imported_question_attempt',
+          },
+        ],
+        superseded_by_artifact_id: null,
       },
     ],
   ]);
@@ -601,6 +654,47 @@ describe('artifact-service', () => {
     });
   });
 
+  test('superseding a pinned artifact with a non-authoritative imported successor is rejected and keeps the current resident stable', async () => {
+    const repository = createArtifactRepositoryFixture();
+    const service = createArtifactService({
+      artifactRepository: repository,
+      lifecycleFlagEnabled: true,
+    });
+
+    await expect(
+      service.patchArtifact({
+        userId: 'student-1',
+        artifactId: 'art-pinned',
+        intent: 'attach_superseded_by',
+        successorArtifactRef: {
+          kind: 'artifact',
+          artifact_id: 'art-successor-non-authoritative',
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: 'artifact_state_conflict',
+      status: 409,
+    });
+
+    const snapshot = repository.snapshot();
+    expect(snapshot.artifacts.get('art-pinned')).toMatchObject({
+      placement_status: 'pinned',
+      artifact_state: 'verified',
+      lifecycle_status: 'active',
+      superseded_by_artifact_id: null,
+    });
+    expect(snapshot.artifacts.get('art-successor-non-authoritative')).toMatchObject({
+      placement_status: 'inbox',
+      artifact_state: 'verified',
+    });
+    expect(snapshot.workspaceSlots.get('student-1:repair-target-topic:common_traps')).toMatchObject({
+      primary_artifact_ref: {
+        kind: 'artifact',
+        artifact_id: 'art-pinned',
+      },
+    });
+  });
+
   test('set_placement_status rejects pinning a contested artifact', async () => {
     const service = createArtifactService({
       artifactRepository: createArtifactRepositoryFixture(),
@@ -649,6 +743,24 @@ describe('artifact-service', () => {
       service.patchArtifact({
         userId: 'student-1',
         artifactId: 'art-incompatible',
+        intent: 'set_placement_status',
+        placementStatus: 'pinned',
+      }),
+    ).rejects.toMatchObject({
+      code: 'artifact_state_conflict',
+      status: 409,
+    });
+  });
+
+  test('set_placement_status rejects pinning an artifact grounded only by a non-authoritative imported attempt', async () => {
+    const service = createArtifactService({
+      artifactRepository: createArtifactRepositoryFixture(),
+    });
+
+    await expect(
+      service.patchArtifact({
+        userId: 'student-1',
+        artifactId: 'art-non-authoritative',
         intent: 'set_placement_status',
         placementStatus: 'pinned',
       }),

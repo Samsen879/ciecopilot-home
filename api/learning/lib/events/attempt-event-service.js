@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { projectAttemptPipelineState } from './event-service.js';
+import { buildRuntimeAuthorityPosture } from '../contracts/runtime-authority-posture.js';
 
 const BRIDGE_EVENT_TYPES = Object.freeze([
   'AttemptSubmitted',
@@ -355,6 +356,9 @@ function buildBridgeEvents(input = {}) {
   const questionId = normalizeString(input.questionId) || null;
   const sessionId = normalizeString(input.sessionId) || null;
   const questionContext = cloneJson(input.questionContext ?? {}) ?? {};
+  const runtimeAuthorityPosture = buildRuntimeAuthorityPosture(authorityPosture, {
+    questionContext,
+  });
   const attemptContext = cloneJson(input.attemptContext ?? {}) ?? {};
   const sourceAttemptRef = cloneJson(input.sourceAttemptRef ?? null);
   const sourceMarkRunRef = cloneJson(input.sourceMarkRunRef ?? null);
@@ -370,7 +374,7 @@ function buildBridgeEvents(input = {}) {
 
   const baseProvenance = buildBaseProvenance({
     subjectCode,
-    authorityPosture,
+    authorityPosture: runtimeAuthorityPosture,
     correlationId,
     sourceAttemptRef,
     sourceMarkRunRef,
@@ -382,7 +386,7 @@ function buildBridgeEvents(input = {}) {
   const payloads = [
     buildAttemptSubmittedPayload({
       attemptId,
-      authorityPosture,
+      authorityPosture: runtimeAuthorityPosture,
       submittedAt,
       questionId,
       markRunId,
@@ -393,7 +397,7 @@ function buildBridgeEvents(input = {}) {
     }),
     buildQuestionClassifiedPayload({
       attemptId,
-      authorityPosture,
+      authorityPosture: runtimeAuthorityPosture,
       questionId,
       questionContext,
       attemptContext,
@@ -401,7 +405,7 @@ function buildBridgeEvents(input = {}) {
     }),
     buildMarkingCompletedPayload({
       attemptId,
-      authorityPosture,
+      authorityPosture: runtimeAuthorityPosture,
       questionContext,
       markRunId,
       decisions: input.decisions,
@@ -409,7 +413,7 @@ function buildBridgeEvents(input = {}) {
     }),
     buildLearningUpdateProposedPayload({
       attemptId,
-      authorityPosture,
+      authorityPosture: runtimeAuthorityPosture,
       markRunId,
     }),
   ];
@@ -494,7 +498,12 @@ async function writeBridgeWarning(client, {
 
 export async function persistAttemptEventBridge(client, input = {}) {
   const attemptId = assertImmutableAttemptId(input);
-  const authorityPosture = normalizeAuthorityPosture(input.authorityPosture);
+  const authorityPosture = buildRuntimeAuthorityPosture(
+    normalizeAuthorityPosture(input.authorityPosture),
+    {
+      questionContext: cloneJson(input.questionContext ?? {}) ?? {},
+    },
+  );
   const attemptContext = cloneJson(input.attemptContext ?? {}) ?? {};
   const markRunId = normalizeString(input.markRunId) || null;
 

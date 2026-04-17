@@ -1,4 +1,8 @@
 import { buildAttemptRef, buildMarkRunRef } from '../contracts/runtime-contract.js';
+import {
+  buildRuntimeAuthorityPosture,
+  isNonAuthoritativeRuntimeInput,
+} from '../contracts/runtime-authority-posture.js';
 import { createReviewTaskService } from '../review/review-task-service.js';
 import { createDefaultReviewTaskService } from '../review/review-task-service.js';
 import { shouldGenerateReviewTaskFromOutcome } from '../review/review-task-service.js';
@@ -75,7 +79,7 @@ function resolveLearningEffectsPosture({
   questionContext,
   adapter,
 } = {}) {
-  return input.release_scope_posture || adapter.marking.resolveReleasedScoringPosture({
+  const basePosture = input.release_scope_posture || adapter.marking.resolveReleasedScoringPosture({
     questionTypeId: questionContext.question_type_id,
     questionTypeReleaseState:
       questionContext.question_type_release_state
@@ -84,6 +88,10 @@ function resolveLearningEffectsPosture({
     candidateRubricRefs: questionContext.candidate_rubric_refs,
     classificationConfidence: questionContext.classification_confidence,
     uncertaintyValidated: input.uncertainty_validated ?? false,
+  });
+
+  return buildRuntimeAuthorityPosture(basePosture, {
+    questionContext,
   });
 }
 
@@ -102,6 +110,11 @@ export function createMasteryOrchestrator({
         input,
         questionContext,
         adapter,
+      });
+      const nonAuthoritativeRuntimeInput = isNonAuthoritativeRuntimeInput({
+        ...input,
+        release_scope_posture: releaseScopePosture,
+        question_context: questionContext,
       });
       const sourceAttemptRef = input.source_attempt_ref
         || (input.attempt_id ? buildAttemptRef(input.attempt_id) : null);
@@ -127,6 +140,9 @@ export function createMasteryOrchestrator({
         repair_target_question_type_id:
           input.repair_target_question_type_id || questionContext.question_type_id || null,
         source_attempt_ref: sourceAttemptRef,
+        runtime_authority_posture: releaseScopePosture.runtime_authority_posture,
+        runtime_authority_reason_code: releaseScopePosture.runtime_authority_reason_code,
+        question_source_kind: releaseScopePosture.question_source_kind,
       };
       const artifactInput = {
         artifact_kind: 'misconception_card',
@@ -143,6 +159,10 @@ export function createMasteryOrchestrator({
         source_attempt_ref: sourceAttemptRef,
         source_mark_run_ref: sourceMarkRunRef,
         source_session_id: input.source_session_id ?? null,
+        runtime_authority_posture: releaseScopePosture.runtime_authority_posture,
+        runtime_authority_reason_code: releaseScopePosture.runtime_authority_reason_code,
+        question_source_kind: releaseScopePosture.question_source_kind,
+        blocked_materializers: releaseScopePosture.blocked_materializers,
       };
       const masteryProjection = adapter.mastery.buildMasteryProjection({
         input,
@@ -150,10 +170,11 @@ export function createMasteryOrchestrator({
         releaseScopePosture,
       });
       const localSignals = masteryProjection.localSignals;
-      const masteryUpdates = masteryProjection.masteryUpdates;
+      const masteryUpdates = nonAuthoritativeRuntimeInput ? [] : masteryProjection.masteryUpdates;
       const reviewCapabilityPosture = adapter.meta.capability_posture?.review
         ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
       const reviewTasks = reviewCapabilityPosture !== SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED
+        || nonAuthoritativeRuntimeInput
         || !shouldGenerateReviewTaskFromOutcome(reviewTaskInput)
         ? []
         : await reviewTaskService.generateTasksFromOutcome(reviewTaskInput);

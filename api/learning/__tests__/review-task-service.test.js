@@ -395,7 +395,7 @@ describe('learning orchestration', () => {
           question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709/integration/source',
-          classification_confidence: 0.78,
+          classification_confidence: 0.86,
           candidate_rubric_refs: [
             {
               kind: 'rubric_release',
@@ -440,6 +440,120 @@ describe('learning orchestration', () => {
     });
   });
 
+  test('imported-question attempts keep local feedback and artifact candidates but suppress durable mastery and review writes', async () => {
+    const reviewTaskService = createSpyService('generateTasksFromOutcome', async () => [
+      {
+        review_task_id: 'review-task-imported',
+      },
+    ]);
+    const artifactService = createSpyService('buildArtifactCandidates', async () => [
+      {
+        artifact_id: 'artifact-imported-1',
+        artifact_kind: 'misconception_card',
+      },
+    ]);
+    const reconciliationService = createSpyService('reconcileDerivedState', async ({ derivedState }) => ({
+      reconciliation_run_id: 'recon-imported-1',
+      status: 'completed',
+      derived_state: derivedState,
+    }));
+
+    const result = await applyLearningEffects(
+      {
+        user_id: 'student-1',
+        question_id: 'question-imported-1',
+        question_context: {
+          source_kind: 'imported_question',
+          family_id: '9709.trigonometry_manipulation_equations',
+          question_type_id: '9709.trigonometry.identities',
+          question_type_release_state: 'released',
+          primary_topic_id: 'topic-trig-identities',
+          primary_topic_path: '9709/trigonometry/identities',
+          classification_confidence: 0.95,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'trig-identities-v1',
+              release_state: 'released',
+            },
+          ],
+        },
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-imported-1' },
+        source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-imported-1' },
+        decisions: [
+          {
+            awarded: true,
+            awarded_marks: 1,
+            alignment_confidence: 0.94,
+          },
+        ],
+        misconception_tags: ['identity:rewrite'],
+        marking_result: {
+          marking_summary: {
+            coverage_scope: 'subpart',
+            local_signal_only: true,
+            ambiguous_rubric_point_result_count: 0,
+          },
+          part_results: [
+            {
+              part_id: 'a',
+              subpart_id: 'a_i',
+              score_awarded: 1,
+              score_max: 1,
+            },
+          ],
+        },
+        uncertainty_validated: true,
+        release_scope_posture: {
+          release_scope_status: 'released_scoring',
+          authoritative_scoring_allowed: true,
+          fallback_mode: null,
+          fallback_reason_code: null,
+          classification_confidence: 0.95,
+          learning_signal_posture: 'authoritative_scoring',
+        },
+      },
+      {
+        reviewTaskService,
+        artifactService,
+        reconciliationService,
+      },
+    );
+
+    expect(result).toMatchObject({
+      release_scope_status: 'released_scoring',
+      authoritative_scoring_allowed: false,
+      runtime_authority_posture: 'non_authoritative',
+      runtime_authority_reason_code: 'imported_question_attempt',
+      mastery_updates: [],
+      review_tasks: [],
+      artifact_candidates: [
+        {
+          artifact_id: 'artifact-imported-1',
+        },
+      ],
+      local_signals: [
+        expect.objectContaining({
+          scope_kind: 'subpart',
+          part_id: 'a',
+          subpart_id: 'a_i',
+        }),
+      ],
+    });
+    expect(reviewTaskService.calls).toHaveLength(0);
+    expect(artifactService.calls).toHaveLength(1);
+    expect(reconciliationService.calls[0].derivedState).toMatchObject({
+      family_masteries: [],
+      type_masteries: [],
+      review_tasks: [],
+      artifacts: [
+        {
+          artifact_id: 'artifact-imported-1',
+        },
+      ],
+    });
+  });
+
   test('incorrect released-scoring outcomes still emit repair tasks without positive type mastery', async () => {
     const reviewTaskService = createSpyService('generateTasksFromOutcome', async (input) => [
       {
@@ -467,7 +581,7 @@ describe('learning orchestration', () => {
           question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709/integration/source',
-          classification_confidence: 0.78,
+          classification_confidence: 0.86,
           candidate_rubric_refs: [
             {
               kind: 'rubric_release',
@@ -542,7 +656,7 @@ describe('learning orchestration', () => {
           question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709/integration/source',
-          classification_confidence: 0.78,
+          classification_confidence: 0.86,
           candidate_rubric_refs: [
             {
               kind: 'rubric_release',
@@ -604,6 +718,33 @@ describe('learning orchestration', () => {
 });
 
 describe('review task service generation', () => {
+  test('non-authoritative imported attempts do not enqueue default durable review tasks', async () => {
+    const service = createReviewTaskService({
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const tasks = await service.generateTasksFromOutcome({
+      user_id: 'student-1',
+      question_id: 'question-imported-queue-1',
+      authoritative_scoring_allowed: false,
+      runtime_authority_posture: 'non_authoritative',
+      runtime_authority_reason_code: 'imported_question_attempt',
+      question_source_kind: 'imported_question',
+      fallback_reason_code: 'imported_question_attempt',
+      repair_target_topic_id: 'topic-1',
+      repair_target_topic_path: '9709/trigonometry/identities',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-imported-queue-1' },
+      misconception_tags: ['identity:rewrite'],
+      question_context: {
+        source_kind: 'imported_question',
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.identities',
+      },
+    });
+
+    expect(tasks).toEqual([]);
+  });
+
   test('fallback review tasks now route through immediate repair with explicit scheduler policy', async () => {
     const service = createReviewTaskService({
       now: () => new Date('2026-03-24T10:00:00.000Z'),

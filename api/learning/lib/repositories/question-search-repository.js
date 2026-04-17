@@ -14,6 +14,7 @@ export async function searchQuestionProjection(client, filters = {}) {
   const pageSize = Number.isInteger(filters.page_size) && filters.page_size > 0
     ? filters.page_size
     : 20;
+  const unpaged = filters.unpaged === true;
   const rangeStart = (page - 1) * pageSize;
   const rangeEnd = rangeStart + pageSize - 1;
 
@@ -45,9 +46,12 @@ export async function searchQuestionProjection(client, filters = {}) {
     query = query.ilike('search_text', `%${escapeLikePattern(textQuery)}%`);
   }
 
-  const { data, count, error } = await query
-    .order('question_id', { ascending: true })
-    .range(rangeStart, rangeEnd);
+  let orderedQuery = query.order('question_id', { ascending: true });
+  if (!unpaged) {
+    orderedQuery = orderedQuery.range(rangeStart, rangeEnd);
+  }
+
+  const { data, count, error } = await orderedQuery;
 
   if (error) {
     throw new Error(`Failed to search question projection: ${error.message}`);

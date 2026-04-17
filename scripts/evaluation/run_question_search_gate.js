@@ -5,6 +5,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+import { getServiceClient } from '../../api/lib/supabase/client.js';
+import { searchQuestions } from '../../api/learning/lib/questions/question-search-service.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -723,7 +725,26 @@ async function resolveTopicPathFromDatabase({
   return JSON.parse(await runPsql(sql));
 }
 
-async function searchProjectionFromDatabase(searchInput) {
+function hasServiceSearchEnv(env = process.env) {
+  return Boolean(
+    env.SUPABASE_URL
+      && (env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SERVICE_ROLE),
+  );
+}
+
+export function getProjectionSearchMode(env = process.env) {
+  if (env.SUPABASE_PG_COMPAT === 'true') {
+    return 'psql';
+  }
+
+  if (!hasServiceSearchEnv(env)) {
+    return 'psql';
+  }
+
+  return 'service';
+}
+
+function buildProjectionSearchSql(searchInput) {
   const conditions = [];
 
   STRUCTURED_FILTER_FIELDS.forEach((field) => {
@@ -741,7 +762,7 @@ async function searchProjectionFromDatabase(searchInput) {
     ? `WHERE ${conditions.join(' AND ')}`
     : '';
 
-  const sql = [
+  return [
     'WITH filtered AS (',
     '  SELECT *',
     '  FROM public.learning_question_search_projection',
@@ -757,8 +778,21 @@ async function searchProjectionFromDatabase(searchInput) {
     "  'items', COALESCE((SELECT json_agg(row_to_json(paged)) FROM paged), '[]'::json)",
     ')::text;',
   ].join('\n');
+}
 
-  return runPsqlJson(sql);
+export async function searchProjectionFromDatabase(searchInput, {
+  env = process.env,
+  runPsqlJsonFn = runPsqlJson,
+  searchQuestionsFn = searchQuestions,
+  getServiceClientFn = getServiceClient,
+} = {}) {
+  if (getProjectionSearchMode(env) === 'psql') {
+    return runPsqlJsonFn(buildProjectionSearchSql(searchInput));
+  }
+
+  return searchQuestionsFn(getServiceClientFn(), searchInput, {
+    productMode: true,
+  });
 }
 
 async function inspectDescriptorSourceFromDatabase(subjectCode) {

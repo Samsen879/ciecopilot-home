@@ -198,6 +198,15 @@ export function normalizeImportQuestionResponse(payload = {}) {
   };
 }
 
+export function normalizeQuestionSearchResponse(payload = {}) {
+  const camelized = camelizeKeys(payload);
+  return {
+    ...camelized,
+    items: Array.isArray(camelized.items) ? camelized.items : [],
+    featureFlags: camelized.featureFlags || {},
+  };
+}
+
 export function normalizeReviewTaskListResponse(payload = {}) {
   const camelized = camelizeKeys(payload);
   return {
@@ -258,6 +267,35 @@ export async function importQuestion(payload, options = {}) {
     body: payload,
     idempotencyKey: options.idempotencyKey ?? null,
   }));
+}
+
+export async function searchQuestions(params = {}) {
+  const query = buildQuery({
+    subjectCode: params.subjectCode ?? params.subject_code,
+    primaryTopicId: params.primaryTopicId ?? params.primary_topic_id,
+    familyId: params.familyId ?? params.family_id,
+    primaryQuestionTypeId: params.primaryQuestionTypeId ?? params.primary_question_type_id,
+    year: params.year,
+    session: params.session,
+    paperNumber: params.paperNumber ?? params.paper_number,
+    variant: params.variant,
+    qNumber: params.qNumber ?? params.q_number,
+    query: params.query,
+    page: params.page,
+    pageSize: params.pageSize ?? params.page_size,
+  }, {
+    subjectCode: 'subject_code',
+    primaryTopicId: 'primary_topic_id',
+    familyId: 'family_id',
+    primaryQuestionTypeId: 'primary_question_type_id',
+    paperNumber: 'paper_number',
+    qNumber: 'q_number',
+    pageSize: 'page_size',
+  });
+
+  return normalizeQuestionSearchResponse(
+    await learningRequest(`/questions${query}`),
+  );
 }
 
 export async function getWorkspace(topicId) {
@@ -341,6 +379,7 @@ export const learningRuntimeApi = {
   getSession,
   askInSession,
   importQuestion,
+  searchQuestions,
   getWorkspace,
   listReviewTasks,
   updateReviewTask,

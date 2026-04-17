@@ -5,8 +5,10 @@ import {
   buildCurriculumNodeResolutionSql,
   DEFAULT_CURRICULUM_VERSION_TAG,
   DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
+  getProjectionSearchMode,
   loadQuestionSearchGoldFixture,
   runQuestionSearchGate,
+  searchProjectionFromDatabase,
 } from '../run_question_search_gate.js';
 
 const FIXTURE_PATH = path.join(
@@ -35,6 +37,9 @@ describe('question-search-gate', () => {
         && Number.isInteger(testCase.query.year)
         && Number.isInteger(testCase.query.paper_number)
       )),
+    ).toBe(true);
+    expect(
+      fixture.cases.some((testCase) => testCase.id === 'mixed-ranking-paper-authority'),
     ).toBe(true);
   });
 
@@ -387,6 +392,104 @@ describe('question-search-gate', () => {
     expect(result.report_markdown).toContain('paper-backed pinned cases cannot pass');
   });
 
+  test('runQuestionSearchGate keeps mixed-source authority fixtures green when paper-backed rows rank first', async () => {
+    const fixture = {
+      subject_code: '9709',
+      curriculum_version_tag: DEFAULT_CURRICULUM_VERSION_TAG,
+      thresholds: DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
+      cases: [
+        {
+          id: 'mixed-ranking-paper-authority',
+          description: 'Paper-backed rows outrank imported rows when both satisfy the same structured query.',
+          query: {
+            topic_path: '9709.p1.trigonometry',
+            primary_question_type_id: '9709.trigonometry.equations',
+            query: 'identity solve equation',
+          },
+          expected: {
+            match: {
+              question_id: 'question-paper-1',
+              source_kind: 'paper_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.p1.trigonometry',
+              primary_question_type_id: '9709.trigonometry.equations',
+              q_number: 6,
+            },
+            required_metadata: [
+              'question_id',
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'primary_question_type_id',
+              'q_number',
+              'summary',
+            ],
+            summary_policy: 'require_non_null',
+          },
+        },
+      ],
+    };
+
+    const searchQuestionsFn = jest.fn().mockResolvedValue({
+      items: [
+        {
+          question_id: 'question-paper-1',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          primary_topic_path: '9709.p1.trigonometry',
+          primary_question_type_id: '9709.trigonometry.equations',
+          q_number: 6,
+          summary: 'Prove a trigonometric identity and solve the resulting equation.',
+        },
+        {
+          question_id: 'question-imported-1',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          primary_topic_path: '9709.p1.trigonometry',
+          primary_question_type_id: '9709.trigonometry.equations',
+          q_number: 91,
+          summary: null,
+        },
+      ],
+      total: 2,
+      page: 1,
+      page_size: 20,
+    });
+
+    const resolveTopicPathFn = jest.fn().mockResolvedValue('topic-paper-trigonometry');
+    const inspectDescriptorSourceFn = jest.fn().mockResolvedValue({
+      selected_branch: 'question_descriptions_v0_status_ok',
+      surfaces: {
+        question_descriptions_prod_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v0: { exists: true, count: 24, count_9709: 24 },
+        learning_question_search_projection: { count: 24, count_9709: 24 },
+        question_bank_9709: { total: 24, paper_question: 22, imported_question: 2 },
+      },
+    });
+
+    const result = await runQuestionSearchGate({
+      fixture,
+      searchQuestionsFn,
+      resolveTopicPathFn,
+      inspectDescriptorSourceFn,
+      nowIso: '2026-04-16T09:00:00Z',
+    });
+
+    expect(result.metrics).toEqual({
+      exact_structured_match_rate: 1,
+      subject_leakage_rate: 0,
+      metadata_completeness_rate: 1,
+      null_summary_rate: 0,
+    });
+    expect(result.gate.pass).toBe(true);
+    expect(result.case_results[0]).toEqual(expect.objectContaining({
+      id: 'mixed-ranking-paper-authority',
+      top_result_question_id: 'question-paper-1',
+      total_results: 2,
+    }));
+  });
+
   test('curriculum node resolution SQL filters by syllabus, topic_path, and explicit version_tag', () => {
     const sql = buildCurriculumNodeResolutionSql({
       subjectCode: '9709',
@@ -400,5 +503,83 @@ describe('question-search-gate', () => {
     expect(sql).toContain("version_tag = '2025-2027_v1'");
     expect(sql).toContain('ORDER BY node_id ASC');
     expect(sql).toContain('LIMIT 1');
+  });
+
+  test('getProjectionSearchMode falls back to psql for DATABASE_URL-only environments', () => {
+    expect(getProjectionSearchMode({
+      DATABASE_URL: 'postgres://example.test/db',
+    })).toBe('psql');
+  });
+
+  test('getProjectionSearchMode falls back to psql when SUPABASE_PG_COMPAT is enabled', () => {
+    expect(getProjectionSearchMode({
+      DATABASE_URL: 'postgres://example.test/db',
+      SUPABASE_URL: 'https://supabase.example.test',
+      SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',
+      SUPABASE_PG_COMPAT: 'true',
+    })).toBe('psql');
+  });
+
+  test('searchProjectionFromDatabase uses SQL fallback when service env is unavailable', async () => {
+    const runPsqlJsonFn = jest.fn().mockResolvedValue({
+      total: 1,
+      items: [{ question_id: 'question-paper-1' }],
+    });
+    const searchQuestionsFn = jest.fn();
+    const getServiceClientFn = jest.fn();
+
+    const result = await searchProjectionFromDatabase({
+      subject_code: '9709',
+      primary_topic_id: 'topic-paper-trigonometry',
+      query: 'identity solve equation',
+    }, {
+      env: {
+        DATABASE_URL: 'postgres://example.test/db',
+      },
+      runPsqlJsonFn,
+      searchQuestionsFn,
+      getServiceClientFn,
+    });
+
+    expect(result).toEqual({
+      total: 1,
+      items: [{ question_id: 'question-paper-1' }],
+    });
+    expect(searchQuestionsFn).not.toHaveBeenCalled();
+    expect(getServiceClientFn).not.toHaveBeenCalled();
+    expect(runPsqlJsonFn).toHaveBeenCalledTimes(1);
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain('FROM public.learning_question_search_projection');
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("subject_code = '9709'");
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("primary_topic_id = 'topic-paper-trigonometry'");
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("search_text ILIKE '%' || 'identity solve equation' || '%' ESCAPE '\\'");
+  });
+
+  test('searchProjectionFromDatabase uses SQL fallback when pg-compat is enabled', async () => {
+    const runPsqlJsonFn = jest.fn().mockResolvedValue({
+      total: 2,
+      items: [{ question_id: 'question-paper-1' }, { question_id: 'question-imported-1' }],
+    });
+    const searchQuestionsFn = jest.fn();
+    const getServiceClientFn = jest.fn();
+
+    const result = await searchProjectionFromDatabase({
+      subject_code: '9709',
+      query: 'tan^2',
+    }, {
+      env: {
+        DATABASE_URL: 'postgres://example.test/db',
+        SUPABASE_URL: 'https://supabase.example.test',
+        SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',
+        SUPABASE_PG_COMPAT: 'true',
+      },
+      runPsqlJsonFn,
+      searchQuestionsFn,
+      getServiceClientFn,
+    });
+
+    expect(result.total).toBe(2);
+    expect(runPsqlJsonFn).toHaveBeenCalledTimes(1);
+    expect(searchQuestionsFn).not.toHaveBeenCalled();
+    expect(getServiceClientFn).not.toHaveBeenCalled();
   });
 });

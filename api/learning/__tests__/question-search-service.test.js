@@ -145,6 +145,166 @@ describe('question-search-service', () => {
       total: 1,
       page: 1,
       page_size: 10,
+      feature_flags: {
+        question_search_product_enabled: false,
+      },
     });
+  });
+
+  test('searchQuestions ranks paper-backed results ahead of imported rows in product mode and shapes grounded result cards', async () => {
+    mockSearchQuestionProjection.mockResolvedValueOnce({
+      total: 3,
+      rows: [
+        {
+          question_id: 'question-imported-1',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          release_scope_status: 'released_scoring',
+          primary_topic_title: 'Trigonometric equations',
+          primary_question_type_id: '9709.trigonometry.equations',
+          family_id: '9709.trigonometry_manipulation_equations',
+          q_number: 91,
+          summary: null,
+          question_type: null,
+          answer_form: null,
+          search_text: 'Prove a trigonometric identity and solve the equation in the given interval.',
+        },
+        {
+          question_id: 'question-paper-1',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          release_scope_status: 'non_released_fallback',
+          primary_topic_title: 'Trigonometric equations',
+          primary_question_type_id: '9709.trigonometry.equations',
+          family_id: '9709.trigonometry_manipulation_equations',
+          year: 2019,
+          session: 's',
+          paper_number: 1,
+          q_number: 6,
+          summary: '  Prove a trigonometric identity and solve the resulting equation.  ',
+          question_type: 'proof_and_solve',
+          answer_form: 'free_response',
+          search_text: 'Prove a trigonometric identity and solve the resulting equation.',
+        },
+        {
+          question_id: 'question-imported-2',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          release_scope_status: 'non_released_fallback',
+          primary_topic_title: 'Trigonometric equations',
+          primary_question_type_id: '9709.trigonometry.equations',
+          family_id: '9709.trigonometry_manipulation_equations',
+          q_number: 4,
+          summary: '',
+          question_type: null,
+          answer_form: null,
+          search_text: 'Solve tan x = 1.',
+        },
+      ],
+    });
+
+    const result = await searchQuestions({}, {
+      subject_code: '9709',
+      primary_question_type_id: '9709.trigonometry.equations',
+      query: 'identity solve equation',
+      page: 1,
+      page_size: 2,
+    }, {
+      productMode: true,
+    });
+
+    expect(mockSearchQuestionProjection).toHaveBeenCalledWith({}, {
+      subject_code: '9709',
+      primary_topic_id: null,
+      family_id: null,
+      primary_question_type_id: '9709.trigonometry.equations',
+      year: null,
+      session: null,
+      paper_number: null,
+      variant: null,
+      q_number: null,
+      query: 'identity solve equation',
+      page: 1,
+      page_size: 2,
+      unpaged: true,
+    });
+    expect(result.feature_flags).toEqual({
+      question_search_product_enabled: true,
+    });
+    expect(result.items.map((item) => item.question_id)).toEqual([
+      'question-paper-1',
+      'question-imported-1',
+    ]);
+    expect(result.items[0].product_posture).toEqual({
+      code: 'paper_backed',
+      label: 'Paper-backed',
+      is_provisional: false,
+    });
+    expect(result.items[0].product_card).toEqual(expect.objectContaining({
+      title: 'S19 P1 Q6',
+      summary_line: 'Prove a trigonometric identity and solve the resulting equation.',
+    }));
+    expect(result.items[1].product_posture).toEqual({
+      code: 'imported_provisional',
+      label: 'Imported / provisional',
+      is_provisional: true,
+    });
+    expect(result.items[1].product_card).toEqual(expect.objectContaining({
+      summary_line: null,
+    }));
+    expect(result.total).toBe(3);
+    expect(result.page).toBe(1);
+    expect(result.page_size).toBe(2);
+  });
+
+  test('searchQuestions keeps the legacy contract when product mode is explicitly disabled', async () => {
+    mockSearchQuestionProjection.mockResolvedValueOnce({
+      total: 2,
+      rows: [
+        {
+          question_id: 'question-imported-1',
+          source_kind: 'imported_question',
+          subject_code: '9709',
+          search_text: 'Imported row first.',
+        },
+        {
+          question_id: 'question-paper-1',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          search_text: 'Paper row second.',
+        },
+      ],
+    });
+
+    const result = await searchQuestions({}, {
+      subject_code: '9709',
+      page: 1,
+      page_size: 10,
+    }, {
+      productMode: false,
+    });
+
+    expect(mockSearchQuestionProjection).toHaveBeenCalledWith({}, {
+      subject_code: '9709',
+      primary_topic_id: null,
+      family_id: null,
+      primary_question_type_id: null,
+      year: null,
+      session: null,
+      paper_number: null,
+      variant: null,
+      q_number: null,
+      query: null,
+      page: 1,
+      page_size: 10,
+    });
+    expect(result.feature_flags).toEqual({
+      question_search_product_enabled: false,
+    });
+    expect(result.items.map((item) => item.question_id)).toEqual([
+      'question-imported-1',
+      'question-paper-1',
+    ]);
+    expect(result.items[0].product_card).toBeUndefined();
   });
 });

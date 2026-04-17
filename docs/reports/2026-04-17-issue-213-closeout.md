@@ -2,7 +2,7 @@
 
 ## Scope Shipped
 
-- restacked `feat/213` onto `feat/211` so the posture work builds on the runtime bridge foundation instead of `main`
+- restacked `feat/213` onto current `main` after the runtime bridge foundation landed there
 - introduced a shared runtime-authority posture contract for imported-question attempts
 - forced imported attempts into explicit `non_authoritative` posture before ledger/event/materialization handoff
 - kept imported attempts durable in the mark ledger and attempt-scoped event stream
@@ -57,7 +57,7 @@ Outcome:
 
 - Passed.
 - Test suites: `5 passed, 5 total`
-- Tests: `53 passed, 53 total`
+- Tests: `74 passed, 74 total`
 
 ### Diff hygiene
 
@@ -73,5 +73,5 @@ Outcome:
 
 ## Notes / Risks
 
-- The AO-referenced decision file `docs/reports/2026-04-16-ao-execution-decision-alignment.md` is still absent on this branch, so implementation aligned to the issue body, frozen runtime docs present in-tree, and the AO continuation note that required restacking onto `feat/211`.
+- The AO-referenced decision file `docs/reports/2026-04-16-ao-execution-decision-alignment.md` is still absent on this branch, so implementation aligned to the issue body, frozen runtime docs present in-tree, and the AO continuation note that required restacking onto current `main`.
 - Two pre-existing review-task fixtures were below the frozen `0.8` released-scoring confidence threshold while still expecting released-scoring behavior. Their fixture confidence was corrected to keep the focused verification set aligned to the current contract.

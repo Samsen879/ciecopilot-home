@@ -39,6 +39,33 @@ function renderSummaryChip(key, label, value) {
   ]);
 }
 
+function renderStudentExplanation(key, studentExplanation) {
+  if (!studentExplanation?.summary && !(Array.isArray(studentExplanation?.labels) && studentExplanation.labels.length > 0)) {
+    return null;
+  }
+
+  return h('div', {
+    key,
+    className: 'mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700',
+  }, [
+    studentExplanation.summary
+      ? h('p', {
+        key: 'summary',
+        className: 'leading-6 text-slate-900',
+      }, studentExplanation.summary)
+      : null,
+    Array.isArray(studentExplanation.labels) && studentExplanation.labels.length > 0
+      ? h('div', {
+        key: 'labels',
+        className: 'mt-3 flex flex-wrap gap-2',
+      }, studentExplanation.labels.map((label) => h('span', {
+        key: label,
+        className: 'rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-700',
+      }, label)))
+      : null,
+  ].filter(Boolean));
+}
+
 function formatFreshnessLabel(explanation) {
   const bucket = explanation?.freshness?.bucket;
   if (!bucket) {
@@ -50,6 +77,7 @@ function formatFreshnessLabel(explanation) {
 
 function renderReviewItem(item, {
   drafts = {},
+  featureFlags = {},
   mutationStateByTaskId = {},
   onComplete = () => {},
   onDraftChange = () => {},
@@ -57,6 +85,8 @@ function renderReviewItem(item, {
   onOpenWorkspace = null,
   onReschedule = () => {},
 } = {}) {
+  const schedulerExplanationEnabled = featureFlags.schedulerExplanationEnabled === true;
+
   return h('li', {
     key: item.reviewTaskId,
     className: 'rounded-3xl border border-slate-200 bg-slate-50 p-5',
@@ -96,19 +126,21 @@ function renderReviewItem(item, {
       key: 'meta',
       className: 'mt-3 text-sm text-slate-600',
     }, `Due ${item.dueAtLabel} · ${item.estimatedMinutesLabel}`),
-    item.schedulerExplanation?.summary
-      ? h('div', {
-        key: 'scheduler-summary',
-        className: 'mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800',
-      }, item.schedulerExplanation.summary)
-      : null,
+    schedulerExplanationEnabled
+      ? renderStudentExplanation('student-explanation', item.studentExplanation)
+      : item.schedulerExplanation?.summary
+        ? h('div', {
+          key: 'scheduler-summary',
+          className: 'mt-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800',
+        }, item.schedulerExplanation.summary)
+        : null,
     item.resultFeedback?.summary
       ? h('div', {
         key: 'result-summary',
         className: 'mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800',
       }, item.resultFeedback.summary)
       : null,
-    item.explanation?.summary
+    !schedulerExplanationEnabled && item.explanation?.summary
       ? h('div', {
         key: 'explanation-summary',
         className: 'mt-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700',
@@ -190,6 +222,7 @@ export default function ReviewQueuePanel({
   reviewQueue,
 }) {
   const items = Array.isArray(reviewQueue?.items) ? reviewQueue.items : [];
+  const featureFlags = reviewQueue?.featureFlags || {};
   const summary = reviewQueue?.summary || {};
 
   return h('section', {
@@ -235,6 +268,7 @@ export default function ReviewQueuePanel({
         className: 'mt-5 space-y-4',
       }, items.map((item) => renderReviewItem(item, {
         drafts,
+        featureFlags,
         mutationStateByTaskId,
         onDraftChange,
         onLaunch,

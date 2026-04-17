@@ -14,6 +14,7 @@ jest.unstable_mockModule('../../lib/security/auth-guard.js', () => ({
 }));
 
 jest.unstable_mockModule('../lib/questions/question-search-service.js', () => ({
+  getQuestionSearchProductFlagStatus: () => ({ enabled: true }),
   searchQuestions: mockSearchQuestions,
 }));
 
@@ -76,6 +77,15 @@ describe('question-search-api', () => {
           question_id: 'question-1',
           subject_code: '9709',
           search_text: 'Use a trigonometric identity.',
+          product_posture: {
+            code: 'paper_backed',
+            label: 'Paper-backed',
+            is_provisional: false,
+          },
+          product_card: {
+            title: 'S19 P1 Q6',
+            summary_line: 'Use a trigonometric identity.',
+          },
           match_context: {
             filters_applied: ['subject_code'],
             text_query_used: false,
@@ -85,6 +95,9 @@ describe('question-search-api', () => {
       total: 1,
       page: 1,
       page_size: 10,
+      feature_flags: {
+        question_search_product_enabled: true,
+      },
     });
 
     const req = createReq({
@@ -100,7 +113,9 @@ describe('question-search-api', () => {
     await handler(req, res);
 
     expect(mockGetServiceClient).toHaveBeenCalledTimes(1);
-    expect(mockSearchQuestions).toHaveBeenCalledWith(mockServiceClient, req.query);
+    expect(mockSearchQuestions).toHaveBeenCalledWith(mockServiceClient, req.query, {
+      productMode: true,
+    });
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual({
       request_id: 'req-question-search-api',
@@ -109,6 +124,15 @@ describe('question-search-api', () => {
           question_id: 'question-1',
           subject_code: '9709',
           search_text: 'Use a trigonometric identity.',
+          product_posture: {
+            code: 'paper_backed',
+            label: 'Paper-backed',
+            is_provisional: false,
+          },
+          product_card: {
+            title: 'S19 P1 Q6',
+            summary_line: 'Use a trigonometric identity.',
+          },
           match_context: {
             filters_applied: ['subject_code'],
             text_query_used: false,
@@ -118,6 +142,9 @@ describe('question-search-api', () => {
       total: 1,
       page: 1,
       page_size: 10,
+      feature_flags: {
+        question_search_product_enabled: true,
+      },
     });
   });
 
@@ -158,7 +185,9 @@ describe('question-search-api', () => {
 
     await handler(req, res);
 
-    expect(mockSearchQuestions).toHaveBeenCalledWith(mockServiceClient, req.query);
+    expect(mockSearchQuestions).toHaveBeenCalledWith(mockServiceClient, req.query, {
+      productMode: true,
+    });
     expect(res.statusCode).toBe(400);
     expect(res.body).toEqual({
       request_id: 'req-question-search-api',

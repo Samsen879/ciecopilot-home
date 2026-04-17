@@ -7,7 +7,10 @@ import {
   sendLearningHttpError,
   sendLearningJson,
 } from '../lib/http/learning-http.js';
-import { searchQuestions } from '../lib/questions/question-search-service.js';
+import {
+  getQuestionSearchProductFlagStatus,
+  searchQuestions,
+} from '../lib/questions/question-search-service.js';
 
 async function ensureLearningAuth(req) {
   if (req?.auth_user_id) {
@@ -55,7 +58,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const payload = await searchQuestions(getServiceClient(), req.query || {});
+    const payload = await searchQuestions(getServiceClient(), req.query || {}, {
+      productMode: getQuestionSearchProductFlagStatus().enabled,
+    });
     return sendLearningJson(res, req?.request_id || null, payload);
   } catch (error) {
     if (error instanceof LearningHttpError) {

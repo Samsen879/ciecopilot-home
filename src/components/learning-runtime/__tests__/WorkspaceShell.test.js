@@ -41,6 +41,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:56:00.000Z',
@@ -52,7 +59,14 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'my_notes',
             placementStatus: 'inbox',
-            trustStatus: 'user_confirmed',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
+            trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:57:00.000Z',
             title: 'My note candidate',
@@ -63,6 +77,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-identities',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'verified',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: true,
+              residentEligible: true,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'grounded',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:55:00.000Z',
@@ -73,6 +94,13 @@ function createWorkspacePayload() {
             canonicalHomeTopicId: 'topic-trig-equations',
             slotKey: 'common_traps',
             placementStatus: 'inbox',
+            artifactState: 'contested',
+            capabilities: {
+              shellVisible: true,
+              bodyVisible: false,
+              residentEligible: false,
+              authoritativeAutomationEligible: false,
+            },
             trustStatus: 'contested',
             lifecycleStatus: 'active',
             updatedAt: '2026-03-22T07:54:00.000Z',
@@ -172,6 +200,23 @@ function createWorkspacePayload() {
               summary: 'Fresh repair evidence should be retried before it is spaced.',
             },
           ],
+          studentExplanation: {
+            summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
+            labels: ['最近出错', '同题型回补'],
+            provenance: {
+              summaryFactorCodes: ['recent_error', 'same_question_type_repair'],
+              labelMappings: [
+                {
+                  label: '最近出错',
+                  factorCode: 'recent_error',
+                },
+                {
+                  label: '同题型回补',
+                  factorCode: 'same_question_type_repair',
+                },
+              ],
+            },
+          },
           explanation: {
             summary: 'Queued from interval-repair evidence while authoritative mastery stays conservative.',
             posture: 'conservative_fallback',
@@ -240,6 +285,9 @@ function createWorkspacePayload() {
           },
         ],
       },
+    },
+    featureFlags: {
+      learningRuntimeEnabled: true,
     },
   };
 }
@@ -384,6 +432,37 @@ describe('WorkspaceShell', () => {
     expect(html).toContain('Closed the interval mistake with a fresh variant.');
   });
 
+  test('renders the compact scheduler explanation contract when the flag is enabled', () => {
+    const payload = createWorkspacePayload();
+    payload.reviewQueue.featureFlags = {
+      schedulerExplanationEnabled: true,
+    };
+
+    const workspaceVm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+    const html = renderToStaticMarkup(
+      React.createElement(WorkspaceShell, {
+        viewModel: workspaceVm,
+        onOpenGlobalQueue: () => {},
+        reviewQueueDrafts: {
+          'review-task-1': {
+            completionSummary: 'Solved one more repair variant.',
+            dueAt: '2026-03-24T09:30',
+          },
+        },
+      }),
+    );
+
+    expect(html).toContain('你最近在这个题型上出错过，所以先安排一次同题型回补。');
+    expect(html).toContain('最近出错');
+    expect(html).toContain('同题型回补');
+    expect(html).not.toContain('Fresh repair evidence should be retried before it is spaced.');
+    expect(html).not.toContain('Queued from interval-repair evidence while authoritative mastery stays conservative.');
+    expect(html).not.toContain('Attempt history');
+    expect(html).not.toContain('Fresh evidence');
+  });
+
   test('renders a read-only second-subject runtime posture banner', () => {
     const html = renderToStaticMarkup(
       React.createElement(WorkspaceShell, {
@@ -403,7 +482,25 @@ describe('WorkspaceShell', () => {
   });
 
   test('getArtifactSupersedeCandidates keeps successor choices conservative', () => {
-    const workspaceVm = buildWorkspaceViewModel(createWorkspacePayload());
+    const payload = createWorkspacePayload();
+    payload.workspace.artifactInbox.items.push({
+      artifactId: 'artifact-awaiting-verification',
+      artifactKind: 'misconception_card',
+      canonicalHomeTopicId: 'topic-trig-equations',
+      slotKey: 'common_traps',
+      placementStatus: 'inbox',
+      artifactState: 'unverified',
+      capabilities: {
+        shellVisible: true,
+        bodyVisible: false,
+        residentEligible: false,
+        authoritativeAutomationEligible: false,
+      },
+      trustStatus: 'unverified',
+      lifecycleStatus: 'active',
+      updatedAt: '2026-03-22T08:06:00.000Z',
+    });
+    const workspaceVm = buildWorkspaceViewModel(payload);
 
     expect(
       getArtifactSupersedeCandidates(
@@ -411,6 +508,43 @@ describe('WorkspaceShell', () => {
         workspaceVm.slots.common_traps.primaryArtifactCard,
       ).map((card) => card.artifactId),
     ).toEqual(['artifact-successor']);
+  });
+
+  test('renders awaiting verification only when the slot has no resident', () => {
+    const payload = createWorkspacePayload();
+    payload.workspace.slotState.commonTraps = 'awaiting_verification';
+    payload.workspace.slots.commonTraps.primaryArtifactRef = null;
+    payload.workspace.artifactInbox.items = [
+      {
+        artifactId: 'artifact-awaiting-verification',
+        artifactKind: 'misconception_card',
+        canonicalHomeTopicId: 'topic-trig-equations',
+        slotKey: 'common_traps',
+        placementStatus: 'inbox',
+        artifactState: 'unverified',
+        capabilities: {
+          shellVisible: true,
+          bodyVisible: false,
+          residentEligible: false,
+          authoritativeAutomationEligible: false,
+        },
+        trustStatus: 'unverified',
+        lifecycleStatus: 'active',
+        updatedAt: '2026-03-22T08:06:00.000Z',
+      },
+    ];
+
+    const html = renderToStaticMarkup(
+      React.createElement(WorkspaceShell, {
+        viewModel: buildWorkspaceViewModel(payload, {
+          now: '2026-03-22T12:00:00.000Z',
+        }),
+        onOpenGlobalQueue: () => {},
+      }),
+    );
+
+    expect(html).toContain('Awaiting verification');
+    expect(html).not.toContain('artifact-primary');
   });
 
   test('applyArtifactLifecycleUpdate moves a pinned slot to the successor and removes the candidate from inbox', () => {

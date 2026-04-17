@@ -6,6 +6,10 @@ function normalizeObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 }
 
+function normalizeObjectOrNull(value) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : null;
+}
+
 async function maybeSingle(promise, message) {
   const { data, error } = await promise;
 
@@ -26,11 +30,22 @@ function buildInsertRow(input = {}) {
     target_family_id: input.target_family_id ?? null,
     target_question_type_id: input.target_question_type_id ?? null,
     slot_key: input.slot_key ?? null,
+    artifact_state: input.artifact_state ?? 'unverified',
     trust_status: input.trust_status ?? 'unverified',
     placement_status: input.placement_status ?? 'inbox',
     lifecycle_status: input.lifecycle_status ?? 'active',
     lineage_parent_artifact_id: input.lineage_parent_artifact_id ?? null,
     superseded_by_artifact_id: input.superseded_by_artifact_id ?? null,
+    verified_by: input.verified_by ?? null,
+    verified_at: input.verified_at ?? null,
+    verification_evidence_ref: normalizeObjectOrNull(input.verification_evidence_ref),
+    released_by: input.released_by ?? null,
+    released_at: input.released_at ?? null,
+    release_evidence_ref: normalizeObjectOrNull(input.release_evidence_ref),
+    contested_by: input.contested_by ?? null,
+    contested_at: input.contested_at ?? null,
+    contested_reason: input.contested_reason ?? null,
+    superseded_at: input.superseded_at ?? null,
     grounding_refs: normalizeArray(input.grounding_refs),
     ...(input.updated_at ? { updated_at: input.updated_at } : {}),
   };
@@ -40,6 +55,10 @@ export function createArtifactRepository(client) {
   return {
     async getArtifactById(artifactId) {
       return getArtifactById(client, artifactId);
+    },
+
+    async listArtifactsByTopic({ topicId }) {
+      return listArtifactsByTopic(client, { topicId });
     },
 
     async insertArtifact(input) {
@@ -86,10 +105,33 @@ export async function insertArtifact(client, input = {}) {
   );
 }
 
+export async function listArtifactsByTopic(client, { topicId } = {}) {
+  const { data, error } = await client
+    .from('learning_artifacts')
+    .select('*')
+    .eq('canonical_home_topic_id', topicId)
+    .order('updated_at', { ascending: false })
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to load learning artifacts for topic: ${error.message}`);
+  }
+
+  return Array.isArray(data) ? data : [];
+}
+
 export async function updateArtifact(client, artifactId, patch = {}) {
   const payload = {
     ...patch,
   };
+
+  if (Object.prototype.hasOwnProperty.call(payload, 'verification_evidence_ref')) {
+    payload.verification_evidence_ref = normalizeObjectOrNull(payload.verification_evidence_ref);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, 'release_evidence_ref')) {
+    payload.release_evidence_ref = normalizeObjectOrNull(payload.release_evidence_ref);
+  }
 
   return maybeSingle(
     client

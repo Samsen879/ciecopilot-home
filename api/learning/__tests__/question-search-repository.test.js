@@ -188,4 +188,28 @@ describe('question-search-repository', () => {
       rows: [importedRow],
     });
   });
+
+  test('searchQuestionProjection can skip the range window when product ranking needs the full candidate set', async () => {
+    const db = createQuestionSearchDb({
+      data: [],
+      count: 3,
+      error: null,
+    });
+
+    await searchQuestionProjection(db, {
+      subject_code: '9709',
+      query: 'identity',
+      unpaged: true,
+      page: 2,
+      page_size: 2,
+    });
+
+    expect(db.state.queries[0]).toEqual(expect.objectContaining({
+      filters: [
+        { type: 'eq', field: 'subject_code', value: '9709' },
+        { type: 'ilike', field: 'search_text', pattern: '%identity%' },
+      ],
+      range: null,
+    }));
+  });
 });

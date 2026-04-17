@@ -110,11 +110,16 @@ function createInMemoryEffectRepository() {
   };
 }
 
-function buildProposalEvent() {
+function buildProposalEvent({
+  eventId = 'learning-update-event-1',
+  truthRevision = 1,
+} = {}) {
+  const proposalRevisionKey = `mark-run:mark-run-1:r${truthRevision}`;
+
   return {
-    event_id: 'learning-update-event-1',
+    event_id: eventId,
     aggregate_id: 'attempt-1',
-    truth_revision: 1,
+    truth_revision: truthRevision,
     payload: {
       attempt_id: 'attempt-1',
       proposal_key: 'mark-run:mark-run-1',
@@ -124,7 +129,8 @@ function buildProposalEvent() {
       },
       proposed_mastery_effects: [
         {
-          effect_key: 'mastery:family:user-1:topic-1:9709.trigonometry_manipulation_equations',
+          effect_key:
+            `mastery:${proposalRevisionKey}:family:user-1:topic-1:9709.trigonometry_manipulation_equations`,
           user_id: 'user-1',
           level: 'family',
           topic_id: 'topic-1',
@@ -141,7 +147,8 @@ function buildProposalEvent() {
       ],
       proposed_review_tasks: [
         {
-          effect_key: 'review:user-1:topic-1:9709.trigonometry.equations:sign_error',
+          effect_key:
+            `review:${proposalRevisionKey}:user-1:topic-1:9709.trigonometry.equations:sign_error`,
           user_id: 'user-1',
           target_kind: 'question_type',
           target_topic_id: 'topic-1',
@@ -163,7 +170,8 @@ function buildProposalEvent() {
       ],
       proposed_artifact_suggestions: [
         {
-          effect_key: 'artifact:user-1:topic-1:misconception_card:sign_error',
+          effect_key:
+            `artifact:${proposalRevisionKey}:user-1:topic-1:misconception_card:sign_error`,
           artifact_kind: 'misconception_card',
           canonical_home_topic_id: 'topic-1',
           canonical_home_topic_path: '9709/trigonometry/equations',
@@ -309,6 +317,86 @@ describe('learning-effect-engine', () => {
     expect(masteryHandler).toHaveBeenCalledTimes(1);
     expect(reviewHandler).toHaveBeenCalledTimes(1);
     expect(artifactHandler).toHaveBeenCalledTimes(1);
+  });
+
+  test('later proposal revisions for the same target execute instead of deduping prior receipts', async () => {
+    const { applyLearningUpdateProposal } = await import('../lib/events/learning-effect-engine.js');
+    const effectRepository = createInMemoryEffectRepository();
+    const masteryHandler = jest.fn(async () => ({
+      status: 'succeeded',
+      result_ref_type: 'family_mastery',
+      result_ref_id: 'family-mastery-1',
+    }));
+    const reviewHandler = jest.fn(async () => ({
+      status: 'succeeded',
+      result_ref_type: 'review_task',
+      result_ref_id: 'review-task-1',
+    }));
+    const artifactHandler = jest.fn(async () => ({
+      status: 'succeeded',
+      result_ref_type: 'artifact',
+      result_ref_id: 'artifact-1',
+    }));
+
+    const first = await applyLearningUpdateProposal(
+      { proposalEvent: buildProposalEvent({ eventId: 'learning-update-event-1', truthRevision: 1 }) },
+      {
+        effectRepository,
+        handlers: {
+          mastery: masteryHandler,
+          review_tasks: reviewHandler,
+          artifact_suggestions: artifactHandler,
+        },
+      },
+    );
+    const second = await applyLearningUpdateProposal(
+      { proposalEvent: buildProposalEvent({ eventId: 'learning-update-event-2', truthRevision: 2 }) },
+      {
+        effectRepository,
+        handlers: {
+          mastery: masteryHandler,
+          review_tasks: reviewHandler,
+          artifact_suggestions: artifactHandler,
+        },
+      },
+    );
+
+    expect(first.status).toBe('applied');
+    expect(second).toMatchObject({
+      ok: true,
+      status: 'applied',
+      proposal_key: 'mark-run:mark-run-1',
+      receipt_summary: {
+        total: 3,
+        persisted: 3,
+        retrying: 0,
+      },
+    });
+    expect(masteryHandler).toHaveBeenCalledTimes(2);
+    expect(reviewHandler).toHaveBeenCalledTimes(2);
+    expect(artifactHandler).toHaveBeenCalledTimes(2);
+    expect(await effectRepository.listEffectReceiptsByEventId('learning-update-event-2')).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          handler_name: 'mastery',
+          truth_revision: 2,
+          effect_key:
+            'mastery:mark-run:mark-run-1:r2:family:user-1:topic-1:9709.trigonometry_manipulation_equations',
+        }),
+        expect.objectContaining({
+          handler_name: 'review_tasks',
+          truth_revision: 2,
+          effect_key:
+            'review:mark-run:mark-run-1:r2:user-1:topic-1:9709.trigonometry.equations:sign_error',
+        }),
+        expect.objectContaining({
+          handler_name: 'artifact_suggestions',
+          truth_revision: 2,
+          effect_key:
+            'artifact:mark-run:mark-run-1:r2:user-1:topic-1:misconception_card:sign_error',
+        }),
+      ]),
+    );
   });
 
   test('partial handler failure keeps successful receipts persisted and records retry debt for the failed handler', async () => {

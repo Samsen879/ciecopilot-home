@@ -58,7 +58,19 @@ function buildProposalKey(input = {}) {
   return `attempt:${renderEffectKeyFragment(input.attempt_id ?? input.attemptId, 'unknown-attempt')}`;
 }
 
-function buildMasteryEffectKey(effect = {}) {
+function buildProposalRevisionKey({
+  proposalKey,
+  truthRevision,
+} = {}) {
+  const normalizedProposalKey = normalizeString(proposalKey) || 'proposal:unknown';
+  const normalizedTruthRevision = Number.isInteger(Number(truthRevision)) && Number(truthRevision) >= 1
+    ? Number(truthRevision)
+    : 1;
+
+  return `${normalizedProposalKey}:r${normalizedTruthRevision}`;
+}
+
+function buildMasteryEffectKey(effect = {}, proposalRevisionKey = 'proposal:unknown:r1') {
   const level = normalizeString(effect.level) || 'family';
   const userId = renderEffectKeyFragment(effect.user_id, 'anonymous');
   const topicId = renderEffectKeyFragment(effect.topic_id, 'unknown-topic');
@@ -66,10 +78,10 @@ function buildMasteryEffectKey(effect = {}) {
     ? renderEffectKeyFragment(effect.question_type_id, 'unknown-type')
     : renderEffectKeyFragment(effect.family_id, 'unknown-family');
 
-  return `mastery:${level}:${userId}:${topicId}:${targetId}`;
+  return `mastery:${proposalRevisionKey}:${level}:${userId}:${topicId}:${targetId}`;
 }
 
-function buildReviewTaskEffectKey(payload = {}) {
+function buildReviewTaskEffectKey(payload = {}, proposalRevisionKey = 'proposal:unknown:r1') {
   const userId = renderEffectKeyFragment(payload.user_id, 'anonymous');
   const topicId = renderEffectKeyFragment(payload.target_topic_id, 'unknown-topic');
   const targetId = renderEffectKeyFragment(
@@ -78,16 +90,20 @@ function buildReviewTaskEffectKey(payload = {}) {
   );
   const tags = renderEffectTagFragment(payload.target_misconception_tags);
 
-  return `review:${userId}:${topicId}:${targetId}:${tags}`;
+  return `review:${proposalRevisionKey}:${userId}:${topicId}:${targetId}:${tags}`;
 }
 
-function buildArtifactSuggestionEffectKey(candidate = {}, userId = null) {
+function buildArtifactSuggestionEffectKey(
+  candidate = {},
+  userId = null,
+  proposalRevisionKey = 'proposal:unknown:r1',
+) {
   const normalizedUserId = renderEffectKeyFragment(userId, 'anonymous');
   const topicId = renderEffectKeyFragment(candidate.canonical_home_topic_id, 'unknown-topic');
   const artifactKind = renderEffectKeyFragment(candidate.artifact_kind, 'artifact');
   const tags = renderEffectTagFragment(candidate.misconception_tags);
 
-  return `artifact:${normalizedUserId}:${topicId}:${artifactKind}:${tags}`;
+  return `artifact:${proposalRevisionKey}:${normalizedUserId}:${topicId}:${artifactKind}:${tags}`;
 }
 
 function buildGuardrailDecisions(releaseScopePosture = {}) {
@@ -179,6 +195,7 @@ function buildNormalizedMasteryEffect({
   releaseScopePosture,
   sourceAttemptRef,
   sourceMarkRunRef,
+  proposalRevisionKey,
 } = {}) {
   const effect = {
     effect_key: null,
@@ -204,12 +221,12 @@ function buildNormalizedMasteryEffect({
 
   return {
     ...effect,
-    effect_key: buildMasteryEffectKey(effect),
+    effect_key: buildMasteryEffectKey(effect, proposalRevisionKey),
   };
 }
 
-function buildNormalizedReviewTaskProposal(payload = {}) {
-  const effectKey = buildReviewTaskEffectKey(payload);
+function buildNormalizedReviewTaskProposal(payload = {}, proposalRevisionKey) {
+  const effectKey = buildReviewTaskEffectKey(payload, proposalRevisionKey);
 
   return {
     effect_key: effectKey,
@@ -217,8 +234,8 @@ function buildNormalizedReviewTaskProposal(payload = {}) {
   };
 }
 
-function buildNormalizedArtifactSuggestion(candidate = {}, userId = null) {
-  const effectKey = buildArtifactSuggestionEffectKey(candidate, userId);
+function buildNormalizedArtifactSuggestion(candidate = {}, userId = null, proposalRevisionKey) {
+  const effectKey = buildArtifactSuggestionEffectKey(candidate, userId, proposalRevisionKey);
 
   return {
     effect_key: effectKey,
@@ -308,9 +325,14 @@ export function buildLearningUpdateProposal(input = {}, { now = new Date() } = {
   )
     ? null
     : buildArtifactCandidate(artifactInput, now.toISOString());
+  const proposalKey = buildProposalKey(input);
+  const proposalRevisionKey = buildProposalRevisionKey({
+    proposalKey,
+    truthRevision: input.truth_revision ?? input.truthRevision ?? null,
+  });
 
   return {
-    proposal_key: buildProposalKey(input),
+    proposal_key: proposalKey,
     guardrail_decisions: buildGuardrailDecisions(releaseScopePosture),
     releaseScopePosture,
     sourceAttemptRef,
@@ -326,12 +348,13 @@ export function buildLearningUpdateProposal(input = {}, { now = new Date() } = {
         releaseScopePosture,
         sourceAttemptRef,
         sourceMarkRunRef,
+        proposalRevisionKey,
       })),
     proposedReviewTasks: reviewTaskPayload
-      ? [buildNormalizedReviewTaskProposal(reviewTaskPayload)]
+      ? [buildNormalizedReviewTaskProposal(reviewTaskPayload, proposalRevisionKey)]
       : [],
     proposedArtifactSuggestions: artifactCandidate?.canonical_home_topic_id
-      ? [buildNormalizedArtifactSuggestion(artifactCandidate, input.user_id)]
+      ? [buildNormalizedArtifactSuggestion(artifactCandidate, input.user_id, proposalRevisionKey)]
       : [],
   };
 }

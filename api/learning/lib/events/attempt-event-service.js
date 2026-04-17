@@ -466,6 +466,7 @@ function buildBridgeEvents(input = {}) {
     source_session_id: sessionId,
     decisions: input.decisions,
     marking_result: input.markingResult,
+    truth_revision: truthRevision,
     uncertainty_validated: input.uncertaintyValidated ?? true,
     release_scope_posture: runtimeAuthorityPosture,
     misconception_tags: input.misconceptionTags ?? input.misconception_tags ?? [],

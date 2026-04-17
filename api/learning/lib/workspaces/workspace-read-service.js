@@ -203,6 +203,14 @@ function isPendingVerificationArtifact(artifact = {}) {
     && artifact.artifact_state === 'unverified';
 }
 
+function shouldResetSlotStateToActive(currentState) {
+  const normalizedState = normalizeString(currentState);
+  return !normalizedState
+    || normalizedState === 'idle'
+    || normalizedState === 'awaiting_verification'
+    || normalizedState === 'active';
+}
+
 function resolveResidentArtifact(slot = null, slotArtifacts = []) {
   const residentArtifacts = (Array.isArray(slotArtifacts) ? slotArtifacts : []).filter(isResidentArtifact);
   const primaryArtifactId = slot?.primary_artifact_ref?.artifact_id ?? null;
@@ -272,7 +280,7 @@ function projectWorkspaceResidency(workspaceProjection, topicArtifacts = []) {
       return;
     }
 
-    if (residentArtifact) {
+    if (residentArtifact && shouldResetSlotStateToActive(projectedSlotState[slotKey])) {
       projectedSlotState[slotKey] = 'active';
     }
   });

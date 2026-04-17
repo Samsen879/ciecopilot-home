@@ -6,6 +6,7 @@
 - Rejected `attach_superseded_by` when the successor is not resident-eligible under `LEARNING_ARTIFACT_LIFECYCLE_ENABLED`, keeping the current resident pointer stable.
 - Added topic-artifact workspace projection reads behind `LEARNING_ARTIFACT_LIFECYCLE_ENABLED` so slot residency resolves from resident-eligible artifacts only and pending unverified artifacts stay in `artifact_inbox`.
 - Derived `slot_state = awaiting_verification` only when a slot has no displayable resident but does have a pending unverified candidate.
+- Preserved precomputed non-residency slot warning states such as `stale` while resolving the resident pointer, instead of rewriting every resident slot to `active`.
 - Updated workspace view-model and shell behavior so unverified candidates cannot be pinned or offered as supersede successors, and the placeholder does not hide a still-valid resident.
 
 ## Residency Matrix
@@ -13,6 +14,7 @@
 | Scenario | Projected primary resident | Slot state | Candidate surface |
 | --- | --- | --- | --- |
 | Verified resident + unverified successor | Existing verified resident stays primary | `active` | Unverified successor stays in `artifact_inbox` |
+| Verified resident + precomputed warning state | Existing verified resident stays primary | Preserve upstream warning state such as `stale` | No placeholder or resident loss |
 | No resident + unverified candidate | No primary resident | `awaiting_verification` | Candidate stays in `artifact_inbox` |
 | Verified inbox candidate pinned into occupied slot | New verified artifact becomes sole resident | `active` | Prior pinned resident is demoted out of primary residency |
 | Pinned resident supersede request with unverified successor | Existing resident stays primary | `active` | Request is rejected with `409 artifact_state_conflict` |
@@ -27,6 +29,9 @@
 
 3. `NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand src/components/learning-runtime/__tests__/view-models.test.js src/components/learning-runtime/__tests__/WorkspaceShell.test.js`
    Outcome: `PASS`, 26 tests passed.
+
+4. `NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand api/learning/__tests__/workspace-read-service.test.js -t "resident projection preserves stale warning state|workspace residency matrix"`
+   Outcome: `PASS`, 3 selected residency-matrix tests passed and 10 were skipped by the test filter.
 
 ## Additional Observation
 

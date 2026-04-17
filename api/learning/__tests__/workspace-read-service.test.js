@@ -969,6 +969,53 @@ describe('workspace read service', () => {
       expectedInboxArtifactId: 'artifact-successor-unverified',
     },
     {
+      label: 'resident projection preserves stale warning state',
+      workspaceProjection: {
+        workspace_id: 'workspace-1',
+        user_id: 'student-1',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+        slot_state: {
+          common_traps: 'stale',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T08:03:00.000Z',
+        slots: [
+          {
+            workspace_slot_id: 'slot-common-traps',
+            slot_key: 'common_traps',
+            primary_artifact_ref: {
+              kind: 'artifact',
+              artifact_id: 'artifact-primary',
+            },
+            linked_reference_refs: [],
+            updated_at: '2026-03-22T08:03:00.000Z',
+          },
+        ],
+      },
+      artifactRows: [
+        {
+          artifact_id: 'artifact-primary',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          verified_by: 'operator-1',
+          verified_at: '2026-03-22T07:40:00.000Z',
+          verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+          updated_at: '2026-03-22T08:03:00.000Z',
+        },
+      ],
+      expectedPrimaryArtifactId: 'artifact-primary',
+      expectedSlotState: 'stale',
+      expectedInboxArtifactId: null,
+    },
+    {
       label: 'awaiting_verification appears only when the slot has no displayable resident',
       workspaceProjection: {
         workspace_id: 'workspace-1',
@@ -1042,15 +1089,19 @@ describe('workspace read service', () => {
         }
         : null,
     );
-    expect(payload.workspace.artifact_inbox.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          artifact_id: expectedInboxArtifactId,
-          slot_key: 'common_traps',
-          placement_status: 'inbox',
-        }),
-      ]),
-    );
+    if (expectedInboxArtifactId) {
+      expect(payload.workspace.artifact_inbox.items).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            artifact_id: expectedInboxArtifactId,
+            slot_key: 'common_traps',
+            placement_status: 'inbox',
+          }),
+        ]),
+      );
+    } else {
+      expect(payload.workspace.artifact_inbox.items).toEqual([]);
+    }
   });
 
   test('workspace revisit payload keeps last-session continuity separate from slot and queue changes', async () => {

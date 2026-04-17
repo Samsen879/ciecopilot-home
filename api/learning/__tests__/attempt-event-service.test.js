@@ -130,6 +130,7 @@ function createMockClient({
   existingStreamHead = null,
   existingDeliveryRow = null,
   existingLearningEvents = [],
+  failLearningEventReads = false,
 } = {}) {
   const records = {
     learningEvents: null,
@@ -161,6 +162,13 @@ function createMockClient({
             maybeSingle: async () => {
               const eventId = filters.find((filter) => filter.field === 'event_id')?.value ?? null;
               if (eventId) {
+                if (failLearningEventReads) {
+                  return {
+                    data: null,
+                    error: null,
+                  };
+                }
+
                 return {
                   data: clone(records.learningEventsById[eventId] ?? null),
                   error: null,
@@ -907,6 +915,43 @@ describe('attempt-event-service', () => {
       result_summary: {
         retrying_receipt_count: 0,
         persisted_receipt_count: 3,
+      },
+    });
+  });
+
+  test('downstream-effect read failures after persisted event writes do not downgrade the delivery row', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client } = createMockClient({
+      failLearningEventReads: true,
+    });
+
+    const result = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput(),
+      {
+        applyDownstreamEffects: true,
+      },
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      deduped: false,
+      delivery: {
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_error: null,
+      },
+      learning_effects: {
+        effect_execution: {
+          ok: false,
+          status: 'failed',
+          debt_pending: true,
+          error: {
+            code: 'effect_execution_failed',
+            message: 'learning_update_proposed_event_not_found',
+          },
+        },
       },
     });
   });

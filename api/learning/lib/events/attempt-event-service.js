@@ -661,6 +661,44 @@ function buildLearningEffectsResponse(proposalEvent = {}, effectExecution = {}) 
   };
 }
 
+function buildFallbackLearningEffectsResponseFromDeliveryRow(deliveryRow = {}, error = null) {
+  const proposalKey = normalizeString(deliveryRow.mark_run_id)
+    ? `mark-run:${normalizeString(deliveryRow.mark_run_id)}`
+    : (normalizeString(deliveryRow.attempt_id) ? `attempt:${normalizeString(deliveryRow.attempt_id)}` : null);
+
+  return {
+    proposal_key: proposalKey,
+    guardrail_decisions: {},
+    authoritative_scoring_allowed: false,
+    release_scope_status: null,
+    learning_signal_posture: null,
+    fallback_mode: null,
+    fallback_reason_code: null,
+    runtime_authority_posture: null,
+    runtime_authority_reason_code: null,
+    question_source_kind: null,
+    proposed_mastery_effects: [],
+    proposed_review_tasks: [],
+    proposed_artifact_suggestions: [],
+    effect_execution: {
+      ok: false,
+      status: 'failed',
+      debt_pending: true,
+      receipt_summary: {
+        total: 0,
+        persisted: 0,
+        retrying: 0,
+        needs_manual_review: 0,
+      },
+      receipts: [],
+      error: {
+        code: 'effect_execution_failed',
+        message: error?.message || String(error),
+      },
+    },
+  };
+}
+
 function buildReconciliationSourceRef(deliveryRow = {}) {
   if (normalizeString(deliveryRow.mark_run_id)) {
     return {
@@ -759,51 +797,45 @@ async function loadPersistedLearningUpdateProposalEvent(client, deliveryRow = {}
   return proposalEvent;
 }
 
-async function executePersistedLearningUpdateEffects(client, {
-  deliveryRow,
-} = {}, dependencies = {}) {
-  const proposalEvent = await loadPersistedLearningUpdateProposalEvent(client, deliveryRow);
-  const effectExecution = await applyLearningUpdateProposal(
-    {
-      proposalEvent,
-    },
-    {
-      supabase: client,
-      ...dependencies,
-    },
-  );
-
-  return {
-    proposalEvent,
-    learningEffects: buildLearningEffectsResponse(proposalEvent, effectExecution),
-  };
-}
-
 async function executePersistedLearningUpdateEffectsSafely(client, {
   deliveryRow,
 } = {}, dependencies = {}) {
+  let proposalEvent = null;
+
   try {
-    return await executePersistedLearningUpdateEffects(client, {
-      deliveryRow,
-    }, dependencies);
+    proposalEvent = await loadPersistedLearningUpdateProposalEvent(client, deliveryRow);
+    const effectExecution = await applyLearningUpdateProposal(
+      {
+        proposalEvent,
+      },
+      {
+        supabase: client,
+        ...dependencies,
+      },
+    );
+
+    return {
+      proposalEvent,
+      learningEffects: buildLearningEffectsResponse(proposalEvent, effectExecution),
+    };
   } catch (error) {
-    const proposalEvent = await loadPersistedLearningUpdateProposalEvent(client, deliveryRow);
-    const learningEffects = buildLearningEffectsResponse(proposalEvent, {
-      ok: false,
-      status: 'failed',
-      receipt_summary: {
-        total: 0,
-        persisted: 0,
-        retrying: 0,
-        needs_manual_review: 0,
-      },
-      receipts: [],
-      error: {
-        code: 'effect_execution_failed',
-        message: error?.message || String(error),
-      },
-    });
-    learningEffects.effect_execution.debt_pending = true;
+    const learningEffects = proposalEvent
+      ? buildLearningEffectsResponse(proposalEvent, {
+        ok: false,
+        status: 'failed',
+        receipt_summary: {
+          total: 0,
+          persisted: 0,
+          retrying: 0,
+          needs_manual_review: 0,
+        },
+        receipts: [],
+        error: {
+          code: 'effect_execution_failed',
+          message: error?.message || String(error),
+        },
+      })
+      : buildFallbackLearningEffectsResponseFromDeliveryRow(deliveryRow, error);
 
     return {
       proposalEvent,

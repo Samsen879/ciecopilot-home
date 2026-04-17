@@ -1166,3 +1166,485 @@ describe('review task service write semantics', () => {
     });
   });
 });
+
+describe('review task service review-action contract', () => {
+  test('review target key includes authority posture so fallback and released scoring stay distinct', async () => {
+    let storedTask = buildStoredReviewTask({
+      review_task_id: 'review-task-fallback',
+      success_criteria: {
+        posture: 'conservative_fallback',
+      },
+      trigger_type: 'immediate_repair',
+      mode: 'trap_fix',
+      priority: 'high',
+      target_misconception_tags: ['domain:interval'],
+    });
+    const reviewTaskRepository = {
+      insertCalls: [],
+      updateCalls: [],
+      async listReviewTaskProjectionsByUser() {
+        return [storedTask];
+      },
+      async insertReviewTask(input) {
+        this.insertCalls.push(input);
+        return {
+          review_task_id: 'review-task-released',
+          ...input,
+        };
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        this.updateCalls.push({ reviewTaskId, patch });
+        storedTask = {
+          ...storedTask,
+          ...patch,
+        };
+        return storedTask;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      reviewActionContractEnabled: true,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const [task] = await service.generateTasksFromOutcome({
+      user_id: 'student-1',
+      question_id: 'question-1',
+      authoritative_scoring_allowed: true,
+      repair_target_topic_id: 'topic-1',
+      repair_target_topic_path: '9709/trigonometry/equations',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+      misconception_tags: ['domain:interval'],
+      question_context: {
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    });
+
+    expect(reviewTaskRepository.updateCalls).toEqual([]);
+    expect(reviewTaskRepository.insertCalls).toHaveLength(1);
+    expect(task).toMatchObject({
+      review_task_id: 'review-task-released',
+      success_criteria: expect.objectContaining({
+        posture: 'released_scoring_repair',
+        review_target_key:
+          'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+      }),
+    });
+    expect(reviewTaskRepository.insertCalls[0].success_criteria.review_target_key)
+      .not.toBe('question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|conservative_fallback');
+  });
+
+  test('partial creates an open successor and expires the current task as merged_into_successor', async () => {
+    let storedTask = buildStoredReviewTask({
+      review_task_id: 'review-task-1',
+      due_at: '2026-03-25T00:00:00.000Z',
+      success_criteria: {
+        posture: 'released_scoring_repair',
+        review_target_key:
+          'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+      },
+    });
+    const reviewTaskRepository = {
+      insertCalls: [],
+      updateCalls: [],
+      async getReviewTaskById() {
+        return storedTask;
+      },
+      async listReviewTaskProjectionsByUser() {
+        return [storedTask];
+      },
+      async insertReviewTask(input) {
+        this.insertCalls.push(input);
+        return {
+          review_task_id: 'review-task-successor',
+          created_at: '2026-03-24T10:00:00.000Z',
+          updated_at: '2026-03-24T10:00:00.000Z',
+          ...input,
+        };
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        this.updateCalls.push({ reviewTaskId, patch });
+        if (reviewTaskId === storedTask.review_task_id) {
+          storedTask = {
+            ...storedTask,
+            ...patch,
+          };
+          return storedTask;
+        }
+
+        return {
+          review_task_id: reviewTaskId,
+          ...patch,
+        };
+      },
+      async getReviewTaskProjectionById(reviewTaskId) {
+        if (reviewTaskId === 'review-task-successor') {
+          return {
+            review_task_id: 'review-task-successor',
+            user_id: 'student-1',
+            status: 'open',
+            due_at: '2026-03-24T10:00:00.000Z',
+            success_criteria: {
+              review_target_key:
+                'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+            },
+          };
+        }
+
+        return storedTask;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      reviewActionContractEnabled: true,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent: 'complete',
+      completionOutcome: 'partial',
+      completionEvidence: {
+        summary: 'Need one more interval check.',
+        attempt_ref: { kind: 'attempt', attempt_id: 'attempt-2' },
+      },
+    });
+
+    expect(reviewTaskRepository.insertCalls).toHaveLength(1);
+    expect(reviewTaskRepository.insertCalls[0]).toMatchObject({
+      status: 'open',
+      due_at: '2026-03-24T10:00:00.000Z',
+      success_criteria: expect.objectContaining({
+        review_target_key:
+          'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+        review_action_contract: expect.objectContaining({
+          last_lineage_action: 'partial',
+        }),
+      }),
+    });
+    expect(reviewTaskRepository.updateCalls[0]).toMatchObject({
+      reviewTaskId: 'review-task-1',
+      patch: {
+        status: 'expired',
+        completion_evidence: expect.objectContaining({
+          outcome: 'partial',
+          backend_disposition: 'merged_into_successor',
+          successor_review_task_ref: {
+            kind: 'review_task',
+            review_task_id: 'review-task-successor',
+          },
+        }),
+      },
+    });
+    expect(result.review_task).toMatchObject({
+      review_task_id: 'review-task-successor',
+      status: 'open',
+    });
+  });
+
+  test('partial merge reopens an existing active successor instead of leaving it partial', async () => {
+    let storedTask = buildStoredReviewTask({
+      review_task_id: 'review-task-1',
+      due_at: '2026-03-25T00:00:00.000Z',
+      success_criteria: {
+        posture: 'released_scoring_repair',
+        review_target_key:
+          'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+      },
+    });
+    let successorTask = buildStoredReviewTask({
+      review_task_id: 'review-task-successor',
+      status: 'partial',
+      due_at: '2026-03-26T00:00:00.000Z',
+      completion_evidence: {
+        summary: 'Old partial state.',
+        outcome: 'partial',
+      },
+      success_criteria: {
+        posture: 'released_scoring_repair',
+        review_target_key:
+          'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+        review_action_contract: {
+          lineage_key:
+            'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair:review-task-successor',
+          last_lineage_action: 'partial',
+        },
+      },
+    });
+    const reviewTaskRepository = {
+      updateCalls: [],
+      async getReviewTaskById() {
+        return storedTask;
+      },
+      async listReviewTaskProjectionsByUser() {
+        return [storedTask, successorTask];
+      },
+      async insertReviewTask(input) {
+        return input;
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        this.updateCalls.push({ reviewTaskId, patch });
+        if (reviewTaskId === storedTask.review_task_id) {
+          storedTask = {
+            ...storedTask,
+            ...patch,
+          };
+          return storedTask;
+        }
+
+        successorTask = {
+          ...successorTask,
+          ...patch,
+        };
+        return successorTask;
+      },
+      async getReviewTaskProjectionById(reviewTaskId) {
+        if (reviewTaskId === successorTask.review_task_id) {
+          return successorTask;
+        }
+
+        return storedTask;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      reviewActionContractEnabled: true,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent: 'complete',
+      completionOutcome: 'partial',
+      completionEvidence: {
+        summary: 'Need one more interval check.',
+        attempt_ref: { kind: 'attempt', attempt_id: 'attempt-2' },
+      },
+    });
+
+    expect(reviewTaskRepository.updateCalls[0]).toMatchObject({
+      reviewTaskId: 'review-task-successor',
+      patch: expect.objectContaining({
+        status: 'open',
+      }),
+    });
+    expect(result.review_task).toMatchObject({
+      review_task_id: 'review-task-successor',
+      status: 'open',
+    });
+  });
+
+  test('reschedule updates due_at while retaining schedule provenance', async () => {
+    let storedTask = buildStoredReviewTask({
+      due_at: '2026-03-25T00:00:00.000Z',
+      success_criteria: {
+        posture: 'released_scoring_repair',
+        review_target_key:
+          'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+      },
+    });
+    const reviewTaskRepository = {
+      async getReviewTaskById() {
+        return storedTask;
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        storedTask = {
+          ...storedTask,
+          review_task_id: reviewTaskId,
+          ...patch,
+        };
+        return storedTask;
+      },
+      async getReviewTaskProjectionById() {
+        return storedTask;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      reviewActionContractEnabled: true,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent: 'reschedule',
+      dueAt: '2026-03-25T12:00:00.000Z',
+    });
+
+    expect(result.review_task).toMatchObject({
+      review_task_id: 'review-task-1',
+      due_at: '2026-03-25T12:00:00.000Z',
+      success_criteria: {
+        review_action_contract: {
+          last_lineage_action: 'reschedule',
+          schedule_provenance: [
+            {
+              intent: 'reschedule',
+              previous_due_at: '2026-03-25T00:00:00.000Z',
+              next_due_at: '2026-03-25T12:00:00.000Z',
+              changed_at: '2026-03-24T10:00:00.000Z',
+            },
+          ],
+        },
+      },
+    });
+  });
+
+  test('skip_once rejects consecutive lineage skips for the current active successor', async () => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask({
+            review_task_id: 'review-task-successor',
+            due_at: '2026-03-24T10:00:00.000Z',
+            success_criteria: {
+              posture: 'released_scoring_repair',
+              review_target_key:
+                'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+              review_action_contract: {
+                lineage_key: 'lineage-1',
+                predecessor_review_task_ref: {
+                  kind: 'review_task',
+                  review_task_id: 'review-task-1',
+                },
+                last_lineage_action: 'skip_once',
+              },
+            },
+          });
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask(),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+      reviewActionContractEnabled: true,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-successor',
+        intent: 'snooze',
+      }),
+    ).rejects.toMatchObject({
+      code: 'review_task_state_conflict',
+      status: 409,
+      details: {
+        lineage_key: 'lineage-1',
+      },
+    });
+  });
+
+  test.each([
+    ['invalidate', 'invalidated'],
+    ['withdraw', 'withdrawn_by_policy'],
+  ])('%s records backend disposition without pretending completion', async (intent, backendDisposition) => {
+    let storedTask = buildStoredReviewTask({
+      success_criteria: {
+        posture: 'released_scoring_repair',
+        review_target_key:
+          'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+      },
+    });
+    const reviewTaskRepository = {
+      async getReviewTaskById() {
+        return storedTask;
+      },
+      async updateReviewTask(reviewTaskId, patch) {
+        storedTask = {
+          ...storedTask,
+          review_task_id: reviewTaskId,
+          ...patch,
+        };
+        return storedTask;
+      },
+      async getReviewTaskProjectionById() {
+        return storedTask;
+      },
+    };
+    const service = createReviewTaskService({
+      reviewTaskRepository,
+      reviewActionContractEnabled: true,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent,
+      completionEvidence: {
+        note: 'Operator reconciliation closed this task.',
+      },
+    });
+
+    expect(result.review_task).toMatchObject({
+      review_task_id: 'review-task-1',
+      status: 'expired',
+      completion_evidence: expect.objectContaining({
+        backend_disposition: backendDisposition,
+        note: 'Operator reconciliation closed this task.',
+      }),
+    });
+    expect(result.review_task.completion_evidence.outcome).toBeUndefined();
+  });
+
+  test.each([
+    ['invalidate', 'completed'],
+    ['withdraw', 'expired'],
+  ])('%s rejects non-active tasks instead of overwriting historical completion data', async (intent, status) => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask({
+            status,
+            completion_evidence: {
+              summary: 'Historical completion evidence.',
+              outcome: 'completed',
+            },
+            success_criteria: {
+              posture: 'released_scoring_repair',
+              review_target_key:
+                'question_type|topic-1|9709.trigonometry_manipulation_equations|9709.trigonometry.equations|released_scoring_repair',
+            },
+          });
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask(),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+      reviewActionContractEnabled: true,
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent,
+        completionEvidence: {
+          note: 'Operator reconciliation closed this task.',
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: 'review_task_state_conflict',
+      status: 409,
+      details: {
+        review_task_id: 'review-task-1',
+        status,
+        intent,
+      },
+    });
+  });
+});

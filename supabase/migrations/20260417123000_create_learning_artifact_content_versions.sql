@@ -113,6 +113,21 @@ BEGIN
 END;
 $fn$;
 
+REVOKE ALL ON FUNCTION public.create_learning_artifact_content_version(
+  UUID,
+  INT,
+  UUID,
+  BOOLEAN,
+  TEXT,
+  TEXT,
+  TEXT,
+  TEXT,
+  JSONB,
+  TEXT,
+  JSONB,
+  TIMESTAMPTZ
+) FROM PUBLIC;
+
 GRANT EXECUTE ON FUNCTION public.create_learning_artifact_content_version(
   UUID,
   INT,

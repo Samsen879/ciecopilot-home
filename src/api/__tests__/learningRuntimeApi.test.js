@@ -166,7 +166,7 @@ function createSessionEnvelope() {
     },
     feature_flags: {
       learning_runtime_enabled: true,
-      session_create_read_enabled: true,
+      learning_runtime_9709_enabled: true,
     },
     request_id: 'req-session-1',
   };
@@ -366,6 +366,10 @@ describe('learning runtime api', () => {
       parentSessionId: 'sess-parent-1',
       handoffKind: 'explicit_new_session',
     }));
+    expect(payload.featureFlags).toEqual({
+      learningRuntimeEnabled: true,
+      learningRuntime9709Enabled: true,
+    });
     expect(payload.session.summaryState.postMortemReview).toEqual({
       scoringPosture: {
         releaseScopeStatus: 'non_released_fallback',

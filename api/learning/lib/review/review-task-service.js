@@ -429,6 +429,47 @@ export function createReviewTaskService({
   reviewTaskRepository = null,
   now = () => new Date(),
 } = {}) {
+  async function materializeReviewTaskPayload(payload = {}) {
+    if (!payload || typeof payload !== 'object') {
+      return [];
+    }
+
+    if (!reviewTaskRepository) {
+      return [normalizeSchedulerProjectionItem(payload)];
+    }
+
+    const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(payload.user_id)
+      ?? [];
+    const mergeCandidate = pickReviewTaskMergeCandidate(activeTasks, payload);
+    if (mergeCandidate?.review_task_id) {
+      const mergedPatch = mergeReviewTaskPayload(
+        mergeCandidate,
+        payload,
+        now().toISOString(),
+      );
+      const merged = await reviewTaskRepository.updateReviewTask(
+        mergeCandidate.review_task_id,
+        mergedPatch,
+      );
+      return [
+        normalizeSchedulerProjectionItem({
+          ...mergeCandidate,
+          ...merged,
+          target_topic_path:
+            payload.target_topic_path ?? mergeCandidate.target_topic_path ?? null,
+        }),
+      ];
+    }
+
+    const stored = await reviewTaskRepository.insertReviewTask(payload);
+    return [
+      normalizeSchedulerProjectionItem({
+        ...stored,
+        target_topic_path: payload.target_topic_path,
+      }),
+    ];
+  }
+
   return {
     async generateTasksFromOutcome(input = {}) {
       const payload = buildReviewTaskPayload(input, now());
@@ -436,40 +477,11 @@ export function createReviewTaskService({
         return [];
       }
 
-      if (!reviewTaskRepository) {
-        return [normalizeSchedulerProjectionItem(payload)];
-      }
+      return materializeReviewTaskPayload(payload);
+    },
 
-      const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(payload.user_id)
-        ?? [];
-      const mergeCandidate = pickReviewTaskMergeCandidate(activeTasks, payload);
-      if (mergeCandidate?.review_task_id) {
-        const mergedPatch = mergeReviewTaskPayload(
-          mergeCandidate,
-          payload,
-          now().toISOString(),
-        );
-        const merged = await reviewTaskRepository.updateReviewTask(
-          mergeCandidate.review_task_id,
-          mergedPatch,
-        );
-        return [
-          normalizeSchedulerProjectionItem({
-            ...mergeCandidate,
-            ...merged,
-            target_topic_path:
-              payload.target_topic_path ?? mergeCandidate.target_topic_path ?? null,
-          }),
-        ];
-      }
-
-      const stored = await reviewTaskRepository.insertReviewTask(payload);
-      return [
-        normalizeSchedulerProjectionItem({
-          ...stored,
-          target_topic_path: payload.target_topic_path,
-        }),
-      ];
+    async materializeProposedTask(effect = {}) {
+      return materializeReviewTaskPayload(effect);
     },
 
     async patchReviewTask({

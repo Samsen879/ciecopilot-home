@@ -534,7 +534,10 @@ describe('learning session api', () => {
         topic_path: '9709.trigonometry.equations',
       },
     });
-    expect(res.body.feature_flags.learning_runtime_enabled).toBe(true);
+    expect(res.body.feature_flags).toEqual({
+      learning_runtime_enabled: true,
+      learning_runtime_9709_enabled: true,
+    });
     expect(res.body.session.handoff).toMatchObject({
       supported: true,
       session_id: res.body.session.session_id,

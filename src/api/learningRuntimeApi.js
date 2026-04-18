@@ -8,7 +8,7 @@ function isPlainObject(value) {
 }
 
 function camelizeKey(key) {
-  return String(key).replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+  return String(key).replace(/_([a-z0-9])/gi, (_, letter) => letter.toUpperCase());
 }
 
 function camelizeKeys(value) {

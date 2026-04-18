@@ -1,3 +1,8 @@
+import {
+  deriveConfidenceBand,
+  normalizeConfidenceBand,
+} from '../question-analysis/low-confidence-posture.js';
+
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
 const HIGH_PRIORITY_VALUES = new Set(['high', 'urgent']);
 const VALID_TRIGGER_TYPES = new Set([
@@ -23,21 +28,26 @@ const ROUTE_WEIGHT = Object.freeze({
   regression_recovery: 5,
 });
 
-const STUDENT_EXPLANATION_LABEL_BY_FACTOR = Object.freeze({
-  recent_error: '最近出错',
-  interval_due: '间隔已到',
-  exam_near: '临近考试',
-  same_question_type_repair: '同题型回补',
-  regression_risk: '回归风险',
+const FRESHNESS_FACTOR_SCORE = Object.freeze({
+  fresh: 2,
+  cooling: 1,
+  current: 0,
+  stale: 1,
 });
 
-const STUDENT_EXPLANATION_LABEL_ORDER = Object.freeze([
-  'recent_error',
-  'interval_due',
-  'exam_near',
-  'same_question_type_repair',
-  'regression_risk',
-]);
+const TRIGGER_URGENCY_FACTOR_SCORE = Object.freeze({
+  spaced_review: 0,
+  short_delay: 1,
+  exam_polish: 1,
+  immediate_repair: 2,
+  regression_recovery: 3,
+});
+
+const BAND_VULNERABILITY_FACTOR_SCORE = Object.freeze({
+  high: 0,
+  medium: 1,
+  low: 2,
+});
 
 export const REVIEW_SCHEDULER_POLICY = Object.freeze({
   DAILY_RECOMMENDATION_CAP: 3,
@@ -83,12 +93,164 @@ function addHours(date, hours) {
   return new Date(date.getTime() + (hours * 60 * 60 * 1000));
 }
 
+function normalizeNumber(value, fallback = null) {
+  if (value === null || value === undefined || value === '') {
+    return fallback;
+  }
+  const parsed = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
 function priorityWeight(priority) {
   return PRIORITY_WEIGHT[normalizeString(priority, 'normal')] ?? PRIORITY_WEIGHT.normal;
 }
 
 function routeWeight(route) {
   return ROUTE_WEIGHT[normalizeString(route, 'short_delay')] ?? ROUTE_WEIGHT.short_delay;
+}
+
+function factorProfileFromTask(task = {}) {
+  const successCriteria = normalizeObject(task?.success_criteria);
+  const taskPolicy = normalizeObject(task?.scheduler_policy);
+  const storedPolicy = normalizeObject(successCriteria.scheduler_policy);
+  return normalizeObject(taskPolicy.factor_profile ?? storedPolicy.factor_profile);
+}
+
+function factorTotalScore(task = {}) {
+  const factorProfile = factorProfileFromTask(task);
+  const totalScore = factorProfile.total_score;
+  return Number.isFinite(totalScore) ? totalScore : null;
+}
+
+function factorProfileTotal(profile = {}) {
+  const totalScore = normalizeObject(profile).total_score;
+  return Number.isFinite(totalScore) ? totalScore : null;
+}
+
+function pickStrongerFactorProfile(existingPolicy = {}, candidatePolicy = {}) {
+  const existingFactorProfile = clone(normalizeObject(existingPolicy.factor_profile));
+  const candidateFactorProfile = clone(normalizeObject(candidatePolicy.factor_profile));
+  const existingTotal = factorProfileTotal(existingFactorProfile);
+  const candidateTotal = factorProfileTotal(candidateFactorProfile);
+
+  if (existingTotal === null) {
+    return candidateFactorProfile;
+  }
+
+  if (candidateTotal === null) {
+    return existingFactorProfile;
+  }
+
+  return existingTotal >= candidateTotal ? existingFactorProfile : candidateFactorProfile;
+}
+
+function freshnessFactor(freshnessBucket = null) {
+  const bucket = normalizeString(freshnessBucket);
+  return {
+    bucket,
+    score: FRESHNESS_FACTOR_SCORE[bucket] ?? 0,
+  };
+}
+
+function overduePressureFactor({ dueAt = null, now = new Date() } = {}) {
+  const dueAtDate = parseTimestamp(dueAt);
+  const nowDate = now instanceof Date ? now : parseTimestamp(now) ?? new Date();
+  if (!dueAtDate || dueAtDate.getTime() >= nowDate.getTime()) {
+    return {
+      score: 0,
+    };
+  }
+
+  const overdueHours = (nowDate.getTime() - dueAtDate.getTime()) / (60 * 60 * 1000);
+  return {
+    score: overdueHours >= 24 ? 2 : 1,
+  };
+}
+
+function bandVulnerabilityFactor({
+  confidenceBand = null,
+  classificationConfidence = null,
+} = {}) {
+  const band = normalizeConfidenceBand(confidenceBand)
+    || deriveConfidenceBand(normalizeNumber(classificationConfidence));
+  return {
+    band,
+    score: BAND_VULNERABILITY_FACTOR_SCORE[band] ?? 0,
+  };
+}
+
+function triggerUrgencyFactor(route = null) {
+  const normalizedRoute = normalizeString(route, 'short_delay');
+  return {
+    route: normalizedRoute,
+    score: TRIGGER_URGENCY_FACTOR_SCORE[normalizedRoute] ?? 0,
+  };
+}
+
+function examProximityFactor({
+  learnerGoal = null,
+  route = null,
+} = {}) {
+  const normalizedGoal = normalizeString(learnerGoal);
+  const normalizedRoute = normalizeString(route);
+  return {
+    score: normalizedGoal === 'exam_polish' || normalizedRoute === 'exam_polish' ? 1 : 0,
+  };
+}
+
+function regressionSeverityFactor({
+  regressionRecovery = false,
+  route = null,
+} = {}) {
+  return {
+    score: regressionRecovery === true || normalizeString(route) === 'regression_recovery' ? 2 : 0,
+  };
+}
+
+function buildBoundedFactorProfile({
+  route = 'short_delay',
+  freshnessBucket = null,
+  dueAt = null,
+  now = new Date(),
+  confidenceBand = null,
+  classificationConfidence = null,
+  learnerGoal = null,
+  regressionRecovery = false,
+} = {}) {
+  const freshness = freshnessFactor(freshnessBucket);
+  const overduePressure = overduePressureFactor({
+    dueAt,
+    now,
+  });
+  const bandVulnerability = bandVulnerabilityFactor({
+    confidenceBand,
+    classificationConfidence,
+  });
+  const triggerUrgency = triggerUrgencyFactor(route);
+  const examProximity = examProximityFactor({
+    learnerGoal,
+    route,
+  });
+  const regressionSeverity = regressionSeverityFactor({
+    regressionRecovery,
+    route,
+  });
+
+  return {
+    total_score:
+      freshness.score
+      + overduePressure.score
+      + bandVulnerability.score
+      + triggerUrgency.score
+      + examProximity.score
+      + regressionSeverity.score,
+    freshness,
+    overdue_pressure: overduePressure,
+    band_vulnerability: bandVulnerability,
+    trigger_urgency: triggerUrgency,
+    exam_proximity: examProximity,
+    regression_severity: regressionSeverity,
+  };
 }
 
 function normalizeRoute(task = {}) {
@@ -110,15 +272,6 @@ function buildReason(code, summary) {
   return { code, summary };
 }
 
-function buildExplanationFactor(code, summary, value = null) {
-  return {
-    code,
-    status: 'grounded',
-    summary,
-    value,
-  };
-}
-
 function typeGroupingKey(task = {}) {
   return normalizeString(task?.target_question_type_id)
     || normalizeString(task?.target_family_id)
@@ -128,6 +281,16 @@ function typeGroupingKey(task = {}) {
 }
 
 function compareTaskRank(left, right) {
+  const leftFactorTotal = factorTotalScore(left);
+  const rightFactorTotal = factorTotalScore(right);
+  if (leftFactorTotal !== null || rightFactorTotal !== null) {
+    const normalizedLeft = leftFactorTotal ?? Number.NEGATIVE_INFINITY;
+    const normalizedRight = rightFactorTotal ?? Number.NEGATIVE_INFINITY;
+    if (normalizedLeft !== normalizedRight) {
+      return normalizedRight - normalizedLeft;
+    }
+  }
+
   const leftRoute = routeWeight(normalizeRoute(left));
   const rightRoute = routeWeight(normalizeRoute(right));
   if (leftRoute !== rightRoute) {
@@ -223,25 +386,6 @@ function uniqueTypedRefs(refs = []) {
   });
 }
 
-function uniqueExplanationFactors(factors = []) {
-  const seen = new Set();
-  return normalizeArray(factors).flatMap((factor) => {
-    const normalized = normalizeObject(factor);
-    const code = normalizeString(normalized.code);
-    if (!code || seen.has(code)) {
-      return [];
-    }
-
-    seen.add(code);
-    return [{
-      code,
-      status: normalizeString(normalized.status, 'grounded'),
-      summary: normalizeString(normalized.summary),
-      value: normalized.value ?? null,
-    }];
-  });
-}
-
 function labelFromMisconceptionTag(tag) {
   const normalized = normalizeString(tag);
   if (!normalized) {
@@ -268,148 +412,6 @@ function summarizeExplainability(task = {}, explainability = {}) {
   }
 
   return `Queued from ${evidenceLabel} evidence while authoritative mastery stays conservative.`;
-}
-
-function buildStructuredExplainabilityFactors(task = {}, explainability = {}, storedFactors = []) {
-  const attemptHistory = normalizeObject(explainability.attempt_history);
-  const evidence = normalizeObject(explainability.evidence);
-  const freshness = normalizeObject(explainability.freshness);
-  const schedulerState = normalizeObject(task?.scheduler_state);
-  const factors = [];
-
-  const hasRecentError = Boolean(
-    evidence.source_attempt_ref
-    || normalizeString(evidence.source_question_id)
-    || normalizeArray(evidence.misconception_tags).length > 0
-    || Number(attemptHistory.attempt_count ?? 0) > 0,
-  );
-  if (hasRecentError) {
-    factors.push(buildExplanationFactor(
-      'recent_error',
-      'Recent repair evidence exists for this task.',
-      {
-        attempt_count: Number(attemptHistory.attempt_count ?? 0),
-        misconception_tag_count: normalizeArray(evidence.misconception_tags).length,
-      },
-    ));
-  }
-
-  const sameQuestionTypeRepair = Boolean(
-    normalizeString(task?.target_question_type_id)
-    && (
-      evidence.source_attempt_ref
-      || normalizeString(evidence.source_question_id)
-    ),
-  );
-  if (sameQuestionTypeRepair) {
-    factors.push(buildExplanationFactor(
-      'same_question_type_repair',
-      'Repair stays on the same grounded question type.',
-      normalizeString(task?.target_question_type_id),
-    ));
-  }
-
-  const intervalDue = schedulerState?.reason_code === 'due_window_open'
-    || schedulerState?.value === 'due';
-  if (intervalDue) {
-    factors.push(buildExplanationFactor(
-      'interval_due',
-      'The scheduled review interval has opened.',
-      normalizeString(task?.due_at),
-    ));
-  }
-
-  if (freshness.route === 'exam_polish') {
-    factors.push(buildExplanationFactor(
-      'exam_near',
-      'This review was scheduled for exam-near preparation.',
-      normalizeString(task?.due_at),
-    ));
-  }
-
-  if (
-    freshness.route === 'regression_recovery'
-    || schedulerState?.reason_code === 'regression_recovery_due'
-  ) {
-    factors.push(buildExplanationFactor(
-      'regression_risk',
-      'Regression recovery evidence is active for this task.',
-      normalizeString(task?.due_at),
-    ));
-  }
-
-  return uniqueExplanationFactors([
-    ...normalizeArray(storedFactors),
-    ...factors,
-  ]);
-}
-
-function buildStudentExplanationSummary(factorCodes = []) {
-  const factorSet = new Set(normalizeArray(factorCodes));
-
-  if (
-    factorSet.has('regression_risk')
-    && factorSet.has('recent_error')
-    && factorSet.has('same_question_type_repair')
-  ) {
-    return {
-      summary: '这类内容有回归风险，而且你最近在这个题型上出错过，所以安排一次同题型回补。',
-      factor_codes: ['regression_risk', 'recent_error', 'same_question_type_repair'],
-    };
-  }
-
-  if (factorSet.has('exam_near') && factorSet.has('interval_due')) {
-    return {
-      summary: '临近考试，而且现在到了这类内容的复习时间，所以安排一次回顾。',
-      factor_codes: ['exam_near', 'interval_due'],
-    };
-  }
-
-  if (factorSet.has('recent_error') && factorSet.has('same_question_type_repair')) {
-    return {
-      summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
-      factor_codes: ['recent_error', 'same_question_type_repair'],
-    };
-  }
-
-  if (factorSet.has('interval_due') && factorSet.has('same_question_type_repair')) {
-    return {
-      summary: '现在到了这类内容的复习时间，所以安排一次回顾。',
-      factor_codes: ['interval_due', 'same_question_type_repair'],
-    };
-  }
-
-  return {
-    summary: null,
-    factor_codes: [],
-  };
-}
-
-function buildStudentExplanation(task = {}, explanation = {}) {
-  const factors = uniqueExplanationFactors(explanation?.factors);
-  const factorCodes = new Set(factors.map((factor) => factor.code));
-  const labelMappings = STUDENT_EXPLANATION_LABEL_ORDER
-    .filter((code) => factorCodes.has(code))
-    .map((code) => ({
-      label: STUDENT_EXPLANATION_LABEL_BY_FACTOR[code],
-      factor_code: code,
-    }))
-    .slice(0, 4);
-  const labels = labelMappings.map((mapping) => mapping.label);
-  const summaryShape = buildStudentExplanationSummary(labelMappings.map((mapping) => mapping.factor_code));
-
-  if (labels.length < 2 || !summaryShape.summary) {
-    return null;
-  }
-
-  return {
-    summary: summaryShape.summary,
-    labels,
-    provenance: {
-      summary_factor_codes: summaryShape.factor_codes,
-      label_mappings: labelMappings,
-    },
-  };
 }
 
 export function buildReviewTaskExplainabilitySeed({
@@ -551,7 +553,6 @@ function mergeReviewTaskExplainability(existingTask = {}, candidateTask = {}) {
 export function buildReviewTaskExplainability(task = {}) {
   const successCriteria = normalizeObject(task?.success_criteria);
   const storedExplainability = normalizeObject(successCriteria.explainability);
-  const storedFactors = uniqueExplanationFactors(storedExplainability.factors);
   const attemptHistory = normalizeObject(storedExplainability.attempt_history);
   const evidence = normalizeObject(storedExplainability.evidence);
   const freshness = normalizeObject(storedExplainability.freshness);
@@ -636,10 +637,7 @@ export function buildReviewTaskExplainability(task = {}) {
       ),
     },
     summary: normalizeString(storedExplainability.summary),
-    factors: storedFactors,
   };
-
-  explanation.factors = buildStructuredExplainabilityFactors(task, explanation, storedFactors);
 
   if (!explanation.summary) {
     explanation.summary = summarizeExplainability(task, explanation);
@@ -656,6 +654,8 @@ export function buildReviewTaskSchedulerSeed({
   learnerGoal = null,
   fallbackReasonCode = null,
   freshnessBucket = null,
+  confidenceBand = null,
+  classificationConfidence = null,
 } = {}) {
   const nowDate = now instanceof Date ? now : new Date(now);
   const normalizedTriggerType = normalizeString(triggerType);
@@ -699,6 +699,16 @@ export function buildReviewTaskSchedulerSeed({
         : route === 'spaced_review'
           ? 'current'
           : 'cooling');
+  const factorProfile = buildBoundedFactorProfile({
+    route,
+    freshnessBucket: resolvedFreshnessBucket,
+    dueAt: dueDate.toISOString(),
+    now: nowDate,
+    confidenceBand,
+    classificationConfidence,
+    learnerGoal,
+    regressionRecovery,
+  });
 
   return {
     triggerType: route,
@@ -708,6 +718,7 @@ export function buildReviewTaskSchedulerSeed({
     policy: buildStoredPolicy({
       route,
       freshness_bucket: resolvedFreshnessBucket,
+      factor_profile: factorProfile,
       immediate_repair_max_deferral_at:
         route === 'immediate_repair'
           ? addHours(
@@ -817,7 +828,6 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
       scheduler_state: buildSchedulerStateFromTask(task, { now: nowDate.toISOString() }),
       scheduler_reasons: [],
       explanation: null,
-      student_explanation: null,
     };
   });
 
@@ -904,15 +914,11 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
       : null;
     task.scheduler_reasons = reason ? [reason] : [];
     task.explanation = buildReviewTaskExplainability(task);
-    task.student_explanation = buildStudentExplanation(task, task.explanation);
   }
 
   for (const task of items) {
     if (!task.explanation) {
       task.explanation = buildReviewTaskExplainability(task);
-    }
-    if (typeof task.student_explanation === 'undefined' || task.student_explanation === null) {
-      task.student_explanation = buildStudentExplanation(task, task.explanation);
     }
   }
 
@@ -949,6 +955,7 @@ export function buildMergedSchedulerPolicy(existingTask = {}, candidateTask = {}
     freshness_bucket: routeWeight(existingPolicy.route) >= routeWeight(candidatePolicy.route)
       ? existingPolicy.freshness_bucket ?? candidatePolicy.freshness_bucket ?? null
       : candidatePolicy.freshness_bucket ?? existingPolicy.freshness_bucket ?? null,
+    factor_profile: pickStrongerFactorProfile(existingPolicy, candidatePolicy),
     immediate_repair_max_deferral_at:
       candidatePolicy.immediate_repair_max_deferral_at
       ?? existingPolicy.immediate_repair_max_deferral_at
@@ -1025,19 +1032,17 @@ export function normalizeSchedulerProjectionItem(item = {}) {
   const schedulerPolicy = normalizeObject(item?.scheduler_policy);
   const schedulerState = normalizeObject(item?.scheduler_state);
   const schedulerReasons = normalizeArray(item?.scheduler_reasons);
-  const explanation = buildReviewTaskExplainability({
-    ...item,
-    scheduler_policy: schedulerPolicy,
-    scheduler_state: schedulerState,
-    scheduler_reasons: schedulerReasons,
-  });
 
   return {
     ...item,
     scheduler_policy: schedulerPolicy,
     scheduler_state: schedulerState,
     scheduler_reasons: schedulerReasons,
-    explanation,
-    student_explanation: buildStudentExplanation(item, explanation),
+    explanation: buildReviewTaskExplainability({
+      ...item,
+      scheduler_policy: schedulerPolicy,
+      scheduler_state: schedulerState,
+      scheduler_reasons: schedulerReasons,
+    }),
   };
 }

@@ -4,14 +4,6 @@ import {
   REVIEW_SCHEDULER_POLICY,
 } from '../lib/review/review-scheduler-policy.js';
 
-const FROZEN_STUDENT_LABELS = new Set([
-  '最近出错',
-  '间隔已到',
-  '临近考试',
-  '同题型回补',
-  '回归风险',
-]);
-
 function buildTask(overrides = {}) {
   return {
     review_task_id: 'review-task-1',
@@ -64,6 +56,151 @@ describe('review scheduler policy', () => {
         fallback_reason_code: 'non_released_fallback',
       }),
     }));
+  });
+
+  test('buildReviewTaskSchedulerSeed includes a bounded factor profile for the real scheduler path', () => {
+    const scheduler = buildReviewTaskSchedulerSeed({
+      regressionRecovery: true,
+      learnerGoal: 'exam_polish',
+      classificationConfidence: 0.79,
+      now: new Date('2026-03-25T10:00:00.000Z'),
+    });
+
+    expect(scheduler.policy).toEqual(expect.objectContaining({
+      factor_profile: {
+        total_score: 9,
+        freshness: {
+          bucket: 'stale',
+          score: 1,
+        },
+        overdue_pressure: {
+          score: 0,
+        },
+        band_vulnerability: {
+          band: 'low',
+          score: 2,
+        },
+        trigger_urgency: {
+          route: 'regression_recovery',
+          score: 3,
+        },
+        exam_proximity: {
+          score: 1,
+        },
+        regression_severity: {
+          score: 2,
+        },
+      },
+    }));
+  });
+
+  test('deriveReviewQueueProjection prefers higher bounded factor totals over stronger compatibility routes', () => {
+    const projection = deriveReviewQueueProjection([
+      buildTask({
+        review_task_id: 'review-task-regression-route',
+        target_question_type_id: '9709.trigonometry.identities',
+        trigger_type: 'regression_recovery',
+        priority: 'urgent',
+        due_at: '2026-03-26T08:00:00.000Z',
+        success_criteria: {
+          scheduler_policy: {
+            route: 'regression_recovery',
+            freshness_bucket: 'stale',
+            factor_profile: {
+              total_score: 6,
+              freshness: { score: 0 },
+              overdue_pressure: { score: 0 },
+              band_vulnerability: { score: 1 },
+              trigger_urgency: { score: 2 },
+              exam_proximity: { score: 0 },
+              regression_severity: { score: 3 },
+            },
+          },
+        },
+      }),
+      buildTask({
+        review_task_id: 'review-task-immediate-route',
+        target_question_type_id: '9709.trigonometry.functions',
+        trigger_type: 'immediate_repair',
+        priority: 'high',
+        due_at: '2026-03-25T10:00:00.000Z',
+        success_criteria: {
+          scheduler_policy: {
+            route: 'immediate_repair',
+            freshness_bucket: 'fresh',
+            factor_profile: {
+              total_score: 7,
+              freshness: { score: 2 },
+              overdue_pressure: { score: 1 },
+              band_vulnerability: { score: 1 },
+              trigger_urgency: { score: 3 },
+              exam_proximity: { score: 0 },
+              regression_severity: { score: 0 },
+            },
+          },
+        },
+      }),
+      buildTask({
+        review_task_id: 'review-task-factor-winner',
+        target_question_type_id: '9709.trigonometry.series',
+        trigger_type: 'short_delay',
+        priority: 'normal',
+        due_at: '2026-03-25T09:00:00.000Z',
+        success_criteria: {
+          scheduler_policy: {
+            route: 'short_delay',
+            freshness_bucket: 'cooling',
+            factor_profile: {
+              total_score: 11,
+              freshness: { score: 1 },
+              overdue_pressure: { score: 3 },
+              band_vulnerability: { score: 3 },
+              trigger_urgency: { score: 1 },
+              exam_proximity: { score: 1 },
+              regression_severity: { score: 2 },
+            },
+          },
+        },
+      }),
+      buildTask({
+        review_task_id: 'review-task-route-only-loser',
+        target_question_type_id: '9709.trigonometry.revision',
+        trigger_type: 'exam_polish',
+        priority: 'high',
+        due_at: '2026-03-26T07:00:00.000Z',
+        success_criteria: {
+          scheduler_policy: {
+            route: 'exam_polish',
+            freshness_bucket: 'cooling',
+            factor_profile: {
+              total_score: 5,
+              freshness: { score: 1 },
+              overdue_pressure: { score: 0 },
+              band_vulnerability: { score: 1 },
+              trigger_urgency: { score: 1 },
+              exam_proximity: { score: 2 },
+              regression_severity: { score: 0 },
+            },
+          },
+        },
+      }),
+    ], {
+      now: '2026-03-25T10:00:00.000Z',
+    });
+
+    expect(projection.items.find((item) => item.review_task_id === 'review-task-factor-winner'))
+      .toEqual(expect.objectContaining({
+        scheduler_state: expect.objectContaining({
+          value: 'due',
+        }),
+      }));
+    expect(projection.items.find((item) => item.review_task_id === 'review-task-route-only-loser'))
+      .toEqual(expect.objectContaining({
+        scheduler_state: expect.objectContaining({
+          value: 'blocked',
+          reason_code: 'daily_recommendation_cap',
+        }),
+      }));
   });
 
   test('deriveReviewQueueProjection blocks overflowed tasks after the daily recommendation cap', () => {
@@ -183,158 +320,5 @@ describe('review scheduler policy', () => {
           value: 'escalated',
         }),
       }));
-  });
-
-  test('deriveReviewQueueProjection shapes compact student explanations from structured factors only', () => {
-    const fixtures = [
-      {
-        name: 'recent error repair',
-        now: '2026-03-25T10:00:00.000Z',
-        task: buildTask({
-          review_task_id: 'review-task-repair',
-          trigger_type: 'immediate_repair',
-          due_at: '2026-03-25T09:00:00.000Z',
-          source_question_id: 'question-1',
-          source_attempt_ref: {
-            kind: 'attempt',
-            attempt_id: 'attempt-1',
-          },
-          target_misconception_tags: ['domain:interval'],
-          success_criteria: {
-            scheduler_policy: {
-              route: 'immediate_repair',
-              freshness_bucket: 'fresh',
-            },
-          },
-        }),
-        expected: {
-          summary: '你最近在这个题型上出错过，所以先安排一次同题型回补。',
-          labels: ['最近出错', '同题型回补'],
-          summaryFactorCodes: ['recent_error', 'same_question_type_repair'],
-        },
-      },
-      {
-        name: 'due exam polish',
-        now: '2026-03-25T10:00:00.000Z',
-        task: buildTask({
-          review_task_id: 'review-task-exam',
-          trigger_type: 'exam_polish',
-          mode: 'timed_check',
-          priority: 'high',
-          due_at: '2026-03-25T09:30:00.000Z',
-          success_criteria: {
-            scheduler_policy: {
-              route: 'exam_polish',
-              freshness_bucket: 'cooling',
-            },
-          },
-        }),
-        expected: {
-          summary: '临近考试，而且现在到了这类内容的复习时间，所以安排一次回顾。',
-          labels: ['间隔已到', '临近考试'],
-          summaryFactorCodes: ['exam_near', 'interval_due'],
-        },
-      },
-      {
-        name: 'regression recovery',
-        now: '2026-03-25T10:00:00.000Z',
-        task: buildTask({
-          review_task_id: 'review-task-regression',
-          trigger_type: 'regression_recovery',
-          priority: 'urgent',
-          due_at: '2026-03-25T09:45:00.000Z',
-          source_question_id: 'question-2',
-          source_attempt_ref: {
-            kind: 'attempt',
-            attempt_id: 'attempt-2',
-          },
-          success_criteria: {
-            scheduler_policy: {
-              route: 'regression_recovery',
-              freshness_bucket: 'stale',
-            },
-          },
-        }),
-        expected: {
-          summary: '这类内容有回归风险，而且你最近在这个题型上出错过，所以安排一次同题型回补。',
-          labels: ['最近出错', '同题型回补', '回归风险'],
-          summaryFactorCodes: [
-            'regression_risk',
-            'recent_error',
-            'same_question_type_repair',
-          ],
-        },
-      },
-    ];
-
-    fixtures.forEach(({ name, now, task, expected }) => {
-      const item = deriveReviewQueueProjection([task], { now }).items[0];
-
-      expect(item.student_explanation).toEqual(expect.objectContaining({
-        summary: expected.summary,
-        labels: expected.labels,
-        provenance: expect.objectContaining({
-          summary_factor_codes: expected.summaryFactorCodes,
-          label_mappings: expected.labels.map((label) => expect.objectContaining({
-            label,
-          })),
-        }),
-      }));
-
-      expect(item.student_explanation.labels).toHaveLength(expected.labels.length);
-      expect(item.student_explanation.labels.every((label) => FROZEN_STUDENT_LABELS.has(label)))
-        .toBe(true);
-
-      const studentCopy = `${item.student_explanation.summary} ${item.student_explanation.labels.join(' ')}`;
-      ['immediate_repair', 'spaced_review', 'regression_recovery', 'exam_polish', 'band']
-        .forEach((token) => {
-          expect(studentCopy).not.toContain(token);
-        });
-
-      expect(item.explanation?.factors?.length).toBeGreaterThanOrEqual(2);
-      expect(item.student_explanation.provenance.label_mappings).toHaveLength(expected.labels.length);
-      expect(item.student_explanation.provenance.summary_factor_codes.length).toBeGreaterThanOrEqual(2);
-      expect(item.student_explanation.provenance.summary_factor_codes.length).toBeLessThanOrEqual(4);
-      expect(name).toBeTruthy();
-    });
-  });
-
-  test('deriveReviewQueueProjection omits compact student explanations when structured grounding is missing', () => {
-    const item = deriveReviewQueueProjection([
-      buildTask({
-        review_task_id: 'review-task-ungrounded',
-        target_question_type_id: null,
-        due_at: '2026-03-26T08:00:00.000Z',
-        source_question_id: null,
-        source_attempt_ref: null,
-        target_misconception_tags: [],
-        success_criteria: {
-          scheduler_policy: {
-            route: 'short_delay',
-            freshness_bucket: 'cooling',
-          },
-          explainability: {
-            attempt_history: {
-              attempt_count: 0,
-              source_attempt_refs: [],
-              source_question_ids: [],
-            },
-            evidence: {
-              source_question_id: null,
-              source_attempt_ref: null,
-              misconception_tags: [],
-            },
-            freshness: {
-              route: 'short_delay',
-              bucket: 'cooling',
-            },
-          },
-        },
-      }),
-    ], {
-      now: '2026-03-25T10:00:00.000Z',
-    }).items[0];
-
-    expect(item.student_explanation).toBeNull();
   });
 });

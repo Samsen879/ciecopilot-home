@@ -2,36 +2,185 @@ function clone(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 }
 
+function createInMemoryEffectRepository() {
+  const receipts = new Map();
+
+  function keyFor(handlerName, effectKey) {
+    return `${handlerName}::${effectKey}`;
+  }
+
+  return {
+    async reserveEffectReceipt(input = {}) {
+      const key = keyFor(input.handler_name, input.effect_key);
+      const existing = receipts.get(key) ?? null;
+
+      if (existing) {
+        if (existing.status === 'failed' && existing.receipt_state === 'retrying') {
+          const retried = {
+            ...existing,
+            event_id: input.event_id,
+            aggregate_id: input.aggregate_id,
+            truth_revision: input.truth_revision,
+            reconciliation_id: input.reconciliation_id ?? null,
+            proposal_key: input.proposal_key ?? existing.proposal_key ?? null,
+            status: 'started',
+            receipt_state: 'pending',
+            attempt_count: Number(existing.attempt_count ?? 0) + 1,
+            last_attempted_at: '2026-04-17T10:05:00.000Z',
+            last_error: null,
+          };
+          receipts.set(key, retried);
+          return {
+            inserted: true,
+            reason_code: 'retry_failed_effect',
+            receipt: clone(retried),
+          };
+        }
+
+        return {
+          inserted: false,
+          reason_code: 'duplicate_effect_key',
+          receipt: clone(existing),
+        };
+      }
+
+      const receipt = {
+        effect_id: `effect-${receipts.size + 1}`,
+        proposal_key: input.proposal_key ?? null,
+        event_id: input.event_id,
+        aggregate_id: input.aggregate_id,
+        truth_revision: input.truth_revision,
+        reconciliation_id: input.reconciliation_id ?? null,
+        handler_name: input.handler_name,
+        effect_key: input.effect_key,
+        status: 'started',
+        receipt_state: 'pending',
+        retry_count: 0,
+        attempt_count: 1,
+        last_attempted_at: '2026-04-17T10:00:00.000Z',
+        last_error: null,
+        result_ref_type: null,
+        result_ref_id: null,
+      };
+      receipts.set(key, receipt);
+
+      return {
+        inserted: true,
+        reason_code: null,
+        receipt: clone(receipt),
+      };
+    },
+
+    async markEffectReceiptSucceeded({
+      handler_name: handlerName,
+      effect_key: effectKey,
+      status = 'succeeded',
+      result_ref_type: resultRefType = null,
+      result_ref_id: resultRefId = null,
+    } = {}) {
+      const key = keyFor(handlerName, effectKey);
+      const receipt = receipts.get(key);
+      const succeeded = {
+        ...receipt,
+        status,
+        receipt_state: 'persisted',
+        result_ref_type: resultRefType,
+        result_ref_id: resultRefId,
+        last_error: null,
+      };
+      receipts.set(key, succeeded);
+      return clone(succeeded);
+    },
+
+    async markEffectReceiptFailed({
+      handler_name: handlerName,
+      effect_key: effectKey,
+      error_code: errorCode = 'effect_execution_failed',
+      error_message: errorMessage = 'effect execution failed',
+      receipt_state: receiptState = 'retrying',
+    } = {}) {
+      const key = keyFor(handlerName, effectKey);
+      const receipt = receipts.get(key);
+      const failed = {
+        ...receipt,
+        status: 'failed',
+        receipt_state: receiptState,
+        retry_count: Number(receipt?.retry_count ?? 0) + 1,
+        last_error: {
+          code: errorCode,
+          message: errorMessage,
+        },
+      };
+      receipts.set(key, failed);
+      return clone(failed);
+    },
+
+    async listEffectReceiptsByEventId(eventId) {
+      return [...receipts.values()]
+        .filter((receipt) => receipt.event_id === eventId)
+        .map((receipt) => clone(receipt));
+    },
+  };
+}
+
 function createMockClient({
   learningEventsError = null,
   pipelineStateError = null,
   warningError = null,
   existingStreamHead = null,
   existingDeliveryRow = null,
+  existingMarkRun = null,
+  existingLearningEvents = [],
+  failLearningEventReads = false,
 } = {}) {
   const records = {
     learningEvents: null,
     learningEventsInsertCount: 0,
+    learningEventsById: Object.fromEntries(
+      existingLearningEvents.map((event) => [event.event_id, clone(event)]),
+    ),
     pipelineState: null,
     bridgeWarning: null,
     deliveryRow: clone(existingDeliveryRow) ?? null,
     deliveryInsertCount: 0,
     deliveryUpdates: [],
+    reconciliationRuns: [],
   };
 
   return {
     client: {
       from(table) {
         if (table === 'learning_events') {
+          const filters = [];
           const query = {
             select: () => query,
-            eq: () => query,
+            eq: (field, value) => {
+              filters.push({ field, value });
+              return query;
+            },
             order: () => query,
             limit: () => query,
-            maybeSingle: async () => ({
-              data: existingStreamHead,
-              error: null,
-            }),
+            maybeSingle: async () => {
+              const eventId = filters.find((filter) => filter.field === 'event_id')?.value ?? null;
+              if (eventId) {
+                if (failLearningEventReads) {
+                  return {
+                    data: null,
+                    error: null,
+                  };
+                }
+
+                return {
+                  data: clone(records.learningEventsById[eventId] ?? null),
+                  error: null,
+                };
+              }
+
+              return {
+                data: existingStreamHead,
+                error: null,
+              };
+            },
           };
 
           return {
@@ -39,6 +188,9 @@ function createMockClient({
             insert: async (rows) => {
               records.learningEventsInsertCount += 1;
               records.learningEvents = rows;
+              rows.forEach((event) => {
+                records.learningEventsById[event.event_id] = clone(event);
+              });
               return { error: learningEventsError };
             },
           };
@@ -107,6 +259,33 @@ function createMockClient({
           };
         }
 
+        if (table === 'mark_runs') {
+          const filters = [];
+          const query = {
+            select: () => query,
+            eq: (field, value) => {
+              filters.push({ field, value });
+              return query;
+            },
+            maybeSingle: async () => {
+              const markRunId = filters.find((filter) => filter.field === 'mark_run_id')?.value ?? null;
+              if (markRunId && existingMarkRun?.mark_run_id === markRunId) {
+                return {
+                  data: clone(existingMarkRun),
+                  error: null,
+                };
+              }
+
+              return {
+                data: null,
+                error: null,
+              };
+            },
+          };
+
+          return query;
+        }
+
         if (table === 'error_events') {
           return {
             insert: async (rows) => {
@@ -114,6 +293,25 @@ function createMockClient({
               return { error: warningError };
             },
           };
+        }
+
+        if (table === 'learning_reconciliation_runs') {
+          const query = {
+            select: () => query,
+            single: async () => ({
+              data: records.reconciliationRuns.at(-1) ?? null,
+              error: null,
+            }),
+            insert: (payload) => {
+              records.reconciliationRuns.push({
+                reconciliation_run_id: `recon-${records.reconciliationRuns.length + 1}`,
+                ...clone(payload),
+              });
+              return query;
+            },
+          };
+
+          return query;
         }
 
         throw new Error(`unexpected_table:${table}`);
@@ -310,6 +508,82 @@ describe('attempt-event-service', () => {
         }),
       ],
     });
+  });
+
+  test('executes downstream effects only after bridge persistence succeeds and surfaces durable retry debt', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient();
+    const effectRepository = createInMemoryEffectRepository();
+    let masteryCalls = 0;
+    let reviewCalls = 0;
+    let artifactCalls = 0;
+
+    const result = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput({
+        misconceptionTags: ['sign_error'],
+      }),
+      {
+        applyDownstreamEffects: true,
+        effectRepository,
+        handlers: {
+          mastery: async () => {
+            masteryCalls += 1;
+            return {
+              status: 'succeeded',
+              result_ref_type: 'family_mastery',
+              result_ref_id: 'family-mastery-1',
+            };
+          },
+          review_tasks: async () => {
+            reviewCalls += 1;
+            throw new Error('review task write failed');
+          },
+          artifact_suggestions: async () => {
+            artifactCalls += 1;
+            return {
+              status: 'succeeded',
+              result_ref_type: 'artifact',
+              result_ref_id: 'artifact-1',
+            };
+          },
+        },
+      },
+    );
+
+    expect(records.learningEventsInsertCount).toBe(1);
+    expect(masteryCalls).toBe(1);
+    expect(reviewCalls).toBe(1);
+    expect(artifactCalls).toBe(1);
+    expect(result.learning_effects).toMatchObject({
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      learning_signal_posture: 'authoritative_scoring',
+      effect_execution: {
+        ok: false,
+        status: 'partial_failure',
+        debt_pending: true,
+        receipt_summary: {
+          total: 3,
+          persisted: 2,
+          retrying: 1,
+        },
+      },
+    });
+    expect(await effectRepository.listEffectReceiptsByEventId(records.learningEvents.at(-1).event_id)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          handler_name: 'review_tasks',
+          status: 'failed',
+          receipt_state: 'retrying',
+          retry_count: 1,
+          last_error: {
+            code: 'effect_execution_failed',
+            message: 'review task write failed',
+          },
+        }),
+      ]),
+    );
   });
 
   test('reuses the same bridge delivery row and does not append duplicate events on repeated delivery', async () => {
@@ -543,6 +817,329 @@ describe('attempt-event-service', () => {
     expect(reconciled).toMatchObject({
       delivery_state: 'reconciled',
       reconciliation_id: 'recon-auto-1',
+    });
+  });
+
+  test('reconciliation can retry failed downstream effect receipts from the persisted proposal event', async () => {
+    const {
+      persistAttemptEventBridge,
+      reconcileAttemptEventBridgeEffects,
+    } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient();
+    const effectRepository = createInMemoryEffectRepository();
+    let masteryCalls = 0;
+    let reviewCalls = 0;
+    let artifactCalls = 0;
+
+    const first = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput({
+        misconceptionTags: ['sign_error'],
+      }),
+      {
+        applyDownstreamEffects: true,
+        effectRepository,
+        handlers: {
+          mastery: async () => {
+            masteryCalls += 1;
+            return {
+              status: 'succeeded',
+              result_ref_type: 'family_mastery',
+              result_ref_id: 'family-mastery-1',
+            };
+          },
+          review_tasks: async () => {
+            reviewCalls += 1;
+            if (reviewCalls === 1) {
+              throw new Error('review task write failed');
+            }
+
+            return {
+              status: 'succeeded',
+              result_ref_type: 'review_task',
+              result_ref_id: 'review-task-1',
+            };
+          },
+          artifact_suggestions: async () => {
+            artifactCalls += 1;
+            return {
+              status: 'succeeded',
+              result_ref_type: 'artifact',
+              result_ref_id: 'artifact-1',
+            };
+          },
+        },
+      },
+    );
+
+    expect(first.learning_effects?.effect_execution).toMatchObject({
+      ok: false,
+      status: 'partial_failure',
+      debt_pending: true,
+    });
+
+    const retried = await reconcileAttemptEventBridgeEffects(
+      client,
+      {
+        stableIdempotencyKey: first.delivery.stable_idempotency_key,
+      },
+      {
+        effectRepository,
+        handlers: {
+          mastery: async () => {
+            masteryCalls += 1;
+            return {
+              status: 'succeeded',
+              result_ref_type: 'family_mastery',
+              result_ref_id: 'family-mastery-1',
+            };
+          },
+          review_tasks: async () => {
+            reviewCalls += 1;
+            return {
+              status: 'succeeded',
+              result_ref_type: 'review_task',
+              result_ref_id: 'review-task-1',
+            };
+          },
+          artifact_suggestions: async () => {
+            artifactCalls += 1;
+            return {
+              status: 'succeeded',
+              result_ref_type: 'artifact',
+              result_ref_id: 'artifact-1',
+            };
+          },
+        },
+      },
+    );
+
+    expect(masteryCalls).toBe(1);
+    expect(reviewCalls).toBe(2);
+    expect(artifactCalls).toBe(1);
+    expect(retried).toMatchObject({
+      reconciliation_run_id: 'recon-1',
+      status: 'completed',
+      learning_effects: {
+        effect_execution: {
+          ok: true,
+          status: 'applied',
+          debt_pending: false,
+          receipt_summary: {
+            total: 3,
+            persisted: 3,
+            retrying: 0,
+          },
+        },
+      },
+    });
+    expect(records.reconciliationRuns.at(-1)).toMatchObject({
+      trigger_source: 'attempt_event_effect_retry',
+      source_ref: {
+        kind: 'mark_run',
+        mark_run_id: 'mr-bridge-1',
+      },
+      status: 'completed',
+      result_summary: {
+        retrying_receipt_count: 0,
+        persisted_receipt_count: 3,
+      },
+    });
+  });
+
+  test('downstream-effect read failures after persisted event writes do not downgrade the delivery row', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client } = createMockClient({
+      failLearningEventReads: true,
+    });
+
+    const result = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput(),
+      {
+        applyDownstreamEffects: true,
+      },
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      deduped: false,
+      delivery: {
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_error: null,
+      },
+      learning_effects: {
+        authoritative_scoring_allowed: true,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'authoritative_scoring',
+        runtime_authority_posture: 'default_durable',
+        runtime_authority_reason_code: null,
+        question_source_kind: 'paper_question',
+        effect_execution: {
+          ok: false,
+          status: 'failed',
+          debt_pending: true,
+          error: {
+            code: 'effect_execution_failed',
+            message: 'learning_update_proposed_event_not_found',
+          },
+        },
+      },
+    });
+  });
+
+  test('downstream-effect read failures preserve imported-question non-authoritative posture', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client } = createMockClient({
+      failLearningEventReads: true,
+    });
+
+    const result = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput({
+        questionContext: {
+          source_kind: 'imported_question',
+          family_id: '9709.trigonometry_manipulation_equations',
+          question_type_id: '9709.trigonometry.identities',
+          question_type_release_state: 'released',
+          primary_topic_id: 'topic-trig-identities',
+          primary_topic_path: '9709/trigonometry/identities',
+          classification_confidence: 0.95,
+          candidate_rubric_refs: [
+            {
+              kind: 'rubric_release',
+              rubric_version_id: 'trig-identities-v1',
+              release_state: 'released',
+            },
+          ],
+          release_scope_status: 'released_scoring',
+        },
+        authorityPosture: {
+          release_scope_status: 'released_scoring',
+          authoritative_scoring_allowed: true,
+          fallback_mode: null,
+          fallback_reason_code: null,
+          classification_confidence: 0.95,
+          learning_signal_posture: 'authoritative_scoring',
+        },
+      }),
+      {
+        applyDownstreamEffects: true,
+      },
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      deduped: false,
+      delivery: {
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_error: null,
+      },
+      learning_effects: {
+        authoritative_scoring_allowed: false,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'conservative_fallback',
+        runtime_authority_posture: 'non_authoritative',
+        runtime_authority_reason_code: 'imported_question_attempt',
+        question_source_kind: 'imported_question',
+        effect_execution: {
+          ok: false,
+          status: 'failed',
+          debt_pending: true,
+          error: {
+            code: 'effect_execution_failed',
+            message: 'learning_update_proposed_event_not_found',
+          },
+        },
+      },
+    });
+  });
+
+  test('replayed persisted deliveries preserve durable authority posture when proposal-event reload fails', async () => {
+    const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
+    const { client } = createMockClient({
+      failLearningEventReads: true,
+      existingMarkRun: {
+        mark_run_id: 'mr-bridge-1',
+        response_summary: {
+          authority_posture: {
+            release_scope_status: 'released_scoring',
+            authoritative_scoring_allowed: true,
+            fallback_mode: null,
+            fallback_reason_code: null,
+            learning_signal_posture: 'authoritative_scoring',
+            runtime_authority_posture: 'default_durable',
+            runtime_authority_reason_code: null,
+            question_source_kind: 'paper_question',
+          },
+        },
+      },
+      existingDeliveryRow: {
+        delivery_id: 'delivery-persisted-1',
+        stable_idempotency_key: 'attempt_event_bridge:mr-bridge-1',
+        attempt_id: 'att-bridge-1',
+        learner_id: 'user-bridge-1',
+        subject_code: '9709',
+        mark_run_id: 'mr-bridge-1',
+        truth_revision: 1,
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_attempted_at: '2026-04-17T00:00:00.000Z',
+        last_error: null,
+        persisted_event_types: [
+          'AttemptSubmitted',
+          'QuestionClassified',
+          'MarkingCompleted',
+          'LearningUpdateProposed',
+        ],
+        persisted_event_ids: [
+          'event-1',
+          'event-2',
+          'event-3',
+          'event-4',
+        ],
+        reconciliation_id: null,
+      },
+    });
+
+    const result = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput(),
+      {
+        applyDownstreamEffects: true,
+      },
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      warningRecorded: false,
+      deduped: true,
+      delivery: {
+        delivery_state: 'persisted',
+        retry_count: 0,
+        last_error: null,
+      },
+      learning_effects: {
+        authoritative_scoring_allowed: true,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'authoritative_scoring',
+        runtime_authority_posture: 'default_durable',
+        runtime_authority_reason_code: null,
+        question_source_kind: 'paper_question',
+        effect_execution: {
+          ok: false,
+          status: 'failed',
+          debt_pending: true,
+          error: {
+            code: 'effect_execution_failed',
+            message: 'learning_update_proposed_event_not_found',
+          },
+        },
+      },
     });
   });
 

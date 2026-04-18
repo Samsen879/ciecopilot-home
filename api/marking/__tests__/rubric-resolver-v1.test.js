@@ -362,6 +362,72 @@ describe('resolveRubric — error handling', () => {
   });
 });
 
+describe('resolveRubric — pilot template binding', () => {
+  it('binds released pilot template metadata behind the runtime flag', async () => {
+    const versionRows = [makeVersionRow()];
+    const readyPoints = [
+      makePoint({ rubric_id: 'identity-rewrite', mark_label: 'M1' }),
+      makePoint({ rubric_id: 'identity-result', mark_label: 'A1', step_index: 2 }),
+    ];
+
+    const supabase = createMockSupabase({
+      rubricPointsData: versionRows,
+      readyViewData: readyPoints,
+    });
+
+    const result = await resolveRubric({
+      supabase,
+      storage_key: '9709/s22/qp11/q01.png',
+      q_number: 1,
+      subpart: null,
+      subject_code: '9709',
+      question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+      pilot_runtime_enabled: true,
+    });
+
+    expect(result.pilot_rubric_template).toMatchObject({
+      question_type_id: '9709.trigonometry.identities',
+      release_state: 'released',
+    });
+    expect(result.pilot_adapter_methods).toEqual([
+      'proof_structure_check',
+      'symbolic_check',
+    ]);
+  });
+
+  it('does not bind pilot template metadata without a released rubric ref', async () => {
+    const versionRows = [makeVersionRow()];
+    const readyPoints = [makePoint()];
+
+    const supabase = createMockSupabase({
+      rubricPointsData: versionRows,
+      readyViewData: readyPoints,
+    });
+
+    const result = await resolveRubric({
+      supabase,
+      storage_key: '9709/s22/qp11/q01.png',
+      q_number: 1,
+      subpart: null,
+      subject_code: '9709',
+      question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [],
+      pilot_runtime_enabled: true,
+    });
+
+    expect(result.pilot_rubric_template).toBeNull();
+    expect(result.pilot_adapter_methods).toEqual([]);
+  });
+});
+
 // ── resolveRubric: audit log ────────────────────────────────────────────────
 
 describe('resolveRubric — audit log', () => {

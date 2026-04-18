@@ -23,6 +23,7 @@ function separateWorkspaceSlots(slotRows) {
     slots[slot.slot_key] = {
       workspace_slot_id: slot.workspace_slot_id,
       primary_artifact_ref: slot.primary_artifact_ref ?? null,
+      primary_artifact: slot.primary_artifact ?? null,
       updated_at: slot.updated_at ?? null,
     };
     linked_references[slot.slot_key] = Array.isArray(slot.linked_reference_refs)

@@ -15,6 +15,7 @@ import { resolveReleasedScoringPosture } from '../learning/lib/contracts/release
 import { buildRuntimeAuthorityPosture } from '../learning/lib/contracts/runtime-authority-posture.js';
 import { persistAttemptEventBridge } from '../learning/lib/events/attempt-event-service.js';
 import { applyLearningEffects } from '../learning/lib/mastery/mastery-orchestrator.js';
+import { runPilotAdapterRuntime } from '../learning/lib/marking/adapter-method-dispatcher.js';
 
 // ── Feature flag (evaluated per-request so env changes take effect) ──────────
 function isV1Enabled() {
@@ -283,38 +284,84 @@ export default async function handler(req, res) {
       ts: new Date().toISOString(),
     }));
 
+    const runtimeAuthorityPosture = buildRuntimeAuthorityPosture(
+      resolveReleasedScoringPosture({
+        questionTypeId: questionContext.question_type_id,
+        questionTypeReleaseState: questionContext.question_type_release_state,
+        candidateRubricRefs: questionContext.candidate_rubric_refs,
+        classificationConfidence: questionContext.classification_confidence,
+        uncertaintyValidated: true,
+      }),
+      {
+        questionContext,
+      },
+    );
+
     // ── Rubric Resolver (Task 4) ─────────────────────────────────────────
-    const {
-      rubric_source_version,
-      rubric_points,
-      rubric_rows_used,
-    } = await resolveRubric({
+    const resolvedRubric = await resolveRubric({
       supabase,
       storage_key,
       q_number,
       subpart,
       rubric_source_version: requestedVersion,
+      subject_code: subjectCode,
+      question_type_id: questionContext.question_type_id,
+      candidate_rubric_refs: questionContext.candidate_rubric_refs,
+      pilot_runtime_enabled: isRuntimeBridgeEnabled(),
     });
+    const {
+      rubric_source_version,
+      pilot_rubric_template,
+      pilot_adapter_methods,
+      rubric_rows_used,
+    } = resolvedRubric;
+    let rubric_points = resolvedRubric.rubric_points;
 
     // ── Decision Engine (Task 5) ─────────────────────────────────────────
     let decisions = [];
     let alignments;
+    const runtimeExecution = {
+      execution_path: pilot_rubric_template ? 'pilot_adapter_runtime' : 'legacy_decision_engine',
+      authority_level: runtimeAuthorityPosture.authoritative_scoring_allowed
+        ? 'authoritative'
+        : 'conservative',
+      pilot_question_type_id: pilot_rubric_template?.question_type_id ?? null,
+      adapter_methods: pilot_rubric_template ? pilot_adapter_methods : [],
+    };
     try {
-      const engineResult = runDecisionEngine({
-        student_steps,
-        rubric_points,
-        options: {
-          compat_mode: compat_mode,
-          include_uncertain_reason: include_uncertain_reason === true,
-        },
-      });
-      decisions = engineResult.decisions.map((d) => serializeDecisionForResponse(d, {
-        includeUncertainReason: include_uncertain_reason === true,
-      }));
-      if (engineResult.alignments) {
-        alignments = engineResult.alignments.map((a) => serializeAlignmentForResponse(a, {
+      if (pilot_rubric_template) {
+        const pilotResult = runPilotAdapterRuntime({
+          rubricTemplate: pilot_rubric_template,
+          studentSteps: student_steps,
+          includeUncertainReason: include_uncertain_reason === true,
+          compatMode: compat_mode,
+        });
+        rubric_points = pilotResult.rubric_points;
+        decisions = pilotResult.decisions.map((decision) => serializeDecisionForResponse(decision, {
           includeUncertainReason: include_uncertain_reason === true,
         }));
+        if (pilotResult.alignments) {
+          alignments = pilotResult.alignments.map((alignment) => serializeAlignmentForResponse(alignment, {
+            includeUncertainReason: include_uncertain_reason === true,
+          }));
+        }
+      } else {
+        const engineResult = runDecisionEngine({
+          student_steps,
+          rubric_points,
+          options: {
+            compat_mode: compat_mode,
+            include_uncertain_reason: include_uncertain_reason === true,
+          },
+        });
+        decisions = engineResult.decisions.map((d) => serializeDecisionForResponse(d, {
+          includeUncertainReason: include_uncertain_reason === true,
+        }));
+        if (engineResult.alignments) {
+          alignments = engineResult.alignments.map((a) => serializeAlignmentForResponse(a, {
+            includeUncertainReason: include_uncertain_reason === true,
+          }));
+        }
       }
     } catch (engineError) {
       console.error(JSON.stringify({
@@ -332,18 +379,6 @@ export default async function handler(req, res) {
     let markingResult = null;
     const requestScopedPartId = part_id;
     const requestScopedSubpartId = subpart_id ?? subpart ?? null;
-    const runtimeAuthorityPosture = buildRuntimeAuthorityPosture(
-      resolveReleasedScoringPosture({
-        questionTypeId: questionContext.question_type_id,
-        questionTypeReleaseState: questionContext.question_type_release_state,
-        candidateRubricRefs: questionContext.candidate_rubric_refs,
-        classificationConfidence: questionContext.classification_confidence,
-        uncertaintyValidated: true,
-      }),
-      {
-        questionContext,
-      },
-    );
 
     try {
       const baseMarkingResult = buildMarkingResult({
@@ -379,6 +414,7 @@ export default async function handler(req, res) {
           rubric_rows_used,
           marking_result: baseMarkingResult,
           authority_posture: runtimeAuthorityPosture,
+          runtime_execution: runtimeExecution,
         },
       });
 
@@ -406,6 +442,40 @@ export default async function handler(req, res) {
       }));
 
       if (ledgerResult.decision_write_status === 'success') {
+        const learningEffectsInput = {
+          supabase,
+          user_id,
+          subject_code: subjectCode,
+          question_id,
+          question_context: {
+            source_kind: questionContext.source_kind,
+            family_id: questionContext.family_id,
+            question_type_id: questionContext.question_type_id,
+            question_type_release_state: questionContext.question_type_release_state,
+            primary_topic_id:
+              questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
+            primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
+            classification_confidence: questionContext.classification_confidence,
+            candidate_rubric_refs: questionContext.candidate_rubric_refs,
+            release_scope_status: questionContext.release_scope_status,
+          },
+          attempt_id: ledgerResult.attempt_id,
+          mark_run_id: ledgerResult.mark_run_id,
+          source_attempt_ref: {
+            kind: 'attempt',
+            attempt_id: ledgerResult.attempt_id,
+          },
+          source_mark_run_ref: {
+            kind: 'mark_run',
+            mark_run_id: ledgerResult.mark_run_id,
+          },
+          source_attempt_context: ledgerResult.attempt_context ?? null,
+          decisions,
+          marking_result: markingResult,
+          uncertainty_validated: true,
+          release_scope_posture: runtimeAuthorityPosture,
+        };
+
         if (isRuntimeBridgeEnabled()) {
           try {
             const bridgeResult = await persistAttemptEventBridge(supabase, {
@@ -436,7 +506,11 @@ export default async function handler(req, res) {
               },
               correlationId: run_id,
               emittedBy: 'evaluate-v1',
+            }, {
+              applyDownstreamEffects: true,
             });
+
+            learningEffects = bridgeResult.learning_effects ?? null;
 
             if (!bridgeResult.ok) {
               console.warn(JSON.stringify({
@@ -460,51 +534,19 @@ export default async function handler(req, res) {
               ts: new Date().toISOString(),
             }));
           }
-        }
-
-        try {
-          learningEffects = await applyLearningEffects({
-            supabase,
-            user_id,
-            subject_code: subjectCode,
-            question_id,
-            question_context: {
-              source_kind: questionContext.source_kind,
-              family_id: questionContext.family_id,
-              question_type_id: questionContext.question_type_id,
-              question_type_release_state: questionContext.question_type_release_state,
-              primary_topic_id:
-                questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
-              primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
-              classification_confidence: questionContext.classification_confidence,
-              candidate_rubric_refs: questionContext.candidate_rubric_refs,
-              release_scope_status: questionContext.release_scope_status,
-            },
-            attempt_id: ledgerResult.attempt_id,
-            mark_run_id: ledgerResult.mark_run_id,
-            source_attempt_ref: {
-              kind: 'attempt',
-              attempt_id: ledgerResult.attempt_id,
-            },
-            source_mark_run_ref: {
-              kind: 'mark_run',
-              mark_run_id: ledgerResult.mark_run_id,
-            },
-            source_attempt_context: ledgerResult.attempt_context ?? null,
-            decisions,
-            marking_result: markingResult,
-            uncertainty_validated: true,
-            release_scope_posture: runtimeAuthorityPosture,
-          }, {
-            supabase,
-          });
-        } catch (learningEffectsError) {
-          console.warn(JSON.stringify({
-            event: 'evaluate_v1_learning_effects_error',
-            run_id,
-            error: learningEffectsError?.message || String(learningEffectsError),
-            ts: new Date().toISOString(),
-          }));
+        } else {
+          try {
+            learningEffects = await applyLearningEffects(learningEffectsInput, {
+              supabase,
+            });
+          } catch (learningEffectsError) {
+            console.warn(JSON.stringify({
+              event: 'evaluate_v1_learning_effects_error',
+              run_id,
+              error: learningEffectsError?.message || String(learningEffectsError),
+              ts: new Date().toISOString(),
+            }));
+          }
         }
       }
     } catch (ledgerErr) {
@@ -527,6 +569,7 @@ export default async function handler(req, res) {
       decisions,
       ledger_write_status,
       marking_result: markingResult,
+      marking_runtime: runtimeExecution,
     };
 
     if (learningEffects) {

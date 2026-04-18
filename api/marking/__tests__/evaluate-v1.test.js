@@ -8,27 +8,30 @@ import { jest } from '@jest/globals';
 // The rubric resolver calls supabase.from('rubric_points').select().eq()...
 // and supabase.from('rubric_points_ready_v1').select().eq().order()...
 
-const MOCK_READY_POINT = {
-  rubric_id: 'aaaaaaaa-0000-0000-0000-000000000001',
-  storage_key: '9709/s22/qp11/q01.png',
-  q_number: 1,
-  subpart: null,
-  step_index: 1,
-  mark_label: 'M1',
-  kind: 'M',
-  description: 'Correct method',
-  marks: 1,
-  depends_on: [],
-  ft_mode: 'none',
-  confidence: 0.95,
-  source: 'vlm',
-  extractor_version: 'v1',
-  provider: 'openai',
-  model: 'gpt-4-turbo',
-  prompt_version: 'p1',
-  source_version: 'v1:openai:gpt-4-turbo:p1',
-  updated_at: '2026-02-15T10:00:00Z',
-};
+function buildReadyPoint(overrides = {}) {
+  return {
+    rubric_id: 'aaaaaaaa-0000-0000-0000-000000000001',
+    storage_key: '9709/s22/qp11/q01.png',
+    q_number: 1,
+    subpart: null,
+    step_index: 1,
+    mark_label: 'M1',
+    kind: 'M',
+    description: 'Correct method',
+    marks: 1,
+    depends_on: [],
+    ft_mode: 'none',
+    confidence: 0.95,
+    source: 'vlm',
+    extractor_version: 'v1',
+    provider: 'openai',
+    model: 'gpt-4-turbo',
+    prompt_version: 'p1',
+    source_version: 'v1:openai:gpt-4-turbo:p1',
+    updated_at: '2026-02-15T10:00:00Z',
+    ...overrides,
+  };
+}
 
 function buildLearningQuestionProjectionRow(overrides = {}) {
   return {
@@ -52,6 +55,8 @@ function buildLearningQuestionProjectionRow(overrides = {}) {
 }
 
 let learningQuestionProjectionRow = buildLearningQuestionProjectionRow();
+let mockRubricVersionRows = [buildReadyPoint()];
+let mockReadyPoints = [buildReadyPoint()];
 
 function createChainMock(data) {
   const chain = {};
@@ -69,10 +74,10 @@ function createChainMock(data) {
 
 const mockFrom = jest.fn((table) => {
   if (table === 'rubric_points') {
-    return createChainMock([MOCK_READY_POINT]);
+    return createChainMock(mockRubricVersionRows);
   }
   if (table === 'rubric_points_ready_v1') {
-    return createChainMock([MOCK_READY_POINT]);
+    return createChainMock(mockReadyPoints);
   }
   if (table === 'learning_question_registry_projection') {
     return createChainMock(learningQuestionProjectionRow);
@@ -133,6 +138,31 @@ const mockPersistAttemptEventBridge = jest.fn(async () => ({
     current_status: 'running',
     last_sequence_no: 4,
   },
+  learning_effects: {
+    proposal_key: 'mark-run:mr-001',
+    guardrail_decisions: {
+      authoritative_scoring_allowed: true,
+      release_scope_status: 'released_scoring',
+      learning_signal_posture: 'authoritative_scoring',
+      fallback_mode: null,
+      fallback_reason_code: null,
+      reasons: ['released_scoring'],
+    },
+    authoritative_scoring_allowed: true,
+    release_scope_status: 'released_scoring',
+    learning_signal_posture: 'authoritative_scoring',
+    effect_execution: {
+      ok: true,
+      status: 'applied',
+      debt_pending: false,
+      receipt_summary: {
+        total: 3,
+        persisted: 3,
+        retrying: 0,
+        needs_manual_review: 0,
+      },
+    },
+  },
 }));
 
 jest.unstable_mockModule('../lib/auth-helper.js', () => ({
@@ -191,6 +221,8 @@ beforeEach(() => {
   process.env.EVIDENCE_LEDGER_ENABLED = 'false';
   process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'false';
   learningQuestionProjectionRow = buildLearningQuestionProjectionRow();
+  mockRubricVersionRows = [buildReadyPoint()];
+  mockReadyPoints = [buildReadyPoint()];
   jest.clearAllMocks();
   mockApplyLearningEffects.mockResolvedValue({
     release_scope_status: 'released_scoring',
@@ -401,6 +433,67 @@ describe('v0 compat mode', () => {
     const body = res.json.mock.calls[0][0];
     expect(body.alignments).toBeUndefined();
   });
+
+  it('preserves alignments[] for pilot-bound questions in compat_mode=v0', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        compat_mode: 'v0',
+        student_steps: [
+          { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+          { step_id: 's2', text: 'Hence the target identity is proved.' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.alignments).toEqual([
+      expect.objectContaining({
+        step_id: 's1',
+        status: 'aligned',
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        reason: 'pilot_adapter_match',
+      }),
+      expect.objectContaining({
+        step_id: 's2',
+        status: 'aligned',
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        reason: 'pilot_adapter_match',
+      }),
+    ]);
+  });
 });
 
 describe('learning-runtime orchestration', () => {
@@ -562,7 +655,202 @@ describe('learning-runtime orchestration', () => {
           learning_signal_posture: 'authoritative_scoring',
         }),
       }),
+      {
+        applyDownstreamEffects: true,
+      },
     );
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+    expect(res.json.mock.calls[0][0].learning_effects).toMatchObject({
+      proposal_key: 'mark-run:mr-001',
+      effect_execution: {
+        ok: true,
+        status: 'applied',
+      },
+    });
+  });
+
+  it('executes a released 9709 pilot rubric through the adapter runtime behind the runtime flag', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        student_steps: [
+          { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+          { step_id: 's2', text: 'Hence the target identity is proved.' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.decisions).toEqual([
+      expect.objectContaining({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        reason: 'pilot_adapter_match',
+        awarded: true,
+        awarded_marks: 1,
+      }),
+      expect.objectContaining({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        reason: 'pilot_adapter_match',
+        awarded: true,
+        awarded_marks: 1,
+      }),
+    ]);
+    expect(body.marking_result.marking_summary.total_awarded).toBe(2);
+    expect(mockWriteLedger).toHaveBeenCalledWith(
+      expect.objectContaining({
+        rubric_points: expect.arrayContaining([
+          expect.objectContaining({ rubric_id: 'identity-rewrite' }),
+          expect.objectContaining({ rubric_id: 'identity-result' }),
+        ]),
+      }),
+    );
+  });
+
+  it('keeps pilot adapter execution conservative when released-scope posture fails closed', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      classification_confidence: 0.42,
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: true,
+      warningRecorded: false,
+      persisted_event_types: [
+        'AttemptSubmitted',
+        'QuestionClassified',
+        'MarkingCompleted',
+        'LearningUpdateProposed',
+      ],
+      pipeline_state: {
+        attempt_id: 'att-001',
+        current_stage: 'LearningUpdateProposed',
+        current_status: 'running',
+        last_sequence_no: 4,
+      },
+      learning_effects: {
+        proposal_key: 'mark-run:mr-001',
+        guardrail_decisions: {
+          authoritative_scoring_allowed: false,
+          release_scope_status: 'non_released_fallback',
+          learning_signal_posture: 'conservative_fallback',
+          fallback_mode: 'classification_guardrail',
+          fallback_reason_code: 'low_classification_confidence',
+          reasons: ['low_classification_confidence'],
+        },
+        authoritative_scoring_allowed: false,
+        release_scope_status: 'non_released_fallback',
+        learning_signal_posture: 'conservative_fallback',
+        fallback_mode: 'classification_guardrail',
+        fallback_reason_code: 'low_classification_confidence',
+        effect_execution: {
+          ok: true,
+          status: 'applied',
+          debt_pending: false,
+          receipt_summary: {
+            total: 0,
+            persisted: 0,
+            retrying: 0,
+            needs_manual_review: 0,
+          },
+        },
+      },
+    });
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        student_steps: [
+          { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+          { step_id: 's2', text: 'Hence the target identity is proved.' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(mockPersistAttemptEventBridge).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        authorityPosture: expect.objectContaining({
+          authoritative_scoring_allowed: false,
+          fallback_reason_code: 'low_classification_confidence',
+          learning_signal_posture: 'conservative_fallback',
+        }),
+      }),
+      {
+        applyDownstreamEffects: true,
+      },
+    );
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.decisions[0]).toMatchObject({
+      reason: 'pilot_adapter_match',
+      awarded: true,
+    });
+    expect(body.learning_effects).toMatchObject({
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'low_classification_confidence',
+      effect_execution: expect.objectContaining({
+        ok: true,
+        status: 'applied',
+      }),
+    });
   });
 
   it('marks imported-question attempts as explicit non-authoritative runtime inputs across ledger, bridge, and learning effects', async () => {
@@ -573,16 +861,49 @@ describe('learning-runtime orchestration', () => {
       family_id: '9709.trigonometry_manipulation_equations',
       primary_question_type_id: '9709.trigonometry.identities',
     });
-    mockApplyLearningEffects.mockResolvedValueOnce({
-      release_scope_status: 'released_scoring',
-      authoritative_scoring_allowed: false,
-      learning_signal_posture: 'conservative_fallback',
-      runtime_authority_posture: 'non_authoritative',
-      runtime_authority_reason_code: 'imported_question_attempt',
-      mastery_updates: [],
-      review_tasks: [],
-      artifact_candidates: [],
-      reconciliation: null,
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: true,
+      warningRecorded: false,
+      persisted_event_types: [
+        'AttemptSubmitted',
+        'QuestionClassified',
+        'MarkingCompleted',
+        'LearningUpdateProposed',
+      ],
+      pipeline_state: {
+        attempt_id: 'att-001',
+        current_stage: 'LearningUpdateProposed',
+        current_status: 'running',
+        last_sequence_no: 4,
+      },
+      learning_effects: {
+        proposal_key: 'mark-run:mr-001',
+        guardrail_decisions: {
+          authoritative_scoring_allowed: false,
+          release_scope_status: 'released_scoring',
+          learning_signal_posture: 'conservative_fallback',
+          fallback_mode: null,
+          fallback_reason_code: 'imported_question_attempt',
+          reasons: ['imported_question_attempt'],
+        },
+        authoritative_scoring_allowed: false,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'conservative_fallback',
+        runtime_authority_posture: 'non_authoritative',
+        runtime_authority_reason_code: 'imported_question_attempt',
+        question_source_kind: 'imported_question',
+        effect_execution: {
+          ok: true,
+          status: 'applied',
+          debt_pending: false,
+          receipt_summary: {
+            total: 0,
+            persisted: 0,
+            retrying: 0,
+            needs_manual_review: 0,
+          },
+        },
+      },
     });
 
     const req = mockReq();
@@ -612,27 +933,89 @@ describe('learning-runtime orchestration', () => {
           question_source_kind: 'imported_question',
         }),
       }),
+      {
+        applyDownstreamEffects: true,
+      },
     );
-    expect(mockApplyLearningEffects).toHaveBeenCalledWith(
-      expect.objectContaining({
-        question_context: expect.objectContaining({
-          source_kind: 'imported_question',
-        }),
-        release_scope_posture: expect.objectContaining({
-          authoritative_scoring_allowed: false,
-          runtime_authority_posture: 'non_authoritative',
-          runtime_authority_reason_code: 'imported_question_attempt',
-          question_source_kind: 'imported_question',
-        }),
-      }),
-      expect.any(Object),
-    );
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
 
     const body = res.json.mock.calls[0][0];
     expect(body.learning_effects).toMatchObject({
       authoritative_scoring_allowed: false,
       runtime_authority_posture: 'non_authoritative',
       runtime_authority_reason_code: 'imported_question_attempt',
+      effect_execution: {
+        ok: true,
+        status: 'applied',
+      },
+    });
+  });
+
+  it('surfaces durable downstream effect retry debt without breaking the scoring response', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: true,
+      warningRecorded: false,
+      persisted_event_types: [
+        'AttemptSubmitted',
+        'QuestionClassified',
+        'MarkingCompleted',
+        'LearningUpdateProposed',
+      ],
+      pipeline_state: {
+        attempt_id: 'att-001',
+        current_stage: 'LearningUpdateProposed',
+        current_status: 'running',
+        last_sequence_no: 4,
+      },
+      learning_effects: {
+        proposal_key: 'mark-run:mr-001',
+        guardrail_decisions: {
+          authoritative_scoring_allowed: true,
+          release_scope_status: 'released_scoring',
+          learning_signal_posture: 'authoritative_scoring',
+          fallback_mode: null,
+          fallback_reason_code: null,
+          reasons: ['released_scoring'],
+        },
+        authoritative_scoring_allowed: true,
+        release_scope_status: 'released_scoring',
+        learning_signal_posture: 'authoritative_scoring',
+        effect_execution: {
+          ok: false,
+          status: 'partial_failure',
+          debt_pending: true,
+          receipt_summary: {
+            total: 3,
+            persisted: 2,
+            retrying: 1,
+            needs_manual_review: 0,
+          },
+        },
+      },
+    });
+
+    const req = mockReq();
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
+    expect(res.json.mock.calls[0][0]).toMatchObject({
+      ledger_write_status: 'success',
+      learning_effects: {
+        effect_execution: {
+          ok: false,
+          status: 'partial_failure',
+          debt_pending: true,
+          receipt_summary: {
+            total: 3,
+            persisted: 2,
+            retrying: 1,
+          },
+        },
+      },
     });
   });
 
@@ -654,7 +1037,8 @@ describe('learning-runtime orchestration', () => {
     expect(res.json.mock.calls[0][0]).toMatchObject({
       ledger_write_status: 'success',
     });
+    expect(res.json.mock.calls[0][0].learning_effects).toBeUndefined();
     expect(mockPersistAttemptEventBridge).toHaveBeenCalled();
-    expect(mockApplyLearningEffects).toHaveBeenCalled();
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
   });
 });

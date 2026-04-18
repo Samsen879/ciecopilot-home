@@ -1,6 +1,5 @@
 import { createReviewTaskRepository } from '../repositories/review-task-repository.js';
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
-import { isNonAuthoritativeRuntimeInput } from '../contracts/runtime-authority-posture.js';
 import { LearningHttpError } from '../http/learning-http.js';
 import {
   buildReviewTaskExplainabilitySeed,
@@ -332,10 +331,6 @@ export function shouldGenerateReviewTaskFromOutcome(input = {}) {
     return false;
   }
 
-  if (isNonAuthoritativeRuntimeInput(input)) {
-    return false;
-  }
-
   if (!input.authoritative_scoring_allowed) {
     return true;
   }
@@ -361,6 +356,8 @@ export function buildReviewTaskPayload(input = {}, now = new Date()) {
     regressionRecovery: input.regression_recovery === true,
     learnerGoal: input.learner_goal ?? null,
     fallbackReasonCode: input.fallback_reason_code ?? null,
+    confidenceBand: input.question_context?.confidence_band ?? null,
+    classificationConfidence: input.question_context?.classification_confidence ?? null,
   });
   if (!scheduler) {
     return null;
@@ -428,51 +425,6 @@ export function buildReviewTaskPayload(input = {}, now = new Date()) {
   };
 }
 
-async function materializeReviewTaskPayload({
-  payload,
-  reviewTaskRepository,
-  timestamp,
-} = {}) {
-  if (!payload) {
-    return [];
-  }
-
-  if (!reviewTaskRepository) {
-    return [normalizeSchedulerProjectionItem(payload)];
-  }
-
-  const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(payload.user_id)
-    ?? [];
-  const mergeCandidate = pickReviewTaskMergeCandidate(activeTasks, payload);
-  if (mergeCandidate?.review_task_id) {
-    const mergedPatch = mergeReviewTaskPayload(
-      mergeCandidate,
-      payload,
-      timestamp,
-    );
-    const merged = await reviewTaskRepository.updateReviewTask(
-      mergeCandidate.review_task_id,
-      mergedPatch,
-    );
-    return [
-      normalizeSchedulerProjectionItem({
-        ...mergeCandidate,
-        ...merged,
-        target_topic_path:
-          payload.target_topic_path ?? mergeCandidate.target_topic_path ?? null,
-      }),
-    ];
-  }
-
-  const stored = await reviewTaskRepository.insertReviewTask(payload);
-  return [
-    normalizeSchedulerProjectionItem({
-      ...stored,
-      target_topic_path: payload.target_topic_path,
-    }),
-  ];
-}
-
 export function createReviewTaskService({
   reviewTaskRepository = null,
   now = () => new Date(),
@@ -480,19 +432,44 @@ export function createReviewTaskService({
   return {
     async generateTasksFromOutcome(input = {}) {
       const payload = buildReviewTaskPayload(input, now());
-      return materializeReviewTaskPayload({
-        payload,
-        reviewTaskRepository,
-        timestamp: now().toISOString(),
-      });
-    },
+      if (!payload) {
+        return [];
+      }
 
-    async materializeProposedTask(payload = {}) {
-      return materializeReviewTaskPayload({
-        payload,
-        reviewTaskRepository,
-        timestamp: now().toISOString(),
-      });
+      if (!reviewTaskRepository) {
+        return [normalizeSchedulerProjectionItem(payload)];
+      }
+
+      const activeTasks = await reviewTaskRepository.listReviewTaskProjectionsByUser?.(payload.user_id)
+        ?? [];
+      const mergeCandidate = pickReviewTaskMergeCandidate(activeTasks, payload);
+      if (mergeCandidate?.review_task_id) {
+        const mergedPatch = mergeReviewTaskPayload(
+          mergeCandidate,
+          payload,
+          now().toISOString(),
+        );
+        const merged = await reviewTaskRepository.updateReviewTask(
+          mergeCandidate.review_task_id,
+          mergedPatch,
+        );
+        return [
+          normalizeSchedulerProjectionItem({
+            ...mergeCandidate,
+            ...merged,
+            target_topic_path:
+              payload.target_topic_path ?? mergeCandidate.target_topic_path ?? null,
+          }),
+        ];
+      }
+
+      const stored = await reviewTaskRepository.insertReviewTask(payload);
+      return [
+        normalizeSchedulerProjectionItem({
+          ...stored,
+          target_topic_path: payload.target_topic_path,
+        }),
+      ];
     },
 
     async patchReviewTask({

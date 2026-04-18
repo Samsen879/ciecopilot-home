@@ -248,6 +248,8 @@ function createLearningDb(overrides = {}) {
     },
   ];
 
+  const artifactContentVersionRows = overrides.artifactContentVersionRows ?? [];
+
   const sessionRows = overrides.sessionRows ?? [
     {
       session_id: 'session-topic-2-later',
@@ -369,6 +371,11 @@ function createLearningDb(overrides = {}) {
       return this;
     }
 
+    in(column, values) {
+      this.filters.push({ type: 'in', column, values });
+      return this;
+    }
+
     lte(column, value) {
       this.filters.push({ type: 'lte', column, value });
       return this;
@@ -387,6 +394,36 @@ function createLearningDb(overrides = {}) {
         orders: [...this.orders],
         single: true,
       });
+
+      if (this.table === 'learning_artifact_content_versions') {
+        let rows = [...artifactContentVersionRows];
+
+        for (const filter of this.filters) {
+          if (filter.type === 'eq') {
+            rows = rows.filter((row) => row[filter.column] === filter.value);
+          }
+
+          if (filter.type === 'in') {
+            rows = rows.filter((row) => filter.values.includes(row[filter.column]));
+          }
+        }
+
+        for (const order of this.orders) {
+          rows = rows.sort((left, right) => {
+            const leftValue = left[order.column];
+            const rightValue = right[order.column];
+            const direction = order.options?.ascending === false ? -1 : 1;
+
+            if (leftValue === rightValue) {
+              return 0;
+            }
+
+            return leftValue > rightValue ? direction : -direction;
+          });
+        }
+
+        return { data: rows[0] ?? null, error: null };
+      }
 
       if (this.table !== 'learning_workspace_projection') {
         throw new Error(`Unexpected maybeSingle table: ${this.table}`);
@@ -430,6 +467,40 @@ function createLearningDb(overrides = {}) {
           if (filter.type === 'eq') {
             rows = rows.filter((row) => row[filter.column] === filter.value);
           }
+
+          if (filter.type === 'in') {
+            rows = rows.filter((row) => filter.values.includes(row[filter.column]));
+          }
+        }
+
+        return Promise.resolve({ data: rows, error: null }).then(resolve, reject);
+      }
+
+      if (this.table === 'learning_artifact_content_versions') {
+        let rows = [...artifactContentVersionRows];
+
+        for (const filter of this.filters) {
+          if (filter.type === 'eq') {
+            rows = rows.filter((row) => row[filter.column] === filter.value);
+          }
+
+          if (filter.type === 'in') {
+            rows = rows.filter((row) => filter.values.includes(row[filter.column]));
+          }
+        }
+
+        for (const order of this.orders) {
+          rows = rows.sort((left, right) => {
+            const leftValue = left[order.column];
+            const rightValue = right[order.column];
+            const direction = order.options?.ascending === false ? -1 : 1;
+
+            if (leftValue === rightValue) {
+              return 0;
+            }
+
+            return leftValue > rightValue ? direction : -direction;
+          });
         }
 
         return Promise.resolve({ data: rows, error: null }).then(resolve, reject);
@@ -468,6 +539,7 @@ function createBoundaryLearningDb() {
   const state = {
     nextReviewTaskId: 1,
     nextArtifactId: 1,
+    nextArtifactContentVersionId: 1,
     nextWorkspaceId: 1,
     nextWorkspaceSlotId: 1,
     nextReconciliationId: 1,
@@ -482,6 +554,7 @@ function createBoundaryLearningDb() {
     ]),
     reviewTasks: new Map(),
     artifacts: new Map(),
+    artifactContentVersions: new Map(),
     workspaces: new Map(),
     workspaceByUserTopic: new Map(),
     workspaceSlots: new Map(),
@@ -526,6 +599,22 @@ function createBoundaryLearningDb() {
 
       return String(left.created_at ?? '').localeCompare(String(right.created_at ?? ''));
     });
+  }
+
+  function listArtifactContentVersions(filters = []) {
+    let rows = [...state.artifactContentVersions.values()];
+
+    for (const filter of filters) {
+      if (filter.type === 'eq') {
+        rows = rows.filter((row) => row[filter.column] === filter.value);
+      }
+
+      if (filter.type === 'in') {
+        rows = rows.filter((row) => filter.values.includes(row[filter.column]));
+      }
+    }
+
+    return rows.sort((left, right) => Number(right.version_number ?? 0) - Number(left.version_number ?? 0));
   }
 
   function deriveWorkspaceProjection(userId, topicId) {
@@ -644,8 +733,33 @@ function createBoundaryLearningDb() {
     }
 
     if (query.table === 'learning_artifacts' && query.operation === 'select') {
-      const artifactId = findFilter(query.filters, 'artifact_id');
-      return { data: state.artifacts.get(artifactId) || null, error: null };
+      let rows = [...state.artifacts.values()];
+
+      for (const filter of query.filters) {
+        if (filter.type === 'eq') {
+          rows = rows.filter((row) => row[filter.column] === filter.value);
+        }
+      }
+
+      for (const order of query.orders ?? []) {
+        rows = rows.sort((left, right) => {
+          const leftValue = left[order.column];
+          const rightValue = right[order.column];
+          const direction = order.options?.ascending === false ? -1 : 1;
+
+          if (leftValue === rightValue) {
+            return 0;
+          }
+
+          return leftValue > rightValue ? direction : -direction;
+        });
+      }
+
+      if (query.options?.single || query.options?.maybeSingle) {
+        return { data: rows[0] || null, error: null };
+      }
+
+      return { data: rows, error: null };
     }
 
     if (query.table === 'learning_artifacts' && query.operation === 'update') {
@@ -655,6 +769,44 @@ function createBoundaryLearningDb() {
 
       if (next) {
         state.artifacts.set(artifactId, next);
+      }
+
+      return { data: next, error: null };
+    }
+
+    if (query.table === 'learning_artifact_content_versions' && query.operation === 'insert') {
+      const artifactId = query.payload.artifact_id;
+      const existing = listArtifactContentVersions([
+        { type: 'eq', column: 'artifact_id', value: artifactId },
+      ]);
+      const row = {
+        artifact_content_version_id:
+          `artifact-content-version-${state.nextArtifactContentVersionId++}`,
+        created_at: query.payload.created_at ?? '2026-03-22T09:00:00.000Z',
+        ...query.payload,
+      };
+      if (row.version_number == null) {
+        row.version_number = (existing[0]?.version_number ?? 0) + 1;
+      }
+      state.artifactContentVersions.set(row.artifact_content_version_id, row);
+      return { data: row, error: null };
+    }
+
+    if (query.table === 'learning_artifact_content_versions' && query.operation === 'select') {
+      const rows = listArtifactContentVersions(query.filters);
+      if (query.options?.single || query.options?.maybeSingle) {
+        return { data: rows[0] || null, error: null };
+      }
+      return { data: rows, error: null };
+    }
+
+    if (query.table === 'learning_artifact_content_versions' && query.operation === 'update') {
+      const versionId = findFilter(query.filters, 'artifact_content_version_id');
+      const current = state.artifactContentVersions.get(versionId) || null;
+      const next = current ? { ...current, ...query.payload } : null;
+
+      if (next) {
+        state.artifactContentVersions.set(versionId, next);
       }
 
       return { data: next, error: null };
@@ -782,6 +934,11 @@ function createBoundaryLearningDb() {
       return this;
     }
 
+    in(column, values) {
+      this.filters.push({ type: 'in', column, values });
+      return this;
+    }
+
     lte(column, value) {
       this.filters.push({ type: 'lte', column, value });
       return this;
@@ -823,6 +980,49 @@ function createBoundaryLearningDb() {
 
   return {
     queries,
+    async rpc(name, params) {
+      queries.push({
+        table: `rpc:${name}`,
+        params,
+      });
+
+      if (name !== 'create_learning_artifact_content_version') {
+        throw new Error(`Unhandled rpc: ${name}`);
+      }
+
+      const current = listArtifactContentVersions([
+        { type: 'eq', column: 'artifact_id', value: params.p_artifact_id },
+        { type: 'eq', column: 'is_current', value: true },
+      ])[0] ?? null;
+
+      if (params.p_is_current ?? true) {
+        if (current) {
+          state.artifactContentVersions.set(current.artifact_content_version_id, {
+            ...current,
+            is_current: false,
+          });
+        }
+      }
+
+      const row = {
+        artifact_content_version_id:
+          `artifact-content-version-${state.nextArtifactContentVersionId++}`,
+        artifact_id: params.p_artifact_id,
+        version_number: params.p_version_number,
+        lineage_parent_version_id: params.p_lineage_parent_version_id,
+        is_current: params.p_is_current,
+        title: params.p_title,
+        summary: params.p_summary,
+        body_markdown: params.p_body_markdown,
+        content_format: params.p_content_format,
+        render_payload: params.p_render_payload,
+        materialization_kind: params.p_materialization_kind,
+        source_refs: params.p_source_refs,
+        created_at: params.p_created_at ?? '2026-03-22T09:00:00.000Z',
+      };
+      state.artifactContentVersions.set(row.artifact_content_version_id, row);
+      return { data: row, error: null };
+    },
     from(table) {
       return new QueryBuilder(table);
     },
@@ -885,6 +1085,7 @@ describe('workspace read service', () => {
     expect(payload.workspace.slots.overview_map).toEqual({
       workspace_slot_id: null,
       primary_artifact_ref: null,
+      primary_artifact: null,
       linked_references: [],
       updated_at: null,
     });
@@ -894,6 +1095,7 @@ describe('workspace read service', () => {
         kind: 'artifact',
         artifact_id: 'artifact-primary',
       },
+      primary_artifact: null,
       linked_references: [
         { kind: 'artifact', artifact_id: 'artifact-linked-1' },
       ],
@@ -964,9 +1166,139 @@ describe('workspace read service', () => {
           updated_at: '2026-03-22T08:04:00.000Z',
         },
       ],
+      artifactContentVersionRows: [
+        {
+          artifact_content_version_id: 'artifact-content-verified-primary',
+          artifact_id: 'artifact-primary',
+          version_number: 1,
+          is_current: true,
+          title: 'Common trap: interval sign slip',
+          summary: 'The verified resident stays renderable while the successor remains unverified.',
+          body_markdown: 'Keep the verified resident visible until the successor is verified.',
+          content_format: 'markdown',
+        },
+      ],
       expectedPrimaryArtifactId: 'artifact-primary',
+      expectedPrimaryArtifact: {
+        title: 'Common trap: interval sign slip',
+        summary: 'The verified resident stays renderable while the successor remains unverified.',
+        current_content_version_number: 1,
+      },
       expectedSlotState: 'active',
       expectedInboxArtifactId: 'artifact-successor-unverified',
+    },
+    {
+      label: 'verified resident without current content stays pinned but surfaces missing_artifact_content',
+      workspaceProjection: {
+        workspace_id: 'workspace-1',
+        user_id: 'student-1',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+        slot_state: {
+          common_traps: 'active',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T08:00:00.000Z',
+        slots: [
+          {
+            workspace_slot_id: 'slot-common-traps',
+            slot_key: 'common_traps',
+            primary_artifact_ref: {
+              kind: 'artifact',
+              artifact_id: 'artifact-primary',
+            },
+            linked_reference_refs: [],
+            updated_at: '2026-03-22T08:00:00.000Z',
+          },
+        ],
+      },
+      artifactRows: [
+        {
+          artifact_id: 'artifact-primary',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          verified_by: 'operator-1',
+          verified_at: '2026-03-22T07:40:00.000Z',
+          verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+          updated_at: '2026-03-22T08:00:00.000Z',
+        },
+      ],
+      artifactContentVersionRows: [],
+      expectedPrimaryArtifactId: 'artifact-primary',
+      expectedPrimaryArtifact: null,
+      expectedSlotState: 'missing_artifact_content',
+      expectedInboxArtifactId: null,
+    },
+    {
+      label: 'verified resident with current content stays active and exposes renderable resident fields',
+      workspaceProjection: {
+        workspace_id: 'workspace-1',
+        user_id: 'student-1',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+        slot_state: {
+          common_traps: 'active',
+        },
+        linked_reference_summary: {
+          total_linked_references: 0,
+        },
+        updated_at: '2026-03-22T08:00:00.000Z',
+        slots: [
+          {
+            workspace_slot_id: 'slot-common-traps',
+            slot_key: 'common_traps',
+            primary_artifact_ref: {
+              kind: 'artifact',
+              artifact_id: 'artifact-primary',
+            },
+            linked_reference_refs: [],
+            updated_at: '2026-03-22T08:00:00.000Z',
+          },
+        ],
+      },
+      artifactRows: [
+        {
+          artifact_id: 'artifact-primary',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          verified_by: 'operator-1',
+          verified_at: '2026-03-22T07:40:00.000Z',
+          verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+          updated_at: '2026-03-22T08:00:00.000Z',
+        },
+      ],
+      artifactContentVersionRows: [
+        {
+          artifact_content_version_id: 'artifact-content-1',
+          artifact_id: 'artifact-primary',
+          version_number: 1,
+          is_current: true,
+          title: 'Common trap: sign error',
+          summary: 'Watch for sign changes before applying the interval restriction.',
+          body_markdown: 'Check the sign before you solve for the interval.',
+          content_format: 'markdown',
+        },
+      ],
+      expectedPrimaryArtifactId: 'artifact-primary',
+      expectedPrimaryArtifact: {
+        title: 'Common trap: sign error',
+        summary: 'Watch for sign changes before applying the interval restriction.',
+        current_content_version_number: 1,
+      },
+      expectedSlotState: 'active',
+      expectedInboxArtifactId: null,
     },
     {
       label: 'resident projection preserves stale warning state',
@@ -1011,7 +1343,24 @@ describe('workspace read service', () => {
           updated_at: '2026-03-22T08:03:00.000Z',
         },
       ],
+      artifactContentVersionRows: [
+        {
+          artifact_content_version_id: 'artifact-content-stale-primary',
+          artifact_id: 'artifact-primary',
+          version_number: 1,
+          is_current: true,
+          title: 'Common trap: stale but renderable',
+          summary: 'Resident content stays available even when the projection warning remains stale.',
+          body_markdown: 'Preserve the stale warning while keeping the resident renderable.',
+          content_format: 'markdown',
+        },
+      ],
       expectedPrimaryArtifactId: 'artifact-primary',
+      expectedPrimaryArtifact: {
+        title: 'Common trap: stale but renderable',
+        summary: 'Resident content stays available even when the projection warning remains stale.',
+        current_content_version_number: 1,
+      },
       expectedSlotState: 'stale',
       expectedInboxArtifactId: null,
     },
@@ -1065,13 +1414,16 @@ describe('workspace read service', () => {
   ])('workspace residency matrix: $label', async ({
     workspaceProjection,
     artifactRows,
+    artifactContentVersionRows,
     expectedPrimaryArtifactId,
+    expectedPrimaryArtifact,
     expectedSlotState,
     expectedInboxArtifactId,
   }) => {
     const db = createLearningDb({
       workspaceProjection,
       artifactRows,
+      artifactContentVersionRows,
     });
 
     const payload = await getWorkspaceView(db, {
@@ -1087,6 +1439,11 @@ describe('workspace read service', () => {
           kind: 'artifact',
           artifact_id: expectedPrimaryArtifactId,
         }
+        : null,
+    );
+    expect(payload.workspace.slots.common_traps.primary_artifact ?? null).toEqual(
+      expectedPrimaryArtifact
+        ? expect.objectContaining(expectedPrimaryArtifact)
         : null,
     );
     if (expectedInboxArtifactId) {
@@ -1419,6 +1776,12 @@ describe('workspace read service', () => {
     expect(outcome.release_scope_status).toBe('non_released_fallback');
     expect(outcome.review_tasks).toHaveLength(1);
     expect(outcome.artifact_candidates).toHaveLength(1);
+    expect(outcome.artifact_candidates[0]).toMatchObject({
+      title: expect.any(String),
+      summary: expect.any(String),
+      current_content_version_number: 1,
+      body_markdown: expect.stringContaining('domain interval'),
+    });
 
     await expect(
       getWorkspaceView(db, {
@@ -1443,12 +1806,32 @@ describe('workspace read service', () => {
       status: 'open',
     });
 
+    const verifyResult = await patchLearningArtifact({
+      client: db,
+      userId: 'student-1',
+      artifactId: outcome.artifact_candidates[0].artifact_id,
+      intent: 'mark_verified',
+      verificationEvidenceRef: {
+        kind: 'review_run',
+        review_run_id: 'review-verified-1',
+      },
+    }, {
+      lifecycleFlagEnabled: true,
+    });
+
+    expect(verifyResult.artifact).toMatchObject({
+      artifact_id: outcome.artifact_candidates[0].artifact_id,
+      artifact_state: 'verified',
+    });
+
     const patchResult = await patchLearningArtifact({
       client: db,
       userId: 'student-1',
       artifactId: outcome.artifact_candidates[0].artifact_id,
       intent: 'set_placement_status',
       placementStatus: 'pinned',
+    }, {
+      lifecycleFlagEnabled: true,
     });
 
     expect(patchResult.artifact).toMatchObject({
@@ -1465,6 +1848,7 @@ describe('workspace read service', () => {
     const workspaceAfterPatch = await getWorkspaceView(db, {
       userId: 'student-1',
       topicId: 'repair-target-topic',
+      residencyFlagEnabled: true,
     });
 
     expect(workspaceAfterPatch.review_queue.items[0].review_task_id)
@@ -1475,9 +1859,16 @@ describe('workspace read service', () => {
         kind: 'artifact',
         artifact_id: outcome.artifact_candidates[0].artifact_id,
       },
+      primary_artifact: expect.objectContaining({
+        artifact_id: outcome.artifact_candidates[0].artifact_id,
+        title: expect.any(String),
+        summary: expect.any(String),
+        current_content_version_number: 1,
+      }),
       linked_references: [],
       updated_at: '2026-03-22T09:00:00.000Z',
     });
+    expect(workspaceAfterPatch.workspace.slot_state.common_traps).toBe('active');
   });
 
   test('review-task writes update topic projections and active review-queue references', async () => {
@@ -1524,8 +1915,8 @@ describe('workspace read service', () => {
       },
     );
 
-    expect(outcome.release_scope_status).toBe('released_scoring');
-    expect(outcome.authoritative_scoring_allowed).toBe(true);
+    expect(outcome.release_scope_status).toBe('non_released_fallback');
+    expect(outcome.authoritative_scoring_allowed).toBe(false);
 
     await patchLearningArtifact({
       client: db,

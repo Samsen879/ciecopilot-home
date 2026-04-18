@@ -229,6 +229,8 @@ function createArtifactRepositoryFixture() {
     ],
   ]);
 
+  let nextArtifactId = 1;
+
   const workspaceSlots = new Map([
     [
       'student-1:repair-target-topic:common_traps',
@@ -245,6 +247,19 @@ function createArtifactRepositoryFixture() {
   ]);
 
   return {
+    async insertArtifact(input) {
+      const artifactId = input.artifact_id ?? `art-generated-${nextArtifactId++}`;
+      const row = {
+        artifact_id: artifactId,
+        created_at: input.created_at ?? '2026-03-22T08:00:00.000Z',
+        updated_at: input.updated_at ?? '2026-03-22T08:00:00.000Z',
+        ...input,
+        artifact_id: artifactId,
+      };
+      artifacts.set(artifactId, row);
+      return row;
+    },
+
     async getArtifactById(artifactId) {
       return artifacts.get(artifactId) || null;
     },
@@ -280,6 +295,65 @@ function createArtifactRepositoryFixture() {
         artifacts: new Map(artifacts),
         workspaceSlots: new Map(workspaceSlots),
       };
+    },
+  };
+}
+
+function createArtifactContentRepositoryFixture() {
+  const versionsByArtifactId = new Map();
+
+  function clone(value) {
+    return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
+  }
+
+  return {
+    async createArtifactContentVersion(input = {}) {
+      const existing = versionsByArtifactId.get(input.artifact_id) ?? [];
+      const current = existing.find((version) => version.is_current) ?? null;
+      const next = {
+        artifact_content_version_id: `content-version-${input.artifact_id}-${existing.length + 1}`,
+        artifact_id: input.artifact_id,
+        version_number: current ? Number(current.version_number) + 1 : 1,
+        lineage_parent_version_id: current?.artifact_content_version_id ?? null,
+        is_current: true,
+        title: input.title,
+        summary: input.summary ?? null,
+        body_markdown: input.body_markdown,
+        content_format: input.content_format ?? 'markdown',
+        render_payload: clone(input.render_payload ?? {}),
+        materialization_kind: input.materialization_kind ?? 'runtime_candidate',
+        source_refs: clone(input.source_refs ?? []),
+        created_at: input.created_at ?? '2026-03-22T08:00:00.000Z',
+      };
+
+      versionsByArtifactId.set(
+        input.artifact_id,
+        [
+          ...existing.map((version) => ({ ...version, is_current: false })),
+          next,
+        ],
+      );
+
+      return clone(next);
+    },
+
+    async getCurrentArtifactContentByArtifactId(artifactId) {
+      const current = (versionsByArtifactId.get(artifactId) ?? []).find((version) => version.is_current) ?? null;
+      return clone(current);
+    },
+
+    async listArtifactContentVersionsByArtifactId(artifactId) {
+      return clone(
+        (versionsByArtifactId.get(artifactId) ?? [])
+          .slice()
+          .sort((left, right) => Number(right.version_number) - Number(left.version_number)),
+      );
+    },
+
+    snapshot() {
+      return new Map(
+        [...versionsByArtifactId.entries()].map(([artifactId, versions]) => [artifactId, clone(versions)]),
+      );
     },
   };
 }
@@ -426,6 +500,51 @@ describe('artifact-service', () => {
       slot_key: 'common_traps',
       target_question_type_id: '9709.trigonometry.equations',
     });
+  });
+
+  test('runtime candidate materialization persists an initial content version alongside artifact metadata', async () => {
+    const artifactRepository = createArtifactRepositoryFixture();
+    const artifactContentRepository = createArtifactContentRepositoryFixture();
+    const service = createArtifactService({
+      artifactRepository,
+      artifactContentRepository,
+      lifecycleFlagEnabled: true,
+      now: () => new Date('2026-03-22T08:25:00.000Z'),
+    });
+
+    const [candidate] = await service.buildArtifactCandidates({
+      artifact_kind: 'misconception_card',
+      canonical_home_topic_id: 'topic-trig-equations',
+      canonical_home_topic_path: '9709/trigonometry/equations',
+      repair_target_topic_id: 'repair-target-topic',
+      repair_target_topic_path: '9709/trigonometry/repair',
+      target_family_id: '9709.trigonometry_manipulation_equations',
+      target_question_type_id: '9709.trigonometry.equations',
+      misconception_tags: ['sign_slip'],
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+      source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-1' },
+    });
+
+    expect(candidate).toMatchObject({
+      artifact_kind: 'misconception_card',
+      canonical_home_topic_id: 'repair-target-topic',
+      slot_key: 'common_traps',
+      title: 'Common trap: sign slip',
+      current_content_version_number: 1,
+      content_format: 'markdown',
+    });
+    expect(candidate.summary).toContain('9709.trigonometry.equations');
+    expect(candidate.body_markdown).toContain('sign slip');
+    expect(candidate.body_markdown).toContain('mark-run-1');
+
+    expect(artifactContentRepository.snapshot().get(candidate.artifact_id)).toEqual([
+      expect.objectContaining({
+        artifact_id: candidate.artifact_id,
+        version_number: 1,
+        is_current: true,
+        title: 'Common trap: sign slip',
+      }),
+    ]);
   });
 
   test('mark_verified requires explicit operator evidence and keeps released distinct from verified', async () => {

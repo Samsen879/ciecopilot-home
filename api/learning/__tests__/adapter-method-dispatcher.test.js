@@ -193,4 +193,72 @@ describe('adapter-method-dispatcher', () => {
       }),
     ]);
   });
+
+  test('keeps trivial trig equations conservative for the released identities pilot template', async () => {
+    const { runPilotAdapterRuntime } = await import('../lib/marking/adapter-method-dispatcher.js');
+
+    const template = {
+      question_type_id: '9709.trigonometry.identities',
+      parts: [
+        {
+          part_id: 'main',
+          points: [
+            {
+              point_id: 'identity-rewrite',
+              official_mark_notation: 'M1',
+              mark_family: 'M',
+              max_score: 1,
+              verification_condition: {
+                kind: 'adapter_call',
+                adapter_method: 'proof_structure_check',
+                params: {
+                  requires_identity_rewrite: true,
+                },
+              },
+            },
+            {
+              point_id: 'identity-result',
+              official_mark_notation: 'A1',
+              mark_family: 'A',
+              max_score: 1,
+              verification_condition: {
+                kind: 'adapter_call',
+                adapter_method: 'symbolic_check',
+                params: {
+                  expects_target_identity: true,
+                },
+              },
+              dependency_chain: {
+                prerequisite_point_ids: ['identity-rewrite'],
+                prerequisite_policy: 'all',
+                strict: true,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    const result = runPilotAdapterRuntime({
+      rubricTemplate: template,
+      studentSteps: [
+        { step_id: 's1', text: 'sin x = 0' },
+      ],
+    });
+
+    expect(result.decisions).toEqual([
+      expect.objectContaining({
+        rubric_id: 'identity-rewrite',
+        reason: 'pilot_adapter_mismatch',
+        awarded: false,
+        awarded_marks: 0,
+      }),
+      expect.objectContaining({
+        rubric_id: 'identity-result',
+        reason: 'dependency_not_met',
+        awarded: false,
+        awarded_marks: 0,
+      }),
+    ]);
+  });
 });

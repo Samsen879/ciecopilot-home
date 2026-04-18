@@ -878,6 +878,17 @@ describe('attempt-event-service', () => {
       debt_pending: true,
     });
 
+    records.deliveryRow = {
+      ...records.deliveryRow,
+      delivery_state: 'retrying',
+      last_attempted_at: '2026-04-17T09:59:00.000Z',
+      last_error: {
+        code: 'effect_execution_failed',
+        message: 'review task write failed',
+      },
+      reconciliation_id: null,
+    };
+
     const retried = await reconcileAttemptEventBridgeEffects(
       client,
       {
@@ -945,6 +956,13 @@ describe('attempt-event-service', () => {
         persisted_receipt_count: 3,
       },
     });
+    expect(records.deliveryRow).toMatchObject({
+      delivery_state: 'reconciled',
+      last_error: null,
+      reconciliation_id: 'recon-1',
+      last_attempted_at: expect.any(String),
+    });
+    expect(records.deliveryRow.last_attempted_at).not.toBe('2026-04-17T09:59:00.000Z');
   });
 
   test('downstream-effect read failures after persisted event writes do not downgrade the delivery row', async () => {

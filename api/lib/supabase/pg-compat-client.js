@@ -135,13 +135,34 @@ function buildWhereClause(tableAlias, filters, table, startingIndex = 1) {
 
   for (const filter of filters) {
     const columnSql = `${tableAlias}.${quoteIdent(filter.column)}`;
+    const filterType = filter.type || 'eq';
+
+    if (filterType === 'in') {
+      const normalizedValues = Array.isArray(filter.values)
+        ? filter.values.map((value) => normalizeParameterValue(table, filter.column, value))
+        : [];
+
+      if (normalizedValues.length === 0) {
+        clauses.push('FALSE');
+        continue;
+      }
+
+      const placeholders = normalizedValues.map((value) => {
+        values.push(value);
+        return buildPlaceholder(table, filter.column, startingIndex + values.length - 1);
+      });
+
+      clauses.push(`${columnSql} IN (${placeholders.join(', ')})`);
+      continue;
+    }
+
     if (filter.value === null) {
       clauses.push(`${columnSql} IS NULL`);
       continue;
     }
 
     values.push(normalizeParameterValue(table, filter.column, filter.value));
-    clauses.push(`${columnSql} = $${startingIndex + values.length - 1}`);
+    clauses.push(`${columnSql} = ${buildPlaceholder(table, filter.column, startingIndex + values.length - 1)}`);
   }
 
   return {
@@ -240,12 +261,17 @@ class PgCompatQueryBuilder {
   }
 
   eq(column, value) {
-    this.filters.push({ column, value });
+    this.filters.push({ type: 'eq', column, value });
     return this;
   }
 
   is(column, value) {
-    this.filters.push({ column, value });
+    this.filters.push({ type: 'is', column, value });
+    return this;
+  }
+
+  in(column, values) {
+    this.filters.push({ type: 'in', column, values });
     return this;
   }
 

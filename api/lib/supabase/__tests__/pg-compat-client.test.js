@@ -56,6 +56,50 @@ describe('pg-compat-client', () => {
     );
   });
 
+  test('supports select.in(...).eq(...) chains for batched current-content filters', async () => {
+    mockQuery.mockResolvedValueOnce({
+      rows: [
+        {
+          artifact_content_version_id: 'content-1',
+          artifact_id: 'artifact-1',
+          is_current: true,
+        },
+        {
+          artifact_content_version_id: 'content-2',
+          artifact_id: 'artifact-2',
+          is_current: true,
+        },
+      ],
+    });
+
+    const client = getPgCompatClient();
+    const result = await client
+      .from('learning_artifact_content_versions')
+      .select('*')
+      .in('artifact_id', ['artifact-1', 'artifact-2'])
+      .eq('is_current', true);
+
+    expect(result).toEqual({
+      data: [
+        {
+          artifact_content_version_id: 'content-1',
+          artifact_id: 'artifact-1',
+          is_current: true,
+        },
+        {
+          artifact_content_version_id: 'content-2',
+          artifact_id: 'artifact-2',
+          is_current: true,
+        },
+      ],
+      error: null,
+    });
+    expect(mockQuery).toHaveBeenCalledWith(
+      expect.stringContaining('t."artifact_id" IN ($1, $2) AND t."is_current" = $3'),
+      ['artifact-1', 'artifact-2', true],
+    );
+  });
+
   test('casts learning snapshot, question event, and question bank JSONB fields explicitly', async () => {
     mockQuery
       .mockResolvedValueOnce({

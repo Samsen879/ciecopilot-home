@@ -327,9 +327,9 @@ describe('learning runtime schema contract', () => {
       'descriptor_rows.summary',
       'descriptor_rows.question_type',
       'descriptor_rows.answer_form',
-      'descriptor_rows.year',
-      'descriptor_rows.session',
-      'descriptor_rows.paper_number',
+      'coalesce( descriptor_rows.year, (qb.paper_scope ->> \'year\')::integer ) as year',
+      'coalesce( descriptor_rows.session, qb.paper_scope ->> \'session\' ) as session',
+      'coalesce( descriptor_rows.paper_number, (qb.paper_scope ->> \'paper\')::integer ) as paper_number',
       'descriptor_rows.variant',
       'as search_text'
     ].forEach((token) => expect(sql).toContain(token));
@@ -340,6 +340,8 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('left join descriptor_rows');
     expect(sql).toContain('descriptor_rows.storage_key = qb.storage_key');
     expect(sql).toContain('descriptor_rows.q_number = qb.q_number');
+    expect(sql).toContain("qb.provenance_summary ->> 'summary'");
+    expect(sql).toContain("qb.provenance_summary ->> 'search_text'");
     expect(sql).toContain("qb.prompt_representation ->> 'value'");
   });
 });

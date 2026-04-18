@@ -69,7 +69,7 @@ describe('question evidence bundle v1', () => {
         buildLaneOutput({
           inputAssetId: '9709/s24_qp_31/questions/q08.png',
           route: 'ocr_lane',
-          model: 'qwen-vl-ocr',
+          model: 'qwen3.6-plus',
           evidence: {
             ocr_text: 'Find the value of the integral of (2x + 1)(x^2 + x)^4 dx.',
             formula_latex_list: ['\\int (2x + 1)(x^2 + x)^4 \\, dx'],
@@ -97,9 +97,9 @@ describe('question evidence bundle v1', () => {
         diagram_elements: [],
         spatial_evidence: [],
       },
-      route: {
-        route: 'ocr_lane',
-        model: 'qwen-vl-ocr',
+        route: {
+          route: 'ocr_lane',
+          model: 'qwen3.6-plus',
         region: 'dashscope-cn',
         prompt_template_version: 'v1',
         response_schema_version: 'v1',
@@ -112,11 +112,11 @@ describe('question evidence bundle v1', () => {
       },
     });
     expect(bundles[0].model_provenance).toEqual([
-      expect.objectContaining({
-        route: 'ocr_lane',
-        model: 'qwen-vl-ocr',
-        input_asset_id: '9709/s24_qp_31/questions/q08.png',
-      }),
+        expect.objectContaining({
+          route: 'ocr_lane',
+          model: 'qwen3.6-plus',
+          input_asset_id: '9709/s24_qp_31/questions/q08.png',
+        }),
     ]);
   });
 
@@ -255,6 +255,64 @@ describe('question evidence bundle v1', () => {
     });
   });
 
+  test('keeps review posture but routes non-gate-critical unknown-surface rows through extraction-first OCR lane', () => {
+    const manifest = buildManifest([
+      {
+        storage_key: '9709/s20_qp_12/questions/q02.png',
+        syllabus_code: '9709',
+        year: 2020,
+        session: 's',
+        paper: 1,
+        variant: 2,
+        q_number: 2,
+        primary_topic_path: '9709.p1.trigonometry',
+        route_hint: 'review_lane',
+        diagram_present: null,
+        formula_dense: null,
+        table_heavy: null,
+        surface_evidence_status: 'unknown_requires_primary_asset_replay',
+        gate_critical: false,
+        requires_review: true,
+      },
+    ]);
+
+    const bundles = buildQuestionEvidenceBundlesV1({
+      manifest,
+      laneOutputs: [
+        buildLaneOutput({
+          inputAssetId: '9709/s20_qp_12/questions/q02.png',
+          route: 'ocr_lane',
+          model: 'qwen3.6-plus',
+          confidence: 0.87,
+          warnings: ['requires_review', 'unknown_surface_flags'],
+          evidence: {
+            ocr_text: 'Find the exact value of tan 75 degrees.',
+            formula_latex_list: ['\\tan 75^\\circ'],
+            subquestion_blocks: ['(a)'],
+            layout_hints: ['single_column_prompt'],
+          },
+        }),
+      ],
+    });
+
+    expect(bundles).toHaveLength(1);
+    expect(bundles[0]).toMatchObject({
+      evidence: {
+        ocr_text: 'Find the exact value of tan 75 degrees.',
+        formula_latex_list: ['\\tan 75^\\circ'],
+      },
+      review_posture: {
+        requires_review: true,
+        gate_critical: false,
+      },
+      route: {
+        route: 'ocr_lane',
+        model: 'qwen3.6-plus',
+        confidence: 0.87,
+      },
+    });
+  });
+
   test('does not copy model or confidence from an unrelated fallback lane when the decided lane output is missing', () => {
     const manifest = buildManifest([
       {
@@ -282,7 +340,7 @@ describe('question evidence bundle v1', () => {
         buildLaneOutput({
           inputAssetId: '9709/s19_qp_11/questions/q06.png',
           route: 'ocr_lane',
-          model: 'qwen-vl-ocr',
+          model: 'qwen3.6-plus',
           confidence: 0.99,
           evidence: {
             ocr_text: 'Unrelated OCR output that should not override review-lane provenance.',

@@ -88,9 +88,30 @@ def test_route_manifest_item_selects_ocr_lane_for_formula_dense_text_dominant_ro
 
     assert decision.route == "ocr_lane"
     assert decision.lane == "ocr"
-    assert decision.model == "qwen-vl-ocr"
+    assert decision.model == "qwen3.6-plus"
     assert decision.lazy_attach_original_image is False
     assert "formula_dense" in decision.decision_reasons
+
+
+def test_route_manifest_item_uses_extraction_first_for_unknown_surface_rows_that_only_need_review_posture():
+    decision = route_manifest_item(
+        _item(
+            route_hint="review_lane",
+            diagram_present=None,
+            formula_dense=None,
+            table_heavy=None,
+            gate_critical=False,
+            requires_review=True,
+            surface_evidence_status="unknown_requires_primary_asset_replay",
+        )
+    )
+
+    assert decision.route == "ocr_lane"
+    assert decision.lane == "ocr"
+    assert decision.model == "qwen3.6-plus"
+    assert "requires_review" in decision.decision_reasons
+    assert "unknown_surface_flags" in decision.decision_reasons
+    assert "extraction_first_unknown_surface" in decision.decision_reasons
 
 
 def test_build_manifest_jobs_carries_lane_provider_model_and_prompt_metadata():

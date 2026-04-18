@@ -120,10 +120,11 @@ def route_manifest_item(
         reasons.append("gate_critical")
     if item.get("requires_review"):
         reasons.append("requires_review")
-    if _surface_flags_unknown(item):
+    surface_flags_unknown = _surface_flags_unknown(item)
+    if surface_flags_unknown:
         reasons.append("unknown_surface_flags")
 
-    if reasons:
+    if item.get("gate_critical"):
         return build_route_decision("review_lane", reasons, scope)
 
     if item.get("diagram_present") is True:
@@ -143,6 +144,13 @@ def route_manifest_item(
 
     if item.get("diagram_present") is False:
         return build_route_decision("ocr_lane", ["text_dominant"], scope)
+
+    if surface_flags_unknown or item.get("requires_review"):
+        return build_route_decision(
+            "ocr_lane",
+            [*reasons, "extraction_first_unknown_surface"],
+            scope,
+        )
 
     return build_route_decision("review_lane", ["router_fallback"], scope)
 

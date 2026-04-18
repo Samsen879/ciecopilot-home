@@ -3,11 +3,15 @@ import { jest } from '@jest/globals';
 
 import {
   buildCurriculumNodeResolutionSql,
+  buildGateCommand,
   DEFAULT_CURRICULUM_VERSION_TAG,
   DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
   getProjectionSearchMode,
   loadQuestionSearchGoldFixture,
+  parseQuestionSearchGateArgs,
+  resolveQuestionSearchGatePsqlConfig,
   runQuestionSearchGate,
+  selectSupabaseDbContainerName,
   searchProjectionFromDatabase,
 } from '../run_question_search_gate.js';
 
@@ -505,6 +509,58 @@ describe('question-search-gate', () => {
     expect(sql).toContain('LIMIT 1');
   });
 
+  test('parse/build gate command preserves docker psql execution flags', () => {
+    const args = parseQuestionSearchGateArgs([
+      '--fixture',
+      'data/eval/question_search_gold_9709_v1.json',
+      '--report',
+      'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun-report.md',
+      '--json-out',
+      'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun.json',
+      '--psql-mode',
+      'docker',
+      '--psql-container',
+      'supabase_db_ciecopilot-home',
+    ]);
+
+    expect(args).toMatchObject({
+      fixture: 'data/eval/question_search_gold_9709_v1.json',
+      report: 'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun-report.md',
+      jsonOut: 'docs/reports/2026-04-16-9709-question-search-gate-hotfix-rerun.json',
+      psqlMode: 'docker',
+      psqlContainer: 'supabase_db_ciecopilot-home',
+    });
+    expect(buildGateCommand(args)).toContain('--psql-mode docker');
+    expect(buildGateCommand(args)).toContain('--psql-container supabase_db_ciecopilot-home');
+    expect(
+      resolveQuestionSearchGatePsqlConfig(args, {
+        DATABASE_URL: 'postgresql://postgres:postgres@127.0.0.1:54322/postgres',
+      }),
+    ).toEqual({
+      mode: 'docker',
+      databaseUrl: null,
+      containerName: 'supabase_db_ciecopilot-home',
+    });
+  });
+
+  test('selectSupabaseDbContainerName returns the sole matching container and fails loudly when missing or ambiguous', () => {
+    expect(selectSupabaseDbContainerName([
+      'redis_cache_ciecopilot-home',
+      'supabase_db_ciecopilot-home',
+      'supabase_imgproxy_ciecopilot-home',
+    ])).toBe('supabase_db_ciecopilot-home');
+
+    expect(() => selectSupabaseDbContainerName([
+      'redis_cache_ciecopilot-home',
+      'studio_ciecopilot-home',
+    ])).toThrow('Supabase DB container not found');
+
+    expect(() => selectSupabaseDbContainerName([
+      'supabase_db_alpha',
+      'supabase_db_beta',
+    ])).toThrow('Multiple Supabase DB containers found');
+  });
+
   test('getProjectionSearchMode falls back to psql for DATABASE_URL-only environments', () => {
     expect(getProjectionSearchMode({
       DATABASE_URL: 'postgres://example.test/db',
@@ -579,6 +635,45 @@ describe('question-search-gate', () => {
 
     expect(result.total).toBe(2);
     expect(runPsqlJsonFn).toHaveBeenCalledTimes(1);
+    expect(searchQuestionsFn).not.toHaveBeenCalled();
+    expect(getServiceClientFn).not.toHaveBeenCalled();
+  });
+
+  test('searchProjectionFromDatabase honors explicit psqlConfig even when service env is available', async () => {
+    const runPsqlJsonFn = jest.fn().mockResolvedValue({
+      total: 1,
+      items: [{ question_id: 'question-paper-1' }],
+    });
+    const searchQuestionsFn = jest.fn();
+    const getServiceClientFn = jest.fn();
+
+    const result = await searchProjectionFromDatabase({
+      subject_code: '9709',
+      query: 'prove identity',
+    }, {
+      env: {
+        DATABASE_URL: 'postgres://example.test/db',
+        SUPABASE_URL: 'https://supabase.example.test',
+        SUPABASE_SERVICE_ROLE_KEY: 'service-role-key',
+      },
+      psqlConfig: {
+        mode: 'docker',
+        databaseUrl: null,
+        containerName: 'supabase_db_ciecopilot-home',
+      },
+      runPsqlJsonFn,
+      searchQuestionsFn,
+      getServiceClientFn,
+    });
+
+    expect(result.total).toBe(1);
+    expect(runPsqlJsonFn).toHaveBeenCalledTimes(1);
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain('FROM public.learning_question_search_projection');
+    expect(runPsqlJsonFn.mock.calls[0][1]).toEqual({
+      mode: 'docker',
+      databaseUrl: null,
+      containerName: 'supabase_db_ciecopilot-home',
+    });
     expect(searchQuestionsFn).not.toHaveBeenCalled();
     expect(getServiceClientFn).not.toHaveBeenCalled();
   });

@@ -58,7 +58,7 @@ class WindowsHostQwenProvider(VLMProvider):
 
     def __init__(
         self,
-        model: str = "qwen-vl-ocr",
+        model: str = "qwen3.6-plus",
         lane: str | None = None,
         prompt_template_id: str | None = None,
         prompt_template_version: str = "v1",
@@ -86,7 +86,7 @@ class WindowsHostQwenProvider(VLMProvider):
                     ],
                 }
             ],
-            "max_tokens": 512,
+            "max_tokens": self._max_tokens(),
             "temperature": 0,
             "enable_thinking": False,
             "response_format": {"type": "json_object"},
@@ -108,10 +108,10 @@ class WindowsHostQwenProvider(VLMProvider):
                 "Return a single JSON object only. "
                 "This is an OCR and document-surface extraction task. "
                 "Do not infer topic, syllabus, or solution steps. "
-                "Include keys ocr_text, formula_latex_list, subquestion_blocks, layout_hints, "
-                "symbol_inventory, table_blocks, line_boxes, ocr_confidence. "
+                "Include keys ocr_text, formula_latex_list, subquestion_blocks, layout_hints, ocr_confidence. "
                 "Use the exact visible text for ocr_text. "
-                "Use arrays for list-like fields, objects for detected blocks/boxes, and numbers for confidence. "
+                "Use arrays for list-like fields and a number for ocr_confidence. "
+                "Keep ocr_text concise but complete enough to preserve the question stem and subparts. "
                 "If a field is not visible, return an empty string only for ocr_text and otherwise return [] or 0. "
                 "Do not include markdown fences or explanation."
             )
@@ -129,12 +129,17 @@ class WindowsHostQwenProvider(VLMProvider):
         if self.lane == "review":
             return (
                 "Return a single JSON object only. "
-                "This is a multimodal review triage task. "
+                "This is a multimodal extraction-plus-review task. "
                 "Do not assign final topic, syllabus, or answer. "
-                "Include keys requires_review, review_reasons, ambiguity_flags, review_summary, review_confidence. "
+                "First extract visible evidence, then report whether downstream review is still needed. "
+                "Include keys ocr_text, formula_latex_list, subquestion_blocks, layout_hints, "
+                "diagram_present, diagram_elements, spatial_evidence, "
+                "requires_review, review_reasons, ambiguity_flags, review_summary, review_confidence. "
+                "Use the exact visible text for ocr_text. "
+                "Use null for diagram_present when the image is too ambiguous to decide. "
                 "Set requires_review true only when the image has visual ambiguity, legibility risk, diagram complexity, "
                 "or layout issues that likely need downstream review. "
-                "Use [] for list fields, an empty string for review_summary when nothing useful can be said, and 0 for review_confidence. "
+                "Use [] for list fields, an empty string for ocr_text/review_summary when nothing useful can be said, and 0 for review_confidence. "
                 "Do not include markdown fences or explanation."
             )
         return (
@@ -170,6 +175,13 @@ class WindowsHostQwenProvider(VLMProvider):
             }
         if self.lane == "review":
             return {
+                "ocr_text": _normalize_text(parsed.get("ocr_text")),
+                "formula_latex_list": _normalize_string_list(parsed.get("formula_latex_list")),
+                "subquestion_blocks": _normalize_string_list(parsed.get("subquestion_blocks")),
+                "layout_hints": _normalize_string_list(parsed.get("layout_hints")),
+                "diagram_present": _normalize_nullable_bool(parsed.get("diagram_present")),
+                "diagram_elements": _normalize_string_list(parsed.get("diagram_elements")),
+                "spatial_evidence": _normalize_string_list(parsed.get("spatial_evidence")),
                 "requires_review": _normalize_bool(parsed.get("requires_review")),
                 "review_reasons": _normalize_string_list(parsed.get("review_reasons")),
                 "ambiguity_flags": _normalize_string_list(parsed.get("ambiguity_flags")),
@@ -177,6 +189,11 @@ class WindowsHostQwenProvider(VLMProvider):
                 "review_confidence": _normalize_float(parsed.get("review_confidence")),
             }
         return parsed
+
+    def _max_tokens(self) -> int:
+        if self.lane == "ocr":
+            return 768
+        return 512
 
 
 def _normalize_text(value: Any) -> str:
@@ -232,6 +249,16 @@ def _normalize_bool(value: Any) -> bool:
     return False
 
 
+def _normalize_nullable_bool(value: Any) -> bool | None:
+    if value is None:
+        return None
+    if isinstance(value, str) and not value.strip():
+        return None
+    if isinstance(value, str) and value.strip().lower() == "null":
+        return None
+    return _normalize_bool(value)
+
+
 def _normalize_float(value: Any) -> float:
     try:
         return max(0.0, min(1.0, float(value)))
@@ -251,7 +278,7 @@ def get_provider(
         return MockProvider()
     if name == "windows-qwen":
         return WindowsHostQwenProvider(
-            model=model or "qwen-vl-ocr",
+            model=model or "qwen3.6-plus",
             lane=lane,
             prompt_template_id=prompt_template_id,
             prompt_template_version=prompt_template_version,

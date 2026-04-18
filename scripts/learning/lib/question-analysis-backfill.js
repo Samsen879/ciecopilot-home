@@ -17,6 +17,14 @@ function normalizeStringArray(value) {
   return value.map((entry) => normalizeString(entry)).filter(Boolean);
 }
 
+function uniqueStrings(values = []) {
+  return [...new Set(normalizeStringArray(values))];
+}
+
+function hasTrigToken(value) {
+  return /(?:^|[^a-z])(sin|cos|tan|sec|cosec|cot)(?:[^a-z]|$)/u.test(value);
+}
+
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -64,6 +72,154 @@ function normalizeFormulaLatexForPrompt(value) {
     .replace(/[{}]/gu, '')
     .replace(/\s+/gu, ' ')
     .trim();
+}
+
+function extractSubquestionText(block) {
+  const normalized = normalizeString(block);
+  if (!normalized) {
+    return '';
+  }
+
+  const match = normalized.match(/['"]text['"]:\s*['"](.+?)['"]/u);
+  if (!match?.[1]) {
+    return normalized;
+  }
+
+  return normalizeString(match[1].replace(/\\'/gu, '\'').replace(/\\"/gu, '"'));
+}
+
+function buildEvidenceDerivedSummary(questionEvidenceBundle = null) {
+  const evidence = questionEvidenceBundle?.evidence ?? {};
+  const ocrText = normalizeString(evidence.ocr_text);
+  if (ocrText) {
+    return ocrText;
+  }
+
+  const subquestionSummary = uniqueStrings(
+    normalizeArray(evidence.subquestion_blocks).map(extractSubquestionText),
+  ).join(' ');
+  if (subquestionSummary) {
+    return subquestionSummary;
+  }
+
+  const formulaSummary = uniqueStrings(
+    normalizeArray(evidence.formula_latex_list).map(normalizeFormulaLatexForPrompt),
+  ).join(' ; ');
+  if (formulaSummary) {
+    return formulaSummary;
+  }
+
+  return '';
+}
+
+function buildQuestionSearchSignals(summary, classification) {
+  const prompt = normalizeString(summary).toLowerCase();
+  const signals = [];
+  const hasTrig = hasTrigToken(prompt);
+  const hasIdentityLanguage = /(prove|show|identity)/u.test(prompt);
+  const hasEquationLanguage = /(solve|equation)/u.test(prompt);
+  const hasIntegral = /(integral|dx\b|∫)/u.test(prompt);
+  const hasSubstitution = /\bsubstitut/u.test(prompt);
+  const mentionsIntegralI = /\blet\s+i\b|\bi\s*=/u.test(prompt);
+
+  if (classification?.primary_question_type_id === '9709.trigonometry.identities') {
+    signals.push('trigonometric identity', 'prove identity');
+  }
+  if (classification?.primary_question_type_id === '9709.trigonometry.equations') {
+    signals.push('trigonometric equation', 'solve equation');
+  }
+  if (classification?.primary_question_type_id === '9709.integration.application') {
+    signals.push('evaluate integral', 'integration application');
+  }
+  if (classification?.primary_question_type_id === '9709.differential_equations.separable') {
+    signals.push('solve differential equation', 'separable differential equation');
+  }
+
+  if (hasTrig && hasIdentityLanguage && hasEquationLanguage) {
+    signals.push('Prove trigonometric identity and solve equation');
+  }
+  if (hasIntegral && hasSubstitution && mentionsIntegralI) {
+    signals.push('Evaluate integral I using substitution');
+  }
+  if (hasIntegral && hasSubstitution) {
+    signals.push('Evaluate integral using substitution');
+  }
+
+  if (hasTrig && hasIdentityLanguage) {
+    signals.push('trigonometric identity');
+  }
+  if (hasTrig && hasEquationLanguage) {
+    signals.push('solve equation');
+  }
+  if (hasIntegral) {
+    signals.push('evaluate integral');
+  }
+  if (hasSubstitution) {
+    signals.push('using substitution');
+  }
+  if (/(differential equation|dy\s*\/\s*dx)/u.test(prompt)) {
+    signals.push('solve differential equation');
+  }
+
+  return uniqueStrings(signals);
+}
+
+function buildEvidenceDerivedSearchText(questionEvidenceBundle = null, classification = null) {
+  if (!questionEvidenceBundle) {
+    return '';
+  }
+
+  const evidence = questionEvidenceBundle.evidence ?? {};
+  const summary = buildEvidenceDerivedSummary(questionEvidenceBundle);
+  const subquestionText = uniqueStrings(
+    normalizeArray(evidence.subquestion_blocks).map(extractSubquestionText),
+  );
+  const formulaText = uniqueStrings(
+    normalizeArray(evidence.formula_latex_list).map(normalizeFormulaLatexForPrompt),
+  );
+  const signals = buildQuestionSearchSignals(summary, classification);
+
+  return uniqueStrings([
+    signals.join(' '),
+    summary,
+    ...subquestionText,
+    ...formulaText,
+  ]).join('\n\n');
+}
+
+function buildQuestionPromptRepresentation(question = {}, questionEvidenceBundle = null) {
+  const derivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle);
+  if (derivedSummary) {
+    return {
+      type: 'text',
+      value: derivedSummary,
+    };
+  }
+
+  return normalizeObject(question?.prompt_representation);
+}
+
+function buildQuestionProvenanceSummary(
+  question = {},
+  questionEvidenceBundle = null,
+  classification = null,
+) {
+  const existing = normalizeObject(question?.provenance_summary, {}) ?? {};
+  const derivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle);
+  const derivedSearchText = buildEvidenceDerivedSearchText(questionEvidenceBundle, classification);
+
+  return {
+    ...existing,
+    summary: derivedSummary || existing.summary || null,
+    title: derivedSummary || existing.title || null,
+    search_text: derivedSearchText || existing.search_text || null,
+    descriptor_summary_status: derivedSummary
+      ? 'evidence_bundle_summary'
+      : existing.descriptor_summary_status ?? 'missing',
+    descriptor_search_text_status: derivedSearchText
+      ? 'evidence_bundle_search_text'
+      : existing.descriptor_search_text_status ?? 'missing',
+  };
 }
 
 function buildQuestionEvidenceBundleClassificationInput(questionEvidenceBundle = null) {
@@ -290,6 +446,46 @@ async function supersedeActiveSnapshot(client, {
   }
 }
 
+async function restoreActiveSnapshot(client, {
+  activeSnapshotId,
+} = {}) {
+  if (!activeSnapshotId) {
+    return;
+  }
+
+  const { error } = await client
+    .from('learning_question_analysis_snapshots')
+    .update({
+      superseded_by_snapshot_id: null,
+    })
+    .eq('classification_snapshot_id', activeSnapshotId);
+
+  if (error) {
+    throw new Error(
+      `Failed to restore active question classification snapshot: ${error.message}`,
+    );
+  }
+}
+
+async function deleteSnapshot(client, {
+  snapshotId,
+} = {}) {
+  if (!snapshotId) {
+    return;
+  }
+
+  const { error } = await client
+    .from('learning_question_analysis_snapshots')
+    .delete()
+    .eq('classification_snapshot_id', snapshotId);
+
+  if (error) {
+    throw new Error(
+      `Failed to delete replacement question classification snapshot during rollback: ${error.message}`,
+    );
+  }
+}
+
 export async function backfillQuestionAnalysisRecord(client, {
   question,
   analysisHints = null,
@@ -326,77 +522,117 @@ export async function backfillQuestionAnalysisRecord(client, {
     ? await findActiveSnapshotId(client, { questionId: question?.question_id ?? null })
     : null;
   const replacementSnapshotId = activeSnapshotId ? randomUUID() : null;
+  let insertedSnapshotId = null;
+  let eventRef = null;
+  let supersededActiveSnapshot = false;
 
-  if (force && activeSnapshotId) {
-    await supersedeActiveSnapshot(client, {
-      activeSnapshotId,
-      replacementSnapshotId,
-    });
+  try {
+    if (force && activeSnapshotId) {
+      await supersedeActiveSnapshot(client, {
+        activeSnapshotId,
+        replacementSnapshotId,
+      });
+      supersededActiveSnapshot = true;
+    }
+
+    const snapshotRow = buildSnapshotRow(question.question_id, materializedClassification);
+    if (replacementSnapshotId) {
+      snapshotRow.classification_snapshot_id = replacementSnapshotId;
+    }
+
+    const { data: insertedSnapshot, error: snapshotError } = await client
+      .from('learning_question_analysis_snapshots')
+      .insert(snapshotRow)
+      .select('classification_snapshot_id')
+      .single();
+
+    if (snapshotError || !insertedSnapshot) {
+      throw new Error(
+        `Failed to insert backfill question classification snapshot: ${snapshotError?.message || 'no data returned'}`,
+      );
+    }
+    insertedSnapshotId = insertedSnapshot.classification_snapshot_id;
+
+    ({ eventRef } = await appendQuestionClassifiedEvent(client, {
+      questionId: question.question_id,
+      classificationSnapshotId: insertedSnapshotId,
+      question,
+      classification: materializedClassification,
+    }));
+
+    const { error: snapshotUpdateError } = await client
+      .from('learning_question_analysis_snapshots')
+      .update({ evidence_source_event_ref: eventRef })
+      .eq('classification_snapshot_id', insertedSnapshotId);
+
+    if (snapshotUpdateError) {
+      throw new Error(
+        `Failed to link backfill snapshot to QuestionClassified event: ${snapshotUpdateError.message}`,
+      );
+    }
+
+    const { error: questionUpdateError } = await client
+      .from('question_bank')
+      .update({
+        primary_topic_id: materializedClassification.primary_topic_id ?? question?.primary_topic_id ?? null,
+        secondary_topic_ids: materializedClassification.secondary_topic_ids,
+        family_id: materializedClassification.family_id ?? null,
+        primary_question_type_id: materializedClassification.primary_question_type_id ?? null,
+        secondary_question_type_ids: materializedClassification.secondary_question_type_ids,
+        variant_tags: materializedClassification.variant_tags,
+        release_scope_status: scoringScopePosture.release_scope_status,
+        prompt_representation: buildQuestionPromptRepresentation(
+          question,
+          normalizedQuestionEvidenceBundle,
+        ),
+        provenance_summary: buildQuestionProvenanceSummary(
+          question,
+          normalizedQuestionEvidenceBundle,
+          materializedClassification,
+        ),
+        classification_snapshot_ref: buildClassificationSnapshotRef(
+          insertedSnapshotId,
+        ),
+      })
+      .eq('question_id', question.question_id);
+
+    if (questionUpdateError) {
+      throw new Error(
+        `Failed to update question_bank during question-analysis backfill: ${questionUpdateError.message}`,
+      );
+    }
+
+    return {
+      question_id: question.question_id,
+      classification_snapshot_id: insertedSnapshotId,
+      scoring_scope_posture: scoringScopePosture,
+      event_ref: eventRef,
+    };
+  } catch (error) {
+    if (supersededActiveSnapshot) {
+      const rollbackErrors = [];
+
+      if (insertedSnapshotId) {
+        try {
+          await deleteSnapshot(client, { snapshotId: insertedSnapshotId });
+        } catch (rollbackError) {
+          rollbackErrors.push(rollbackError.message);
+        }
+      }
+
+      try {
+        await restoreActiveSnapshot(client, { activeSnapshotId });
+      } catch (rollbackError) {
+        rollbackErrors.push(rollbackError.message);
+      }
+
+      if (rollbackErrors.length > 0) {
+        throw new Error(`${error.message}; rollback failed: ${rollbackErrors.join('; ')}`);
+      }
+    }
+
+    throw error;
   }
-
-  const snapshotRow = buildSnapshotRow(question.question_id, materializedClassification);
-  if (replacementSnapshotId) {
-    snapshotRow.classification_snapshot_id = replacementSnapshotId;
-  }
-
-  const { data: insertedSnapshot, error: snapshotError } = await client
-    .from('learning_question_analysis_snapshots')
-    .insert(snapshotRow)
-    .select('classification_snapshot_id')
-    .single();
-
-  if (snapshotError || !insertedSnapshot) {
-    throw new Error(
-      `Failed to insert backfill question classification snapshot: ${snapshotError?.message || 'no data returned'}`,
-    );
-  }
-
-  const { eventRef } = await appendQuestionClassifiedEvent(client, {
-    questionId: question.question_id,
-    classificationSnapshotId: insertedSnapshot.classification_snapshot_id,
-    question,
-    classification: materializedClassification,
-  });
-
-  const { error: snapshotUpdateError } = await client
-    .from('learning_question_analysis_snapshots')
-    .update({ evidence_source_event_ref: eventRef })
-    .eq('classification_snapshot_id', insertedSnapshot.classification_snapshot_id);
-
-  if (snapshotUpdateError) {
-    throw new Error(
-      `Failed to link backfill snapshot to QuestionClassified event: ${snapshotUpdateError.message}`,
-    );
-  }
-
-  const { error: questionUpdateError } = await client
-    .from('question_bank')
-    .update({
-      primary_topic_id: materializedClassification.primary_topic_id ?? null,
-      secondary_topic_ids: materializedClassification.secondary_topic_ids,
-      family_id: materializedClassification.family_id ?? null,
-      primary_question_type_id: materializedClassification.primary_question_type_id ?? null,
-      secondary_question_type_ids: materializedClassification.secondary_question_type_ids,
-      variant_tags: materializedClassification.variant_tags,
-      release_scope_status: scoringScopePosture.release_scope_status,
-      classification_snapshot_ref: buildClassificationSnapshotRef(
-        insertedSnapshot.classification_snapshot_id,
-      ),
-    })
-    .eq('question_id', question.question_id);
-
-  if (questionUpdateError) {
-    throw new Error(
-      `Failed to update question_bank during question-analysis backfill: ${questionUpdateError.message}`,
-    );
-  }
-
-  return {
-    question_id: question.question_id,
-    classification_snapshot_id: insertedSnapshot.classification_snapshot_id,
-    scoring_scope_posture: scoringScopePosture,
-    event_ref: eventRef,
-  };
 }
 
 export async function runQuestionAnalysisBackfill(client, {

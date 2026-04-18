@@ -20,7 +20,7 @@ def _job(**overrides):
         "route": "ocr_lane",
         "lane": "ocr",
         "provider": "windows-qwen",
-        "model": "qwen-vl-ocr",
+        "model": "qwen3.6-plus",
         "prompt_template_id": "ocr_specialist",
         "prompt_template_version": "v1",
         "response_schema_version": "v1",
@@ -47,7 +47,7 @@ def test_run_lane_job_wraps_provider_output_in_wave1_contract(tmp_path):
 
     class FakeProvider:
         name = "windows-qwen"
-        model = "qwen-vl-ocr"
+        model = "qwen3.6-plus"
 
         def generate(self, _image_path):
             return {
@@ -102,6 +102,54 @@ def test_run_lane_job_surfaces_provider_failures_in_contract_envelope(tmp_path):
     assert payload["confidence"] == 0.0
     assert payload["output"]["summary"] is None
     assert "lazy_attach_original_image" in payload["output"]["warnings"]
+
+
+def test_run_lane_job_uses_review_extraction_fields_when_review_summary_is_blank(tmp_path):
+    image_path = tmp_path / "q07.png"
+    image_path.write_bytes(b"fake-image")
+
+    class ReviewProvider:
+        name = "windows-qwen"
+        model = "qwen3.6-plus"
+
+        def generate(self, _image_path):
+            return {
+                "ocr_text": "State the binomial expansion of (1 + x)^5.",
+                "formula_latex_list": ["(1+x)^5"],
+                "subquestion_blocks": ["(a)"],
+                "layout_hints": ["single column"],
+                "diagram_present": False,
+                "diagram_elements": [],
+                "spatial_evidence": [],
+                "requires_review": True,
+                "review_reasons": ["unknown_surface_flags"],
+                "ambiguity_flags": [],
+                "review_summary": "",
+                "review_confidence": 0.72,
+            }
+
+    payload = run_lane_job(
+        _job(
+            route="review_lane",
+            lane="review",
+            model="qwen3.6-plus",
+            prompt_template_id="review_specialist",
+            lazy_attach_original_image=True,
+            requires_review=True,
+        ),
+        image_path=image_path,
+        provider=ReviewProvider(),
+    )
+
+    validate_qwen_wave1_output(payload)
+    assert payload["route"] == "review_lane"
+    assert payload["failure_reason"] is None
+    assert payload["confidence"] == 0.72
+    assert payload["output"]["summary"] == "State the binomial expansion of (1 + x)^5."
+    assert any(
+        entry["field"] == "formula_latex_list" and entry["value"] == ["(1+x)^5"]
+        for entry in payload["output"]["evidence"]
+    )
 
 
 def test_main_loads_project_env_before_running_manifest(capsys):

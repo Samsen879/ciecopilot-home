@@ -10,6 +10,10 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
+function hasTrigToken(prompt) {
+  return /(?:^|[^a-z])(sin|cos|tan|sec|cosec|cot)(?:[^a-z]|$)/u.test(prompt);
+}
+
 function buildRuleMatch({
   questionTypeId,
   baseConfidence,
@@ -75,7 +79,7 @@ const QUESTION_TYPE_RULES = Object.freeze([
     questionTypeId: '9709.trigonometry.identities',
     familyId: '9709.trigonometry_manipulation_equations',
     matches(prompt) {
-      const hasTrig = /(sin|cos|tan|sec|cosec|cot)/u.test(prompt);
+      const hasTrig = hasTrigToken(prompt);
       const isIdentity = /(prove|show that|hence show|identity)/u.test(prompt);
       if (!hasTrig || !isIdentity) {
         return null;
@@ -100,7 +104,7 @@ const QUESTION_TYPE_RULES = Object.freeze([
     questionTypeId: '9709.trigonometry.equations',
     familyId: '9709.trigonometry_manipulation_equations',
     matches(prompt) {
-      const hasTrig = /(sin|cos|tan|sec|cosec|cot)/u.test(prompt);
+      const hasTrig = hasTrigToken(prompt);
       const isEquation = /(solve|find all values of x|0\s*[<≤]=?\s*x|x\s*[<≤]=?\s*360)/u.test(prompt);
       if (!hasTrig || !isEquation) {
         return null;

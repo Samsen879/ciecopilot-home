@@ -104,11 +104,12 @@ export function resolveQuestionEvidenceRoute(manifestItem = {}, contract = loadR
   if (manifestItem.requires_review) {
     reasons.push('requires_review');
   }
-  if (surfaceFlagsUnknown(manifestItem)) {
+  const unknownSurface = surfaceFlagsUnknown(manifestItem);
+  if (unknownSurface) {
     reasons.push('unknown_surface_flags');
   }
 
-  if (reasons.length > 0) {
+  if (manifestItem.gate_critical) {
     return buildRouteDecision('review_lane', reasons, contract);
   }
 
@@ -134,6 +135,14 @@ export function resolveQuestionEvidenceRoute(manifestItem = {}, contract = loadR
 
   if (manifestItem.diagram_present === false) {
     return buildRouteDecision('ocr_lane', ['text_dominant'], contract);
+  }
+
+  if (unknownSurface || manifestItem.requires_review) {
+    return buildRouteDecision(
+      'ocr_lane',
+      [...reasons, 'extraction_first_unknown_surface'],
+      contract,
+    );
   }
 
   return buildRouteDecision('review_lane', ['router_fallback'], contract);

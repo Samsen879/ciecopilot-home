@@ -1210,6 +1210,18 @@ export async function reconcileAttemptEventBridgeEffects(client, {
     completed_at: timestamp,
   });
 
+  if (learningEffects.effect_execution.ok) {
+    await updateAttemptEventBridgeDelivery(client, {
+      stableIdempotencyKey,
+      patch: {
+        delivery_state: 'reconciled',
+        last_attempted_at: timestamp,
+        last_error: null,
+        reconciliation_id: run?.reconciliation_run_id ?? null,
+      },
+    });
+  }
+
   return {
     reconciliation_run_id: run?.reconciliation_run_id ?? null,
     status: run?.status ?? (learningEffects.effect_execution.ok ? 'completed' : 'failed'),

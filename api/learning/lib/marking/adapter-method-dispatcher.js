@@ -36,6 +36,45 @@ function hasIntegralSignal(text) {
   return hasAny(text, [/\bintegral\b/, /∫/, /\bln\b/, /\+ c\b/, /\banti-?derivative\b/]);
 }
 
+function hasIdentityRewriteVocabulary(text) {
+  return hasAny(text, [
+    /\bidentity\b/,
+    /\brewrite\b/,
+    /\blhs\b/,
+    /\brhs\b/,
+    /\bsimplif/,
+    /\bexpand/,
+    /\bfactor/,
+    /\bsubstitut/,
+    /\bequivalent\b/,
+  ]);
+}
+
+function hasTrigIdentityStructure(text) {
+  return hasAny(text, [
+    /\bsin\^?2\b.*\bcos\^?2\b/,
+    /\bcos\^?2\b.*\bsin\^?2\b/,
+    /\btan\^?2\b/,
+    /\bsec\^?2\b/,
+    /\bcosec\^?2\b/,
+    /\bcot\^?2\b/,
+    /\b1\s*\+\s*tan\b/,
+    /\b1\s*\+\s*cot\b/,
+    /\b2\s*sin\b.*\bcos\b/,
+  ]);
+}
+
+function hasTargetIdentityResultSignal(text) {
+  return hasAny(text, [
+    /\btarget identity\b/,
+    /\bidentity\b.*\b(proved|shown|verified|holds)\b/,
+    /\b(proved|shown|verified)\b.*\bidentity\b/,
+    /\bas required\b/,
+    /\bhence\b.*\b(identity|result)\b/,
+    /\btherefore\b.*\b(identity|result)\b/,
+  ]);
+}
+
 function hasSubstitutionSignal(text) {
   return hasAny(text, [/\blet\s+[a-z]\s*=/, /\bu\s*=/, /\bsubstitut/, /\bchange of variable/]);
 }
@@ -63,10 +102,20 @@ function hasNumericSignal(text) {
 function scoreMethodMatch(adapterMethod, params = {}, text) {
   switch (adapterMethod) {
     case 'proof_structure_check':
-      return hasTrigSignal(text) && hasEquationSignal(text) ? 0.94 : 0;
+      return hasTrigSignal(text)
+        && hasEquationSignal(text)
+        && (hasTrigIdentityStructure(text) || hasIdentityRewriteVocabulary(text))
+        ? 0.94
+        : 0;
     case 'symbolic_check':
       if (params?.expects_target_identity === true) {
-        return hasTrigSignal(text) && hasEquationSignal(text) ? 0.93 : 0;
+        return hasTrigSignal(text)
+          && (
+            hasTargetIdentityResultSignal(text)
+            || (hasEquationSignal(text) && hasTrigIdentityStructure(text))
+          )
+          ? 0.93
+          : 0;
       }
       if (params?.checks === 'base_trigonometric_equation') {
         return hasTrigSignal(text) && hasEquationSignal(text) ? 0.92 : 0;

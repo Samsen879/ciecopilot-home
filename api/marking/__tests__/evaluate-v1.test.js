@@ -738,6 +738,66 @@ describe('learning-runtime orchestration', () => {
     );
   });
 
+  it('keeps released 9709 pilot runtime grading conservative for a trivial trig equation', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        student_steps: [
+          { step_id: 's1', text: 'sin x = 0' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.decisions).toEqual([
+      expect.objectContaining({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        reason: 'pilot_adapter_mismatch',
+        awarded: false,
+        awarded_marks: 0,
+      }),
+      expect.objectContaining({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        reason: 'dependency_not_met',
+        awarded: false,
+        awarded_marks: 0,
+      }),
+    ]);
+    expect(body.marking_result.marking_summary.total_awarded).toBe(0);
+  });
+
   it('keeps pilot adapter execution conservative when released-scope posture fails closed', async () => {
     process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
     learningQuestionProjectionRow = buildLearningQuestionProjectionRow({

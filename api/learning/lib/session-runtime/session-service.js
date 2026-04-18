@@ -44,6 +44,21 @@ function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function isStrictProductionRuntime(env = process.env) {
+  return env.NODE_ENV === 'production' || env.VERCEL_ENV === 'production';
+}
+
+function readRuntimeFlag(flagName, {
+  env = process.env,
+  defaultEnabled = true,
+} = {}) {
+  if (!isStrictProductionRuntime(env)) {
+    return defaultEnabled;
+  }
+
+  return env[flagName] === 'true';
+}
+
 function isUuidString(value) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     normalizeString(value),
@@ -119,10 +134,22 @@ function normalizeSessionBundle({
   };
 }
 
-function featureFlags() {
+function featureFlags(env = process.env) {
+  const learningRuntimeEnabled = readRuntimeFlag('LEARNING_RUNTIME_ENABLED', {
+    env,
+    defaultEnabled: true,
+  });
+  const learningRuntime9709Enabled = learningRuntimeEnabled && readRuntimeFlag(
+    'LEARNING_RUNTIME_9709_ENABLED',
+    {
+      env,
+      defaultEnabled: true,
+    },
+  );
+
   return {
-    learning_runtime_enabled: true,
-    session_create_read_enabled: true,
+    learning_runtime_enabled: learningRuntimeEnabled,
+    learning_runtime_9709_enabled: learningRuntime9709Enabled,
   };
 }
 

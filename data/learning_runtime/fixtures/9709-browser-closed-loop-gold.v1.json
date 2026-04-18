@@ -1,0 +1,141 @@
+{
+  "schema_version": "learning_runtime_browser_closed_loop_fixture_v1",
+  "scenario_id": "9709.gold.closed_loop.release_gate.v1",
+  "subject_code": "9709",
+  "feature_flags": {
+    "learning_runtime_enabled": true,
+    "learning_runtime_9709_enabled": true
+  },
+  "actor": {
+    "user_id": "student-9709-release-gate"
+  },
+  "topic": {
+    "topic_id": "topic-9709-trig-equations",
+    "topic_path": "9709/trigonometry/equations",
+    "question_type_id": "9709.trigonometry.equations",
+    "family_id": "9709.trigonometry_manipulation_equations"
+  },
+  "question": {
+    "question_id": "question-9709-trig-equations-gold",
+    "source_kind": "paper_question",
+    "subject_code": "9709",
+    "primary_topic_id": "topic-9709-trig-equations",
+    "primary_question_type_id": "9709.trigonometry.equations",
+    "family_id": "9709.trigonometry_manipulation_equations"
+  },
+  "request_intake": {
+    "body": {
+      "subject_code": "9709",
+      "mode": "guided_solve",
+      "session_goal": "Repair trigonometric equation solving",
+      "anchor_kind": "question",
+      "anchor_ref": {
+        "kind": "question",
+        "question_id": "question-9709-trig-equations-gold"
+      },
+      "current_question_id": "question-9709-trig-equations-gold",
+      "current_question_type_id": "9709.trigonometry.equations"
+    }
+  },
+  "marking": {
+    "attempt_id": "attempt-9709-closed-loop-gold",
+    "mark_run_id": "mark-run-9709-closed-loop-gold",
+    "bridge_input": {
+      "attemptId": "attempt-9709-closed-loop-gold",
+      "learnerId": "student-9709-release-gate",
+      "sessionId": null,
+      "questionId": "question-9709-trig-equations-gold",
+      "subjectCode": "9709",
+      "markRunId": "mark-run-9709-closed-loop-gold",
+      "questionContext": {
+        "source_kind": "paper_question",
+        "family_id": "9709.trigonometry_manipulation_equations",
+        "question_type_id": "9709.trigonometry.equations",
+        "question_type_release_state": "released",
+        "primary_topic_id": "topic-9709-trig-equations",
+        "primary_topic_path": "9709/trigonometry/equations",
+        "classification_confidence": 0.94,
+        "candidate_rubric_refs": [
+          {
+            "kind": "rubric_release",
+            "rubric_set_id": "9709.trigonometry.equations",
+            "rubric_version_id": "trig-equations-v1",
+            "release_state": "released"
+          }
+        ],
+        "release_scope_status": "released_scoring"
+      },
+      "attemptContext": {
+        "topic_id": "topic-9709-trig-equations",
+        "topic_path": "9709/trigonometry/equations"
+      },
+      "authorityPosture": {
+        "release_scope_status": "released_scoring",
+        "authoritative_scoring_allowed": true,
+        "fallback_mode": null,
+        "fallback_reason_code": null,
+        "classification_confidence": 0.94,
+        "learning_signal_posture": "authoritative_scoring"
+      },
+      "markingResult": {
+        "attempt_id": "attempt-9709-closed-loop-gold",
+        "mark_run_id": "mark-run-9709-closed-loop-gold",
+        "marking_summary": {
+          "coverage_scope": "question"
+        },
+        "part_results": [
+          {
+            "part_id": "part-a",
+            "subpart_id": null,
+            "score_awarded": 0,
+            "score_max": 4
+          }
+        ]
+      },
+      "decisions": [
+        {
+          "part_id": "part-a",
+          "awarded": false,
+          "awarded_marks": 0,
+          "alignment_confidence": 0.78
+        }
+      ],
+      "sourceAttemptRef": {
+        "kind": "attempt",
+        "attempt_id": "attempt-9709-closed-loop-gold"
+      },
+      "sourceMarkRunRef": {
+        "kind": "mark_run",
+        "mark_run_id": "mark-run-9709-closed-loop-gold"
+      },
+      "correlationId": "11111111-1111-4111-8111-111111111111",
+      "submittedAt": "2026-04-18T09:00:00.000Z",
+      "emittedAt": "2026-04-18T09:00:05.000Z",
+      "emittedBy": "evaluate-v1",
+      "storageKey": "9709/s22/qp11/q01.png",
+      "qNumber": 1,
+      "subpart": "a",
+      "studentSteps": [
+        {
+          "step_id": "step-1",
+          "text": "Expanded the identity with a sign error."
+        }
+      ],
+      "uncertaintyValidated": true,
+      "misconceptionTags": [
+        "sign_error"
+      ]
+    }
+  },
+  "workspace_projection": {
+    "verification_evidence_ref": {
+      "kind": "review_run",
+      "review_run_id": "review-run-9709-closed-loop-gold"
+    }
+  },
+  "degraded_path": {
+    "attempt_id": "attempt-9709-closed-loop-degraded",
+    "mark_run_id": "mark-run-9709-closed-loop-degraded",
+    "failing_handler": "review_tasks"
+  }
+}

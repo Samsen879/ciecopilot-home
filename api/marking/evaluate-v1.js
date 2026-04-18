@@ -442,6 +442,40 @@ export default async function handler(req, res) {
       }));
 
       if (ledgerResult.decision_write_status === 'success') {
+        const learningEffectsInput = {
+          supabase,
+          user_id,
+          subject_code: subjectCode,
+          question_id,
+          question_context: {
+            source_kind: questionContext.source_kind,
+            family_id: questionContext.family_id,
+            question_type_id: questionContext.question_type_id,
+            question_type_release_state: questionContext.question_type_release_state,
+            primary_topic_id:
+              questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
+            primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
+            classification_confidence: questionContext.classification_confidence,
+            candidate_rubric_refs: questionContext.candidate_rubric_refs,
+            release_scope_status: questionContext.release_scope_status,
+          },
+          attempt_id: ledgerResult.attempt_id,
+          mark_run_id: ledgerResult.mark_run_id,
+          source_attempt_ref: {
+            kind: 'attempt',
+            attempt_id: ledgerResult.attempt_id,
+          },
+          source_mark_run_ref: {
+            kind: 'mark_run',
+            mark_run_id: ledgerResult.mark_run_id,
+          },
+          source_attempt_context: ledgerResult.attempt_context ?? null,
+          decisions,
+          marking_result: markingResult,
+          uncertainty_validated: true,
+          release_scope_posture: runtimeAuthorityPosture,
+        };
+
         if (isRuntimeBridgeEnabled()) {
           try {
             const bridgeResult = await persistAttemptEventBridge(supabase, {
@@ -472,7 +506,11 @@ export default async function handler(req, res) {
               },
               correlationId: run_id,
               emittedBy: 'evaluate-v1',
+            }, {
+              applyDownstreamEffects: true,
             });
+
+            learningEffects = bridgeResult.learning_effects ?? null;
 
             if (!bridgeResult.ok) {
               console.warn(JSON.stringify({
@@ -496,51 +534,19 @@ export default async function handler(req, res) {
               ts: new Date().toISOString(),
             }));
           }
-        }
-
-        try {
-          learningEffects = await applyLearningEffects({
-            supabase,
-            user_id,
-            subject_code: subjectCode,
-            question_id,
-            question_context: {
-              source_kind: questionContext.source_kind,
-              family_id: questionContext.family_id,
-              question_type_id: questionContext.question_type_id,
-              question_type_release_state: questionContext.question_type_release_state,
-              primary_topic_id:
-                questionContext.primary_topic_id ?? ledgerResult.attempt_context?.topic_id ?? null,
-              primary_topic_path: ledgerResult.attempt_context?.topic_path ?? null,
-              classification_confidence: questionContext.classification_confidence,
-              candidate_rubric_refs: questionContext.candidate_rubric_refs,
-              release_scope_status: questionContext.release_scope_status,
-            },
-            attempt_id: ledgerResult.attempt_id,
-            mark_run_id: ledgerResult.mark_run_id,
-            source_attempt_ref: {
-              kind: 'attempt',
-              attempt_id: ledgerResult.attempt_id,
-            },
-            source_mark_run_ref: {
-              kind: 'mark_run',
-              mark_run_id: ledgerResult.mark_run_id,
-            },
-            source_attempt_context: ledgerResult.attempt_context ?? null,
-            decisions,
-            marking_result: markingResult,
-            uncertainty_validated: true,
-            release_scope_posture: runtimeAuthorityPosture,
-          }, {
-            supabase,
-          });
-        } catch (learningEffectsError) {
-          console.warn(JSON.stringify({
-            event: 'evaluate_v1_learning_effects_error',
-            run_id,
-            error: learningEffectsError?.message || String(learningEffectsError),
-            ts: new Date().toISOString(),
-          }));
+        } else {
+          try {
+            learningEffects = await applyLearningEffects(learningEffectsInput, {
+              supabase,
+            });
+          } catch (learningEffectsError) {
+            console.warn(JSON.stringify({
+              event: 'evaluate_v1_learning_effects_error',
+              run_id,
+              error: learningEffectsError?.message || String(learningEffectsError),
+              ts: new Date().toISOString(),
+            }));
+          }
         }
       }
     } catch (ledgerErr) {

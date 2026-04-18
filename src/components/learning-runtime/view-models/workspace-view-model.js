@@ -550,8 +550,49 @@ function buildSlotEmptyState(rawState) {
 function buildSlotViewModel(definition, slots, slotState, workspace) {
   const slot = readSlotRecord(slots, definition);
   const primaryArtifact = normalizeRef(slot.primaryArtifactRef ?? slot.primary_artifact_ref ?? null);
-  const primaryArtifactRecord = primaryArtifact
+  const primaryArtifactPayload = slot.primaryArtifact ?? slot.primary_artifact ?? null;
+  const primaryArtifactRecord = primaryArtifactPayload
     ? normalizeArtifactRecord({
+      ...primaryArtifactPayload,
+      artifactId:
+        primaryArtifactPayload.artifactId
+        ?? primaryArtifactPayload.artifact_id
+        ?? primaryArtifact?.artifactId
+        ?? primaryArtifact?.artifact_id,
+      artifactKind:
+        primaryArtifactPayload.artifactKind
+        ?? primaryArtifactPayload.artifact_kind
+        ?? defaultArtifactKindForSlot(definition.key),
+      canonicalHomeTopicId:
+        primaryArtifactPayload.canonicalHomeTopicId
+        ?? primaryArtifactPayload.canonical_home_topic_id
+        ?? workspace.topicId,
+      lifecycleStatus:
+        primaryArtifactPayload.lifecycleStatus
+        ?? primaryArtifactPayload.lifecycle_status
+        ?? 'active',
+      placementStatus:
+        primaryArtifactPayload.placementStatus
+        ?? primaryArtifactPayload.placement_status
+        ?? 'pinned',
+      slotKey:
+        primaryArtifactPayload.slotKey
+        ?? primaryArtifactPayload.slot_key
+        ?? definition.key,
+      title:
+        primaryArtifactPayload.title
+        ?? primaryArtifact?.label,
+      updatedAt:
+        primaryArtifactPayload.updatedAt
+        ?? primaryArtifactPayload.updated_at
+        ?? slot.updatedAt
+        ?? slot.updated_at
+        ?? null,
+    }, {
+      source: 'slot_primary',
+    })
+    : primaryArtifact
+      ? normalizeArtifactRecord({
       artifactId: primaryArtifact.artifactId ?? primaryArtifact.artifact_id,
       artifactKind: defaultArtifactKindForSlot(definition.key),
       canonicalHomeTopicId: workspace.topicId,
@@ -562,7 +603,7 @@ function buildSlotViewModel(definition, slots, slotState, workspace) {
     }, {
       source: 'slot_primary',
     })
-    : null;
+      : null;
   const linkedReferences = normalizeRefList(slot.linkedReferences ?? slot.linked_references);
   const rawState = readSlotState(slotState, definition);
   const surfaceState = buildSurfaceState(rawState);
@@ -577,7 +618,7 @@ function buildSlotViewModel(definition, slots, slotState, workspace) {
     primaryArtifact,
     primaryArtifactCard: buildArtifactCard(primaryArtifactRecord, {
       placementLabel: 'Canonical resident',
-      description: 'Pinned to the canonical slot for this topic.',
+      description: primaryArtifactRecord?.summary || 'Pinned to the canonical slot for this topic.',
       fallbackState: contentState,
       slotTitle: definition.title,
       workspace,

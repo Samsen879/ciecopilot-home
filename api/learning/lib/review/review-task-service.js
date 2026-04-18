@@ -338,7 +338,7 @@ export function shouldGenerateReviewTaskFromOutcome(input = {}) {
   return hasRepairSignal(input);
 }
 
-function buildReviewTaskPayload(input = {}, now = new Date()) {
+export function buildReviewTaskPayload(input = {}, now = new Date()) {
   const targetQuestionTypeId =
     input.repair_target_question_type_id
     || input.question_context?.question_type_id

@@ -1,6 +1,7 @@
 import { createArtifactService } from '../artifacts/artifact-service.js';
 import { createMasteryOrchestrator } from '../mastery/mastery-orchestrator.js';
 import { createArtifactRepository } from '../repositories/artifact-repository.js';
+import { createArtifactContentRepository } from '../repositories/artifact-content-repository.js';
 import { createLearningEventEffectRepository } from '../repositories/learning-event-effect-repository.js';
 import {
   createDefaultReviewTaskService,
@@ -110,6 +111,7 @@ function buildDefaultHandlers({
   const resolvedArtifactService = artifactService
     || createArtifactService({
       artifactRepository: supabase ? createArtifactRepository(supabase) : null,
+      artifactContentRepository: supabase ? createArtifactContentRepository(supabase) : null,
     });
   const resolvedMasteryOrchestrator = masteryOrchestrator
     || createMasteryOrchestrator({

@@ -11,6 +11,7 @@ import {
 } from '../review/review-task-service.js';
 import { buildArtifactCandidate, createArtifactService } from '../artifacts/artifact-service.js';
 import { createArtifactRepository } from '../repositories/artifact-repository.js';
+import { createArtifactContentRepository } from '../repositories/artifact-content-repository.js';
 import { createReconciliationService } from '../reconciliation/reconciliation-service.js';
 import { createDefaultReconciliationService } from '../reconciliation/reconciliation-service.js';
 import { SUBJECT_ADAPTER_CAPABILITY_POSTURES } from '../subjects/subject-adapter-contract.js';
@@ -529,6 +530,9 @@ export async function applyLearningEffects(input = {}, dependencies = {}) {
       || createArtifactService({
         artifactRepository:
           dependencies.artifactRepository || (supabase ? createArtifactRepository(supabase) : null),
+        artifactContentRepository:
+          dependencies.artifactContentRepository
+          || (supabase ? createArtifactContentRepository(supabase) : null),
       }),
     reconciliationService:
       dependencies.reconciliationService

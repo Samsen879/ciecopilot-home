@@ -1426,6 +1426,40 @@ describe('learning runtime session view model', () => {
     });
   });
 
+  test('workspace view-model prefers renderable resident content over the missing-content placeholder when slot payload includes primary_artifact data', () => {
+    const payload = createWorkspacePayload();
+    payload.workspace.slotState.coreMethodDerivation = 'active';
+    payload.workspace.slots.coreMethodDerivation.primaryArtifact = {
+      artifactId: 'artifact-derivation-ready',
+      artifactKind: 'derivation_card',
+      title: 'Derive the tangent double-angle route',
+      summary: 'Start from the double-angle identity, then isolate the tangent substitution carefully.',
+      placementStatus: 'pinned',
+      artifactState: 'verified',
+      lifecycleStatus: 'active',
+      slotKey: 'core_method_derivation',
+      currentContentVersionNumber: 2,
+      capabilities: {
+        shellVisible: true,
+        bodyVisible: true,
+        residentEligible: true,
+        authoritativeAutomationEligible: false,
+      },
+    };
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.slots.core_method_derivation.contentState).toBeNull();
+    expect(vm.slots.core_method_derivation.primaryArtifactCard).toMatchObject({
+      artifactId: 'artifact-derivation-ready',
+      title: 'Derive the tangent double-angle route',
+      description:
+        'Start from the double-angle identity, then isolate the tangent substitution carefully.',
+    });
+  });
+
   test('builds queue action drafts that preserve canonical launch and scheduling defaults', () => {
     const vm = buildWorkspaceViewModel(createWorkspacePayload(), {
       now: '2026-03-22T12:00:00.000Z',

@@ -766,15 +766,48 @@ describe('learning-runtime orchestration', () => {
         step_index: 2,
       }),
     ];
-    mockApplyLearningEffects.mockResolvedValueOnce({
-      release_scope_status: 'non_released_fallback',
-      authoritative_scoring_allowed: false,
-      learning_signal_posture: 'conservative_fallback',
-      fallback_reason_code: 'low_classification_confidence',
-      mastery_updates: [],
-      review_tasks: [],
-      artifact_candidates: [],
-      reconciliation: null,
+    mockPersistAttemptEventBridge.mockResolvedValueOnce({
+      ok: true,
+      warningRecorded: false,
+      persisted_event_types: [
+        'AttemptSubmitted',
+        'QuestionClassified',
+        'MarkingCompleted',
+        'LearningUpdateProposed',
+      ],
+      pipeline_state: {
+        attempt_id: 'att-001',
+        current_stage: 'LearningUpdateProposed',
+        current_status: 'running',
+        last_sequence_no: 4,
+      },
+      learning_effects: {
+        proposal_key: 'mark-run:mr-001',
+        guardrail_decisions: {
+          authoritative_scoring_allowed: false,
+          release_scope_status: 'non_released_fallback',
+          learning_signal_posture: 'conservative_fallback',
+          fallback_mode: 'classification_guardrail',
+          fallback_reason_code: 'low_classification_confidence',
+          reasons: ['low_classification_confidence'],
+        },
+        authoritative_scoring_allowed: false,
+        release_scope_status: 'non_released_fallback',
+        learning_signal_posture: 'conservative_fallback',
+        fallback_mode: 'classification_guardrail',
+        fallback_reason_code: 'low_classification_confidence',
+        effect_execution: {
+          ok: true,
+          status: 'applied',
+          debt_pending: false,
+          receipt_summary: {
+            total: 0,
+            persisted: 0,
+            retrying: 0,
+            needs_manual_review: 0,
+          },
+        },
+      },
     });
 
     const req = mockReq({
@@ -790,16 +823,20 @@ describe('learning-runtime orchestration', () => {
 
     await handler(req, res);
 
-    expect(mockApplyLearningEffects).toHaveBeenCalledWith(
+    expect(mockPersistAttemptEventBridge).toHaveBeenCalledWith(
+      expect.any(Object),
       expect.objectContaining({
-        release_scope_posture: expect.objectContaining({
+        authorityPosture: expect.objectContaining({
           authoritative_scoring_allowed: false,
           fallback_reason_code: 'low_classification_confidence',
           learning_signal_posture: 'conservative_fallback',
         }),
       }),
-      expect.any(Object),
+      {
+        applyDownstreamEffects: true,
+      },
     );
+    expect(mockApplyLearningEffects).not.toHaveBeenCalled();
 
     const body = res.json.mock.calls[0][0];
     expect(body.decisions[0]).toMatchObject({
@@ -809,6 +846,10 @@ describe('learning-runtime orchestration', () => {
     expect(body.learning_effects).toMatchObject({
       authoritative_scoring_allowed: false,
       fallback_reason_code: 'low_classification_confidence',
+      effect_execution: expect.objectContaining({
+        ok: true,
+        status: 'applied',
+      }),
     });
   });
 

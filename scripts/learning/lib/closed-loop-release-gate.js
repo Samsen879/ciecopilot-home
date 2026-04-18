@@ -6,7 +6,6 @@ import { persistAttemptEventBridge } from '../../../api/learning/lib/events/atte
 import { patchLearningArtifact } from '../../../api/learning/lib/artifacts/artifact-service.js';
 import { getWorkspaceView, listReviewTasks } from '../../../api/learning/lib/workspaces/workspace-read-service.js';
 import {
-  buildBrowserClosedLoopFixture,
   createClosedLoopLearningDb,
   createInMemoryEffectRepository,
   DEFAULT_BROWSER_CLOSED_LOOP_FIXTURE_PATH,
@@ -46,10 +45,20 @@ function readFixtureFromDisk(rootDir, fixturePath) {
   const absolutePath = resolveFromRoot(rootDir, resolvedFixturePath);
 
   if (!fs.existsSync(absolutePath)) {
-    return buildBrowserClosedLoopFixture();
+    const error = new Error(`Fixture file not found: ${resolvedFixturePath}`);
+    error.code = 'fixture_missing';
+    throw error;
   }
 
-  return JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+  try {
+    return JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+  } catch (error) {
+    const wrapped = new Error(
+      `Fixture file could not be read: ${resolvedFixturePath} (${error instanceof Error ? error.message : String(error)})`,
+    );
+    wrapped.code = 'fixture_unreadable';
+    throw wrapped;
+  }
 }
 
 function toGateStatus(passed) {
@@ -263,9 +272,10 @@ export async function buildClosedLoopReleaseGateReceipt({
   fixturePath = DEFAULT_BROWSER_CLOSED_LOOP_FIXTURE_PATH,
   fixture = null,
 } = {}) {
-  const resolvedFixture = fixture || readFixtureFromDisk(rootDir, fixturePath);
+  let resolvedFixture = fixture;
 
   try {
+    resolvedFixture = resolvedFixture || readFixtureFromDisk(rootDir, fixturePath);
     const gold = await runGoldClosedLoop(resolvedFixture);
     const degradedPath = await runDegradedPath(resolvedFixture);
     const blockedReasons = Object.entries(gold.gates)
@@ -286,15 +296,24 @@ export async function buildClosedLoopReleaseGateReceipt({
       residual_risks: buildResidualRisks(),
     };
   } catch (error) {
+    const blockedReason = error?.code === 'fixture_missing' || error?.code === 'fixture_unreadable'
+      ? error.code
+      : 'gate_execution_failed';
+    const failureMessage = blockedReason === 'gate_execution_failed'
+      ? `Gate execution failed: ${error instanceof Error ? error.message : String(error)}`
+      : error instanceof Error
+        ? error.message
+        : String(error);
+
     return {
       schema_version: CLOSED_LOOP_RELEASE_GATE_SCHEMA_VERSION,
       generated_at: new Date().toISOString(),
-      scenario_id: resolvedFixture.scenario_id,
-      subject_code: resolvedFixture.subject_code,
+      scenario_id: resolvedFixture?.scenario_id ?? null,
+      subject_code: resolvedFixture?.subject_code ?? null,
       status: 'fail',
       release_ready: false,
-      blocked_reasons: ['gate_execution_failed'],
-      feature_flags: cloneJson(resolvedFixture.feature_flags),
+      blocked_reasons: [blockedReason],
+      feature_flags: cloneJson(resolvedFixture?.feature_flags ?? {}),
       gates: {},
       degraded_path: {
         status: 'not_run',
@@ -309,9 +328,7 @@ export async function buildClosedLoopReleaseGateReceipt({
           },
         },
       },
-      residual_risks: [
-        `Gate execution failed: ${error instanceof Error ? error.message : String(error)}`,
-      ],
+      residual_risks: [failureMessage],
     };
   }
 }

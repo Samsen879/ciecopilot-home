@@ -166,4 +166,41 @@ describe('closed loop release gate', () => {
       fs.rmSync(path.join(process.cwd(), outMd), { force: true });
     }
   });
+
+  test('explicit missing fixture path fails instead of falling back to synthetic data', async () => {
+    const missingFixturePath = 'tmp/does-not-exist-closed-loop-fixture.json';
+    const outJson = 'tmp/closed-loop-release-gate-missing-fixture.json';
+    const outMd = 'tmp/closed-loop-release-gate-missing-fixture.md';
+    const { writeClosedLoopReleaseGateOutputs } = await import('../lib/closed-loop-release-gate.js');
+
+    try {
+      await writeClosedLoopReleaseGateOutputs({
+        fixturePath: missingFixturePath,
+        outJsonPath: outJson,
+        outMdPath: outMd,
+      });
+
+      expect(fs.existsSync(path.join(process.cwd(), outJson))).toBe(true);
+      expect(fs.existsSync(path.join(process.cwd(), outMd))).toBe(true);
+
+      const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), outJson), 'utf8'));
+      const markdown = fs.readFileSync(path.join(process.cwd(), outMd), 'utf8');
+
+      expect(payload).toMatchObject({
+        schema_version: 'learning_runtime_closed_loop_release_gate_receipt_v1',
+        status: 'fail',
+        release_ready: false,
+        blocked_reasons: ['fixture_missing'],
+        feature_flags: {},
+      });
+      expect(payload.residual_risks).toEqual([
+        expect.stringContaining(missingFixturePath),
+      ]);
+      expect(markdown).toContain('status: `fail`');
+      expect(markdown).toContain(missingFixturePath);
+    } finally {
+      fs.rmSync(path.join(process.cwd(), outJson), { force: true });
+      fs.rmSync(path.join(process.cwd(), outMd), { force: true });
+    }
+  });
 });

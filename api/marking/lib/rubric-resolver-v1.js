@@ -2,6 +2,11 @@
 // Rubric Resolver v1 — version selection + ready data fetch.
 // Implements design §2.2 (version selection on base table) and §5.3 (SQL).
 
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { resolvePilotMarkingTemplateBinding } from '../../learning/lib/subjects/subject-adapter-registry.js';
+
 // ── Custom error classes ────────────────────────────────────────────────────
 
 export class RubricNotReadyError extends Error {
@@ -26,6 +31,76 @@ export class RubricContractInvalidError extends Error {
 // ── Contract validation ─────────────────────────────────────────────────────
 
 const CONTRACT_REQUIRED_FIELDS = ['rubric_id', 'mark_label', 'kind', 'depends_on', 'marks'];
+const MODULE_DIR = path.dirname(fileURLToPath(import.meta.url));
+const PROJECT_ROOT = path.resolve(MODULE_DIR, '../../..');
+
+function normalizeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function normalizeString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function loadPilotRubricTemplate(templatePath) {
+  const absolutePath = path.join(PROJECT_ROOT, templatePath);
+  return JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+}
+
+function collectPilotAdapterMethods(template = {}) {
+  const methods = new Set();
+
+  function visit(parts = []) {
+    for (const part of normalizeArray(parts)) {
+      for (const point of normalizeArray(part?.points)) {
+        const adapterMethod = normalizeString(point?.verification_condition?.adapter_method);
+        if (adapterMethod) {
+          methods.add(adapterMethod);
+        }
+      }
+
+      if (Array.isArray(part?.subparts)) {
+        visit(part.subparts);
+      }
+    }
+  }
+
+  visit(template?.parts);
+  return [...methods].sort();
+}
+
+function resolvePilotTemplateMetadata({
+  subject_code = null,
+  question_type_id = null,
+  candidate_rubric_refs = [],
+  pilot_runtime_enabled = false,
+} = {}) {
+  if (!pilot_runtime_enabled) {
+    return {
+      pilot_rubric_template: null,
+      pilot_adapter_methods: [],
+    };
+  }
+
+  const binding = resolvePilotMarkingTemplateBinding({
+    subjectCode: subject_code,
+    questionTypeId: question_type_id,
+    candidateRubricRefs: candidate_rubric_refs,
+  });
+
+  if (!binding) {
+    return {
+      pilot_rubric_template: null,
+      pilot_adapter_methods: [],
+    };
+  }
+
+  const pilotRubricTemplate = loadPilotRubricTemplate(binding.rubric_template_path);
+  return {
+    pilot_rubric_template: pilotRubricTemplate,
+    pilot_adapter_methods: collectPilotAdapterMethods(pilotRubricTemplate),
+  };
+}
 
 /**
  * Validate that every rubric point has the required contract fields.
@@ -177,11 +252,25 @@ async function fetchReadyPoints(supabase, storageKey, qNumber, subpartNorm, sour
  * @param {number} params.q_number
  * @param {string|null|undefined} params.subpart
  * @param {string|null|undefined} params.rubric_source_version - optional pinned version
- * @returns {Promise<{ rubric_source_version: string, rubric_points: object[], rubric_rows_used: number }>}
+ * @param {string|null|undefined} params.subject_code
+ * @param {string|null|undefined} params.question_type_id
+ * @param {object[]} [params.candidate_rubric_refs]
+ * @param {boolean} [params.pilot_runtime_enabled]
+ * @returns {Promise<{ rubric_source_version: string, rubric_points: object[], rubric_rows_used: number, pilot_rubric_template: object|null, pilot_adapter_methods: string[] }>}
  * @throws {RubricNotReadyError} 409 — no ready rubric found
  * @throws {RubricContractInvalidError} 422 — contract fields missing
  */
-export async function resolveRubric({ supabase, storage_key, q_number, subpart, rubric_source_version }) {
+export async function resolveRubric({
+  supabase,
+  storage_key,
+  q_number,
+  subpart,
+  rubric_source_version,
+  subject_code = null,
+  question_type_id = null,
+  candidate_rubric_refs = [],
+  pilot_runtime_enabled = false,
+}) {
   const subpartNorm = subpart ?? '';
 
   let selectedVersion;
@@ -219,6 +308,16 @@ export async function resolveRubric({ supabase, storage_key, q_number, subpart, 
     );
   }
 
+  const {
+    pilot_rubric_template,
+    pilot_adapter_methods,
+  } = resolvePilotTemplateMetadata({
+    subject_code,
+    question_type_id,
+    candidate_rubric_refs,
+    pilot_runtime_enabled,
+  });
+
   // Audit log
   console.log(JSON.stringify({
     event: 'rubric_resolved',
@@ -227,6 +326,8 @@ export async function resolveRubric({ supabase, storage_key, q_number, subpart, 
     subpart: subpartNorm,
     rubric_source_version: selectedVersion,
     rubric_rows_used: points.length,
+    pilot_template_bound: Boolean(pilot_rubric_template),
+    pilot_adapter_methods,
     ts: new Date().toISOString(),
   }));
 
@@ -234,5 +335,7 @@ export async function resolveRubric({ supabase, storage_key, q_number, subpart, 
     rubric_source_version: selectedVersion,
     rubric_points: points,
     rubric_rows_used: points.length,
+    pilot_rubric_template,
+    pilot_adapter_methods,
   };
 }

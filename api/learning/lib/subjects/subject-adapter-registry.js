@@ -19,6 +19,10 @@ function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function cloneJson(value) {
+  return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
+}
+
 function normalizeSubjectCode(value) {
   const normalized = normalizeString(value);
   return /^\d{4}$/.test(normalized) ? normalized : null;
@@ -224,6 +228,69 @@ export const SUBJECT_ADAPTER_DECISION = Object.freeze({
   evidence_report_path: 'docs/reports/learning_runtime_second_subject_decision_2026-03-25.md',
 });
 
+const PILOT_MARKING_TEMPLATE_BINDINGS = Object.freeze({
+  '9709.trigonometry.identities': Object.freeze({
+    subject_code: '9709',
+    question_type_id: '9709.trigonometry.identities',
+    rubric_set_id: '9709.trigonometry.identities',
+    rubric_template_path: 'data/learning_runtime/pilot_rubrics/9709.trigonometry.identities.json',
+    released_rubric_version_ids: Object.freeze(['trig-identities-v1']),
+    adapter_methods: Object.freeze(['proof_structure_check', 'symbolic_check']),
+  }),
+  '9709.trigonometry.equations': Object.freeze({
+    subject_code: '9709',
+    question_type_id: '9709.trigonometry.equations',
+    rubric_set_id: '9709.trigonometry.equations',
+    rubric_template_path: 'data/learning_runtime/pilot_rubrics/9709.trigonometry.equations.json',
+    released_rubric_version_ids: Object.freeze(['trig-equations-v1']),
+    adapter_methods: Object.freeze(['numeric_check', 'symbolic_check']),
+  }),
+  '9709.integration.application': Object.freeze({
+    subject_code: '9709',
+    question_type_id: '9709.integration.application',
+    rubric_set_id: '9709.integration.application',
+    rubric_template_path: 'data/learning_runtime/pilot_rubrics/9709.integration.application.json',
+    released_rubric_version_ids: Object.freeze(['integration-application-v1']),
+    adapter_methods: Object.freeze(['symbolic_check', 'transform_bundle_check']),
+  }),
+  '9709.differential_equations.separable': Object.freeze({
+    subject_code: '9709',
+    question_type_id: '9709.differential_equations.separable',
+    rubric_set_id: '9709.differential_equations.separable',
+    rubric_template_path: 'data/learning_runtime/pilot_rubrics/9709.differential_equations.separable.json',
+    released_rubric_version_ids: Object.freeze(['differential-separable-v1', 'diff-eq-v1']),
+    adapter_methods: Object.freeze(['numeric_check', 'transform_bundle_check']),
+  }),
+});
+
+export const APPROVED_9709_PILOT_ADAPTER_METHODS = Object.freeze(
+  [...new Set(Object.values(PILOT_MARKING_TEMPLATE_BINDINGS)
+    .flatMap((binding) => binding.adapter_methods))]
+    .sort(),
+);
+
+function hasReleasedPilotRubricRef(binding, candidateRubricRefs = []) {
+  return normalizeArray(candidateRubricRefs).some((ref) => {
+    const releaseState = normalizeString(ref?.release_state).toLowerCase();
+    const rubricSetId = normalizeString(ref?.rubric_set_id);
+    const rubricVersionId = normalizeString(ref?.rubric_version_id);
+
+    if (releaseState !== 'released') {
+      return false;
+    }
+
+    if (!binding.released_rubric_version_ids.includes(rubricVersionId)) {
+      return false;
+    }
+
+    if (rubricSetId && rubricSetId !== binding.rubric_set_id) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
 const SUBJECT_ADAPTERS = new Map([
   [
     '9709',
@@ -318,6 +385,29 @@ export function getSubjectAdapter(subjectCode, { allowDisabled = false } = {}) {
   }
 
   return adapter;
+}
+
+export function resolvePilotMarkingTemplateBinding({
+  subjectCode = null,
+  questionTypeId = null,
+  candidateRubricRefs = [],
+} = {}) {
+  const normalizedQuestionTypeId = normalizeString(questionTypeId);
+  const binding = PILOT_MARKING_TEMPLATE_BINDINGS[normalizedQuestionTypeId] ?? null;
+  const normalizedSubjectCode = normalizeSubjectCode(subjectCode)
+    || deriveSubjectCodeFromStructuredId(normalizedQuestionTypeId);
+
+  if (!binding || normalizedSubjectCode !== binding.subject_code) {
+    return null;
+  }
+
+  if (!hasReleasedPilotRubricRef(binding, candidateRubricRefs)) {
+    return null;
+  }
+
+  return {
+    ...cloneJson(binding),
+  };
 }
 
 export function getSubjectCapabilityPosture(

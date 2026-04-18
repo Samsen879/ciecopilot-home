@@ -8,27 +8,30 @@ import { jest } from '@jest/globals';
 // The rubric resolver calls supabase.from('rubric_points').select().eq()...
 // and supabase.from('rubric_points_ready_v1').select().eq().order()...
 
-const MOCK_READY_POINT = {
-  rubric_id: 'aaaaaaaa-0000-0000-0000-000000000001',
-  storage_key: '9709/s22/qp11/q01.png',
-  q_number: 1,
-  subpart: null,
-  step_index: 1,
-  mark_label: 'M1',
-  kind: 'M',
-  description: 'Correct method',
-  marks: 1,
-  depends_on: [],
-  ft_mode: 'none',
-  confidence: 0.95,
-  source: 'vlm',
-  extractor_version: 'v1',
-  provider: 'openai',
-  model: 'gpt-4-turbo',
-  prompt_version: 'p1',
-  source_version: 'v1:openai:gpt-4-turbo:p1',
-  updated_at: '2026-02-15T10:00:00Z',
-};
+function buildReadyPoint(overrides = {}) {
+  return {
+    rubric_id: 'aaaaaaaa-0000-0000-0000-000000000001',
+    storage_key: '9709/s22/qp11/q01.png',
+    q_number: 1,
+    subpart: null,
+    step_index: 1,
+    mark_label: 'M1',
+    kind: 'M',
+    description: 'Correct method',
+    marks: 1,
+    depends_on: [],
+    ft_mode: 'none',
+    confidence: 0.95,
+    source: 'vlm',
+    extractor_version: 'v1',
+    provider: 'openai',
+    model: 'gpt-4-turbo',
+    prompt_version: 'p1',
+    source_version: 'v1:openai:gpt-4-turbo:p1',
+    updated_at: '2026-02-15T10:00:00Z',
+    ...overrides,
+  };
+}
 
 function buildLearningQuestionProjectionRow(overrides = {}) {
   return {
@@ -52,6 +55,8 @@ function buildLearningQuestionProjectionRow(overrides = {}) {
 }
 
 let learningQuestionProjectionRow = buildLearningQuestionProjectionRow();
+let mockRubricVersionRows = [buildReadyPoint()];
+let mockReadyPoints = [buildReadyPoint()];
 
 function createChainMock(data) {
   const chain = {};
@@ -69,10 +74,10 @@ function createChainMock(data) {
 
 const mockFrom = jest.fn((table) => {
   if (table === 'rubric_points') {
-    return createChainMock([MOCK_READY_POINT]);
+    return createChainMock(mockRubricVersionRows);
   }
   if (table === 'rubric_points_ready_v1') {
-    return createChainMock([MOCK_READY_POINT]);
+    return createChainMock(mockReadyPoints);
   }
   if (table === 'learning_question_registry_projection') {
     return createChainMock(learningQuestionProjectionRow);
@@ -191,6 +196,8 @@ beforeEach(() => {
   process.env.EVIDENCE_LEDGER_ENABLED = 'false';
   process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'false';
   learningQuestionProjectionRow = buildLearningQuestionProjectionRow();
+  mockRubricVersionRows = [buildReadyPoint()];
+  mockReadyPoints = [buildReadyPoint()];
   jest.clearAllMocks();
   mockApplyLearningEffects.mockResolvedValue({
     release_scope_status: 'released_scoring',
@@ -401,6 +408,67 @@ describe('v0 compat mode', () => {
     const body = res.json.mock.calls[0][0];
     expect(body.alignments).toBeUndefined();
   });
+
+  it('preserves alignments[] for pilot-bound questions in compat_mode=v0', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        compat_mode: 'v0',
+        student_steps: [
+          { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+          { step_id: 's2', text: 'Hence the target identity is proved.' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.alignments).toEqual([
+      expect.objectContaining({
+        step_id: 's1',
+        status: 'aligned',
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        reason: 'pilot_adapter_match',
+      }),
+      expect.objectContaining({
+        step_id: 's2',
+        status: 'aligned',
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        reason: 'pilot_adapter_match',
+      }),
+    ]);
+  });
 });
 
 describe('learning-runtime orchestration', () => {
@@ -563,6 +631,149 @@ describe('learning-runtime orchestration', () => {
         }),
       }),
     );
+  });
+
+  it('executes a released 9709 pilot rubric through the adapter runtime behind the runtime flag', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        student_steps: [
+          { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+          { step_id: 's2', text: 'Hence the target identity is proved.' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.decisions).toEqual([
+      expect.objectContaining({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        reason: 'pilot_adapter_match',
+        awarded: true,
+        awarded_marks: 1,
+      }),
+      expect.objectContaining({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        reason: 'pilot_adapter_match',
+        awarded: true,
+        awarded_marks: 1,
+      }),
+    ]);
+    expect(body.marking_result.marking_summary.total_awarded).toBe(2);
+    expect(mockWriteLedger).toHaveBeenCalledWith(
+      expect.objectContaining({
+        rubric_points: expect.arrayContaining([
+          expect.objectContaining({ rubric_id: 'identity-rewrite' }),
+          expect.objectContaining({ rubric_id: 'identity-result' }),
+        ]),
+      }),
+    );
+  });
+
+  it('keeps pilot adapter execution conservative when released-scope posture fails closed', async () => {
+    process.env.MARKING_V1_RUNTIME_BRIDGE_ENABLED = 'true';
+    learningQuestionProjectionRow = buildLearningQuestionProjectionRow({
+      primary_topic_id: 'topic-trig-identities',
+      primary_question_type_id: '9709.trigonometry.identities',
+      classification_confidence: 0.42,
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_set_id: '9709.trigonometry.identities',
+          rubric_version_id: 'trig-identities-v1',
+          release_state: 'released',
+        },
+      ],
+    });
+    mockReadyPoints = [
+      buildReadyPoint({
+        rubric_id: 'identity-rewrite',
+        mark_label: 'M1',
+        description: 'Identity rewrite',
+      }),
+      buildReadyPoint({
+        rubric_id: 'identity-result',
+        mark_label: 'A1',
+        description: 'Identity result',
+        step_index: 2,
+      }),
+    ];
+    mockApplyLearningEffects.mockResolvedValueOnce({
+      release_scope_status: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      learning_signal_posture: 'conservative_fallback',
+      fallback_reason_code: 'low_classification_confidence',
+      mastery_updates: [],
+      review_tasks: [],
+      artifact_candidates: [],
+      reconciliation: null,
+    });
+
+    const req = mockReq({
+      body: {
+        ...mockReq().body,
+        student_steps: [
+          { step_id: 's1', text: 'sin^2 x + cos^2 x = 1' },
+          { step_id: 's2', text: 'Hence the target identity is proved.' },
+        ],
+      },
+    });
+    const res = mockRes();
+
+    await handler(req, res);
+
+    expect(mockApplyLearningEffects).toHaveBeenCalledWith(
+      expect.objectContaining({
+        release_scope_posture: expect.objectContaining({
+          authoritative_scoring_allowed: false,
+          fallback_reason_code: 'low_classification_confidence',
+          learning_signal_posture: 'conservative_fallback',
+        }),
+      }),
+      expect.any(Object),
+    );
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.decisions[0]).toMatchObject({
+      reason: 'pilot_adapter_match',
+      awarded: true,
+    });
+    expect(body.learning_effects).toMatchObject({
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'low_classification_confidence',
+    });
   });
 
   it('marks imported-question attempts as explicit non-authoritative runtime inputs across ledger, bridge, and learning effects', async () => {

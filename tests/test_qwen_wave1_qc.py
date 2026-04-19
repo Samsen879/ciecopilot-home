@@ -8,6 +8,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from scripts.vlm import qc_stats as qc_stats_module  # noqa: E402
 from scripts.vlm.batch_process_v0 import parse_response  # noqa: E402
 from scripts.vlm.contracts import extract_qwen_wave1_provenance  # noqa: E402
 from scripts.vlm.qc_stats import (  # noqa: E402
@@ -293,6 +294,7 @@ def test_wave1_qc_helpers_report_descriptor_coverage_acceptance_and_threshold_ch
             "expected_route": "ocr_lane",
             "difficulty_band": "clean",
             "descriptor_required": True,
+            "descriptor_readiness": "descriptor_candidate",
             "summary": "Descriptor present.",
             "failure_reason": None,
         },
@@ -302,6 +304,7 @@ def test_wave1_qc_helpers_report_descriptor_coverage_acceptance_and_threshold_ch
             "expected_route": "ocr_lane",
             "difficulty_band": "medium",
             "descriptor_required": True,
+            "descriptor_readiness": "failed",
             "summary": None,
             "failure_reason": "provider timeout",
         },
@@ -351,6 +354,117 @@ def test_wave1_qc_helpers_report_descriptor_coverage_acceptance_and_threshold_ch
         "reviewed_count": 2,
         "acceptance_rate": 0.5,
     }
+
+
+def test_collect_stats_loads_wave_a_thresholds_when_thresholds_json_is_provided(tmp_path, monkeypatch):
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "manifest_id": "pilot",
+                "items": [
+                    {
+                        "storage_key": "9709/a.png",
+                        "syllabus_code": "9709",
+                        "year": 2024,
+                        "session": "s",
+                        "paper": 1,
+                        "variant": 1,
+                        "q_number": 1,
+                        "primary_topic_path": "9709.p1.trigonometry",
+                        "difficulty_band": "clean",
+                        "route_hint": "ocr_lane",
+                        "shard_id": "shard_1",
+                        "descriptor_required": True,
+                        "gate_critical": False,
+                        "requires_review": False,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    lane_results_path = tmp_path / "lane-results.json"
+    lane_results_path.write_text(
+        json.dumps(
+            [
+                {
+                    "input_asset_id": "9709/a.png",
+                    "route": "ocr_lane",
+                    "lane": "ocr",
+                    "model": "qwen3.6-plus",
+                    "failure_reason": None,
+                    "output": {
+                        "summary": "Solve the equation.",
+                        "warnings": [],
+                        "evidence": [],
+                    },
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+    thresholds_path = tmp_path / "thresholds.json"
+    thresholds_path.write_text(
+        json.dumps(
+            {
+                "provider_failure_max": 0,
+                "unexpected_review_lane_max": {"clean": 0},
+                "route_hint_match_required": {"clean": True},
+                "full_review_min_acceptance": 0.9,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    class _FakeCursor:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    class _FakeConnection:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def cursor(self):
+            return _FakeCursor()
+
+    default_row = {
+        "total_records": 0,
+        "cnt": 0,
+        "total_rows": 0,
+        "empty_rows": 0,
+        "avg_len_non_empty": None,
+        "min_confidence": None,
+        "max_confidence": None,
+        "mean_confidence": None,
+        "median_confidence": None,
+        "stddev_confidence": None,
+    }
+
+    monkeypatch.setattr(qc_stats_module, "get_connection", lambda: _FakeConnection())
+    monkeypatch.setattr(qc_stats_module, "query_one", lambda *args, **kwargs: dict(default_row))
+    monkeypatch.setattr(qc_stats_module, "query_all", lambda *args, **kwargs: [])
+
+    stats = qc_stats_module.collect_stats(
+        manifest_path=manifest_path,
+        lane_results_json=lane_results_path,
+        shard_id="shard_1",
+        thresholds_path=thresholds_path,
+    )
+
+    assert stats["wave1_pilot"]["summary"]["total_rows"] == 1
+    assert stats["wave1_pilot"]["thresholds"]["provider_failures"] == 0
+    assert [check["name"] for check in stats["wave1_pilot"]["thresholds"]["threshold_verdicts"]] == [
+        "provider_failures",
+        "unexpected_review_fallbacks:clean",
+        "route_hint_match:clean",
+    ]
 
 
 def test_build_wave1_prompt_mentions_lane_route_and_review_posture():

@@ -6,7 +6,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { getServiceClient } from '../../api/lib/supabase/client.js';
-import { searchQuestions } from '../../api/learning/lib/questions/question-search-service.js';
+import {
+  normalizeQuestionSearchInput,
+  rankProductQuestionSearchRows,
+  searchQuestions,
+} from '../../api/learning/lib/questions/question-search-service.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -84,6 +88,22 @@ function ratio(numerator, denominator) {
 
 function escapeLikePattern(value) {
   return String(value).replace(/[\\%_]/g, '\\$&');
+}
+
+function buildSearchTextTokens(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  if (!normalized) {
+    return [];
+  }
+
+  const tokens = [...new Set(
+    normalized
+      .split(/[^a-z0-9]+/i)
+      .map((token) => token.trim())
+      .filter(Boolean),
+  )];
+
+  return tokens.length > 0 ? tokens : [normalized];
 }
 
 function sqlLiteral(value) {
@@ -844,8 +864,10 @@ function buildProjectionSearchSql(searchInput) {
   });
 
   if (isPresent(searchInput.query)) {
-    const escaped = escapeLikePattern(searchInput.query);
-    conditions.push(`search_text ILIKE '%' || ${sqlLiteral(escaped)} || '%' ESCAPE '\\'`);
+    for (const token of buildSearchTextTokens(searchInput.query)) {
+      const escaped = escapeLikePattern(token);
+      conditions.push(`search_text ILIKE '%' || ${sqlLiteral(escaped)} || '%' ESCAPE '\\'`);
+    }
   }
 
   const whereSql = conditions.length > 0
@@ -878,11 +900,21 @@ export async function searchProjectionFromDatabase(searchInput, {
   getServiceClientFn = getServiceClient,
 } = {}) {
   if (psqlConfig) {
-    return runPsqlJsonFn(buildProjectionSearchSql(searchInput), psqlConfig);
+    const result = await runPsqlJsonFn(buildProjectionSearchSql(searchInput), psqlConfig);
+    const normalizedInput = normalizeQuestionSearchInput(searchInput);
+    return {
+      total: Number.isInteger(result?.total) ? result.total : 0,
+      items: rankProductQuestionSearchRows(result?.items || [], normalizedInput),
+    };
   }
 
   if (getProjectionSearchMode(env) === 'psql') {
-    return runPsqlJsonFn(buildProjectionSearchSql(searchInput));
+    const result = await runPsqlJsonFn(buildProjectionSearchSql(searchInput));
+    const normalizedInput = normalizeQuestionSearchInput(searchInput);
+    return {
+      total: Number.isInteger(result?.total) ? result.total : 0,
+      items: rankProductQuestionSearchRows(result?.items || [], normalizedInput),
+    };
   }
 
   return searchQuestionsFn(getServiceClientFn(), searchInput, {

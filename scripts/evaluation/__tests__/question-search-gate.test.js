@@ -45,6 +45,16 @@ describe('question-search-gate', () => {
     expect(
       fixture.cases.some((testCase) => testCase.id === 'mixed-ranking-paper-authority'),
     ).toBe(true);
+    expect(
+      fixture.cases.find((testCase) => testCase.id === 'mixed-ranking-paper-authority'),
+    ).toEqual(expect.objectContaining({
+      expected: expect.objectContaining({
+        match: expect.objectContaining({
+          q_number: 6,
+          primary_question_type_id: '9709.trigonometry.identities',
+        }),
+      }),
+    }));
   });
 
   test('runQuestionSearchGate computes release metrics and passes when thresholds are met', async () => {
@@ -599,7 +609,11 @@ describe('question-search-gate', () => {
 
     expect(result).toEqual({
       total: 1,
-      items: [{ question_id: 'question-paper-1' }],
+      items: [
+        expect.objectContaining({
+          question_id: 'question-paper-1',
+        }),
+      ],
     });
     expect(searchQuestionsFn).not.toHaveBeenCalled();
     expect(getServiceClientFn).not.toHaveBeenCalled();
@@ -607,7 +621,9 @@ describe('question-search-gate', () => {
     expect(runPsqlJsonFn.mock.calls[0][0]).toContain('FROM public.learning_question_search_projection');
     expect(runPsqlJsonFn.mock.calls[0][0]).toContain("subject_code = '9709'");
     expect(runPsqlJsonFn.mock.calls[0][0]).toContain("primary_topic_id = 'topic-paper-trigonometry'");
-    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("search_text ILIKE '%' || 'identity solve equation' || '%' ESCAPE '\\'");
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("search_text ILIKE '%' || 'identity' || '%' ESCAPE '\\'");
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("search_text ILIKE '%' || 'solve' || '%' ESCAPE '\\'");
+    expect(runPsqlJsonFn.mock.calls[0][0]).toContain("search_text ILIKE '%' || 'equation' || '%' ESCAPE '\\'");
   });
 
   test('searchProjectionFromDatabase uses SQL fallback when pg-compat is enabled', async () => {
@@ -637,6 +653,90 @@ describe('question-search-gate', () => {
     expect(runPsqlJsonFn).toHaveBeenCalledTimes(1);
     expect(searchQuestionsFn).not.toHaveBeenCalled();
     expect(getServiceClientFn).not.toHaveBeenCalled();
+  });
+
+  test('searchProjectionFromDatabase ranks psql fallback rows with the product ordering contract', async () => {
+    const runPsqlJsonFn = jest.fn().mockResolvedValue({
+      total: 3,
+      items: [
+        {
+          question_id: 'question-paper-s21-q7',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          release_scope_status: 'released_scoring',
+          primary_topic_id: 'topic-paper-trigonometry',
+          primary_topic_path: '9709.p1.trigonometry',
+          primary_question_type_id: '9709.trigonometry.identities',
+          family_id: '9709.trigonometry_manipulation_equations',
+          storage_key: '9709/s21_qp_11/questions/q07.png',
+          q_number: 7,
+          year: 2021,
+          session: 's',
+          paper_number: 1,
+          variant: 1,
+          summary: 'Prove the identity ... Hence solve the equation ...',
+          search_text: 'trigonometric identity prove identity solve equation',
+          primary_topic_title: 'Trigonometry',
+        },
+        {
+          question_id: 'question-paper-s19-q6',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          release_scope_status: 'released_scoring',
+          primary_topic_id: 'topic-paper-trigonometry',
+          primary_topic_path: '9709.p1.trigonometry',
+          primary_question_type_id: '9709.trigonometry.identities',
+          family_id: '9709.trigonometry_manipulation_equations',
+          storage_key: '9709/s19_qp_11/questions/q06.png',
+          q_number: 6,
+          year: 2019,
+          session: 's',
+          paper_number: 1,
+          variant: 1,
+          summary: 'Prove the identity ... Hence solve the equation ...',
+          search_text: 'trigonometric identity prove identity solve equation',
+          primary_topic_title: 'Trigonometry',
+        },
+        {
+          question_id: 'question-paper-w19-q5',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          release_scope_status: 'released_scoring',
+          primary_topic_id: 'topic-paper-trigonometry',
+          primary_topic_path: '9709.p1.trigonometry',
+          primary_question_type_id: '9709.trigonometry.equations',
+          family_id: '9709.trigonometry_manipulation_equations',
+          storage_key: '9709/w19_qp_11/questions/q05.png',
+          q_number: 5,
+          year: 2019,
+          session: 'w',
+          paper_number: 1,
+          variant: 1,
+          summary: 'Given that ... Hence solve the equation ...',
+          search_text: 'trigonometric equation prove identity solve equation',
+          primary_topic_title: 'Trigonometry',
+        },
+      ],
+    });
+
+    const result = await searchProjectionFromDatabase({
+      subject_code: '9709',
+      primary_topic_id: 'topic-paper-trigonometry',
+      query: 'identity solve equation',
+      page: 1,
+      page_size: 2,
+    }, {
+      env: {
+        DATABASE_URL: 'postgres://example.test/db',
+      },
+      runPsqlJsonFn,
+    });
+
+    expect(result.total).toBe(3);
+    expect(result.items.map((item) => item.question_id)).toEqual([
+      'question-paper-s19-q6',
+      'question-paper-s21-q7',
+    ]);
   });
 
   test('searchProjectionFromDatabase honors explicit psqlConfig even when service env is available', async () => {

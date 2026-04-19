@@ -5,6 +5,22 @@ function normalizeNullableString(value) {
   return normalized || null;
 }
 
+function buildSearchTextTokens(value) {
+  const normalized = normalizeNullableString(value);
+  if (!normalized) {
+    return [];
+  }
+
+  const tokens = [...new Set(
+    normalized
+      .split(/[^a-z0-9]+/i)
+      .map((token) => token.trim())
+      .filter(Boolean),
+  )];
+
+  return tokens.length > 0 ? tokens : [normalized];
+}
+
 function escapeLikePattern(value) {
   return String(value).replace(/[\\%_]/g, '\\$&');
 }
@@ -42,8 +58,10 @@ export async function searchQuestionProjection(client, filters = {}) {
 
   const textQuery = normalizeNullableString(filters.query);
   if (textQuery) {
-    // V1 tradeoff: pilot-scale retrieval uses ILIKE on search_text only.
-    query = query.ilike('search_text', `%${escapeLikePattern(textQuery)}%`);
+    for (const token of buildSearchTextTokens(textQuery)) {
+      // V1 tradeoff: pilot-scale retrieval uses ILIKE on search_text only.
+      query = query.ilike('search_text', `%${escapeLikePattern(token)}%`);
+    }
   }
 
   let orderedQuery = query.order('question_id', { ascending: true });

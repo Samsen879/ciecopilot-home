@@ -396,6 +396,22 @@ function paginateRows(rows, page, pageSize) {
   return rows.slice(start, start + pageSize);
 }
 
+export function rankProductQuestionSearchRows(rows = [], normalizedFilters) {
+  return paginateRows(
+    rows
+      .map((row) => ({
+        ...attachMatchContext(row, buildMatchContext(normalizedFilters)),
+        product_posture: buildProductPosture(row),
+        product_card: buildProductCard(row),
+        __sort_key: buildResultSortKey(row, normalizedFilters),
+      }))
+      .sort((left, right) => compareResultSortKeys(left.__sort_key, right.__sort_key))
+      .map(({ __sort_key, ...row }) => row),
+    normalizedFilters.page,
+    normalizedFilters.page_size,
+  );
+}
+
 export async function searchQuestions(client, input = {}, options = {}) {
   const normalizedFilters = normalizeQuestionSearchInput(input);
   const productMode = options.productMode === true;
@@ -405,19 +421,7 @@ export async function searchQuestions(client, input = {}, options = {}) {
   const { rows, total } = await searchQuestionProjection(client, repositoryFilters);
   const matchContext = buildMatchContext(normalizedFilters);
   const items = productMode
-    ? paginateRows(
-      rows
-        .map((row) => ({
-          ...attachMatchContext(row, matchContext),
-          product_posture: buildProductPosture(row),
-          product_card: buildProductCard(row),
-          __sort_key: buildResultSortKey(row, normalizedFilters),
-        }))
-        .sort((left, right) => compareResultSortKeys(left.__sort_key, right.__sort_key))
-        .map(({ __sort_key, ...row }) => row),
-      normalizedFilters.page,
-      normalizedFilters.page_size,
-    )
+    ? rankProductQuestionSearchRows(rows, normalizedFilters)
     : rows.map((row) => attachMatchContext(row, matchContext));
 
   return {

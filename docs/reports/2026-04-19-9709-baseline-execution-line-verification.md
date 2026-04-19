@@ -2,20 +2,22 @@
 
 Date: 2026-04-19
 Issue: `#242`
+PR: `#250`
 Status: fail
 
 ## Summary
 
-This note records the issue `#242` preflight run on the current execution line.
+This note records the reclaimed-session rerun of the exact issue `#242` commands on the current execution line after PR `#250` ownership was restored to `cie-179`.
 
 The required closure surfaces exist, the required checked-in rerun artifacts exist, and the closure runner dry-run prints the expected 4-step plan.
 
-The baseline gate rerun did not complete. The exact issue command failed before connecting to Postgres because this worktree does not have `node_modules`, so `@supabase/supabase-js` could not be resolved. Wave A work must not start from this session state.
+The baseline gate rerun did not complete. The exact issue command failed before connecting to Postgres because this worktree does not have `node_modules`, so `@supabase/supabase-js` could not be resolved from `/home/samsen/.worktrees/ciecopilot-home/cie-179/api/lib/supabase/client.js`. No new gate artifacts were written to `/tmp`, so Wave A work must not start from this session state and must not proceed to `#243`.
 
 ## Execution Fingerprint
 
+- worktree: `/home/samsen/.worktrees/ciecopilot-home/cie-179`
 - current branch: `feat/242`
-- repo SHA: `720637a39b52932c04cfbf6f3c9f0707bd385b7d`
+- repo SHA: `cb37a0928f394afa36a956ff177dcd0533863cd8`
 - baseline fixture path: `data/eval/question_search_gold_9709_v1.json`
 - gate report path: `/tmp/9709-baseline-gate-check.md`
 - gate JSON path: `/tmp/9709-baseline-gate-check.json`
@@ -39,13 +41,7 @@ The baseline gate rerun did not complete. The exact issue command failed before 
 
 ## Command List
 
-### Prerequisite Repo Workflow Command
-
-```bash
-npm run workflow:baseline:sync
-```
-
-### Issue #242 Commands
+The following commands were rerun exactly as written in issue `#242`:
 
 ```bash
 node - <<'NODE'
@@ -94,37 +90,25 @@ node scripts/evaluation/run_question_search_gate.js \
 
 ## Result List
 
-1. `npm run workflow:baseline:sync`: fail
-   Root baseline worktree at `/home/samsen/code/ciecopilot-home` could not fast-forward because local `hotfix/9709-wave1-vlm-stabilization` is diverged from `origin/hotfix/9709-wave1-vlm-stabilization`.
-2. closure surface existence check: pass
-3. checked-in rerun artifact existence check: pass
-4. closure dry-run: pass
+1. closure surface existence check: pass
+2. checked-in rerun artifact existence check: pass
+3. closure dry-run: pass
    Printed the expected 4 steps:
    - `build_evidence_bundles`
    - `backfill_paper_question_registry`
    - `hydrate_question_analysis`
    - `rerun_question_search_gate`
-5. baseline gate rerun: fail
+4. baseline gate rerun: fail
    The command exited `1` before the gate ran.
 
 ## Remediation Evidence
-
-### Baseline Sync Failure
-
-Relevant output:
-
-```text
-+ (cd /home/samsen/code/ciecopilot-home && git -C /home/samsen/code/ciecopilot-home pull --ff-only)
-hint: Diverging branches can't be fast-forwarded
-fatal: Not possible to fast-forward, aborting.
-```
 
 ### Gate Rerun Failure
 
 Relevant output:
 
 ```text
-Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@supabase/supabase-js' imported from /home/samsen/.worktrees/ciecopilot-home/cie-178/api/lib/supabase/client.js
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@supabase/supabase-js' imported from /home/samsen/.worktrees/ciecopilot-home/cie-179/api/lib/supabase/client.js
 ```
 
 Environment check:
@@ -132,7 +116,9 @@ Environment check:
 ```json
 {
   "node_modules": false,
-  "supabasePkg": false
+  "supabasePkg": false,
+  "gateJsonExists": false,
+  "gateReportExists": false
 }
 ```
 
@@ -140,6 +126,6 @@ Environment check:
 
 Issue `#242` does not pass in this session state.
 
-The execution line contains the expected closure code and checked-in evidence, but this worktree cannot honestly verify the green baseline gate because required Node dependencies are absent and the repo baseline-sync prerequisite is currently diverged.
+The execution line contains the expected closure code and checked-in evidence, but this worktree cannot honestly verify the green baseline gate because required Node dependencies are absent.
 
-Do not start Wave A work from this session. Restore a bootstrapped worktree and a fast-forwardable baseline, then rerun the same commands.
+Do not start Wave A work from this session. Restore a bootstrapped worktree, then rerun the same commands before treating issue `#242` as green.

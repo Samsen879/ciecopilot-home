@@ -12,10 +12,12 @@ from scripts.vlm.batch_process_v0 import parse_response  # noqa: E402
 from scripts.vlm.contracts import extract_qwen_wave1_provenance  # noqa: E402
 from scripts.vlm.qc_stats import (  # noqa: E402
     build_wave1_pilot_rows,
+    evaluate_wave_a_thresholds,
     summarize_wave1_pilot_rows,
 )
 from scripts.vlm.qc_vlm_spot_check import (  # noqa: E402
     build_wave1_prompt,
+    compute_wave1_aggregates,
     main,
     parse_json_response,
     select_wave1_spot_check_rows,
@@ -221,6 +223,134 @@ def test_select_wave1_spot_check_rows_prioritizes_gate_critical_and_diagram_rows
     selected = select_wave1_spot_check_rows(rows, sample_size=2)
 
     assert [row["storage_key"] for row in selected] == ["b", "c"]
+
+
+def test_build_wave1_pilot_rows_filters_by_shard_and_tracks_expected_route_metadata():
+    manifest = {
+        "manifest_id": "pilot",
+        "items": [
+            {
+                "storage_key": "9709/a.png",
+                "syllabus_code": "9709",
+                "year": 2024,
+                "session": "s",
+                "paper": 1,
+                "variant": 1,
+                "q_number": 1,
+                "primary_topic_path": "9709.p1.trigonometry",
+                "difficulty_band": "clean",
+                "shard_id": "shard_1",
+                "descriptor_required": True,
+                "gate_critical": False,
+            },
+            {
+                "storage_key": "9709/b.png",
+                "syllabus_code": "9709",
+                "year": 2024,
+                "session": "s",
+                "paper": 3,
+                "variant": 1,
+                "q_number": 7,
+                "primary_topic_path": "9709.p3.integration",
+                "difficulty_band": "medium",
+                "shard_id": "shard_2",
+                "descriptor_required": True,
+                "gate_critical": True,
+            },
+        ],
+    }
+    lane_results = [
+        {
+            "input_asset_id": "9709/a.png",
+            "route": "ocr_lane",
+            "lane": "ocr",
+            "model": "qwen3.6-plus",
+            "output": {"summary": "Solve the equation.", "warnings": [], "evidence": []},
+        },
+        {
+            "input_asset_id": "9709/b.png",
+            "route": "review_lane",
+            "lane": "review",
+            "model": "qwen3.6-plus",
+            "output": {"summary": None, "warnings": ["requires_review"], "evidence": []},
+        },
+    ]
+
+    rows = build_wave1_pilot_rows(manifest, lane_results, shard_id="shard_1")
+
+    assert [row["storage_key"] for row in rows] == ["9709/a.png"]
+    assert rows[0]["expected_route"] == "ocr_lane"
+    assert rows[0]["route_matches_expected"] is True
+    assert rows[0]["difficulty_band"] == "clean"
+    assert rows[0]["descriptor_required"] is True
+
+
+def test_wave1_qc_helpers_report_descriptor_coverage_acceptance_and_threshold_checks():
+    rows = [
+        {
+            "storage_key": "9709/a.png",
+            "route": "ocr_lane",
+            "expected_route": "ocr_lane",
+            "difficulty_band": "clean",
+            "descriptor_required": True,
+            "summary": "Descriptor present.",
+            "failure_reason": None,
+        },
+        {
+            "storage_key": "9709/b.png",
+            "route": "review_lane",
+            "expected_route": "ocr_lane",
+            "difficulty_band": "medium",
+            "descriptor_required": True,
+            "summary": None,
+            "failure_reason": "provider timeout",
+        },
+    ]
+    thresholds = {
+        "provider_failure_max": 0,
+        "unexpected_review_lane_max": {"clean": 0, "medium": 0},
+        "route_hint_match_required": {"clean": True, "medium": True},
+        "full_review_min_acceptance": 0.9,
+    }
+    full_review_payload = {
+        "records": [
+            {
+                "storage_key": "9709/a.png",
+                "review": {
+                    "descriptor_readiness": "descriptor_ready",
+                    "route_verdict": "appropriate",
+                    "review_bucket_verdict": "correct",
+                },
+            },
+            {
+                "storage_key": "9709/b.png",
+                "review": {
+                    "descriptor_readiness": "review_bucket",
+                    "route_verdict": "under_conservative",
+                    "review_bucket_verdict": "incorrect",
+                },
+            },
+        ]
+    }
+
+    summary = summarize_wave1_pilot_rows(rows)
+    threshold_summary = evaluate_wave_a_thresholds(rows, thresholds, full_review_payload=full_review_payload)
+    aggregate_summary = compute_wave1_aggregates(full_review_payload["records"])
+
+    assert summary["descriptor_coverage"] == {
+        "required_rows": 2,
+        "covered_rows": 1,
+        "coverage_rate": 0.5,
+    }
+    assert summary["unexpected_review_fallbacks"] == {"medium": 1}
+    assert threshold_summary["provider_failures"] == 1
+    assert threshold_summary["full_review_acceptance"] == 0.5
+    assert any(check["pass"] is False for check in threshold_summary["threshold_verdicts"])
+    assert aggregate_summary["acceptance_summary"] == {
+        "accepted_count": 1,
+        "reviewed_count": 2,
+        "acceptance_rate": 0.5,
+    }
 
 
 def test_build_wave1_prompt_mentions_lane_route_and_review_posture():

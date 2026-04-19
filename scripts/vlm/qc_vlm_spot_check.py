@@ -309,6 +309,7 @@ def compute_wave1_aggregates(records: list[dict[str, Any]]) -> dict[str, Any]:
     route_verdict = Counter()
     review_bucket_verdict = Counter()
     follow_up: list[dict[str, Any]] = []
+    accepted_count = 0
 
     for record in records:
         review = record.get("review")
@@ -320,6 +321,13 @@ def compute_wave1_aggregates(records: list[dict[str, Any]]) -> dict[str, Any]:
             route_verdict[review["route_verdict"]] += 1
         if review.get("review_bucket_verdict"):
             review_bucket_verdict[review["review_bucket_verdict"]] += 1
+        route_ok = review.get("route_verdict") in {None, "", "appropriate", "cannot_judge"}
+        acceptance_ok = (
+            review.get("descriptor_readiness") == "descriptor_ready"
+            or review.get("review_bucket_verdict") == "correct"
+        )
+        if route_ok and acceptance_ok:
+            accepted_count += 1
         if review.get("descriptor_readiness") != "descriptor_ready":
             follow_up.append(
                 {
@@ -334,6 +342,15 @@ def compute_wave1_aggregates(records: list[dict[str, Any]]) -> dict[str, Any]:
         "descriptor_readiness_counts": dict(sorted(descriptor_readiness.items())),
         "route_verdict_counts": dict(sorted(route_verdict.items())),
         "review_bucket_verdict_counts": dict(sorted(review_bucket_verdict.items())),
+        "acceptance_summary": {
+            "accepted_count": accepted_count,
+            "reviewed_count": sum(1 for record in records if isinstance(record.get("review"), dict)),
+            "acceptance_rate": (
+                accepted_count / sum(1 for record in records if isinstance(record.get("review"), dict))
+                if any(isinstance(record.get("review"), dict) for record in records)
+                else None
+            ),
+        },
         "follow_up_cases": follow_up,
     }
 
@@ -343,6 +360,8 @@ def run_wave1_spot_check(
     lane_results_json: Path,
     *,
     sample_size: int | None = None,
+    shard_id: str | None = None,
+    full_review: bool = False,
 ) -> dict[str, Any]:
     api_key = os.environ.get("DASHSCOPE_API_KEY")
     if not api_key:
@@ -354,8 +373,8 @@ def run_wave1_spot_check(
         raise ValueError("lane_results_json must contain a JSON array")
 
     sampled = select_wave1_spot_check_rows(
-        build_wave1_pilot_rows(manifest, lane_results),
-        sample_size=sample_size,
+        build_wave1_pilot_rows(manifest, lane_results, shard_id=shard_id),
+        sample_size=(sample_size if sample_size is not None else None),
     )
     client = OpenAI(api_key=api_key, base_url=BASE_URL)
     results: list[dict[str, Any]] = []
@@ -404,6 +423,8 @@ def run_wave1_spot_check(
         "manifest_id": manifest.get("manifest_id"),
         "manifest_path": str(manifest_path),
         "lane_results_json": str(lane_results_json),
+        "shard_id": shard_id,
+        "full_review": full_review,
         "model": MODEL,
         "assets_root": str(ASSETS_ROOT),
         "sample_size": len(results),
@@ -487,6 +508,8 @@ def print_summary(data: dict[str, Any]) -> None:
 
     if data.get("mode") == "wave1_lane":
         print(f"manifest_id: {data['manifest_id']}")
+        if data.get("shard_id"):
+            print(f"shard_id: {data['shard_id']}")
         print("descriptor_readiness 计数:")
         for field, value in data["aggregates"]["descriptor_readiness_counts"].items():
             print(f"  - {field}: {value}")
@@ -496,6 +519,13 @@ def print_summary(data: dict[str, Any]) -> None:
         print("review_bucket_verdict 计数:")
         for field, value in data["aggregates"]["review_bucket_verdict_counts"].items():
             print(f"  - {field}: {value}")
+        acceptance_summary = data["aggregates"]["acceptance_summary"]
+        print(
+            "acceptance summary: "
+            f"accepted={acceptance_summary['accepted_count']}, "
+            f"reviewed={acceptance_summary['reviewed_count']}, "
+            f"rate={acceptance_summary['acceptance_rate']}"
+        )
         follow_up = data["aggregates"]["follow_up_cases"]
         print(f"需后续处理样本数: {len(follow_up)}")
         for case in follow_up:
@@ -533,6 +563,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--manifest", type=Path, help="Optional pilot manifest for wave-1 lane spot-check mode.")
     parser.add_argument("--lane-results-json", type=Path, help="Optional qwen_lane_runner_v1 JSON output for wave-1 spot-check mode.")
     parser.add_argument("--sample-size", type=int, help="Optional deterministic cap for wave-1 spot-check mode.")
+    parser.add_argument("--shard-id", type=str, help="Optional shard filter for wave-1 lane spot-check mode.")
+    parser.add_argument("--full-review", action="store_true", help="Mark the wave-1 lane review as deterministic full-review coverage.")
     args = parser.parse_args(argv)
 
     if (args.manifest is None) != (args.lane_results_json is None):
@@ -543,6 +575,8 @@ def main(argv: list[str] | None = None) -> int:
             args.manifest,
             args.lane_results_json,
             sample_size=args.sample_size,
+            shard_id=args.shard_id,
+            full_review=args.full_review,
         )
     else:
         data = run_spot_check(args.table)

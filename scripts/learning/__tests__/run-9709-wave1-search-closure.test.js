@@ -25,7 +25,7 @@ describe('run_9709_wave1_search_closure cli', () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain(
-      `Usage: node ${path.join('scripts', 'learning', 'run_9709_wave1_search_closure.js')} [--manifest <path>] [--lane-results <path>] [--evidence-bundles-out <path>] [--fixture <path>] [--gate-report <path>] [--gate-json <path>] [--gate-psql-mode <direct|docker>] [--gate-psql-container <name>] [--dry-run]`,
+      `Usage: node ${path.join('scripts', 'learning', 'run_9709_wave1_search_closure.js')} [--manifest <path>] [--shard-id <id>] [--lane-results <path>] [--scope-from-lane-results|--scope-from-manifest] [--evidence-bundles-out <path>] [--fixture <path>] [--gate-report <path>] [--gate-json <path>] [--gate-psql-mode <direct|docker>] [--gate-psql-container <name>] [--dry-run]`,
     );
   });
 
@@ -118,5 +118,34 @@ describe('run_9709_wave1_search_closure cli', () => {
     ).toBe(
       '\\\\wsl.localhost\\Ubuntu\\home\\samsen\\code\\ciecopilot-home\\scripts\\learning\\run_question_analysis_backfill_host.ps1',
     );
+  });
+
+  test('dry-run prints explicit shard scope preview for lane-results authority', () => {
+    const result = runCli([
+      '--manifest',
+      'data/manifests/9709_question_search_expansion_wave_a_v1.json',
+      '--shard-id',
+      'shard_1',
+      '--lane-results',
+      '/tmp/9709-wave-a-shard1-results.json',
+      '--scope-from-lane-results',
+      '--evidence-bundles-out',
+      '/tmp/9709-wave-a-shard1-bundles.json',
+      '--gate-report',
+      '/tmp/9709-wave-a-shard1-gate.md',
+      '--gate-json',
+      '/tmp/9709-wave-a-shard1-gate.json',
+      '--dry-run',
+    ]);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('scope_mode: lane_results');
+    expect(result.stdout).toContain('scope_source: /tmp/9709-wave-a-shard1-results.json');
+    expect(result.stdout).toContain('target_row_count: 10');
+    expect(result.stdout).toContain('cumulative_mode: false');
+    expect(result.stdout).toContain('9709/s17_qp_11/questions/q03.png');
+    expect(result.stdout).toContain('9709/s16_qp_32/questions/q03.png');
+    expect(result.stdout).toContain('9709/m20_qp_32/questions/q05.png');
+    expect(result.stdout).not.toContain('9709/m24_qp_12/questions/q04.png');
   });
 });

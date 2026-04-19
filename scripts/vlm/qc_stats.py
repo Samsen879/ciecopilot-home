@@ -18,7 +18,11 @@ from scripts.vlm.qc_common import (
     write_json,
 )
 from scripts.vlm.contracts import extract_qwen_wave1_provenance
-from scripts.vlm.create_jobs_from_manifest import build_manifest_jobs, load_manifest
+from scripts.vlm.create_jobs_from_manifest import (
+    build_manifest_jobs,
+    filter_manifest_items,
+    load_manifest,
+)
 
 
 def _load_lane_results(path: Path | None) -> list[dict[str, Any]]:
@@ -76,11 +80,14 @@ def _classify_descriptor_readiness(
 def build_wave1_pilot_rows(
     manifest: dict[str, Any],
     lane_results: list[dict[str, Any]] | None = None,
+    *,
+    shard_id: str | None = None,
 ) -> list[dict[str, Any]]:
     jobs = {
         job["storage_key"]: job
-        for job in build_manifest_jobs(manifest)
+        for job in build_manifest_jobs(manifest, shard_id=shard_id)
     }
+    items = filter_manifest_items(manifest, shard_id=shard_id)
     results_by_key = {
         row.get("input_asset_id"): row
         for row in (lane_results or [])
@@ -88,9 +95,7 @@ def build_wave1_pilot_rows(
     }
     rows: list[dict[str, Any]] = []
 
-    for item in manifest.get("items", []):
-        if not isinstance(item, dict):
-            continue
+    for item in items:
         storage_key = item["storage_key"]
         job = jobs.get(storage_key, {})
         lane_result = results_by_key.get(storage_key, {})
@@ -115,6 +120,8 @@ def build_wave1_pilot_rows(
         if lazy_attach is None:
             lazy_attach = job_wave1.get("lazy_attach_original_image")
 
+        expected_route = job.get("route")
+        expected_lane = job.get("lane")
         route = result_wave1.get("route") or job_wave1.get("route")
         lane = result_wave1.get("lane") or job_wave1.get("lane")
         failure_reason = lane_result.get("failure_reason") or result_wave1.get("failure_reason")
@@ -125,9 +132,14 @@ def build_wave1_pilot_rows(
                 "manifest_position": job.get("manifest_position"),
                 "route": route,
                 "lane": lane,
+                "expected_route": expected_route,
+                "expected_lane": expected_lane,
+                "route_matches_expected": route == expected_route,
                 "model": lane_result.get("model") or job.get("model"),
                 "decision_reasons": list(job_wave1.get("decision_reasons") or []),
                 "route_hint": item.get("route_hint"),
+                "difficulty_band": item.get("difficulty_band"),
+                "descriptor_required": bool(item.get("descriptor_required")),
                 "gate_critical": bool(item.get("gate_critical")),
                 "diagram_present": diagram_present,
                 "requires_review": requires_review,
@@ -155,6 +167,16 @@ def summarize_wave1_pilot_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         decision_reasons.extend(row.get("decision_reasons") or [])
 
     failure_reasons = [row["failure_reason"] for row in rows if row.get("failure_reason")]
+    descriptor_required_rows = [row for row in rows if row.get("descriptor_required")]
+    unexpected_review_fallbacks: dict[str, int] = {}
+    route_mismatch_counts: dict[str, int] = {}
+
+    for row in rows:
+        band = row.get("difficulty_band") or "unknown"
+        if row.get("route") == "review_lane" and row.get("expected_route") != "review_lane":
+            unexpected_review_fallbacks[band] = unexpected_review_fallbacks.get(band, 0) + 1
+        if row.get("route") != row.get("expected_route"):
+            route_mismatch_counts[band] = route_mismatch_counts.get(band, 0) + 1
 
     return {
         "total_rows": len(rows),
@@ -170,7 +192,128 @@ def summarize_wave1_pilot_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "present": sum(1 for row in rows if _summary_present(row.get("summary"))),
             "missing": sum(1 for row in rows if not _summary_present(row.get("summary"))),
         },
+        "descriptor_coverage": {
+            "required_rows": len(descriptor_required_rows),
+            "covered_rows": sum(1 for row in descriptor_required_rows if _summary_present(row.get("summary"))),
+            "coverage_rate": (
+                sum(1 for row in descriptor_required_rows if _summary_present(row.get("summary"))) / len(descriptor_required_rows)
+                if descriptor_required_rows
+                else None
+            ),
+        },
+        "unexpected_review_fallbacks": dict(sorted(unexpected_review_fallbacks.items())),
+        "route_mismatch_counts": dict(sorted(route_mismatch_counts.items())),
         "failure_reason_counts": _count_labels(failure_reasons),
+    }
+
+
+def _full_review_record_accepted(record: dict[str, Any]) -> bool:
+    review = record.get("review")
+    if not isinstance(review, dict):
+        return False
+
+    route_verdict = review.get("route_verdict")
+    route_ok = route_verdict in (None, "", "appropriate", "cannot_judge")
+    descriptor_ok = (
+        review.get("descriptor_readiness") == "descriptor_ready"
+        or review.get("review_bucket_verdict") == "correct"
+    )
+    return route_ok and descriptor_ok
+
+
+def evaluate_wave_a_thresholds(
+    rows: list[dict[str, Any]],
+    thresholds: dict[str, Any],
+    *,
+    full_review_payload: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    provider_failures = sum(1 for row in rows if row.get("failure_reason"))
+    unexpected_review_fallbacks = {
+        band: sum(
+            1
+            for row in rows
+            if (row.get("difficulty_band") or "unknown") == band
+            and row.get("route") == "review_lane"
+            and row.get("expected_route") != "review_lane"
+        )
+        for band in (thresholds.get("unexpected_review_lane_max") or {})
+    }
+    route_hint_mismatches = {
+        band: sum(
+            1
+            for row in rows
+            if (row.get("difficulty_band") or "unknown") == band
+            and row.get("route") != row.get("expected_route")
+        )
+        for band, required in (thresholds.get("route_hint_match_required") or {}).items()
+        if required
+    }
+    descriptor_required_rows = [row for row in rows if row.get("descriptor_required")]
+    descriptor_coverage = (
+        sum(1 for row in descriptor_required_rows if _summary_present(row.get("summary"))) / len(descriptor_required_rows)
+        if descriptor_required_rows
+        else None
+    )
+    full_review_records = [
+        record
+        for record in (full_review_payload or {}).get("records", [])
+        if isinstance(record, dict)
+    ]
+    full_review_acceptance = (
+        sum(1 for record in full_review_records if _full_review_record_accepted(record)) / len(full_review_records)
+        if full_review_records
+        else None
+    )
+
+    checks = [
+        {
+            "name": "provider_failures",
+            "pass": provider_failures <= int(thresholds.get("provider_failure_max", 0)),
+            "actual": provider_failures,
+            "expected_max": int(thresholds.get("provider_failure_max", 0)),
+        }
+    ]
+
+    for band, maximum in (thresholds.get("unexpected_review_lane_max") or {}).items():
+        actual = unexpected_review_fallbacks.get(band, 0)
+        checks.append(
+            {
+                "name": f"unexpected_review_fallbacks:{band}",
+                "pass": actual <= int(maximum),
+                "actual": actual,
+                "expected_max": int(maximum),
+            }
+        )
+
+    for band, required in (thresholds.get("route_hint_match_required") or {}).items():
+        if not required:
+            continue
+        actual = route_hint_mismatches.get(band, 0)
+        checks.append(
+            {
+                "name": f"route_hint_match:{band}",
+                "pass": actual == 0,
+                "actual": actual,
+                "expected": 0,
+            }
+        )
+
+    if full_review_acceptance is not None:
+        checks.append(
+            {
+                "name": "full_review_acceptance",
+                "pass": full_review_acceptance >= float(thresholds.get("full_review_min_acceptance", 1)),
+                "actual": full_review_acceptance,
+                "expected_min": float(thresholds.get("full_review_min_acceptance", 1)),
+            }
+        )
+
+    return {
+        "provider_failures": provider_failures,
+        "unexpected_review_fallbacks": unexpected_review_fallbacks,
+        "descriptor_coverage": descriptor_coverage,
+        "full_review_acceptance": full_review_acceptance,
+        "threshold_verdicts": checks,
     }
 
 
@@ -178,6 +321,9 @@ def collect_stats(
     *,
     manifest_path: Path | None = None,
     lane_results_json: Path | None = None,
+    shard_id: str | None = None,
+    thresholds_path: Path | None = None,
+    full_review_json: Path | None = None,
 ) -> dict[str, Any]:
     with get_connection() as conn:
         with conn.cursor() as cur:
@@ -469,17 +615,27 @@ def collect_stats(
 
     if manifest_path is not None:
         manifest = load_manifest(manifest_path)
+        full_review_payload = read_json(full_review_json) if full_review_json is not None else None
         wave1_rows = build_wave1_pilot_rows(
             manifest,
             _load_lane_results(lane_results_json),
+            shard_id=shard_id,
         )
         stats["wave1_pilot"] = {
             "manifest_id": manifest.get("manifest_id"),
             "manifest_path": str(manifest_path),
             "lane_results_json": str(lane_results_json) if lane_results_json else None,
+            "shard_id": shard_id,
             "summary": summarize_wave1_pilot_rows(wave1_rows),
             "rows": wave1_rows,
         }
+        if thresholds_path is not None:
+            thresholds = read_json(thresholds_path)
+            stats["wave1_pilot"]["thresholds"] = evaluate_wave_a_thresholds(
+                wave1_rows,
+                thresholds,
+                full_review_payload=full_review_payload,
+            )
 
     return stats
 
@@ -591,9 +747,27 @@ def print_stats(stats: dict[str, Any]) -> None:
             f"present={summary['summary_presence']['present']}, "
             f"missing={summary['summary_presence']['missing']}"
         )
+        descriptor_coverage = summary["descriptor_coverage"]
+        print(
+            "descriptor coverage: "
+            f"covered={descriptor_coverage['covered_rows']}, "
+            f"required={descriptor_coverage['required_rows']}, "
+            f"rate={descriptor_coverage['coverage_rate']}"
+        )
+        print("unexpected review fallbacks:")
+        for key, value in summary["unexpected_review_fallbacks"].items():
+            print(f"  - {key}: {value}")
+        thresholds_summary = wave1.get("thresholds")
+        if thresholds_summary:
+            print("threshold verdicts:")
+            for check in thresholds_summary["threshold_verdicts"]:
+                status = "pass" if check["pass"] else "fail"
+                print(f"  - {check['name']}: {status}")
+            if thresholds_summary["full_review_acceptance"] is not None:
+                print(f"full review acceptance: {thresholds_summary['full_review_acceptance']}")
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="VLM QC stats for question_descriptions_v0")
     parser.add_argument(
         "--output-json",
@@ -603,11 +777,17 @@ def main() -> int:
     )
     parser.add_argument("--manifest", type=Path, help="Optional pilot manifest to overlay wave-1 routing metadata.")
     parser.add_argument("--lane-results-json", type=Path, help="Optional qwen_lane_runner_v1 JSON output.")
-    args = parser.parse_args()
+    parser.add_argument("--shard-id", type=str, help="Optional shard filter for wave-1 pilot overlays.")
+    parser.add_argument("--thresholds-json", type=Path, help="Optional Wave A threshold contract JSON.")
+    parser.add_argument("--full-review-json", type=Path, help="Optional deterministic full-review JSON.")
+    args = parser.parse_args(argv)
 
     stats = collect_stats(
         manifest_path=args.manifest,
         lane_results_json=args.lane_results_json,
+        shard_id=args.shard_id,
+        thresholds_path=args.thresholds_json,
+        full_review_json=args.full_review_json,
     )
     print_stats(stats)
     write_json(args.output_json, stats)

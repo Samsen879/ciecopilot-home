@@ -9,12 +9,15 @@
   "source_documents": [
     "docs/reports/2026-04-19-9709-wave-a-github-issue-drafts.md",
     "docs/superpowers/plans/2026-04-19-9709-wave-a-controlled-expansion.md",
-    "data/manifests/9709_question_search_recovery_v1.json"
+    "data/manifests/9709_question_search_recovery_v1.json",
+    "docs/reports/2026-04-19-9709-wave-a-surface-audit-report.md"
   ],
   "notes": [
     "Wave A adds exactly 30 new rows beyond the 17-row recovery manifest.",
     "Selection prefers non-overlap reviewed rows from the A1 manual audit sheet and uses blind-set topic-matched rows only where they add explicit hard coverage or fill the paper 3 trigonometry shortfall.",
-    "paper_scope_key is a deterministic single-question identity derived from syllabus, year, session, paper, variant, and q number; manifest paper is expected to map directly to projection paper_number."
+    "paper_scope_key is a deterministic single-question identity derived from syllabus, year, session, paper, variant, and q number; manifest paper is expected to map directly to projection paper_number.",
+    "Issue #245 surface audit froze route_hint plus surface flags against checked-in primary assets and supporting manual audit evidence.",
+    "Issue #245 replaced 9709/w21_qp_32/questions/q07.png with 9709/w22_qp_32/questions/q04.png after checked-in manual audit and released-family evidence confirmed the former belongs to released differential equations scope, not Wave A p3 trigonometry."
   ],
   "items": [
     {
@@ -32,7 +35,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2017:s:p1:v1:q03"
+      "paper_scope_key": "9709:2017:s:p1:v1:q03",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s23_qp_11/questions/q01.png",
@@ -49,7 +58,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2023:s:p1:v1:q01"
+      "paper_scope_key": "9709:2023:s:p1:v1:q01",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "ocr_risk": "low",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w16_qp_12/questions/q02.png",
@@ -66,7 +81,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2016:w:p1:v2:q02"
+      "paper_scope_key": "9709:2016:w:p1:v2:q02",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "ocr_risk": "low",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w23_qp_11/questions/q05.png",
@@ -83,7 +104,13 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2023:w:p1:v1:q05"
+      "paper_scope_key": "9709:2023:w:p1:v1:q05",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s17_qp_13/questions/q05.png",
@@ -100,7 +127,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2017:s:p1:v3:q05"
+      "paper_scope_key": "9709:2017:s:p1:v3:q05",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w16_qp_13/questions/q03.png",
@@ -117,7 +150,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2016:w:p1:v3:q03"
+      "paper_scope_key": "9709:2016:w:p1:v3:q03",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/m24_qp_12/questions/q04.png",
@@ -134,7 +173,14 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2024:m:p1:v2:q04"
+      "paper_scope_key": "9709:2024:m:p1:v2:q04",
+      "route_hint": "review_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "high",
+      "surface_evidence_status": "verified_primary_asset",
+      "review_lane_justification": "Dense identity-proof-plus-solve row packs multiple symbolic transitions into one surface, so extraction-first OCR alone is not stable enough for the hard p1 gate pin."
     },
     {
       "storage_key": "9709/s21_qp_13/questions/q04.png",
@@ -151,7 +197,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2021:s:p1:v3:q04"
+      "paper_scope_key": "9709:2021:s:p1:v3:q04",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s18_qp_13/questions/q07.png",
@@ -168,7 +220,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2018:s:p1:v3:q07"
+      "paper_scope_key": "9709:2018:s:p1:v3:q07",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s22_qp_13/questions/q02.png",
@@ -185,7 +243,13 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2022:s:p1:v3:q02"
+      "paper_scope_key": "9709:2022:s:p1:v3:q02",
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "ocr_risk": "high",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s16_qp_32/questions/q03.png",
@@ -202,7 +266,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2016:s:p3:v2:q03"
+      "paper_scope_key": "9709:2016:s:p3:v2:q03",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s17_qp_33/questions/q04.png",
@@ -219,7 +289,13 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2017:s:p3:v3:q04"
+      "paper_scope_key": "9709:2017:s:p3:v3:q04",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s18_qp_31/questions/q05.png",
@@ -236,7 +312,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_partial",
-      "paper_scope_key": "9709:2018:s:p3:v1:q05"
+      "paper_scope_key": "9709:2018:s:p3:v1:q05",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s18_qp_32/questions/q04.png",
@@ -253,7 +335,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2018:s:p3:v2:q04"
+      "paper_scope_key": "9709:2018:s:p3:v2:q04",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s24_qp_32/questions/q07.png",
@@ -270,7 +358,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2024:s:p3:v2:q07"
+      "paper_scope_key": "9709:2024:s:p3:v2:q07",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w20_qp_32/questions/q09.png",
@@ -287,7 +381,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2020:w:p3:v2:q09"
+      "paper_scope_key": "9709:2020:w:p3:v2:q09",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w23_qp_32/questions/q09.png",
@@ -304,7 +404,14 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "blind_eval_v3_hard_topic_match",
-      "paper_scope_key": "9709:2023:w:p3:v2:q09"
+      "paper_scope_key": "9709:2023:w:p3:v2:q09",
+      "route_hint": "review_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "high",
+      "surface_evidence_status": "verified_primary_asset",
+      "review_lane_justification": "Hard blind-row evidence mixes application context, turning-point reasoning, and signed area interpretation, so the hard integration slot needs explicit review posture instead of OCR-only extraction."
     },
     {
       "storage_key": "9709/w21_qp_33/questions/q09.png",
@@ -321,7 +428,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2021:w:p3:v3:q09"
+      "paper_scope_key": "9709:2021:w:p3:v3:q09",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w19_qp_32/questions/q08.png",
@@ -338,7 +451,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_partial",
-      "paper_scope_key": "9709:2019:w:p3:v2:q08"
+      "paper_scope_key": "9709:2019:w:p3:v2:q08",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/s24_qp_32/questions/q06.png",
@@ -355,7 +474,13 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2024:s:p3:v2:q06"
+      "paper_scope_key": "9709:2024:s:p3:v2:q06",
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "high",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/m19_qp_32/questions/q03.png",
@@ -372,7 +497,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2019:m:p3:v2:q03"
+      "paper_scope_key": "9709:2019:m:p3:v2:q03",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "ocr_risk": "low",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w21_qp_32/questions/q06.png",
@@ -389,7 +520,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "blind_eval_v2_topic_match",
-      "paper_scope_key": "9709:2021:w:p3:v2:q06"
+      "paper_scope_key": "9709:2021:w:p3:v2:q06",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "ocr_risk": "low",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/m20_qp_32/questions/q05.png",
@@ -406,7 +543,13 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2020:m:p3:v2:q05"
+      "paper_scope_key": "9709:2020:m:p3:v2:q05",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/m24_qp_32/questions/q08.png",
@@ -423,7 +566,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2024:m:p3:v2:q08"
+      "paper_scope_key": "9709:2024:m:p3:v2:q08",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w22_qp_32/questions/q06.png",
@@ -440,7 +589,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "blind_eval_v2_topic_match",
-      "paper_scope_key": "9709:2022:w:p3:v2:q06"
+      "paper_scope_key": "9709:2022:w:p3:v2:q06",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "ocr_risk": "low",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w23_qp_32/questions/q07.png",
@@ -457,7 +612,14 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "blind_eval_v3_hard_topic_match",
-      "paper_scope_key": "9709:2023:w:p3:v2:q07"
+      "paper_scope_key": "9709:2023:w:p3:v2:q07",
+      "route_hint": "review_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "high",
+      "surface_evidence_status": "verified_primary_asset",
+      "review_lane_justification": "Hard blind trig row compresses triple-angle identity work and noisy symbolic alignment into one surface, so explicit review posture is safer than OCR-only routing."
     },
     {
       "storage_key": "9709/s17_qp_32/questions/q03.png",
@@ -474,7 +636,13 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "manual_audit_non_overlap_correct",
-      "paper_scope_key": "9709:2017:s:p3:v2:q03"
+      "paper_scope_key": "9709:2017:s:p3:v2:q03",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w22_qp_32/questions/q09.png",
@@ -491,24 +659,36 @@
       "descriptor_required": true,
       "gate_critical": false,
       "source_reason": "blind_eval_v2_topic_match",
-      "paper_scope_key": "9709:2022:w:p3:v2:q09"
+      "paper_scope_key": "9709:2022:w:p3:v2:q09",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "ocr_risk": "low",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
-      "storage_key": "9709/w21_qp_32/questions/q07.png",
+      "storage_key": "9709/w22_qp_32/questions/q04.png",
       "syllabus_code": "9709",
-      "year": 2021,
+      "year": 2022,
       "session": "w",
       "paper": 3,
       "variant": 2,
-      "q_number": 7,
+      "q_number": 4,
       "primary_topic_path": "9709.p3.trigonometry",
       "bucket": "9709.p3.trigonometry",
       "difficulty_band": "medium",
       "shard_id": "shard_3",
       "descriptor_required": true,
       "gate_critical": false,
-      "source_reason": "blind_eval_v2_topic_match",
-      "paper_scope_key": "9709:2021:w:p3:v2:q07"
+      "source_reason": "manual_audit_non_overlap_wrong_scope_repair",
+      "paper_scope_key": "9709:2022:w:p3:v2:q04",
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "medium",
+      "surface_evidence_status": "verified_primary_asset"
     },
     {
       "storage_key": "9709/w22_qp_32/questions/q07.png",
@@ -525,7 +705,14 @@
       "descriptor_required": true,
       "gate_critical": true,
       "source_reason": "blind_eval_v3_hard_topic_match",
-      "paper_scope_key": "9709:2022:w:p3:v2:q07"
+      "paper_scope_key": "9709:2022:w:p3:v2:q07",
+      "route_hint": "review_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "ocr_risk": "high",
+      "surface_evidence_status": "verified_primary_asset",
+      "review_lane_justification": "This intentionally review-heavy symbolic identity row has no literal diagram, but the retained hard slot still needs manual review posture because equivalence checking is denser than extraction-first OCR alone."
     }
   ]
 }

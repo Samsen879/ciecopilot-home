@@ -1,0 +1,203 @@
+{
+  "report_date": "2026-04-21",
+  "report_path": "docs/reports/2026-04-21-9709-closed-loop-reentry-audit.md",
+  "tracker_issue": 258,
+  "tracker_url": "https://github.com/Samsen879/ciecopilot-home/issues/258",
+  "authoritative_truth_baseline": true,
+  "no_new_expansion_until_issue_258_closes": true,
+  "current_line_baseline": {
+    "issue_258_file_claim_reconciliation": [
+      {
+        "path": "api/learning/lib/events/learning-effect-engine.js",
+        "present": true
+      },
+      {
+        "path": "api/learning/lib/marking/adapter-method-dispatcher.js",
+        "present": true
+      },
+      {
+        "path": "scripts/learning/lib/closed-loop-release-gate.js",
+        "present": true
+      },
+      {
+        "path": "api/learning/lib/orchestration/learning-runtime-state-machine.js",
+        "present": false
+      }
+    ],
+    "missing_files": [
+      "api/learning/lib/orchestration/learning-runtime-state-machine.js",
+      "api/learning/__tests__/learning-runtime-state-machine.test.js"
+    ]
+  },
+  "issues": [
+    {
+      "issue_number": 227,
+      "status": "partially_landed",
+      "title": "9709 Closed-Loop Release Readiness Tracker",
+      "remaining_delta": [
+        "Tracker closure is not authoritative because issues 232 and 233 are still only partially evidenced on the current line."
+      ]
+    },
+    {
+      "issue_number": 228,
+      "status": "landed",
+      "title": "Runtime Effects 1/2: materialize LearningUpdateProposed into idempotent downstream effect receipts",
+      "evidence_files": [
+        "api/learning/lib/events/learning-effect-engine.js",
+        "api/learning/lib/repositories/learning-event-effect-repository.js",
+        "supabase/migrations/20260417120000_create_learning_runtime_effect_receipts.sql",
+        "api/learning/__tests__/learning-effect-engine.test.js"
+      ],
+      "remaining_delta": []
+    },
+    {
+      "issue_number": 229,
+      "status": "landed",
+      "title": "Runtime Effects 2/2: wire downstream effect execution into bridge and reconciliation paths",
+      "evidence_files": [
+        "api/marking/evaluate-v1.js",
+        "api/learning/lib/events/attempt-event-service.js",
+        "api/learning/lib/reconciliation/reconciliation-service.js",
+        "api/learning/__tests__/attempt-event-service.test.js",
+        "api/learning/__tests__/reconciliation-service.test.js",
+        "api/marking/__tests__/evaluate-v1.test.js"
+      ],
+      "remaining_delta": []
+    },
+    {
+      "issue_number": 230,
+      "status": "landed",
+      "title": "9709 Adapter Runtime: execute pilot adapter_method contracts in marking runtime",
+      "evidence_files": [
+        "api/learning/lib/marking/adapter-method-dispatcher.js",
+        "api/learning/lib/subjects/subject-adapter-registry.js",
+        "api/marking/lib/rubric-resolver-v1.js",
+        "api/learning/__tests__/adapter-method-dispatcher.test.js",
+        "api/learning/__tests__/subject-adapter-registry.test.js",
+        "api/marking/__tests__/rubric-resolver-v1.test.js",
+        "docs/reports/2026-04-18-issue-230-pilot-adapter-runtime-coverage-note.md"
+      ],
+      "remaining_delta": []
+    },
+    {
+      "issue_number": 231,
+      "status": "landed",
+      "title": "Artifact Content Activation: persist body/version content and materialize renderable pilot artifacts",
+      "evidence_files": [
+        "api/learning/lib/repositories/artifact-content-repository.js",
+        "api/learning/lib/artifacts/artifact-service.js",
+        "api/learning/lib/workspaces/workspace-read-service.js",
+        "supabase/migrations/20260417123000_create_learning_artifact_content_versions.sql",
+        "api/learning/__tests__/artifact-content-repository.test.js",
+        "api/learning/__tests__/artifact-service.test.js",
+        "api/learning/__tests__/workspace-read-service.test.js"
+      ],
+      "remaining_delta": []
+    },
+    {
+      "issue_number": 232,
+      "status": "partially_landed",
+      "title": "Scheduler Core Upgrade: replace simplified route weights with a bounded P1 factor model for 9709",
+      "evidence_files": [
+        "api/learning/lib/review/review-scheduler-policy.js",
+        "api/learning/lib/review/review-task-service.js",
+        "api/learning/__tests__/review-scheduler-policy.test.js",
+        "docs/reports/2026-04-18-issue-232-scheduler-factor-coverage-report.md"
+      ],
+      "blocking_files_or_tests": [
+        "api/learning/lib/orchestration/learning-runtime-state-machine.js",
+        "api/learning/__tests__/learning-runtime-state-machine.test.js",
+        "api/learning/__tests__/review-task-service.test.js"
+      ],
+      "remaining_delta": [
+        "Explicit runtime-state-machine module/test are still missing.",
+        "Current-line review-task-service verification fails two released-scope 9709.integration.application assertions with released_scoring -> non_released_fallback."
+      ]
+    },
+    {
+      "issue_number": 233,
+      "status": "partially_landed",
+      "title": "Closed-Loop Release Gate: prove feature-flagged 9709 release readiness end to end",
+      "evidence_files": [
+        "scripts/learning/lib/closed-loop-release-gate.js",
+        "scripts/learning/lib/browser-closed-loop-fixture.js",
+        "scripts/learning/run_closed_loop_release_gate.js",
+        "scripts/learning/__tests__/closed-loop-release-gate.test.js",
+        "docs/reports/2026-04-18-9709-closed-loop-release-gate.md",
+        "docs/reports/2026-04-18-9709-closed-loop-release-readiness.md"
+      ],
+      "remaining_delta": [
+        "The current gate is a focused in-memory harness proof, not an authoritative real-line runtime proof.",
+        "The current gate covers one 9709.trigonometry.equations gold path and does not catch the present released-scope review-task regression."
+      ]
+    }
+  ],
+  "fresh_verification": [
+    {
+      "command": "NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand --runTestsByPath api/learning/__tests__/learning-effect-engine.test.js api/learning/__tests__/attempt-event-service.test.js api/learning/__tests__/reconciliation-service.test.js api/marking/__tests__/evaluate-v1.test.js",
+      "outcome": "pass",
+      "suite_count": 4,
+      "test_count": 49
+    },
+    {
+      "command": "NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand --runTestsByPath api/learning/__tests__/adapter-method-dispatcher.test.js api/learning/__tests__/subject-adapter-registry.test.js api/marking/__tests__/rubric-resolver-v1.test.js",
+      "outcome": "pass",
+      "suite_count": 3,
+      "test_count": 30
+    },
+    {
+      "command": "NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand --runTestsByPath api/learning/__tests__/artifact-content-repository.test.js api/learning/__tests__/artifact-service.test.js api/learning/__tests__/workspace-read-service.test.js",
+      "outcome": "pass",
+      "suite_count": 3,
+      "test_count": 45
+    },
+    {
+      "command": "NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand --runTestsByPath api/learning/__tests__/review-scheduler-policy.test.js api/learning/__tests__/review-task-service.test.js",
+      "outcome": "fail",
+      "suite_count": 2,
+      "failed_tests": [
+        "incorrect released-scoring outcomes still emit repair tasks without positive type mastery",
+        "released-scoring outcomes with conservative mapping ambiguity still emit repair tasks"
+      ]
+    },
+    {
+      "command": "NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node --experimental-vm-modules /home/samsen/code/ciecopilot-home/node_modules/jest/bin/jest.js --runInBand --runTestsByPath scripts/learning/__tests__/closed-loop-release-gate.test.js",
+      "outcome": "pass",
+      "suite_count": 1,
+      "test_count": 4
+    },
+    {
+      "command": "node scripts/learning/run_closed_loop_release_gate.js --out-json tmp/closed-loop-release-gate.audit.json --out-md tmp/closed-loop-release-gate.audit.md",
+      "outcome": "pass",
+      "receipt_status": "pass",
+      "release_ready": true
+    }
+  ],
+  "reentry_sequence": [
+    {
+      "order": 1,
+      "name": "Re-enter scheduler and runtime-state seam",
+      "required": [
+        "Restore green released-scope repair behavior in mastery-orchestrator -> review-task-service.",
+        "Make api/learning/__tests__/review-task-service.test.js fully green.",
+        "Land the explicit runtime-state module/test promised by issue 232, or replace that promise with an equally strong checked-in contract under issue 258."
+      ]
+    },
+    {
+      "order": 2,
+      "name": "Re-enter final gate proof surface",
+      "required": [
+        "Keep the existing gate runner but harden the authoritative proof surface beyond the current in-memory harness.",
+        "Add gate coverage that would fail if the released-scope review-task regression reappears."
+      ]
+    },
+    {
+      "order": 3,
+      "name": "Close tracker only after fresh proof",
+      "required": [
+        "Publish fresh gate receipt and markdown report.",
+        "Keep issue 258 open until the re-entry delta is closed."
+      ]
+    }
+  ]
+}

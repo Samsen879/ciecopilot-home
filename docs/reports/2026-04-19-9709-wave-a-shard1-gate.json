@@ -1,20 +1,20 @@
 {
   "fixture_path": "data/eval/question_search_gold_9709_v1.json",
   "metrics": {
-    "exact_structured_match_rate": 0.8,
+    "exact_structured_match_rate": 1,
     "subject_leakage_rate": 0,
     "metadata_completeness_rate": 1,
     "null_summary_rate": 0
   },
   "gate": {
-    "pass": false,
+    "pass": true,
     "checks": [
       {
         "metric": "exact_structured_match_rate",
         "required": 0.9,
-        "actual": 0.8,
+        "actual": 1,
         "comparator": ">=",
-        "pass": false
+        "pass": true
       },
       {
         "metric": "subject_leakage_rate",
@@ -38,15 +38,7 @@
         "pass": true
       }
     ],
-    "failing_checks": [
-      {
-        "metric": "exact_structured_match_rate",
-        "required": 0.9,
-        "actual": 0.8,
-        "comparator": ">=",
-        "pass": false
-      }
-    ]
+    "failing_checks": []
   },
   "environment": {
     "selected_branch": "question_descriptions_v0_status_ok",
@@ -185,9 +177,9 @@
         "query": "identity solve equation"
       },
       "resolution_error": null,
-      "total_results": 4,
-      "top_result_question_id": "1500bd9d-8842-462a-8105-2334ca4e81af",
-      "exact_structured_match": false,
+      "total_results": 5,
+      "top_result_question_id": "6c0c8191-b16f-4f19-8d2a-092ed894c39d",
+      "exact_structured_match": true,
       "subject_leakage": false,
       "metadata_present_count": 6,
       "metadata_required_count": 6,

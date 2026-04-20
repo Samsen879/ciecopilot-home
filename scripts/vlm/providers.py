@@ -191,7 +191,7 @@ class WindowsHostQwenProvider(VLMProvider):
         return parsed
 
     def _max_tokens(self) -> int:
-        if self.lane == "ocr":
+        if self.lane in {"ocr", "review"}:
             return 768
         return 512
 

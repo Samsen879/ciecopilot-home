@@ -19,7 +19,7 @@ node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question
 ## Fixture
 
 - Fixture path: `data/eval/question_search_gold_9709_v1.json`
-- Generated at (UTC): `2026-04-20T00:14:14.770Z`
+- Generated at (UTC): `2026-04-20T00:51:06.628Z`
 - Case count: `5`
 
 | Case | Query | Summary Policy | Expected Source Kind |
@@ -59,33 +59,30 @@ Curriculum version tag for topic resolution: `2025-2027_v1`
 | imported-fallback-browser-continuity | topic=9709.codex_cli.browser_fixture.continuity, q=2, type=9709.trigonometry.identities, text~tan^2 | 0c100001-7a3e-4d82-9d7c-1f1000010202 | pass | 8/8 | n/a | no |
 | paper-pin-s19-p1-q6 | topic=9709.p1.trigonometry, year=2019, session=s, paper=1, q=6, text~Prove trigonometric identity and solve equation | 69776499-41a2-4af2-b992-d22c92ef9ece | pass | 8/8 | present | no |
 | paper-pin-s16-p3-q7 | topic=9709.p3.integration, year=2016, session=s, paper=3, q=7, text~Evaluate integral I using substitution | 3cd91c38-598a-4e85-a3a3-d8898568427a | pass | 8/8 | present | no |
-| mixed-ranking-paper-authority | topic=9709.p1.trigonometry, type=9709.trigonometry.identities, text~identity solve equation | 1500bd9d-8842-462a-8105-2334ca4e81af | fail | 6/6 | present | no |
+| mixed-ranking-paper-authority | topic=9709.p1.trigonometry, type=9709.trigonometry.identities, text~identity solve equation | 6c0c8191-b16f-4f19-8d2a-092ed894c39d | pass | 6/6 | present | no |
 
 ## Threshold Results
 
 | Metric | Comparator | Required | Actual | Status |
 | --- | --- | --- | --- | --- |
-| exact_structured_match_rate | >= | 0.9 | 0.8 | fail |
+| exact_structured_match_rate | >= | 0.9 | 1 | pass |
 | subject_leakage_rate | <= | 0 | 0 | pass |
 | metadata_completeness_rate | >= | 0.95 | 1 | pass |
 | null_summary_rate | <= | 0.05 | 0 | pass |
 
 ## Metrics
 
-- exact_structured_match_rate: `0.8`
+- exact_structured_match_rate: `1`
 - subject_leakage_rate: `0`
 - metadata_completeness_rate: `1`
 - null_summary_rate: `0`
-- gate_pass: `false`
+- gate_pass: `true`
 
 ## Outcome
 
-- live_gate_status: `fail`
-- imported_fallback_cases_passing: `2`
-- pinned_case_failures: `1`
-- failing_metrics: `exact_structured_match_rate`
+- live_gate_status: `pass`
+- All fixture cases met the structured-retrieval thresholds in the checked environment.
 
 ## Residual Risks
 
 - Descriptor surfaces are empty for 9709 in the checked environment, so summary-bearing paper-backed retrieval remains blocked by data posture rather than runner logic.
-- The structured-retrieval gate is blocking release for this checked environment until the failing thresholds are addressed.

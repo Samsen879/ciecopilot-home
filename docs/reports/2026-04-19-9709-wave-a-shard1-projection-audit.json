@@ -1,12 +1,12 @@
 {
   "manifest_id": "9709_question_search_expansion_wave_a_v1",
   "shard_id": "shard_1",
-  "pass": false,
+  "pass": true,
   "thresholds_contract_id": "9709_wave_a_thresholds_v1",
   "summary": {
     "target_row_count": 10,
     "duplicate_projection_rows": 0,
-    "current_shard_projection_completeness": 0.9,
+    "current_shard_projection_completeness": 1,
     "current_shard_queryability": 1
   },
   "rows": [
@@ -41,10 +41,7 @@
       "storage_key": "9709/w23_qp_11/questions/q05.png",
       "shard_id": "shard_1",
       "matched_projection_rows": 1,
-      "missing_required_fields": [
-        "summary",
-        "search_text"
-      ],
+      "missing_required_fields": [],
       "paper_number_matches": true,
       "queryability_pass": true,
       "duplicate_projection_rows": 0
@@ -104,19 +101,5 @@
       "duplicate_projection_rows": 0
     }
   ],
-  "failures": [
-    {
-      "code": "missing_required_projection_fields",
-      "storage_key": "9709/w23_qp_11/questions/q05.png",
-      "missing_required_fields": [
-        "summary",
-        "search_text"
-      ]
-    },
-    {
-      "code": "current_shard_projection_completeness_below_threshold",
-      "actual": 0.9,
-      "expected_min": 1
-    }
-  ]
+  "failures": []
 }

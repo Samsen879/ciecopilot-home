@@ -120,6 +120,7 @@ def test_windows_host_qwen_provider_builds_review_lane_contract_and_normalizes_m
     with patch("scripts.vlm.providers.call_qwen_openai_v1", side_effect=fake_call):
         result = provider.generate(image_path)
 
+    assert captured["request"]["max_tokens"] == 768
     prompt_text = captured["request"]["messages"][0]["content"][0]["text"]
     assert "requires_review" in prompt_text
     assert "ocr_text" in prompt_text

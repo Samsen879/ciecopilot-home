@@ -1,27 +1,24 @@
 # Wave A Shard Verdict
 
-- status: `fail`
+- status: `pass`
 - shard_id: `shard_1`
 - target_row_count: `10`
-- provider_failures: `1`
-- gate_pass: `False`
-- projection_pass: `False`
+- provider_failures: `0`
+- gate_pass: `True`
+- projection_pass: `True`
 - full_review_acceptance: `0.9`
 
 ## Failures
-- `provider_failures_exceeded`: `{"actual": 1, "code": "provider_failures_exceeded", "expected_max": 0}`
-- `baseline_gate_failed`: `{"code": "baseline_gate_failed"}`
-- `current_shard_projection_incomplete`: `{"actual": 0.9, "code": "current_shard_projection_incomplete", "expected_min": 1.0}`
-- `projection_audit_failed`: `{"code": "projection_audit_failed"}`
+- none
 
 ## Execution Fingerprint
 
-- `repo_sha`: `"78c33356da92ee2e7a9b3682dd1cd22a0a9af73f"`
+- `repo_sha`: `"d6970bc815f9cf5b6bdce78bd5938c8b5c6c6a6f"`
 - `branch`: `"feat/242"`
 - `manifest`: `{"digest": "3332454c981179e317988b45f847b47afb5c658226167344b782504909d8061b", "manifest_id": "9709_question_search_expansion_wave_a_v1", "path": "data/manifests/9709_question_search_expansion_wave_a_v1.json"}`
-- `lane_results`: `{"digest": "9eb8c02aa3566c94991cab264ae86fc06effa34e208c574beb781cd91fe1cab4", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-results.json"}`
-- `gate`: `{"digest": "f20f9e06999d1532751412c21ebbe8e492e085ab8a0c1c16d598b3337db1a9ba", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-gate.json"}`
-- `projection_audit`: `{"digest": "dfa4d5e97a5fb1d67d8db6fe960f5b655fbfc7973c615e5aac440543d15349ad", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-projection-audit.json"}`
-- `full_review`: `{"digest": "60ccce82c61813ad42a93f972ec5713c48a923bd02076dba7f1e152061a5a8d0", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-full-review.json"}`
+- `lane_results`: `{"digest": "a5e54189ef719e31f19f564031c3271f48ed00b76ac1c0933acc69d49c271d1b", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-results.json"}`
+- `gate`: `{"digest": "710b7ad11259c3d195e067aefc6fca35d98cab4eb9409180eb0adb92535d2b5e", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-gate.json"}`
+- `projection_audit`: `{"digest": "11f41ba2f064ece692e475d83263a733b7431cbd7afb1fc81430d01cf7c8c8b5", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-projection-audit.json"}`
+- `full_review`: `{"digest": "066c48b4f64b0a1def4b49519eabf4dc9058ffeea4dad6f4c4229e7236cc843c", "path": "docs/reports/2026-04-19-9709-wave-a-shard1-full-review.json"}`
 - `thresholds`: `{"contract_id": "9709_wave_a_thresholds_v1", "digest": "19f8a6f9b29b16ce2a358faea1da710edce16d41e720f6f7994f68d14f2cec06", "path": "data/contracts/9709_wave_a_thresholds_v1.json"}`
 - `evidence_bundles`: `{"digest": null, "path": null}`

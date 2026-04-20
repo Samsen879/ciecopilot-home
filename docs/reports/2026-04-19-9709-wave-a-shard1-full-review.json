@@ -19,23 +19,83 @@
       "diagram_present": false,
       "requires_review": false,
       "lazy_attach_original_image": true,
-      "confidence": 0.0,
-      "failure_reason": "Windows-host Qwen provider did not return a valid JSON object",
-      "summary": null,
+      "confidence": 1.0,
+      "failure_reason": null,
+      "summary": "5 (a) Show that the equation\n4 sin x + 5/tan x + 2/sin x = 0\nmay be expressed in the form a cos^2 x + b cos x + c = 0, where a, b and c are integers to be found. [3]\n(b) Hence solve the equation 4 sin x + 5/tan x + 2/sin x = 0 for 0° ≤ x ≤ 360°. [3]",
       "warnings": [
-        "lazy_attach_original_image",
-        "provider_failure"
+        "lazy_attach_original_image"
       ],
-      "evidence": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "5 (a) Show that the equation\n4 sin x + 5/tan x + 2/sin x = 0\nmay be expressed in the form a cos^2 x + b cos x + c = 0, where a, b and c are integers to be found. [3]\n(b) Hence solve the equation 4 sin x + 5/tan x + 2/sin x = 0 for 0° ≤ x ≤ 360°. [3]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "4 \\sin x + \\frac{5}{\\tan x} + \\frac{2}{\\sin x} = 0",
+            "a \\cos^2 x + b \\cos x + c = 0",
+            "4 \\sin x + \\frac{5}{\\tan x} + \\frac{2}{\\sin x} = 0",
+            "0^\\circ \\leqslant x \\leqslant 360^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Show that the equation 4 sin x + 5/tan x + 2/sin x = 0 may be expressed in the form a cos^2 x + b cos x + c = 0, where a, b and c are integers to be found.', 'marks': '[3]'}",
+            "{'label': '(b)', 'text': 'Hence solve the equation 4 sin x + 5/tan x + 2/sin x = 0 for 0° ≤ x ≤ 360°.', 'marks': '[3]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 5 at top left",
+            "Subquestions labeled (a) and (b)",
+            "Dotted lines provided for student answers below each subquestion",
+            "Mark allocation [3] aligned to the right for each subquestion"
+          ]
+        },
+        {
+          "field": "diagram_present",
+          "value": false
+        },
+        {
+          "field": "diagram_elements",
+          "value": []
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "The text is arranged vertically with question 5(a) at the top followed by answer space, then question 5(b) followed by answer space. Mathematical expressions are centered or inline with the text."
+          ]
+        },
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 1.0
+        }
+      ],
       "review": {
-        "descriptor_readiness": "review_bucket",
+        "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
-        "review_bucket_verdict": "cannot_judge",
-        "comment": "Provider failure prevented extraction; no evidence available for assessment.",
-        "issues": [
-          "provider_failure",
-          "lazy_attach_original_image"
-        ]
+        "review_bucket_verdict": "correct",
+        "comment": "OCR and formula extraction are accurate and complete; all key elements (question numbers, subquestions, equations, domain, marks) are correctly captured. No missing or misinterpreted content.",
+        "issues": []
       }
     },
     {
@@ -71,9 +131,8 @@
         {
           "field": "layout_hints",
           "value": [
-            "dotted_lines_for_working",
-            "question_header",
-            "mark_allocation_bracket"
+            "dotted_lines_for_answer",
+            "question_number_or_marks_top_right"
           ]
         },
         {
@@ -113,7 +172,7 @@
         "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
         "review_bucket_verdict": "correct",
-        "comment": "OCR and LaTeX both correctly extract the integral expression with limits, integrand, and mark allocation; no ambiguity or missing information detected.",
+        "comment": "OCR and LaTeX both correctly extract the integral expression with limits, integrand, and marks [4]; no ambiguity or missing elements; confidence 1.0 justified.",
         "issues": []
       }
     },
@@ -155,10 +214,10 @@
         {
           "field": "layout_hints",
           "value": [
-            "Question number 5 at top left",
-            "Subquestions (a) and (b) vertically stacked",
-            "Mark allocations [4] and [3] aligned to the right",
-            "Dotted lines provided for student working space below each subquestion"
+            "Question number 5",
+            "Sub-questions (a) and (b)",
+            "Dotted lines for student answers",
+            "Marks indicated in square brackets on the right margin"
           ]
         },
         {
@@ -172,7 +231,7 @@
         {
           "field": "spatial_evidence",
           "value": [
-            "Standard exam paper layout with question text at the top of sections and ample whitespace/dotted lines below for answers."
+            "The text is arranged vertically with question 5(a) at the top followed by answer space, and question 5(b) below it followed by more answer space. Mathematical expressions are inline with the text."
           ]
         },
         {
@@ -200,7 +259,7 @@
         "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
         "review_bucket_verdict": "correct",
-        "comment": "OCR and formula extraction are accurate and complete; all key components (subquestions, equations, domain, marks) are correctly identified. No ambiguity or missing information.",
+        "comment": "OCR and formula extraction are accurate and complete; all key components (question text, equations, sub-questions, marks, domain constraint) are correctly identified. No missing or misinterpreted elements. The 'lazy_attach_original_image' warning is expected for non-diagram-based content and does not affect readiness.",
         "issues": []
       }
     },
@@ -240,11 +299,9 @@
         {
           "field": "layout_hints",
           "value": [
-            "Two-part question with subparts (i) and (ii)",
-            "Each part has a mark allocation in square brackets: [3] and [5]",
-            "Dotted lines provided for working space after each subpart",
-            "Mathematical identities and equations are centrally aligned within text flow",
-            "Angle range specified using degree symbol and inequality"
+            "dotted_lines_for_answer",
+            "vertical_spacing_between_subquestions",
+            "marks_in_brackets_on_right"
           ]
         },
         {
@@ -268,7 +325,7 @@
         "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
         "review_bucket_verdict": "correct",
-        "comment": "OCR successfully extracted both parts of the question with correct LaTeX formulas, subquestion labels, mark allocations, and domain specification. No issues detected.",
+        "comment": "OCR result accurately captures both subquestions, including the identity to prove, the equation to solve, and the domain constraint. All LaTeX formulas and layout hints are correctly extracted. Confidence is high (0.98) and no warnings or failures detected.",
         "issues": []
       }
     },
@@ -304,9 +361,9 @@
         {
           "field": "layout_hints",
           "value": [
-            "Question number '1' on the left.",
-            "Marks '[3]' on the right.",
-            "Dotted lines for answer space below."
+            "Question number '1' is on the far left.",
+            "Marks '[3]' are aligned to the far right.",
+            "Dotted lines occupy the lower portion of the page for working space."
           ]
         },
         {
@@ -370,9 +427,9 @@
         {
           "field": "layout_hints",
           "value": [
-            "Question number 2 on the left margin",
-            "Subquestions labeled with Roman numerals (i) and (ii)",
-            "Mark allocations [2] and [3] aligned to the right"
+            "Question number 2",
+            "Two sub-parts labeled (i) and (ii)",
+            "Marks indicated in square brackets on the right margin"
           ]
         },
         {
@@ -396,7 +453,7 @@
         "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
         "review_bucket_verdict": "correct",
-        "comment": "OCR结果准确完整，包含题目文本、公式LaTeX、子题块和布局提示，无遗漏或错误；confidence 0.98 高，可直接作为descriptor使用。",
+        "comment": "OCR and formula extraction are accurate and complete; all key elements (question text, sub-questions, marks, domain constraint) are correctly captured. No issues detected.",
         "issues": []
       }
     },
@@ -411,17 +468,18 @@
       "lazy_attach_original_image": false,
       "confidence": 0.98,
       "failure_reason": null,
-      "summary": "3 Find the exact value of ∫₀^(½π) x² sin 2x dx. [5]",
+      "summary": "3 Find the exact value of ∫₀^(½π) x² sin 2x dx. [5] (ln x)²",
       "warnings": [],
       "evidence": [
         {
           "field": "ocr_text",
-          "value": "3 Find the exact value of ∫₀^(½π) x² sin 2x dx. [5]"
+          "value": "3 Find the exact value of ∫₀^(½π) x² sin 2x dx. [5] (ln x)²"
         },
         {
           "field": "formula_latex_list",
           "value": [
-            "\\int_{0}^{\\frac{1}{2}\\pi} x^2 \\sin 2x \\, dx"
+            "\\int_{0}^{\\frac{1}{2}\\pi} x^2 \\sin 2x \\, dx",
+            "(\\ln x)^2"
           ]
         },
         {
@@ -430,7 +488,12 @@
         },
         {
           "field": "layout_hints",
-          "value": []
+          "value": [
+            "Question number 3 on the left",
+            "Integral expression in the center",
+            "Mark allocation [5] on the right",
+            "Fragment '(ln x)²' visible at the bottom center"
+          ]
         },
         {
           "field": "symbol_inventory",
@@ -450,11 +513,13 @@
         }
       ],
       "review": {
-        "descriptor_readiness": "descriptor_ready",
+        "descriptor_readiness": "review_bucket",
         "route_verdict": "appropriate",
-        "review_bucket_verdict": "correct",
-        "comment": "OCR and formula extraction are accurate and complete; the problem statement is fully captured with correct limits, integrand, and scoring mark [5]. No issues detected.",
-        "issues": []
+        "review_bucket_verdict": "incorrect",
+        "comment": "OCR result includes extraneous '(ln x)²' at the end, which is not part of the question — likely a misreading of unrelated text in the image. The integral is correctly transcribed but the presence of this spurious term suggests insufficient filtering or validation.",
+        "issues": [
+          "Extraneous text '(ln x)²' included in summary — not part of the question"
+        ]
       }
     },
     {
@@ -468,36 +533,35 @@
       "lazy_attach_original_image": false,
       "confidence": 0.98,
       "failure_reason": null,
-      "summary": "5 Let I = \\int_{\\frac{1}{4}}^{\\frac{3}{4}} \\sqrt{\\left(\\frac{x}{1-x}\\right)} dx.\n\n(i) Using the substitution x = \\cos^2 \\theta, show that I = \\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} 2 \\cos^2 \\theta d\\theta. [4]\n\n(ii) Hence find the exact value of I. [4]",
+      "summary": "5 Let I = ∫_{1/4}^{3/4} √(x/(1-x)) dx.\n\n(i) Using the substitution x = cos²θ, show that I = ∫_{π/6}^{π/3} 2 cos²θ dθ. [4]\n\n(ii) Hence find the exact value of I. [4]",
       "warnings": [],
       "evidence": [
         {
           "field": "ocr_text",
-          "value": "5 Let I = \\int_{\\frac{1}{4}}^{\\frac{3}{4}} \\sqrt{\\left(\\frac{x}{1-x}\\right)} dx.\n\n(i) Using the substitution x = \\cos^2 \\theta, show that I = \\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} 2 \\cos^2 \\theta d\\theta. [4]\n\n(ii) Hence find the exact value of I. [4]"
+          "value": "5 Let I = ∫_{1/4}^{3/4} √(x/(1-x)) dx.\n\n(i) Using the substitution x = cos²θ, show that I = ∫_{π/6}^{π/3} 2 cos²θ dθ. [4]\n\n(ii) Hence find the exact value of I. [4]"
         },
         {
           "field": "formula_latex_list",
           "value": [
-            "I = \\int_{\\frac{1}{4}}^{\\frac{3}{4}} \\sqrt{\\left(\\frac{x}{1-x}\\right)} dx",
+            "I = \\int_{\\frac{1}{4}}^{\\frac{3}{4}} \\sqrt{\\left(\\frac{x}{1-x}\\right)} \\mathrm{d}x",
             "x = \\cos^2 \\theta",
-            "I = \\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} 2 \\cos^2 \\theta d\\theta"
+            "I = \\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} 2 \\cos^2 \\theta \\mathrm{d}\\theta"
           ]
         },
         {
           "field": "subquestion_blocks",
           "value": [
-            "{'label': '(i)', 'text': 'Using the substitution x = \\\\cos^2 \\\\theta, show that I = \\\\int_{\\\\frac{1}{6}\\\\pi}^{\\\\frac{1}{3}\\\\pi} 2 \\\\cos^2 \\\\theta d\\\\theta.', 'marks': '[4]'}",
+            "{'label': '(i)', 'text': 'Using the substitution x = cos²θ, show that I = ∫_{π/6}^{π/3} 2 cos²θ dθ.', 'marks': '[4]'}",
             "{'label': '(ii)', 'text': 'Hence find the exact value of I.', 'marks': '[4]'}"
           ]
         },
         {
           "field": "layout_hints",
           "value": [
-            "Question number 5 is at the top left.",
-            "The main integral definition is on the first line.",
-            "Subquestion (i) follows with dotted lines for working space.",
-            "Subquestion (ii) follows further down with dotted lines for working space.",
-            "Mark allocations [4] are aligned to the right margin for each subquestion."
+            "Question number 5 at top left",
+            "Main integral definition followed by two subparts (i) and (ii)",
+            "Dotted lines provided for working space under each subpart",
+            "Mark allocation [4] aligned to the right for each subpart"
           ]
         },
         {
@@ -521,7 +585,7 @@
         "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
         "review_bucket_verdict": "correct",
-        "comment": "OCR 识别准确，完整还原了题目编号、积分表达式、两小问要求及分值，公式以 LaTeX 格式正确提取，布局和字段信息完整可靠，无需进一步审核。",
+        "comment": "OCR 识别准确，完整提取了题干、子问题及积分表达式，包含所有关键数学符号与标记（如积分上下限、substitution、mark allocation），符合 CIE A-Level 单题恢复的 descriptor 要求；无缺失或错误信息，无需进一步审核。",
         "issues": []
       }
     },
@@ -588,7 +652,7 @@
         "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
         "review_bucket_verdict": "correct",
-        "comment": "OCR and layout analysis correctly extracted both subquestions, including exact phrasing, mark allocations, and domain constraints. No missing or misinterpreted content; confidence 0.98 supports reliability.",
+        "comment": "OCR and layout analysis correctly identifies the question structure, subquestions, marks, and key mathematical expressions. No missing or misinterpreted content; confidence 0.98 supports reliability.",
         "issues": []
       }
     },
@@ -603,12 +667,12 @@
       "lazy_attach_original_image": false,
       "confidence": 0.98,
       "failure_reason": null,
-      "summary": "6 (a) Using the expansions of sin(3x + 2x) and sin(3x - 2x), show that\n1/2(sin 5x + sin x) ≡ sin 3x cos 2x. [3]\n\n(b) Hence show that ∫₀^(π/4) sin 3x cos 2x dx = 1/5(3 - √2). [3]",
+      "summary": "6 (a) Using the expansions of sin(3x + 2x) and sin(3x - 2x), show that\n1/2(sin 5x + sin x) ≡ sin 3x cos 2x. [3]\n(b) Hence show that ∫₀^(π/4) sin 3x cos 2x dx = 1/5(3 - √2). [3]",
       "warnings": [],
       "evidence": [
         {
           "field": "ocr_text",
-          "value": "6 (a) Using the expansions of sin(3x + 2x) and sin(3x - 2x), show that\n1/2(sin 5x + sin x) ≡ sin 3x cos 2x. [3]\n\n(b) Hence show that ∫₀^(π/4) sin 3x cos 2x dx = 1/5(3 - √2). [3]"
+          "value": "6 (a) Using the expansions of sin(3x + 2x) and sin(3x - 2x), show that\n1/2(sin 5x + sin x) ≡ sin 3x cos 2x. [3]\n(b) Hence show that ∫₀^(π/4) sin 3x cos 2x dx = 1/5(3 - √2). [3]"
         },
         {
           "field": "formula_latex_list",
@@ -631,8 +695,8 @@
           "value": [
             "Question number 6 at top left",
             "Subquestions (a) and (b) vertically stacked",
-            "Mark allocations [3] aligned to the right margin for each subquestion",
-            "Dotted lines provided below each subquestion for working space"
+            "Mark allocation [3] right-aligned for each subquestion",
+            "Dotted lines provided for working space below each subquestion"
           ]
         },
         {
@@ -656,7 +720,7 @@
         "descriptor_readiness": "descriptor_ready",
         "route_verdict": "appropriate",
         "review_bucket_verdict": "correct",
-        "comment": "OCR and formula extraction are accurate; all key elements (question text, formulae, subquestions, marks, integral limits) correctly captured. No issues detected.",
+        "comment": "OCR result accurately captures the full question text, including subquestions (a) and (b), the required identity, the integral expression with correct limits (π/4, not 4°), and mark allocations. Formula LaTeX list and subquestion blocks are correctly extracted. No issues detected.",
         "issues": []
       }
     }
@@ -670,8 +734,8 @@
       "appropriate": 10
     },
     "review_bucket_verdict_counts": {
-      "cannot_judge": 1,
-      "correct": 9
+      "correct": 9,
+      "incorrect": 1
     },
     "acceptance_summary": {
       "accepted_count": 9,
@@ -680,12 +744,11 @@
     },
     "follow_up_cases": [
       {
-        "storage_key": "9709/w23_qp_11/questions/q05.png",
-        "route": "review_lane",
-        "comment": "Provider failure prevented extraction; no evidence available for assessment.",
+        "storage_key": "9709/s16_qp_32/questions/q03.png",
+        "route": "ocr_lane",
+        "comment": "OCR result includes extraneous '(ln x)²' at the end, which is not part of the question — likely a misreading of unrelated text in the image. The integral is correctly transcribed but the presence of this spurious term suggests insufficient filtering or validation.",
         "issues": [
-          "provider_failure",
-          "lazy_attach_original_image"
+          "Extraneous text '(ln x)²' included in summary — not part of the question"
         ]
       }
     ]

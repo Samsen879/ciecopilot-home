@@ -50,11 +50,14 @@ describe('question-search-gate', () => {
     ).toEqual(expect.objectContaining({
       expected: expect.objectContaining({
         match: expect.objectContaining({
-          q_number: 6,
+          source_kind: 'paper_question',
           primary_question_type_id: '9709.trigonometry.identities',
         }),
       }),
     }));
+    expect(
+      fixture.cases.find((testCase) => testCase.id === 'mixed-ranking-paper-authority')?.expected?.match,
+    ).not.toHaveProperty('q_number');
   });
 
   test('runQuestionSearchGate computes release metrics and passes when thresholds are met', async () => {

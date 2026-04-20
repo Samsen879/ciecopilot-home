@@ -859,6 +859,225 @@ describe('question-analysis backfill', () => {
     ).not.toEqual(expect.stringContaining('Find the exact value integral 1 2 4x cos x'));
   });
 
+  test('wave a trigonometry misses emit exact aggregate-probe aliases without unrelated retrieval cues', async () => {
+    const { client, state } = createBackfillClient();
+
+    await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-wave-a-trig-m20',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/m20_qp_32/questions/q05.png',
+          q_number: 5,
+          primary_topic_id: 'topic-trigonometry',
+          paper_scope: {
+            year: 2020,
+            session: 'm',
+            paper: 3,
+            q_number: 5,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/m20_qp_32/questions/q05.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.trigonometry',
+            },
+            evidence: {
+              ocr_text:
+                '5 (a) Show that \\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 2 \\cot 2x. [4]\n\n(b) Hence solve the equation \\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 4, for 0 < x < \\pi. [3]',
+              formula_latex_list: [
+                '\\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 2 \\cot 2x',
+                '\\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 4',
+              ],
+              subquestion_blocks: [
+                "{'label': '(a)', 'text': 'Show that \\\\frac{\\\\cos 3x}{\\\\sin x} + \\\\frac{\\\\sin 3x}{\\\\cos x} = 2 \\\\cot 2x.', 'marks': '[4]'}",
+                "{'label': '(b)', 'text': 'Hence solve the equation \\\\frac{\\\\cos 3x}{\\\\sin x} + \\\\frac{\\\\sin 3x}{\\\\cos x} = 4, for 0 < x < \\\\pi.', 'marks': '[3]'}",
+              ],
+              layout_hints: [],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['gate_critical'],
+            original_image_asset: {
+              input_asset_id: '9709/m20_qp_32/questions/q05.png',
+              input_asset_hash: 'hash-wave-a-trig-m20',
+            },
+            review_posture: {
+              requires_review: false,
+              gate_critical: true,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/m20_qp_32/questions/q05.png',
+            q_number: 5,
+            primary_topic_path: '9709.p3.trigonometry',
+          },
+          classification_snapshot_ref: null,
+        },
+        {
+          question_id: 'question-wave-a-trig-w23',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/w23_qp_32/questions/q07.png',
+          q_number: 7,
+          primary_topic_id: 'topic-trigonometry',
+          paper_scope: {
+            year: 2023,
+            session: 'w',
+            paper: 3,
+            q_number: 7,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/w23_qp_32/questions/q07.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.trigonometry',
+            },
+            evidence: {
+              ocr_text:
+                '7 (a) By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ. [3]\n\n(b) Hence solve the equation cos 3θ + cos θ cos 2θ = cos² θ for 0° ≤ θ ≤ 180°. [5]',
+              formula_latex_list: [
+                '3\\theta',
+                '2\\theta + \\theta',
+                '\\cos 3\\theta \\equiv 4 \\cos^3 \\theta - 3 \\cos \\theta',
+                '\\cos 3\\theta + \\cos \\theta \\cos 2\\theta = \\cos^2 \\theta',
+              ],
+              subquestion_blocks: [
+                "{'label': '(a)', 'text': 'By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ.', 'marks': '[3]'}",
+                "{'label': '(b)', 'text': 'Hence solve the equation cos 3θ + cos θ cos 2θ = cos² θ for 0° ≤ θ ≤ 180°.', 'marks': '[5]'}",
+              ],
+              layout_hints: [],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['gate_critical'],
+            original_image_asset: {
+              input_asset_id: '9709/w23_qp_32/questions/q07.png',
+              input_asset_hash: 'hash-wave-a-trig-w23',
+            },
+            review_posture: {
+              requires_review: false,
+              gate_critical: true,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/w23_qp_32/questions/q07.png',
+            q_number: 7,
+            primary_topic_path: '9709.p3.trigonometry',
+          },
+          classification_snapshot_ref: null,
+        },
+        {
+          question_id: 'question-wave-a-trig-w22',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/w22_qp_32/questions/q07.png',
+          q_number: 7,
+          primary_topic_id: 'topic-trigonometry',
+          paper_scope: {
+            year: 2022,
+            session: 'w',
+            paper: 3,
+            q_number: 7,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/w22_qp_32/questions/q07.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.trigonometry',
+            },
+            evidence: {
+              ocr_text:
+                '7 The variables x and θ satisfy the differential equation x sin²θ dx/dθ = tan²θ - 2 cot θ, for 0 < θ < ½π and x > 0. It is given that x = 2 when θ = ¼π. (a) Show that d/dθ(cot²θ) = - (2 cot θ)/sin²θ. (b) Solve the differential equation and find the value of x when θ = ⅙π. [7]',
+              formula_latex_list: [
+                'x \\sin^2 \\theta \\frac{dx}{d\\theta} = \\tan^2 \\theta - 2 \\cot \\theta',
+                '\\frac{d}{d\\theta}(\\cot^2 \\theta) = -\\frac{2 \\cot \\theta}{\\sin^2 \\theta}',
+              ],
+              subquestion_blocks: [
+                "{'label': '(a)', 'content': 'Show that d/dθ(cot²θ) = - (2 cot θ)/sin²θ. (You may assume without proof that the derivative of cot θ with respect to θ is -cosec²θ.) [1]'}",
+                "{'label': '(b)', 'content': 'Solve the differential equation and find the value of x when θ = ⅙π. [7]'}",
+              ],
+              layout_hints: [],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['gate_critical'],
+            original_image_asset: {
+              input_asset_id: '9709/w22_qp_32/questions/q07.png',
+              input_asset_hash: 'hash-wave-a-trig-w22',
+            },
+            review_posture: {
+              requires_review: false,
+              gate_critical: true,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/w22_qp_32/questions/q07.png',
+            q_number: 7,
+            primary_topic_path: '9709.p3.trigonometry',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(state.questions.get('question-wave-a-trig-m20').provenance_summary.search_text).toEqual(
+      expect.stringContaining('cos 3x over sin x plus sin 3x over cos x equals 2 cot 2x'),
+    );
+    expect(state.questions.get('question-wave-a-trig-w23').provenance_summary.search_text).toEqual(
+      expect.stringContaining('prove identity cos 3 theta equals 4 cos cubed theta minus 3 cos theta'),
+    );
+    expect(state.questions.get('question-wave-a-trig-w22').provenance_summary.search_text).toEqual(
+      expect.stringContaining('x sin squared theta dx dtheta equals tan squared theta minus 2 cot theta'),
+    );
+    expect(state.questions.get('question-wave-a-trig-w22').provenance_summary.search_text).not.toContain(
+      'evaluate integral',
+    );
+    expect(state.questions.get('question-wave-a-trig-w22').provenance_summary.search_text).not.toContain(
+      'Prove trigonometric identity and solve equation',
+    );
+    expect(state.questions.get('question-wave-a-trig-w22').provenance_summary.search_text).not.toContain(
+      'prove identity',
+    );
+    expect(state.questions.get('question-wave-a-trig-w22').provenance_summary.search_text).not.toContain(
+      'solve equation',
+    );
+  });
+
   test('skips questions that already have an active snapshot unless force is enabled', async () => {
     const { client } = createBackfillClient();
 

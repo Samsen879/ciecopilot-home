@@ -570,6 +570,20 @@ describe('attempt-event-service', () => {
         },
       },
     });
+    expect(result.delivery).toMatchObject({
+      delivery_state: 'retrying',
+      retry_count: 1,
+      last_error: {
+        code: 'attempt_event_bridge_effect_retry_pending',
+        failed_stage: 'downstream_effect_execution',
+        receipt_summary: {
+          total: 3,
+          persisted: 2,
+          retrying: 1,
+          needs_manual_review: 0,
+        },
+      },
+    });
     expect(await effectRepository.listEffectReceiptsByEventId(records.learningEvents.at(-1).event_id)).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -877,16 +891,19 @@ describe('attempt-event-service', () => {
       status: 'partial_failure',
       debt_pending: true,
     });
+    expect(records.deliveryRow).toMatchObject({
+      delivery_state: 'retrying',
+      retry_count: 1,
+      last_error: {
+        code: 'attempt_event_bridge_effect_retry_pending',
+        failed_stage: 'downstream_effect_execution',
+      },
+      reconciliation_id: null,
+    });
 
     records.deliveryRow = {
       ...records.deliveryRow,
-      delivery_state: 'retrying',
       last_attempted_at: '2026-04-17T09:59:00.000Z',
-      last_error: {
-        code: 'effect_execution_failed',
-        message: 'review task write failed',
-      },
-      reconciliation_id: null,
     };
 
     const retried = await reconcileAttemptEventBridgeEffects(
@@ -965,7 +982,7 @@ describe('attempt-event-service', () => {
     expect(records.deliveryRow.last_attempted_at).not.toBe('2026-04-17T09:59:00.000Z');
   });
 
-  test('downstream-effect read failures after persisted event writes do not downgrade the delivery row', async () => {
+  test('downstream-effect read failures after persisted event writes mark durable retry debt', async () => {
     const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
     const { client } = createMockClient({
       failLearningEventReads: true,
@@ -984,9 +1001,12 @@ describe('attempt-event-service', () => {
       warningRecorded: false,
       deduped: false,
       delivery: {
-        delivery_state: 'persisted',
-        retry_count: 0,
-        last_error: null,
+        delivery_state: 'retrying',
+        retry_count: 1,
+        last_error: {
+          code: 'attempt_event_bridge_effect_retry_pending',
+          failed_stage: 'downstream_effect_execution',
+        },
       },
       learning_effects: {
         authoritative_scoring_allowed: true,
@@ -1053,9 +1073,12 @@ describe('attempt-event-service', () => {
       warningRecorded: false,
       deduped: false,
       delivery: {
-        delivery_state: 'persisted',
-        retry_count: 0,
-        last_error: null,
+        delivery_state: 'retrying',
+        retry_count: 1,
+        last_error: {
+          code: 'attempt_event_bridge_effect_retry_pending',
+          failed_stage: 'downstream_effect_execution',
+        },
       },
       learning_effects: {
         authoritative_scoring_allowed: false,
@@ -1137,9 +1160,12 @@ describe('attempt-event-service', () => {
       warningRecorded: false,
       deduped: true,
       delivery: {
-        delivery_state: 'persisted',
-        retry_count: 0,
-        last_error: null,
+        delivery_state: 'retrying',
+        retry_count: 1,
+        last_error: {
+          code: 'attempt_event_bridge_effect_retry_pending',
+          failed_stage: 'downstream_effect_execution',
+        },
       },
       learning_effects: {
         authoritative_scoring_allowed: true,
@@ -1157,6 +1183,93 @@ describe('attempt-event-service', () => {
             message: 'learning_update_proposed_event_not_found',
           },
         },
+      },
+    });
+  });
+
+  test('failed downstream-effect reconciliation keeps retry debt visible on the delivery row', async () => {
+    const {
+      persistAttemptEventBridge,
+      reconcileAttemptEventBridgeEffects,
+    } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient();
+    const effectRepository = createInMemoryEffectRepository();
+
+    const first = await persistAttemptEventBridge(
+      client,
+      buildBridgeInput({
+        misconceptionTags: ['sign_error'],
+      }),
+      {
+        applyDownstreamEffects: true,
+        effectRepository,
+        handlers: {
+          mastery: async () => ({
+            status: 'succeeded',
+            result_ref_type: 'family_mastery',
+            result_ref_id: 'family-mastery-1',
+          }),
+          review_tasks: async () => {
+            throw new Error('review task write failed again');
+          },
+          artifact_suggestions: async () => ({
+            status: 'succeeded',
+            result_ref_type: 'artifact',
+            result_ref_id: 'artifact-1',
+          }),
+        },
+      },
+    );
+
+    const retried = await reconcileAttemptEventBridgeEffects(
+      client,
+      {
+        stableIdempotencyKey: first.delivery.stable_idempotency_key,
+      },
+      {
+        effectRepository,
+        handlers: {
+          mastery: async () => ({
+            status: 'succeeded',
+            result_ref_type: 'family_mastery',
+            result_ref_id: 'family-mastery-1',
+          }),
+          review_tasks: async () => {
+            throw new Error('review task write failed again');
+          },
+          artifact_suggestions: async () => ({
+            status: 'succeeded',
+            result_ref_type: 'artifact',
+            result_ref_id: 'artifact-1',
+          }),
+        },
+      },
+    );
+
+    expect(retried).toMatchObject({
+      reconciliation_run_id: 'recon-1',
+      status: 'failed',
+      learning_effects: {
+        effect_execution: {
+          ok: false,
+          status: 'partial_failure',
+          debt_pending: true,
+          receipt_summary: {
+            total: 3,
+            persisted: 2,
+            retrying: 1,
+          },
+        },
+      },
+    });
+    expect(records.deliveryRow).toMatchObject({
+      delivery_state: 'retrying',
+      retry_count: 2,
+      reconciliation_id: 'recon-1',
+      last_error: {
+        code: 'attempt_event_bridge_effect_retry_pending',
+        failed_stage: 'downstream_effect_execution',
+        reconciliation_run_id: 'recon-1',
       },
     });
   });

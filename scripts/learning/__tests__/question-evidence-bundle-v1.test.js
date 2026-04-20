@@ -365,6 +365,43 @@ describe('question evidence bundle v1', () => {
     });
   });
 
+  test('uses diagram lane for the verified gate-critical shard-3 trigonometry diagram case', () => {
+    const bundles = buildQuestionEvidenceBundlesV1({
+      manifest: buildManifest([
+        {
+          storage_key: '9709/s22_qp_13/questions/q02.png',
+          syllabus_code: '9709',
+          year: 2022,
+          session: 's',
+          paper: 1,
+          variant: 3,
+          q_number: 2,
+          primary_topic_path: '9709.p1.trigonometry',
+          route_hint: 'diagram_lane',
+          diagram_present: true,
+          formula_dense: false,
+          table_heavy: false,
+          surface_evidence_status: 'verified_primary_asset',
+          gate_critical: true,
+          requires_review: false,
+        },
+      ]),
+      laneOutputs: [],
+    });
+
+    expect(bundles).toHaveLength(1);
+    expect(bundles[0].route).toMatchObject({
+      route: 'diagram_lane',
+      model: 'qwen3-vl-plus',
+    });
+    expect(bundles[0].route.decision_reasons).toEqual(
+      expect.arrayContaining(['gate_critical', 'diagram_present']),
+    );
+    expect(bundles[0].lazy_attach_reasons).toEqual(
+      expect.arrayContaining(['route_requires_original_image', 'gate_critical']),
+    );
+  });
+
   test('summarizes route and lazy-attach counts for a bundle set', () => {
     const bundles = buildQuestionEvidenceBundlesV1({
       manifest: buildManifest([

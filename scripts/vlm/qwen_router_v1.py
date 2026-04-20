@@ -73,6 +73,18 @@ def _surface_flags_unknown(item: dict[str, Any]) -> bool:
     return any(item.get(field) is None for field in SURFACE_FLAGS)
 
 
+def _should_use_diagram_lane_for_verified_gate_critical_row(item: dict[str, Any]) -> bool:
+    return (
+        item.get("gate_critical") is True
+        and item.get("requires_review") is False
+        and item.get("route_hint") == "diagram_lane"
+        and item.get("diagram_present") is True
+        and item.get("formula_dense") is False
+        and item.get("table_heavy") is False
+        and item.get("surface_evidence_status") == "verified_primary_asset"
+    )
+
+
 def build_route_decision(
     route: str,
     decision_reasons: list[str],
@@ -123,6 +135,9 @@ def route_manifest_item(
     surface_flags_unknown = _surface_flags_unknown(item)
     if surface_flags_unknown:
         reasons.append("unknown_surface_flags")
+
+    if _should_use_diagram_lane_for_verified_gate_critical_row(item):
+        return build_route_decision("diagram_lane", [*reasons, "diagram_present"], scope)
 
     if item.get("gate_critical"):
         return build_route_decision("review_lane", reasons, scope)

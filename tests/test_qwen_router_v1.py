@@ -55,6 +55,30 @@ def test_route_manifest_item_prefers_review_lane_for_gate_critical_unknown_surfa
     assert "unknown_surface_flags" in decision.decision_reasons
 
 
+def test_route_manifest_item_uses_diagram_lane_for_verified_gate_critical_diagram_row():
+    decision = route_manifest_item(
+        _item(
+            storage_key="9709/s22_qp_13/questions/q02.png",
+            year=2022,
+            paper=1,
+            variant=3,
+            route_hint="diagram_lane",
+            diagram_present=True,
+            formula_dense=False,
+            table_heavy=False,
+            gate_critical=True,
+            requires_review=False,
+            surface_evidence_status="verified_primary_asset",
+        )
+    )
+
+    assert decision.route == "diagram_lane"
+    assert decision.lane == "diagram"
+    assert decision.model == "qwen3-vl-plus"
+    assert "gate_critical" in decision.decision_reasons
+    assert "diagram_present" in decision.decision_reasons
+
+
 def test_route_manifest_item_selects_diagram_lane_for_evidence_backed_diagram_rows():
     decision = route_manifest_item(
         _item(

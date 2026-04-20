@@ -75,6 +75,8 @@ The branch change does three things:
 3. reconciliation retries now stamp the delivery row with either:
    - `reconciled` plus the reconciliation run id on success
    - continued retry debt plus the reconciliation run id on failure
+4. an existing `needs_manual_review` delivery stays terminal when
+   reconciliation cannot even reload the persisted proposal event
 
 The scoring contract remains unchanged:
 
@@ -98,7 +100,7 @@ Observed result:
 
 - `PASS`
 - `2` suites passed
-- `43` tests passed
+- `44` tests passed
 
 Live GitHub PR state at verification time:
 
@@ -120,6 +122,8 @@ Live GitHub PR state at verification time:
 - successful reconciliation moves the row to `reconciled`
 - failed reconciliation keeps retry debt visible and records the
   reconciliation run id
+- an already-terminal `needs_manual_review` row does not get downgraded back
+  to `retrying` when proposal-event reload fails during reconciliation
 
 `api/marking/__tests__/evaluate-v1.test.js` proves:
 

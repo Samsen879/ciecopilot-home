@@ -1,0 +1,352 @@
+{
+  "fixture_path": "data/eval/question_search_gold_9709_wave_a_v1.json",
+  "metrics": {
+    "exact_structured_match_rate": 0.5556,
+    "subject_leakage_rate": 0,
+    "metadata_completeness_rate": 0.5556,
+    "null_summary_rate": 0.4444
+  },
+  "gate": {
+    "pass": false,
+    "checks": [
+      {
+        "metric": "exact_structured_match_rate",
+        "required": 0.9,
+        "actual": 0.5556,
+        "comparator": ">=",
+        "pass": false
+      },
+      {
+        "metric": "subject_leakage_rate",
+        "required": 0,
+        "actual": 0,
+        "comparator": "<=",
+        "pass": true
+      },
+      {
+        "metric": "metadata_completeness_rate",
+        "required": 0.95,
+        "actual": 0.5556,
+        "comparator": ">=",
+        "pass": false
+      },
+      {
+        "metric": "null_summary_rate",
+        "required": 0.05,
+        "actual": 0.4444,
+        "comparator": "<=",
+        "pass": false
+      }
+    ],
+    "failing_checks": [
+      {
+        "metric": "exact_structured_match_rate",
+        "required": 0.9,
+        "actual": 0.5556,
+        "comparator": ">=",
+        "pass": false
+      },
+      {
+        "metric": "metadata_completeness_rate",
+        "required": 0.95,
+        "actual": 0.5556,
+        "comparator": ">=",
+        "pass": false
+      },
+      {
+        "metric": "null_summary_rate",
+        "required": 0.05,
+        "actual": 0.4444,
+        "comparator": "<=",
+        "pass": false
+      }
+    ]
+  },
+  "environment": {
+    "selected_branch": "question_descriptions_v0_status_ok",
+    "surfaces": {
+      "question_descriptions_prod_v1": {
+        "exists": false,
+        "count": null,
+        "count_9709": null
+      },
+      "question_descriptions_v1": {
+        "exists": false,
+        "count": null,
+        "count_9709": null
+      },
+      "question_descriptions_v0": {
+        "exists": true,
+        "count": 0,
+        "count_9709": 0
+      },
+      "learning_question_search_projection_9709": {
+        "total": 58,
+        "paper_question": 47,
+        "imported_question": 11
+      },
+      "question_bank_9709": {
+        "total": 58,
+        "paper_question": 47,
+        "imported_question": 11
+      },
+      "curriculum_nodes_9709": {
+        "count": 8
+      }
+    }
+  },
+  "case_results": [
+    {
+      "id": "wave-a-gate-01",
+      "description": "Wave A shard 1 should retrieve the gate-critical p1 trigonometry row for 2023 winter paper 1 question 5.",
+      "query_summary": "topic=9709.p1.trigonometry, year=2023, session=w, paper=1, q=5, text~4 sin x + 5/tan x + 2/sin x = 0",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "bfcd2264-e2ce-4255-815b-5ceb6a83fc01",
+        "year": 2023,
+        "session": "w",
+        "paper_number": 1,
+        "q_number": 5,
+        "query": "4 sin x + 5/tan x + 2/sin x = 0"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "abced999-08eb-4cf5-831c-f8f1678161f1",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true
+    },
+    {
+      "id": "wave-a-gate-02",
+      "description": "Wave A shard 2 should retrieve the OCR-hard p1 trigonometry row for 2024 March paper 1 question 4.",
+      "query_summary": "topic=9709.p1.trigonometry, year=2024, session=m, paper=1, q=4, text~Prove identity and solve equation 5 tan^3 theta",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "bfcd2264-e2ce-4255-815b-5ceb6a83fc01",
+        "year": 2024,
+        "session": "m",
+        "paper_number": 1,
+        "q_number": 4,
+        "query": "Prove identity and solve equation 5 tan^3 theta"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "b164f282-0727-4868-8d0e-d58866f7c095",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true
+    },
+    {
+      "id": "wave-a-gate-03",
+      "description": "Wave A shard 3 should retrieve the diagram-review-heavy p1 trigonometry row for 2022 summer paper 1 question 2.",
+      "query_summary": "topic=9709.p1.trigonometry, year=2022, session=s, paper=1, q=2, text~y = p sin(qθ) + r state p q r",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "bfcd2264-e2ce-4255-815b-5ceb6a83fc01",
+        "year": 2022,
+        "session": "s",
+        "paper_number": 1,
+        "q_number": 2,
+        "query": "y = p sin(qθ) + r state p q r"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "ea5fdbcf-5f4f-439c-a6dc-af27d1551dd0",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true
+    },
+    {
+      "id": "wave-a-gate-04",
+      "description": "Wave A shard 1 should retrieve the clean p3 integration row for 2017 summer paper 3 question 4.",
+      "query_summary": "topic=9709.p3.integration, year=2017, session=s, paper=3, q=4, text~Find the exact value integral 6 sin squared theta",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "36c8cf6d-2073-4df3-8368-26d8ac7512d4",
+        "year": 2017,
+        "session": "s",
+        "paper_number": 3,
+        "q_number": 4,
+        "query": "Find the exact value integral 6 sin squared theta"
+      },
+      "resolution_error": null,
+      "total_results": 0,
+      "top_result_question_id": null,
+      "exact_structured_match": false,
+      "subject_leakage": false,
+      "metadata_present_count": 0,
+      "metadata_required_count": 8,
+      "missing_metadata": [
+        "source_kind",
+        "subject_code",
+        "primary_topic_path",
+        "year",
+        "session",
+        "paper_number",
+        "q_number",
+        "summary"
+      ],
+      "summary_required": true,
+      "summary_present": false
+    },
+    {
+      "id": "wave-a-gate-05",
+      "description": "Wave A shard 2 should retrieve the OCR-hard p3 integration row for 2023 winter paper 3 question 9.",
+      "query_summary": "topic=9709.p3.integration, year=2023, session=w, paper=3, q=9, text~curve y = sin x cos 2x area region R",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "36c8cf6d-2073-4df3-8368-26d8ac7512d4",
+        "year": 2023,
+        "session": "w",
+        "paper_number": 3,
+        "q_number": 9,
+        "query": "curve y = sin x cos 2x area region R"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "b3764251-55e6-4916-be7e-66bb0b046188",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true
+    },
+    {
+      "id": "wave-a-gate-06",
+      "description": "Wave A shard 3 should retrieve the diagram-review-heavy p3 integration row for 2024 summer paper 3 question 6.",
+      "query_summary": "topic=9709.p3.integration, year=2024, session=s, paper=3, q=6, text~curve y = x e^-ax maximum point M",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "36c8cf6d-2073-4df3-8368-26d8ac7512d4",
+        "year": 2024,
+        "session": "s",
+        "paper_number": 3,
+        "q_number": 6,
+        "query": "curve y = x e^-ax maximum point M"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "3977d9f1-dabb-4a87-972a-3a8b67c9189c",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true
+    },
+    {
+      "id": "wave-a-gate-07",
+      "description": "Wave A shard 1 should retrieve the medium-difficulty p3 trigonometry row for 2020 March paper 3 question 5.",
+      "query_summary": "topic=9709.p3.trigonometry, year=2020, session=m, paper=3, q=5, text~cos 3x over sin x plus sin 3x over cos x equals 2 cot 2x",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "5c83cccb-f5f4-4390-a42e-7f6f0ffcb138",
+        "year": 2020,
+        "session": "m",
+        "paper_number": 3,
+        "q_number": 5,
+        "query": "cos 3x over sin x plus sin 3x over cos x equals 2 cot 2x"
+      },
+      "resolution_error": null,
+      "total_results": 0,
+      "top_result_question_id": null,
+      "exact_structured_match": false,
+      "subject_leakage": false,
+      "metadata_present_count": 0,
+      "metadata_required_count": 8,
+      "missing_metadata": [
+        "source_kind",
+        "subject_code",
+        "primary_topic_path",
+        "year",
+        "session",
+        "paper_number",
+        "q_number",
+        "summary"
+      ],
+      "summary_required": true,
+      "summary_present": false
+    },
+    {
+      "id": "wave-a-gate-08",
+      "description": "Wave A shard 2 should retrieve the OCR-hard p3 trigonometry row for 2023 winter paper 3 question 7.",
+      "query_summary": "topic=9709.p3.trigonometry, year=2023, session=w, paper=3, q=7, text~prove identity cos 3 theta equals 4 cos cubed theta minus 3 cos theta",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "5c83cccb-f5f4-4390-a42e-7f6f0ffcb138",
+        "year": 2023,
+        "session": "w",
+        "paper_number": 3,
+        "q_number": 7,
+        "query": "prove identity cos 3 theta equals 4 cos cubed theta minus 3 cos theta"
+      },
+      "resolution_error": null,
+      "total_results": 0,
+      "top_result_question_id": null,
+      "exact_structured_match": false,
+      "subject_leakage": false,
+      "metadata_present_count": 0,
+      "metadata_required_count": 8,
+      "missing_metadata": [
+        "source_kind",
+        "subject_code",
+        "primary_topic_path",
+        "year",
+        "session",
+        "paper_number",
+        "q_number",
+        "summary"
+      ],
+      "summary_required": true,
+      "summary_present": false
+    },
+    {
+      "id": "wave-a-gate-09",
+      "description": "Wave A shard 3 should retrieve the diagram-review-heavy p3 trigonometry row for 2022 winter paper 3 question 7.",
+      "query_summary": "topic=9709.p3.trigonometry, year=2022, session=w, paper=3, q=7, text~x sin squared theta dx dtheta equals tan squared theta minus 2 cot theta",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "5c83cccb-f5f4-4390-a42e-7f6f0ffcb138",
+        "year": 2022,
+        "session": "w",
+        "paper_number": 3,
+        "q_number": 7,
+        "query": "x sin squared theta dx dtheta equals tan squared theta minus 2 cot theta"
+      },
+      "resolution_error": null,
+      "total_results": 0,
+      "top_result_question_id": null,
+      "exact_structured_match": false,
+      "subject_leakage": false,
+      "metadata_present_count": 0,
+      "metadata_required_count": 8,
+      "missing_metadata": [
+        "source_kind",
+        "subject_code",
+        "primary_topic_path",
+        "year",
+        "session",
+        "paper_number",
+        "q_number",
+        "summary"
+      ],
+      "summary_required": true,
+      "summary_present": false
+    }
+  ]
+}

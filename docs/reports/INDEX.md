@@ -10,7 +10,10 @@
 - `2026-04-03-ao-reviewer-gate-rehearsal.md` - repo-local independent reviewer gate rehearsal showing request, claim, verdict, and durable freeze/release posture.
 - `2026-04-12-phase-a-question-intelligence-slice-1-report.md` - takeover closeout report for the first Phase A question-intelligence slice, including scope, touched modules, focused verification, and residual risks.
 - `2026-04-18-issue-232-scheduler-factor-coverage-report.md` - compact factor-coverage and verification report for the bounded `9709` scheduler-core upgrade on issue `#232`.
-- `2026-04-19-9709-wave-a-shard1-execution-report.md` - shard-1 fail-path execution record for issue `#246`, including the canonical fail verdict, required reset artifact, qc/reset utility fixes, and rerun blocker details.
+- `2026-04-19-9709-wave-a-shard1-execution-report.md` - shard-1 passing execution record for issue `#246`, including the rerun evidence, green gate posture, and bounded residual follow-up.
+- `2026-04-19-9709-wave-a-shard2-execution-report.md` - shard-2 passing execution record for issue `#247`, including OCR-hard routing outcomes, green gate posture, and bounded residual follow-ups.
+- `2026-04-19-9709-wave-a-shard3-execution-report.md` - shard-3 repaired passing execution record for issue `#248`, including the required reset, repaired host/local-db execution surfaces, and final green verdict.
+- `2026-04-19-9709-wave-a-closeout-report.md` - Wave A aggregate closeout report for issue `#249`, combining the three shard verdicts, final baseline/probe gates, and the binary recommendation.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.

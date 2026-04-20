@@ -74,6 +74,46 @@ function normalizeFormulaLatexForPrompt(value) {
     .trim();
 }
 
+function buildSearchFriendlyFormulaText(value) {
+  const normalized = normalizeString(value);
+  if (!normalized) {
+    return '';
+  }
+
+  return normalized
+    .replace(/\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/gu, '$1/$2')
+    .replace(/\\int(?:_\{[^}]*\})?(?:\^\{[^}]*\})?/gu, 'integral')
+    .replace(/\\,/gu, ' ')
+    .replace(/\\([a-zA-Z]+)/gu, '$1')
+    .replace(/\b(sin|cos|tan|sec|cosec|cot)\s*\^\s*2\b/gu, '$1 squared')
+    .replace(/\b(sin|cos|tan|sec|cosec|cot)\s*\^\s*3\b/gu, '$1 cubed')
+    .replace(/\bd(theta|alpha|beta|x|y|z|u|v|t)\b/gu, 'd $1')
+    .replace(/[_^]/gu, ' ')
+    .replace(/[{}]/gu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+}
+
+function normalizeMathSearchText(value) {
+  const normalized = normalizeString(value);
+  if (!normalized) {
+    return '';
+  }
+
+  return normalized
+    .replace(/∫/gu, ' integral ')
+    .replace(/π/gu, ' pi ')
+    .replace(/θ/gu, ' theta ')
+    .replace(/²/gu, ' squared ')
+    .replace(/³/gu, ' cubed ')
+    .replace(/\b(sin|cos|tan|sec|cosec|cot)\s*\^\s*2\b/gu, '$1 squared')
+    .replace(/\b(sin|cos|tan|sec|cosec|cot)\s*\^\s*3\b/gu, '$1 cubed')
+    .replace(/\[\d+\]/gu, ' ')
+    .replace(/\bof\s+integral\b/gu, 'integral')
+    .replace(/\s+/gu, ' ')
+    .trim();
+}
+
 function extractSubquestionText(block) {
   const normalized = normalizeString(block);
   if (!normalized) {
@@ -113,7 +153,7 @@ function buildEvidenceDerivedSummary(questionEvidenceBundle = null) {
 }
 
 function buildQuestionSearchSignals(summary, classification) {
-  const prompt = normalizeString(summary).toLowerCase();
+  const prompt = normalizeMathSearchText(summary).toLowerCase();
   const signals = [];
   const hasTrig = hasTrigToken(prompt);
   const hasIdentityLanguage = /(prove|show|identity)/u.test(prompt);
@@ -164,6 +204,32 @@ function buildQuestionSearchSignals(summary, classification) {
   return uniqueStrings(signals);
 }
 
+function buildExactValueIntegralCue(summary, formulaText = []) {
+  const normalizedSummary = normalizeMathSearchText(summary).toLowerCase();
+  if (!/\bfind\b.*\bexact value\b/u.test(normalizedSummary)) {
+    return '';
+  }
+
+  for (const formula of formulaText) {
+    const normalizedFormula = normalizeMathSearchText(formula);
+    const match = normalizedFormula.match(
+      /(?:^|=\s*)integral\s+(?:([0-9pi./()+-]+)\s+([0-9pi./()+-]+)\s+)?(.+?)\s+d\s+[a-z]+\b/iu,
+    );
+    if (!match?.[3]) {
+      continue;
+    }
+
+    const integrand = normalizeMathSearchText(match[3])
+      .replace(/\s+/gu, ' ')
+      .trim();
+    if (integrand) {
+      return `Find the exact value integral ${integrand}`;
+    }
+  }
+
+  return '';
+}
+
 function buildEvidenceDerivedSearchText(questionEvidenceBundle = null, classification = null) {
   if (!questionEvidenceBundle) {
     return '';
@@ -177,13 +243,23 @@ function buildEvidenceDerivedSearchText(questionEvidenceBundle = null, classific
   const formulaText = uniqueStrings(
     normalizeArray(evidence.formula_latex_list).map(normalizeFormulaLatexForPrompt),
   );
+  const searchFriendlyFormulaText = uniqueStrings(
+    normalizeArray(evidence.formula_latex_list).map(buildSearchFriendlyFormulaText),
+  );
+  const normalizedSummary = normalizeMathSearchText(summary);
+  const normalizedFormulaText = uniqueStrings(searchFriendlyFormulaText.map(normalizeMathSearchText));
   const signals = buildQuestionSearchSignals(summary, classification);
+  const exactValueIntegralCue = buildExactValueIntegralCue(summary, searchFriendlyFormulaText);
 
   return uniqueStrings([
     signals.join(' '),
+    exactValueIntegralCue,
     summary,
+    normalizedSummary,
     ...subquestionText,
     ...formulaText,
+    ...searchFriendlyFormulaText,
+    ...normalizedFormulaText,
   ]).join('\n\n');
 }
 

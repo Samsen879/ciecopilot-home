@@ -1274,6 +1274,77 @@ describe('attempt-event-service', () => {
     });
   });
 
+  test('failed downstream-effect reconciliation keeps needs_manual_review sticky when proposal reload fails', async () => {
+    const {
+      reconcileAttemptEventBridgeEffects,
+    } = await import('../lib/events/attempt-event-service.js');
+    const { client, records } = createMockClient({
+      failLearningEventReads: true,
+      existingDeliveryRow: {
+        delivery_id: 'delivery-manual-1',
+        stable_idempotency_key: 'attempt_event_bridge:mr-bridge-1',
+        attempt_id: 'att-bridge-1',
+        learner_id: 'user-bridge-1',
+        subject_code: '9709',
+        mark_run_id: 'mr-bridge-1',
+        truth_revision: 1,
+        delivery_state: 'needs_manual_review',
+        retry_count: 1,
+        last_attempted_at: '2026-04-17T09:59:00.000Z',
+        last_error: {
+          code: 'attempt_event_bridge_effect_retry_pending',
+          failed_stage: 'downstream_effect_execution',
+        },
+        persisted_event_types: [
+          'AttemptSubmitted',
+          'QuestionClassified',
+          'MarkingCompleted',
+          'LearningUpdateProposed',
+        ],
+        persisted_event_ids: [
+          'event-1',
+          'event-2',
+          'event-3',
+          'event-4',
+        ],
+        reconciliation_id: null,
+      },
+    });
+
+    const retried = await reconcileAttemptEventBridgeEffects(
+      client,
+      {
+        stableIdempotencyKey: 'attempt_event_bridge:mr-bridge-1',
+      },
+    );
+
+    expect(retried).toMatchObject({
+      reconciliation_run_id: 'recon-1',
+      status: 'failed',
+      learning_effects: {
+        effect_execution: {
+          ok: false,
+          status: 'failed',
+          debt_pending: true,
+          error: {
+            code: 'effect_execution_failed',
+            message: 'learning_update_proposed_event_not_found',
+          },
+        },
+      },
+    });
+    expect(records.deliveryRow).toMatchObject({
+      delivery_state: 'needs_manual_review',
+      retry_count: 2,
+      reconciliation_id: 'recon-1',
+      last_error: {
+        code: 'attempt_event_bridge_effect_retry_pending',
+        failed_stage: 'downstream_effect_execution',
+        reconciliation_run_id: 'recon-1',
+      },
+    });
+  });
+
   test('retrying a prior pipeline-state failure can recover without re-inserting already-persisted bridge events', async () => {
     const { persistAttemptEventBridge } = await import('../lib/events/attempt-event-service.js');
     const { client, records } = createMockClient({

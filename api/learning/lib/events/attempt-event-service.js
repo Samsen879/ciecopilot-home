@@ -744,9 +744,15 @@ function buildDownstreamEffectDeliveryError(learningEffects = {}, {
   };
 }
 
-function resolveDownstreamEffectDeliveryState(learningEffects = {}) {
+function resolveDownstreamEffectDeliveryState(learningEffects = {}, deliveryRow = {}) {
   const receiptSummary = buildLearningEffectsReceiptSummary(learningEffects?.effect_execution);
-  return receiptSummary.needs_manual_review > 0 ? 'needs_manual_review' : 'retrying';
+  if (receiptSummary.needs_manual_review > 0) {
+    return 'needs_manual_review';
+  }
+
+  return normalizeString(deliveryRow?.delivery_state) === 'needs_manual_review'
+    ? 'needs_manual_review'
+    : 'retrying';
 }
 
 function buildReconciliationSourceRef(deliveryRow = {}) {
@@ -927,7 +933,7 @@ async function settleAttemptEventBridgeDeliveryAfterEffects(client, {
   const effectExecution = learningEffects?.effect_execution ?? {};
   const hasDebt = Boolean(effectExecution?.debt_pending) || !Boolean(effectExecution?.ok);
   const nextState = hasDebt
-    ? resolveDownstreamEffectDeliveryState(learningEffects)
+    ? resolveDownstreamEffectDeliveryState(learningEffects, deliveryRow)
     : (normalizedSuccessState || normalizeString(deliveryRow?.delivery_state) || 'persisted');
   const shouldUpdateForSuccess = !hasDebt
     && (

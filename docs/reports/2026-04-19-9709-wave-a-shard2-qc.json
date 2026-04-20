@@ -1,0 +1,1452 @@
+{
+  "overview": {
+    "total_records": 0,
+    "by_status": [],
+    "by_syllabus": []
+  },
+  "field_distributions": {
+    "question_type_by_syllabus": [],
+    "answer_form_by_syllabus": [],
+    "confidence_stats": {
+      "min_confidence": null,
+      "max_confidence": null,
+      "mean_confidence": null,
+      "median_confidence": null,
+      "stddev_confidence": null
+    },
+    "confidence_bins": []
+  },
+  "array_field_stats": {
+    "math_expressions_latex": {
+      "total_rows": 0,
+      "empty_rows": 0,
+      "avg_len_non_empty": null,
+      "empty_ratio": null
+    },
+    "variables": {
+      "total_rows": 0,
+      "empty_rows": 0,
+      "avg_len_non_empty": null,
+      "empty_ratio": null
+    },
+    "units_by_syllabus": [],
+    "diagram_elements": {
+      "total_rows": 0,
+      "empty_rows": 0,
+      "avg_len_non_empty": null,
+      "empty_ratio": null
+    }
+  },
+  "anomaly_detection": {
+    "summary_null_or_empty_count": 0,
+    "summary_len_gt_180_count": 0,
+    "low_confidence_records": [],
+    "leakage_non_empty_count": 0,
+    "leakage_flag_type_distribution": [],
+    "blocked_records": [],
+    "question_type_other_by_syllabus": []
+  },
+  "cross_validation": {
+    "jobs_done_count": 0,
+    "descriptions_count": 0,
+    "done_missing_in_descriptions": []
+  },
+  "wave1_pilot": {
+    "manifest_id": "9709_question_search_expansion_wave_a_v1",
+    "manifest_path": "data/manifests/9709_question_search_expansion_wave_a_v1.json",
+    "lane_results_json": "docs/reports/2026-04-19-9709-wave-a-shard2-results.json",
+    "shard_id": null,
+    "summary": {
+      "total_rows": 30,
+      "rows_by_route": {
+        "ocr_lane": 21,
+        "review_lane": 9
+      },
+      "rows_by_lane": {
+        "ocr": 21,
+        "review": 9
+      },
+      "model_counts": {
+        "qwen3.6-plus": 30
+      },
+      "decision_reasons": {
+        "formula_dense": 15,
+        "gate_critical": 9,
+        "text_dominant": 6
+      },
+      "diagram_present": {
+        "false": 28,
+        "true": 2
+      },
+      "requires_review": {
+        "false": 29,
+        "true": 1
+      },
+      "lazy_attach_original_image": {
+        "false": 21,
+        "true": 9
+      },
+      "descriptor_readiness": {
+        "descriptor_candidate": 7,
+        "review_bucket": 23
+      },
+      "summary_presence": {
+        "present": 10,
+        "missing": 20
+      },
+      "descriptor_coverage": {
+        "required_rows": 30,
+        "covered_rows": 10,
+        "coverage_rate": 0.3333333333333333
+      },
+      "unexpected_review_fallbacks": {},
+      "route_mismatch_counts": {},
+      "failure_reason_counts": {}
+    },
+    "rows": [
+      {
+        "storage_key": "9709/s17_qp_11/questions/q03.png",
+        "manifest_position": 0,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s23_qp_11/questions/q01.png",
+        "manifest_position": 1,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "text_dominant"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w16_qp_12/questions/q02.png",
+        "manifest_position": 2,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "text_dominant"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w23_qp_11/questions/q05.png",
+        "manifest_position": 3,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "medium",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s17_qp_13/questions/q05.png",
+        "manifest_position": 4,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": "5 (i) Show that the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ may be expressed as cos² θ = 2 sin² θ. [3]\n\n(ii) Hence solve the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ for 0° < θ < 180°. [3]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 (i) Show that the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ may be expressed as cos² θ = 2 sin² θ. [3]\n\n(ii) Hence solve the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ for 0° < θ < 180°. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\frac{2 \\sin \\theta + \\cos \\theta}{\\sin \\theta + \\cos \\theta} = 2 \\tan \\theta",
+              "\\cos^2 \\theta = 2 \\sin^2 \\theta",
+              "0^\\circ < \\theta < 180^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(i)', 'text': 'Show that the equation \\\\frac{2 \\\\sin \\\\theta + \\\\cos \\\\theta}{\\\\sin \\\\theta + \\\\cos \\\\theta} = 2 \\\\tan \\\\theta may be expressed as \\\\cos^2 \\\\theta = 2 \\\\sin^2 \\\\theta.', 'marks': '[3]'}",
+              "{'label': '(ii)', 'text': 'Hence solve the equation \\\\frac{2 \\\\sin \\\\theta + \\\\cos \\\\theta}{\\\\sin \\\\theta + \\\\cos \\\\theta} = 2 \\\\tan \\\\theta for 0^\\\\circ < \\\\theta < 180^\\\\circ.', 'marks': '[3]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 5 at top left",
+              "Subquestions (i) and (ii) vertically stacked",
+              "Dotted lines provided for working space below each subquestion",
+              "Mark allocation [3] aligned to the right of each subquestion stem"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
+      },
+      {
+        "storage_key": "9709/w16_qp_13/questions/q03.png",
+        "manifest_position": 5,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": "3 Showing all necessary working, solve the equation 6 sin² x - 5 cos² x = 2 sin² x + cos² x for 0° ≤ x ≤ 360°. [4]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 Showing all necessary working, solve the equation 6 sin² x - 5 cos² x = 2 sin² x + cos² x for 0° ≤ x ≤ 360°. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "6 \\sin^2 x - 5 \\cos^2 x = 2 \\sin^2 x + \\cos^2 x",
+              "0^\\circ \\leqslant x \\leqslant 360^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": []
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 3 is bolded and aligned to the left.",
+              "The instruction 'Showing all necessary working' precedes the main task.",
+              "The domain constraint is on a new line or wrapped below the main equation.",
+              "The mark allocation '[4]' is right-aligned."
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
+      },
+      {
+        "storage_key": "9709/m24_qp_12/questions/q04.png",
+        "manifest_position": 6,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "review_lane",
+        "difficulty_band": "ocr_hard",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": false,
+        "requires_review": true,
+        "lazy_attach_original_image": true,
+        "summary": "Image contains a trigonometry problem set. Question 4(a) is partially cropped, missing the left side of the equation's numerator. Question 4(b) is fully visible but contains complex formatting requiring careful transcription.",
+        "warnings": [
+          "lazy_attach_original_image"
+        ],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 (a) Prove that ... / cos^2 θ = 2 tan θ. [5]\n(b) Hence solve the equation ((sin θ + cos θ)^2 - 1) / cos^2 θ = 5 tan^3 θ for -90° < θ < 90°. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\frac{...}{\\cos^2 \\theta} = 2 \\tan \\theta",
+              "\\frac{(\\sin \\theta + \\cos \\theta)^2 - 1}{\\cos^2 \\theta} = 5 \\tan^3 \\theta",
+              "-90^\\circ < \\theta < 90^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(a)', 'text': 'Prove that ... / cos^2 θ = 2 tan θ.', 'marks': '[5]'}",
+              "{'label': '(b)', 'text': 'Hence solve the equation ((sin θ + cos θ)^2 - 1) / cos^2 θ = 5 tan^3 θ for -90° < θ < 90°.', 'marks': '[3]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 4 at top left",
+              "Subquestions (a) and (b) vertically stacked",
+              "Mark allocations [5] and [3] aligned to the right",
+              "Dotted lines provided for student answers below each subquestion"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Standard exam paper layout with questions on the left and marks on the right. Answer space consists of horizontal dotted lines spanning the width of the page."
+            ]
+          },
+          {
+            "field": "requires_review",
+            "value": true
+          },
+          {
+            "field": "review_reasons",
+            "value": [
+              "The numerator of the fraction in question 4(a) is cut off at the top edge of the image, making the expression incomplete.",
+              "Verification of the exact LaTeX structure for the complex fraction in 4(b) is recommended due to potential OCR errors with nested parentheses and superscripts."
+            ]
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": [
+              "Missing content in 4(a) numerator",
+              "Potential ambiguity in reading the exponent '3' in tan^3 theta without high-resolution verification"
+            ]
+          },
+          {
+            "field": "review_summary",
+            "value": "Image contains a trigonometry problem set. Question 4(a) is partially cropped, missing the left side of the equation's numerator. Question 4(b) is fully visible but contains complex formatting requiring careful transcription."
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.85
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.85,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s21_qp_13/questions/q04.png",
+        "manifest_position": 7,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s18_qp_13/questions/q07.png",
+        "manifest_position": 8,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "medium",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s22_qp_13/questions/q02.png",
+        "manifest_position": 9,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "diagram_lane",
+        "difficulty_band": "diagram_review_heavy",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": true,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s16_qp_32/questions/q03.png",
+        "manifest_position": 10,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s17_qp_33/questions/q04.png",
+        "manifest_position": 11,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s18_qp_31/questions/q05.png",
+        "manifest_position": 12,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "medium",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s18_qp_32/questions/q04.png",
+        "manifest_position": 13,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": "4 (i) Show that \\frac{2 \\sin x - \\sin 2x}{1 - \\cos 2x} \\equiv \\frac{\\sin x}{1 + \\cos x}. [4]\n\n(ii) Hence, showing all necessary working, find \\int_{\\frac{1}{3}\\pi}^{\\dots} \\frac{1}{1 - \\cos 2x} dx, giving your answer in the form \\ln k. [4]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 (i) Show that \\frac{2 \\sin x - \\sin 2x}{1 - \\cos 2x} \\equiv \\frac{\\sin x}{1 + \\cos x}. [4]\n\n(ii) Hence, showing all necessary working, find \\int_{\\frac{1}{3}\\pi}^{\\dots} \\frac{1}{1 - \\cos 2x} dx, giving your answer in the form \\ln k. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\frac{2 \\sin x - \\sin 2x}{1 - \\cos 2x} \\equiv \\frac{\\sin x}{1 + \\cos x}",
+              "\\int_{\\frac{1}{3}\\pi} \\frac{1}{1 - \\cos 2x} dx",
+              "\\ln k"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(i)', 'text': 'Show that \\\\frac{2 \\\\sin x - \\\\sin 2x}{1 - \\\\cos 2x} \\\\equiv \\\\frac{\\\\sin x}{1 + \\\\cos x}. [4]'}",
+              "{'label': '(ii)', 'text': 'Hence, showing all necessary working, find \\\\int_{\\\\frac{1}{3}\\\\pi} \\\\frac{1}{1 - \\\\cos 2x} dx, giving your answer in the form \\\\ln k. [4]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 4 at top left",
+              "Subquestions labeled (i) and (ii)",
+              "Mark allocation [4] for each subquestion at right margin",
+              "Dotted lines provided for working space below each subquestion"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.95
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.95,
+        "descriptor_readiness": "descriptor_candidate"
+      },
+      {
+        "storage_key": "9709/s24_qp_32/questions/q07.png",
+        "manifest_position": 14,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": "(b) Hence find the exact value of ∫_{-1/8 π}^{1/8 π} (cos^4 θ - sin^4 θ + 4 sin^2 θ cos^2 θ) dθ. [6]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "(b) Hence find the exact value of ∫_{-1/8 π}^{1/8 π} (cos^4 θ - sin^4 θ + 4 sin^2 θ cos^2 θ) dθ. [6]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\int_{-\\frac{1}{8}\\pi}^{\\frac{1}{8}\\pi} \\left( \\cos^4 \\theta - \\sin^4 \\theta + 4 \\sin^2 \\theta \\cos^2 \\theta \\right) \\mathrm{d}\\theta"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(b)', 'text': 'Hence find the exact value of ∫_{-1/8 π}^{1/8 π} (cos^4 θ - sin^4 θ + 4 sin^2 θ cos^2 θ) dθ.', 'marks': '[6]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Single subquestion labeled (b)",
+              "Integral expression with limits from -π/8 to π/8",
+              "Trigonometric integrand involving powers of sine and cosine",
+              "Mark allocation [6] at end of line",
+              "Dotted lines above and below for answer space"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
+      },
+      {
+        "storage_key": "9709/w20_qp_32/questions/q09.png",
+        "manifest_position": 15,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": "9 Let f(x) = (7x + 18) / ((3x + 2)(x^2 + 4)).\n(a) Express f(x) in partial fractions. [5]\n(b) Hence find the exact value of ∫[0 to 1] f(x) dx. [6]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "9 Let f(x) = (7x + 18) / ((3x + 2)(x^2 + 4)).\n(a) Express f(x) in partial fractions. [5]\n(b) Hence find the exact value of ∫[0 to 1] f(x) dx. [6]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "f(x) = \\frac{7x + 18}{(3x + 2)(x^2 + 4)}",
+              "\\int_{0}^{1} f(x) \\, dx"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(a)', 'text': 'Express f(x) in partial fractions.', 'marks': '[5]'}",
+              "{'label': '(b)', 'text': 'Hence find the exact value of ∫[0 to 1] f(x) dx.', 'marks': '[6]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 9 at top left",
+              "Function definition centered after question number",
+              "Subparts (a) and (b) vertically stacked with dotted answer lines below each",
+              "Marks indicated in square brackets on right margin for each subpart",
+              "Integral limits in part (b) are from 0 to 1"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
+      },
+      {
+        "storage_key": "9709/w23_qp_32/questions/q09.png",
+        "manifest_position": 16,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "review_lane",
+        "difficulty_band": "ocr_hard",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": "9\ny\nM\nO a π x\nThe diagram shows the curve y = sin x cos 2x, for 0 ≤ x ≤ π, and a maximum point M, where x = a.\nThe shaded region between the curve and the x-axis is denoted by R.\n(a) Find the value of a correct to 2 decimal places. [5]\n(b) Find the exact area of the region R, giving your answer in simplified form. [4]",
+        "warnings": [
+          "lazy_attach_original_image"
+        ],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "9\ny\nM\nO a π x\nThe diagram shows the curve y = sin x cos 2x, for 0 ≤ x ≤ π, and a maximum point M, where x = a.\nThe shaded region between the curve and the x-axis is denoted by R.\n(a) Find the value of a correct to 2 decimal places. [5]\n(b) Find the exact area of the region R, giving your answer in simplified form. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "y = \\sin x \\cos 2x",
+              "0 \\leqslant x \\leqslant \\pi",
+              "x = a",
+              "R"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'id': 'a', 'text': 'Find the value of a correct to 2 decimal places.', 'marks': '[5]'}",
+              "{'id': 'b', 'text': 'Find the exact area of the region R, giving your answer in simplified form.', 'marks': '[4]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Standard exam question layout with diagram at top followed by text description.",
+              "Subquestions (a) and (b) are clearly separated with dotted lines for answers.",
+              "Mark allocations [5] and [4] are aligned to the right."
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "Cartesian coordinate system with x and y axes.",
+              "Origin labeled O.",
+              "Curve plotted from x=0 to x=π.",
+              "Local maximum point labeled M with x-coordinate a.",
+              "Shaded region labeled R bounded by the curve and the x-axis.",
+              "x-intercepts visible at 0, π, and two intermediate points."
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Point M is the first local maximum for x > 0.",
+              "Region R is the area enclosed by the curve below the x-axis, between the first positive x-intercept and the second positive x-intercept (which appears to be before π based on the curve shape, though the axis label π is at the end)."
+            ]
+          },
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 0.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w21_qp_33/questions/q09.png",
+        "manifest_position": 17,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w19_qp_32/questions/q08.png",
+        "manifest_position": 18,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "medium",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s24_qp_32/questions/q06.png",
+        "manifest_position": 19,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "diagram_lane",
+        "difficulty_band": "diagram_review_heavy",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": true,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/m19_qp_32/questions/q03.png",
+        "manifest_position": 20,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "text_dominant"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w21_qp_32/questions/q06.png",
+        "manifest_position": 21,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "text_dominant"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/m20_qp_32/questions/q05.png",
+        "manifest_position": 22,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "medium",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/m24_qp_32/questions/q08.png",
+        "manifest_position": 23,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": "(a) Express 5 sin x + 2√2 cos(x + 1/4 π) in the form R sin(x + α), where R > 0 and 0 < α < 1/2 π. State the exact value of R and give α correct to 3 decimal places. [4]\n\n(b) Hence solve the equation\n6 sin 1/2 θ + 4√2 cos(1/2 θ + 1/4 π) = 3\nfor -4π < θ < 4π. [5]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "(a) Express 5 sin x + 2√2 cos(x + 1/4 π) in the form R sin(x + α), where R > 0 and 0 < α < 1/2 π. State the exact value of R and give α correct to 3 decimal places. [4]\n\n(b) Hence solve the equation\n6 sin 1/2 θ + 4√2 cos(1/2 θ + 1/4 π) = 3\nfor -4π < θ < 4π. [5]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "5 \\sin x + 2\\sqrt{2} \\cos\\left(x + \\frac{1}{4} \\pi\\right)",
+              "R \\sin(x + \\alpha)",
+              "R > 0",
+              "0 < \\alpha < \\frac{1}{2} \\pi",
+              "6 \\sin \\frac{1}{2} \\theta + 4\\sqrt{2} \\cos\\left(\\frac{1}{2} \\theta + \\frac{1}{4} \\pi\\right) = 3",
+              "-4\\pi < \\theta < 4\\pi"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(a)', 'text': 'Express 5 sin x + 2√2 cos(x + 1/4 π) in the form R sin(x + α), where R > 0 and 0 < α < 1/2 π. State the exact value of R and give α correct to 3 decimal places.', 'marks': '[4]'}",
+              "{'label': '(b)', 'text': 'Hence solve the equation 6 sin 1/2 θ + 4√2 cos(1/2 θ + 1/4 π) = 3 for -4π < θ < 4π.', 'marks': '[5]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Vertical arrangement of subquestions (a) and (b).",
+              "Dotted lines provided below each subquestion for student answers.",
+              "Mark allocations [4] and [5] aligned to the right margin."
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
+      },
+      {
+        "storage_key": "9709/w22_qp_32/questions/q06.png",
+        "manifest_position": 24,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "text_dominant"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": "6 Relative to the origin O, the points A, B and C have position vectors given by\n\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\ 3 \\\\ 1 \\end{pmatrix}, \\quad \\overrightarrow{OB} = \\begin{pmatrix} 3 \\\\ 1 \\\\ 2 \\end{pmatrix} \\quad \\text{and} \\quad \\overrightarrow{OC} = \\begin{pmatrix} 5 \\\\ 3 \\\\ -2 \\end{pmatrix}.\n\n(a) Using a scalar product, find the cosine of angle BAC. [4]\n\n(b) Hence find the area of triangle ABC. Give your answer in a simplified exact form. [4]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 Relative to the origin O, the points A, B and C have position vectors given by\n\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\ 3 \\\\ 1 \\end{pmatrix}, \\quad \\overrightarrow{OB} = \\begin{pmatrix} 3 \\\\ 1 \\\\ 2 \\end{pmatrix} \\quad \\text{and} \\quad \\overrightarrow{OC} = \\begin{pmatrix} 5 \\\\ 3 \\\\ -2 \\end{pmatrix}.\n\n(a) Using a scalar product, find the cosine of angle BAC. [4]\n\n(b) Hence find the area of triangle ABC. Give your answer in a simplified exact form. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\ 3 \\\\ 1 \\end{pmatrix}",
+              "\\overrightarrow{OB} = \\begin{pmatrix} 3 \\\\ 1 \\\\ 2 \\end{pmatrix}",
+              "\\overrightarrow{OC} = \\begin{pmatrix} 5 \\\\ 3 \\\\ -2 \\end{pmatrix}"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(a)', 'text': 'Using a scalar product, find the cosine of angle BAC.', 'marks': '[4]'}",
+              "{'label': '(b)', 'text': 'Hence find the area of triangle ABC. Give your answer in a simplified exact form.', 'marks': '[4]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 6 at top left",
+              "Vector definitions centered below intro text",
+              "Subquestions (a) and (b) vertically separated with dotted answer lines",
+              "Mark allocations [4] aligned to right margin for each subquestion"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
+      },
+      {
+        "storage_key": "9709/w23_qp_32/questions/q07.png",
+        "manifest_position": 25,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "review_lane",
+        "difficulty_band": "ocr_hard",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": "7 (a) By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ. [3]\n\n(b) Hence solve the equation\n\ncos 3θ + cos θ cos 2θ = cos² θ\n\nfor 0° ≤ θ ≤ 180°. [5]",
+        "warnings": [
+          "lazy_attach_original_image"
+        ],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "7 (a) By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ. [3]\n\n(b) Hence solve the equation\n\ncos 3θ + cos θ cos 2θ = cos² θ\n\nfor 0° ≤ θ ≤ 180°. [5]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "3\\theta",
+              "2\\theta + \\theta",
+              "\\cos 3\\theta \\equiv 4 \\cos^3 \\theta - 3 \\cos \\theta",
+              "\\cos 3\\theta + \\cos \\theta \\cos 2\\theta = \\cos^2 \\theta",
+              "0^\\circ \\leqslant \\theta \\leqslant 180^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(a)', 'text': 'By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ.', 'marks': '[3]'}",
+              "{'label': '(b)', 'text': 'Hence solve the equation cos 3θ + cos θ cos 2θ = cos² θ for 0° ≤ θ ≤ 180°.', 'marks': '[5]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 7 at top left",
+              "Subquestions (a) and (b) vertically stacked",
+              "Mark allocations [3] and [5] aligned to the right",
+              "Dotted lines provided for student answers below each subquestion"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Standard exam paper layout with question text at the top of sections and answer space (dotted lines) filling the remainder of the vertical space."
+            ]
+          },
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 1.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 1.0,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/s17_qp_32/questions/q03.png",
+        "manifest_position": 26,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w22_qp_32/questions/q09.png",
+        "manifest_position": 27,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "text_dominant"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "clean",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w22_qp_32/questions/q04.png",
+        "manifest_position": 28,
+        "route": "ocr_lane",
+        "lane": "ocr",
+        "expected_route": "ocr_lane",
+        "expected_lane": "ocr",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "formula_dense"
+        ],
+        "route_hint": "ocr_lane",
+        "difficulty_band": "medium",
+        "descriptor_required": true,
+        "gate_critical": false,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": false,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      },
+      {
+        "storage_key": "9709/w22_qp_32/questions/q07.png",
+        "manifest_position": 29,
+        "route": "review_lane",
+        "lane": "review",
+        "expected_route": "review_lane",
+        "expected_lane": "review",
+        "route_matches_expected": true,
+        "model": "qwen3.6-plus",
+        "decision_reasons": [
+          "gate_critical"
+        ],
+        "route_hint": "review_lane",
+        "difficulty_band": "diagram_review_heavy",
+        "descriptor_required": true,
+        "gate_critical": true,
+        "diagram_present": false,
+        "requires_review": false,
+        "lazy_attach_original_image": true,
+        "summary": null,
+        "warnings": [],
+        "evidence": [],
+        "failure_reason": null,
+        "confidence": null,
+        "descriptor_readiness": "review_bucket"
+      }
+    ],
+    "thresholds": {
+      "provider_failures": 0,
+      "unexpected_review_fallbacks": {
+        "clean": 0,
+        "medium": 0
+      },
+      "descriptor_coverage": 0.3333333333333333,
+      "full_review_acceptance": null,
+      "threshold_verdicts": [
+        {
+          "name": "provider_failures",
+          "pass": true,
+          "actual": 0,
+          "expected_max": 0
+        },
+        {
+          "name": "unexpected_review_fallbacks:clean",
+          "pass": true,
+          "actual": 0,
+          "expected_max": 0
+        },
+        {
+          "name": "unexpected_review_fallbacks:medium",
+          "pass": true,
+          "actual": 0,
+          "expected_max": 0
+        },
+        {
+          "name": "route_hint_match:clean",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        },
+        {
+          "name": "route_hint_match:medium",
+          "pass": true,
+          "actual": 0,
+          "expected": 0
+        }
+      ]
+    }
+  }
+}

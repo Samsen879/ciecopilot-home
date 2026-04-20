@@ -10,6 +10,7 @@
 - `2026-04-03-ao-reviewer-gate-rehearsal.md` - repo-local independent reviewer gate rehearsal showing request, claim, verdict, and durable freeze/release posture.
 - `2026-04-12-phase-a-question-intelligence-slice-1-report.md` - takeover closeout report for the first Phase A question-intelligence slice, including scope, touched modules, focused verification, and residual risks.
 - `2026-04-18-issue-232-scheduler-factor-coverage-report.md` - compact factor-coverage and verification report for the bounded `9709` scheduler-core upgrade on issue `#232`.
+- `2026-04-20-issue-253-wave-a-review-lane-remediation.md` - bounded fix report for the remaining Wave A shard-3 over-conservative review-lane case on `9709/s22_qp_13/questions/q02.png`.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.

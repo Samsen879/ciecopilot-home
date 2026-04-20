@@ -375,6 +375,12 @@ function canRecoverPipelineStateFromDelivery(deliveryRow = {}) {
     && Number(deliveryRow.truth_revision) >= 1;
 }
 
+function canRetryDownstreamEffectsFromDelivery(deliveryRow = {}) {
+  return deliveryRow?.delivery_state === 'retrying'
+    && normalizeString(deliveryRow?.last_error?.failed_stage) === 'downstream_effect_execution'
+    && normalizeArray(deliveryRow?.persisted_event_types).includes('LearningUpdateProposed');
+}
+
 function buildPipelineStateFromDeliveryRow(deliveryRow = {}) {
   const currentStage = getLastPersistedBridgeEventType(deliveryRow);
 
@@ -720,6 +726,29 @@ function buildFallbackLearningEffectsResponseFromDeliveryRow(
   );
 }
 
+function buildDownstreamEffectDeliveryError(learningEffects = {}, {
+  reconciliationRunId = null,
+} = {}) {
+  const effectExecution = learningEffects?.effect_execution ?? {};
+  const receiptSummary = buildLearningEffectsReceiptSummary(effectExecution);
+  const reconciliationId = normalizeString(reconciliationRunId) || null;
+
+  return {
+    code: 'attempt_event_bridge_effect_retry_pending',
+    message:
+      normalizeString(effectExecution?.error?.message)
+      || `downstream effect execution ${normalizeString(effectExecution?.status) || 'failed'}`,
+    failed_stage: 'downstream_effect_execution',
+    receipt_summary: receiptSummary,
+    reconciliation_run_id: reconciliationId,
+  };
+}
+
+function resolveDownstreamEffectDeliveryState(learningEffects = {}) {
+  const receiptSummary = buildLearningEffectsReceiptSummary(learningEffects?.effect_execution);
+  return receiptSummary.needs_manual_review > 0 ? 'needs_manual_review' : 'retrying';
+}
+
 function buildReconciliationSourceRef(deliveryRow = {}) {
   if (normalizeString(deliveryRow.mark_run_id)) {
     return {
@@ -886,6 +915,55 @@ async function executePersistedLearningUpdateEffectsSafely(client, {
   }
 }
 
+async function settleAttemptEventBridgeDeliveryAfterEffects(client, {
+  stableIdempotencyKey,
+  deliveryRow,
+  learningEffects,
+  successState = null,
+  reconciliationId = null,
+} = {}) {
+  const normalizedSuccessState = normalizeString(successState);
+  const normalizedReconciliationId = normalizeString(reconciliationId) || null;
+  const effectExecution = learningEffects?.effect_execution ?? {};
+  const hasDebt = Boolean(effectExecution?.debt_pending) || !Boolean(effectExecution?.ok);
+  const nextState = hasDebt
+    ? resolveDownstreamEffectDeliveryState(learningEffects)
+    : (normalizedSuccessState || normalizeString(deliveryRow?.delivery_state) || 'persisted');
+  const shouldUpdateForSuccess = !hasDebt
+    && (
+      nextState !== normalizeString(deliveryRow?.delivery_state)
+      || deliveryRow?.last_error
+      || (
+        normalizedReconciliationId
+        && normalizedReconciliationId !== normalizeString(deliveryRow?.reconciliation_id)
+      )
+    );
+
+  if (!hasDebt && !shouldUpdateForSuccess) {
+    return deliveryRow;
+  }
+
+  return updateAttemptEventBridgeDelivery(client, {
+    stableIdempotencyKey,
+    patch: {
+      delivery_state: nextState,
+      retry_count: hasDebt
+        ? Number(deliveryRow?.retry_count ?? 0) + 1
+        : Number(deliveryRow?.retry_count ?? 0),
+      last_attempted_at: new Date().toISOString(),
+      last_error: hasDebt
+        ? buildDownstreamEffectDeliveryError(learningEffects, {
+          reconciliationRunId: normalizedReconciliationId,
+        })
+        : null,
+      reconciliation_id:
+        normalizedReconciliationId
+        || normalizeString(deliveryRow?.reconciliation_id)
+        || null,
+    },
+  });
+}
+
 async function reserveAttemptEventBridgeDelivery(client, {
   attemptId,
   learnerId,
@@ -1010,13 +1088,21 @@ export async function persistAttemptEventBridge(client, input = {}, options = {}
             deliveryRow: deliveryReservation.row,
           }, options)
           : null;
+        const replayDelivery = replayLearningEffects
+          ? await settleAttemptEventBridgeDeliveryAfterEffects(client, {
+            stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
+            deliveryRow: deliveryReservation.row,
+            learningEffects: replayLearningEffects.learningEffects,
+            successState: deliveryReservation.row.delivery_state,
+          })
+          : deliveryReservation.row;
         return {
           ok: true,
           warningRecorded: false,
           deduped: true,
           persisted_event_types: normalizeArray(deliveryReservation.row.persisted_event_types),
           pipeline_state: null,
-          delivery: deliveryReservation.row,
+          delivery: replayDelivery,
           learning_effects: replayLearningEffects?.learningEffects ?? null,
         };
       }
@@ -1030,6 +1116,40 @@ export async function persistAttemptEventBridge(client, input = {}, options = {}
           failed_stage: 'manual_review',
           error_message: 'attempt-event delivery row already requires manual review',
           delivery: deliveryReservation.row,
+        };
+      }
+
+      if (canRetryDownstreamEffectsFromDelivery(deliveryReservation.row)) {
+        if (!options.applyDownstreamEffects) {
+          return {
+            ok: true,
+            warningRecorded: false,
+            deduped: true,
+            persisted_event_types: normalizeArray(deliveryReservation.row.persisted_event_types),
+            pipeline_state: null,
+            delivery: deliveryReservation.row,
+            learning_effects: null,
+          };
+        }
+
+        const replayLearningEffects = await executePersistedLearningUpdateEffectsSafely(client, {
+          deliveryRow: deliveryReservation.row,
+        }, options);
+        const replayDelivery = await settleAttemptEventBridgeDeliveryAfterEffects(client, {
+          stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
+          deliveryRow: deliveryReservation.row,
+          learningEffects: replayLearningEffects.learningEffects,
+          successState: 'persisted',
+        });
+
+        return {
+          ok: true,
+          warningRecorded: false,
+          deduped: false,
+          persisted_event_types: normalizeArray(deliveryReservation.row.persisted_event_types),
+          pipeline_state: null,
+          delivery: replayDelivery,
+          learning_effects: replayLearningEffects.learningEffects,
         };
       }
 
@@ -1102,6 +1222,14 @@ export async function persistAttemptEventBridge(client, input = {}, options = {}
           events.find((event) => event.event_type === 'LearningUpdateProposed') ?? null,
       }, options)
       : null;
+    const settledDelivery = downstreamLearningEffects
+      ? await settleAttemptEventBridgeDeliveryAfterEffects(client, {
+        stableIdempotencyKey: deliveryReservation.stableIdempotencyKey,
+        deliveryRow: finalizedDelivery,
+        learningEffects: downstreamLearningEffects.learningEffects,
+        successState: 'persisted',
+      })
+      : finalizedDelivery;
 
     return {
       ok: true,
@@ -1109,7 +1237,7 @@ export async function persistAttemptEventBridge(client, input = {}, options = {}
       deduped: false,
       persisted_event_types: events.map((event) => event.event_type),
       pipeline_state: pipelineState,
-      delivery: finalizedDelivery,
+      delivery: settledDelivery,
       learning_effects: downstreamLearningEffects?.learningEffects ?? null,
     };
   } catch (error) {
@@ -1209,18 +1337,13 @@ export async function reconcileAttemptEventBridgeEffects(client, {
     started_at: timestamp,
     completed_at: timestamp,
   });
-
-  if (learningEffects.effect_execution.ok) {
-    await updateAttemptEventBridgeDelivery(client, {
-      stableIdempotencyKey,
-      patch: {
-        delivery_state: 'reconciled',
-        last_attempted_at: timestamp,
-        last_error: null,
-        reconciliation_id: run?.reconciliation_run_id ?? null,
-      },
-    });
-  }
+  await settleAttemptEventBridgeDeliveryAfterEffects(client, {
+    stableIdempotencyKey,
+    deliveryRow,
+    learningEffects,
+    successState: 'reconciled',
+    reconciliationId: run?.reconciliation_run_id ?? null,
+  });
 
   return {
     reconciliation_run_id: run?.reconciliation_run_id ?? null,

@@ -1,0 +1,36 @@
+{
+  "contract_id": "9709_wave_a_thresholds_v1",
+  "schema_version": "v1",
+  "subject_code": "9709",
+  "frozen_on": "2026-04-19",
+  "provider_failure_max": 0,
+  "baseline_gate_pass_required": true,
+  "full_review_min_acceptance": 0.9,
+  "unexpected_review_lane_max": {
+    "clean": 0,
+    "medium": 0
+  },
+  "projection_required_fields": [
+    "question_id",
+    "source_kind",
+    "subject_code",
+    "year",
+    "session",
+    "paper_number",
+    "variant",
+    "q_number",
+    "summary",
+    "search_text"
+  ],
+  "current_shard_projection_completeness_required": 1,
+  "current_shard_queryability_required": 1,
+  "duplicate_projection_rows_max": 0,
+  "gate_critical_full_review_required": true,
+  "route_hint_match_required": {
+    "clean": true,
+    "medium": true
+  },
+  "review_lane_allowlist_required": true,
+  "review_lane_allowlist_source": "manifest",
+  "closure_scope_mode_required": "lane_results"
+}

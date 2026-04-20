@@ -1,0 +1,367 @@
+{
+  "suite_id": "question_search_gold_9709_wave_a_v1",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "thresholds": {
+    "exact_structured_match_rate": 0.9,
+    "subject_leakage_rate": 0.0,
+    "metadata_completeness_rate": 0.95,
+    "null_summary_rate": 0.05
+  },
+  "wave": "question_search_expansion_wave_a_v1",
+  "source_manifest_id": "9709_question_search_expansion_wave_a_v1",
+  "manifest_digest": "3332454c981179e317988b45f847b47afb5c658226167344b782504909d8061b",
+  "cases": [
+    {
+      "id": "wave-a-gate-01",
+      "description": "Wave A shard 1 should retrieve the gate-critical p1 trigonometry row for 2023 winter paper 1 question 5.",
+      "query": {
+        "topic_path": "9709.p1.trigonometry",
+        "year": 2023,
+        "session": "w",
+        "paper_number": 1,
+        "q_number": 5,
+        "query": "4 sin x + 5/tan x + 2/sin x = 0"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p1.trigonometry",
+          "year": 2023,
+          "session": "w",
+          "paper_number": 1,
+          "q_number": 5
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2023:w:p1:v1:q05"
+      }
+    },
+    {
+      "id": "wave-a-gate-02",
+      "description": "Wave A shard 2 should retrieve the OCR-hard p1 trigonometry row for 2024 March paper 1 question 4.",
+      "query": {
+        "topic_path": "9709.p1.trigonometry",
+        "year": 2024,
+        "session": "m",
+        "paper_number": 1,
+        "q_number": 4,
+        "query": "Prove identity and solve equation 5 tan^3 theta"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p1.trigonometry",
+          "year": 2024,
+          "session": "m",
+          "paper_number": 1,
+          "q_number": 4
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2024:m:p1:v2:q04"
+      }
+    },
+    {
+      "id": "wave-a-gate-03",
+      "description": "Wave A shard 3 should retrieve the diagram-review-heavy p1 trigonometry row for 2022 summer paper 1 question 2.",
+      "query": {
+        "topic_path": "9709.p1.trigonometry",
+        "year": 2022,
+        "session": "s",
+        "paper_number": 1,
+        "q_number": 2,
+        "query": "y = p sin(qθ) + r state p q r"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p1.trigonometry",
+          "year": 2022,
+          "session": "s",
+          "paper_number": 1,
+          "q_number": 2
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2022:s:p1:v3:q02"
+      }
+    },
+    {
+      "id": "wave-a-gate-04",
+      "description": "Wave A shard 1 should retrieve the clean p3 integration row for 2017 summer paper 3 question 4.",
+      "query": {
+        "topic_path": "9709.p3.integration",
+        "year": 2017,
+        "session": "s",
+        "paper_number": 3,
+        "q_number": 4,
+        "query": "Find the exact value integral 6 sin squared theta"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p3.integration",
+          "year": 2017,
+          "session": "s",
+          "paper_number": 3,
+          "q_number": 4
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2017:s:p3:v3:q04"
+      }
+    },
+    {
+      "id": "wave-a-gate-05",
+      "description": "Wave A shard 2 should retrieve the OCR-hard p3 integration row for 2023 winter paper 3 question 9.",
+      "query": {
+        "topic_path": "9709.p3.integration",
+        "year": 2023,
+        "session": "w",
+        "paper_number": 3,
+        "q_number": 9,
+        "query": "curve y = sin x cos 2x area region R"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p3.integration",
+          "year": 2023,
+          "session": "w",
+          "paper_number": 3,
+          "q_number": 9
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2023:w:p3:v2:q09"
+      }
+    },
+    {
+      "id": "wave-a-gate-06",
+      "description": "Wave A shard 3 should retrieve the diagram-review-heavy p3 integration row for 2024 summer paper 3 question 6.",
+      "query": {
+        "topic_path": "9709.p3.integration",
+        "year": 2024,
+        "session": "s",
+        "paper_number": 3,
+        "q_number": 6,
+        "query": "curve y = x e^-ax maximum point M"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p3.integration",
+          "year": 2024,
+          "session": "s",
+          "paper_number": 3,
+          "q_number": 6
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2024:s:p3:v2:q06"
+      }
+    },
+    {
+      "id": "wave-a-gate-07",
+      "description": "Wave A shard 1 should retrieve the medium-difficulty p3 trigonometry row for 2020 March paper 3 question 5.",
+      "query": {
+        "topic_path": "9709.p3.trigonometry",
+        "year": 2020,
+        "session": "m",
+        "paper_number": 3,
+        "q_number": 5,
+        "query": "cos 3x over sin x plus sin 3x over cos x equals 2 cot 2x"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p3.trigonometry",
+          "year": 2020,
+          "session": "m",
+          "paper_number": 3,
+          "q_number": 5
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2020:m:p3:v2:q05"
+      }
+    },
+    {
+      "id": "wave-a-gate-08",
+      "description": "Wave A shard 2 should retrieve the OCR-hard p3 trigonometry row for 2023 winter paper 3 question 7.",
+      "query": {
+        "topic_path": "9709.p3.trigonometry",
+        "year": 2023,
+        "session": "w",
+        "paper_number": 3,
+        "q_number": 7,
+        "query": "prove identity cos 3 theta equals 4 cos cubed theta minus 3 cos theta"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p3.trigonometry",
+          "year": 2023,
+          "session": "w",
+          "paper_number": 3,
+          "q_number": 7
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2023:w:p3:v2:q07"
+      }
+    },
+    {
+      "id": "wave-a-gate-09",
+      "description": "Wave A shard 3 should retrieve the diagram-review-heavy p3 trigonometry row for 2022 winter paper 3 question 7.",
+      "query": {
+        "topic_path": "9709.p3.trigonometry",
+        "year": 2022,
+        "session": "w",
+        "paper_number": 3,
+        "q_number": 7,
+        "query": "x sin squared theta dx dtheta equals tan squared theta minus 2 cot theta"
+      },
+      "expected": {
+        "match": {
+          "source_kind": "paper_question",
+          "subject_code": "9709",
+          "primary_topic_path": "9709.p3.trigonometry",
+          "year": 2022,
+          "session": "w",
+          "paper_number": 3,
+          "q_number": 7
+        },
+        "required_metadata": [
+          "source_kind",
+          "subject_code",
+          "primary_topic_path",
+          "year",
+          "session",
+          "paper_number",
+          "q_number",
+          "summary"
+        ],
+        "summary_policy": "require_non_null"
+      },
+      "source_reference": {
+        "kind": "wave_a_manifest",
+        "manifest_id": "9709_question_search_expansion_wave_a_v1",
+        "paper_scope_key": "9709:2022:w:p3:v2:q07"
+      }
+    }
+  ]
+}

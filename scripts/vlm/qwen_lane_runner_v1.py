@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from scripts.common.env import load_project_env, resolve_assets_root
 from scripts.vlm.contracts import validate_qwen_wave1_output
-from scripts.vlm.create_jobs_from_manifest import build_manifest_jobs, load_manifest
+from scripts.vlm.create_jobs_from_manifest import build_manifest_jobs, load_manifest, summarize_jobs
 from scripts.vlm.providers import get_provider
 
 
@@ -149,7 +149,7 @@ def run_lane_job(
 
 def _build_jobs_from_args(args: argparse.Namespace) -> list[dict[str, Any]]:
     manifest = load_manifest(args.manifest)
-    jobs = build_manifest_jobs(manifest)
+    jobs = build_manifest_jobs(manifest, shard_id=args.shard_id)
     if args.max_jobs is not None:
         jobs = jobs[:args.max_jobs]
     return jobs
@@ -162,6 +162,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--assets-root", type=Path, default=resolve_assets_root())
     parser.add_argument("--max-jobs", type=int)
+    parser.add_argument("--shard-id", type=str)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--output", type=Path)
     return parser.parse_args(argv)
@@ -173,10 +174,15 @@ def main(argv: list[str] | None = None) -> int:
     jobs = _build_jobs_from_args(args)
 
     if args.dry_run:
-        route_counts = Counter(job["route"] for job in jobs)
-        print(f"jobs_planned: {len(jobs)}")
-        for route, count in sorted(route_counts.items()):
+        summary = summarize_jobs(jobs)
+        if args.shard_id:
+            print(f"shard_id: {args.shard_id}")
+        print(f"jobs_planned: {summary['jobs_planned']}")
+        for route, count in sorted(summary["route_counts"].items()):
             print(f"{route}: {count}")
+        print("targeted_identities:")
+        for storage_key in summary["targeted_identities"]:
+            print(f"- {storage_key}")
         return 0
 
     payloads = []

@@ -251,7 +251,7 @@ class PgCompatQueryBuilder {
   }
 
   select(selection) {
-    if (this.mode === 'insert' || this.mode === 'update') {
+    if (this.mode === 'insert' || this.mode === 'update' || this.mode === 'delete') {
       this.returning = selection;
       return this;
     }
@@ -297,6 +297,11 @@ class PgCompatQueryBuilder {
     return this;
   }
 
+  delete() {
+    this.mode = 'delete';
+    return this;
+  }
+
   single() {
     this.singleMode = 'single';
     return this.execute();
@@ -330,6 +335,7 @@ class PgCompatQueryBuilder {
     try {
       if (this.mode === 'insert') return await this.runInsert();
       if (this.mode === 'update') return await this.runUpdate();
+      if (this.mode === 'delete') return await this.runDelete();
       return await this.runSelect();
     } catch (error) {
       return {
@@ -416,6 +422,22 @@ class PgCompatQueryBuilder {
     const whereSql = where.sql.replaceAll('t.', '');
 
     let sql = `UPDATE public.${quoteIdent(this.table)} SET ${setSql}${whereSql}`;
+    if (this.returning) {
+      const projection = buildProjection(this.table, this.returning, { returning: true });
+      sql += ` RETURNING ${projection.sql}`;
+    }
+
+    const result = await this.pool.query(sql, params);
+    const rows = this.returning ? result.rows.map(shapeRow) : [];
+    return singleResult(rows, this.singleMode);
+  }
+
+  async runDelete() {
+    const where = buildWhereClause('t', this.filters, this.table);
+    const params = [...where.values];
+    const whereSql = where.sql.replaceAll('t.', '');
+
+    let sql = `DELETE FROM public.${quoteIdent(this.table)}${whereSql}`;
     if (this.returning) {
       const projection = buildProjection(this.table, this.returning, { returning: true });
       sql += ` RETURNING ${projection.sql}`;

@@ -2,9 +2,15 @@
 
 import { execFile } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+import {
+  buildScopedManifest,
+  loadManifest,
+  resolveWaveAClosureScope,
+} from './lib/wave-a-manifest.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -30,7 +36,7 @@ function writeStderrLine(message) {
 
 function printUsage() {
   writeStdoutLine(
-    'Usage: node scripts/learning/run_9709_wave1_search_closure.js [--manifest <path>] [--lane-results <path>] [--evidence-bundles-out <path>] [--fixture <path>] [--gate-report <path>] [--gate-json <path>] [--gate-psql-mode <direct|docker>] [--gate-psql-container <name>] [--dry-run]',
+    'Usage: node scripts/learning/run_9709_wave1_search_closure.js [--manifest <path>] [--shard-id <id>] [--lane-results <path>] [--scope-from-lane-results|--scope-from-manifest] [--evidence-bundles-out <path>] [--fixture <path>] [--gate-report <path>] [--gate-json <path>] [--gate-psql-mode <direct|docker>] [--gate-psql-container <name>] [--dry-run]',
   );
 }
 
@@ -135,7 +141,9 @@ export function build9709Wave1SearchClosurePlan({
 function parseArgs(argv = process.argv.slice(2)) {
   const options = {
     manifest: DEFAULT_9709_WAVE1_CLOSURE_PATHS.manifest,
+    shardId: null,
     laneResults: DEFAULT_9709_WAVE1_CLOSURE_PATHS.laneResults,
+    scopeMode: null,
     evidenceBundlesOut: DEFAULT_9709_WAVE1_CLOSURE_PATHS.evidenceBundlesOut,
     fixture: DEFAULT_9709_WAVE1_CLOSURE_PATHS.fixture,
     gateReport: DEFAULT_9709_WAVE1_CLOSURE_PATHS.gateReport,
@@ -162,9 +170,28 @@ function parseArgs(argv = process.argv.slice(2)) {
       index += 1;
       continue;
     }
+    if (token === '--shard-id') {
+      options.shardId = normalizeOptionalString(argv[index + 1] ?? null);
+      index += 1;
+      continue;
+    }
     if (token === '--lane-results') {
       options.laneResults = argv[index + 1] ?? null;
       index += 1;
+      continue;
+    }
+    if (token === '--scope-from-lane-results') {
+      if (options.scopeMode) {
+        throw new Error('Scope mode may only be set once.');
+      }
+      options.scopeMode = 'lane_results';
+      continue;
+    }
+    if (token === '--scope-from-manifest') {
+      if (options.scopeMode) {
+        throw new Error('Scope mode may only be set once.');
+      }
+      options.scopeMode = 'manifest';
       continue;
     }
     if (token === '--evidence-bundles-out') {
@@ -228,6 +255,18 @@ async function runStep(step) {
   }
 }
 
+function materializeScopedManifest({
+  manifestPath,
+  scope,
+} = {}) {
+  const manifest = loadManifest(manifestPath);
+  const scopedManifest = buildScopedManifest(manifest, scope.targetStorageKeys);
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), '9709-wave-a-closure-'));
+  const scopedManifestPath = path.join(tempDir, `${manifest.manifest_id ?? 'manifest'}-${Date.now()}.json`);
+  fs.writeFileSync(scopedManifestPath, JSON.stringify(scopedManifest, null, 2));
+  return scopedManifestPath;
+}
+
 export async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
 
@@ -236,9 +275,41 @@ export async function main(argv = process.argv.slice(2)) {
     return;
   }
 
-  const plan = build9709Wave1SearchClosurePlan(options);
+  const manifest = loadManifest(options.manifest);
+  const scope = resolveWaveAClosureScope({
+    manifest,
+    manifestPath: options.manifest,
+    shardId: options.shardId,
+    laneResultsPath: options.laneResults,
+    scopeMode: options.scopeMode,
+    dryRun: options.dryRun,
+  });
+
+  if (!options.dryRun && options.shardId && scope.scopeMode !== 'lane_results') {
+    throw new Error('Live shard execution requires --scope-from-lane-results.');
+  }
+
+  const scopedManifestPath = (!options.dryRun && options.shardId)
+    ? materializeScopedManifest({
+      manifestPath: options.manifest,
+      scope,
+    })
+    : options.manifest;
+
+  const plan = build9709Wave1SearchClosurePlan({
+    ...options,
+    manifest: scopedManifestPath,
+  });
 
   if (options.dryRun) {
+    writeStdoutLine(`scope_mode: ${scope.scopeMode}`);
+    writeStdoutLine(`scope_source: ${scope.scopeSource}`);
+    writeStdoutLine(`target_row_count: ${scope.targetRowCount}`);
+    writeStdoutLine('target_storage_keys:');
+    for (const storageKey of scope.targetStorageKeys) {
+      writeStdoutLine(`- ${storageKey}`);
+    }
+    writeStdoutLine(`cumulative_mode: ${scope.cumulativeMode}`);
     for (const step of plan) {
       writeStdoutLine(`${step.label}: ${renderStep(step)}`);
     }

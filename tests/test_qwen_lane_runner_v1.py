@@ -167,3 +167,37 @@ def test_main_loads_project_env_before_running_manifest(capsys):
     assert exit_code == 0
     mock_load_env.assert_called_once()
     assert "jobs_planned: 0" in capsys.readouterr().out
+
+
+def test_main_dry_run_supports_pre_audit_wave_a_manifest(capsys):
+    exit_code = main([
+        "--manifest",
+        "data/manifests/9709_question_search_expansion_wave_a_v1.json",
+        "--dry-run",
+    ])
+
+    assert exit_code == 0
+    output = capsys.readouterr().out
+    assert "jobs_planned: 30" in output
+    assert "targeted_identities:" in output
+    assert "9709/s17_qp_11/questions/q03.png" in output
+    assert "9709/w22_qp_32/questions/q07.png" in output
+
+
+def test_main_dry_run_filters_wave_a_manifest_by_shard(capsys):
+    exit_code = main([
+        "--manifest",
+        "data/manifests/9709_question_search_expansion_wave_a_v1.json",
+        "--shard-id",
+        "shard_1",
+        "--dry-run",
+    ])
+
+    assert exit_code == 0
+    output = capsys.readouterr().out
+    assert "jobs_planned: 10" in output
+    assert "shard_id: shard_1" in output
+    assert "9709/s17_qp_11/questions/q03.png" in output
+    assert "9709/s16_qp_32/questions/q03.png" in output
+    assert "9709/m20_qp_32/questions/q05.png" in output
+    assert "9709/m24_qp_12/questions/q04.png" not in output

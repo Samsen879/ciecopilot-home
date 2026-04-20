@@ -1,0 +1,802 @@
+{
+  "date": "2026-04-20",
+  "mode": "wave1_lane",
+  "manifest_id": "9709_question_search_expansion_wave_a_v1",
+  "manifest_path": "data/manifests/9709_question_search_expansion_wave_a_v1.json",
+  "lane_results_json": "docs/reports/2026-04-19-9709-wave-a-shard2-results.json",
+  "shard_id": "shard_2",
+  "full_review": true,
+  "model": "qwen3-vl-flash",
+  "assets_root": "/home/samsen/code/cie-assets",
+  "sample_size": 10,
+  "records": [
+    {
+      "index": 1,
+      "storage_key": "9709/m24_qp_12/questions/q04.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": true,
+      "diagram_present": false,
+      "requires_review": true,
+      "lazy_attach_original_image": true,
+      "confidence": 0.85,
+      "failure_reason": null,
+      "summary": "Image contains a trigonometry problem set. Question 4(a) is partially cropped, missing the left side of the equation's numerator. Question 4(b) is fully visible but contains complex formatting requiring careful transcription.",
+      "warnings": [
+        "lazy_attach_original_image"
+      ],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "4 (a) Prove that ... / cos^2 θ = 2 tan θ. [5]\n(b) Hence solve the equation ((sin θ + cos θ)^2 - 1) / cos^2 θ = 5 tan^3 θ for -90° < θ < 90°. [3]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\frac{...}{\\cos^2 \\theta} = 2 \\tan \\theta",
+            "\\frac{(\\sin \\theta + \\cos \\theta)^2 - 1}{\\cos^2 \\theta} = 5 \\tan^3 \\theta",
+            "-90^\\circ < \\theta < 90^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Prove that ... / cos^2 θ = 2 tan θ.', 'marks': '[5]'}",
+            "{'label': '(b)', 'text': 'Hence solve the equation ((sin θ + cos θ)^2 - 1) / cos^2 θ = 5 tan^3 θ for -90° < θ < 90°.', 'marks': '[3]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 4 at top left",
+            "Subquestions (a) and (b) vertically stacked",
+            "Mark allocations [5] and [3] aligned to the right",
+            "Dotted lines provided for student answers below each subquestion"
+          ]
+        },
+        {
+          "field": "diagram_present",
+          "value": false
+        },
+        {
+          "field": "diagram_elements",
+          "value": []
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "Standard exam paper layout with questions on the left and marks on the right. Answer space consists of horizontal dotted lines spanning the width of the page."
+          ]
+        },
+        {
+          "field": "requires_review",
+          "value": true
+        },
+        {
+          "field": "review_reasons",
+          "value": [
+            "The numerator of the fraction in question 4(a) is cut off at the top edge of the image, making the expression incomplete.",
+            "Verification of the exact LaTeX structure for the complex fraction in 4(b) is recommended due to potential OCR errors with nested parentheses and superscripts."
+          ]
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": [
+            "Missing content in 4(a) numerator",
+            "Potential ambiguity in reading the exponent '3' in tan^3 theta without high-resolution verification"
+          ]
+        },
+        {
+          "field": "review_summary",
+          "value": "Image contains a trigonometry problem set. Question 4(a) is partially cropped, missing the left side of the equation's numerator. Question 4(b) is fully visible but contains complex formatting requiring careful transcription."
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.85
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "图像中问题4(a)的分子部分被裁切，导致表达式不完整；尽管4(b)完整可见，但其复杂格式（嵌套括号、上标）存在OCR误读风险。当前结果已准确指出关键缺陷并给出合理置信度，符合review_lane标准。",
+        "issues": [
+          "Missing content in 4(a) numerator",
+          "Potential ambiguity in reading the exponent '3' in tan^3 theta without high-resolution verification"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "storage_key": "9709/w23_qp_32/questions/q09.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": true,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": true,
+      "confidence": 0.0,
+      "failure_reason": null,
+      "summary": "9\ny\nM\nO a π x\nThe diagram shows the curve y = sin x cos 2x, for 0 ≤ x ≤ π, and a maximum point M, where x = a.\nThe shaded region between the curve and the x-axis is denoted by R.\n(a) Find the value of a correct to 2 decimal places. [5]\n(b) Find the exact area of the region R, giving your answer in simplified form. [4]",
+      "warnings": [
+        "lazy_attach_original_image"
+      ],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "9\ny\nM\nO a π x\nThe diagram shows the curve y = sin x cos 2x, for 0 ≤ x ≤ π, and a maximum point M, where x = a.\nThe shaded region between the curve and the x-axis is denoted by R.\n(a) Find the value of a correct to 2 decimal places. [5]\n(b) Find the exact area of the region R, giving your answer in simplified form. [4]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "y = \\sin x \\cos 2x",
+            "0 \\leqslant x \\leqslant \\pi",
+            "x = a",
+            "R"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'id': 'a', 'text': 'Find the value of a correct to 2 decimal places.', 'marks': '[5]'}",
+            "{'id': 'b', 'text': 'Find the exact area of the region R, giving your answer in simplified form.', 'marks': '[4]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Standard exam question layout with diagram at top followed by text description.",
+            "Subquestions (a) and (b) are clearly separated with dotted lines for answers.",
+            "Mark allocations [5] and [4] are aligned to the right."
+          ]
+        },
+        {
+          "field": "diagram_present",
+          "value": true
+        },
+        {
+          "field": "diagram_elements",
+          "value": [
+            "Cartesian coordinate system with x and y axes.",
+            "Origin labeled O.",
+            "Curve plotted from x=0 to x=π.",
+            "Local maximum point labeled M with x-coordinate a.",
+            "Shaded region labeled R bounded by the curve and the x-axis.",
+            "x-intercepts visible at 0, π, and two intermediate points."
+          ]
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "Point M is the first local maximum for x > 0.",
+            "Region R is the area enclosed by the curve below the x-axis, between the first positive x-intercept and the second positive x-intercept (which appears to be before π based on the curve shape, though the axis label π is at the end)."
+          ]
+        },
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 0.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR and layout evidence fully capture the question structure, formulae, subquestions, and diagram elements. The 'lazy_attach_original_image' warning is acceptable since the diagram is described in text and the visual content is not required for solving—this is typical for exam-style problems where the description suffices. All key components (curve equation, domain, point M, region R, marks, subquestions) are present and correctly interpreted.",
+        "issues": []
+      }
+    },
+    {
+      "index": 3,
+      "storage_key": "9709/w23_qp_32/questions/q07.png",
+      "route": "review_lane",
+      "lane": "review",
+      "gate_critical": true,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": true,
+      "confidence": 1.0,
+      "failure_reason": null,
+      "summary": "7 (a) By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ. [3]\n\n(b) Hence solve the equation\n\ncos 3θ + cos θ cos 2θ = cos² θ\n\nfor 0° ≤ θ ≤ 180°. [5]",
+      "warnings": [
+        "lazy_attach_original_image"
+      ],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "7 (a) By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ. [3]\n\n(b) Hence solve the equation\n\ncos 3θ + cos θ cos 2θ = cos² θ\n\nfor 0° ≤ θ ≤ 180°. [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "3\\theta",
+            "2\\theta + \\theta",
+            "\\cos 3\\theta \\equiv 4 \\cos^3 \\theta - 3 \\cos \\theta",
+            "\\cos 3\\theta + \\cos \\theta \\cos 2\\theta = \\cos^2 \\theta",
+            "0^\\circ \\leqslant \\theta \\leqslant 180^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'By expressing 3θ as 2θ + θ, prove the identity cos 3θ ≡ 4 cos³ θ − 3 cos θ.', 'marks': '[3]'}",
+            "{'label': '(b)', 'text': 'Hence solve the equation cos 3θ + cos θ cos 2θ = cos² θ for 0° ≤ θ ≤ 180°.', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 7 at top left",
+            "Subquestions (a) and (b) vertically stacked",
+            "Mark allocations [3] and [5] aligned to the right",
+            "Dotted lines provided for student answers below each subquestion"
+          ]
+        },
+        {
+          "field": "diagram_present",
+          "value": false
+        },
+        {
+          "field": "diagram_elements",
+          "value": []
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "Standard exam paper layout with question text at the top of sections and answer space (dotted lines) filling the remainder of the vertical space."
+          ]
+        },
+        {
+          "field": "requires_review",
+          "value": false
+        },
+        {
+          "field": "review_reasons",
+          "value": []
+        },
+        {
+          "field": "ambiguity_flags",
+          "value": []
+        },
+        {
+          "field": "review_summary",
+          "value": ""
+        },
+        {
+          "field": "review_confidence",
+          "value": 1.0
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR and structured fields fully capture the question text, subquestions, marks, and layout cues; no missing or ambiguous elements detected.",
+        "issues": []
+      }
+    },
+    {
+      "index": 4,
+      "storage_key": "9709/s17_qp_13/questions/q05.png",
+      "route": "ocr_lane",
+      "lane": "ocr",
+      "gate_critical": false,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": false,
+      "confidence": 0.98,
+      "failure_reason": null,
+      "summary": "5 (i) Show that the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ may be expressed as cos² θ = 2 sin² θ. [3]\n\n(ii) Hence solve the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ for 0° < θ < 180°. [3]",
+      "warnings": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "5 (i) Show that the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ may be expressed as cos² θ = 2 sin² θ. [3]\n\n(ii) Hence solve the equation (2 sin θ + cos θ) / (sin θ + cos θ) = 2 tan θ for 0° < θ < 180°. [3]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\frac{2 \\sin \\theta + \\cos \\theta}{\\sin \\theta + \\cos \\theta} = 2 \\tan \\theta",
+            "\\cos^2 \\theta = 2 \\sin^2 \\theta",
+            "0^\\circ < \\theta < 180^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Show that the equation \\\\frac{2 \\\\sin \\\\theta + \\\\cos \\\\theta}{\\\\sin \\\\theta + \\\\cos \\\\theta} = 2 \\\\tan \\\\theta may be expressed as \\\\cos^2 \\\\theta = 2 \\\\sin^2 \\\\theta.', 'marks': '[3]'}",
+            "{'label': '(ii)', 'text': 'Hence solve the equation \\\\frac{2 \\\\sin \\\\theta + \\\\cos \\\\theta}{\\\\sin \\\\theta + \\\\cos \\\\theta} = 2 \\\\tan \\\\theta for 0^\\\\circ < \\\\theta < 180^\\\\circ.', 'marks': '[3]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 5 at top left",
+            "Subquestions (i) and (ii) vertically stacked",
+            "Dotted lines provided for working space below each subquestion",
+            "Mark allocation [3] aligned to the right of each subquestion stem"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR and structured fields accurately capture the question text, formulae, subquestion structure, layout hints, and mark allocations. No missing or misinterpreted elements; confidence 0.98 supports reliability.",
+        "issues": []
+      }
+    },
+    {
+      "index": 5,
+      "storage_key": "9709/w16_qp_13/questions/q03.png",
+      "route": "ocr_lane",
+      "lane": "ocr",
+      "gate_critical": false,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": false,
+      "confidence": 0.98,
+      "failure_reason": null,
+      "summary": "3 Showing all necessary working, solve the equation 6 sin² x - 5 cos² x = 2 sin² x + cos² x for 0° ≤ x ≤ 360°. [4]",
+      "warnings": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "3 Showing all necessary working, solve the equation 6 sin² x - 5 cos² x = 2 sin² x + cos² x for 0° ≤ x ≤ 360°. [4]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "6 \\sin^2 x - 5 \\cos^2 x = 2 \\sin^2 x + \\cos^2 x",
+            "0^\\circ \\leqslant x \\leqslant 360^\\circ"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": []
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 3 is bolded and aligned to the left.",
+            "The instruction 'Showing all necessary working' precedes the main task.",
+            "The domain constraint is on a new line or wrapped below the main equation.",
+            "The mark allocation '[4]' is right-aligned."
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "review_bucket",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "incorrect",
+        "comment": "当前结果仅OCR了题目文本和公式，未提供任何解题过程或答案。题目明确要求'Showing all necessary working'（展示所有必要步骤），而该结果完全缺失解题工作，无法满足评分标准[4]的要求，故应退回review bucket。",
+        "issues": [
+          "未提供任何解题步骤或最终答案",
+          "未满足题目中'Showing all necessary working'的要求",
+          "缺少三角恒等式转换、化简、求解及验证过程"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "storage_key": "9709/s18_qp_32/questions/q04.png",
+      "route": "ocr_lane",
+      "lane": "ocr",
+      "gate_critical": false,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": false,
+      "confidence": 0.95,
+      "failure_reason": null,
+      "summary": "4 (i) Show that \\frac{2 \\sin x - \\sin 2x}{1 - \\cos 2x} \\equiv \\frac{\\sin x}{1 + \\cos x}. [4]\n\n(ii) Hence, showing all necessary working, find \\int_{\\frac{1}{3}\\pi}^{\\dots} \\frac{1}{1 - \\cos 2x} dx, giving your answer in the form \\ln k. [4]",
+      "warnings": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "4 (i) Show that \\frac{2 \\sin x - \\sin 2x}{1 - \\cos 2x} \\equiv \\frac{\\sin x}{1 + \\cos x}. [4]\n\n(ii) Hence, showing all necessary working, find \\int_{\\frac{1}{3}\\pi}^{\\dots} \\frac{1}{1 - \\cos 2x} dx, giving your answer in the form \\ln k. [4]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\frac{2 \\sin x - \\sin 2x}{1 - \\cos 2x} \\equiv \\frac{\\sin x}{1 + \\cos x}",
+            "\\int_{\\frac{1}{3}\\pi} \\frac{1}{1 - \\cos 2x} dx",
+            "\\ln k"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'Show that \\\\frac{2 \\\\sin x - \\\\sin 2x}{1 - \\\\cos 2x} \\\\equiv \\\\frac{\\\\sin x}{1 + \\\\cos x}. [4]'}",
+            "{'label': '(ii)', 'text': 'Hence, showing all necessary working, find \\\\int_{\\\\frac{1}{3}\\\\pi} \\\\frac{1}{1 - \\\\cos 2x} dx, giving your answer in the form \\\\ln k. [4]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 4 at top left",
+            "Subquestions labeled (i) and (ii)",
+            "Mark allocation [4] for each subquestion at right margin",
+            "Dotted lines provided for working space below each subquestion"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.95
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR 识别准确，完整保留了题号、小问、公式、积分上下限（虽显示为 \\dots 但实际为 \\frac{1}{3}\\pi）、要求形式 ln k 及分值标注；公式 LaTeX 列表与子问题块结构清晰，符合 CIE A-Level 题目规范；无明显误识别或缺失关键信息。",
+        "issues": []
+      }
+    },
+    {
+      "index": 7,
+      "storage_key": "9709/s24_qp_32/questions/q07.png",
+      "route": "ocr_lane",
+      "lane": "ocr",
+      "gate_critical": false,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": false,
+      "confidence": 0.98,
+      "failure_reason": null,
+      "summary": "(b) Hence find the exact value of ∫_{-1/8 π}^{1/8 π} (cos^4 θ - sin^4 θ + 4 sin^2 θ cos^2 θ) dθ. [6]",
+      "warnings": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "(b) Hence find the exact value of ∫_{-1/8 π}^{1/8 π} (cos^4 θ - sin^4 θ + 4 sin^2 θ cos^2 θ) dθ. [6]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\int_{-\\frac{1}{8}\\pi}^{\\frac{1}{8}\\pi} \\left( \\cos^4 \\theta - \\sin^4 \\theta + 4 \\sin^2 \\theta \\cos^2 \\theta \\right) \\mathrm{d}\\theta"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(b)', 'text': 'Hence find the exact value of ∫_{-1/8 π}^{1/8 π} (cos^4 θ - sin^4 θ + 4 sin^2 θ cos^2 θ) dθ.', 'marks': '[6]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Single subquestion labeled (b)",
+            "Integral expression with limits from -π/8 to π/8",
+            "Trigonometric integrand involving powers of sine and cosine",
+            "Mark allocation [6] at end of line",
+            "Dotted lines above and below for answer space"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR and layout analysis correctly extracted the subquestion (b) with full integral expression, limits, and mark allocation; no issues detected.",
+        "issues": []
+      }
+    },
+    {
+      "index": 8,
+      "storage_key": "9709/w20_qp_32/questions/q09.png",
+      "route": "ocr_lane",
+      "lane": "ocr",
+      "gate_critical": false,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": false,
+      "confidence": 0.98,
+      "failure_reason": null,
+      "summary": "9 Let f(x) = (7x + 18) / ((3x + 2)(x^2 + 4)).\n(a) Express f(x) in partial fractions. [5]\n(b) Hence find the exact value of ∫[0 to 1] f(x) dx. [6]",
+      "warnings": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "9 Let f(x) = (7x + 18) / ((3x + 2)(x^2 + 4)).\n(a) Express f(x) in partial fractions. [5]\n(b) Hence find the exact value of ∫[0 to 1] f(x) dx. [6]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "f(x) = \\frac{7x + 18}{(3x + 2)(x^2 + 4)}",
+            "\\int_{0}^{1} f(x) \\, dx"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Express f(x) in partial fractions.', 'marks': '[5]'}",
+            "{'label': '(b)', 'text': 'Hence find the exact value of ∫[0 to 1] f(x) dx.', 'marks': '[6]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 9 at top left",
+            "Function definition centered after question number",
+            "Subparts (a) and (b) vertically stacked with dotted answer lines below each",
+            "Marks indicated in square brackets on right margin for each subpart",
+            "Integral limits in part (b) are from 0 to 1"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR and layout analysis are accurate; all key elements (function, subparts, marks, integral limits) correctly extracted with high confidence (0.98). No issues detected.",
+        "issues": []
+      }
+    },
+    {
+      "index": 9,
+      "storage_key": "9709/m24_qp_32/questions/q08.png",
+      "route": "ocr_lane",
+      "lane": "ocr",
+      "gate_critical": false,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": false,
+      "confidence": 0.98,
+      "failure_reason": null,
+      "summary": "(a) Express 5 sin x + 2√2 cos(x + 1/4 π) in the form R sin(x + α), where R > 0 and 0 < α < 1/2 π. State the exact value of R and give α correct to 3 decimal places. [4]\n\n(b) Hence solve the equation\n6 sin 1/2 θ + 4√2 cos(1/2 θ + 1/4 π) = 3\nfor -4π < θ < 4π. [5]",
+      "warnings": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "(a) Express 5 sin x + 2√2 cos(x + 1/4 π) in the form R sin(x + α), where R > 0 and 0 < α < 1/2 π. State the exact value of R and give α correct to 3 decimal places. [4]\n\n(b) Hence solve the equation\n6 sin 1/2 θ + 4√2 cos(1/2 θ + 1/4 π) = 3\nfor -4π < θ < 4π. [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "5 \\sin x + 2\\sqrt{2} \\cos\\left(x + \\frac{1}{4} \\pi\\right)",
+            "R \\sin(x + \\alpha)",
+            "R > 0",
+            "0 < \\alpha < \\frac{1}{2} \\pi",
+            "6 \\sin \\frac{1}{2} \\theta + 4\\sqrt{2} \\cos\\left(\\frac{1}{2} \\theta + \\frac{1}{4} \\pi\\right) = 3",
+            "-4\\pi < \\theta < 4\\pi"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Express 5 sin x + 2√2 cos(x + 1/4 π) in the form R sin(x + α), where R > 0 and 0 < α < 1/2 π. State the exact value of R and give α correct to 3 decimal places.', 'marks': '[4]'}",
+            "{'label': '(b)', 'text': 'Hence solve the equation 6 sin 1/2 θ + 4√2 cos(1/2 θ + 1/4 π) = 3 for -4π < θ < 4π.', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Vertical arrangement of subquestions (a) and (b).",
+            "Dotted lines provided below each subquestion for student answers.",
+            "Mark allocations [4] and [5] aligned to the right margin."
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR text and formula LaTeX are accurately extracted; all key components (subquestions, equations, constraints, mark allocations) are correctly parsed. No issues detected.",
+        "issues": []
+      }
+    },
+    {
+      "index": 10,
+      "storage_key": "9709/w22_qp_32/questions/q06.png",
+      "route": "ocr_lane",
+      "lane": "ocr",
+      "gate_critical": false,
+      "diagram_present": false,
+      "requires_review": false,
+      "lazy_attach_original_image": false,
+      "confidence": 0.98,
+      "failure_reason": null,
+      "summary": "6 Relative to the origin O, the points A, B and C have position vectors given by\n\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\ 3 \\\\ 1 \\end{pmatrix}, \\quad \\overrightarrow{OB} = \\begin{pmatrix} 3 \\\\ 1 \\\\ 2 \\end{pmatrix} \\quad \\text{and} \\quad \\overrightarrow{OC} = \\begin{pmatrix} 5 \\\\ 3 \\\\ -2 \\end{pmatrix}.\n\n(a) Using a scalar product, find the cosine of angle BAC. [4]\n\n(b) Hence find the area of triangle ABC. Give your answer in a simplified exact form. [4]",
+      "warnings": [],
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "6 Relative to the origin O, the points A, B and C have position vectors given by\n\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\ 3 \\\\ 1 \\end{pmatrix}, \\quad \\overrightarrow{OB} = \\begin{pmatrix} 3 \\\\ 1 \\\\ 2 \\end{pmatrix} \\quad \\text{and} \\quad \\overrightarrow{OC} = \\begin{pmatrix} 5 \\\\ 3 \\\\ -2 \\end{pmatrix}.\n\n(a) Using a scalar product, find the cosine of angle BAC. [4]\n\n(b) Hence find the area of triangle ABC. Give your answer in a simplified exact form. [4]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\overrightarrow{OA} = \\begin{pmatrix} 1 \\\\ 3 \\\\ 1 \\end{pmatrix}",
+            "\\overrightarrow{OB} = \\begin{pmatrix} 3 \\\\ 1 \\\\ 2 \\end{pmatrix}",
+            "\\overrightarrow{OC} = \\begin{pmatrix} 5 \\\\ 3 \\\\ -2 \\end{pmatrix}"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(a)', 'text': 'Using a scalar product, find the cosine of angle BAC.', 'marks': '[4]'}",
+            "{'label': '(b)', 'text': 'Hence find the area of triangle ABC. Give your answer in a simplified exact form.', 'marks': '[4]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 6 at top left",
+            "Vector definitions centered below intro text",
+            "Subquestions (a) and (b) vertically separated with dotted answer lines",
+            "Mark allocations [4] aligned to right margin for each subquestion"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "review": {
+        "descriptor_readiness": "descriptor_ready",
+        "route_verdict": "appropriate",
+        "review_bucket_verdict": "correct",
+        "comment": "OCR 识别准确完整，包含题号、所有向量定义、两小问及分值标注，布局与原始图像一致，无关键信息缺失或误识别。",
+        "issues": []
+      }
+    }
+  ],
+  "aggregates": {
+    "descriptor_readiness_counts": {
+      "descriptor_ready": 8,
+      "review_bucket": 2
+    },
+    "route_verdict_counts": {
+      "appropriate": 10
+    },
+    "review_bucket_verdict_counts": {
+      "correct": 9,
+      "incorrect": 1
+    },
+    "acceptance_summary": {
+      "accepted_count": 9,
+      "reviewed_count": 10,
+      "acceptance_rate": 0.9
+    },
+    "follow_up_cases": [
+      {
+        "storage_key": "9709/m24_qp_12/questions/q04.png",
+        "route": "review_lane",
+        "comment": "图像中问题4(a)的分子部分被裁切，导致表达式不完整；尽管4(b)完整可见，但其复杂格式（嵌套括号、上标）存在OCR误读风险。当前结果已准确指出关键缺陷并给出合理置信度，符合review_lane标准。",
+        "issues": [
+          "Missing content in 4(a) numerator",
+          "Potential ambiguity in reading the exponent '3' in tan^3 theta without high-resolution verification"
+        ]
+      },
+      {
+        "storage_key": "9709/w16_qp_13/questions/q03.png",
+        "route": "ocr_lane",
+        "comment": "当前结果仅OCR了题目文本和公式，未提供任何解题过程或答案。题目明确要求'Showing all necessary working'（展示所有必要步骤），而该结果完全缺失解题工作，无法满足评分标准[4]的要求，故应退回review bucket。",
+        "issues": [
+          "未提供任何解题步骤或最终答案",
+          "未满足题目中'Showing all necessary working'的要求",
+          "缺少三角恒等式转换、化简、求解及验证过程"
+        ]
+      }
+    ]
+  }
+}

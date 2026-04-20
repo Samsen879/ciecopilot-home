@@ -115,7 +115,7 @@ describe('question-search-repository', () => {
     });
   });
 
-  test('searchQuestionProjection applies text search only to search_text with ilike', async () => {
+  test('searchQuestionProjection applies tokenized text search to search_text with ilike', async () => {
     const db = createQuestionSearchDb({
       data: [],
       count: 0,
@@ -124,7 +124,7 @@ describe('question-search-repository', () => {
 
     await searchQuestionProjection(db, {
       subject_code: '9709',
-      query: 'identity',
+      query: 'identity solve equation',
       page: 1,
       page_size: 10,
     });
@@ -133,6 +133,8 @@ describe('question-search-repository', () => {
       db.state.queries[0].filters.filter((filter) => filter.type === 'ilike'),
     ).toEqual([
       { type: 'ilike', field: 'search_text', pattern: '%identity%' },
+      { type: 'ilike', field: 'search_text', pattern: '%solve%' },
+      { type: 'ilike', field: 'search_text', pattern: '%equation%' },
     ]);
   });
 
@@ -198,7 +200,7 @@ describe('question-search-repository', () => {
 
     await searchQuestionProjection(db, {
       subject_code: '9709',
-      query: 'identity',
+      query: 'identity solve equation',
       unpaged: true,
       page: 2,
       page_size: 2,
@@ -208,6 +210,8 @@ describe('question-search-repository', () => {
       filters: [
         { type: 'eq', field: 'subject_code', value: '9709' },
         { type: 'ilike', field: 'search_text', pattern: '%identity%' },
+        { type: 'ilike', field: 'search_text', pattern: '%solve%' },
+        { type: 'ilike', field: 'search_text', pattern: '%equation%' },
       ],
       range: null,
     }));

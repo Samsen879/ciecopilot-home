@@ -180,4 +180,38 @@ describe('pg-compat-client', () => {
       JSON.stringify({ summary: 'Summary' }),
     ]));
   });
+
+  test('supports delete filters with returning projections for reset flows', async () => {
+    mockQuery.mockResolvedValueOnce({
+      rows: [
+        {
+          question_id: 'question-1',
+          storage_key: '9709/s17_qp_11/questions/q03.png',
+        },
+      ],
+    });
+
+    const client = getPgCompatClient();
+    const result = await client
+      .from('question_bank')
+      .delete()
+      .eq('source_kind', 'paper_question')
+      .in('question_id', ['question-1'])
+      .select('question_id, storage_key');
+
+    expect(result).toEqual({
+      data: [
+        {
+          question_id: 'question-1',
+          storage_key: '9709/s17_qp_11/questions/q03.png',
+        },
+      ],
+      error: null,
+    });
+    expect(mockQuery).toHaveBeenCalledWith(
+      expect.stringContaining('DELETE FROM public."question_bank"'),
+      ['paper_question', 'question-1'],
+    );
+    expect(mockQuery.mock.calls[0][0]).toContain('RETURNING "question_id", "storage_key"');
+  });
 });

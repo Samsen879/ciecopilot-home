@@ -212,13 +212,14 @@ function buildExactValueIntegralCue(summary, formulaText = []) {
 
   for (const formula of formulaText) {
     const normalizedFormula = normalizeMathSearchText(formula);
-    const match = normalizedFormula.match(/(?:^|=\s*)integral\s+(.+?)\s+d\s+[a-z]+\b/iu);
-    if (!match?.[1]) {
+    const match = normalizedFormula.match(
+      /(?:^|=\s*)integral\s+(?:([0-9pi./()+-]+)\s+([0-9pi./()+-]+)\s+)?(.+?)\s+d\s+[a-z]+\b/iu,
+    );
+    if (!match?.[3]) {
       continue;
     }
 
-    const integrand = normalizeMathSearchText(match[1])
-      .replace(/\b0\s+pi\s*\/\s*3\b/giu, ' ')
+    const integrand = normalizeMathSearchText(match[3])
       .replace(/\s+/gu, ' ')
       .trim();
     if (integrand) {

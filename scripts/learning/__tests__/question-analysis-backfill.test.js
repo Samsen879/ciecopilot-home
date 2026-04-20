@@ -789,6 +789,76 @@ describe('question-analysis backfill', () => {
     ).toEqual(expect.stringContaining('Find the exact value integral 6 sin squared theta'));
   });
 
+  test('paper_question exact-value integral cue strips arbitrary leading bounds from the formula integrand', async () => {
+    const { client, state } = createBackfillClient();
+
+    await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-paper-integral-generic-bounds',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/mock_qp_33/questions/q05.png',
+          q_number: 5,
+          primary_topic_id: 'topic-integration',
+          paper_scope: {
+            year: 2018,
+            session: 'w',
+            paper: 3,
+            q_number: 5,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/mock_qp_33/questions/q05.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p3.integration',
+            },
+            evidence: {
+              ocr_text: 'Find the exact value of ∫₁² 4x cos x dx. [5]',
+              formula_latex_list: [
+                '\\int_{1}^{2} 4x \\cos x \\, dx',
+              ],
+              subquestion_blocks: [],
+              layout_hints: ['single_column_prompt'],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'review_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['route_requires_original_image', 'gate_critical'],
+            original_image_asset: null,
+            review_posture: {
+              requires_review: false,
+              gate_critical: true,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/mock_qp_33/questions/q05.png',
+            q_number: 5,
+            primary_topic_path: '9709.p3.integration',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(
+      state.questions.get('question-paper-integral-generic-bounds').provenance_summary.search_text,
+    ).toEqual(expect.stringContaining('Find the exact value integral 4x cos x'));
+    expect(
+      state.questions.get('question-paper-integral-generic-bounds').provenance_summary.search_text,
+    ).not.toEqual(expect.stringContaining('Find the exact value integral 1 2 4x cos x'));
+  });
+
   test('skips questions that already have an active snapshot unless force is enabled', async () => {
     const { client } = createBackfillClient();
 

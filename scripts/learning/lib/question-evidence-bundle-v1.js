@@ -70,6 +70,16 @@ function surfaceFlagsUnknown(item) {
   return SURFACE_FLAGS.some((field) => item?.[field] === null || typeof item?.[field] === 'undefined');
 }
 
+function shouldUseDiagramLaneForVerifiedGateCriticalRow(manifestItem) {
+  return manifestItem.gate_critical === true
+    && manifestItem.requires_review === false
+    && manifestItem.route_hint === 'diagram_lane'
+    && manifestItem.diagram_present === true
+    && manifestItem.formula_dense === false
+    && manifestItem.table_heavy === false
+    && manifestItem.surface_evidence_status === 'verified_primary_asset';
+}
+
 function buildRouteDecision(route, decisionReasons, contract) {
   const routeContract = contract.routes?.[route];
   const runtime = contract.runtime_freeze ?? {};
@@ -107,6 +117,10 @@ export function resolveQuestionEvidenceRoute(manifestItem = {}, contract = loadR
   const unknownSurface = surfaceFlagsUnknown(manifestItem);
   if (unknownSurface) {
     reasons.push('unknown_surface_flags');
+  }
+
+  if (shouldUseDiagramLaneForVerifiedGateCriticalRow(manifestItem)) {
+    return buildRouteDecision('diagram_lane', [...reasons, 'diagram_present'], contract);
   }
 
   if (manifestItem.gate_critical) {

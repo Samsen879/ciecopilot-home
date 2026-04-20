@@ -86,31 +86,23 @@
         "true": 9
       },
       "descriptor_readiness": {
-        "failed": 10,
-        "review_bucket": 20
+        "descriptor_candidate": 7,
+        "failed": 1,
+        "review_bucket": 22
       },
       "summary_presence": {
-        "present": 0,
-        "missing": 30
+        "present": 9,
+        "missing": 21
       },
       "descriptor_coverage": {
         "required_rows": 30,
-        "covered_rows": 0,
-        "coverage_rate": 0.0
+        "covered_rows": 9,
+        "coverage_rate": 0.3
       },
       "unexpected_review_fallbacks": {},
       "route_mismatch_counts": {},
       "failure_reason_counts": {
-        "<3>WSL (1093632 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093636 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093642 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093646 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093663 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093672 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093676 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093680 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093684 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1,
-        "<3>WSL (1093688 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1": 1
+        "Windows-host Qwen provider did not return a valid JSON object": 1
       }
     },
     "rows": [
@@ -133,14 +125,58 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": false,
-        "summary": null,
-        "warnings": [
-          "provider_failure"
+        "summary": "(i) Prove the identity \\frac{1}{\\sin \\theta} + \\frac{1}{1 + \\cos \\theta} \\equiv \\frac{1}{\\sin \\theta}. [3]\n\n(ii) Hence solve the equation \\frac{1}{\\sin \\theta} + \\frac{1}{1 + \\cos \\theta} = \\frac{1}{\\cos \\theta} for 0^\\circ \\leqslant \\theta \\leqslant 360^\\circ. [5]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "(i) Prove the identity \\frac{1}{\\sin \\theta} + \\frac{1}{1 + \\cos \\theta} \\equiv \\frac{1}{\\sin \\theta}. [3]\n\n(ii) Hence solve the equation \\frac{1}{\\sin \\theta} + \\frac{1}{1 + \\cos \\theta} = \\frac{1}{\\cos \\theta} for 0^\\circ \\leqslant \\theta \\leqslant 360^\\circ. [5]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\frac{1}{\\sin \\theta} + \\frac{1}{1 + \\cos \\theta} \\equiv \\frac{1}{\\sin \\theta}",
+              "\\frac{1}{\\sin \\theta} + \\frac{1}{1 + \\cos \\theta} = \\frac{1}{\\cos \\theta}",
+              "0^\\circ \\leqslant \\theta \\leqslant 360^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(i)', 'text': 'Prove the identity \\\\frac{1}{\\\\sin \\\\theta} + \\\\frac{1}{1 + \\\\cos \\\\theta} \\\\equiv \\\\frac{1}{\\\\sin \\\\theta}. [3]'}",
+              "{'label': '(ii)', 'text': 'Hence solve the equation \\\\frac{1}{\\\\sin \\\\theta} + \\\\frac{1}{1 + \\\\cos \\\\theta} = \\\\frac{1}{\\\\cos \\\\theta} for 0^\\\\circ \\\\leqslant \\\\theta \\\\leqslant 360^\\\\circ. [5]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Two-part question with subparts (i) and (ii)",
+              "Each part has a mark allocation in square brackets: [3] and [5]",
+              "Dotted lines provided for working space after each subpart",
+              "Mathematical identities and equations are centrally aligned within text flow",
+              "Angle range specified using degree symbol and inequality"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093632 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
       },
       {
         "storage_key": "9709/s23_qp_11/questions/q01.png",
@@ -161,14 +197,52 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": false,
-        "summary": null,
-        "warnings": [
-          "provider_failure"
+        "summary": "1 Solve the equation 4 sin θ + tan θ = 0 for 0° < θ < 180°. [3]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 Solve the equation 4 sin θ + tan θ = 0 for 0° < θ < 180°. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "4 \\sin \\theta + \\tan \\theta = 0",
+              "0^\\circ < \\theta < 180^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": []
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number '1' on the left.",
+              "Marks '[3]' on the right.",
+              "Dotted lines for answer space below."
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093636 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
       },
       {
         "storage_key": "9709/w16_qp_12/questions/q02.png",
@@ -189,14 +263,56 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": false,
-        "summary": null,
-        "warnings": [
-          "provider_failure"
+        "summary": "2 (i) Express the equation sin 2x + 3 cos 2x = 3(sin 2x - cos 2x) in the form tan 2x = k, where k is a constant. [2]\n(ii) Hence solve the equation for -90° ≤ x ≤ 90°. [3]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 (i) Express the equation sin 2x + 3 cos 2x = 3(sin 2x - cos 2x) in the form tan 2x = k, where k is a constant. [2]\n(ii) Hence solve the equation for -90° ≤ x ≤ 90°. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\sin 2x + 3 \\cos 2x = 3(\\sin 2x - \\cos 2x)",
+              "\\tan 2x = k",
+              "-90^\\circ \\leqslant x \\leqslant 90^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(i)', 'text': 'Express the equation sin 2x + 3 cos 2x = 3(sin 2x - cos 2x) in the form tan 2x = k, where k is a constant.', 'marks': '[2]'}",
+              "{'label': '(ii)', 'text': 'Hence solve the equation for -90° ≤ x ≤ 90°.', 'marks': '[3]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 2 on the left margin",
+              "Subquestions labeled with Roman numerals (i) and (ii)",
+              "Mark allocations [2] and [3] aligned to the right"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093642 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
       },
       {
         "storage_key": "9709/w23_qp_11/questions/q05.png",
@@ -223,7 +339,7 @@
           "provider_failure"
         ],
         "evidence": [],
-        "failure_reason": "<3>WSL (1093646 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
+        "failure_reason": "Windows-host Qwen provider did not return a valid JSON object",
         "confidence": 0.0,
         "descriptor_readiness": "failed"
       },
@@ -402,14 +518,47 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": false,
-        "summary": null,
-        "warnings": [
-          "provider_failure"
+        "summary": "3 Find the exact value of ∫₀^(½π) x² sin 2x dx. [5]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 Find the exact value of ∫₀^(½π) x² sin 2x dx. [5]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\int_{0}^{\\frac{1}{2}\\pi} x^2 \\sin 2x \\, dx"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": []
+          },
+          {
+            "field": "layout_hints",
+            "value": []
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093663 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
       },
       {
         "storage_key": "9709/s17_qp_33/questions/q04.png",
@@ -430,15 +579,69 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": true,
-        "summary": null,
+        "summary": "Find the exact value of ∫₀^(π/3) 6 sin²θ dθ. [4]",
         "warnings": [
-          "lazy_attach_original_image",
-          "provider_failure"
+          "lazy_attach_original_image"
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093672 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Find the exact value of ∫₀^(π/3) 6 sin²θ dθ. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\int_{0}^{\\frac{\\pi}{3}} 6 \\sin^2 \\theta \\, d\\theta"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": []
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "dotted_lines_for_working",
+              "question_header",
+              "mark_allocation_bracket"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 1.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 1.0,
+        "descriptor_readiness": "review_bucket"
       },
       {
         "storage_key": "9709/s18_qp_31/questions/q05.png",
@@ -459,14 +662,58 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": false,
-        "summary": null,
-        "warnings": [
-          "provider_failure"
+        "summary": "5 Let I = \\int_{\\frac{1}{4}}^{\\frac{3}{4}} \\sqrt{\\left(\\frac{x}{1-x}\\right)} dx.\n\n(i) Using the substitution x = \\cos^2 \\theta, show that I = \\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} 2 \\cos^2 \\theta d\\theta. [4]\n\n(ii) Hence find the exact value of I. [4]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 Let I = \\int_{\\frac{1}{4}}^{\\frac{3}{4}} \\sqrt{\\left(\\frac{x}{1-x}\\right)} dx.\n\n(i) Using the substitution x = \\cos^2 \\theta, show that I = \\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} 2 \\cos^2 \\theta d\\theta. [4]\n\n(ii) Hence find the exact value of I. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "I = \\int_{\\frac{1}{4}}^{\\frac{3}{4}} \\sqrt{\\left(\\frac{x}{1-x}\\right)} dx",
+              "x = \\cos^2 \\theta",
+              "I = \\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} 2 \\cos^2 \\theta d\\theta"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(i)', 'text': 'Using the substitution x = \\\\cos^2 \\\\theta, show that I = \\\\int_{\\\\frac{1}{6}\\\\pi}^{\\\\frac{1}{3}\\\\pi} 2 \\\\cos^2 \\\\theta d\\\\theta.', 'marks': '[4]'}",
+              "{'label': '(ii)', 'text': 'Hence find the exact value of I.', 'marks': '[4]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 5 is at the top left.",
+              "The main integral definition is on the first line.",
+              "Subquestion (i) follows with dotted lines for working space.",
+              "Subquestion (ii) follows further down with dotted lines for working space.",
+              "Mark allocations [4] are aligned to the right margin for each subquestion."
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093676 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
       },
       {
         "storage_key": "9709/s18_qp_32/questions/q04.png",
@@ -669,14 +916,57 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": false,
-        "summary": null,
-        "warnings": [
-          "provider_failure"
+        "summary": "3 (i) Given that sin(θ + 45°) + 2 cos(θ + 60°) = 3 cos θ, find the exact value of tan θ in a form involving surds. You need not simplify your answer. [4]\n\n(ii) Hence solve the equation sin(θ + 45°) + 2 cos(θ + 60°) = 3 cos θ for 0° < θ < 360°. [2]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 (i) Given that sin(θ + 45°) + 2 cos(θ + 60°) = 3 cos θ, find the exact value of tan θ in a form involving surds. You need not simplify your answer. [4]\n\n(ii) Hence solve the equation sin(θ + 45°) + 2 cos(θ + 60°) = 3 cos θ for 0° < θ < 360°. [2]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\sin(\\theta + 45^\\circ) + 2 \\cos(\\theta + 60^\\circ) = 3 \\cos \\theta",
+              "\\tan \\theta",
+              "0^\\circ < \\theta < 360^\\circ"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(i)', 'text': 'Given that sin(θ + 45°) + 2 cos(θ + 60°) = 3 cos θ, find the exact value of tan θ in a form involving surds. You need not simplify your answer.', 'marks': '[4]'}",
+              "{'label': '(ii)', 'text': 'Hence solve the equation sin(θ + 45°) + 2 cos(θ + 60°) = 3 cos θ for 0° < θ < 360°.', 'marks': '[2]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 3 at top left",
+              "Subquestions labeled (i) and (ii)",
+              "Mark allocations [4] and [2] aligned to the right",
+              "Dotted lines provided for working space below each subquestion"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093680 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
       },
       {
         "storage_key": "9709/w21_qp_32/questions/q06.png",
@@ -697,14 +987,58 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": false,
-        "summary": null,
-        "warnings": [
-          "provider_failure"
+        "summary": "6 (a) Using the expansions of sin(3x + 2x) and sin(3x - 2x), show that\n1/2(sin 5x + sin x) ≡ sin 3x cos 2x. [3]\n\n(b) Hence show that ∫₀^(π/4) sin 3x cos 2x dx = 1/5(3 - √2). [3]",
+        "warnings": [],
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 (a) Using the expansions of sin(3x + 2x) and sin(3x - 2x), show that\n1/2(sin 5x + sin x) ≡ sin 3x cos 2x. [3]\n\n(b) Hence show that ∫₀^(π/4) sin 3x cos 2x dx = 1/5(3 - √2). [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\sin(3x + 2x)",
+              "\\sin(3x - 2x)",
+              "\\frac{1}{2}(\\sin 5x + \\sin x) \\equiv \\sin 3x \\cos 2x",
+              "\\int_{0}^{\\frac{\\pi}{4}} \\sin 3x \\cos 2x \\, \\mathrm{d}x = \\frac{1}{5}(3 - \\sqrt{2})"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(a)', 'text': 'Using the expansions of sin(3x + 2x) and sin(3x - 2x), show that 1/2(sin 5x + sin x) ≡ sin 3x cos 2x.', 'marks': '[3]'}",
+              "{'label': '(b)', 'text': 'Hence show that ∫₀^(π/4) sin 3x cos 2x dx = 1/5(3 - √2).', 'marks': '[3]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 6 at top left",
+              "Subquestions (a) and (b) vertically stacked",
+              "Mark allocations [3] aligned to the right margin for each subquestion",
+              "Dotted lines provided below each subquestion for working space"
+            ]
+          },
+          {
+            "field": "symbol_inventory",
+            "value": []
+          },
+          {
+            "field": "table_blocks",
+            "value": []
+          },
+          {
+            "field": "line_boxes",
+            "value": []
+          },
+          {
+            "field": "ocr_confidence",
+            "value": 0.98
+          }
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093684 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "failure_reason": null,
+        "confidence": 0.98,
+        "descriptor_readiness": "descriptor_candidate"
       },
       {
         "storage_key": "9709/m20_qp_32/questions/q05.png",
@@ -725,15 +1059,77 @@
         "diagram_present": false,
         "requires_review": false,
         "lazy_attach_original_image": true,
-        "summary": null,
+        "summary": "5 (a) Show that \\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 2 \\cot 2x. [4]\n\n(b) Hence solve the equation \\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 4, for 0 < x < \\pi. [3]",
         "warnings": [
-          "lazy_attach_original_image",
-          "provider_failure"
+          "lazy_attach_original_image"
         ],
-        "evidence": [],
-        "failure_reason": "<3>WSL (1093688 - ) ERROR: UtilBindVsockAnyPort:307: socket failed 1",
-        "confidence": 0.0,
-        "descriptor_readiness": "failed"
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 (a) Show that \\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 2 \\cot 2x. [4]\n\n(b) Hence solve the equation \\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 4, for 0 < x < \\pi. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": [
+              "\\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 2 \\cot 2x",
+              "\\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 4",
+              "0 < x < \\pi"
+            ]
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              "{'label': '(a)', 'text': 'Show that \\\\frac{\\\\cos 3x}{\\\\sin x} + \\\\frac{\\\\sin 3x}{\\\\cos x} = 2 \\\\cot 2x.', 'marks': '[4]'}",
+              "{'label': '(b)', 'text': 'Hence solve the equation \\\\frac{\\\\cos 3x}{\\\\sin x} + \\\\frac{\\\\sin 3x}{\\\\cos x} = 4, for 0 < x < \\\\pi.', 'marks': '[3]'}"
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "Question number 5 at top left",
+              "Subquestions (a) and (b) vertically stacked",
+              "Mark allocations [4] and [3] aligned to the right",
+              "Dotted lines provided for student working space below each subquestion"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Standard exam paper layout with question text at the top of sections and ample whitespace/dotted lines below for answers."
+            ]
+          },
+          {
+            "field": "requires_review",
+            "value": false
+          },
+          {
+            "field": "review_reasons",
+            "value": []
+          },
+          {
+            "field": "ambiguity_flags",
+            "value": []
+          },
+          {
+            "field": "review_summary",
+            "value": ""
+          },
+          {
+            "field": "review_confidence",
+            "value": 1.0
+          }
+        ],
+        "failure_reason": null,
+        "confidence": 1.0,
+        "descriptor_readiness": "review_bucket"
       },
       {
         "storage_key": "9709/m24_qp_32/questions/q08.png",
@@ -919,18 +1315,18 @@
       }
     ],
     "thresholds": {
-      "provider_failures": 10,
+      "provider_failures": 1,
       "unexpected_review_fallbacks": {
         "clean": 0,
         "medium": 0
       },
-      "descriptor_coverage": 0.0,
+      "descriptor_coverage": 0.3,
       "full_review_acceptance": null,
       "threshold_verdicts": [
         {
           "name": "provider_failures",
           "pass": false,
-          "actual": 10,
+          "actual": 1,
           "expected_max": 0
         },
         {

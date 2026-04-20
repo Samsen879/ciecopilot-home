@@ -171,6 +171,49 @@ export function buildBrowserClosedLoopFixture() {
   };
 }
 
+export function buildReleasedScopeRepairGuardInput() {
+  return {
+    user_id: 'student-9709-release-gate',
+    question_id: 'question-9709-integration-application-guard',
+    question_context: {
+      family_id: '9709.integration_techniques',
+      question_type_id: '9709.integration.application',
+      question_type_release_state: 'released',
+      primary_topic_id: 'topic-9709-integration-application',
+      primary_topic_path: '9709/integration/application',
+      classification_confidence: 0.78,
+      candidate_rubric_refs: [
+        {
+          kind: 'rubric_release',
+          rubric_version_id: 'integration-v1',
+          release_state: 'released',
+        },
+      ],
+    },
+    source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-9709-integration-application-guard' },
+    source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-9709-integration-application-guard' },
+    decisions: [
+      {
+        awarded: true,
+        awarded_marks: 1,
+        alignment_confidence: 0.74,
+      },
+    ],
+    marking_result: {
+      marking_summary: {
+        coverage_scope: 'question',
+        local_signal_only: false,
+        conservative_part_mapping: true,
+        ambiguous_rubric_point_result_count: 1,
+      },
+    },
+    uncertainty_validated: true,
+    repair_target_topic_id: 'topic-9709-integration-application',
+    repair_target_topic_path: '9709/integration/application',
+    repair_target_question_type_id: '9709.integration.application',
+  };
+}
+
 export function seedBrowserClosedLoopFixture({
   rootDir = PROJECT_ROOT,
   outPath = DEFAULT_BROWSER_CLOSED_LOOP_FIXTURE_PATH,

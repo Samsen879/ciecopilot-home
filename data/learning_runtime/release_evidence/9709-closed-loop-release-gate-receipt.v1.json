@@ -1,6 +1,6 @@
 {
   "schema_version": "learning_runtime_closed_loop_release_gate_receipt_v1",
-  "generated_at": "2026-04-18T13:41:58.839Z",
+  "generated_at": "2026-04-21T00:59:54.806Z",
   "scenario_id": "9709.gold.closed_loop.release_gate.v1",
   "subject_code": "9709",
   "status": "pass",
@@ -67,7 +67,7 @@
         },
         "trigger_type": "immediate_repair",
         "mode": "trap_fix",
-        "due_at": "2026-04-18T13:41:58.827Z",
+        "due_at": "2026-04-21T00:59:54.792Z",
         "priority": "high",
         "estimated_minutes": 15,
         "success_criteria": {
@@ -114,7 +114,7 @@
                 "score": 0
               }
             },
-            "immediate_repair_max_deferral_at": "2026-04-19T01:41:58.827Z"
+            "immediate_repair_max_deferral_at": "2026-04-21T12:59:54.792Z"
           },
           "explainability": {
             "posture": "released_scoring_repair",
@@ -198,7 +198,7 @@
               "score": 0
             }
           },
-          "immediate_repair_max_deferral_at": "2026-04-19T01:41:58.827Z"
+          "immediate_repair_max_deferral_at": "2026-04-21T12:59:54.792Z"
         },
         "scheduler_state": {
           "value": "escalated",
@@ -260,7 +260,7 @@
           "freshness": {
             "route": "immediate_repair",
             "bucket": "fresh",
-            "due_at": "2026-04-18T13:41:58.827Z",
+            "due_at": "2026-04-21T00:59:54.792Z",
             "scheduler_state": "escalated",
             "reason_codes": [
               "fresh_immediate_repair"
@@ -303,7 +303,7 @@
           "artifact_state": "verified",
           "slot_key": "common_traps",
           "target_question_type_id": "9709.trigonometry.equations",
-          "updated_at": "2026-04-18T13:41:58.835Z"
+          "updated_at": "2026-04-21T00:59:54.800Z"
         },
         "linked_references": [],
         "updated_at": "2026-04-18T09:08:00.000Z"
@@ -314,6 +314,77 @@
           "review_task_id": "review-task-1"
         }
       ]
+    }
+  },
+  "released_scope_repair_guard": {
+    "status": "pass",
+    "release_scope_status": "released_scoring",
+    "authoritative_scoring_allowed": true,
+    "fallback_reason_code": null,
+    "review_task_count": 1,
+    "first_review_task": {
+      "review_task_id": "review-task-released-scope-guard",
+      "target_kind": "question_type",
+      "target_topic_id": "topic-9709-integration-application",
+      "target_question_type_id": "9709.integration.application",
+      "status": "open",
+      "success_criteria": {
+        "posture": "released_scoring_repair",
+        "fallback_reason_code": null
+      }
+    },
+    "requested_review_task": {
+      "user_id": "student-9709-release-gate",
+      "question_id": "question-9709-integration-application-guard",
+      "question_context": {
+        "family_id": "9709.integration_techniques",
+        "question_type_id": "9709.integration.application",
+        "question_type_release_state": "released",
+        "primary_topic_id": "topic-9709-integration-application",
+        "primary_topic_path": "9709/integration/application",
+        "classification_confidence": 0.89,
+        "candidate_rubric_refs": [
+          {
+            "kind": "rubric_release",
+            "rubric_set_id": "9709.integration.application",
+            "rubric_version_id": "integration-application-v1",
+            "release_state": "released"
+          }
+        ]
+      },
+      "source_attempt_ref": {
+        "kind": "attempt",
+        "attempt_id": "attempt-9709-integration-application-guard"
+      },
+      "source_mark_run_ref": {
+        "kind": "mark_run",
+        "mark_run_id": "mark-run-9709-integration-application-guard"
+      },
+      "decisions": [
+        {
+          "awarded": true,
+          "awarded_marks": 1,
+          "alignment_confidence": 0.74
+        }
+      ],
+      "marking_result": {
+        "marking_summary": {
+          "coverage_scope": "question",
+          "local_signal_only": false,
+          "conservative_part_mapping": true,
+          "ambiguous_rubric_point_result_count": 1
+        }
+      },
+      "uncertainty_validated": true,
+      "repair_target_topic_id": "topic-9709-integration-application",
+      "repair_target_topic_path": "9709/integration/application",
+      "repair_target_question_type_id": "9709.integration.application",
+      "subject_code": "9709",
+      "authoritative_scoring_allowed": true,
+      "fallback_reason_code": null,
+      "runtime_authority_posture": "default_durable",
+      "runtime_authority_reason_code": null,
+      "question_source_kind": null
     }
   },
   "degraded_path": {

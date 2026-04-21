@@ -153,6 +153,8 @@ Observed result:
 4. Gate runner on the explicit integration baseline
 
 ```bash
+COMMON_NODE_MODULES="$(dirname "$(git rev-parse --git-common-dir)")/node_modules" \
+NODE_PATH="$COMMON_NODE_MODULES" \
 node scripts/learning/run_closed_loop_release_gate.js \
   --out-json data/learning_runtime/release_evidence/9709-closed-loop-release-gate-receipt.v1.json \
   --out-md docs/reports/2026-04-21-9709-closed-loop-release-gate.md
@@ -161,6 +163,7 @@ node scripts/learning/run_closed_loop_release_gate.js \
 Observed result:
 
 - command exited `0`
+- verified from an AO-managed checkout using `COMMON_NODE_MODULES="$(dirname "$(git rev-parse --git-common-dir)")/node_modules"`
 - wrote `data/learning_runtime/release_evidence/9709-closed-loop-release-gate-receipt.v1.json`
 - wrote `docs/reports/2026-04-21-9709-closed-loop-release-gate.md`
 - receipt recorded:

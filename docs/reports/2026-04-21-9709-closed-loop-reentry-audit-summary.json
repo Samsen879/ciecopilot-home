@@ -168,9 +168,22 @@
     },
     {
       "command": "node scripts/learning/run_closed_loop_release_gate.js --out-json tmp/closed-loop-release-gate.audit.json --out-md tmp/closed-loop-release-gate.audit.md",
+      "outcome": "fail",
+      "error_code": "MODULE_NOT_FOUND",
+      "error_excerpt": "Cannot find module 'ajv'",
+      "notes": [
+        "Clean AO worktree invocation is not rerunnable without external module-resolution setup.",
+        "The failing require stack starts at api/learning/lib/marking/contracts/p3-rubric-validator.js."
+      ]
+    },
+    {
+      "command": "NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules node scripts/learning/run_closed_loop_release_gate.js --out-json tmp/closed-loop-release-gate.audit.json --out-md tmp/closed-loop-release-gate.audit.md",
       "outcome": "pass",
       "receipt_status": "pass",
-      "release_ready": true
+      "release_ready": true,
+      "notes": [
+        "This is the rerunnable invocation actually used for the audit because the AO worktree does not contain a local node_modules tree."
+      ]
     }
   ],
   "reentry_sequence": [

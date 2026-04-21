@@ -68,7 +68,9 @@ Later `9709` work demonstrably shifted into question-search / Wave A execution, 
 
 ### Environment note
 
-The AO worktree does not contain a local `node_modules`, so the worktree-local `npm test` bootstrap path fails before product code loads. To avoid confusing environment bootstrap with product truth, the fresh verification below reused the shared root install at `/home/samsen/code/ciecopilot-home/node_modules`, matching the pattern already used in [`docs/reports/2026-04-06-learning-runtime-closeout-matrix.md`](./2026-04-06-learning-runtime-closeout-matrix.md).
+The AO worktree does not contain a local `node_modules`, so worktree-local commands that rely on repo dependencies can fail before product code loads. To avoid confusing dependency bootstrap with product truth, the fresh verification below reused the shared root install at `/home/samsen/code/ciecopilot-home/node_modules`, matching the pattern already used in [`docs/reports/2026-04-06-learning-runtime-closeout-matrix.md`](./2026-04-06-learning-runtime-closeout-matrix.md).
+
+That dependency-resolution caveat applies not only to the Jest invocations below, but also to the closed-loop gate runner itself.
 
 ### Command outcomes
 
@@ -160,9 +162,23 @@ Outcome: `PASS`
 - `1` suite passed
 - `4` tests passed
 
-6. Closed-loop release gate runner
+6. Closed-loop release gate runner, clean worktree-local invocation
 
 ```bash
+node scripts/learning/run_closed_loop_release_gate.js \
+  --out-json tmp/closed-loop-release-gate.audit.json \
+  --out-md tmp/closed-loop-release-gate.audit.md
+```
+
+Outcome: `FAIL`
+
+- blocked by `MODULE_NOT_FOUND` for `ajv`
+- failing require stack starts at [`api/learning/lib/marking/contracts/p3-rubric-validator.js`](../../api/learning/lib/marking/contracts/p3-rubric-validator.js)
+
+7. Closed-loop release gate runner, corrected shared-install invocation
+
+```bash
+NODE_PATH=/home/samsen/code/ciecopilot-home/node_modules \
 node scripts/learning/run_closed_loop_release_gate.js \
   --out-json tmp/closed-loop-release-gate.audit.json \
   --out-md tmp/closed-loop-release-gate.audit.md
@@ -176,7 +192,7 @@ Outcome: `PASS`
 - receipt recorded `release_ready = true`
 - the generated markdown repeats the existing checked-in caveat that the proof runs against an in-memory runtime harness, not a live DB-backed line
 
-7. Explicit missing-file checks
+8. Explicit missing-file checks
 
 ```bash
 test -f api/learning/lib/orchestration/learning-runtime-state-machine.js && echo present || echo missing

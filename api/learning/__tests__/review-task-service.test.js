@@ -395,11 +395,12 @@ describe('learning orchestration', () => {
           question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709/integration/source',
-          classification_confidence: 0.78,
+          classification_confidence: 0.89,
           candidate_rubric_refs: [
             {
               kind: 'rubric_release',
-              rubric_version_id: 'integration-v1',
+              rubric_set_id: '9709.integration.application',
+              rubric_version_id: 'integration-application-v1',
               release_state: 'released',
             },
           ],
@@ -467,11 +468,12 @@ describe('learning orchestration', () => {
           question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709/integration/source',
-          classification_confidence: 0.78,
+          classification_confidence: 0.89,
           candidate_rubric_refs: [
             {
               kind: 'rubric_release',
-              rubric_version_id: 'integration-v1',
+              rubric_set_id: '9709.integration.application',
+              rubric_version_id: 'integration-application-v1',
               release_state: 'released',
             },
           ],
@@ -542,11 +544,12 @@ describe('learning orchestration', () => {
           question_type_release_state: 'released',
           primary_topic_id: 'source-topic',
           primary_topic_path: '9709/integration/source',
-          classification_confidence: 0.78,
+          classification_confidence: 0.89,
           candidate_rubric_refs: [
             {
               kind: 'rubric_release',
-              rubric_version_id: 'integration-v1',
+              rubric_set_id: '9709.integration.application',
+              rubric_version_id: 'integration-application-v1',
               release_state: 'released',
             },
           ],

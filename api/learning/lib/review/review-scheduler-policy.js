@@ -2,6 +2,10 @@ import {
   deriveConfidenceBand,
   normalizeConfidenceBand,
 } from '../question-analysis/low-confidence-posture.js';
+import {
+  buildLearningRuntimeBlockedState,
+  buildLearningRuntimeReviewTaskState,
+} from '../orchestration/learning-runtime-state-machine.js';
 
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
 const HIGH_PRIORITY_VALUES = new Set(['high', 'urgent']);
@@ -310,38 +314,6 @@ function compareTaskRank(left, right) {
   }
 
   return String(left?.created_at ?? '').localeCompare(String(right?.created_at ?? ''));
-}
-
-function summarizeReasonForState(state, route) {
-  if (state === 'escalated' && route === 'regression_recovery') {
-    return buildReason(
-      'regression_recovery_due',
-      'Escalated because repeated regression needs immediate recovery work.',
-    );
-  }
-
-  if (state === 'escalated') {
-    return buildReason(
-      'fresh_immediate_repair',
-      'Fresh repair evidence should be retried before it is spaced.',
-    );
-  }
-
-  if (state === 'due') {
-    return buildReason(
-      'due_window_open',
-      'Due because the current review window has opened.',
-    );
-  }
-
-  if (state === 'deferred') {
-    return buildReason(
-      'freshness_window',
-      'Deferred until the next spaced-review freshness window opens.',
-    );
-  }
-
-  return null;
 }
 
 function buildStoredPolicy(policy = {}, fallbackReasonCode = null) {
@@ -731,64 +703,7 @@ export function buildReviewTaskSchedulerSeed({
 }
 
 export function buildSchedulerStateFromTask(task = {}, options = {}) {
-  const nowDate = parseTimestamp(options.now) || new Date();
-  const route = normalizeRoute(task);
-  const dueAtDate = parseTimestamp(task?.due_at);
-
-  if (!ACTIVE_REVIEW_TASK_STATUSES.has(task?.status)) {
-    return {
-      value: task?.status === 'completed' ? 'completed' : 'open',
-      label: task?.status === 'completed' ? 'Completed' : 'Open',
-      tone: task?.status === 'completed' ? 'success' : 'neutral',
-      reason_code: null,
-      reason_summary: null,
-    };
-  }
-
-  if (
-    (route === 'immediate_repair' || route === 'regression_recovery')
-    && dueAtDate
-    && dueAtDate.getTime() <= nowDate.getTime()
-  ) {
-    const reason = summarizeReasonForState('escalated', route);
-    return {
-      value: 'escalated',
-      label: 'Escalated',
-      tone: 'danger',
-      reason_code: reason.code,
-      reason_summary: reason.summary,
-    };
-  }
-
-  if (dueAtDate && dueAtDate.getTime() <= nowDate.getTime()) {
-    const reason = summarizeReasonForState('due', route);
-    return {
-      value: 'due',
-      label: 'Due',
-      tone: 'warning',
-      reason_code: reason.code,
-      reason_summary: reason.summary,
-    };
-  }
-
-  if (dueAtDate) {
-    const reason = summarizeReasonForState('deferred', route);
-    return {
-      value: 'deferred',
-      label: 'Deferred',
-      tone: 'neutral',
-      reason_code: reason.code,
-      reason_summary: reason.summary,
-    };
-  }
-
-  return {
-    value: 'open',
-    label: 'Open',
-    tone: 'neutral',
-    reason_code: null,
-    reason_summary: null,
-  };
+  return buildLearningRuntimeReviewTaskState(task, options);
 }
 
 export function summarizeReviewQueueItems(items = []) {
@@ -856,18 +771,11 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
       && primaryHighPriorityTaskId
       && primaryHighPriorityTaskId !== task.review_task_id
     ) {
-      task.scheduler_state = {
-        value: 'blocked',
-        label: 'Blocked',
-        tone: 'danger',
-        reason_code: 'high_priority_type_limit',
-        reason_summary:
-          'Blocked because this question type already has a stronger high-priority repair task.',
-      };
+      task.scheduler_state = buildLearningRuntimeBlockedState('high_priority_type_limit');
       task.scheduler_reasons = [
         buildReason(
-          'high_priority_type_limit',
-          'Blocked because this question type already has a stronger high-priority repair task.',
+          task.scheduler_state.reason_code,
+          task.scheduler_state.reason_summary,
         ),
       ];
       continue;
@@ -892,18 +800,11 @@ export function deriveReviewQueueProjection(tasks = [], options = {}) {
     }
 
     if (!recommendedIds.has(task.review_task_id)) {
-      task.scheduler_state = {
-        value: 'blocked',
-        label: 'Blocked',
-        tone: 'danger',
-        reason_code: 'daily_recommendation_cap',
-        reason_summary:
-          'Blocked by overload control because the canonical queue already has 3 higher-priority tasks.',
-      };
+      task.scheduler_state = buildLearningRuntimeBlockedState('daily_recommendation_cap');
       task.scheduler_reasons = [
         buildReason(
-          'daily_recommendation_cap',
-          'Blocked by overload control because the canonical queue already has 3 higher-priority tasks.',
+          task.scheduler_state.reason_code,
+          task.scheduler_state.reason_summary,
         ),
       ];
       continue;

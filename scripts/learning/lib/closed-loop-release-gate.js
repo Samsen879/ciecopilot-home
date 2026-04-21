@@ -3,9 +3,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createLearningSession } from '../../../api/learning/lib/session-runtime/session-service.js';
 import { persistAttemptEventBridge } from '../../../api/learning/lib/events/attempt-event-service.js';
+import { applyLearningEffects } from '../../../api/learning/lib/mastery/mastery-orchestrator.js';
 import { patchLearningArtifact } from '../../../api/learning/lib/artifacts/artifact-service.js';
 import { getWorkspaceView, listReviewTasks } from '../../../api/learning/lib/workspaces/workspace-read-service.js';
 import {
+  buildReleasedScopeRepairGuardInput,
   createClosedLoopLearningDb,
   createInMemoryEffectRepository,
   DEFAULT_BROWSER_CLOSED_LOOP_FIXTURE_PATH,
@@ -18,7 +20,7 @@ export const CLOSED_LOOP_RELEASE_GATE_SCHEMA_VERSION =
 export const DEFAULT_CLOSED_LOOP_RELEASE_GATE_RECEIPT_PATH =
   'data/learning_runtime/release_evidence/9709-closed-loop-release-gate-receipt.v1.json';
 export const DEFAULT_CLOSED_LOOP_RELEASE_GATE_REPORT_PATH =
-  'docs/reports/2026-04-18-9709-closed-loop-release-gate.md';
+  'docs/reports/2026-04-21-9709-closed-loop-release-gate.md';
 
 function cloneJson(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
@@ -259,12 +261,85 @@ async function runDegradedPath(fixture) {
   };
 }
 
-function buildResidualRisks() {
-  return [
+async function runReleasedScopeRepairGuard() {
+  const input = buildReleasedScopeRepairGuardInput();
+  const reviewTaskCalls = [];
+  const reviewTaskService = {
+    async generateTasksFromOutcome(reviewTaskInput = {}) {
+      reviewTaskCalls.push(cloneJson(reviewTaskInput));
+      return [
+        {
+          review_task_id: 'review-task-released-scope-guard',
+          target_kind: 'question_type',
+          target_topic_id: reviewTaskInput.repair_target_topic_id ?? null,
+          target_question_type_id: reviewTaskInput.repair_target_question_type_id ?? null,
+          status: 'open',
+          success_criteria: {
+            posture: reviewTaskInput.authoritative_scoring_allowed
+              ? 'released_scoring_repair'
+              : 'conservative_fallback',
+            fallback_reason_code: reviewTaskInput.fallback_reason_code ?? null,
+          },
+        },
+      ];
+    },
+  };
+  const artifactService = {
+    async buildArtifactCandidates() {
+      return [];
+    },
+  };
+  const reconciliationService = {
+    async reconcileDerivedState({ derivedState } = {}) {
+      return {
+        reconciliation_run_id: 'recon-released-scope-guard',
+        status: 'completed',
+        derived_state: cloneJson(derivedState ?? {}),
+      };
+    },
+  };
+  const result = await applyLearningEffects(
+    input,
+    {
+      reviewTaskService,
+      artifactService,
+      reconciliationService,
+    },
+  );
+  const firstReviewTask = result.review_tasks?.[0] ?? null;
+  const expectedAuthoritative =
+    result.release_scope_status === 'released_scoring'
+    && result.authoritative_scoring_allowed === true
+    && firstReviewTask?.target_question_type_id === '9709.integration.application'
+    && firstReviewTask?.success_criteria?.fallback_reason_code === null;
+
+  return {
+    status: expectedAuthoritative ? 'pass' : 'fail',
+    release_scope_status: result.release_scope_status ?? null,
+    authoritative_scoring_allowed: Boolean(result.authoritative_scoring_allowed),
+    fallback_reason_code: result.fallback_reason_code ?? null,
+    review_task_count: normalizeArray(result.review_tasks).length,
+    first_review_task: cloneJson(firstReviewTask),
+    requested_review_task: cloneJson(reviewTaskCalls[0] ?? null),
+  };
+}
+
+function buildResidualRisks({
+  releasedScopeRepairGuard = null,
+} = {}) {
+  const risks = [
     'The release gate proves one gold 9709 trigonometric-equations scenario, not the full 9709 release envelope.',
     'The degraded path still surfaces retry debt for downstream handlers; the gate records that debt explicitly rather than auto-healing it.',
     'The proof runs against a focused in-memory runtime harness, so separate live-environment rollout checks still depend on CI and production flag posture.',
   ];
+
+  if (releasedScopeRepairGuard?.status === 'fail') {
+    risks.push(
+      'The released-scope repair guard still falls back conservatively for 9709.integration.application, so the current integration line is not yet honestly release-ready.',
+    );
+  }
+
+  return risks;
 }
 
 export async function buildClosedLoopReleaseGateReceipt({
@@ -277,9 +352,13 @@ export async function buildClosedLoopReleaseGateReceipt({
   try {
     resolvedFixture = resolvedFixture || readFixtureFromDisk(rootDir, fixturePath);
     const gold = await runGoldClosedLoop(resolvedFixture);
+    const releasedScopeRepairGuard = await runReleasedScopeRepairGuard();
     const degradedPath = await runDegradedPath(resolvedFixture);
     const blockedReasons = Object.entries(gold.gates)
       .flatMap(([name, gate]) => (gate.status === 'pass' ? [] : [`${name}_failed`]));
+    if (releasedScopeRepairGuard.status !== 'pass') {
+      blockedReasons.push('released_scope_repair_guard_failed');
+    }
     const releaseReady = blockedReasons.length === 0;
 
     return {
@@ -292,8 +371,11 @@ export async function buildClosedLoopReleaseGateReceipt({
       blocked_reasons: blockedReasons,
       feature_flags: gold.featureFlags,
       gates: gold.gates,
+      released_scope_repair_guard: releasedScopeRepairGuard,
       degraded_path: degradedPath,
-      residual_risks: buildResidualRisks(),
+      residual_risks: buildResidualRisks({
+        releasedScopeRepairGuard,
+      }),
     };
   } catch (error) {
     const blockedReason = error?.code === 'fixture_missing' || error?.code === 'fixture_unreadable'
@@ -315,6 +397,15 @@ export async function buildClosedLoopReleaseGateReceipt({
       blocked_reasons: [blockedReason],
       feature_flags: cloneJson(resolvedFixture?.feature_flags ?? {}),
       gates: {},
+      released_scope_repair_guard: {
+        status: 'not_run',
+        release_scope_status: null,
+        authoritative_scoring_allowed: false,
+        fallback_reason_code: null,
+        review_task_count: 0,
+        first_review_task: null,
+        requested_review_task: null,
+      },
       degraded_path: {
         status: 'not_run',
         retry_debt: {
@@ -365,6 +456,16 @@ export function formatClosedLoopReleaseGateReport(receipt = {}) {
 | gate | status | details |
 | --- | --- | --- |
 ${gateRows}
+
+## Released Scope Repair Guard
+
+- status: \`${receipt.released_scope_repair_guard?.status ?? 'unknown'}\`
+- release_scope_status: \`${receipt.released_scope_repair_guard?.release_scope_status ?? 'unknown'}\`
+- authoritative_scoring_allowed: \`${String(receipt.released_scope_repair_guard?.authoritative_scoring_allowed ?? false)}\`
+- fallback_reason_code: \`${receipt.released_scope_repair_guard?.fallback_reason_code ?? 'none'}\`
+- review_task_count: \`${String(receipt.released_scope_repair_guard?.review_task_count ?? 0)}\`
+- first_review_task: \`${JSON.stringify(receipt.released_scope_repair_guard?.first_review_task ?? null)}\`
+- requested_review_task: \`${JSON.stringify(receipt.released_scope_repair_guard?.requested_review_task ?? null)}\`
 
 ## Degraded Retry Debt
 

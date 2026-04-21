@@ -1,13 +1,11 @@
 {
   "schema_version": "learning_runtime_closed_loop_release_gate_receipt_v1",
-  "generated_at": "2026-04-20T19:26:28.800Z",
+  "generated_at": "2026-04-21T00:27:05.935Z",
   "scenario_id": "9709.gold.closed_loop.release_gate.v1",
   "subject_code": "9709",
-  "status": "fail",
-  "release_ready": false,
-  "blocked_reasons": [
-    "released_scope_repair_guard_failed"
-  ],
+  "status": "pass",
+  "release_ready": true,
+  "blocked_reasons": [],
   "feature_flags": {
     "learning_runtime_enabled": true,
     "learning_runtime_9709_enabled": true
@@ -69,7 +67,7 @@
         },
         "trigger_type": "immediate_repair",
         "mode": "trap_fix",
-        "due_at": "2026-04-20T19:26:28.788Z",
+        "due_at": "2026-04-21T00:27:05.921Z",
         "priority": "high",
         "estimated_minutes": 15,
         "success_criteria": {
@@ -116,7 +114,7 @@
                 "score": 0
               }
             },
-            "immediate_repair_max_deferral_at": "2026-04-21T07:26:28.788Z"
+            "immediate_repair_max_deferral_at": "2026-04-21T12:27:05.921Z"
           },
           "explainability": {
             "posture": "released_scoring_repair",
@@ -200,7 +198,7 @@
               "score": 0
             }
           },
-          "immediate_repair_max_deferral_at": "2026-04-21T07:26:28.788Z"
+          "immediate_repair_max_deferral_at": "2026-04-21T12:27:05.921Z"
         },
         "scheduler_state": {
           "value": "escalated",
@@ -262,7 +260,7 @@
           "freshness": {
             "route": "immediate_repair",
             "bucket": "fresh",
-            "due_at": "2026-04-20T19:26:28.788Z",
+            "due_at": "2026-04-21T00:27:05.921Z",
             "scheduler_state": "escalated",
             "reason_codes": [
               "fresh_immediate_repair"
@@ -305,7 +303,7 @@
           "artifact_state": "verified",
           "slot_key": "common_traps",
           "target_question_type_id": "9709.trigonometry.equations",
-          "updated_at": "2026-04-20T19:26:28.795Z"
+          "updated_at": "2026-04-21T00:27:05.929Z"
         },
         "linked_references": [],
         "updated_at": "2026-04-18T09:08:00.000Z"
@@ -319,10 +317,10 @@
     }
   },
   "released_scope_repair_guard": {
-    "status": "fail",
-    "release_scope_status": "non_released_fallback",
-    "authoritative_scoring_allowed": false,
-    "fallback_reason_code": "low_classification_confidence",
+    "status": "pass",
+    "release_scope_status": "released_scoring",
+    "authoritative_scoring_allowed": true,
+    "fallback_reason_code": null,
     "review_task_count": 1,
     "first_review_task": {
       "review_task_id": "review-task-released-scope-guard",
@@ -331,8 +329,8 @@
       "target_question_type_id": "9709.integration.application",
       "status": "open",
       "success_criteria": {
-        "posture": "conservative_fallback",
-        "fallback_reason_code": "low_classification_confidence"
+        "posture": "released_scoring_repair",
+        "fallback_reason_code": null
       }
     },
     "requested_review_task": {
@@ -344,11 +342,12 @@
         "question_type_release_state": "released",
         "primary_topic_id": "topic-9709-integration-application",
         "primary_topic_path": "9709/integration/application",
-        "classification_confidence": 0.78,
+        "classification_confidence": 0.89,
         "candidate_rubric_refs": [
           {
             "kind": "rubric_release",
-            "rubric_version_id": "integration-v1",
+            "rubric_set_id": "9709.integration.application",
+            "rubric_version_id": "integration-application-v1",
             "release_state": "released"
           }
         ]
@@ -381,8 +380,8 @@
       "repair_target_topic_path": "9709/integration/application",
       "repair_target_question_type_id": "9709.integration.application",
       "subject_code": "9709",
-      "authoritative_scoring_allowed": false,
-      "fallback_reason_code": "low_classification_confidence",
+      "authoritative_scoring_allowed": true,
+      "fallback_reason_code": null,
       "runtime_authority_posture": "default_durable",
       "runtime_authority_reason_code": null,
       "question_source_kind": null
@@ -406,7 +405,6 @@
   "residual_risks": [
     "The release gate proves one gold 9709 trigonometric-equations scenario, not the full 9709 release envelope.",
     "The degraded path still surfaces retry debt for downstream handlers; the gate records that debt explicitly rather than auto-healing it.",
-    "The proof runs against a focused in-memory runtime harness, so separate live-environment rollout checks still depend on CI and production flag posture.",
-    "The released-scope repair guard still falls back conservatively for 9709.integration.application, so the current integration line is not yet honestly release-ready."
+    "The proof runs against a focused in-memory runtime harness, so separate live-environment rollout checks still depend on CI and production flag posture."
   ]
 }

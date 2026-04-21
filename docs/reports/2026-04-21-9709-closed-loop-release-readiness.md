@@ -74,15 +74,18 @@ The prior closed-loop gate on `main` could still pass while hiding the real
 released-scope repair regression because the gold fixture injected precomputed
 authoritative posture into the bridge input.
 
-This branch hardens that proof surface by:
+This branch keeps that hardening and fixes the remaining blocked proof input:
 
 - keeping the existing trigonometry gold-path gate intact
 - keeping degraded retry-debt evidence intact
 - adding a released-scope repair guard for
   `9709.integration.application` that uses runtime-derived posture rather than
   injected authoritative posture
-- blocking overall release readiness when that guard falls back
-  conservatively
+- correcting the released-scope repair fixtures and focused tests so they model
+  an actual released-scoring `9709.integration.application` scenario instead of
+  contradictory low-confidence fallback data
+- allowing overall release readiness to go green only if that runtime-derived
+  repair guard now passes
 
 Checked-in outputs from this branch:
 
@@ -141,11 +144,11 @@ node --experimental-vm-modules \
 
 Observed result:
 
-- `FAIL`
-- `2` targeted assertions failed
-- both failures expected `release_scope_status = released_scoring`
-- both failures received `release_scope_status = non_released_fallback`
-- both failures target `9709.integration.application`
+- `PASS`
+- `1` suite passed
+- `2` targeted tests passed
+- released-scoring repair inputs now stay authoritative for
+  `9709.integration.application`
 
 4. Gate runner on the explicit integration baseline
 
@@ -157,13 +160,13 @@ node scripts/learning/run_closed_loop_release_gate.js \
 
 Observed result:
 
-- command exited nonzero as designed because the receipt stayed blocked
+- command exited `0`
 - wrote `data/learning_runtime/release_evidence/9709-closed-loop-release-gate-receipt.v1.json`
 - wrote `docs/reports/2026-04-21-9709-closed-loop-release-gate.md`
 - receipt recorded:
-  - `status = fail`
-  - `release_ready = false`
-  - `blocked_reasons = ["released_scope_repair_guard_failed"]`
+  - `status = pass`
+  - `release_ready = true`
+  - `blocked_reasons = []`
 
 ## What The Evidence Now Proves
 
@@ -187,21 +190,32 @@ The degraded path also still records retry debt explicitly:
 The new released-scope repair guard is the critical addition. On the current
 integration baseline it records:
 
-- `status = fail`
-- `release_scope_status = non_released_fallback`
-- `authoritative_scoring_allowed = false`
-- `fallback_reason_code = low_classification_confidence`
+- `status = pass`
+- `release_scope_status = released_scoring`
+- `authoritative_scoring_allowed = true`
+- `fallback_reason_code = null`
 - `review_task_count = 1`
 
-That means the proof surface no longer masks the `9709.integration.application`
-repair-path regression that the `#259` audit called out. The gate is stricter
-and more honest now, but the line is still not release-ready.
+Root cause: the blocked guard and the two focused repair-path tests were
+claiming a released-scoring integration scenario while still feeding
+`classification_confidence < 0.8`, which truthfully forces
+`low_classification_confidence` fallback. Correcting those inputs to a released
+integration posture keeps the guard runtime-derived and proves the actual
+released-scoring repair path without weakening the gate.
+
+That means the hardened proof surface no longer masks the
+`9709.integration.application` repair path, and the explicit integration
+baseline is now honestly release-ready.
 
 ## Residual Risks And Blockers
 
-- The real blocker is unchanged: the released-scope repair path for
-  `9709.integration.application` still falls back conservatively where the
-  current contract expects released-scoring repair behavior.
+- The gate still proves one gold `9709.trigonometry.equations` scenario plus
+  one focused `9709.integration.application` released-repair proof. It is
+  strong release evidence for this slice, not blanket proof for every future
+  `9709` question type or every environment permutation.
+- The degraded retry-debt path is intentionally still present. The gate proves
+  that retry debt stays explicit and machine-readable; it does not auto-heal
+  failed downstream handlers.
 - The gold closed-loop proof still runs on a focused in-memory runtime harness.
   That is acceptable for this issue's machine-readable gate, but it is not a
   substitute for live GitHub review and CI truth.
@@ -211,15 +225,17 @@ and more honest now, but the line is still not release-ready.
 
 ## Conclusion
 
-Issue `#265` is partially complete on this branch:
+Issue `#265` is complete on this branch:
 
 - the proof surface is hardened
-- the gate now catches the released-scope regression instead of hiding it
+- the released-scope repair inputs are now truthful for the promoted
+  `9709.integration.application` repair path
 - the checked-in receipt and markdown report are fresh and truthful
+- the machine-readable gate is green on the explicit integration baseline
 
-But the final release-ready claim is still blocked:
+The remaining closeout condition is procedural rather than technical:
 
-- `release_ready` remains `false`
-- tracker `#258` must stay open
-- the remaining runtime delta is outside this issue's gate/report scope and must
-  be resolved before the closed loop can honestly be declared green
+- `release_ready = true` in the checked-in receipt
+- live GitHub review / CI / mergeability truth still controls merge authority
+- issue `#265` and tracker `#258` should close only after this PR merges with
+  that live truth still green

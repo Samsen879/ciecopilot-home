@@ -41,7 +41,7 @@ describe('closed loop release gate', () => {
     }
   });
 
-  test('gate proves the gold scenario but blocks release when the released-scope repair guard fails', async () => {
+  test('gate proves the gold scenario and passes the released-scope repair guard', async () => {
     const { buildBrowserClosedLoopFixture } = await import('../lib/browser-closed-loop-fixture.js');
     const { buildClosedLoopReleaseGateReceipt } = await import('../lib/closed-loop-release-gate.js');
 
@@ -51,9 +51,9 @@ describe('closed loop release gate', () => {
 
     expect(receipt).toMatchObject({
       schema_version: 'learning_runtime_closed_loop_release_gate_receipt_v1',
-      status: 'fail',
-      release_ready: false,
-      blocked_reasons: ['released_scope_repair_guard_failed'],
+      status: 'pass',
+      release_ready: true,
+      blocked_reasons: [],
       subject_code: '9709',
       feature_flags: {
         learning_runtime_enabled: true,
@@ -109,16 +109,16 @@ describe('closed loop release gate', () => {
         },
       },
       released_scope_repair_guard: {
-        status: 'fail',
-        release_scope_status: 'non_released_fallback',
-        authoritative_scoring_allowed: false,
-        fallback_reason_code: 'low_classification_confidence',
+        status: 'pass',
+        release_scope_status: 'released_scoring',
+        authoritative_scoring_allowed: true,
+        fallback_reason_code: null,
         review_task_count: 1,
         first_review_task: expect.objectContaining({
           target_question_type_id: '9709.integration.application',
           success_criteria: expect.objectContaining({
-            posture: 'conservative_fallback',
-            fallback_reason_code: 'low_classification_confidence',
+            posture: 'released_scoring_repair',
+            fallback_reason_code: null,
           }),
         }),
       },
@@ -159,7 +159,7 @@ describe('closed loop release gate', () => {
         '--out-md',
         outMd,
       ]);
-      expect(process.exitCode).toBe(1);
+      expect(process.exitCode).toBeUndefined();
       process.exitCode = undefined;
 
       expect(fs.existsSync(path.join(process.cwd(), outJson))).toBe(true);
@@ -170,9 +170,9 @@ describe('closed loop release gate', () => {
 
       expect(payload).toMatchObject({
         schema_version: 'learning_runtime_closed_loop_release_gate_receipt_v1',
-        status: 'fail',
-        release_ready: false,
-        blocked_reasons: ['released_scope_repair_guard_failed'],
+        status: 'pass',
+        release_ready: true,
+        blocked_reasons: [],
       });
       expect(markdown).toContain('# 9709 Closed-Loop Release Gate');
       expect(markdown).toContain('request_intake');

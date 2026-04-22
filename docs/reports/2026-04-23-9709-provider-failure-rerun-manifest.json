@@ -1,0 +1,55 @@
+{
+  "schema_version": "v1",
+  "manifest_id": "9709_provider_failure_rerun_v1",
+  "subject_code": "9709",
+  "frozen_on": "2026-04-23",
+  "scope": "targeted_provider_failure_rerun",
+  "notes": [
+    "Two-row follow-up manifest for the unresolved prompt-backfill provider failures from 2026-04-23.",
+    "Rows remain in the same frozen authority-ready cohort; only the unresolved storage_keys are included here."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/s24_qp_13/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "review_lane",
+      "diagram_present": null,
+      "formula_dense": null,
+      "table_heavy": null,
+      "surface_evidence_status": "unknown_requires_primary_asset_replay",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong"
+    },
+    {
+      "storage_key": "9709/s24_qp_33/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 9,
+      "primary_topic_path": null,
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "review_lane",
+      "diagram_present": null,
+      "formula_dense": null,
+      "table_heavy": null,
+      "surface_evidence_status": "unknown_requires_primary_asset_replay",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null
+    }
+  ]
+}

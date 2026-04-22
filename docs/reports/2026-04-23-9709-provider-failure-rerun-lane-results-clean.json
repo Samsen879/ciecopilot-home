@@ -1,0 +1,128 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_13/questions/q09.png",
+    "input_asset_hash": "da3e874e8dc900407e764acd877da5a587fb02c9696da194d0ae5440a09ab76b",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "9\nThe diagram shows the curve with equation y = sqrt(2x^3 + 10).\n(a) Find the equation of the tangent to the curve at the point where x = 3. Give your answer in the form ax + by + c = 0 where a, b and c are integers. [5]\n(b) The region shaded in the diagram is enclosed by the curve and the straight lines x = 1, x = 3 and y = 0.\nFind the volume of the solid obtained when the shaded region is rotated through 360° about the x-axis. [3]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "9\nThe diagram shows the curve with equation y = sqrt(2x^3 + 10).\n(a) Find the equation of the tangent to the curve at the point where x = 3. Give your answer in the form ax + by + c = 0 where a, b and c are integers. [5]\n(b) The region shaded in the diagram is enclosed by the curve and the straight lines x = 1, x = 3 and y = 0.\nFind the volume of the solid obtained when the shaded region is rotated through 360° about the x-axis. [3]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": []
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "9\nThe diagram shows the curve with equation y = sqrt(2x^3 + 10).\n(a) Find the equation of the tangent to the curve at the point where x = 3. Give your answer in the form ax + by + c = 0 where a, b and c are integers. [5]",
+            "9\nThe diagram shows the curve with equation y = sqrt(2x^3 + 10).\n(b) The region shaded in the diagram is enclosed by the curve and the straight lines x = 1, x = 3 and y = 0.\nFind the volume of the solid obtained when the shaded region is rotated through 360° about the x-axis. [3]"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question 9 includes a diagram of a curve y=sqrt(2x^3+10) with a shaded region between x=1 and x=3.",
+            "Vertical text 'DO NOT WRITE IN THIS MARGIN' appears on both left and right margins.",
+            "Barcodes are present at the top of each question block and page bottom."
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_33/questions/q09.png",
+    "input_asset_hash": "52ef4b0b258cb3ed4482c8032baff02b037a763009aa41ee940064566fed6275",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "9\nA container in the shape of a cuboid has a square base of side x and a height of (10-x). It is given that x varies with time, t, where t > 0. The container decreases in volume at a rate which is inversely proportional to t.\nWhen t = 1/10, x = 1/2 and the rate of decrease of x is 20/37.\n(a) Show that x and t satisfy the differential equation\n   dx/dt = -1 / (2t(20x - 3x^2))\n(b) Solve the differential equation, obtaining an expression for t in terms of x.",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "9\nA container in the shape of a cuboid has a square base of side x and a height of (10-x). It is given that x varies with time, t, where t > 0. The container decreases in volume at a rate which is inversely proportional to t.\nWhen t = 1/10, x = 1/2 and the rate of decrease of x is 20/37.\n(a) Show that x and t satisfy the differential equation\n   dx/dt = -1 / (2t(20x - 3x^2))\n(b) Solve the differential equation, obtaining an expression for t in terms of x."
+        },
+        {
+          "field": "formula_latex_list",
+          "value": []
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "9\nA container in the shape of a cuboid has a square base of side x and a height of (10-x). It is given that x varies with time, t, where t > 0. The container decreases in volume at a rate which is inversely proportional to t.\nWhen t = 1/10, x = 1/2 and the rate of decrease of x is 20/37.\n(a) Show that x and t satisfy the differential equation\n dx/dt = -1 / (2t(20x - 3x^2))",
+            "9\nA container in the shape of a cuboid has a square base of side x and a height of (10-x). It is given that x varies with time, t, where t > 0. The container decreases in volume at a rate which is inversely proportional to t.\nWhen t = 1/10, x = 1/2 and the rate of decrease of x is 20/37.\n(b) Solve the differential equation, obtaining an expression for t in terms of x."
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question 9 includes a diagram of a cuboid with dimensions labeled x, x, and 10-x."
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  }
+]

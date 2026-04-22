@@ -1,0 +1,161 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_13/questions/q09.png",
+    "input_asset_hash": "da3e874e8dc900407e764acd877da5a587fb02c9696da194d0ae5440a09ab76b",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "9\nThe diagram shows the curve with equation y = sqrt(2x^3 + 10).\n(a) Find the equation of the tangent to the curve at the point where x = 3. Give your answer in the form ax + by + c = 0 where a, b and c are integers. [5]\n(b) The region shaded in the diagram is enclosed by the curve and the straight lines x = 1, x = 3 and y = 0.\nFind the volume of the solid obtained when the shaded region is rotated through 360° about the x-axis. [3]\n\n10 The geometric progression a1, a2, a3, ... has first term 2 and common ratio r where r > 0.\nIt is given that (5/2)a2 + 7a3 = 8.\n(a) Find the value of r. [3]\n(b) Find the sum of the first 20 terms of the geometric progression. Give your answer correct to 4 significant figures. [2]\n(c) Find the sum to infinity of the progression a2, a5, a8, ... . [3]\n\n11 The function f is defined by f(x) = 10 + 6x - x^2 for x ∈ R.\n(a) By completing the square, find the range of f. [3]\nThe function g is defined by g(x) = 4x + k for x ∈ R where k is a constant.\n(b) It is given that the graph of y = g^-1(x) meets the graph of y = g(x) at a single point P.\nDetermine the coordinates of P. [6]\n\nAdditional page\nIf you use the following page to complete the answer to any question, the question number must be clearly shown.\nBLANK PAGE\nBLANK PAGE",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "9\nThe diagram shows the curve with equation y = sqrt(2x^3 + 10).\n(a) Find the equation of the tangent to the curve at the point where x = 3. Give your answer in the form ax + by + c = 0 where a, b and c are integers. [5]\n(b) The region shaded in the diagram is enclosed by the curve and the straight lines x = 1, x = 3 and y = 0.\nFind the volume of the solid obtained when the shaded region is rotated through 360° about the x-axis. [3]\n\n10 The geometric progression a1, a2, a3, ... has first term 2 and common ratio r where r > 0.\nIt is given that (5/2)a2 + 7a3 = 8.\n(a) Find the value of r. [3]\n(b) Find the sum of the first 20 terms of the geometric progression. Give your answer correct to 4 significant figures. [2]\n(c) Find the sum to infinity of the progression a2, a5, a8, ... . [3]\n\n11 The function f is defined by f(x) = 10 + 6x - x^2 for x ∈ R.\n(a) By completing the square, find the range of f. [3]\nThe function g is defined by g(x) = 4x + k for x ∈ R where k is a constant.\n(b) It is given that the graph of y = g^-1(x) meets the graph of y = g(x) at a single point P.\nDetermine the coordinates of P. [6]\n\nAdditional page\nIf you use the following page to complete the answer to any question, the question number must be clearly shown.\nBLANK PAGE\nBLANK PAGE"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "y = \\sqrt{2x^3 + 10}",
+            "ax + by + c = 0",
+            "x = 1",
+            "x = 3",
+            "y = 0",
+            "360^{\\circ}",
+            "a_1, a_2, a_3, \\dots",
+            "r > 0",
+            "\\frac{5}{2}a_2 + 7a_3 = 8",
+            "a_2, a_5, a_8, \\dots",
+            "f(x) = 10 + 6x - x^2",
+            "x \\in \\mathbb{R}",
+            "g(x) = 4x + k",
+            "y = g^{-1}(x)",
+            "y = g(x)"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'id': '9(a)', 'text': 'Find the equation of the tangent to the curve at the point where x = 3. Give your answer in the form ax + by + c = 0 where a, b and c are integers.', 'marks': '[5]'}",
+            "{'id': '9(b)', 'text': 'The region shaded in the diagram is enclosed by the curve and the straight lines x = 1, x = 3 and y = 0. Find the volume of the solid obtained when the shaded region is rotated through 360° about the x-axis.', 'marks': '[3]'}",
+            "{'id': '10(a)', 'text': 'Find the value of r.', 'marks': '[3]'}",
+            "{'id': '10(b)', 'text': 'Find the sum of the first 20 terms of the geometric progression. Give your answer correct to 4 significant figures.', 'marks': '[2]'}",
+            "{'id': '10(c)', 'text': 'Find the sum to infinity of the progression a2, a5, a8, ... .', 'marks': '[3]'}",
+            "{'id': '11(a)', 'text': 'By completing the square, find the range of f.', 'marks': '[3]'}",
+            "{'id': '11(b)', 'text': 'It is given that the graph of y = g^-1(x) meets the graph of y = g(x) at a single point P. Determine the coordinates of P.', 'marks': '[6]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question 9 includes a diagram of a curve y=sqrt(2x^3+10) with a shaded region between x=1 and x=3.",
+            "Question 10 deals with a geometric progression.",
+            "Question 11 involves functions f(x) and g(x), including inverse functions and completing the square.",
+            "Vertical text 'DO NOT WRITE IN THIS MARGIN' appears on both left and right margins.",
+            "Barcodes are present at the top of each question block and page bottom.",
+            "Pages labeled 'Additional page' and 'BLANK PAGE' are included at the end."
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  },
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_33/questions/q09.png",
+    "input_asset_hash": "52ef4b0b258cb3ed4482c8032baff02b037a763009aa41ee940064566fed6275",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "9\nA container in the shape of a cuboid has a square base of side x and a height of (10-x). It is given that x varies with time, t, where t > 0. The container decreases in volume at a rate which is inversely proportional to t.\nWhen t = 1/10, x = 1/2 and the rate of decrease of x is 20/37.\n(a) Show that x and t satisfy the differential equation\n   dx/dt = -1 / (2t(20x - 3x^2))\n(b) Solve the differential equation, obtaining an expression for t in terms of x.\n\n10 The equations of two straight lines are\n   r = i + j + 2ak + λ(3i + 4j + ak)  and  r = -3i - j + 4k + μ(-i + 2j + 2k),\nwhere a is a constant.\n(a) Given that the acute angle between the directions of these lines is 1/4 π, find the possible values of a.\n(b) Given instead that the lines intersect, find the value of a and the position vector of the point of intersection.\n\n11 Use the substitution 2x = tan θ to find the exact value of\n   ∫[0 to 1/4] 12 / (1 + 4x^2)^2 dx.\nGive your answer in the form a + bπ, where a and b are rational numbers.",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "9\nA container in the shape of a cuboid has a square base of side x and a height of (10-x). It is given that x varies with time, t, where t > 0. The container decreases in volume at a rate which is inversely proportional to t.\nWhen t = 1/10, x = 1/2 and the rate of decrease of x is 20/37.\n(a) Show that x and t satisfy the differential equation\n   dx/dt = -1 / (2t(20x - 3x^2))\n(b) Solve the differential equation, obtaining an expression for t in terms of x.\n\n10 The equations of two straight lines are\n   r = i + j + 2ak + λ(3i + 4j + ak)  and  r = -3i - j + 4k + μ(-i + 2j + 2k),\nwhere a is a constant.\n(a) Given that the acute angle between the directions of these lines is 1/4 π, find the possible values of a.\n(b) Given instead that the lines intersect, find the value of a and the position vector of the point of intersection.\n\n11 Use the substitution 2x = tan θ to find the exact value of\n   ∫[0 to 1/4] 12 / (1 + 4x^2)^2 dx.\nGive your answer in the form a + bπ, where a and b are rational numbers."
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "\\frac{\\mathrm{d}x}{\\mathrm{d}t} = \\frac{-1}{2t(20x - 3x^2)}",
+            "\\mathbf{r} = \\mathbf{i} + \\mathbf{j} + 2a\\mathbf{k} + \\lambda(3\\mathbf{i} + 4\\mathbf{j} + a\\mathbf{k})",
+            "\\mathbf{r} = -3\\mathbf{i} - \\mathbf{j} + 4\\mathbf{k} + \\mu(-\\mathbf{i} + 2\\mathbf{j} + 2\\mathbf{k})",
+            "\\frac{1}{4}\\pi",
+            "\\int_{0}^{\\frac{1}{4}} \\frac{12}{(1+4x^2)^2} \\, \\mathrm{d}x"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'id': '9', 'parts': [{'label': '(a)', 'text': 'Show that x and t satisfy the differential equation dx/dt = -1 / (2t(20x - 3x^2))', 'marks': '[5]'}, {'label': '(b)', 'text': 'Solve the differential equation, obtaining an expression for t in terms of x.', 'marks': '[6]'}]}",
+            "{'id': '10', 'parts': [{'label': '(a)', 'text': 'Given that the acute angle between the directions of these lines is 1/4 π, find the possible values of a.', 'marks': '[6]'}, {'label': '(b)', 'text': 'Given instead that the lines intersect, find the value of a and the position vector of the point of intersection.', 'marks': '[5]'}]}",
+            "{'id': '11', 'parts': [{'label': '', 'text': 'Use the substitution 2x = tan θ to find the exact value of ∫[0 to 1/4] 12 / (1 + 4x^2)^2 dx. Give your answer in the form a + bπ, where a and b are rational numbers.', 'marks': '[9]'}]}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question 9 includes a diagram of a cuboid with dimensions labeled x, x, and 10-x.",
+            "Questions 9, 10, and 11 are followed by lined answer spaces.",
+            "An 'Additional page' and 'BLANK PAGE' are visible at the bottom."
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "unknown_surface_flags"
+      ]
+    }
+  }
+]

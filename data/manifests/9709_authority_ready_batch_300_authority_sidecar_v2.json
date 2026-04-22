@@ -7,7 +7,7 @@
   "notes": [
     "Full-coverage authority sidecar for issue #273 round 2 dry-run.",
     "Promotes repo-evidence rows to frozen only when supported by checked-in audit/reclassification evidence or explicit operator-review adjudication.",
-    "The paper-6 histogram row remains legal missing because the current frozen evidence set does not safely establish a canonical topic path."
+    "The former paper-6 histogram row is now frozen through a checked-in Statistics 1 crosswalk onto the current p5 Representation of Data taxonomy."
   ],
   "items": [
     {
@@ -6065,7 +6065,7 @@
     {
       "storage_key": "9709/s17_qp_63/questions/q07.png",
       "authority_input_pack": {
-        "canonical_primary_topic_path": null,
+        "canonical_primary_topic_path": "9709.p5.representation_of_data",
         "curriculum_version_tag": "2025-2027_v1",
         "topic_authority_sources": [
           "repo_evidence",
@@ -6073,17 +6073,17 @@
         ],
         "topic_authority_refs": [
           {
-            "kind": "operator_review",
-            "locator": "issue-273-batch-prep-round-2",
-            "note": "Held as legal missing after round-2 review. Available repo evidence only shows a paper-6 histogram about worm lengths; no checked-in frozen taxonomy or audited primary topic path is available for safe authority freeze."
+            "kind": "repo_evidence",
+            "locator": "data/manifests/9709_diagram_lane_live_probe_v1.json",
+            "note": "storage_key=9709/s17_qp_63/questions/q07.png; primary_topic_path=9709.p5.representation_of_data; live probe shows a grouped-data histogram with Length (cm) on the x-axis and Frequency density on the y-axis."
           },
           {
             "kind": "operator_review",
-            "locator": "docs/reports/2026-04-16-9709-diagram-lane-live-probe-results.json",
-            "note": "Probe summary=histogram; histogram evidence exists but does not safely determine canonical topic truth."
+            "locator": "docs/reports/2026-04-23-9709-authority-missing-q07-recovery.md",
+            "note": "Historical review confirms 9709/63 June 2017 is Statistics 1 and that Q7 is the histogram/frequency-density item, so the current repo taxonomy crosswalk is 9709.p5.representation_of_data."
           }
         ],
-        "cross_paper_dependency_note": null
+        "cross_paper_dependency_note": "Historical component 9709/63 (June 2017) is Statistics 1. The current repo taxonomy anchors Statistics 1 under p5, so this row freezes to 9709.p5.representation_of_data rather than a synthetic p6 topic."
       }
     },
     {

@@ -1,0 +1,66 @@
+{
+  "schema_version": "v1",
+  "manifest_id": "9709_authority_missing_q07_v1",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "frozen_on": "2026-04-22",
+  "wave": "authority_ready_batch_300",
+  "scope": "evidence_backed_9709_batch_dry_run",
+  "source_documents": [
+    "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+    "data/curriculum/9709_question_search_recovery_nodes_v1.json",
+    "docs/reports/2026-04-16-9709-qwen-wave1-live-results-hotfix-rerun-v4.json"
+  ],
+  "notes": [
+    "One-row manifest for q07 authority recovery follow-up."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/s17_qp_63/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "s",
+      "paper": 6,
+      "variant": 3,
+      "q_number": 7,
+      "primary_topic_path": "9709.p5.representation_of_data",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "review_lane",
+      "diagram_present": null,
+      "formula_dense": null,
+      "table_heavy": null,
+      "surface_evidence_status": "unknown_requires_primary_asset_replay",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "docs/reports/2026-04-16-9709-diagram-lane-live-probe-results.json",
+      "audit_verdict": null,
+      "authority_alignment_run_id": "authority-alignment-54a99331-4c35-4363-86ba-e528b4b0575d",
+      "source_manifest_digest": "7792790a706b8e94dd9f4a2c096693d3314ace0858cb5b1024a6d348dbdf18db",
+      "canonical_primary_topic_path": "9709.p5.representation_of_data",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "repo_evidence",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "repo_evidence",
+          "locator": "data/manifests/9709_diagram_lane_live_probe_v1.json",
+          "note": "storage_key=9709/s17_qp_63/questions/q07.png; primary_topic_path=9709.p5.representation_of_data; live probe shows a grouped-data histogram with Length (cm) on the x-axis and Frequency density on the y-axis."
+        },
+        {
+          "kind": "operator_review",
+          "locator": "docs/reports/2026-04-23-9709-authority-missing-q07-recovery.md",
+          "note": "Historical review confirms 9709/63 June 2017 is Statistics 1 and that Q7 is the histogram/frequency-density item, so the current repo taxonomy crosswalk is 9709.p5.representation_of_data."
+        }
+      ],
+      "cross_paper_dependency_note": "Historical component 9709/63 (June 2017) is Statistics 1. The current repo taxonomy anchors Statistics 1 under p5, so this row freezes to 9709.p5.representation_of_data rather than a synthetic p6 topic."
+    }
+  ],
+  "authority_alignment_run_id": "authority-alignment-54a99331-4c35-4363-86ba-e528b4b0575d"
+}

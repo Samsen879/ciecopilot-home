@@ -1,0 +1,82 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3-vl-plus",
+    "route": "diagram_lane",
+    "lane": "diagram",
+    "prompt_template_id": "diagram_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s17_qp_63/questions/q07.png",
+    "input_asset_hash": "9cbe447a12a1386ab0b6c7126d97b23b5594d242199a8b1bead99c55d9ff0081",
+    "response_schema_version": "v1",
+    "confidence": 1,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "histogram",
+      "evidence": [
+        {
+          "field": "diagram_present",
+          "value": true
+        },
+        {
+          "field": "diagram_type",
+          "value": "histogram"
+        },
+        {
+          "field": "diagram_elements",
+          "value": [
+            "vertical bars (4)",
+            "x-axis labeled 'Length (cm)'",
+            "y-axis labeled 'Frequency density'",
+            "grid lines"
+          ]
+        },
+        {
+          "field": "axes_labels",
+          "value": []
+        },
+        {
+          "field": "curve_point_annotations",
+          "value": []
+        },
+        {
+          "field": "shape_relations",
+          "value": [
+            "bars are adjacent with no gaps",
+            "bar heights: ~2, ~8, ~12, ~6 (from left to right)",
+            "x-axis intervals: 0–5, 5–10, 10–20, 20–25 cm"
+          ]
+        },
+        {
+          "field": "object_grounding",
+          "value": [
+            {
+              "bars": "represent frequency density for worm length intervals",
+              "x-axis": "worm length in cm",
+              "y-axis": "frequency density (frequency per unit length)"
+            }
+          ]
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "bar 1 spans x=0 to 5, height ≈2",
+            "bar 2 spans x=5 to 10, height ≈8",
+            "bar 3 spans x=10 to 20, height ≈12",
+            "bar 4 spans x=20 to 25, height ≈6"
+          ]
+        },
+        {
+          "field": "diagram_confidence",
+          "value": 1
+        }
+      ],
+      "warnings": [
+        "lazy_attach_original_image"
+      ]
+    }
+  }
+]

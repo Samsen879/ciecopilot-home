@@ -1,0 +1,110 @@
+{
+  "manifest_id": "9709_authority_missing_q07_v1",
+  "bundles": [
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_authority_missing_q07_v1",
+      "manifest_position": 0,
+      "storage_key": "9709/s17_qp_63/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2017,
+        "session": "s",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 7,
+        "primary_topic_path": "9709.p5.representation_of_data"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p5.representation_of_data"
+      },
+      "evidence": {
+        "ocr_text": "",
+        "formula_latex_list": [],
+        "subquestion_blocks": [],
+        "layout_hints": [],
+        "diagram_present": true,
+        "diagram_elements": [
+          "vertical bars (4)",
+          "x-axis labeled 'Length (cm)'",
+          "y-axis labeled 'Frequency density'",
+          "grid lines"
+        ],
+        "spatial_evidence": [
+          "bar 1 spans x=0 to 5, height ≈2",
+          "bar 2 spans x=5 to 10, height ≈8",
+          "bar 3 spans x=10 to 20, height ≈12",
+          "bar 4 spans x=20 to 25, height ≈6"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "review_lane",
+        "diagram_present": null,
+        "formula_dense": null,
+        "table_heavy": null,
+        "surface_evidence_status": "unknown_requires_primary_asset_replay",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s17_qp_63/questions/q07.png",
+        "input_asset_hash": null,
+        "confidence": null,
+        "failure_reason": null,
+        "decision_reasons": [
+          "requires_review",
+          "unknown_surface_flags",
+          "extraction_first_unknown_surface"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": null,
+          "prompt_template_version": "v1",
+          "response_schema_version": "v1",
+          "input_asset_id": "9709/s17_qp_63/questions/q07.png",
+          "input_asset_hash": "9cbe447a12a1386ab0b6c7126d97b23b5594d242199a8b1bead99c55d9ff0081",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s17_qp_63/questions/q07.png",
+        "input_asset_hash": null
+      }
+    }
+  ],
+  "summary": {
+    "bundles_planned": 1,
+    "route_counts": {
+      "ocr_lane": 1
+    },
+    "lazy_attach_original_image": 1
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "v1",
+  "sidecar_id": "9709_authority_missing_q07_authority_sidecar_v1",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "generated_on": "2026-04-22",
+  "notes": [
+    "One-row sidecar for q07 authority recovery follow-up."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/s17_qp_63/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.representation_of_data",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "repo_evidence",
+          "operator_review"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "repo_evidence",
+            "locator": "data/manifests/9709_diagram_lane_live_probe_v1.json",
+            "note": "storage_key=9709/s17_qp_63/questions/q07.png; primary_topic_path=9709.p5.representation_of_data; live probe shows a grouped-data histogram with Length (cm) on the x-axis and Frequency density on the y-axis."
+          },
+          {
+            "kind": "operator_review",
+            "locator": "docs/reports/2026-04-23-9709-authority-missing-q07-recovery.md",
+            "note": "Historical review confirms 9709/63 June 2017 is Statistics 1 and that Q7 is the histogram/frequency-density item, so the current repo taxonomy crosswalk is 9709.p5.representation_of_data."
+          }
+        ],
+        "cross_paper_dependency_note": "Historical component 9709/63 (June 2017) is Statistics 1. The current repo taxonomy anchors Statistics 1 under p5, so this row freezes to 9709.p5.representation_of_data rather than a synthetic p6 topic."
+      }
+    }
+  ]
+}

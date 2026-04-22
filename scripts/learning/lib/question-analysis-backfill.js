@@ -354,7 +354,11 @@ function buildEvidenceDerivedSearchText(questionEvidenceBundle = null, classific
   ]).join('\n\n');
 }
 
-function buildQuestionPromptRepresentation(question = {}, questionEvidenceBundle = null) {
+function buildQuestionPromptRepresentation(
+  question = {},
+  questionEvidenceBundle = null,
+  questionEvidenceBundleClassificationInput = null,
+) {
   const derivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle);
   if (derivedSummary) {
     return {
@@ -363,7 +367,15 @@ function buildQuestionPromptRepresentation(question = {}, questionEvidenceBundle
     };
   }
 
-  return normalizeObject(question?.prompt_representation);
+  const existingPromptRepresentation = normalizeObject(question?.prompt_representation);
+  if (
+    normalizeString(existingPromptRepresentation?.type)
+    && Object.prototype.hasOwnProperty.call(existingPromptRepresentation, 'value')
+  ) {
+    return existingPromptRepresentation;
+  }
+
+  return normalizeObject(questionEvidenceBundleClassificationInput?.prompt_representation);
 }
 
 function buildQuestionProvenanceSummary(
@@ -784,6 +796,7 @@ export async function backfillQuestionAnalysisRecord(client, {
         prompt_representation: buildQuestionPromptRepresentation(
           question,
           normalizedQuestionEvidenceBundle,
+          questionEvidenceBundleClassificationInput,
         ),
         provenance_summary: buildQuestionProvenanceSummary(
           question,

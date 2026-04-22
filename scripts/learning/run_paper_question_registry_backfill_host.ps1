@@ -14,8 +14,54 @@ function Write-Step {
   Write-Host "`n== $Message =="
 }
 
+function Normalize-ProviderPath {
+  param([string]$Value)
+
+  if ([string]::IsNullOrWhiteSpace($Value)) {
+    return $Value
+  }
+
+  return $Value -replace '^Microsoft\.PowerShell\.Core\\FileSystem::', ''
+}
+
 function Resolve-RepoRoot {
-  return (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+  return (Get-Item (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))).FullName
+}
+
+function Resolve-HostHelperPath {
+  return (Resolve-Path (Join-Path $PSScriptRoot "lib\\windows-host-node-path.js")).ProviderPath
+}
+
+function Resolve-HostRepoRoot {
+  param(
+    [string]$RepoRoot,
+    [string]$HelperPath
+  )
+
+  $resolved = & node $HelperPath "--kind" "repo-root" "--repo-root" $RepoRoot
+  if ($LASTEXITCODE -ne 0) {
+    throw "Failed to resolve Windows host repo root"
+  }
+
+  if ([string]::IsNullOrWhiteSpace($resolved)) {
+    return $RepoRoot
+  }
+
+  return ($resolved | Out-String).Trim()
+}
+
+function Resolve-InputPath {
+  param(
+    [string]$RepoRoot,
+    [string]$TargetPath
+  )
+
+  $normalizedTargetPath = Normalize-ProviderPath -Value $TargetPath
+  if ([System.IO.Path]::IsPathRooted($normalizedTargetPath)) {
+    return $normalizedTargetPath
+  }
+
+  return (Resolve-Path (Join-Path $RepoRoot $normalizedTargetPath)).ProviderPath
 }
 
 function Invoke-NodeScript {
@@ -49,13 +95,19 @@ function Invoke-NodeScript {
 }
 
 $repoRoot = Resolve-RepoRoot
+$hostHelperPath = Resolve-HostHelperPath
+$hostRepoRoot = Resolve-HostRepoRoot -RepoRoot $repoRoot -HelperPath $hostHelperPath
+$resolvedManifest = Resolve-InputPath -RepoRoot $repoRoot -TargetPath $Manifest
+$resolvedCurriculumSeed = Resolve-InputPath -RepoRoot $repoRoot -TargetPath $CurriculumSeed
 Set-Location $repoRoot
 
 Write-Step "Backfill paper-question registry via Windows host PG compat"
 Invoke-NodeScript -Arguments @(
-  "scripts/learning/run_paper_question_registry_backfill.js",
+  (Resolve-Path (Join-Path $repoRoot "scripts/learning/run_paper_question_registry_backfill.js")).ProviderPath,
+  "--host-repo-root",
+  $hostRepoRoot,
   "--manifest",
-  $Manifest,
+  $resolvedManifest,
   "--curriculum-seed",
-  $CurriculumSeed
+  $resolvedCurriculumSeed
 )

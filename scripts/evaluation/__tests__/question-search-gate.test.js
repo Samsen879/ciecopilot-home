@@ -409,6 +409,289 @@ describe('question-search-gate', () => {
     expect(result.report_markdown).toContain('paper-backed pinned cases cannot pass');
   });
 
+  test('runQuestionSearchGate marks alignment_blocked when a pinned paper case is blocked_for_review', async () => {
+    const fixture = {
+      subject_code: '9709',
+      curriculum_version_tag: DEFAULT_CURRICULUM_VERSION_TAG,
+      thresholds: DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
+      cases: [
+        {
+          id: 'paper-pin-contested',
+          description: 'Contested paper-backed rows must surface alignment preflight details.',
+          query: {
+            topic_path: '9709.p1.trigonometry',
+            year: 2019,
+            session: 's',
+            paper_number: 1,
+            q_number: 6,
+            query: 'identity solve equation',
+          },
+          expected: {
+            match: {
+              source_kind: 'paper_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.p1.trigonometry',
+              year: 2019,
+              session: 's',
+              paper_number: 1,
+              q_number: 6,
+            },
+            required_metadata: [
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'year',
+              'session',
+              'paper_number',
+              'q_number',
+              'summary',
+            ],
+            summary_policy: 'require_non_null',
+          },
+          source_reference: {
+            kind: 'manual_audit_review_sheet',
+            storage_key: '9709/s19_qp_11/questions/q06.png',
+          },
+        },
+      ],
+    };
+
+    const searchQuestionsFn = jest.fn().mockResolvedValue({
+      items: [],
+      total: 0,
+      page: 1,
+      page_size: 20,
+    });
+    const resolveTopicPathFn = jest.fn().mockResolvedValue('topic-paper-trigonometry');
+    const inspectDescriptorSourceFn = jest.fn().mockResolvedValue({
+      selected_branch: 'question_descriptions_v0_status_ok',
+      surfaces: {
+        question_descriptions_prod_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v0: { exists: true, count: 0, count_9709: 0 },
+        learning_question_search_projection: { count: 11, count_9709: 11 },
+        question_bank_9709: { total: 11, paper_question: 0, imported_question: 11 },
+      },
+    });
+    const resolveAlignmentPostureFn = jest.fn().mockResolvedValue({
+      authority_alignment_run_id: 'alignment-run-1',
+      source_manifest_digest: 'digest-1',
+      authority_truth_status: 'frozen',
+      taxonomy_resolution_status: 'resolved',
+      alignment_status: 'contested',
+      alignment_review_required: true,
+      manual_action_required: true,
+      provisional_alignment_verdict: 'ready',
+      overall_alignment_verdict: 'blocked_for_review',
+    });
+
+    const result = await runQuestionSearchGate({
+      fixture,
+      searchQuestionsFn,
+      resolveTopicPathFn,
+      inspectDescriptorSourceFn,
+      resolveAlignmentPostureFn,
+      nowIso: '2026-04-22T14:00:00Z',
+    });
+
+    expect(resolveAlignmentPostureFn).toHaveBeenCalledWith({
+      storageKey: '9709/s19_qp_11/questions/q06.png',
+      authorityAlignmentRunId: null,
+      sourceManifestDigest: null,
+    });
+    expect(result.case_results[0]).toEqual(expect.objectContaining({
+      id: 'paper-pin-contested',
+      alignment_blocked: true,
+      alignment_error: 'alignment_blocked_for_review',
+      authority_alignment_run_id: 'alignment-run-1',
+      source_manifest_digest: 'digest-1',
+      authority_truth_status: 'frozen',
+      taxonomy_resolution_status: 'resolved',
+      alignment_status: 'contested',
+      alignment_review_required: true,
+      manual_action_required: true,
+      provisional_alignment_verdict: 'ready',
+      overall_alignment_verdict: 'blocked_for_review',
+    }));
+  });
+
+  test('runQuestionSearchGate reports blocked_taxonomy_invalid separately from retrieval metrics', async () => {
+    const fixture = {
+      subject_code: '9709',
+      curriculum_version_tag: DEFAULT_CURRICULUM_VERSION_TAG,
+      thresholds: DEFAULT_QUESTION_SEARCH_GATE_THRESHOLDS,
+      cases: [
+        {
+          id: 'imported-fallback-browser-repair',
+          description: 'Imported fallback rows stay retrievable.',
+          query: {
+            topic_path: '9709.codex_cli.browser_fixture.repair',
+            primary_question_type_id: '9709.trigonometry.equations',
+            q_number: 1,
+            query: '2cos(2x)-3sin x',
+          },
+          expected: {
+            match: {
+              question_id: 'question-imported-1',
+              source_kind: 'imported_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.codex_cli.browser_fixture.repair',
+              primary_question_type_id: '9709.trigonometry.equations',
+              family_id: '9709.trigonometry_manipulation_equations',
+              q_number: 1,
+            },
+            required_metadata: [
+              'question_id',
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'primary_question_type_id',
+              'family_id',
+              'q_number',
+              'search_text',
+            ],
+            summary_policy: 'allow_null',
+          },
+          source_reference: {
+            kind: 'question_bank_fixture',
+            storage_key: 'fixture/browser-closed-loop/repair-source',
+          },
+        },
+        {
+          id: 'paper-pin-taxonomy-invalid',
+          description: 'Taxonomy-invalid paper rows must surface preflight posture without replacing retrieval metrics.',
+          query: {
+            topic_path: '9709.p3.integration',
+            year: 2016,
+            session: 's',
+            paper_number: 3,
+            q_number: 7,
+            query: 'Evaluate integral I using substitution',
+          },
+          expected: {
+            match: {
+              source_kind: 'paper_question',
+              subject_code: '9709',
+              primary_topic_path: '9709.p3.integration',
+              year: 2016,
+              session: 's',
+              paper_number: 3,
+              q_number: 7,
+            },
+            required_metadata: [
+              'source_kind',
+              'subject_code',
+              'primary_topic_path',
+              'year',
+              'session',
+              'paper_number',
+              'q_number',
+              'summary',
+            ],
+            summary_policy: 'require_non_null',
+          },
+          source_reference: {
+            kind: 'manual_audit_review_sheet',
+            storage_key: '9709/s16_qp_33/questions/q07.png',
+          },
+        },
+      ],
+    };
+
+    const searchQuestionsFn = jest.fn()
+      .mockResolvedValueOnce({
+        items: [
+          {
+            question_id: 'question-imported-1',
+            source_kind: 'imported_question',
+            subject_code: '9709',
+            primary_topic_path: '9709.codex_cli.browser_fixture.repair',
+            primary_question_type_id: '9709.trigonometry.equations',
+            family_id: '9709.trigonometry_manipulation_equations',
+            q_number: 1,
+            summary: null,
+            search_text: 'Solve 2cos(2x)-3sin x=0 for 0<=x<=180 degrees.',
+          },
+        ],
+        total: 1,
+        page: 1,
+        page_size: 20,
+      })
+      .mockResolvedValueOnce({
+        items: [],
+        total: 0,
+        page: 1,
+        page_size: 20,
+      });
+    const resolveTopicPathFn = jest.fn(({ topicPath }) => {
+      if (topicPath === '9709.codex_cli.browser_fixture.repair') {
+        return Promise.resolve('topic-browser-repair');
+      }
+      if (topicPath === '9709.p3.integration') {
+        return Promise.resolve('topic-paper-integration');
+      }
+      return Promise.resolve(null);
+    });
+    const inspectDescriptorSourceFn = jest.fn().mockResolvedValue({
+      selected_branch: 'question_descriptions_v0_status_ok',
+      surfaces: {
+        question_descriptions_prod_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v1: { exists: false, count: null, count_9709: null },
+        question_descriptions_v0: { exists: true, count: 0, count_9709: 0 },
+        learning_question_search_projection: { count: 11, count_9709: 11 },
+        question_bank_9709: { total: 11, paper_question: 0, imported_question: 11 },
+      },
+    });
+    const resolveAlignmentPostureFn = jest.fn(async ({ storageKey }) => (
+      storageKey === '9709/s16_qp_33/questions/q07.png'
+        ? {
+          authority_alignment_run_id: 'alignment-run-2',
+          source_manifest_digest: 'digest-2',
+          authority_truth_status: 'frozen',
+          taxonomy_resolution_status: 'blocked',
+          alignment_status: 'not_compared',
+          alignment_review_required: false,
+          manual_action_required: true,
+          provisional_alignment_verdict: 'blocked_taxonomy_invalid',
+          overall_alignment_verdict: 'blocked_taxonomy_invalid',
+        }
+        : null
+    ));
+
+    const result = await runQuestionSearchGate({
+      fixture,
+      searchQuestionsFn,
+      resolveTopicPathFn,
+      inspectDescriptorSourceFn,
+      resolveAlignmentPostureFn,
+      nowIso: '2026-04-22T14:10:00Z',
+    });
+
+    expect(result.metrics).toEqual({
+      exact_structured_match_rate: 0.5,
+      subject_leakage_rate: 0,
+      metadata_completeness_rate: 0.5,
+      null_summary_rate: 1,
+    });
+    expect(result.case_results[1]).toEqual(expect.objectContaining({
+      id: 'paper-pin-taxonomy-invalid',
+      alignment_blocked: true,
+      alignment_error: 'alignment_blocked_taxonomy_invalid',
+      authority_alignment_run_id: 'alignment-run-2',
+      source_manifest_digest: 'digest-2',
+      authority_truth_status: 'frozen',
+      taxonomy_resolution_status: 'blocked',
+      alignment_status: 'not_compared',
+      alignment_review_required: false,
+      manual_action_required: true,
+      provisional_alignment_verdict: 'blocked_taxonomy_invalid',
+      overall_alignment_verdict: 'blocked_taxonomy_invalid',
+      total_results: 0,
+      top_result_question_id: null,
+      exact_structured_match: false,
+    }));
+  });
+
   test('runQuestionSearchGate keeps mixed-source authority fixtures green when paper-backed rows rank first', async () => {
     const fixture = {
       subject_code: '9709',

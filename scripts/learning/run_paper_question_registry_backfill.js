@@ -1,14 +1,13 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { getServiceClient } from '../../api/lib/supabase/client.js';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { runPaperQuestionRegistryBackfill } from './lib/paper-question-registry-backfill.js';
 
 const DEFAULT_CURRICULUM_SEED_PATH = 'data/curriculum/9709_question_search_recovery_nodes_v1.json';
 
 function printUsage() {
   console.log(
-    `Usage: node ${path.join('scripts', 'learning', 'run_paper_question_registry_backfill.js')} --manifest <path> [--curriculum-seed <path>] [--dry-run]`,
+    `Usage: node ${path.join('scripts', 'learning', 'run_paper_question_registry_backfill.js')} --manifest <path> [--curriculum-seed <path>] [--host-repo-root <path>] [--dry-run]`,
   );
 }
 
@@ -20,10 +19,16 @@ function resolveOptionValue(argv, index, flag) {
   return value;
 }
 
+function normalizeOptionalPath(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  return normalized || null;
+}
+
 export function parsePaperQuestionRegistryBackfillArgs(argv = []) {
   const options = {
     manifestPath: null,
     curriculumSeedPath: DEFAULT_CURRICULUM_SEED_PATH,
+    hostRepoRootPath: null,
     dryRun: false,
   };
 
@@ -38,6 +43,14 @@ export function parsePaperQuestionRegistryBackfillArgs(argv = []) {
 
     if (token === '--curriculum-seed') {
       options.curriculumSeedPath = resolveOptionValue(argv, index, '--curriculum-seed');
+      index += 1;
+      continue;
+    }
+
+    if (token === '--host-repo-root') {
+      options.hostRepoRootPath = normalizeOptionalPath(
+        resolveOptionValue(argv, index, '--host-repo-root'),
+      );
       index += 1;
       continue;
     }
@@ -68,6 +81,14 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
 }
 
+export async function loadServiceClient(hostRepoRootPath = null) {
+  const moduleUrl = hostRepoRootPath
+    ? pathToFileURL(path.join(hostRepoRootPath, 'api', 'lib', 'supabase', 'client.js')).href
+    : new URL('../../api/lib/supabase/client.js', import.meta.url).href;
+  const { getServiceClient } = await import(moduleUrl);
+  return getServiceClient();
+}
+
 export async function main(argv = process.argv.slice(2)) {
   if (argv.includes('--help')) {
     printUsage();
@@ -75,7 +96,7 @@ export async function main(argv = process.argv.slice(2)) {
   }
 
   const options = parsePaperQuestionRegistryBackfillArgs(argv);
-  const client = getServiceClient();
+  const client = await loadServiceClient(options.hostRepoRootPath);
   const summary = await runPaperQuestionRegistryBackfill(client, {
     manifest: readJson(options.manifestPath),
     curriculumSeed: readJson(options.curriculumSeedPath),

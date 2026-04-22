@@ -75,6 +75,111 @@ function isPresent(value) {
   return true;
 }
 
+function normalizeOptionalString(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  return normalized || null;
+}
+
+function isPaperBackedCase(testCase = {}) {
+  return testCase?.expected?.match?.source_kind === 'paper_question';
+}
+
+function mapAlignmentVerdictToError(overallAlignmentVerdict = null) {
+  switch (overallAlignmentVerdict) {
+    case null:
+      return null;
+    case 'ready':
+      return null;
+    case 'blocked_for_review':
+      return 'alignment_blocked_for_review';
+    case 'blocked_needs_seed':
+      return 'alignment_blocked_needs_seed';
+    case 'blocked_authority_missing':
+      return 'alignment_blocked_authority_missing';
+    case 'blocked_taxonomy_invalid':
+      return 'alignment_blocked_taxonomy_invalid';
+    default:
+      return 'alignment_blocked_unknown';
+  }
+}
+
+function buildDefaultAlignmentPreflight() {
+  return {
+    alignment_blocked: false,
+    alignment_error: null,
+    authority_alignment_run_id: null,
+    source_manifest_digest: null,
+    authority_truth_status: null,
+    taxonomy_resolution_status: null,
+    alignment_status: null,
+    alignment_review_required: null,
+    manual_action_required: null,
+    provisional_alignment_verdict: null,
+    overall_alignment_verdict: null,
+  };
+}
+
+async function buildCaseAlignmentPreflight(testCase = {}, resolveAlignmentPostureFn = null) {
+  const preflight = buildDefaultAlignmentPreflight();
+
+  if (typeof resolveAlignmentPostureFn !== 'function' || !isPaperBackedCase(testCase)) {
+    return preflight;
+  }
+
+  const storageKey = normalizeOptionalString(testCase?.source_reference?.storage_key);
+  const authorityAlignmentRunId = normalizeOptionalString(
+    testCase?.source_reference?.authority_alignment_run_id,
+  );
+  const sourceManifestDigest = normalizeOptionalString(
+    testCase?.source_reference?.source_manifest_digest,
+  );
+
+  if (!storageKey) {
+    return {
+      ...preflight,
+      alignment_blocked: true,
+      alignment_error: 'alignment_source_reference_missing',
+    };
+  }
+
+  const posture = await resolveAlignmentPostureFn({
+    storageKey,
+    authorityAlignmentRunId,
+    sourceManifestDigest,
+  });
+
+  if (!posture) {
+    return {
+      ...preflight,
+      alignment_blocked: true,
+      alignment_error: 'alignment_posture_not_found',
+    };
+  }
+
+  const overallAlignmentVerdict = normalizeOptionalString(posture?.overall_alignment_verdict);
+  const alignmentError = mapAlignmentVerdictToError(overallAlignmentVerdict);
+
+  return {
+    alignment_blocked: alignmentError !== null,
+    alignment_error: alignmentError,
+    authority_alignment_run_id: normalizeOptionalString(posture?.authority_alignment_run_id),
+    source_manifest_digest: normalizeOptionalString(posture?.source_manifest_digest),
+    authority_truth_status: normalizeOptionalString(posture?.authority_truth_status),
+    taxonomy_resolution_status: normalizeOptionalString(posture?.taxonomy_resolution_status),
+    alignment_status: normalizeOptionalString(posture?.alignment_status),
+    alignment_review_required:
+      typeof posture?.alignment_review_required === 'boolean'
+        ? posture.alignment_review_required
+        : null,
+    manual_action_required:
+      typeof posture?.manual_action_required === 'boolean'
+        ? posture.manual_action_required
+        : null,
+    provisional_alignment_verdict: normalizeOptionalString(posture?.provisional_alignment_verdict),
+    overall_alignment_verdict: overallAlignmentVerdict,
+  };
+}
+
 function roundRate(value) {
   return Number(value.toFixed(4));
 }
@@ -351,6 +456,12 @@ function buildResidualRisks(environment, caseResults, gate) {
     );
   }
 
+  if (caseResults.some((result) => result.alignment_blocked === true)) {
+    risks.push(
+      'At least one paper-backed pinned case is alignment-blocked, so the gate is exposing authority posture separately from retrieval failure.',
+    );
+  }
+
   if (!gate.pass) {
     risks.push(
       'The structured-retrieval gate is blocking release for this checked environment until the failing thresholds are addressed.',
@@ -383,9 +494,13 @@ function buildOutcomeLines(gate, caseResults) {
     && result.summary_required === false
   )).length;
   const pinnedFailures = caseResults.filter((result) => result.exact_structured_match === false);
+  const alignmentBlockedCount = caseResults.filter((result) => result.alignment_blocked === true).length;
 
   lines.push(`- imported_fallback_cases_passing: \`${importedPassCount}\``);
   lines.push(`- pinned_case_failures: \`${pinnedFailures.length}\``);
+  if (alignmentBlockedCount > 0) {
+    lines.push(`- alignment_blocked_cases: \`${alignmentBlockedCount}\``);
+  }
 
   if (pinnedFailures.some((result) => result.resolution_error === 'topic_path_not_found')) {
     lines.push('- Paper-backed pinned cases are currently failing at topic resolution in the checked environment.');
@@ -458,12 +573,27 @@ export function renderQuestionSearchGateReport({
   const caseRows = caseResults.map((result) => [
     result.id,
     result.resolution_error || result.query_summary || '(none)',
+    result.alignment_error || result.overall_alignment_verdict || 'n/a',
     result.top_result_question_id || '(none)',
     result.exact_structured_match ? 'pass' : 'fail',
     `${result.metadata_present_count}/${result.metadata_required_count}`,
     result.summary_required ? (result.summary_present ? 'present' : 'missing') : 'n/a',
     result.subject_leakage ? 'yes' : 'no',
   ]);
+
+  const alignmentRows = caseResults
+    .filter((result) => isPaperBackedCase(fixture.cases.find((testCase) => testCase.id === result.id)))
+    .map((result) => [
+      result.id,
+      result.alignment_error || 'ready',
+      result.overall_alignment_verdict || 'n/a',
+      result.authority_truth_status || 'n/a',
+      result.taxonomy_resolution_status || 'n/a',
+      result.alignment_status || 'n/a',
+      typeof result.manual_action_required === 'boolean'
+        ? (result.manual_action_required ? 'yes' : 'no')
+        : 'n/a',
+    ]);
 
   const thresholdRows = gate.checks.map((check) => [
     check.metric,
@@ -526,9 +656,18 @@ export function renderQuestionSearchGateReport({
     '## Case Results',
     '',
     buildMarkdownTable(
-      ['Case', 'Resolution / Query', 'Top Result', 'Exact Match', 'Metadata', 'Summary', 'Subject Leakage'],
+      ['Case', 'Resolution / Query', 'Alignment', 'Top Result', 'Exact Match', 'Metadata', 'Summary', 'Subject Leakage'],
       caseRows,
     ),
+    '',
+    '## Alignment Preflight',
+    '',
+    alignmentRows.length > 0
+      ? buildMarkdownTable(
+        ['Case', 'Alignment Error', 'Final Verdict', 'Authority', 'Taxonomy', 'Alignment', 'Manual Action'],
+        alignmentRows,
+      )
+      : '_No paper-backed pinned cases required alignment preflight._',
     '',
     '## Threshold Results',
     '',
@@ -563,6 +702,7 @@ export async function runQuestionSearchGate({
   searchQuestionsFn,
   resolveTopicPathFn,
   inspectDescriptorSourceFn,
+  resolveAlignmentPostureFn = null,
   nowIso = new Date().toISOString(),
 } = {}) {
   if (!fixture) {
@@ -603,6 +743,10 @@ export async function runQuestionSearchGate({
     const caseSubject = testCase.query.subject_code || normalizedFixture.subject_code;
     let resolvedTopicId = null;
     let resolutionError = null;
+    const alignmentPreflight = await buildCaseAlignmentPreflight(
+      testCase,
+      resolveAlignmentPostureFn,
+    );
 
     if (isPresent(testCase.query.topic_path)) {
       resolvedTopicId = await resolveTopicPathFn({
@@ -665,6 +809,7 @@ export async function runQuestionSearchGate({
       missing_metadata: metadataStatus.missing,
       summary_required: summaryRequired,
       summary_present: summaryPresent,
+      ...alignmentPreflight,
     });
   }
 
@@ -717,11 +862,6 @@ function normalizePsqlMode(value) {
     throw new Error(`Unsupported --psql-mode: ${value}`);
   }
   return normalized;
-}
-
-function normalizeOptionalString(value) {
-  const normalized = typeof value === 'string' ? value.trim() : '';
-  return normalized || null;
 }
 
 export function selectSupabaseDbContainerName(containerNames = []) {
@@ -822,7 +962,7 @@ async function runPsqlJson(sql, psqlConfig = null) {
   return JSON.parse(raw);
 }
 
-async function resolveTopicPathFromDatabase({
+export async function resolveTopicPathFromDatabase({
   subjectCode,
   topicPath,
   curriculumVersionTag = DEFAULT_CURRICULUM_VERSION_TAG,
@@ -922,7 +1062,7 @@ export async function searchProjectionFromDatabase(searchInput, {
   });
 }
 
-async function inspectDescriptorSourceFromDatabase(subjectCode, psqlConfig = null) {
+export async function inspectDescriptorSourceFromDatabase(subjectCode, psqlConfig = null) {
   const resolvedConfig = psqlConfig ?? resolveQuestionSearchGatePsqlConfig();
   const prodExists = await relationExists('public.question_descriptions_prod_v1', resolvedConfig);
   const v1Exists = await relationExists('public.question_descriptions_v1', resolvedConfig);

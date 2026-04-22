@@ -1,4 +1,6 @@
 import path from 'node:path';
+import fs from 'node:fs';
+import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
@@ -29,7 +31,7 @@ describe('run_paper_question_registry_backfill cli', () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain(
-      `Usage: node ${path.join('scripts', 'learning', 'run_paper_question_registry_backfill.js')} --manifest <path> [--curriculum-seed <path>] [--dry-run]`,
+      `Usage: node ${path.join('scripts', 'learning', 'run_paper_question_registry_backfill.js')} --manifest <path> [--curriculum-seed <path>] [--host-repo-root <path>] [--dry-run]`,
     );
   });
 
@@ -46,6 +48,52 @@ describe('run_paper_question_registry_backfill cli', () => {
       manifestPath: 'data/manifests/9709_question_search_recovery_v1.json',
       curriculumSeedPath: 'data/curriculum/9709_question_search_recovery_nodes_v1.json',
       dryRun: true,
+      hostRepoRootPath: null,
+    });
+  });
+
+  test('loads the service client from --host-repo-root when provided', async () => {
+    const module = await import('../run_paper_question_registry_backfill.js');
+    const hostRepoRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'registry-host-root-'));
+    const clientModulePath = path.join(hostRepoRoot, 'api', 'lib', 'supabase');
+    fs.mkdirSync(clientModulePath, { recursive: true });
+    fs.writeFileSync(
+      path.join(hostRepoRoot, 'package.json'),
+      JSON.stringify({ type: 'module' }),
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(clientModulePath, 'client.js'),
+      [
+        'export function getServiceClient() {',
+        "  return { source: 'host-repo-root-client' };",
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+
+    await expect(module.loadServiceClient(hostRepoRoot)).resolves.toEqual({
+      source: 'host-repo-root-client',
+    });
+  });
+
+  test('parses --host-repo-root deterministically', async () => {
+    const module = await import('../run_paper_question_registry_backfill.js');
+
+    expect(module.parsePaperQuestionRegistryBackfillArgs([
+      '--manifest',
+      'data/manifests/9709_question_search_recovery_v1.json',
+      '--curriculum-seed',
+      'data/curriculum/9709_question_search_recovery_nodes_v1.json',
+      '--host-repo-root',
+      'C:\\repo-root',
+      '--dry-run',
+    ])).toEqual({
+      manifestPath: 'data/manifests/9709_question_search_recovery_v1.json',
+      curriculumSeedPath: 'data/curriculum/9709_question_search_recovery_nodes_v1.json',
+      dryRun: true,
+      hostRepoRootPath: 'C:\\repo-root',
     });
   });
 

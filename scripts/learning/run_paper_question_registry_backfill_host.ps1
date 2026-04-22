@@ -99,11 +99,13 @@ $hostHelperPath = Resolve-HostHelperPath
 $hostRepoRoot = Resolve-HostRepoRoot -RepoRoot $repoRoot -HelperPath $hostHelperPath
 $resolvedManifest = Resolve-InputPath -RepoRoot $repoRoot -TargetPath $Manifest
 $resolvedCurriculumSeed = Resolve-InputPath -RepoRoot $repoRoot -TargetPath $CurriculumSeed
-Set-Location $hostRepoRoot
+Set-Location $repoRoot
 
 Write-Step "Backfill paper-question registry via Windows host PG compat"
 Invoke-NodeScript -Arguments @(
-  (Join-Path $hostRepoRoot "scripts/learning/run_paper_question_registry_backfill.js"),
+  (Resolve-Path (Join-Path $repoRoot "scripts/learning/run_paper_question_registry_backfill.js")).ProviderPath,
+  "--host-repo-root",
+  $hostRepoRoot,
   "--manifest",
   $resolvedManifest,
   "--curriculum-seed",

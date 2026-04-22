@@ -1,7 +1,6 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { getServiceClient } from '../../api/lib/supabase/client.js';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { runQuestionAnalysisBackfill } from './lib/question-analysis-backfill.js';
 
 function writeStdoutLine(message) {
@@ -14,7 +13,7 @@ function writeStderrLine(message) {
 
 function printUsage() {
   writeStdoutLine(
-    'Usage: node scripts/learning/run_question_analysis_backfill.js [--force] [--source-kind <kind>] [--manifest <path>] [--evidence-bundles <path>]',
+    'Usage: node scripts/learning/run_question_analysis_backfill.js [--force] [--source-kind <kind>] [--manifest <path>] [--evidence-bundles <path>] [--host-repo-root <path>]',
   );
 }
 
@@ -29,6 +28,11 @@ function normalizeSourceKind(value) {
   }
 
   return normalized;
+}
+
+function normalizeOptionalPath(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  return normalized || null;
 }
 
 function readRequiredOptionValue(argv, index, token, message) {
@@ -160,6 +164,7 @@ function parseArgs(argv = process.argv.slice(2)) {
     sourceKind: 'imported_question',
     manifestPath: null,
     evidenceBundlePath: null,
+    hostRepoRootPath: null,
     help: false,
   };
 
@@ -201,10 +206,26 @@ function parseArgs(argv = process.argv.slice(2)) {
       continue;
     }
 
+    if (token === '--host-repo-root') {
+      options.hostRepoRootPath = normalizeOptionalPath(
+        readRequiredOptionValue(argv, index, token, '--host-repo-root requires a file path.'),
+      );
+      index += 1;
+      continue;
+    }
+
     throw new Error(`Unknown argument: ${token}`);
   }
 
   return options;
+}
+
+async function loadServiceClient(hostRepoRootPath = null) {
+  const moduleUrl = hostRepoRootPath
+    ? pathToFileURL(path.join(hostRepoRootPath, 'api', 'lib', 'supabase', 'client.js')).href
+    : new URL('../../api/lib/supabase/client.js', import.meta.url).href;
+  const { getServiceClient } = await import(moduleUrl);
+  return getServiceClient();
 }
 
 export async function main(argv = process.argv.slice(2)) {
@@ -215,7 +236,7 @@ export async function main(argv = process.argv.slice(2)) {
     return;
   }
 
-  const client = getServiceClient();
+  const client = await loadServiceClient(options.hostRepoRootPath);
   let questions = await loadCandidateQuestions(client, {
     sourceKind: options.sourceKind,
   });

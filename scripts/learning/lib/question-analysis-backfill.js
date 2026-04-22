@@ -572,6 +572,11 @@ function buildEnvelopeFromQuestion(question, questionEvidenceBundleClassificatio
   });
 }
 
+function isMissingPromptRepresentationError(error) {
+  return error?.name === 'QuestionAnalysisValidationError'
+    && error?.message === 'question envelope prompt_representation is required';
+}
+
 async function findActiveSnapshotId(client, { questionId } = {}) {
   if (!questionId) {
     return null;
@@ -609,6 +614,27 @@ async function supersedeActiveSnapshot(client, {
   if (error) {
     throw new Error(
       `Failed to supersede active question classification snapshot: ${error.message}`,
+    );
+  }
+}
+
+async function activateSnapshot(client, {
+  snapshotId,
+} = {}) {
+  if (!snapshotId) {
+    return;
+  }
+
+  const { error } = await client
+    .from('learning_question_analysis_snapshots')
+    .update({
+      superseded_by_snapshot_id: null,
+    })
+    .eq('classification_snapshot_id', snapshotId);
+
+  if (error) {
+    throw new Error(
+      `Failed to activate replacement question classification snapshot: ${error.message}`,
     );
   }
 }
@@ -694,17 +720,12 @@ export async function backfillQuestionAnalysisRecord(client, {
   let supersededActiveSnapshot = false;
 
   try {
-    if (force && activeSnapshotId) {
-      await supersedeActiveSnapshot(client, {
-        activeSnapshotId,
-        replacementSnapshotId,
-      });
-      supersededActiveSnapshot = true;
-    }
-
     const snapshotRow = buildSnapshotRow(question.question_id, materializedClassification);
     if (replacementSnapshotId) {
       snapshotRow.classification_snapshot_id = replacementSnapshotId;
+      // Insert the replacement snapshot in a provisional self-superseded state so the
+      // self-referential FK and the single-active-snapshot index both stay valid.
+      snapshotRow.superseded_by_snapshot_id = replacementSnapshotId;
     }
 
     const { data: insertedSnapshot, error: snapshotError } = await client
@@ -719,6 +740,18 @@ export async function backfillQuestionAnalysisRecord(client, {
       );
     }
     insertedSnapshotId = insertedSnapshot.classification_snapshot_id;
+
+    if (force && activeSnapshotId) {
+      await supersedeActiveSnapshot(client, {
+        activeSnapshotId,
+        replacementSnapshotId: insertedSnapshotId,
+      });
+      supersededActiveSnapshot = true;
+
+      await activateSnapshot(client, {
+        snapshotId: insertedSnapshotId,
+      });
+    }
 
     ({ eventRef } = await appendQuestionClassifiedEvent(client, {
       questionId: question.question_id,
@@ -776,7 +809,7 @@ export async function backfillQuestionAnalysisRecord(client, {
       event_ref: eventRef,
     };
   } catch (error) {
-    if (supersededActiveSnapshot) {
+    if (force && activeSnapshotId) {
       const rollbackErrors = [];
 
       if (insertedSnapshotId) {
@@ -787,10 +820,12 @@ export async function backfillQuestionAnalysisRecord(client, {
         }
       }
 
-      try {
-        await restoreActiveSnapshot(client, { activeSnapshotId });
-      } catch (rollbackError) {
-        rollbackErrors.push(rollbackError.message);
+      if (supersededActiveSnapshot) {
+        try {
+          await restoreActiveSnapshot(client, { activeSnapshotId });
+        } catch (rollbackError) {
+          rollbackErrors.push(rollbackError.message);
+        }
       }
 
       if (rollbackErrors.length > 0) {
@@ -824,15 +859,30 @@ export async function runQuestionAnalysisBackfill(client, {
       continue;
     }
 
-    const result = await backfillQuestionAnalysisRecord(client, {
-      question,
-      analysisHints: question?.analysisHints ?? question?.analysis_hints ?? null,
-      questionEvidenceBundle:
-        question?.questionEvidenceBundle
-        ?? question?.question_evidence_bundle
-        ?? null,
-      force,
-    });
+    let result;
+    try {
+      result = await backfillQuestionAnalysisRecord(client, {
+        question,
+        analysisHints: question?.analysisHints ?? question?.analysis_hints ?? null,
+        questionEvidenceBundle:
+          question?.questionEvidenceBundle
+          ?? question?.question_evidence_bundle
+          ?? null,
+        force,
+      });
+    } catch (error) {
+      if (!isMissingPromptRepresentationError(error)) {
+        throw error;
+      }
+
+      summary.skipped += 1;
+      summary.items.push({
+        question_id: question.question_id,
+        status: 'skipped_missing_prompt_representation',
+      });
+      continue;
+    }
+
     summary.backfilled += 1;
     summary.items.push({
       question_id: question.question_id,

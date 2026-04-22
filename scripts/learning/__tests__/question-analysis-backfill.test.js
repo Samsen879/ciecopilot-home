@@ -107,7 +107,10 @@ function createBackfillClient() {
           (snapshot) => snapshot.question_id === this.payload.question_id
             && (snapshot.superseded_by_snapshot_id ?? null) === null,
         );
-        if (activeSnapshot) {
+        const snapshotId = this.payload.classification_snapshot_id || `snapshot-${state.nextSnapshotId++}`;
+        const nextSupersededBySnapshotId = this.payload.superseded_by_snapshot_id ?? null;
+
+        if ((nextSupersededBySnapshotId ?? null) === null && activeSnapshot) {
           return Promise.resolve({
             data: null,
             error: {
@@ -117,7 +120,20 @@ function createBackfillClient() {
           });
         }
 
-        const snapshotId = this.payload.classification_snapshot_id || `snapshot-${state.nextSnapshotId++}`;
+        if (
+          nextSupersededBySnapshotId
+          && nextSupersededBySnapshotId !== snapshotId
+          && !state.snapshots.has(nextSupersededBySnapshotId)
+        ) {
+          return Promise.resolve({
+            data: null,
+            error: {
+              message:
+                'insert or update on table "learning_question_analysis_snapshots" violates foreign key constraint "learning_question_analysis_snaps_superseded_by_snapshot_id_fkey"',
+            },
+          });
+        }
+
         const row = {
           superseded_by_snapshot_id: null,
           classification_snapshot_id: snapshotId,
@@ -152,6 +168,39 @@ function createBackfillClient() {
             error: { message: `Snapshot not found for ${snapshotId}` },
           });
         }
+
+        const nextSupersededBySnapshotId = this.payload.superseded_by_snapshot_id;
+        if (
+          typeof nextSupersededBySnapshotId !== 'undefined'
+          && nextSupersededBySnapshotId !== null
+          && !state.snapshots.has(nextSupersededBySnapshotId)
+        ) {
+          return Promise.resolve({
+            data: null,
+            error: {
+              message:
+                'insert or update on table "learning_question_analysis_snapshots" violates foreign key constraint "learning_question_analysis_snaps_superseded_by_snapshot_id_fkey"',
+            },
+          });
+        }
+
+        if (nextSupersededBySnapshotId === null) {
+          const activeSnapshot = [...state.snapshots.values()].find(
+            (snapshot) => snapshot.question_id === current.question_id
+              && snapshot.classification_snapshot_id !== snapshotId
+              && (snapshot.superseded_by_snapshot_id ?? null) === null,
+          );
+          if (activeSnapshot) {
+            return Promise.resolve({
+              data: null,
+              error: {
+                message:
+                  'duplicate key value violates unique constraint "uq_learning_question_analysis_snapshots_active"',
+              },
+            });
+          }
+        }
+
         state.snapshots.set(snapshotId, { ...current, ...this.payload });
         return Promise.resolve({ data: null, error: null });
       }
@@ -1113,6 +1162,52 @@ describe('question-analysis backfill', () => {
         },
       ],
     });
+  });
+
+  test('skips rows that have no prompt_representation and no usable evidence-bundle prompt input', async () => {
+    const { client, state } = createBackfillClient();
+
+    const summary = await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-missing-prompt',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          prompt_representation: null,
+          provenance_summary: {
+            storage_key: '9709/s24_qp_33/questions/q09.png',
+          },
+          classification_snapshot_ref: null,
+          questionEvidenceBundle: {
+            storage_key: '9709/s24_qp_33/questions/q09.png',
+            evidence: {
+              ocr_text: '',
+              formula_latex_list: [],
+              subquestion_blocks: [],
+              layout_hints: [],
+              diagram_present: null,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+          },
+        },
+      ],
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      backfilled: 0,
+      skipped: 1,
+      items: [
+        {
+          question_id: 'question-missing-prompt',
+          status: 'skipped_missing_prompt_representation',
+        },
+      ],
+    });
+    expect(state.snapshots.size).toBe(0);
+    expect(state.questions.size).toBe(0);
+    expect(state.events.size).toBe(0);
   });
 
   test('force backfill replaces the existing active snapshot when the replacement succeeds', async () => {

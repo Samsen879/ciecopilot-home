@@ -2,20 +2,6 @@ name: RAG S1 Metric Gate
 
 on:
   pull_request:
-    paths:
-      - "api/rag/**"
-      - "api/learning/**"
-      - "src/**"
-      - "scripts/rag/**"
-      - "scripts/ao/**"
-      - "scripts/ao-*.js"
-      - "tests/ao/**"
-      - ".github/workflows/ao-operations-gate.yml"
-      - "data/learning_runtime/release_evidence/**"
-      - "docs/reports/learning_runtime*.md"
-      - "docs/reports/*learning-runtime*.md"
-      - "data/eval/**"
-      - ".github/workflows/rag-s1-metric-gate.yml"
   push:
     branches: [main]
     paths:

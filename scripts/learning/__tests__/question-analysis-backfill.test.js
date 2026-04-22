@@ -683,6 +683,114 @@ describe('question-analysis backfill', () => {
     );
   });
 
+  test('paper_question backfill persists the structured bundle prompt when diagram-only evidence has no OCR summary', async () => {
+    const { client, state } = createBackfillClient();
+
+    const summary = await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-paper-q07-diagram-only',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/s17_qp_63/questions/q07.png',
+          q_number: 7,
+          primary_topic_id: 'topic-representation-of-data',
+          paper_scope: {
+            year: 2017,
+            session: 's',
+            paper: 6,
+            q_number: 7,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/s17_qp_63/questions/q07.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p5.representation_of_data',
+            },
+            evidence: {
+              ocr_text: '',
+              formula_latex_list: [],
+              subquestion_blocks: [],
+              layout_hints: [],
+              diagram_present: true,
+              diagram_elements: [
+                'vertical bars (4)',
+                "x-axis labeled 'Length (cm)'",
+                "y-axis labeled 'Frequency density'",
+                'grid lines',
+              ],
+              spatial_evidence: [
+                'bar 1 spans x=0 to 5, height ≈2',
+                'bar 2 spans x=5 to 10, height ≈8',
+                'bar 3 spans x=10 to 20, height ≈12',
+                'bar 4 spans x=20 to 25, height ≈6',
+              ],
+            },
+            route: {
+              route: 'ocr_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [
+              {
+                route: 'diagram_lane',
+                model: 'qwen3-vl-plus',
+                region: 'dashscope-cn',
+                prompt_template_version: 'v1',
+                response_schema_version: 'v1',
+              },
+            ],
+            lazy_attach_original_image: true,
+            lazy_attach_reasons: ['requires_review'],
+            original_image_asset: {
+              input_asset_id: '9709/s17_qp_63/questions/q07.png',
+              input_asset_hash: 'hash-q07-diagram',
+            },
+            review_posture: {
+              requires_review: true,
+              gate_critical: false,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/s17_qp_63/questions/q07.png',
+            q_number: 7,
+            primary_topic_path: '9709.p5.representation_of_data',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(summary).toMatchObject({
+      processed: 1,
+      backfilled: 1,
+      skipped: 0,
+    });
+    expect(state.questions.get('question-paper-q07-diagram-only')).toMatchObject({
+      primary_topic_id: 'topic-representation-of-data',
+      release_scope_status: 'non_released_fallback',
+      prompt_representation: {
+        type: 'text',
+        value: expect.stringContaining('Diagram Present: true'),
+      },
+    });
+    expect(
+      state.questions.get('question-paper-q07-diagram-only').prompt_representation.value,
+    ).toEqual(expect.stringContaining('Diagram Elements:'));
+    expect(
+      state.questions.get('question-paper-q07-diagram-only').prompt_representation.value,
+    ).toEqual(expect.stringContaining("x-axis labeled 'Length (cm)'"));
+    expect(
+      state.questions.get('question-paper-q07-diagram-only').prompt_representation.value,
+    ).toEqual(expect.stringContaining('Spatial Evidence:'));
+    expect(
+      state.questions.get('question-paper-q07-diagram-only').prompt_representation.value,
+    ).toEqual(expect.stringContaining('bar 3 spans x=10 to 20, height ≈12'));
+  });
+
   test('paper_question search text adds retrieval-oriented integral substitution cues', async () => {
     const { client, state } = createBackfillClient();
 

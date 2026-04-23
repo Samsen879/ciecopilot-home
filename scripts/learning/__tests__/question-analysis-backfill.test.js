@@ -776,6 +776,12 @@ describe('question-analysis backfill', () => {
         type: 'text',
         value: expect.stringContaining('Diagram Present: true'),
       },
+      provenance_summary: expect.objectContaining({
+        summary: expect.stringContaining('Diagram Present: true'),
+        search_text: expect.stringContaining('Diagram Present: true'),
+        descriptor_summary_status: 'evidence_bundle_summary',
+        descriptor_search_text_status: 'evidence_bundle_search_text',
+      }),
     });
     expect(
       state.questions.get('question-paper-q07-diagram-only').prompt_representation.value,
@@ -789,6 +795,83 @@ describe('question-analysis backfill', () => {
     expect(
       state.questions.get('question-paper-q07-diagram-only').prompt_representation.value,
     ).toEqual(expect.stringContaining('bar 3 spans x=10 to 20, height ≈12'));
+  });
+
+  test('paper_question backfill preserves curated provenance descriptors when only low-signal structured fallback is available', async () => {
+    const { client, state } = createBackfillClient();
+
+    await runQuestionAnalysisBackfill(client, {
+      questions: [
+        {
+          question_id: 'question-paper-curated-descriptor',
+          source_kind: 'paper_question',
+          subject_code: '9709',
+          storage_key: '9709/s24_qp_13/questions/q09.png',
+          q_number: 9,
+          primary_topic_id: 'topic-integration-application',
+          paper_scope: {
+            year: 2024,
+            session: 's',
+            paper: 1,
+            q_number: 9,
+          },
+          prompt_representation: null,
+          questionEvidenceBundle: {
+            schema_version: 'question_evidence_bundle_v1',
+            storage_key: '9709/s24_qp_13/questions/q09.png',
+            analysis_hints: {
+              topic_path_hint: '9709.p1.integration.application',
+            },
+            evidence: {
+              ocr_text: '',
+              formula_latex_list: [],
+              subquestion_blocks: [],
+              layout_hints: [],
+              diagram_present: false,
+              diagram_elements: [],
+              spatial_evidence: [],
+            },
+            route: {
+              route: 'ocr_lane',
+              model: 'qwen3.6-plus',
+              region: 'dashscope-cn',
+              prompt_template_version: 'v1',
+              response_schema_version: 'v1',
+            },
+            model_provenance: [],
+            lazy_attach_original_image: false,
+            lazy_attach_reasons: [],
+            original_image_asset: {
+              input_asset_id: '9709/s24_qp_13/questions/q09.png',
+              input_asset_hash: 'hash-curated-descriptor',
+            },
+            review_posture: {
+              requires_review: false,
+              gate_critical: false,
+            },
+          },
+          provenance_summary: {
+            storage_key: '9709/s24_qp_13/questions/q09.png',
+            q_number: 9,
+            primary_topic_path: '9709.p1.integration.application',
+            summary: 'Curated descriptor summary.',
+            search_text: 'curated retrieval descriptor text',
+            descriptor_summary_status: 'manual_curated_summary',
+            descriptor_search_text_status: 'manual_curated_search_text',
+          },
+          classification_snapshot_ref: null,
+        },
+      ],
+    });
+
+    expect(state.questions.get('question-paper-curated-descriptor')).toMatchObject({
+      provenance_summary: expect.objectContaining({
+        summary: 'Curated descriptor summary.',
+        search_text: 'curated retrieval descriptor text',
+        descriptor_summary_status: 'manual_curated_summary',
+        descriptor_search_text_status: 'manual_curated_search_text',
+      }),
+    });
   });
 
   test('paper_question search text adds retrieval-oriented integral substitution cues', async () => {

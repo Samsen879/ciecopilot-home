@@ -19678,8 +19678,22 @@
           "mark allocations in square brackets aligned right for each subquestion"
         ],
         "diagram_present": true,
-        "diagram_elements": [],
-        "spatial_evidence": []
+        "diagram_elements": [
+          "quadrilateral ABCD",
+          "points A, B, C, D",
+          "line segments AB, BC, CD, DA"
+        ],
+        "spatial_evidence": [
+          "The diagram shows a quadrilateral with vertices labeled A, B, C, D",
+          "Side AB appears horizontal, side BC vertical, suggesting right angle at B",
+          "Side CD is parallel to AB, indicating possible trapezium"
+        ],
+        "diagram_type": "geometric figure",
+        "shape_relations": [
+          "ABCD is a quadrilateral",
+          "AB and CD are opposite sides",
+          "AD and BC are opposite sides"
+        ]
       },
       "surface_posture": {
         "descriptor_required": true,
@@ -19791,8 +19805,27 @@
           "Subquestion (ii) followed by dotted answer lines."
         ],
         "diagram_present": true,
-        "diagram_elements": [],
-        "spatial_evidence": []
+        "diagram_elements": [
+          "circle",
+          "center O",
+          "points A and B on the circle",
+          "angle AOB = 2θ radians",
+          "tangents at A and B meeting at point T",
+          "shaded region between tangents and arc AB"
+        ],
+        "spatial_evidence": [
+          "The shaded region lies outside the circle but is bounded by the two tangents and the arc AB",
+          "Point T is located externally relative to the circle",
+          "Lines OA and OB are radii, perpendicular to tangents at A and B respectively",
+          "The arc AB is part of the circle's circumference"
+        ],
+        "diagram_type": "geometric diagram",
+        "shape_relations": [
+          "Points A and B lie on the circumference of the circle",
+          "Angle AOB is subtended at the center O",
+          "Tangents from A and B meet at external point T",
+          "Shaded region bounded by tangents AT, BT, and arc AB"
+        ]
       },
       "surface_posture": {
         "descriptor_required": true,
@@ -29779,8 +29812,30 @@
           "Additional Page section at bottom with instruction text and dotted lines"
         ],
         "diagram_present": true,
-        "diagram_elements": [],
-        "spatial_evidence": []
+        "diagram_elements": [
+          "Curve with equation y = x³ - 2bx² + b²x",
+          "Line OA",
+          "Shaded region between the line and the curve",
+          "Point A (maximum point on the curve)",
+          "Origin O",
+          "Point a on the x-axis",
+          "Point b on the x-axis"
+        ],
+        "spatial_evidence": [
+          "The curve starts at the origin, rises to a maximum at A, then decreases to a minimum at (b, 0), and increases again",
+          "The shaded region is located between the line OA and the curve from x = 0 to x = a",
+          "The line OA is straight and connects O to A"
+        ],
+        "diagram_type": "Cartesian graph",
+        "axes_labels": [
+          "x-axis labeled as x",
+          "y-axis labeled as y"
+        ],
+        "shape_relations": [
+          "The shaded region is bounded by the line OA and the curve from x = 0 to x = a",
+          "The curve passes through the origin O",
+          "The line OA connects the origin to point A on the curve"
+        ]
       },
       "surface_posture": {
         "descriptor_required": true,
@@ -32693,8 +32748,14 @@
           "\\frac{dx}{dt} = \\frac{-1}{2t(20x - 3x^2)}"
         ],
         "subquestion_blocks": [
-          "{'label': '(a)', 'text': 'Show that x and t satisfy the differential equation\\n\\n\\\\frac{dx}{dt} = \\\\frac{-1}{2t(20x - 3x^2)}.'}",
-          "{'label': '(b)', 'text': 'Solve the differential equation, obtaining an expression for t in terms of x.'}"
+          {
+            "label": "(a)",
+            "text": "Show that x and t satisfy the differential equation\n\n\\frac{dx}{dt} = \\frac{-1}{2t(20x - 3x^2)}."
+          },
+          {
+            "label": "(b)",
+            "text": "Solve the differential equation, obtaining an expression for t in terms of x."
+          }
         ],
         "layout_hints": [
           "Diagram of a cuboid with labeled dimensions: base side x, height (10 - x).",

@@ -396,15 +396,22 @@ function buildQuestionProvenanceSummary(
   const structuredBundlePrompt = normalizeString(
     questionEvidenceBundleClassificationInput?.prompt_representation?.value,
   );
-  const derivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle) || structuredBundlePrompt;
-  const derivedSearchText =
-    buildEvidenceDerivedSearchText(questionEvidenceBundle, classification) || structuredBundlePrompt;
+  const evidenceDerivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle);
+  const evidenceDerivedSearchText = buildEvidenceDerivedSearchText(questionEvidenceBundle, classification);
+  const existingSummary = normalizeString(existing.summary);
+  const existingTitle = normalizeString(existing.title);
+  const existingSearchText = normalizeString(existing.search_text);
+  const useStructuredSummaryFallback = !evidenceDerivedSummary && !existingSummary && structuredBundlePrompt;
+  const useStructuredSearchTextFallback =
+    !evidenceDerivedSearchText && !existingSearchText && structuredBundlePrompt;
+  const derivedSummary = evidenceDerivedSummary || useStructuredSummaryFallback;
+  const derivedSearchText = evidenceDerivedSearchText || useStructuredSearchTextFallback;
 
   return {
     ...existing,
-    summary: derivedSummary || existing.summary || null,
-    title: derivedSummary || existing.title || null,
-    search_text: derivedSearchText || existing.search_text || null,
+    summary: derivedSummary || existingSummary || null,
+    title: derivedSummary || existingTitle || null,
+    search_text: derivedSearchText || existingSearchText || null,
     descriptor_summary_status: derivedSummary
       ? 'evidence_bundle_summary'
       : existing.descriptor_summary_status ?? 'missing',

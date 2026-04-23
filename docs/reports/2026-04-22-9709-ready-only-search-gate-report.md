@@ -19,7 +19,7 @@ node scripts/evaluation/run_question_search_gate.js --fixture data/eval/question
 ## Fixture
 
 - Fixture path: `data/eval/question_search_gold_9709_v1.json`
-- Generated at (UTC): `2026-04-23T10:16:14.108Z`
+- Generated at (UTC): `2026-04-23T10:33:02.405Z`
 - Case count: `5`
 
 | Case | Query | Summary Policy | Expected Source Kind |

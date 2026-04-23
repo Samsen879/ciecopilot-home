@@ -776,6 +776,12 @@ describe('question-analysis backfill', () => {
         type: 'text',
         value: expect.stringContaining('Diagram Present: true'),
       },
+      provenance_summary: expect.objectContaining({
+        summary: expect.stringContaining('Diagram Present: true'),
+        search_text: expect.stringContaining('Diagram Present: true'),
+        descriptor_summary_status: 'evidence_bundle_summary',
+        descriptor_search_text_status: 'evidence_bundle_search_text',
+      }),
     });
     expect(
       state.questions.get('question-paper-q07-diagram-only').prompt_representation.value,

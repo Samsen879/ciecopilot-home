@@ -359,6 +359,9 @@ function buildQuestionPromptRepresentation(
   questionEvidenceBundle = null,
   questionEvidenceBundleClassificationInput = null,
 ) {
+  const structuredBundlePrompt = normalizeString(
+    questionEvidenceBundleClassificationInput?.prompt_representation?.value,
+  );
   const derivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle);
   if (derivedSummary) {
     return {
@@ -375,17 +378,27 @@ function buildQuestionPromptRepresentation(
     return existingPromptRepresentation;
   }
 
-  return normalizeObject(questionEvidenceBundleClassificationInput?.prompt_representation);
+  return structuredBundlePrompt
+    ? {
+      type: 'text',
+      value: structuredBundlePrompt,
+    }
+    : normalizeObject(questionEvidenceBundleClassificationInput?.prompt_representation);
 }
 
 function buildQuestionProvenanceSummary(
   question = {},
   questionEvidenceBundle = null,
   classification = null,
+  questionEvidenceBundleClassificationInput = null,
 ) {
   const existing = normalizeObject(question?.provenance_summary, {}) ?? {};
-  const derivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle);
-  const derivedSearchText = buildEvidenceDerivedSearchText(questionEvidenceBundle, classification);
+  const structuredBundlePrompt = normalizeString(
+    questionEvidenceBundleClassificationInput?.prompt_representation?.value,
+  );
+  const derivedSummary = buildEvidenceDerivedSummary(questionEvidenceBundle) || structuredBundlePrompt;
+  const derivedSearchText =
+    buildEvidenceDerivedSearchText(questionEvidenceBundle, classification) || structuredBundlePrompt;
 
   return {
     ...existing,
@@ -802,6 +815,7 @@ export async function backfillQuestionAnalysisRecord(client, {
           question,
           normalizedQuestionEvidenceBundle,
           materializedClassification,
+          questionEvidenceBundleClassificationInput,
         ),
         classification_snapshot_ref: buildClassificationSnapshotRef(
           insertedSnapshotId,

@@ -10,6 +10,10 @@ import {
   authorityFreezeManifest,
 } from './lib/authority-alignment.js';
 import {
+  render9709ReleasePreflightMarkdown,
+  validate9709ReleasePreflight,
+} from './lib/9709-release-preflight.js';
+import {
   buildQuestionEvidenceBundlesV1,
   summarizeQuestionEvidenceBundlesV1,
 } from './lib/question-evidence-bundle-v1.js';
@@ -39,6 +43,8 @@ export const DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS = Object.freeze({
   fixture: 'data/eval/question_search_gold_9709_v1.json',
   gateReport: 'docs/reports/2026-04-22-9709-ready-only-search-gate-report.md',
   gateJson: 'docs/reports/2026-04-22-9709-ready-only-search-gate.json',
+  releasePreflightJson: 'docs/reports/2026-04-24-9709-release-preflight.json',
+  releasePreflightMarkdown: 'docs/reports/2026-04-24-9709-release-preflight.md',
   gatePsqlMode: 'docker',
   gatePsqlContainer: null,
 });
@@ -98,6 +104,10 @@ function parseArgs(argv = process.argv.slice(2)) {
     fixture: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.fixture,
     gateReport: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.gateReport,
     gateJson: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.gateJson,
+    releasePreflightJson: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.releasePreflightJson,
+    releasePreflightMarkdown: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.releasePreflightMarkdown,
+    releasePreflightExpectedCount: null,
+    skipReleasePreflight: false,
     gatePsqlMode: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.gatePsqlMode,
     gatePsqlContainer: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.gatePsqlContainer,
     dryRun: false,
@@ -174,6 +184,29 @@ function parseArgs(argv = process.argv.slice(2)) {
     if (token === '--gate-json') {
       options.gateJson = ensureRequiredValue(argv, index, '--gate-json');
       index += 1;
+      continue;
+    }
+    if (token === '--release-preflight-json') {
+      options.releasePreflightJson = ensureRequiredValue(argv, index, '--release-preflight-json');
+      index += 1;
+      continue;
+    }
+    if (token === '--release-preflight-markdown') {
+      options.releasePreflightMarkdown = ensureRequiredValue(argv, index, '--release-preflight-markdown');
+      index += 1;
+      continue;
+    }
+    if (token === '--release-preflight-expected-count') {
+      const value = Number(ensureRequiredValue(argv, index, '--release-preflight-expected-count'));
+      if (!Number.isInteger(value) || value < 0) {
+        throw new Error('--release-preflight-expected-count must be a non-negative integer.');
+      }
+      options.releasePreflightExpectedCount = value;
+      index += 1;
+      continue;
+    }
+    if (token === '--skip-release-preflight') {
+      options.skipReleasePreflight = true;
       continue;
     }
     if (token === '--gate-psql-mode') {
@@ -539,6 +572,38 @@ function writeJson(filePath, payload) {
   fs.writeFileSync(path.resolve(filePath), `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
+function writeText(filePath, text) {
+  ensureParentDir(filePath);
+  fs.writeFileSync(path.resolve(filePath), text, 'utf8');
+}
+
+export function build9709ReleasePreflightForArtifacts({
+  manifest,
+  authoritySidecarPayload,
+  curriculumSeed,
+  artifacts,
+  expectedManifestCount = null,
+} = {}) {
+  return validate9709ReleasePreflight({
+    manifest,
+    authoritySidecar: authoritySidecarPayload,
+    curriculumSeed,
+    evidenceBundles: artifacts?.bundles ?? null,
+    readyManifest: artifacts?.readyManifest ?? null,
+    expectedManifestCount: expectedManifestCount ?? (Array.isArray(manifest?.items) ? manifest.items.length : 300),
+  });
+}
+
+export function assert9709ReleasePreflightPassed(preflight) {
+  if (preflight?.status !== 'pass') {
+    const blockerSummary = (preflight?.blockers ?? [])
+      .slice(0, 5)
+      .map((finding) => `${finding.reason_code}:${finding.storage_key ?? 'batch'}`)
+      .join(', ');
+    throw new Error(`9709 release preflight failed with ${(preflight?.blockers ?? []).length} blocker(s): ${blockerSummary}`);
+  }
+}
+
 function buildAlignmentPostureResolver(alignedManifest = {}) {
   const items = Array.isArray(alignedManifest.items) ? alignedManifest.items : [];
   const itemsByStorageKey = items.reduce((accumulator, item) => {
@@ -626,8 +691,9 @@ export async function main(argv = process.argv.slice(2), {
   }
 
   const manifest = readJson(options.manifest);
+  const authoritySidecarPayload = options.authoritySidecar ? readJson(options.authoritySidecar) : {};
   const authoritySidecar = options.authoritySidecar
-    ? normalizeAuthoritySidecarPayload(readJson(options.authoritySidecar))
+    ? normalizeAuthoritySidecarPayload(authoritySidecarPayload)
     : {};
   const curriculumSeed = readJson(options.curriculumSeed);
   const laneResultPaths = options.laneResults.filter(Boolean);
@@ -649,12 +715,29 @@ export async function main(argv = process.argv.slice(2), {
   writeStdoutLine(`total_items: ${artifacts.summary.total_items}`);
   writeStdoutLine(`ready_items: ${artifacts.summary.ready_items}`);
   writeStdoutLine(`blocked_items: ${artifacts.summary.blocked_items}`);
+  const releasePreflight = options.skipReleasePreflight
+    ? null
+    : build9709ReleasePreflightForArtifacts({
+      manifest,
+      authoritySidecarPayload,
+      curriculumSeed,
+      artifacts,
+      expectedManifestCount: options.releasePreflightExpectedCount,
+    });
+
+  if (releasePreflight) {
+    writeStdoutLine(`release_preflight_status: ${releasePreflight.status}`);
+    writeStdoutLine(`release_preflight_blockers: ${releasePreflight.blockers.length}`);
+    writeStdoutLine(`release_preflight_warnings: ${releasePreflight.warnings.length}`);
+  }
 
   if (options.dryRun) {
     writeStdoutLine(`authority_manifest_out: ${options.authorityManifestOut}`);
     writeStdoutLine(`aligned_manifest_out: ${options.alignedManifestOut}`);
     writeStdoutLine(`ready_manifest_out: ${options.readyManifestOut}`);
     writeStdoutLine(`evidence_bundles_out: ${options.evidenceBundlesOut}`);
+    writeStdoutLine(`release_preflight_json: ${options.releasePreflightJson}`);
+    writeStdoutLine(`release_preflight_markdown: ${options.releasePreflightMarkdown}`);
     writeStdoutLine(`gate_report: ${options.gateReport}`);
     writeStdoutLine(`gate_json: ${options.gateJson}`);
     for (const step of plan) {
@@ -662,8 +745,15 @@ export async function main(argv = process.argv.slice(2), {
     }
     return {
       ...artifacts,
+      releasePreflight,
       plan,
     };
+  }
+
+  if (releasePreflight) {
+    writeJson(options.releasePreflightJson, releasePreflight);
+    writeText(options.releasePreflightMarkdown, render9709ReleasePreflightMarkdown(releasePreflight));
+    assert9709ReleasePreflightPassed(releasePreflight);
   }
 
   writeJson(options.authorityManifestOut, artifacts.authorityManifest);

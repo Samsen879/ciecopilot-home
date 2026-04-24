@@ -11,6 +11,10 @@ function normalizeNullableString(value) {
   return normalized || null;
 }
 
+function normalizeBoolean(value) {
+  return typeof value === 'boolean' ? value : null;
+}
+
 function normalizeItems(payload = {}, preferredKey = 'items') {
   if (Array.isArray(payload)) {
     return payload;
@@ -177,6 +181,22 @@ function hasExtractionSignal(bundle = {}) {
     || (Array.isArray(evidence.spatial_evidence) && evidence.spatial_evidence.length > 0);
 }
 
+function diagramPresentConsistencyDetails({ manifestItem = {}, bundle = {} } = {}) {
+  const details = {
+    manifest_diagram_present: normalizeBoolean(manifestItem.diagram_present),
+    evidence_diagram_present: normalizeBoolean(bundle?.evidence?.diagram_present),
+    surface_posture_diagram_present: normalizeBoolean(bundle?.surface_posture?.diagram_present),
+  };
+  const values = Object.values(details);
+  const hasMissingValue = values.some((value) => value === null);
+  const uniqueValues = new Set(values.filter((value) => typeof value === 'boolean'));
+
+  if (hasMissingValue || uniqueValues.size > 1) {
+    return details;
+  }
+  return null;
+}
+
 function buildCounts({
   manifestItems,
   sidecarItems,
@@ -332,7 +352,18 @@ export function validate9709ReleasePreflight({
     if (bundle) {
       const evidence = bundle.evidence ?? {};
       const ocrText = normalizeString(evidence.ocr_text);
+      const diagramConsistencyDetails = diagramPresentConsistencyDetails({ manifestItem: item, bundle });
       const evidenceDiagramPresent = evidence.diagram_present === true || item.diagram_present === true;
+
+      if (diagramConsistencyDetails) {
+        pushFinding(blockers, {
+          severity: 'blocker',
+          reason_code: 'diagram_present_mismatch_between_manifest_and_evidence_bundle',
+          storage_key: storageKey,
+          message: 'Manifest, evidence, and surface_posture diagram_present must match when evidence bundles are supplied.',
+          details: diagramConsistencyDetails,
+        });
+      }
 
       if (hasExtractionSignal(bundle) && !ocrText && !hasExplicitOcrEmptyStatus({ manifestItem: item, bundle })) {
         pushFinding(blockers, {

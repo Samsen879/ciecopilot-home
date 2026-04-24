@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 
 const PROJECT_ROOT = process.cwd();
 const BASELINE_SYNC_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/baseline-sync.sh');
+const CODEX_PREFLIGHT_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/codex-preflight.sh');
 const TASK_CREATE_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/task-create.sh');
 const TASK_CLOSEOUT_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/task-closeout.sh');
 const HOOK_INSTALL_SCRIPT = path.join(PROJECT_ROOT, 'scripts/git-hooks/install.sh');
@@ -70,6 +71,14 @@ function copyProjectFile(relativePath, targetRoot) {
   fs.copyFileSync(sourcePath, targetPath);
 }
 
+function createFakeNvmHome(tempRoot) {
+  const fakeHome = path.join(tempRoot, 'home');
+  const fakeNodeDir = path.join(fakeHome, '.nvm', 'versions', 'node', 'v-test', 'bin');
+  fs.mkdirSync(fakeNodeDir, { recursive: true });
+  fs.symlinkSync(process.execPath, path.join(fakeNodeDir, 'node'));
+  return fakeHome;
+}
+
 describe('workflow scripts', () => {
   test('baseline sync dry-run prints the intended sync commands', () => {
     const fixture = createRepoFixture();
@@ -80,6 +89,28 @@ describe('workflow scripts', () => {
       });
 
       expect(result.status).toBe(0);
+    } finally {
+      fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  test('codex preflight emits a JSON report for the current worktree', () => {
+    const fixture = createRepoFixture();
+
+    try {
+      const result = runCommand('bash', [CODEX_PREFLIGHT_SCRIPT, '--json'], {
+        cwd: fixture.repoDir,
+      });
+
+      expect(result.status).toBe(0);
+      const payload = JSON.parse(result.stdout);
+      expect(payload).toMatchObject({
+        branch: BASELINE_BRANCH_NAME,
+        upstream: 'origin/main',
+        branch_policy: 'protected_branch_requires_codex_or_task_branch_before_commit',
+        worktree_policy: 'clean',
+      });
+      expect(payload.required_actions).toContain('create a codex/* or task/* branch before committing');
     } finally {
       fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
     }
@@ -136,6 +167,44 @@ describe('workflow scripts', () => {
 
       expect(commitResult.status).toBe(1);
       const blockedCommit = runGit(['log', '--oneline', '--grep', 'test: blocked baseline commit'], protectedWorktree);
+      expect(blockedCommit.stdout.trim()).toBe('');
+    } finally {
+      fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  test('installed hooks fall back to nvm node when node is absent from PATH', () => {
+    const fixture = createRepoFixture();
+    const fakeHome = createFakeNvmHome(fixture.tempRoot);
+
+    try {
+      copyProjectFile('.githooks/pre-commit', fixture.baselineRootPath);
+      copyProjectFile('.githooks/pre-push', fixture.baselineRootPath);
+      copyProjectFile('scripts/git-hooks/guardrails.js', fixture.baselineRootPath);
+      copyProjectFile('scripts/git-hooks/install.sh', fixture.baselineRootPath);
+
+      const installResult = runCommand('bash', [HOOK_INSTALL_SCRIPT], {
+        cwd: fixture.baselineRootPath,
+      });
+      expect(installResult.status).toBe(0);
+
+      fs.writeFileSync(path.join(fixture.repoDir, 'guardrail.txt'), 'blocked\n');
+      runGit(['add', 'guardrail.txt'], fixture.repoDir);
+
+      const commitResult = runCommand('git', ['commit', '-m', 'test: blocked without path node'], {
+        cwd: fixture.repoDir,
+        env: {
+          ...process.env,
+          HOME: fakeHome,
+          PATH: '/usr/bin:/bin',
+        },
+      });
+
+      expect(commitResult.status).toBe(1);
+      const hookOutput = `${commitResult.stdout}\n${commitResult.stderr}`;
+      expect(hookOutput).not.toContain('node: command not found');
+      expect(hookOutput).not.toContain('Node.js was not found');
+      const blockedCommit = runGit(['log', '--oneline', '--grep', 'test: blocked without path node'], fixture.repoDir);
       expect(blockedCommit.stdout.trim()).toBe('');
     } finally {
       fs.rmSync(fixture.tempRoot, { recursive: true, force: true });

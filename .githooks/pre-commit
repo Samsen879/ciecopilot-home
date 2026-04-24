@@ -4,4 +4,37 @@ set -euo pipefail
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 cd "$REPO_ROOT"
-node scripts/git-hooks/guardrails.js --hook pre-commit "$@"
+
+resolve_node() {
+  if command -v node >/dev/null 2>&1; then
+    command -v node
+    return 0
+  fi
+
+  if [[ -n "${NODE_BINARY:-}" && -x "$NODE_BINARY" ]]; then
+    printf '%s\n' "$NODE_BINARY"
+    return 0
+  fi
+
+  if [[ -d "$HOME/.nvm/versions/node" ]]; then
+    local candidate
+    candidate="$(
+      find "$HOME/.nvm/versions/node" -path '*/bin/node' \( -type f -o -type l \) 2>/dev/null \
+        | sort -V \
+        | tail -n 1
+    )"
+    if [[ -n "$candidate" && -x "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  fi
+
+  return 1
+}
+
+NODE_BIN="$(resolve_node)" || {
+  echo "[git guardrails] Node.js was not found. Install Node, load nvm, or set NODE_BINARY to a node executable." >&2
+  exit 127
+}
+
+"$NODE_BIN" scripts/git-hooks/guardrails.js --hook pre-commit "$@"

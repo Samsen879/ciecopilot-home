@@ -5,6 +5,7 @@ import readline from 'node:readline/promises';
 import { stdin as input, stdout as output, stderr as errorOutput } from 'node:process';
 import {
   buildBaselineSyncPlan,
+  buildCodexPreflightReport,
   buildTaskCloseoutPlan,
   buildTaskNames,
   buildTaskPaths,
@@ -18,8 +19,13 @@ const CONFIRMATION_TEXT = 'closeout';
 function printUsage() {
   console.error(`Usage:
   node scripts/workflow/cli.js baseline-sync [--dry-run]
+  node scripts/workflow/cli.js codex-preflight [--json]
   node scripts/workflow/cli.js task-create --id <id> --slug <slug> [--base <ref>] [--dry-run]
   node scripts/workflow/cli.js task-closeout (--id <id> --slug <slug> | --branch <branch>) [--dry-run]`);
+}
+
+function writeStdoutLine(message) {
+  fs.writeSync(1, `${message}\n`);
 }
 
 function runGit(args, cwd) {
@@ -89,6 +95,9 @@ function parseArgs(argv) {
       case '--dry-run':
         parsed.dryRun = true;
         break;
+      case '--json':
+        parsed.json = true;
+        break;
       case '--id':
         parsed.id = argv[index + 1];
         index += 1;
@@ -119,6 +128,116 @@ function parseArgs(argv) {
   }
 
   return parsed;
+}
+
+function parseStatusPorcelain(stdout) {
+  const lines = String(stdout ?? '')
+    .split('\n')
+    .map((line) => line.replace(/\r$/, ''))
+    .filter(Boolean);
+
+  let stagedChanges = false;
+  let unstagedChanges = false;
+  const untrackedFiles = [];
+
+  for (const line of lines) {
+    if (line.startsWith('## ')) continue;
+    if (line.startsWith('?? ')) {
+      untrackedFiles.push(line.slice(3));
+      continue;
+    }
+
+    const indexStatus = line[0] ?? ' ';
+    const worktreeStatus = line[1] ?? ' ';
+    if (indexStatus !== ' ') stagedChanges = true;
+    if (worktreeStatus !== ' ') unstagedChanges = true;
+  }
+
+  return {
+    stagedChanges,
+    unstagedChanges,
+    untrackedFileCount: untrackedFiles.length,
+    untrackedFileSamples: untrackedFiles.slice(0, 5).sort((left, right) => left.localeCompare(right)),
+    worktreeDirty: stagedChanges || unstagedChanges || untrackedFiles.length > 0,
+  };
+}
+
+function readGitText(args, cwd) {
+  const result = runGit(args, cwd);
+  if (result.status !== 0) return null;
+  return trimText(result.stdout);
+}
+
+function readAheadBehind(cwd, upstreamName) {
+  if (trimText(upstreamName) == null) {
+    return { aheadCount: 0, behindCount: 0 };
+  }
+
+  const result = runGit(['rev-list', '--left-right', '--count', `HEAD...${upstreamName}`], cwd);
+  if (result.status !== 0) {
+    return { aheadCount: 0, behindCount: 0 };
+  }
+
+  const [aheadText, behindText] = String(result.stdout ?? '').trim().split(/\s+/, 2);
+  return {
+    aheadCount: Number.parseInt(aheadText, 10) || 0,
+    behindCount: Number.parseInt(behindText, 10) || 0,
+  };
+}
+
+function readCurrentStatusSummary(cwd) {
+  const result = runGit(['status', '--porcelain=v1', '--branch'], cwd);
+  if (result.status !== 0) {
+    return {
+      stagedChanges: false,
+      unstagedChanges: false,
+      untrackedFileCount: 0,
+      untrackedFileSamples: [],
+      worktreeDirty: false,
+    };
+  }
+
+  return parseStatusPorcelain(result.stdout);
+}
+
+function renderCodexPreflightText(report) {
+  writeStdoutLine(`branch: ${report.branch ?? '(unknown)'}`);
+  writeStdoutLine(`upstream: ${report.upstream ?? '(none)'}`);
+  writeStdoutLine(`ahead/behind: ${report.ahead_count}/${report.behind_count}`);
+  writeStdoutLine(`branch_policy: ${report.branch_policy}`);
+  writeStdoutLine(`sync_policy: ${report.sync_policy}`);
+  writeStdoutLine(`worktree_policy: ${report.worktree_policy}`);
+
+  if (report.required_actions.length > 0) {
+    writeStdoutLine('required_actions:');
+    for (const action of report.required_actions) {
+      writeStdoutLine(`- ${action}`);
+    }
+    return;
+  }
+
+  writeStdoutLine('required_actions: none');
+}
+
+async function handleCodexPreflight(options) {
+  const repoRoot = resolveRepoRoot();
+  const branchName = readGitText(['branch', '--show-current'], repoRoot);
+  const upstreamName = readGitText(['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}'], repoRoot);
+  const { aheadCount, behindCount } = readAheadBehind(repoRoot, upstreamName);
+  const report = buildCodexPreflightReport({
+    branchName,
+    upstreamName,
+    aheadCount,
+    behindCount,
+    statusSummary: readCurrentStatusSummary(repoRoot),
+  });
+
+  if (options.json) {
+    writeStdoutLine(JSON.stringify(report, null, 2));
+    return;
+  }
+
+  renderCodexPreflightText(report);
 }
 
 function ensureHooksInstalled() {
@@ -314,6 +433,11 @@ async function main() {
   try {
     if (subcommand === 'baseline-sync') {
       await handleBaselineSync(options);
+      return;
+    }
+
+    if (subcommand === 'codex-preflight') {
+      await handleCodexPreflight(options);
       return;
     }
 

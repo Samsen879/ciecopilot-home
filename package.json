@@ -55,6 +55,7 @@
     "ao:test:acceptance": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand tests/ao/ao-lifecycle-acceptance.test.js",
     "ao:smoke": "node scripts/ao/run-operator-smoke.js",
     "git:hooks:install": "bash scripts/git-hooks/install.sh",
+    "workflow:codex-preflight": "bash scripts/workflow/codex-preflight.sh",
     "workflow:baseline:sync": "bash scripts/workflow/baseline-sync.sh",
     "workflow:task:create": "bash scripts/workflow/task-create.sh",
     "workflow:task:closeout": "bash scripts/workflow/task-closeout.sh"

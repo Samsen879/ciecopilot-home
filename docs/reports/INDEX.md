@@ -17,6 +17,7 @@
 - `2026-04-20-issue-251-remediation-report.md` - bounded remediation report for the remaining Wave A `9709.p3.integration` aggregate-probe miss on `9709/s17_qp_33/questions/q04.png`.
 - `2026-04-20-issue-252-remediation-report.md` - bounded remediation report for the remaining Wave A `9709.p3.trigonometry` aggregate-probe misses and their host-backfill verification posture.
 - `2026-04-20-issue-253-wave-a-review-lane-remediation.md` - bounded fix report for the remaining Wave A shard-3 over-conservative review-lane case on `9709/s22_qp_13/questions/q02.png`.
+- `2026-04-22-9709-syllabus-authority-vlm-dual-track-decision.md` - decision baseline for splitting `9709` topic alignment into an authoritative syllabus/paper line and a separate VLM visual-evidence line.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.

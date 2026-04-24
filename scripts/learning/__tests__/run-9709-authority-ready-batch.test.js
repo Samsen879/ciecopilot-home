@@ -1,7 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { buildAuthorityReadyBatchArtifacts } from '../run_9709_authority_ready_batch.js';
+import {
+  assert9709ReleasePreflightPassed,
+  buildAuthorityReadyBatchArtifacts,
+  build9709ReleasePreflightForArtifacts,
+} from '../run_9709_authority_ready_batch.js';
 
 const STORAGE_KEY = '9709/s17_qp_63/questions/q07.png';
 const EXPECTED_TOPIC_PATH = '9709.p5.representation_of_data';
@@ -80,5 +84,63 @@ describe('9709 authority-ready batch q07 recovery', () => {
         topic_path_hint: EXPECTED_TOPIC_PATH,
       },
     });
+  });
+
+  test('release preflight blocks authority-ready batch artifacts before write steps', async () => {
+    const manifest = {
+      manifest_id: 'broken-9709-release-preflight',
+      items: [
+        {
+          storage_key: '9709/s24_qp_13/questions/q09.png',
+          syllabus_code: '9709',
+          paper: 1,
+          primary_topic_path: '9709.p1.integration',
+          diagram_present: null,
+        },
+      ],
+    };
+    const authoritySidecar = {
+      items: [
+        {
+          storage_key: '9709/s24_qp_13/questions/q09.png',
+          authority_input_pack: {
+            canonical_primary_topic_path: '9709.p1.integration',
+          },
+        },
+      ],
+    };
+    const curriculumSeed = {
+      syllabus_code: '9709',
+      version_tag: '2025-2027_v1',
+      nodes: [
+        {
+          syllabus_code: '9709',
+          version_tag: '2025-2027_v1',
+          topic_path: '9709.p1.integration',
+        },
+      ],
+    };
+    const artifacts = {
+      bundles: [],
+      readyManifest: {
+        items: [
+          {
+            storage_key: '9709/s24_qp_13/questions/q09.png',
+            overall_alignment_verdict: 'ready',
+          },
+        ],
+      },
+    };
+
+    const preflight = build9709ReleasePreflightForArtifacts({
+      manifest,
+      authoritySidecarPayload: authoritySidecar,
+      curriculumSeed,
+      artifacts,
+      expectedManifestCount: 1,
+    });
+
+    expect(preflight.status).toBe('fail');
+    expect(() => assert9709ReleasePreflightPassed(preflight)).toThrow(/9709 release preflight failed/);
   });
 });

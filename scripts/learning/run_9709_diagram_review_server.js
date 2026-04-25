@@ -316,7 +316,7 @@ function renderReviewHtml() {
     .main {
       min-width: 0;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-rows: auto minmax(0, 1fr);
       min-height: 100vh;
     }
     .workspace {
@@ -390,6 +390,8 @@ function renderReviewHtml() {
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 12px;
       background: var(--panel);
+      border-bottom: 0;
+      padding: 0;
     }
     textarea {
       width: 100%;
@@ -458,19 +460,19 @@ function renderReviewHtml() {
           <div class="value-box"><strong>Evidence</strong><span id="vEvidence"></span></div>
           <div class="value-box"><strong>Surface</strong><span id="vSurface"></span></div>
         </div>
+        <div class="decisionbar">
+          <textarea id="note" placeholder="note"></textarea>
+          <div class="actions">
+            <button class="primary" id="present" title="1">Present</button>
+            <button class="danger" id="absent" title="0">Absent</button>
+            <button class="warn" id="skip" title="S">Skip</button>
+            <button id="clear">Clear</button>
+          </div>
+        </div>
       </section>
       <section class="image-wrap">
         <div class="image-stage">
           <img class="question" id="questionImage" alt="">
-        </div>
-      </section>
-      <section class="decisionbar">
-        <textarea id="note" placeholder="note"></textarea>
-        <div class="actions">
-          <button class="primary" id="present" title="1">Present</button>
-          <button class="danger" id="absent" title="0">Absent</button>
-          <button class="warn" id="skip" title="S">Skip</button>
-          <button id="clear">Clear</button>
         </div>
       </section>
     </main>

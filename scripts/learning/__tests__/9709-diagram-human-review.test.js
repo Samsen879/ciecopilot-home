@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import {
+  applyHumanDiagramReviewToArtifacts,
   buildHumanDiagramReviewArtifact,
   defaultHumanDiagramReviewOut,
   recordHumanDiagramReviewDecision,
@@ -145,5 +146,43 @@ describe('9709 human diagram-present review helpers', () => {
         }),
       ]),
     });
+  });
+
+  test('applies completed human review decisions to manifest and evidence bundle diagram_present fields', () => {
+    const artifact = buildHumanDiagramReviewArtifact({
+      manifest: buildManifest(),
+      evidenceBundles: buildEvidenceBundles(),
+      assetsRoot: '/assets',
+      reviewOut: path.join(TMP_DIR, 'review.json'),
+      nowIso: '2026-04-25T10:00:00.000Z',
+    });
+    const completedArtifact = {
+      ...artifact,
+      items: artifact.items.map((item) => ({
+        ...item,
+        disposition: 'reviewed',
+        reviewed_diagram_present: item.storage_key.endsWith('q09.png'),
+        reviewed_at: '2026-04-25T11:00:00.000Z',
+        reviewed_by: 'human',
+      })),
+    };
+
+    const result = applyHumanDiagramReviewToArtifacts({
+      manifest: buildManifest(),
+      evidenceBundles: buildEvidenceBundles(),
+      reviewArtifact: completedArtifact,
+    });
+
+    expect(result.summary).toEqual({
+      total: 2,
+      present: 1,
+      absent: 1,
+      manifest_updated: 2,
+      evidence_updated: 2,
+      surface_posture_updated: 2,
+    });
+    expect(result.manifest.items.map((item) => item.diagram_present)).toEqual([true, false]);
+    expect(result.evidenceBundles.bundles.map((bundle) => bundle.evidence.diagram_present)).toEqual([true, false]);
+    expect(result.evidenceBundles.bundles.map((bundle) => bundle.surface_posture.diagram_present)).toEqual([true, false]);
   });
 });

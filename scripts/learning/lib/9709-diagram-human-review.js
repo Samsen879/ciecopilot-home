@@ -42,6 +42,12 @@ function indexByStorageKey(items = []) {
   return map;
 }
 
+function writeJsonFile(filePath, payload) {
+  const resolved = path.resolve(filePath);
+  ensureParentDir(resolved);
+  fs.writeFileSync(resolved, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
+}
+
 function currentIso() {
   return new Date().toISOString();
 }
@@ -247,4 +253,99 @@ export function buildHumanDiagramReviewState({
   artifact.source.evidence_bundles_path = evidenceBundlesPath;
   writeHumanDiagramReviewArtifact(reviewOut, artifact);
   return artifact;
+}
+
+export function applyHumanDiagramReviewToArtifacts({
+  manifest = {},
+  evidenceBundles = {},
+  reviewArtifact = {},
+} = {}) {
+  const nextManifest = cloneJson(manifest);
+  const nextEvidenceBundles = cloneJson(evidenceBundles);
+  const reviewItems = normalizeItems(reviewArtifact);
+  const manifestItems = normalizeItems(nextManifest);
+  const bundleItems = normalizeItems(nextEvidenceBundles, 'bundles');
+  const manifestByStorageKey = indexByStorageKey(manifestItems);
+  const bundlesByStorageKey = indexByStorageKey(bundleItems);
+  const summary = {
+    total: reviewItems.length,
+    present: 0,
+    absent: 0,
+    manifest_updated: 0,
+    evidence_updated: 0,
+    surface_posture_updated: 0,
+  };
+
+  for (const item of reviewItems) {
+    const storageKey = normalizeString(item?.storage_key);
+    const diagramPresent = normalizeBoolean(item?.reviewed_diagram_present);
+
+    if (!storageKey) {
+      throw new Error('Review artifact contains an item without storage_key.');
+    }
+    if (item?.disposition !== 'reviewed' || typeof diagramPresent !== 'boolean') {
+      throw new Error(`Review item is not completed: ${storageKey}`);
+    }
+
+    const manifestItem = manifestByStorageKey.get(storageKey);
+    const bundle = bundlesByStorageKey.get(storageKey);
+    if (!manifestItem) {
+      throw new Error(`Review storage_key missing from manifest: ${storageKey}`);
+    }
+    if (!bundle) {
+      throw new Error(`Review storage_key missing from evidence bundles: ${storageKey}`);
+    }
+
+    manifestItem.diagram_present = diagramPresent;
+    summary.manifest_updated += 1;
+
+    bundle.evidence = bundle.evidence && typeof bundle.evidence === 'object' && !Array.isArray(bundle.evidence)
+      ? bundle.evidence
+      : {};
+    bundle.evidence.diagram_present = diagramPresent;
+    summary.evidence_updated += 1;
+
+    bundle.surface_posture = bundle.surface_posture
+      && typeof bundle.surface_posture === 'object'
+      && !Array.isArray(bundle.surface_posture)
+      ? bundle.surface_posture
+      : {};
+    bundle.surface_posture.diagram_present = diagramPresent;
+    summary.surface_posture_updated += 1;
+
+    if (diagramPresent) {
+      summary.present += 1;
+    } else {
+      summary.absent += 1;
+    }
+  }
+
+  if (nextEvidenceBundles.summary && typeof nextEvidenceBundles.summary === 'object') {
+    nextEvidenceBundles.summary.diagram_present = {
+      true: summary.present,
+      false: summary.absent,
+    };
+    nextEvidenceBundles.summary.human_diagram_present_review_id = normalizeString(reviewArtifact.review_id) || null;
+  }
+
+  return {
+    manifest: nextManifest,
+    evidenceBundles: nextEvidenceBundles,
+    summary,
+  };
+}
+
+export function applyHumanDiagramReviewFiles({
+  manifestPath = DEFAULT_9709_DIAGRAM_REVIEW_PATHS.manifest,
+  evidenceBundlesPath = DEFAULT_9709_DIAGRAM_REVIEW_PATHS.evidenceBundles,
+  reviewArtifactPath = defaultHumanDiagramReviewOut(),
+} = {}) {
+  const result = applyHumanDiagramReviewToArtifacts({
+    manifest: readJsonFile(manifestPath),
+    evidenceBundles: readJsonFile(evidenceBundlesPath),
+    reviewArtifact: readJsonFile(reviewArtifactPath),
+  });
+  writeJsonFile(manifestPath, result.manifest);
+  writeJsonFile(evidenceBundlesPath, result.evidenceBundles);
+  return result.summary;
 }

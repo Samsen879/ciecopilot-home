@@ -197,6 +197,10 @@ function diagramPresentConsistencyDetails({ manifestItem = {}, bundle = {} } = {
   return null;
 }
 
+function surfaceFlagBlockerCode(field) {
+  return `${field}_not_boolean`;
+}
+
 function buildCounts({
   manifestItems,
   sidecarItems,
@@ -279,14 +283,16 @@ export function validate9709ReleasePreflight({
     const canonicalTopicPath = normalizeNullableString(pack.canonical_primary_topic_path);
     const bundle = bundleByStorageKey.get(storageKey);
 
-    if (item?.diagram_present !== true && item?.diagram_present !== false) {
-      pushFinding(blockers, {
-        severity: 'blocker',
-        reason_code: 'diagram_present_not_boolean',
-        storage_key: storageKey,
-        message: 'Manifest item diagram_present must be true or false.',
-        details: { value: item?.diagram_present ?? null },
-      });
+    for (const surfaceFlag of ['diagram_present', 'formula_dense', 'table_heavy']) {
+      if (item?.[surfaceFlag] !== true && item?.[surfaceFlag] !== false) {
+        pushFinding(blockers, {
+          severity: 'blocker',
+          reason_code: surfaceFlagBlockerCode(surfaceFlag),
+          storage_key: storageKey,
+          message: `Manifest item ${surfaceFlag} must be true or false.`,
+          details: { value: item?.[surfaceFlag] ?? null },
+        });
+      }
     }
 
     if (!sidecarEntry) {

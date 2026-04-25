@@ -155,6 +155,21 @@ def _build_jobs_from_args(args: argparse.Namespace) -> list[dict[str, Any]]:
     return jobs
 
 
+def load_existing_results(path: Path) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+    return payload if isinstance(payload, list) else []
+
+
+def write_lane_results(path: Path, payloads: list[dict[str, Any]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payloads, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run additive Qwen wave-1 jobs from a frozen manifest.",
@@ -165,6 +180,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--shard-id", type=str)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--no-resume", action="store_true")
+    parser.add_argument("--retry-failures", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -185,17 +202,49 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- {storage_key}")
         return 0
 
-    payloads = []
-    for job in jobs:
-        image_path = args.assets_root / job["storage_key"]
-        payloads.append(run_lane_job(job, image_path=image_path))
+    existing_payloads = []
+    if args.output and not args.no_resume:
+        existing_payloads = load_existing_results(args.output)
+    payloads_by_asset_id = {}
+    for payload in existing_payloads:
+        asset_id = payload.get("input_asset_id")
+        if not asset_id:
+            continue
+        if args.retry_failures and payload.get("failure_reason"):
+            continue
+        payloads_by_asset_id[asset_id] = payload
+    payloads = [
+        payloads_by_asset_id[job["storage_key"]]
+        for job in jobs
+        if job.get("storage_key") in payloads_by_asset_id
+    ]
 
-    rendered = json.dumps(payloads, ensure_ascii=False, indent=2)
+    if payloads:
+        print(f"resume_existing_results: {len(payloads)}")
+
+    total = len(jobs)
+    for job in jobs:
+        if job["storage_key"] in payloads_by_asset_id:
+            continue
+        image_path = args.assets_root / job["storage_key"]
+        payload = run_lane_job(job, image_path=image_path)
+        payloads_by_asset_id[job["storage_key"]] = payload
+        payloads.append(payload)
+        if args.output:
+            write_lane_results(args.output, payloads)
+            print(
+                f"lane_progress: {len(payloads)}/{total} "
+                f"storage_key={job['storage_key']} "
+                f"route={job['route']} "
+                f"failures={sum(1 for entry in payloads if entry.get('failure_reason'))}",
+                flush=True,
+            )
+
     if args.output:
-        args.output.write_text(rendered, encoding="utf-8")
+        write_lane_results(args.output, payloads)
         print(f"wrote_results: {args.output}")
     else:
-        print(rendered)
+        print(json.dumps(payloads, ensure_ascii=False, indent=2))
     return 0
 
 

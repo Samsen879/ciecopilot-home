@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.vlm.create_jobs_from_manifest import build_manifest_jobs  # noqa: E402
-from scripts.vlm.qwen_router_v1 import route_manifest_item  # noqa: E402
+from scripts.vlm.qwen_router_v1 import QwenRouterError, route_manifest_item  # noqa: E402
 
 
 def _item(**overrides):
@@ -32,16 +32,51 @@ def _item(**overrides):
     return item
 
 
-def test_route_manifest_item_prefers_review_lane_for_gate_critical_unknown_surface():
+def test_route_manifest_item_blocks_unknown_surface_flags_before_routing():
+    try:
+        route_manifest_item(
+            _item(
+                route_hint="review_lane",
+                diagram_present=None,
+                formula_dense=None,
+                table_heavy=None,
+                gate_critical=True,
+                requires_review=True,
+                surface_evidence_status="unknown_requires_surface_triage",
+            )
+        )
+    except QwenRouterError as exc:
+        assert "Surface triage required before routing" in str(exc)
+    else:
+        raise AssertionError("Expected unknown surface flags to block routing")
+
+
+def test_route_manifest_item_blocks_partially_unknown_surface_flags_before_routing():
+    try:
+        route_manifest_item(
+            _item(
+                diagram_present=False,
+                formula_dense=None,
+                table_heavy=False,
+                surface_evidence_status="unknown_requires_surface_triage",
+            )
+        )
+    except QwenRouterError as exc:
+        assert "formula_dense" in str(exc)
+    else:
+        raise AssertionError("Expected partially unknown surface flags to block routing")
+
+
+def test_route_manifest_item_prefers_review_lane_for_gate_critical_triaged_surface():
     decision = route_manifest_item(
         _item(
             route_hint="review_lane",
-            diagram_present=None,
-            formula_dense=None,
-            table_heavy=None,
+            diagram_present=False,
+            formula_dense=True,
+            table_heavy=False,
             gate_critical=True,
             requires_review=True,
-            surface_evidence_status="unknown_requires_primary_asset_replay",
+            surface_evidence_status="surface_triage_v1",
         )
     )
 
@@ -52,7 +87,6 @@ def test_route_manifest_item_prefers_review_lane_for_gate_critical_unknown_surfa
     assert decision.enable_thinking is False
     assert decision.response_format == {"type": "json_object"}
     assert "gate_critical" in decision.decision_reasons
-    assert "unknown_surface_flags" in decision.decision_reasons
 
 
 def test_route_manifest_item_uses_diagram_lane_for_verified_gate_critical_diagram_row():
@@ -115,27 +149,6 @@ def test_route_manifest_item_selects_ocr_lane_for_formula_dense_text_dominant_ro
     assert decision.model == "qwen3.6-plus"
     assert decision.lazy_attach_original_image is False
     assert "formula_dense" in decision.decision_reasons
-
-
-def test_route_manifest_item_uses_extraction_first_for_unknown_surface_rows_that_only_need_review_posture():
-    decision = route_manifest_item(
-        _item(
-            route_hint="review_lane",
-            diagram_present=None,
-            formula_dense=None,
-            table_heavy=None,
-            gate_critical=False,
-            requires_review=True,
-            surface_evidence_status="unknown_requires_primary_asset_replay",
-        )
-    )
-
-    assert decision.route == "ocr_lane"
-    assert decision.lane == "ocr"
-    assert decision.model == "qwen3.6-plus"
-    assert "requires_review" in decision.decision_reasons
-    assert "unknown_surface_flags" in decision.decision_reasons
-    assert "extraction_first_unknown_surface" in decision.decision_reasons
 
 
 def test_build_manifest_jobs_carries_lane_provider_model_and_prompt_metadata():

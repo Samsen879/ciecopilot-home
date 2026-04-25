@@ -143,6 +143,35 @@ describe('9709 release preflight', () => {
     );
   });
 
+  test('blocks null formula_dense and table_heavy values', () => {
+    const result = validate9709ReleasePreflight({
+      manifest: buildManifest([
+        buildManifestItem({
+          diagram_present: false,
+          formula_dense: null,
+          table_heavy: null,
+        }),
+      ]),
+      authoritySidecar: buildAuthoritySidecar(),
+      curriculumSeed: buildCurriculumSeed(),
+      expectedManifestCount: 1,
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.blockers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          storage_key: '9709/s24_qp_13/questions/q09.png',
+          reason_code: 'formula_dense_not_boolean',
+        }),
+        expect.objectContaining({
+          storage_key: '9709/s24_qp_13/questions/q09.png',
+          reason_code: 'table_heavy_not_boolean',
+        }),
+      ]),
+    );
+  });
+
   test('blocks sidecar join and canonical topic failures', () => {
     const storageKey = '9709/s24_qp_13/questions/q09.png';
     const result = validate9709ReleasePreflight({

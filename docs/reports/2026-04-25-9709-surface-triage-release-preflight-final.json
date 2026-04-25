@@ -1,0 +1,30 @@
+{
+  "schema_version": "9709_release_preflight_v1",
+  "status": "pass",
+  "counts": {
+    "manifest_items": 300,
+    "sidecar_items": 300,
+    "diagram_present": {
+      "true": 65,
+      "false": 235,
+      "invalid": 0
+    },
+    "sidecar_canonical_missing": 0,
+    "sidecar_distinct_topics": 18,
+    "blockers": 0,
+    "warnings": 1
+  },
+  "blockers": [],
+  "warnings": [
+    {
+      "severity": "warning",
+      "reason_code": "paper_5_or_6_in_authority_ready_batch",
+      "storage_key": "9709/s17_qp_63/questions/q07.png",
+      "message": "Paper 5 or Paper 6 item is present in the 9709 batch with explicit authority resolution.",
+      "details": {
+        "paper": 6,
+        "canonical_primary_topic_path": "9709.p5.representation_of_data"
+      }
+    }
+  ]
+}

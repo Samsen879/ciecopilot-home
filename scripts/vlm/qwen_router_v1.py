@@ -73,6 +73,13 @@ def _surface_flags_unknown(item: dict[str, Any]) -> bool:
     return any(item.get(field) is None for field in SURFACE_FLAGS)
 
 
+def _missing_surface_flags(item: dict[str, Any]) -> list[str]:
+    return [
+        field for field in SURFACE_FLAGS
+        if not isinstance(item.get(field), bool)
+    ]
+
+
 def _should_use_diagram_lane_for_verified_gate_critical_row(item: dict[str, Any]) -> bool:
     return (
         item.get("gate_critical") is True
@@ -125,6 +132,12 @@ def route_manifest_item(
     if missing:
         raise QwenRouterError(
             f"Manifest row missing required router fields: {', '.join(missing)}"
+        )
+    missing_surface_flags = _missing_surface_flags(item)
+    if missing_surface_flags:
+        raise QwenRouterError(
+            "Surface triage required before routing; missing boolean surface flags: "
+            + ", ".join(missing_surface_flags)
         )
 
     reasons: list[str] = []

@@ -79,7 +79,7 @@ def test_windows_host_qwen_provider_builds_diagram_lane_contract(tmp_path):
             "choices": [
                 {
                     "message": {
-                        "content": '{"diagram_present":true,"diagram_type":"graph","diagram_elements":["curve"],"axes_labels":["x","y"],"curve_point_annotations":[],"shape_relations":[],"object_grounding":[],"spatial_evidence":[],"diagram_confidence":0.9}'
+                        "content": '{"ocr_text":"The diagram shows a curve.","formula_latex_list":["y=x^2"],"subquestion_blocks":["(a)"],"layout_hints":["single column"],"diagram_present":true,"diagram_type":"graph","diagram_elements":["curve"],"axes_labels":["x","y"],"curve_point_annotations":[],"shape_relations":[],"object_grounding":[],"spatial_evidence":[],"diagram_confidence":0.9}'
                     }
                 }
             ]
@@ -92,7 +92,9 @@ def test_windows_host_qwen_provider_builds_diagram_lane_contract(tmp_path):
 
     prompt_text = captured["request"]["messages"][0]["content"][0]["text"]
     assert "diagram_present" in prompt_text
-    assert "ocr_text" not in prompt_text
+    assert "ocr_text" in prompt_text
+    assert result["ocr_text"] == "The diagram shows a curve."
+    assert result["formula_latex_list"] == ["y=x^2"]
     assert result["diagram_present"] is True
     assert result["diagram_type"] == "graph"
 
@@ -120,7 +122,7 @@ def test_windows_host_qwen_provider_builds_review_lane_contract_and_normalizes_m
     with patch("scripts.vlm.providers.call_qwen_openai_v1", side_effect=fake_call):
         result = provider.generate(image_path)
 
-    assert captured["request"]["max_tokens"] == 768
+    assert captured["request"]["max_tokens"] == 2048
     prompt_text = captured["request"]["messages"][0]["content"][0]["text"]
     assert "requires_review" in prompt_text
     assert "ocr_text" in prompt_text
@@ -131,6 +133,46 @@ def test_windows_host_qwen_provider_builds_review_lane_contract_and_normalizes_m
     assert result["diagram_present"] is False
     assert result["requires_review"] is True
     assert result["review_summary"] == "Needs specialist review"
+
+
+def test_windows_host_qwen_provider_builds_surface_triage_contract(tmp_path):
+    image_path = tmp_path / "q03.png"
+    image_path.write_bytes(b"fake-image")
+
+    captured = {}
+
+    def fake_call(request, **kwargs):
+        captured["request"] = request
+        return {
+            "choices": [
+                {
+                    "message": {
+                        "content": '{"diagram_present":false,"formula_dense":true,"table_heavy":false,"surface_confidence":0.91,"surface_reasons":["many displayed formulae"]}'
+                    }
+                }
+            ]
+        }
+
+    provider = WindowsHostQwenProvider(model="qwen3.6-plus", lane="surface_triage")
+
+    with patch("scripts.vlm.providers.call_qwen_openai_v1", side_effect=fake_call):
+        result = provider.generate(image_path)
+
+    assert captured["request"]["max_tokens"] == 256
+    prompt_text = captured["request"]["messages"][0]["content"][0]["text"]
+    assert "surface triage" in prompt_text
+    assert "diagram_present" in prompt_text
+    assert "formula_dense" in prompt_text
+    assert "table_heavy" in prompt_text
+    assert "ocr_text" not in prompt_text
+    assert "diagram_elements" not in prompt_text
+    assert result == {
+        "diagram_present": False,
+        "formula_dense": True,
+        "table_heavy": False,
+        "surface_confidence": 0.91,
+        "surface_reasons": ["many displayed formulae"],
+    }
 
 
 def test_windows_host_qwen_provider_rejects_non_json_wrapper_output(tmp_path):

@@ -1,0 +1,85 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3-vl-plus",
+    "route": "diagram_lane",
+    "lane": "diagram",
+    "prompt_template_id": "diagram_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/s24_qp_13/questions/q09.png",
+    "input_asset_hash": "da3e874e8dc900407e764acd877da5a587fb02c9696da194d0ae5440a09ab76b",
+    "response_schema_version": "v1",
+    "confidence": 1.0,
+    "failure_reason": null,
+    "lazy_attach_original_image": true,
+    "output": {
+      "summary": "cartesian_plot",
+      "evidence": [
+        {
+          "field": "diagram_present",
+          "value": true
+        },
+        {
+          "field": "diagram_type",
+          "value": "cartesian_plot"
+        },
+        {
+          "field": "diagram_elements",
+          "value": [
+            "curve",
+            "x_axis",
+            "y_axis",
+            "vertical_lines",
+            "shaded_region"
+          ]
+        },
+        {
+          "field": "axes_labels",
+          "value": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "field": "curve_point_annotations",
+          "value": [
+            "{'x': 1, 'y': None, 'label': 'x=1'}",
+            "{'x': 3, 'y': None, 'label': 'x=3'}",
+            "{'x': 0, 'y': None, 'label': 'O'}"
+          ]
+        },
+        {
+          "field": "shape_relations",
+          "value": [
+            "shaded_region bounded by curve, x=1, x=3, and y=0"
+          ]
+        },
+        {
+          "field": "object_grounding",
+          "value": [
+            {
+              "curve": "y = sqrt(2x^3 + 10)",
+              "shaded_region": "between x=1 and x=3 under the curve"
+            }
+          ]
+        },
+        {
+          "field": "spatial_evidence",
+          "value": [
+            "Curve starts left of origin, passes through (1, y1) and (3, y3), with vertical lines at x=1 and x=3 forming a shaded area down to x-axis."
+          ]
+        },
+        {
+          "field": "diagram_confidence",
+          "value": 1.0
+        }
+      ],
+      "warnings": [
+        "requires_review",
+        "lazy_attach_original_image"
+      ]
+    }
+  }
+]

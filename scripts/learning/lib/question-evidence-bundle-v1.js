@@ -70,6 +70,10 @@ function surfaceFlagsUnknown(item) {
   return SURFACE_FLAGS.some((field) => item?.[field] === null || typeof item?.[field] === 'undefined');
 }
 
+function missingSurfaceFlags(item) {
+  return SURFACE_FLAGS.filter((field) => typeof item?.[field] !== 'boolean');
+}
+
 function shouldUseDiagramLaneForVerifiedGateCriticalRow(manifestItem) {
   return manifestItem.gate_critical === true
     && manifestItem.requires_review === false
@@ -105,6 +109,10 @@ export function resolveQuestionEvidenceRoute(manifestItem = {}, contract = loadR
   const missing = missingRequiredFields(manifestItem, contract);
   if (missing.length > 0) {
     throw new Error(`Manifest row missing required router fields: ${missing.join(', ')}`);
+  }
+  const missingSurface = missingSurfaceFlags(manifestItem);
+  if (missingSurface.length > 0) {
+    throw new Error(`Surface triage required before routing; missing boolean surface flags: ${missingSurface.join(', ')}`);
   }
 
   const reasons = [];
@@ -222,17 +230,20 @@ function buildStructuredEvidence(manifestItem, laneOutputs) {
   const reviewEvidence = laneEvidenceMap(reviewOutput);
 
   return {
-    ocr_text: pickFirstString(ocrEvidence.ocr_text, reviewEvidence.ocr_text),
+    ocr_text: pickFirstString(ocrEvidence.ocr_text, diagramEvidence.ocr_text, reviewEvidence.ocr_text),
     formula_latex_list: pickArray(
       ocrEvidence.formula_latex_list,
+      diagramEvidence.formula_latex_list,
       reviewEvidence.formula_latex_list,
     ),
     subquestion_blocks: pickArray(
       ocrEvidence.subquestion_blocks,
+      diagramEvidence.subquestion_blocks,
       reviewEvidence.subquestion_blocks,
     ),
     layout_hints: pickArray(
       ocrEvidence.layout_hints,
+      diagramEvidence.layout_hints,
       reviewEvidence.layout_hints,
     ),
     diagram_present: firstNonNull(

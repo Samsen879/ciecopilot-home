@@ -1,0 +1,50 @@
+{
+  "schema_version": "surface_triage_run_v1",
+  "manifest_id": "9709_authority_ready_batch_300_v1",
+  "model": "qwen3.6-plus",
+  "summary": {
+    "total": 1,
+    "diagram_present_true": 0,
+    "diagram_present_false": 1,
+    "formula_dense_true": 1,
+    "formula_dense_false": 0,
+    "table_heavy_true": 0,
+    "table_heavy_false": 1,
+    "qwen_diagram_disagreements": 0,
+    "missing_effective_surface_flags": 0
+  },
+  "results": [
+    {
+      "schema_version": "surface_triage_v1",
+      "storage_key": "9709/m16_qp_12/questions/q08.png",
+      "model": "qwen3.6-plus",
+      "provider": "windows-qwen",
+      "prompt_template_id": "surface_triage",
+      "prompt_template_version": "v1",
+      "input_asset_hash": "426691f8141ca0e264a8cbd92e8e88b1d076c445ebaae99526cd6d1eba9ee946",
+      "failure_reason": null,
+      "manifest_surface_flags": {
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false
+      },
+      "triage": {
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_confidence": 1.0,
+        "surface_reasons": [
+          "No printed graphs, geometry figures, or charts are visible.",
+          "The content consists primarily of algebraic function definitions and equations.",
+          "No data tables or grids are present."
+        ]
+      },
+      "effective_surface_flags": {
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false
+      },
+      "qwen_diagram_disagrees_with_manifest": false
+    }
+  ]
+}

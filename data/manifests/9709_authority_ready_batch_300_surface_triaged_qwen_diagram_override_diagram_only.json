@@ -1,0 +1,4357 @@
+{
+  "schema_version": "v1",
+  "manifest_id": "9709_authority_ready_batch_300_v1_diagram_only",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "frozen_on": "2026-04-22",
+  "wave": "authority_ready_batch_300",
+  "scope": "evidence_backed_9709_batch_dry_run",
+  "source_documents": [
+    "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+    "data/curriculum/9709_question_search_recovery_nodes_v1.json",
+    "docs/reports/2026-04-16-9709-qwen-wave1-live-results-hotfix-rerun-v4.json"
+  ],
+  "notes": [
+    "This 300-row manifest was created for issue #273 dry-run execution in the AO worktree.",
+    "Rows 1-220 come from the manual audit CSV and preserve gold_primary_node_path as raw provenance only; authority truth is owned by the sidecar.",
+    "Rows 221-300 come from repo textual evidence and are intentionally paired with legal missing authority packs.",
+    "Surface flags remain unknown and review-gated; this manifest does not invent visual posture."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/m16_qp_12/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "8b48a22c49c961bee45394d12611f86abe108f1db7221187f07a75d06eabe1fd",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m16_qp_12/questions/q09.png; gold_primary_node_path=9709.p1.circular_measure; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "77f6b22ab746836f799d21795fb628156ee90b91e3a68312a6129a4e9a355a28",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains two distinct printed geometry figures (Fig. 1 and Fig. 2) with labels and shading.",
+          "Text is primarily descriptive prose rather than a sequence of displayed mathematical formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m18_qp_12/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 6,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "43cbcaafb4e89cec4235f9616c144e10e6e38c16f747c094fd1f92bb159d6122",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m18_qp_12/questions/q06.png; gold_primary_node_path=9709.p1.circular_measure; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "9bee8b50c7677d476467882800bebbf5c329608a48b52c435e62ae7bb7d72531",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure with sectors, arcs, and labels (P, O, Q, R).",
+          "Text is primarily descriptive instructions rather than dense symbolic formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m18_qp_12/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 7,
+      "primary_topic_path": "9709.p3.vectors",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "89c0a38c20c4cee6a0512091cbfbfff5cacc36011d89273ffabadb2bc0423ef1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m18_qp_12/questions/q07.png; gold_primary_node_path=9709.p1.coordinate_geometry; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "5e038cba7c317f26cfc04477bf8c3c01947bef089cc240add63d3cb6a550a09a",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains Fig. 1 (2D polygon geometry) and Fig. 2 (3D pyramid with vector axes)",
+          "Text is descriptive rather than dominated by displayed formulae",
+          "No data tables or grids present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m19_qp_12/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 10,
+      "primary_topic_path": "9709.p1.differentiation",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.differentiation",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "12f97f8e9702cf7d28a8208539e6b9f22b827679232b18607a830f6c4fb6658b",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m19_qp_12/questions/q10.png; gold_primary_node_path=9709.p1.differentiation; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "4e649750db724dee4464207ab940a3813e73464a65b636a522dcb5e2db733e19",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian coordinate graph showing the curve y = 4x^(1/2) is clearly visible at the top.",
+          "The text contains isolated equations (y=x+3, y=4x^(1/2)) but is not dominated by dense blocks of formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m20_qp_12/questions/q12.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 12,
+      "primary_topic_path": "9709.p1.coordinate_geometry",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.coordinate_geometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "b7e04285f0fa75be311765ea3199a9c66f98b33c232443d249e6d7bab847e888",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m20_qp_12/questions/q12.png; gold_primary_node_path=9709.p1.coordinate_geometry; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "a1d0005ce620b7589e46b3eb9d063aa8fcd061d37c82cc7ed4fc8a33f6569171",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry diagram showing two intersecting circles (C1 and C2) on x-y axes.",
+          "Text is primarily descriptive with isolated equations rather than dense blocks of formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m21_qp_12/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2021,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 10,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "d8bdf1a44bee742d25547f5255824dc6a1ab1a8d7aa366f6b4a457734183ce28",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m21_qp_12/questions/q10.png; gold_primary_node_path=9709.p1.circular_measure; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "c3258e6da2a82c4fa7621b64613643ad91959fc0d23bfa8376af1e45a6069d16",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry figure (sector ABC with internal line DE) is clearly visible at the top.",
+          "The text contains inline mathematical notation but is not dominated by multiple displayed formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m23_qp_32/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2023,
+      "session": "m",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 8,
+      "primary_topic_path": "9709.p3.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "f6c9ab5cc5060718389664d0b84310e43ef37fa425042af0b9dd8a7116dcdf33",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m23_qp_32/questions/q08.png; gold_primary_node_path=9709.p3.integration; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "64c4e09aa3d63c30f33426c13f0d2d5f897b33d206859768638008477f4e85bd",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian coordinate graph showing a curve and shaded region is present.",
+          "The text contains only isolated inline equations (y = x^3 ln x, x = 1/2), not dense displayed formulae.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m24_qp_12/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 10,
+      "primary_topic_path": "9709.p1.coordinate_geometry",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.coordinate_geometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "5dbc65ca2360044165aa11e31cadf3c4577935de2fe8e032bf136b9af0558f89",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/m24_qp_12/questions/q10.png; gold_primary_node_path=9709.p1.coordinate_geometry; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "a70609eb86c82ad9d867463b40b031bb141fa93d7fe7f7bc4b321cedad2e8bbf",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry diagram showing a circle on Cartesian axes is clearly visible at the top.",
+          "The text contains only isolated mathematical expressions (coordinates, radius, one equation form) rather than dense blocks of formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s16_qp_13/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 6,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "00abd6ee35fc6c891e164949a9588ad99f161c03e865338eca9692b85af00c86",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s16_qp_13/questions/q06.png; gold_primary_node_path=9709.p1.circular_measure; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "6d92e846bc27aabc45f51b5527f4803c5af077a809693dfb16354ce0fd383867",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure with circles and a triangle",
+          "Text is descriptive rather than dominated by displayed formulae",
+          "No data tables or grids present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s17_qp_12/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 4,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "4eebf9a2fb24b34409deb34a97239c5060da99874f53b6e9ba82e2f039e93c1c",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s17_qp_12/questions/q04.png; gold_primary_node_path=9709.p1.circular_measure; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "6223eca1796b7ea81d4abc9c46a0252ed471f7b8484c5de0ce470a70013be599",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure showing a circle, sector, and rectangle with labels O, A, B, C, D.",
+          "Text is dominant; mathematical notation is sparse and embedded in sentences rather than displayed as dense formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s17_qp_31/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "s",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 5,
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "60eb36b0491c10d83e693efd8260fd7c715e4bcadb7678ece49f8b196038f4f0",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s17_qp_31/questions/q05.png; gold_primary_node_path=9709.p3.numerical_solution_of_equations; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "b19b30a9080bd3c4afd39e8985157e9dc71f0cf6b37f1a3421b5937b3287b080",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry diagram of a semicircle with labeled points and shaded regions is present at the top.",
+          "The text contains only one displayed equation in part (i); the rest is prose and answer lines.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s17_qp_32/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "s",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 10,
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "d5c299cf72aed5bb0ef33d9c9278aecdcfed949553d30c25963fd45223ceb03b",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s17_qp_32/questions/q10.png; gold_primary_node_path=9709.p3.numerical_solution_of_equations; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "acc22b961c3776404f58b9bef5ba95e7db3ff8529b8d7b68a45462b2c85f9472",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing a curve y = x^2 cos 2x is present at the top.",
+          "The question text contains mathematical notation and equations but is not dominated by dense blocks of displayed formulae.",
+          "No data tables or grids are visible in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s18_qp_11/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 6,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "c6bd43adb6e017f996c0fe74193100410ac510c0ce53094bfb00c1edd554c59d",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s18_qp_11/questions/q06.png; gold_primary_node_path=9709.p1.circular_measure; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "8a1bddfe537d7d80ed53777f39aaf1a313c349d974d101382784f7047ae15204",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure showing a circle, tangent, and shaded region.",
+          "Text is primarily descriptive with only inline variable definitions (r, theta), not dense displayed formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s18_qp_13/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 7,
+      "primary_topic_path": "9709.p1.trigonometry",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.trigonometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "b50b24ec96d2dfa9317efe6e0e56c50e4dec1a0902bfdf20ca4c976afde0acdd",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s18_qp_13/questions/q07.png; gold_primary_node_path=9709.p1.trigonometry; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "c3d2e92eca653b46f2f4419afffd989c65bec52d897dd7c2bd1b63b76dd023de",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Part (b) contains a printed Cartesian graph showing curves for y = sin x and y = 2 cos x.",
+          "The visible text consists mainly of question instructions and answer lines rather than dense blocks of formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s18_qp_13/questions/q11.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 11,
+      "primary_topic_path": "9709.p1.differentiation",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.differentiation",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "dfe61b704f2eb042e8edba2e77c6c468c5c633fa5621312180b2c92eee94fee7",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s18_qp_13/questions/q11.png; gold_primary_node_path=9709.p1.differentiation; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "7b45e00ab98e4b14c4299b3bac855d097a10ee1039e58fdc463d2a778dcb0c38",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian graph showing a curve and shaded region.",
+          "Text is primarily descriptive with isolated equations rather than dense symbolic blocks.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s19_qp_33/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "s",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 6,
+      "primary_topic_path": "9709.p3.algebra",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "10e79aa830172bbe04e41d743af55acb34c98a0030f8cc73e2e6addc21999377",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s19_qp_33/questions/q06.png; gold_primary_node_path=9709.p3.algebra; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "f4554e9d7f5c8c2eb347462358b5f6c8a6580925080e23aa9889a645687557f1",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing a curve intersecting the x-axis is clearly visible at the top.",
+          "The text contains isolated equations (e.g., y = x^4 - 2x^3 - 7x - 6) but is primarily narrative instructions rather than a dense block of symbolic lines.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_12/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.functions",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.functions",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "d30a796cf3a0481d5f0c23163b0b3e0feecb2cc76dfab9f6725d1157afd10b8e",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s20_qp_12/questions/q09.png; gold_primary_node_path=9709.p1.functions; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "0a619642c5f8582829fd71b5c7a5265425c0961567b58a16d48e13b43efb4f82",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian graph of y = f(x) with axes and curve.",
+          "Text is dominant; formulae are sparse definitions rather than dense blocks.",
+          "No data tables or grids present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_32/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "s",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 9,
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "ecd58b97654fbbdc764446522f66d226dea83f6d0ea7b8b53849e7cdd7f839fe",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s20_qp_32/questions/q09.png; gold_primary_node_path=9709.p3.numerical_solution_of_equations; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "9f53396a63008c4246a988ab8557ab827885c7f4d73d98e1ff3b93ed3ed187f6",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing two intersecting curves is clearly visible at the top.",
+          "The text contains mathematical notation and equations but is not dominated by dense blocks of formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s21_qp_13/questions/q11.png",
+      "syllabus_code": "9709",
+      "year": 2021,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 11,
+      "primary_topic_path": "9709.p1.differentiation",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p1.differentiation",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "3d5ba46f8bffbe38485af60d532dd022bb1cca26aa220cee5c6860ac99884083",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s21_qp_13/questions/q11.png; gold_primary_node_path=9709.p1.differentiation; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "940800e89c67269dcf9b01ddc72a1b37c5644ca93b794039ba84e28e13d739d7",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian graph showing a curve and shaded region.",
+          "Text is primarily prose with inline equations, not dominated by displayed formula blocks.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s22_qp_12/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 6,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "4620424607cef6cf020ce790a4e02f94d0fbb5e1fc1caf5f9ecd441d3eb02451",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s22_qp_12/questions/q06.png; gold_primary_node_path=9709.p1.integration; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "33fdbe5ed453ca0071542033bf27170f8844e124a7d5907cb0da90ecff5d0d3d",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian coordinate graph with a curve and line.",
+          "Includes a shaded region bounded by the plotted functions.",
+          "Text is sparse; only two equations are visible inline.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s22_qp_13/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 2,
+      "primary_topic_path": "9709.p1.trigonometry",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.trigonometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "02fa45d6d0cfa027e24e84531cbf406a8fe917dfcccbd47d2f7366cee4b68480",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s22_qp_13/questions/q02.png; gold_primary_node_path=9709.p1.trigonometry; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "096b10321687ec4b8d2fd76cec743a04624611fe4f749a509bcc3f25f4517a14",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian graph of a trigonometric curve.",
+          "Text is primarily natural language questions with single inline equations.",
+          "No data tables or grids present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s22_qp_13/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "57f6ecceb3b4e126e5709ad88241d4d76cf63c4b0ce8cf3cc0475bd1a24f2158",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s22_qp_13/questions/q09.png; gold_primary_node_path=9709.p1.circular_measure; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "f84abb504187093747eb7ec7044def2019b8f97424a6aa66d2f05997dbe87d08",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure with triangle ABC and circular arc CD",
+          "Includes labels for vertices, side lengths (6 cm), and angle (1.8 rad)",
+          "Text is descriptive rather than dominated by displayed formulae",
+          "No data tables or grids present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s22_qp_31/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "s",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 10,
+      "primary_topic_path": "9709.p3.differentiation",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p3.differentiation",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "f6c44f21a0769fe391060e5a8ffe3a3931140c840ab7b478ff630c2f6f527fa5",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s22_qp_31/questions/q10.png; gold_primary_node_path=9709.p3.differentiation; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "12da2c3ef30707826b552fbffc15cfdc2047d136b133978b8195bc7d0dfe0481",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing a curve is present at the top of the page.",
+          "The text contains mathematical notation and equations but is not dominated by dense blocks of formulae.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s23_qp_33/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2023,
+      "session": "s",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 5,
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "f619a117491917f6ef2c796588f0ed342afe5ffc7e5014a0e8353f42a16149c8",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s23_qp_33/questions/q05.png; gold_primary_node_path=9709.p3.numerical_solution_of_equations; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "61d43b7007e93193bc5b1809f4e2af9e77a6acffd9dcf7e0aea26a1fb47380af",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing a curve and maximum point M is present at the top.",
+          "The text contains only a few inline mathematical expressions, not a dense block of displayed formulae.",
+          "No data tables or grids are visible in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s24_qp_13/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 2,
+      "primary_topic_path": "9709.p1.trigonometry",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p1.trigonometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "c86d9182c5d7f9109885bdd9f62081516259b9e4b53e0e84e53cf7d570efb35c",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s24_qp_13/questions/q02.png; gold_primary_node_path=9709.p1.trigonometry; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "83c0b0dbc58f1eb7ca11d9c1a53ce3cb829b39ec3c34887fddc5d52fc32db2f3",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Part (a) features a printed Cartesian graph of a trigonometric curve.",
+          "The text is primarily descriptive with only isolated equations, not dominated by formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s24_qp_13/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "8475876e8eb0e05562ebf51178acd264c6955d98fb6e59fa1ab21767a8a846df",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s24_qp_13/questions/q09.png; gold_primary_node_path=9709.p1.integration; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "da3e874e8dc900407e764acd877da5a587fb02c9696da194d0ae5440a09ab76b",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Question 9 features a printed Cartesian graph showing a curve and a shaded region.",
+          "The page is dominated by text questions and large blank answer spaces rather than dense formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": true,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s24_qp_32/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 6,
+      "primary_topic_path": "9709.p3.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "fecb6e7a94e204b75681a0f22642a13887e2ad31dd685657b3bf9670482b62d1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s24_qp_32/questions/q06.png; gold_primary_node_path=9709.p3.integration; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "4f1d65bc4afd660ed14a25df406db8cbb7f47447b27baec9b92806be69402c4f",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing the curve y = xe^(-ax) and point M is present at the top.",
+          "The text contains only two isolated mathematical expressions (the function definition and an integral), not a dense block of formulae.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w16_qp_11/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "w",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 3,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "8a074d53565c197a65683b86b2d719b5b26f7b21cea176891ca43b58e72ce453",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w16_qp_11/questions/q03.png; gold_primary_node_path=9709.p1.circular_measure; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "f9a5e3ba569f0013122d7fd9bab70f7102629b02c4068856ae5027dce6099554",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure showing concentric circular sectors with labels O, A, B, C, D and shaded region.",
+          "Text is primarily descriptive prose rather than a sequence of displayed mathematical formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w16_qp_12/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "w",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 6,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "6821e15b0e6a7de83515d8972f0c9b33f7c7fcaf9a4c748c80f14a32578ce6c7",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w16_qp_12/questions/q06.png; gold_primary_node_path=9709.p1.circular_measure; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "e7d57e68db1c7b8604c23fc04b1ca671dd1106163c46ff794e229ae3b71a19a3",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Prominent geometry figure showing a composite shape with circles and sectors",
+          "Text-based question structure with minimal inline mathematical notation",
+          "No data tables or grids present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w17_qp_11/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "w",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 5,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "e60c412eda053dada697fd8ede4bbbcdbb074137df65fbf7222e602032fe0630",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w17_qp_11/questions/q05.png; gold_primary_node_path=9709.p1.circular_measure; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "4355763a42697e03a6b57e4c2ac267e0c2d242a687689edc794748db3fc57e29",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Visible geometry figure (triangle ABC with arcs and shaded region)",
+          "Text-based question with minimal inline mathematical notation",
+          "No data tables or grids present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w17_qp_11/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "w",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 10,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "625892a9535800066509a3694b34d7447f61245cfd3bd40a913805767a012060",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w17_qp_11/questions/q10.png; gold_primary_node_path=9709.p1.integration; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "ec3a0b514db96c438c2f2b10971b2fe258db39981cc4e235db67c0d05f46aad7",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian coordinate graph showing a curve and shaded region.",
+          "Text is primarily descriptive instructions rather than dense symbolic formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_11/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 10,
+      "primary_topic_path": "9709.p3.vectors",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "ca36c06fbcdd93e2f4cb066dd300b2f8288f5af4330ada12d0b683f58181aed5",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w19_qp_11/questions/q10.png; gold_primary_node_path=9709.p1.coordinate_geometry; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "12b3965b8b346bb01a2d86496205ad24190a654daed623eb2750d79f5a661015",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry figure (trapezium ABCD) is present at the top.",
+          "The question contains vector definitions but is not dominated by dense formulae.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_12/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 4,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "749b7a8d47cc22b4b49c6ed29121ff03a0d90b98df6b93f3cafd9723c8949d45",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w19_qp_12/questions/q04.png; gold_primary_node_path=9709.p1.circular_measure; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "2f3548f8d00d38369e97c4e3769f0f234598468fd8745fc985a986a5a79c70ea",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry figure showing a circle with center O, radius r, tangents meeting at T, and a shaded region is clearly visible.",
+          "The text contains only simple variable assignments (r=5, theta=1.2) and standard mathematical notation, not dense formulae.",
+          "No tables or data grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 8,
+      "primary_topic_path": "9709.p3.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "8c387ffd691b7fd96ed61f21b2c6460750f37c6b8a9db3b173543a3bc1870c5d",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w19_qp_33/questions/q08.png; gold_primary_node_path=9709.p3.integration; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "6475090b831739ac47fe7d584ba7a568f936c737b380f9ebfd34afe0853730c8",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed graph of y = sec x is clearly visible at the top.",
+          "The text contains standard mathematical notation and a single integral, but is not dominated by dense formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w20_qp_11/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "w",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.coordinate_geometry",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.coordinate_geometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "867caa37de9b26f7777764db663dee1e06b8f7e2ffa2b8fafc9c2507dc8c7ce4",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w20_qp_11/questions/q09.png; gold_primary_node_path=9709.p1.coordinate_geometry; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "6c802d02ede6196f036042bf5f2e65b310e5abd190d2bb36eb39753ad036febc",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry diagram showing two intersecting circles and a tangent line is clearly visible at the top.",
+          "The text contains coordinate pairs but is not dominated by multiple displayed formulae or symbolic lines.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w20_qp_32/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 10,
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "partial",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "a0e3695db2e52ef8e4d8615c8fc47282231def9ab1bc6d1d606563092ae0451f",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w20_qp_32/questions/q10.png; gold_primary_node_path=9709.p3.numerical_solution_of_equations; verdict=partial"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "ab38d5d6d90a663daef07ff61aa3716fe0680b57a9577bf828e2ad94ae5faf1a",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed graph of the curve y = sqrt(x)cos(x) is present at the top.",
+          "The question text is primarily descriptive with isolated formulae rather than being dominated by dense symbolic lines.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w21_qp_12/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2021,
+      "session": "w",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 7,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "9fa1ab8cf30e2221645b6058efefa100a4c1ac0620d275647a08dcabf1fb1460",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w21_qp_12/questions/q07.png; gold_primary_node_path=9709.p1.circular_measure; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "755eae255542830974a154728a4fc5c0de7ed72deea6a54772e17fc1e4afb73a",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry figure showing a triangle with an arc and shaded region is clearly visible at the top.",
+          "The text contains minimal mathematical notation (lengths, angle values) but is not dominated by displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w22_qp_12/questions/q11.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "w",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 11,
+      "primary_topic_path": "9709.p1.differentiation",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "correct",
+      "canonical_primary_topic_path": "9709.p1.differentiation",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "47edb73bd566379698f0edc7b86826cada974c0da26b3a26561b010fbafc5beb",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w22_qp_12/questions/q11.png; gold_primary_node_path=9709.p1.differentiation; verdict=correct"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "44dd48d73116006f90c81dac1c75b3d77c0a90a120db6b3ad78e91142c78e5db",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing two intersecting curves and a shaded region is clearly visible.",
+          "The text contains mathematical equations but is not dominated by dense blocks of displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w22_qp_13/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "w",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 10,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "c0f44b58ee13bd342d363398b9c41ee71ffc0b0000ed849a20914e82ef2e00a6",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/w22_qp_13/questions/q10.png; gold_primary_node_path=9709.p1.integration; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "016dda6e8eb5ce998c523611b94e0be88c85fae164dac0ac6a7a2dee18381265",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed coordinate geometry diagram with a circle and intersecting line.",
+          "Text is primarily descriptive instructions rather than dense symbolic formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m17_qp_12/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 3,
+      "primary_topic_path": "9709.p1.differentiation",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.differentiation",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "29fae70d093379837feed3cdc7f05611fced1be69c1d57cae69b6865df6de986",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.differentiation; gold_secondary_node_path=null; snippet=Express volume of water in inverted pyramid in terms of h; then find rate water level rises when hei"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.differentiation; new_secondary_node_path=null; note=related rates dh/dt"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "531a1db5022f6e13b9f1e78df98b0a20efe42f3432d5b3a2838bf1673e61428b",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure of an inverted pyramid with water level.",
+          "Text is primarily descriptive prose rather than dense symbolic formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/m20_qp_12/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 3,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "59df68a124d04848b83bceb136aa00e590e038a2654f8f04861c0ebd1fdc1c2c",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.integration; new_secondary_node_path=null; note=volume of revolution about y-axis"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "4d263ece6c0ba395faadcf4d238f4fe0ce2baa4edab5dc4bbdcbd5f2fa237a3a",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian coordinate graph with a curve and shaded region",
+          "Text is primarily descriptive rather than dominated by multiple displayed formulae",
+          "No data tables or grids are present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s16_qp_11/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 3,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "348e770e98194688cfed4b37bb520a426e949e6547a0ebc2e4c11d1859e76e4f",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.integration; new_secondary_node_path=null; note=volume of revolution about y-axis"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "42369d68e5df83201c327581c3a5f8b6ada6143ca575ad9a9b5bc5c2d99d05b8",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian coordinate graph with a curve and shaded region",
+          "Text is primarily descriptive prose rather than a list of formulae",
+          "No data tables or grids are present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s16_qp_11/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 5,
+      "primary_topic_path": "9709.p1.differentiation",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.differentiation",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "81da4be450ed14518b12166b1786b5be88251b87a47807a81d5e2261b579f17d",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.differentiation; new_secondary_node_path=null; note=optimization max area with constraint"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "f6dcb2198dd971fc651f08fa345bab9cf36bb1b5445b23c59fae67c228871118",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometric diagram showing a rectangular grid with dimension labels x and y is present.",
+          "The text is primarily narrative with only one displayed formula, so it is not formula-dense.",
+          "No data tables or grids of numerical values are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s16_qp_12/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 5,
+      "primary_topic_path": "9709.p1.trigonometry",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.trigonometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "d99ef3e6bbb1352240469f5386912c9744e7f419c55bdac0f243cf07784e92e0",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.trigonometry; gold_secondary_node_path=9709.p1.circular_measure; snippet=In right triangle ABC  find AM in terms of x  then show θ equals π/6 minus arctan(1/(2√3))."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.trigonometry; new_secondary_node_path=9709.p1.circular_measure; note=trig ratios in right triangle angle in radians"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "68fbe139a21ac6cc4af5572701e64f73275b411ab8656e7407ee4c273de451ff",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Prominent printed geometry figure (triangle ABC) with labels and angle markings",
+          "Text-based problem description with only a few inline mathematical expressions",
+          "No data tables or grids present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s17_qp_13/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 7,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "4228c12286c45061e7e02f6251e80ced97357a9cf0ed17ff8d9e83798f767eef",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.circular_measure; gold_secondary_node_path=null; snippet=Find angle ABC in radians and area of shaded region formed by two intersecting circles with given ra"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.circular_measure; new_secondary_node_path=null; note=angle in radians area of shaded region with circles"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "ae918e7a639e0bed97df2a3e29a435dccf43f632d7c2783c637bb126b7730f57",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed geometry figure with two intersecting circles and labeled points/lengths.",
+          "Text is descriptive rather than dominated by displayed mathematical formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2017,
+      "session": "s",
+      "paper": 6,
+      "variant": 3,
+      "q_number": 7,
+      "primary_topic_path": "9709.p5.representation_of_data",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "docs/reports/2026-04-16-9709-diagram-lane-live-probe-results.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p5.representation_of_data",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "7792790a706b8e94dd9f4a2c096693d3314ace0858cb5b1024a6d348dbdf18db",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "repo_evidence",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "repo_evidence",
+          "locator": "data/manifests/9709_diagram_lane_live_probe_v1.json",
+          "note": "storage_key=9709/s17_qp_63/questions/q07.png; primary_topic_path=9709.p5.representation_of_data; live probe shows a grouped-data histogram with Length (cm) on the x-axis and Frequency density on the y-axis."
+        },
+        {
+          "kind": "operator_review",
+          "locator": "docs/reports/2026-04-23-9709-authority-missing-q07-recovery.md",
+          "note": "Historical review confirms 9709/63 June 2017 is Statistics 1 and that Q7 is the histogram/frequency-density item, so the current repo taxonomy crosswalk is 9709.p5.representation_of_data."
+        }
+      ],
+      "cross_paper_dependency_note": "Historical component 9709/63 (June 2017) is Statistics 1. The current repo taxonomy anchors Statistics 1 under p5, so this row freezes to 9709.p5.representation_of_data rather than a synthetic p6 topic.",
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "9cbe447a12a1386ab0b6c7126d97b23b5594d242199a8b1bead99c55d9ff0081",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed histogram (statistical chart) showing frequency density vs length.",
+          "Includes a blank grid for plotting a cumulative frequency graph.",
+          "Text is primarily instructional questions rather than dense symbolic formulae.",
+          "No data tables are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s18_qp_11/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 5,
+      "primary_topic_path": "9709.p1.coordinate_geometry",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.coordinate_geometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "5514108f2e5458b3a104a7b4c9863ea5c0034a86828ca4961c2a5dada0cc8930",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.coordinate_geometry; gold_secondary_node_path=null; snippet=Find equations of lines AC and OB  then calculate coordinates of point B using kite symmetry about A"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.coordinate_geometry; new_secondary_node_path=null; note=line equations kite symmetry"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "83dbebd2dae4c6b61df4dc4b40d9911db2272d25cf333ea40a0648e90dff8986",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed coordinate geometry diagram showing a kite OABC with axes and labeled points.",
+          "Text is primarily descriptive instructions rather than dense symbolic formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s18_qp_12/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 5,
+      "primary_topic_path": "9709.p3.vectors",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "90c46d5aeecf8929f5f13490475e942b2ff965f12185946f31674d58aba2f789",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.coordinate_geometry; gold_secondary_node_path=null; snippet=Express vectors DA and CA in terms of i  j  k; then use scalar product to find angle CAD in 3D geome"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.coordinate_geometry; new_secondary_node_path=null; note=vectors scalar product angle 3D (no p1.vectors node)"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "1210d444a0785f45247a31a048853b12be80f68bcadbe118488e096162ed0a3f",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed 3D geometry figure with coordinate axes (i, j, k) is clearly visible at the top.",
+          "The text contains vector definitions but is not dominated by multiple displayed formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s18_qp_13/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2018,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 9,
+      "primary_topic_path": "9709.p3.vectors",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "8972f7f91e774be4979cbbf3d7675a8d1008756dfe0cdad92198acc57c590a19",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.coordinate_geometry; gold_secondary_node_path=null; snippet=Show vector OE in component form and find angle BDO using scalar product in 3D geometry with given p"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.coordinate_geometry; new_secondary_node_path=null; note=vectors scalar product angle 3D (no p1.vectors node)"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "a62c4715d59e784b479e2115b203e9fb446bc5a55037cb5ab82071ef1a0ab17a",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed 3D geometry figure (pyramid OABCD) with vector axes is clearly visible at the top.",
+          "The text contains only a single inline vector equation and standard problem description, not multiple displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s19_qp_11/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 4,
+      "primary_topic_path": "9709.p1.coordinate_geometry",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.coordinate_geometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "3a275d78bc58bfc0a344f97834761219d6e22fe76b51adf5bfea7895d6683e10",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.coordinate_geometry; gold_secondary_node_path=null; snippet=Given trapezium ABCD with coordinates and geometric constraints  find h then use it to find D's coor"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.coordinate_geometry; new_secondary_node_path=null; note=trapezium coordinates geometric constraints"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "e945728d0d57b1a19073884fb99d8a193b4aea403318e3ba9e809128c2dbcb73",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed coordinate geometry diagram showing a trapezium ABCD is clearly visible at the top.",
+          "The text contains only inline coordinates and simple geometric descriptions, not dense displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s19_qp_11/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 7,
+      "primary_topic_path": "9709.p3.vectors",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "767ef9d771be38488798aa645c1545ce0dda3b7a379bd53a3bb72a6554b31fca",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.coordinate_geometry; gold_secondary_node_path=null; snippet=Express vectors AM and GM in terms of i  j  k; then find angle GMA using scalar product."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.coordinate_geometry; new_secondary_node_path=null; note=vectors scalar product angle (no p1.vectors node)"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "85216136e0eeae16ab51f73aadf6d3a6619d384d242c54a9e5f379755ba5431c",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed 3D geometry figure (parallelepiped) with labeled vertices and coordinate axes is clearly visible.",
+          "The text contains only a couple of vector definitions, not a dense block of formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_13/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 3,
+      "primary_topic_path": "9709.p1.functions",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.functions",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "d7acb431f40ae66932fdad4f3951e9b176b568b52e74a3e3071f760d5f8a601d",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.functions; gold_secondary_node_path=null; snippet=For each part (a)  (b)  (c)  state the equation of the broken-line graph in terms of f(x)  given the"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.functions; new_secondary_node_path=null; note=graph transformations"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "a8300f36a5c0e0c079c53982adcf5cef726629c7a350d5584316c991312359b5",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains three distinct Cartesian coordinate graphs with plotted functions.",
+          "Text is primarily descriptive instructions rather than dense symbolic formulae.",
+          "No data tables or grids of numerical values are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_13/questions/q11.png",
+      "syllabus_code": "9709",
+      "year": 2020,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 11,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "6244288c5e8f9e5d96a5e42a295a9fa73b5dafd8adadad2e1a068996e8231378",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.integration; gold_secondary_node_path=9709.p1.coordinate_geometry; snippet=Show that b=3a and find area of shaded region between curve and line OA as ka⁴."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.integration; new_secondary_node_path=9709.p1.differentiation; note=area between curve and line"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "943765b82fbbc208c644c133afa2643d0caad3ff6d20fc8b5862f36e29199e06",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian graph showing a cubic curve and a shaded region is clearly visible at the top.",
+          "The text contains only isolated equations (e.g., y = x^3 - 2bx^2 + b^2x) rather than being dominated by multiple displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s21_qp_11/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2021,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 8,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "5951f44672af0ed021e71e919f04d84da448fedae46d99286272ab332b66cdb4",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.circular_measure; new_secondary_node_path=null; note=angle perimeter area of plate"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "d8cbd2867b75f09a8bd867f7e1e0944839bc491a49c9a643ce771890ae392958",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A prominent geometry figure showing a symmetrical metal plate with arcs and labeled points P, Q, R, S, C is present at the top.",
+          "The text contains some mathematical notation (e.g., angles in radians, area formulas), but it is not dominated by dense displayed formulae.",
+          "No data tables or grids are visible in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s21_qp_12/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2021,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "37f593c8871e6c1e7c4e2f433a66bfc597659c4fc1a9327dd3d0ee2b4b23edfd",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.integration; gold_secondary_node_path=null; snippet=Find the volume generated by rotating the shaded region bounded by y²=x−2  x=5  and y=1 about the x-"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.integration; new_secondary_node_path=null; note=volume of revolution"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "f89aa2371768b29b77f9f440fdb9b5d6bdc7c9575cb40ba6c2b66879f6668aec",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian coordinate graph with a curve and shaded region",
+          "Text is primarily descriptive prose rather than dense symbolic formulae",
+          "No data tables or grids are present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s21_qp_12/questions/q12.png",
+      "syllabus_code": "9709",
+      "year": 2021,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 12,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "5e79577c31b31223b0fd0fbb4baaf8b0c5e017bc618d99373c010a1c2a491e96",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.circular_measure; gold_secondary_node_path=null; snippet=Given seven cylindrical pipes radius 20cm arranged hexagonally  find angle PAQ  rope length  hexagon"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.circular_measure; new_secondary_node_path=null; note=hexagonal arrangement angle area"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "249495094aa3504ca4ae0099e2c66c02e1d3d0cf20b5db1a05f4d923278b19eb",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A prominent geometry diagram showing seven circles packed in a hexagon with a surrounding rope is present at the top.",
+          "The text contains minimal mathematical notation (e.g., 'angle PAQ = 1/3 pi', 'sqrt(3)'), not dense formulae.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s22_qp_11/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 5,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "5e56d895ce83ae81fbcf38e4921b6e04f995426e66ca15a95f4e8bfbc49ffabe",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.circular_measure; gold_secondary_node_path=9709.p1.trigonometry; snippet=Find exact area of triangle BCD given theta = pi/6  and exact perimeter given BD = sqrt(3)/2 * r."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.circular_measure; new_secondary_node_path=null; note=triangle area with theta perimeter"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "5777b33035884facf0d3998e8ebd45386030322778913254397acfbfb9706a49",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry figure (sector ABC with perpendicular line BD) is clearly visible at the top.",
+          "The text contains only isolated mathematical expressions within sentences, not dense blocks of displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s22_qp_11/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2022,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 7,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "9c61cfab3829c9bcd05110a28b4638ae933b9856be0abba64a0dede969f66070",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.integration; new_secondary_node_path=9709.p1.coordinate_geometry; note=intersection points then area between curve and line"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "e989b7065e87fdbb4033757656d0e81c1fe7e38de54010aa7ecef74086056613",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed Cartesian coordinate graph showing a curve and a line is clearly visible at the top.",
+          "The text contains only two inline equations defining the functions in the diagram, not a dense block of formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s23_qp_11/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2023,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 7,
+      "primary_topic_path": "9709.p1.trigonometry",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.trigonometry",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "cafeb454edd935bb55ba94bcf29023e6c5935c2f663e66d696d93a7837829450",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.trigonometry; gold_secondary_node_path=null; snippet=For curve y=2+3sin(½x) over [0 4π]  find max/min y  sketch curve  and count solutions of equation."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.trigonometry; new_secondary_node_path=null; note=trig curve max min sketch solutions"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "c5bf5ae7cf8c3df9a7a4f6c33452c01bbfb6c1c2a0eeb119d12050c00bfe0d8e",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Printed Cartesian coordinate system (axes with labels and tick marks) is present for part (b).",
+          "Content consists mainly of text instructions and a few isolated equations, not dense formulae.",
+          "No data tables or grids are visible."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s24_qp_11/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 7,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "e280cef8a1a4d3c9d09f773203c91004035324eb2555e12e6cba27a4221523ed",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.circular_measure; gold_secondary_node_path=null; snippet=Show θ=0.7297 rad  then find perimeter and area of shape ABCD to 3 significant figures."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.circular_measure; new_secondary_node_path=null; note=angle perimeter area in radians"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "eba698a0ad78642b1763b69aa47e94ebd274e735bd5c2df8940550de53716c84",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry figure showing a composite shape with arcs and lines is clearly visible at the top.",
+          "The text contains only sparse mathematical notation (e.g., theta, pi) rather than dense displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s24_qp_12/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 6,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "78c3a1b727424e009907aacea753c49030afdf3ac927f33e511d423935260607",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.integration; gold_secondary_node_path=9709.p1.coordinate_geometry; snippet=Find coordinates of points A and B  then calculate area between given curve and line."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.integration; new_secondary_node_path=9709.p1.coordinate_geometry; note=intersection points then area between curve and line"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "79e513b9b96c47e4646c02ad712d1dda805284177fc87aa7fc4c19d79f978961",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Part (b) contains a printed Cartesian coordinate graph showing a curve and a line with a shaded region.",
+          "The text includes only two specific equations embedded in sentences, not a dense block of symbolic lines.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s24_qp_12/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 8,
+      "primary_topic_path": "9709.p1.circular_measure",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.circular_measure",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "3e3f9ef947f2824ab2fb91c0aaffdcda2bef78c4b0ecb9564579e731922abf80",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.circular_measure; gold_secondary_node_path=null; snippet=Calculate EF length and area of symmetrical plate with given radius and angles; then find r when per"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.circular_measure; new_secondary_node_path=null; note=symmetrical plate radius angles"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "4bd39e006acac8fb93c1204f409b6c98449172b614278fd69f64a890d9bea6a2",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "A printed geometry figure of a symmetrical plate with sectors is clearly visible at the top.",
+          "The text contains minimal mathematical notation (e.g., 'r = 0.4 cm', 'EF = 2.4 cm') but is not dominated by displayed formulae.",
+          "No data tables or grids are present in the image."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/s24_qp_33/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 9,
+      "primary_topic_path": "9709.p3.differential_equations",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p3.differential_equations",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "f13f390d561c0d5c353f132478fd2e5bed506a8f5232c5defbff457436be0f8b",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p3.differential_equations; gold_secondary_node_path=null; snippet=A cuboid container with square base x and height 10−x has volume decreasing at rate proportional to"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p3.differential_equations; new_secondary_node_path=null; note=rate proportional to 1/t separable DE"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "52ef4b0b258cb3ed4482c8032baff02b037a763009aa41ee940064566fed6275",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Question 9 includes a printed line drawing of a cuboid with labeled dimensions.",
+          "The page contains standard mathematical notation and single displayed equations rather than dense blocks of formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w16_qp_11/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "w",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 7,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "e175bbfedb2c1f081700e869e22d2af2306db8e35bd197c22e6547e2acadd1ca",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.integration; gold_secondary_node_path=9709.p1.coordinate_geometry; snippet=Find coordinates of point A and area of shaded region between two intersecting curves."
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.integration; new_secondary_node_path=null; note=area between intersecting curves"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "98761c05cc879d085c5779bcdb741afbb9ec5dd05b6913cbb38c008e4250d333",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Contains a printed Cartesian coordinate graph with curves and shaded region",
+          "Text is primarily descriptive with inline equations rather than dense displayed formula blocks",
+          "No data tables or grids present"
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    },
+    {
+      "storage_key": "9709/w16_qp_13/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2016,
+      "session": "w",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 7,
+      "primary_topic_path": "9709.p3.vectors",
+      "source_reason": "repo_evidence_selection",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_fallback_questions_for_reclassification.json",
+      "audit_verdict": null,
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "21853e98ded0e4652c125d864164204cd4d7fdefeac5d51b70037b02b11664b7",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_audit_round2_100.csv",
+          "note": "gold_primary_node_path=9709.p1.coordinate_geometry; gold_secondary_node_path=null; snippet=Verify right angles at DAB  DAC  CAB using vectors; then find area of triangle ABC and volume of pyr"
+        },
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_fallback_reclassified_144.csv",
+          "note": "new_primary_node_path=9709.p1.coordinate_geometry; new_secondary_node_path=null; note=vectors right angles area volume (no p1.vectors node)"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-round-2",
+          "note": "Promoted to frozen from checked-in reclassification/manual-audit evidence during issue #273 round-2 operator review."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "0069928dc55b8149648c2372bf2bdc3b54869e2eab1dcab2690a0dee40428ec7",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Printed geometry figure of a triangular pyramid (ABCD) is clearly visible.",
+          "Contains vector definitions but text and questions dominate the layout, not dense formulae.",
+          "No data tables or grids present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": false,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    }
+  ],
+  "surface_triage_summary": {
+    "total": 300,
+    "updated": 300,
+    "missing_triage": 0,
+    "qwen_diagram_disagreements": 1,
+    "missing_effective_surface_flags": 0
+  }
+}

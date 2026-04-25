@@ -19,6 +19,8 @@ function buildManifest(diagramPresent = true) {
         paper: 1,
         primary_topic_path: '9709.p1.integration',
         diagram_present: diagramPresent,
+        formula_dense: true,
+        table_heavy: false,
       },
     ],
   };
@@ -106,9 +108,9 @@ describe('run_9709_release_preflight cli', () => {
     expect(exitCode).toBe(1);
     expect(JSON.parse(fs.readFileSync(jsonOut, 'utf8'))).toMatchObject({
       status: 'fail',
-      blockers: [
+      blockers: expect.arrayContaining([
         expect.objectContaining({ reason_code: 'diagram_present_not_boolean' }),
-      ],
+      ]),
     });
   });
 });

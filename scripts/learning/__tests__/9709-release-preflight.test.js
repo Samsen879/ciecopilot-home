@@ -92,6 +92,7 @@ function buildBundle(storageKey = '9709/s24_qp_13/questions/q09.png', overrides 
     },
     surface_posture: {
       surface_evidence_status: 'backfilled_from_audit',
+      diagram_present: true,
     },
     review_posture: {
       review_reasons: [],
@@ -112,13 +113,13 @@ describe('9709 release preflight', () => {
     expect(result.status).toBe('pass');
     expect(result.blockers).toHaveLength(0);
     expect(result.counts.manifest_items).toBe(300);
-    expect(result.counts.diagram_present).toEqual({ true: 83, false: 217, invalid: 0 });
+    expect(result.counts.diagram_present).toEqual({ true: 64, false: 236, invalid: 0 });
     expect(result.counts.sidecar_items).toBe(300);
     expect(result.counts.sidecar_canonical_missing).toBe(0);
     expect(result.counts.sidecar_distinct_topics).toBe(18);
     expect(result.warnings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ reason_code: 'manifest_primary_topic_missing_sidecar_canonical_present' }),
+        expect.objectContaining({ reason_code: 'paper_5_or_6_in_authority_ready_batch' }),
       ]),
     );
   });
@@ -227,6 +228,7 @@ describe('9709 release preflight', () => {
       manifest: buildManifest([
         buildManifestItem({
           storage_key: storageKey,
+          diagram_present: false,
           review_reasons: [],
         }),
       ]),
@@ -250,6 +252,7 @@ describe('9709 release preflight', () => {
           },
           surface_posture: {
             surface_evidence_status: 'unknown_requires_primary_asset_replay',
+            diagram_present: false,
           },
         }),
       ],
@@ -292,6 +295,91 @@ describe('9709 release preflight', () => {
       expect.arrayContaining([
         expect.objectContaining({ storage_key: storageKey, reason_code: 'diagram_present_but_elements_empty' }),
         expect.objectContaining({ storage_key: storageKey, reason_code: 'diagram_present_but_spatial_evidence_empty' }),
+      ]),
+    );
+  });
+
+  test('blocks manifest and evidence bundle diagram_present mismatches', () => {
+    const storageKey = '9709/s24_qp_13/questions/q09.png';
+    const result = validate9709ReleasePreflight({
+      manifest: buildManifest([
+        buildManifestItem({
+          storage_key: storageKey,
+          diagram_present: false,
+        }),
+      ]),
+      authoritySidecar: buildAuthoritySidecar([
+        buildAuthoritySidecarEntry(storageKey, '9709.p1.integration'),
+      ]),
+      curriculumSeed: buildCurriculumSeed(),
+      evidenceBundles: [
+        buildBundle(storageKey, {
+          evidence: {
+            ocr_text: 'A text-only question asks the student to sketch a graph.',
+            diagram_present: true,
+            diagram_elements: [],
+            spatial_evidence: [],
+          },
+          surface_posture: {
+            surface_evidence_status: 'backfilled_from_audit',
+            diagram_present: true,
+          },
+        }),
+      ],
+      expectedManifestCount: 1,
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.blockers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          storage_key: storageKey,
+          reason_code: 'diagram_present_mismatch_between_manifest_and_evidence_bundle',
+          details: {
+            manifest_diagram_present: false,
+            evidence_diagram_present: true,
+            surface_posture_diagram_present: true,
+          },
+        }),
+      ]),
+    );
+  });
+
+  test('blocks evidence bundles missing surface_posture diagram_present', () => {
+    const storageKey = '9709/s24_qp_13/questions/q09.png';
+    const result = validate9709ReleasePreflight({
+      manifest: buildManifest([
+        buildManifestItem({
+          storage_key: storageKey,
+          diagram_present: true,
+        }),
+      ]),
+      authoritySidecar: buildAuthoritySidecar([
+        buildAuthoritySidecarEntry(storageKey, '9709.p1.integration'),
+      ]),
+      curriculumSeed: buildCurriculumSeed(),
+      evidenceBundles: [
+        buildBundle(storageKey, {
+          surface_posture: {
+            surface_evidence_status: 'backfilled_from_audit',
+          },
+        }),
+      ],
+      expectedManifestCount: 1,
+    });
+
+    expect(result.status).toBe('fail');
+    expect(result.blockers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          storage_key: storageKey,
+          reason_code: 'diagram_present_mismatch_between_manifest_and_evidence_bundle',
+          details: {
+            manifest_diagram_present: true,
+            evidence_diagram_present: true,
+            surface_posture_diagram_present: null,
+          },
+        }),
       ]),
     );
   });

@@ -367,14 +367,16 @@ function renderReviewHtml() {
     .image-wrap {
       min-height: 0;
       overflow: auto;
-      padding: 16px;
+      padding: 8px 16px 16px;
       background: #e2e8f0;
     }
     .image-stage {
       width: 100%;
       min-height: 100%;
       display: grid;
-      place-items: center;
+      justify-items: center;
+      align-items: start;
+      align-content: start;
     }
     img.question {
       max-width: min(100%, 1180px);

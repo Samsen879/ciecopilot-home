@@ -19,6 +19,7 @@
 - `2026-04-20-issue-253-wave-a-review-lane-remediation.md` - bounded fix report for the remaining Wave A shard-3 over-conservative review-lane case on `9709/s22_qp_13/questions/q02.png`.
 - `2026-04-22-9709-syllabus-authority-vlm-dual-track-decision.md` - decision baseline for splitting `9709` topic alignment into an authoritative syllabus/paper line and a separate VLM visual-evidence line.
 - `9709-syllabus-id-contract.md` - canonical `9709` syllabus topic-tree schema and durable node ID contract for issue `#288`, scoped to schema/ID rules only with no draft tree generation.
+- `9709-canonical-topic-tree-draft-v1.md` - issue `#289` first-draft canonical `9709` topic tree report, generated only from the locked official syllabus raw sections with bullet coverage and human-review merge/split candidates.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.
@@ -56,5 +57,6 @@
 
 - `9709-syllabus-source-inventory.md` - official Cambridge `9709` syllabus source lock, raw section extraction inventory, legacy/candidate file classification, and coverage summary for issue `#287`.
 - `9709-syllabus-id-contract.md` - schema, ID, source-reference, review-state, and legacy-alias contract for future canonical syllabus topic-tree generation.
+- `9709-canonical-topic-tree-draft-v1.md` - first-draft canonical `9709` topic tree coverage report for issue `#289`, including mapped/unmapped official subject-content bullets and review candidates.
 - `rag_corpus_source_coverage.md` - corpus source coverage summary for backend RAG.
 - `rag_restricted_official_source_inventory.md` - restricted-official inventory snapshot used for governance review.

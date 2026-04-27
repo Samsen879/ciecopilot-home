@@ -51,14 +51,47 @@ function pathsFromCli(cli) {
   };
 }
 
+function parseBooleanFlag(value, flagName) {
+  if (value === undefined) {
+    return { ok: true, value: false };
+  }
+  if (value === true) {
+    return { ok: true, value: true };
+  }
+
+  const normalized = String(value).trim().toLowerCase();
+  if (['true', '1', 'yes', 'on'].includes(normalized)) {
+    return { ok: true, value: true };
+  }
+  if (['false', '0', 'no', 'off'].includes(normalized)) {
+    return { ok: true, value: false };
+  }
+
+  return {
+    ok: false,
+    value: false,
+    error: `Invalid boolean value for --${flagName}: ${value}`,
+  };
+}
+
 export async function main(argv = process.argv.slice(2)) {
   const cli = parseCliArgs(argv);
   const outJsonPath = cli['out-json'] || DEFAULT_9709_SYLLABUS_GATE_REPORT_PATH;
+  const approvedBaselineFlag = parseBooleanFlag(
+    cli['attempt-approved-baseline'],
+    'attempt-approved-baseline',
+  );
+  if (!approvedBaselineFlag.ok) {
+    process.stderr.write(`${approvedBaselineFlag.error}\n`);
+    process.exitCode = 1;
+    return;
+  }
+
   const { report } = write9709SyllabusGateReport({
     rootDir: ROOT,
     paths: pathsFromCli(cli),
     outJsonPath,
-    approvedBaselineAttempted: Boolean(cli['attempt-approved-baseline']),
+    approvedBaselineAttempted: approvedBaselineFlag.value,
   });
 
   process.stdout.write(`${outJsonPath}\n`);

@@ -161,6 +161,49 @@ describe('9709 syllabus gate', () => {
     );
   });
 
+  test('allows official syllabus update refs when the update document is in source inventory metadata', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildFixture();
+    const updateDocument = fixture.sourceInventory.observed_official_non_baseline_documents.find(
+      (source) => source.id === 'cambridge-9709-syllabus-update-2026-2027-december-2025',
+    );
+    expect(updateDocument).toBeDefined();
+    fixture.canonicalTopicTree.nodes[0].source_refs[0] = {
+      ...fixture.canonicalTopicTree.nodes[0].source_refs[0],
+      source_document_id: updateDocument.id,
+      source_type: 'official_syllabus_update',
+    };
+
+    const report = build9709SyllabusGateReport({ artifacts: fixture });
+
+    expect(report.status).toBe('pass');
+    expect(gateByName(report, 'source_refs').status).toBe('pass');
+    expect(gateByName(report, 'legacy_file_leakage').status).toBe('pass');
+  });
+
+  test('rejects candidate comparison files even when a ref claims official update source type', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildFixture();
+    fixture.canonicalTopicTree.nodes[0].source_refs[0] = {
+      ...fixture.canonicalTopicTree.nodes[0].source_refs[0],
+      source_document_id: 'data/curriculum/9709_authority_ready_batch_300_nodes_v2.json',
+      source_type: 'official_syllabus_update',
+    };
+
+    const report = build9709SyllabusGateReport({ artifacts: fixture });
+
+    expectBlocked(report, 'legacy_file_leakage');
+    expectBlocked(report, 'missing_source_inventory_ref');
+    expect(gateByName(report, 'legacy_file_leakage').errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'legacy_file_leakage',
+          source_document_id: 'data/curriculum/9709_authority_ready_batch_300_nodes_v2.json',
+        }),
+      ]),
+    );
+  });
+
   test('reports unmapped raw syllabus sections without failing the draft gate', async () => {
     const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
     const fixture = buildFixture();
@@ -244,12 +287,38 @@ describe('9709 syllabus gate', () => {
     );
   });
 
+  test.each(['false', '0'])(
+    'CLI treats --attempt-approved-baseline=%s as normal non-freeze gate mode',
+    async (flagValue) => {
+      const outJson = `tmp/9709-syllabus-gate-report-${flagValue}-test.json`;
+      const previousExitCode = process.exitCode;
+      const { main } = await import('../run_9709_syllabus_gate.js');
+
+      try {
+        process.exitCode = undefined;
+        await main([`--attempt-approved-baseline=${flagValue}`, '--out-json', outJson]);
+
+        expect(process.exitCode).toBeUndefined();
+        const report = readJson(outJson);
+        expect(report).toMatchObject({
+          status: 'pass',
+          approved_baseline_attempted: false,
+          blocked_reasons: [],
+        });
+      } finally {
+        process.exitCode = previousExitCode;
+        fs.rmSync(path.join(process.cwd(), outJson), { force: true });
+      }
+    },
+  );
+
   test('CLI writes the deterministic gate report JSON', async () => {
     const outJson = 'tmp/9709-syllabus-gate-report-test.json';
     const previousExitCode = process.exitCode;
     const { main } = await import('../run_9709_syllabus_gate.js');
 
     try {
+      process.exitCode = undefined;
       await main(['--out-json', outJson]);
 
       expect(process.exitCode).toBeUndefined();

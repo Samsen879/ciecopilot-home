@@ -86,8 +86,39 @@ function formatAjvError(error = {}) {
   };
 }
 
-function officialSourceIds(sourceInventory = {}) {
-  return new Set(normalizeArray(sourceInventory.official_sources).map((source) => source.id));
+function isAllowedSyllabusUpdateDocument(sourceInventory = {}, source = {}) {
+  const id = String(source.id ?? '').toLowerCase();
+  const title = String(source.title ?? '').toLowerCase();
+  const lockedExamYears = sourceInventory.source_lock?.exam_years ?? null;
+  const embeddedExamYears = `${id} ${title}`.match(/[0-9]{4}-[0-9]{4}/)?.[0] ?? null;
+  const examYears = source.exam_years ?? embeddedExamYears;
+  const sameExamYears = Boolean(lockedExamYears) && examYears === lockedExamYears;
+  const updateLike = id.includes('update') || title.includes('update');
+
+  return Boolean(source.id) && updateLike && sameExamYears;
+}
+
+function observedOfficialDocuments(sourceInventory = {}) {
+  return [
+    ...normalizeArray(sourceInventory.observed_official_documents),
+    ...normalizeArray(sourceInventory.observed_official_non_baseline_documents),
+    ...normalizeArray(sourceInventory.official_syllabus_updates),
+    ...normalizeArray(sourceInventory.observed_official_syllabus_updates),
+  ];
+}
+
+function officialSourceIds(sourceInventory = {}, sourceType = 'official_syllabus') {
+  const sourceIds = normalizeArray(sourceInventory.official_sources).map((source) => source.id);
+
+  if (sourceType === 'official_syllabus_update') {
+    sourceIds.push(
+      ...observedOfficialDocuments(sourceInventory)
+        .filter((source) => isAllowedSyllabusUpdateDocument(sourceInventory, source))
+        .map((source) => source.id),
+    );
+  }
+
+  return new Set(sourceIds.filter(Boolean));
 }
 
 function rawSectionIds(rawSections = {}) {
@@ -349,7 +380,6 @@ function validateSourceRefs({
   canonicalTopicTree = {},
   boundaryAnnotations = {},
 } = {}) {
-  const officialIds = officialSourceIds(sourceInventory);
   const rawIds = rawSectionIds(rawSections);
   const errors = [];
 
@@ -365,7 +395,8 @@ function validateSourceRefs({
     }
 
     for (const sourceRef of refs) {
-      if (!officialIds.has(sourceRef.source_document_id)) {
+      const recognizedSourceIds = officialSourceIds(sourceInventory, sourceRef.source_type);
+      if (!recognizedSourceIds.has(sourceRef.source_document_id)) {
         errors.push({
           code: 'missing_source_inventory_ref',
           owner_type: owner.owner_type,

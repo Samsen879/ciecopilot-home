@@ -22,6 +22,7 @@
 - `9709-canonical-topic-tree-draft-v1.md` - issue `#289` first-draft canonical `9709` topic tree report, generated only from the locked official syllabus raw sections with bullet coverage and human-review merge/split candidates.
 - `9709-boundary-audit-v1.md` - issue `#290` draft boundary annotation audit, keeping assessment scope, route constraints, assumed knowledge, exclusions, and component-only coverage separate from the canonical topic tree.
 - `9709-syllabus-human-review-pack.md` - issue `#292` compact human review queue for merge/split, boundary, component-conflict, naming/ID, and unmapped-official-content decisions reusable by issue `#293`.
+- `9709-syllabus-baseline-freeze-v1.md` - issue `#293` approved canonical `9709` syllabus baseline freeze report, linking human review decisions, approved v1 artifacts, gate posture, and legacy quarantine notes.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.
@@ -62,5 +63,6 @@
 - `9709-canonical-topic-tree-draft-v1.md` - first-draft canonical `9709` topic tree coverage report for issue `#289`, including mapped/unmapped official subject-content bullets and review candidates.
 - `9709-boundary-audit-v1.md` - draft `9709` boundary overlay report for issue `#290`, covering P1-P6 assessment scope, route eligibility, assumed knowledge, excluded knowledge, component-only coverage, and review flags.
 - `9709-syllabus-human-review-pack.md` - compact issue `#292` human review queue with machine-readable options in `data/syllabus/9709/review_items_v1.json`.
+- `9709-syllabus-baseline-freeze-v1.md` - approved issue `#293` baseline freeze report covering `canonical_topic_tree_v1.json`, `boundary_annotations_v1.json`, `human_review_decisions_v1.json`, and the approved-baseline gate report.
 - `rag_corpus_source_coverage.md` - corpus source coverage summary for backend RAG.
 - `rag_restricted_official_source_inventory.md` - restricted-official inventory snapshot used for governance review.

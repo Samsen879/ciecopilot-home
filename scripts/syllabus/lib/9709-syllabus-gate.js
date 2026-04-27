@@ -15,8 +15,10 @@ export const DEFAULT_9709_SYLLABUS_GATE_REPORT_PATH =
 export const DEFAULT_9709_SYLLABUS_GATE_PATHS = {
   sourceInventory: 'data/syllabus/9709/source_inventory.json',
   rawSections: 'data/syllabus/9709/raw_sections_v1.json',
-  canonicalTopicTree: 'data/syllabus/9709/canonical_topic_tree_draft_v1.json',
-  boundaryAnnotations: 'data/syllabus/9709/boundary_annotations_draft_v1.json',
+  canonicalTopicTree: 'data/syllabus/9709/canonical_topic_tree_v1.json',
+  boundaryAnnotations: 'data/syllabus/9709/boundary_annotations_v1.json',
+  reviewItems: 'data/syllabus/9709/review_items_v1.json',
+  humanReviewDecisions: 'data/syllabus/9709/human_review_decisions_v1.json',
   topicTreeSchema: 'data/contracts/9709_syllabus_topic_tree_schema_v1.json',
 };
 
@@ -52,6 +54,17 @@ function ensureParentDir(filePath) {
 
 function readJson(rootDir, relPath) {
   return JSON.parse(fs.readFileSync(resolveFromRoot(rootDir, relPath), 'utf8'));
+}
+
+function maybeReadJson(rootDir, relPath) {
+  if (!relPath) {
+    return null;
+  }
+  const absolutePath = resolveFromRoot(rootDir, relPath);
+  if (!fs.existsSync(absolutePath)) {
+    return null;
+  }
+  return JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
 }
 
 function normalizeArray(value) {
@@ -575,6 +588,150 @@ function buildApprovedBaselineFreezeGate({ approvedBaselineAttempted, reviewSumm
   ]);
 }
 
+function recommendedOption(reviewItem = {}) {
+  return normalizeArray(reviewItem.recommended_options).find(
+    (option) => option.recommended === true,
+  );
+}
+
+function validateHumanReviewDecisions({
+  approvedBaselineAttempted,
+  reviewItems = null,
+  humanReviewDecisions = null,
+  canonicalTopicTree = {},
+  boundaryAnnotations = {},
+  humanReviewDecisionsPath = DEFAULT_9709_SYLLABUS_GATE_PATHS.humanReviewDecisions,
+} = {}) {
+  const errors = [];
+  const warnings = [];
+  const approvedNodes = normalizeArray(canonicalTopicTree.nodes).filter(
+    (node) => node.status === 'approved',
+  );
+  const approvedBoundaries = normalizeArray(boundaryAnnotations.boundary_annotations).filter(
+    (annotation) => annotation.status === 'approved',
+  );
+  const freezeLike =
+    approvedBaselineAttempted || approvedNodes.length > 0 || approvedBoundaries.length > 0;
+
+  if (!freezeLike) {
+    return buildGate('human_review_decisions');
+  }
+
+  if (!humanReviewDecisions) {
+    return buildGate('human_review_decisions', [
+      {
+        code: 'missing_human_review_decisions',
+        path: humanReviewDecisionsPath ?? null,
+      },
+    ]);
+  }
+
+  if (humanReviewDecisions.schema_version !== '9709_human_review_decisions_v1') {
+    errors.push({
+      code: 'invalid_human_review_decisions',
+      field: 'schema_version',
+      expected: '9709_human_review_decisions_v1',
+      actual: humanReviewDecisions.schema_version ?? null,
+    });
+  }
+
+  if (humanReviewDecisions.issue !== 293) {
+    errors.push({
+      code: 'invalid_human_review_decisions',
+      field: 'issue',
+      expected: 293,
+      actual: humanReviewDecisions.issue ?? null,
+    });
+  }
+
+  const carriedReviewItems = normalizeArray(humanReviewDecisions.carried_review_items);
+  if (carriedReviewItems.length > 0) {
+    errors.push({
+      code: 'carried_review_items',
+      carried_count: carriedReviewItems.length,
+    });
+  }
+
+  const decisionMap = new Map(
+    normalizeArray(humanReviewDecisions.decisions)
+      .filter((decision) => decision.review_item_id)
+      .map((decision) => [decision.review_item_id, decision]),
+  );
+
+  for (const reviewItem of normalizeArray(reviewItems?.review_items)) {
+    const decision = decisionMap.get(reviewItem.item_id);
+    const recommended = recommendedOption(reviewItem);
+
+    if (!decision) {
+      errors.push({
+        code: 'missing_human_review_decision',
+        review_item_id: reviewItem.item_id ?? null,
+      });
+      continue;
+    }
+
+    if (decision.decision_status !== 'approved') {
+      errors.push({
+        code: 'unapproved_human_review_decision',
+        review_item_id: reviewItem.item_id ?? null,
+        decision_status: decision.decision_status ?? null,
+      });
+    }
+
+    if (recommended && decision.selected_option_id !== recommended.option_id) {
+      errors.push({
+        code: 'non_recommended_human_review_decision',
+        review_item_id: reviewItem.item_id ?? null,
+        expected: recommended.option_id,
+        actual: decision.selected_option_id ?? null,
+      });
+    }
+  }
+
+  for (const decision of normalizeArray(humanReviewDecisions.decisions)) {
+    if (!decision.review_item_id) {
+      errors.push({ code: 'invalid_human_review_decision', field: 'review_item_id' });
+    }
+    if (normalizeArray(decision.source_refs).length === 0) {
+      errors.push({
+        code: 'missing_source_refs',
+        owner_type: 'human_review_decision',
+        owner_id: decision.review_item_id ?? null,
+      });
+    }
+  }
+
+  for (const node of approvedNodes) {
+    const notes = normalizeArray(node.review_state?.notes).join('\n');
+    if (!notes.includes(humanReviewDecisionsPath)) {
+      errors.push({
+        code: 'missing_human_review_decision_ref',
+        owner_type: 'topic_node',
+        owner_id: node.node_id ?? null,
+      });
+    }
+  }
+
+  for (const annotation of approvedBoundaries) {
+    if (annotation.review_state?.decision_artifact !== humanReviewDecisionsPath) {
+      errors.push({
+        code: 'missing_human_review_decision_ref',
+        owner_type: 'boundary_claim',
+        owner_id: annotation.boundary_id ?? null,
+      });
+    }
+  }
+
+  if (!reviewItems) {
+    warnings.push({
+      code: 'missing_review_items_for_crosscheck',
+      path: DEFAULT_9709_SYLLABUS_GATE_PATHS.reviewItems,
+    });
+  }
+
+  return buildGate('human_review_decisions', errors, warnings);
+}
+
 function collectBlockedReasons(gates) {
   return unique(
     gates.flatMap((gate) =>
@@ -594,6 +751,8 @@ export function load9709SyllabusGateArtifacts({
     rawSections: readJson(rootDir, paths.rawSections),
     canonicalTopicTree: readJson(rootDir, paths.canonicalTopicTree),
     boundaryAnnotations: readJson(rootDir, paths.boundaryAnnotations),
+    reviewItems: maybeReadJson(rootDir, paths.reviewItems),
+    humanReviewDecisions: maybeReadJson(rootDir, paths.humanReviewDecisions),
     topicTreeSchema: readJson(rootDir, paths.topicTreeSchema),
   };
 }
@@ -611,6 +770,8 @@ export function build9709SyllabusGateReport({
     rawSections = {},
     canonicalTopicTree = {},
     boundaryAnnotations = {},
+    reviewItems = null,
+    humanReviewDecisions = null,
     topicTreeSchema = {},
   } = resolvedArtifacts;
 
@@ -629,6 +790,14 @@ export function build9709SyllabusGateReport({
     validateSourceRefs({ sourceInventory, rawSections, canonicalTopicTree, boundaryAnnotations }),
     validateLegacyFileLeakage({ sourceInventory, canonicalTopicTree, boundaryAnnotations, paths }),
     rawSectionMapping.gate,
+    validateHumanReviewDecisions({
+      approvedBaselineAttempted,
+      reviewItems,
+      humanReviewDecisions,
+      canonicalTopicTree,
+      boundaryAnnotations,
+      humanReviewDecisionsPath: paths.humanReviewDecisions,
+    }),
     buildApprovedBaselineFreezeGate({ approvedBaselineAttempted, reviewSummary: review }),
   ];
   const blockedReasons = collectBlockedReasons(gates);
@@ -675,6 +844,13 @@ export function build9709SyllabusGateReport({
       },
     },
     review,
+    human_review: {
+      decisions_total: normalizeArray(humanReviewDecisions?.decisions).length,
+      carried_review_items: cloneJson(humanReviewDecisions?.carried_review_items ?? []),
+      authority_id: humanReviewDecisions?.human_authority?.authority_id ?? null,
+      decisions_artifact: paths.humanReviewDecisions ?? null,
+      review_items_artifact: paths.reviewItems ?? null,
+    },
     gates,
   };
 }

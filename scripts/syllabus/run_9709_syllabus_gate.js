@@ -47,6 +47,9 @@ function pathsFromCli(cli) {
       cli['canonical-topic-tree'] || DEFAULT_9709_SYLLABUS_GATE_PATHS.canonicalTopicTree,
     boundaryAnnotations:
       cli['boundary-annotations'] || DEFAULT_9709_SYLLABUS_GATE_PATHS.boundaryAnnotations,
+    reviewItems: cli['review-items'] || DEFAULT_9709_SYLLABUS_GATE_PATHS.reviewItems,
+    humanReviewDecisions:
+      cli['human-review-decisions'] || DEFAULT_9709_SYLLABUS_GATE_PATHS.humanReviewDecisions,
     topicTreeSchema: cli['topic-tree-schema'] || DEFAULT_9709_SYLLABUS_GATE_PATHS.topicTreeSchema,
   };
 }
@@ -77,8 +80,9 @@ function parseBooleanFlag(value, flagName) {
 export async function main(argv = process.argv.slice(2)) {
   const cli = parseCliArgs(argv);
   const outJsonPath = cli['out-json'] || DEFAULT_9709_SYLLABUS_GATE_REPORT_PATH;
+  const defaultApprovedBaselineAttempt = !Object.hasOwn(cli, 'attempt-approved-baseline');
   const approvedBaselineFlag = parseBooleanFlag(
-    cli['attempt-approved-baseline'],
+    defaultApprovedBaselineAttempt ? true : cli['attempt-approved-baseline'],
     'attempt-approved-baseline',
   );
   if (!approvedBaselineFlag.ok) {

@@ -9,6 +9,16 @@ const realPaths = {
   topicTreeSchema: 'data/contracts/9709_syllabus_topic_tree_schema_v1.json',
 };
 
+const approvedPaths = {
+  sourceInventory: 'data/syllabus/9709/source_inventory.json',
+  rawSections: 'data/syllabus/9709/raw_sections_v1.json',
+  canonicalTopicTree: 'data/syllabus/9709/canonical_topic_tree_v1.json',
+  boundaryAnnotations: 'data/syllabus/9709/boundary_annotations_v1.json',
+  reviewItems: 'data/syllabus/9709/review_items_v1.json',
+  humanReviewDecisions: 'data/syllabus/9709/human_review_decisions_v1.json',
+  topicTreeSchema: 'data/contracts/9709_syllabus_topic_tree_schema_v1.json',
+};
+
 function readJson(relPath) {
   return JSON.parse(fs.readFileSync(path.join(process.cwd(), relPath), 'utf8'));
 }
@@ -24,6 +34,18 @@ function buildFixture() {
     canonicalTopicTree: readJson(realPaths.canonicalTopicTree),
     boundaryAnnotations: readJson(realPaths.boundaryAnnotations),
     topicTreeSchema: readJson(realPaths.topicTreeSchema),
+  };
+}
+
+function buildApprovedFixture() {
+  return {
+    sourceInventory: readJson(approvedPaths.sourceInventory),
+    rawSections: readJson(approvedPaths.rawSections),
+    canonicalTopicTree: readJson(approvedPaths.canonicalTopicTree),
+    boundaryAnnotations: readJson(approvedPaths.boundaryAnnotations),
+    reviewItems: readJson(approvedPaths.reviewItems),
+    humanReviewDecisions: readJson(approvedPaths.humanReviewDecisions),
+    topicTreeSchema: readJson(approvedPaths.topicTreeSchema),
   };
 }
 
@@ -262,6 +284,26 @@ describe('9709 syllabus gate', () => {
     });
   });
 
+  test('fails approved baseline attempts when review item crosscheck is unavailable', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildApprovedFixture();
+    fixture.reviewItems = null;
+
+    const report = build9709SyllabusGateReport({
+      artifacts: fixture,
+      paths: approvedPaths,
+      approvedBaselineAttempted: true,
+    });
+
+    expectBlocked(report, 'missing_review_items_for_crosscheck');
+    expect(report.approved_baseline_attempted).toBe(true);
+    expect(report.approved_baseline_ready).toBe(false);
+    expect(gateByName(report, 'human_review_decisions').errors[0]).toMatchObject({
+      code: 'missing_review_items_for_crosscheck',
+      path: approvedPaths.reviewItems,
+    });
+  });
+
   test('fails legacy-file leakage without rejecting candidate legacy-path metadata', async () => {
     const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
     const fixture = buildFixture();
@@ -327,10 +369,12 @@ describe('9709 syllabus gate', () => {
       expect(report).toMatchObject({
         schema_version: '9709_syllabus_gate_report_v1',
         status: 'pass',
+        approved_baseline_attempted: true,
+        approved_baseline_ready: true,
         blocked_reasons: [],
         subject_code: '9709',
       });
-      expect(report.artifacts).toMatchObject(realPaths);
+      expect(report.artifacts).toMatchObject(approvedPaths);
     } finally {
       process.exitCode = previousExitCode;
       fs.rmSync(path.join(process.cwd(), outJson), { force: true });

@@ -27,6 +27,7 @@
     "test:community": "node scripts/test-community-api.js",
     "test:community:dev": "npm run dev & sleep 5 && npm run test:community",
     "learning:release-gate": "node scripts/learning/run_released_family_gate.js",
+    "syllabus:9709:gate": "node scripts/syllabus/run_9709_syllabus_gate.js",
     "ao:start:clean": "bash scripts/ao/start-clean.sh",
     "ao:start:clean:dry": "bash scripts/ao/start-clean.sh --dry-run",
     "ao:reconcile": "node scripts/ao-reconcile.js",

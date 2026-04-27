@@ -53,14 +53,6 @@ function extractBulletLocators(section) {
   return locators;
 }
 
-function sourceRefKey(sourceRef) {
-  return [
-    sourceRef.source_document_id,
-    sourceRef.raw_section_id,
-    sourceRef.locator,
-  ].join('\u0000');
-}
-
 function collectSourceRefs(node) {
   return [
     ...node.source_refs,
@@ -122,29 +114,71 @@ describe('9709 canonical topic tree draft v1', () => {
   test('maps every official subject-content bullet to a node source ref', () => {
     const draft = readJson(draftPath);
     const rawSections = readJson(rawSectionsPath);
-    const expectedBulletRefs = [];
+    const expectedCountsByRawSection = new Map();
 
     for (const section of subjectContentSections(rawSections)) {
-      for (const locator of extractBulletLocators(section)) {
-        expectedBulletRefs.push(
-          sourceRefKey({
-            source_document_id: section.source_document,
-            raw_section_id: section.section_id,
-            locator,
-          }),
+      const count = extractBulletLocators(section).length;
+      if (count > 0) {
+        expectedCountsByRawSection.set(section.section_id, count);
+      }
+    }
+
+    const actualCountsByRawSection = new Map();
+    for (const node of draft.nodes.filter(
+      (entry) =>
+        ['learning_objective', 'note'].includes(entry.node_type) &&
+        /\.lo[0-9]{2}_/.test(entry.node_id),
+    )) {
+      const rawSectionId = node.source_refs[0].raw_section_id;
+      if (expectedCountsByRawSection.has(rawSectionId)) {
+        actualCountsByRawSection.set(
+          rawSectionId,
+          (actualCountsByRawSection.get(rawSectionId) ?? 0) + 1,
         );
       }
     }
 
-    const nodeSourceRefs = new Set(
-      draft.nodes
-        .flatMap((node) => node.source_refs)
-        .map((sourceRef) => sourceRefKey(sourceRef)),
+    expect([...expectedCountsByRawSection.values()].reduce((sum, count) => sum + count, 0)).toBe(
+      155,
     );
-    const missing = expectedBulletRefs.filter((ref) => !nodeSourceRefs.has(ref));
+    expect(actualCountsByRawSection).toEqual(expectedCountsByRawSection);
+  });
 
-    expect(expectedBulletRefs.length).toBe(155);
-    expect(missing).toEqual([]);
+  test('keeps notes/examples text out of canonical objective locators', () => {
+    const draft = readJson(draftPath);
+    const rawSections = readJson(rawSectionsPath);
+    const objective = draft.nodes.find(
+      (node) =>
+        node.node_id ===
+        '9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo01_apply_newton_s_laws_of_motion_to_the',
+    );
+    const rawSection = rawSections.sections.find(
+      (section) => section.section_id === objective.source_refs[0].raw_section_id,
+    );
+
+    expect(objective).toBeDefined();
+    expect(rawSection).toBeDefined();
+    expect(objective.canonical_title).toContain(
+      'apply Newton\u2019s laws of motion to the linear motion of a particle',
+    );
+    expect(objective.canonical_title).not.toContain('If any other forces resisting motion');
+    expect(objective.canonical_title).not.toContain('this will be indicated in the question');
+    expect(objective.source_refs[0].locator).not.toContain('If any other forces resisting motion');
+    expect(rawSection.raw_text).toContain(objective.source_refs[0].locator);
+  });
+
+  test('uses raw section headings as section source-ref locators', () => {
+    const draft = readJson(draftPath);
+    const rawSections = readJson(rawSectionsPath);
+    const sectionsById = new Map(rawSections.sections.map((section) => [section.section_id, section]));
+
+    for (const node of draft.nodes.filter((entry) => entry.node_type === 'section')) {
+      const sourceRef = node.source_refs[0];
+      const rawSection = sectionsById.get(sourceRef.raw_section_id);
+      expect(rawSection).toBeDefined();
+      expect(sourceRef.locator).toBe(rawSection.raw_text.split(/\r?\n/)[0].trim());
+      expect(rawSection.raw_text).toContain(sourceRef.locator);
+    }
   });
 
   test('publishes the human-review report alongside the draft JSON', () => {

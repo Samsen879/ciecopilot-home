@@ -30,6 +30,74 @@ const componentRouteScope = {
   P6: ['A Level'],
 };
 
+const noteColumnInlineMarkers = [
+  /\s+e\.g\./,
+  /\s+\(e\.g\. a child\b/,
+  /\s+Including\b/,
+  /\s+Knowledge of\b/,
+  /\s+No specialised\b/,
+  /\s+Only an\b/,
+  /\s+Only a\b/,
+  /\s+Formal use\b/,
+  /\s+Implicit differentiation\b/,
+  /\s+By factorising\b/,
+  /\s+Graphs of\b/,
+  /\s+Sketches of\b/,
+  /\s+Calculations are\b/,
+  /\s+Solutions by\b/,
+  /\s+Terminology such\b/,
+  /\s+Restricted to\b/,
+  /\s+The term\b/,
+  /\s+Calculus required\b/,
+  /\s+Proofs are\b/,
+  /\s+For calculations\b/,
+  /\s+Full details\b/,
+  /\s+Outcomes of\b/,
+  /\s+The condition\b/,
+  /\s+The conditions\b/,
+  /\s+Explicit knowledge\b/,
+  /\s+Finding the general\b/,
+  /\s+Adapting the standard\b/,
+  /\s+Use of the scalar\b/,
+  /\s+A volume of revolution\b/,
+  /\s+If any other\b/,
+  /\s+Questions may\b/,
+  /\s+Questions about\b/,
+  /\s+For density functions\b/,
+  /\s+The general form\b/,
+  /\s+functions f are not included\b/,
+  /\s+considered \(e\.g\./,
+  /\s+this will be indicated\b/,
+  /\s+in the question\./,
+  /\s+equivalent methods\b/,
+  /\s+Theorem\b/,
+  /\s+these other methods\b/,
+  /\s+and will not be referred\b/,
+  /\s+mean \u2018in limiting\b/,
+  /\s+is equal and opposite\b/,
+  /\s+\(or more\) rows\b/,
+  /\s+be included\./,
+  /\s+be known;/,
+  /\s+of a distribution by direct\b/,
+  /\s+using the density function\b/,
+  /\s+in overall energy\b/,
+  /\s+given y =/,
+  /\s+chord joining\b/,
+  /\s+from first principles\b/,
+  /\s+of values of x\b/,
+  /\s+details of the working\b/,
+  /\s+will vary the process\b/,
+  /\s+be interpreted\b/,
+  /\s+which a root lies\b/,
+  /\s+as specified\b/,
+  /\s+or probabilities may\b/,
+  /\s+3sin2\b/,
+  /\s+forms of solution are not included\b/,
+  /\s+W =/,
+];
+
+const noteColumnOnlyLine = /^(?:e\.g\.|Including\b|Knowledge\b|No\b|Only\b|Formal\b|Implicit\b|By factorising\b|Graphs\b|Sketches\b|Calculations\b|Solutions\b|Terminology\b|Restricted\b|The term\b|Calculus required\b|Proofs\b|For calculations\b|Full details\b|Outcomes\b|The condition\b|The conditions\b|Explicit\b|Finding\b|Adapting\b|Use of\b|A volume\b|If any other\b|Questions\b|For density\b|The general\b|functions f\b|considered\b|this will be indicated\b|in the question\b|equivalent methods\b|Theorem\b|these other methods\b|and will not be referred\b|mean \u2018in limiting\b|is equal and opposite\b|be known\b|using the density function\b|function is not included\b|forms of solution are not included\b)/;
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
@@ -63,6 +131,10 @@ function sectionTail(sectionRef) {
   return sectionRef.split('>').at(-1).trim();
 }
 
+function rawSectionHeading(section) {
+  return section.raw_text.split(/\r?\n/).find((line) => line.trim())?.trim() ?? sectionTail(section.section_ref);
+}
+
 function sourceRef(section, locator) {
   return {
     source_document_id: section.source_document,
@@ -72,6 +144,31 @@ function sourceRef(section, locator) {
     raw_section_id: section.section_id,
     locator,
   };
+}
+
+function removeNotesColumnFragment(line) {
+  let candidate = line.trim();
+  if (noteColumnOnlyLine.test(candidate)) {
+    return '';
+  }
+
+  let cutIndex = -1;
+  for (const marker of noteColumnInlineMarkers) {
+    const match = candidate.match(marker);
+    if (match && (cutIndex === -1 || match.index < cutIndex)) {
+      cutIndex = match.index;
+    }
+  }
+
+  if (cutIndex !== -1) {
+    candidate = candidate.slice(0, cutIndex).trim();
+  }
+
+  return noteColumnOnlyLine.test(candidate) ? '' : candidate;
+}
+
+function normalizeExtractedText(parts) {
+  return parts.join(' ').replace(/\s+/g, ' ').trim();
 }
 
 function reviewState(status, notes = []) {
@@ -130,7 +227,7 @@ function baseNode({
   };
 }
 
-function extractBullets(section) {
+function extractBulletEntries(section) {
   const bullets = [];
   let current = null;
 
@@ -138,19 +235,34 @@ function extractBullets(section) {
     const trimmed = line.trim();
     if (trimmed.startsWith('\u2022')) {
       if (current) {
-        bullets.push(current.trim());
+        bullets.push(current);
       }
-      current = trimmed.replace(/^\u2022\s*/, '');
+      const fragment = removeNotesColumnFragment(trimmed.replace(/^\u2022\s*/, ''));
+      current = {
+        objective_parts: fragment ? [fragment] : [],
+        locator: fragment,
+      };
     } else if (current && trimmed) {
-      current = `${current} ${trimmed}`;
+      const fragment = removeNotesColumnFragment(trimmed);
+      if (fragment) {
+        current.objective_parts.push(fragment);
+        current.locator ||= fragment;
+      }
     }
   }
 
   if (current) {
-    bullets.push(current.trim());
+    bullets.push(current);
   }
 
-  return bullets;
+  return bullets.map((bullet) => ({
+    objective: normalizeExtractedText(bullet.objective_parts),
+    locator: bullet.locator,
+  }));
+}
+
+function extractBullets(section) {
+  return extractBulletEntries(section).map((bullet) => bullet.objective);
 }
 
 function subjectContentSections(rawSections) {
@@ -377,13 +489,13 @@ function buildDraft() {
         qualificationRouteScope: componentRouteScope[parsed.componentCode],
         status,
         reviewNotes,
-        sourceRefs: [sourceRef(section, sectionTail(section.section_ref))],
+        sourceRefs: [sourceRef(section, rawSectionHeading(section))],
       }),
     );
   }
 
   for (const section of subjectContentSections(rawSections)) {
-    const bullets = extractBullets(section);
+    const bullets = extractBulletEntries(section);
     if (bullets.length === 0) {
       continue;
     }
@@ -396,10 +508,10 @@ function buildDraft() {
       : priorKnowledgeNodeId;
     const component = topicParsed ? componentByPaper.get(topicParsed.paper) : null;
 
-    bullets.forEach((locator, index) => {
+    bullets.forEach((bullet, index) => {
       const bulletNumber = String(index + 1).padStart(2, '0');
-      const slug = `lo${bulletNumber}_${compactSlug(locator, 'objective')}`;
-      const status = isSplitCandidate(locator) ? 'needs_human_review' : 'draft';
+      const slug = `lo${bulletNumber}_${compactSlug(bullet.objective, 'objective')}`;
+      const status = isSplitCandidate(bullet.objective) ? 'needs_human_review' : 'draft';
       const reviewNotes =
         status === 'needs_human_review'
           ? ['Official bullet contains multiple concepts or long notation-heavy wording; retained as one node pending human split review.']
@@ -431,7 +543,7 @@ function buildDraft() {
           parentNodeId,
           nodeType,
           topicPath,
-          canonicalTitle: locator,
+          canonicalTitle: bullet.objective,
           componentCode: topicParsed ? topicParsed.componentCode : null,
           paper: topicParsed ? topicParsed.paper : null,
           sectionCode: topicParsed ? topicParsed.sectionCode : null,
@@ -443,7 +555,7 @@ function buildDraft() {
             : ['AS Level', 'A Level'],
           status,
           reviewNotes,
-          sourceRefs: [sourceRef(section, locator)],
+          sourceRefs: [sourceRef(section, bullet.locator || bullet.objective)],
         }),
       );
     });

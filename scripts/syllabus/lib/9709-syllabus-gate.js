@@ -600,10 +600,10 @@ function validateHumanReviewDecisions({
   humanReviewDecisions = null,
   canonicalTopicTree = {},
   boundaryAnnotations = {},
+  reviewItemsPath = DEFAULT_9709_SYLLABUS_GATE_PATHS.reviewItems,
   humanReviewDecisionsPath = DEFAULT_9709_SYLLABUS_GATE_PATHS.humanReviewDecisions,
 } = {}) {
   const errors = [];
-  const warnings = [];
   const approvedNodes = normalizeArray(canonicalTopicTree.nodes).filter(
     (node) => node.status === 'approved',
   );
@@ -723,13 +723,13 @@ function validateHumanReviewDecisions({
   }
 
   if (!reviewItems) {
-    warnings.push({
+    errors.push({
       code: 'missing_review_items_for_crosscheck',
-      path: DEFAULT_9709_SYLLABUS_GATE_PATHS.reviewItems,
+      path: reviewItemsPath ?? null,
     });
   }
 
-  return buildGate('human_review_decisions', errors, warnings);
+  return buildGate('human_review_decisions', errors);
 }
 
 function collectBlockedReasons(gates) {
@@ -796,6 +796,7 @@ export function build9709SyllabusGateReport({
       humanReviewDecisions,
       canonicalTopicTree,
       boundaryAnnotations,
+      reviewItemsPath: paths.reviewItems,
       humanReviewDecisionsPath: paths.humanReviewDecisions,
     }),
     buildApprovedBaselineFreezeGate({ approvedBaselineAttempted, reviewSummary: review }),

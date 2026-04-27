@@ -37,6 +37,18 @@ function buildFixture() {
   };
 }
 
+function buildApprovedFixture() {
+  return {
+    sourceInventory: readJson(approvedPaths.sourceInventory),
+    rawSections: readJson(approvedPaths.rawSections),
+    canonicalTopicTree: readJson(approvedPaths.canonicalTopicTree),
+    boundaryAnnotations: readJson(approvedPaths.boundaryAnnotations),
+    reviewItems: readJson(approvedPaths.reviewItems),
+    humanReviewDecisions: readJson(approvedPaths.humanReviewDecisions),
+    topicTreeSchema: readJson(approvedPaths.topicTreeSchema),
+  };
+}
+
 function gateByName(report, gateName) {
   return report.gates.find((gate) => gate.name === gateName);
 }
@@ -269,6 +281,26 @@ describe('9709 syllabus gate', () => {
     expect(report.approved_baseline_ready).toBe(false);
     expect(gateByName(report, 'approved_baseline_freeze').errors[0]).toMatchObject({
       code: 'unresolved_review_items',
+    });
+  });
+
+  test('fails approved baseline attempts when review item crosscheck is unavailable', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildApprovedFixture();
+    fixture.reviewItems = null;
+
+    const report = build9709SyllabusGateReport({
+      artifacts: fixture,
+      paths: approvedPaths,
+      approvedBaselineAttempted: true,
+    });
+
+    expectBlocked(report, 'missing_review_items_for_crosscheck');
+    expect(report.approved_baseline_attempted).toBe(true);
+    expect(report.approved_baseline_ready).toBe(false);
+    expect(gateByName(report, 'human_review_decisions').errors[0]).toMatchObject({
+      code: 'missing_review_items_for_crosscheck',
+      path: approvedPaths.reviewItems,
     });
   });
 

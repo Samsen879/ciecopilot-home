@@ -53,5 +53,6 @@
 
 ## Coverage And Inventory
 
+- `9709-syllabus-source-inventory.md` - official Cambridge `9709` syllabus source lock, raw section extraction inventory, legacy/candidate file classification, and coverage summary for issue `#287`.
 - `rag_corpus_source_coverage.md` - corpus source coverage summary for backend RAG.
 - `rag_restricted_official_source_inventory.md` - restricted-official inventory snapshot used for governance review.

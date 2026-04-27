@@ -523,6 +523,228 @@
           "locator": "Knowledge of the content of Paper 5: Probability & Statistics 1 is assumed, and candidates may be required\nto demonstrate such knowledge in answering questions. Knowledge of calculus within the content for\nPaper 3: Pure Mathematics 3 will also be assumed."
         }
       ]
+    },
+    {
+      "boundary_id": "9709:2026-2027_v4:boundary:route.as.valid_combinations",
+      "boundary_kind": "route_constraint",
+      "claim": "AS Mathematics candidates take two components in the same series using one of three valid combinations: P1/P2, P1/P4, or P1/P5.",
+      "component_scope": [
+        {
+          "component_code": "P1",
+          "paper": "Paper 1",
+          "role": "required_as_route_component"
+        },
+        {
+          "component_code": "P2",
+          "paper": "Paper 2",
+          "role": "eligible_as_route_component"
+        },
+        {
+          "component_code": "P4",
+          "paper": "Paper 4",
+          "role": "eligible_as_route_component"
+        },
+        {
+          "component_code": "P5",
+          "paper": "Paper 5",
+          "role": "eligible_as_route_component"
+        }
+      ],
+      "route_scope": [
+        {
+          "route": "AS Mathematics (AS Level only)",
+          "eligibility": "eligible",
+          "valid_component_combinations": [
+            [
+              "P1",
+              "P2"
+            ],
+            [
+              "P1",
+              "P4"
+            ],
+            [
+              "P1",
+              "P5"
+            ]
+          ],
+          "progression": "P1/P2 is separately constrained as AS-only with no carry-forward to A Level."
+        }
+      ],
+      "linked_node_ids": [
+        "9709:2026-2027_v4:component:p1",
+        "9709:2026-2027_v4:component:p2",
+        "9709:2026-2027_v4:component:p4",
+        "9709:2026-2027_v4:component:p5"
+      ],
+      "cross_component_claim": true,
+      "needs_human_review": false,
+      "status": "draft",
+      "review_reasons": [],
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "pp. 8-17",
+          "section_ref": "2 Syllabus overview",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.2.syllabus_overview",
+          "locator": "AS Mathematics (AS Level only)\nCandidates take two components in the same series.\nPaper 1 and Paper 2\nPure Mathematics 1 Pure Mathematics 2\n(Please note, this route cannot count towards A Level)\nOR\nPaper 1 and Paper 4\nPure Mathematics 1 Mechanics\nOR\nPaper 1 and Paper 5\nPure Mathematics 1 Probability & Statistics 1"
+        }
+      ]
+    },
+    {
+      "boundary_id": "9709:2026-2027_v4:boundary:route.a_level.staged_valid_combinations",
+      "boundary_kind": "route_constraint",
+      "claim": "A Level Mathematics staged routes carry forward AS components and then add two more components using one of three valid combinations: P1/P4 then P3/P5; P1/P5 then P3/P4; or P1/P5 then P3/P6.",
+      "component_scope": [
+        {
+          "component_code": "P1",
+          "paper": "Paper 1",
+          "role": "required_staged_route_component"
+        },
+        {
+          "component_code": "P3",
+          "paper": "Paper 3",
+          "role": "required_staged_route_component"
+        },
+        {
+          "component_code": "P4",
+          "paper": "Paper 4",
+          "role": "eligible_staged_route_component"
+        },
+        {
+          "component_code": "P5",
+          "paper": "Paper 5",
+          "role": "eligible_staged_route_component"
+        },
+        {
+          "component_code": "P6",
+          "paper": "Paper 6",
+          "role": "eligible_staged_route_component"
+        }
+      ],
+      "route_scope": [
+        {
+          "route": "A Level Mathematics (Staged route)",
+          "eligibility": "eligible",
+          "valid_component_combinations": [
+            [
+              "P1",
+              "P4",
+              "P3",
+              "P5"
+            ],
+            [
+              "P1",
+              "P5",
+              "P3",
+              "P4"
+            ],
+            [
+              "P1",
+              "P5",
+              "P3",
+              "P6"
+            ]
+          ],
+          "progression": "Candidates take AS Level components first, carry forward the AS result, and complete the A Level in another series."
+        }
+      ],
+      "linked_node_ids": [
+        "9709:2026-2027_v4:component:p1",
+        "9709:2026-2027_v4:component:p3",
+        "9709:2026-2027_v4:component:p4",
+        "9709:2026-2027_v4:component:p5",
+        "9709:2026-2027_v4:component:p6"
+      ],
+      "cross_component_claim": true,
+      "needs_human_review": false,
+      "status": "draft",
+      "review_reasons": [],
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "pp. 8-17",
+          "section_ref": "2 Syllabus overview",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.2.syllabus_overview",
+          "locator": "A Level Mathematics (Staged route)\nCandidates take AS Level components in the first year and carry forward their AS Level result. They then take\ntwo more components in another series to complete the A Level.\nYear 1 Paper 1 and Paper 4\n(AS Level) Pure Mathematics 1 Mechanics\nthen\nYear 2 Paper 3 and Paper 5\n(A Level) Pure Mathematics 3 Probability & Statistics 1\nOR\nYear 1 Paper 1 and Paper 5\n(AS Level) Pure Mathematics 1 Probability & Statistics 1\nthen\nYear 2 Paper 3 and Paper 4\n(A Level) Pure Mathematics 3 Mechanics\nOR\nYear 1 Paper 1 and Paper 5\n(AS Level) Pure Mathematics 1 Probability & Statistics 1\nthen\nYear 2 Paper 3 and Paper 6\n(A Level) Pure Mathematics 3 Probability & Statistics 2"
+        }
+      ]
+    },
+    {
+      "boundary_id": "9709:2026-2027_v4:boundary:route.a_level.linear_valid_combinations",
+      "boundary_kind": "route_constraint",
+      "claim": "A Level Mathematics linear routes take all A Level components in the same series using either P1/P3/P4/P5 or P1/P3/P5/P6.",
+      "component_scope": [
+        {
+          "component_code": "P1",
+          "paper": "Paper 1",
+          "role": "required_linear_route_component"
+        },
+        {
+          "component_code": "P3",
+          "paper": "Paper 3",
+          "role": "required_linear_route_component"
+        },
+        {
+          "component_code": "P4",
+          "paper": "Paper 4",
+          "role": "eligible_linear_route_component"
+        },
+        {
+          "component_code": "P5",
+          "paper": "Paper 5",
+          "role": "eligible_linear_route_component"
+        },
+        {
+          "component_code": "P6",
+          "paper": "Paper 6",
+          "role": "eligible_linear_route_component"
+        }
+      ],
+      "route_scope": [
+        {
+          "route": "A Level Mathematics (Linear route)",
+          "eligibility": "eligible",
+          "valid_component_combinations": [
+            [
+              "P1",
+              "P3",
+              "P4",
+              "P5"
+            ],
+            [
+              "P1",
+              "P3",
+              "P5",
+              "P6"
+            ]
+          ],
+          "progression": "Candidates take the A Level components in the same series."
+        }
+      ],
+      "linked_node_ids": [
+        "9709:2026-2027_v4:component:p1",
+        "9709:2026-2027_v4:component:p3",
+        "9709:2026-2027_v4:component:p4",
+        "9709:2026-2027_v4:component:p5",
+        "9709:2026-2027_v4:component:p6"
+      ],
+      "cross_component_claim": true,
+      "needs_human_review": false,
+      "status": "draft",
+      "review_reasons": [],
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "pp. 8-17",
+          "section_ref": "2 Syllabus overview",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.2.syllabus_overview",
+          "locator": "A Level Mathematics (Linear route)\nCandidates take the A Level components in the same series.\nPaper 1 Paper 4\nPure Mathematics 1 Mechanics\nPaper 3 Paper 5\nPure Mathematics 3 Probability & Statistics 1\nOR\nPaper 1 Paper 5\nPure Mathematics 1 Probability & Statistics 1\nPaper 3 Paper 6\nPure Mathematics 3 Probability & Statistics 2"
+        }
+      ]
     }
   ]
 }

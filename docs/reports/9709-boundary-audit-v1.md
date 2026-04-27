@@ -13,7 +13,7 @@ The draft does not approve boundary decisions, alter topic-tree nodes, add sched
 ## Extracted Boundary Classes
 
 - `assessment_scope`: compact P1-P6 component scope annotations from the syllabus content overview.
-- `route_constraint`: AS-only and A Level route eligibility constraints, including the P1/P2 no-progression rule and the P4/P6 combination conflict.
+- `route_constraint`: explicit eligible AS combinations, A Level staged combinations, A Level linear combinations, plus negative constraints such as the P1/P2 no-progression rule and the P4/P6 combination conflict.
 - `assumed_knowledge`: course-entry prior knowledge and P6 dependencies on P5 plus P3 calculus.
 - `excluded_knowledge`: explicit exclusions such as Paper 4 question papers not using vector notation.
 - `component_only_coverage`: the P2/P3 alternative-route and subset relationship, preserved as review-needed rather than normalized.

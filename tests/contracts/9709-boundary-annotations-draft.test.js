@@ -126,7 +126,48 @@ describe('9709 boundary annotations draft v1', () => {
     ).toBe(true);
     expect(
       byId.get('9709:2026-2027_v4:boundary:component.p4.no_vector_notation')
-        .boundary_kind,
+      .boundary_kind,
     ).toBe('excluded_knowledge');
+  });
+
+  test('represents explicit eligible AS and A Level route options', () => {
+    const artifact = readJson(artifactPath);
+    const byId = new Map(
+      artifact.boundary_annotations.map((annotation) => [annotation.boundary_id, annotation]),
+    );
+    const requiredRouteIds = [
+      '9709:2026-2027_v4:boundary:route.as.valid_combinations',
+      '9709:2026-2027_v4:boundary:route.a_level.staged_valid_combinations',
+      '9709:2026-2027_v4:boundary:route.a_level.linear_valid_combinations',
+    ];
+
+    for (const routeId of requiredRouteIds) {
+      const annotation = byId.get(routeId);
+      expect(annotation).toBeDefined();
+      expect(annotation.boundary_kind).toBe('route_constraint');
+      expect(annotation.route_scope.some((route) => route.eligibility === 'eligible')).toBe(true);
+      expect(annotation.source_refs.length).toBeGreaterThan(0);
+    }
+
+    expect(byId.get(requiredRouteIds[0]).route_scope[0].valid_component_combinations).toEqual(
+      expect.arrayContaining([
+        ['P1', 'P2'],
+        ['P1', 'P4'],
+        ['P1', 'P5'],
+      ]),
+    );
+    expect(byId.get(requiredRouteIds[1]).route_scope[0].valid_component_combinations).toEqual(
+      expect.arrayContaining([
+        ['P1', 'P4', 'P3', 'P5'],
+        ['P1', 'P5', 'P3', 'P4'],
+        ['P1', 'P5', 'P3', 'P6'],
+      ]),
+    );
+    expect(byId.get(requiredRouteIds[2]).route_scope[0].valid_component_combinations).toEqual(
+      expect.arrayContaining([
+        ['P1', 'P3', 'P4', 'P5'],
+        ['P1', 'P3', 'P5', 'P6'],
+      ]),
+    );
   });
 });

@@ -28,7 +28,7 @@ Existing legacy or candidate files under `data/syllabus` and `data/curriculum` w
 
 - Total nodes: 201
 - Node types: `component`: 6, `learning_objective`: 153, `note`: 3, `section`: 38, `syllabus`: 1
-- Status counts: `draft`: 120, `needs_human_review`: 81
+- Status counts: `draft`: 122, `needs_human_review`: 79
 - Mapped subject-content bullets: 155
 - Unmapped subject-content bullets: 0
 - Source-ref posture: every generated node has at least one `official_syllabus` source ref resolving to the locked raw section layer.
@@ -156,8 +156,6 @@ Compound or notation-heavy official bullet blocks were retained as one learning-
 - `9709:2026-2027_v4:learning_objective:p4.kinematics_of_motion_in_a_straight_line.lo02_sketch_and_interpret_displacement_time_graphs_and_velocity` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p4.kinematics_of_motion_in_a_straight_line.lo03_use_differentiation_and_integration_with_respect_to_time` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo01_apply_newton_s_laws_of_motion_to_the` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion`: Compound or notation-heavy official bullet kept unsplit for draft v1.
-- `9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo03_solve_simple_problems_which_may_be_modelled_as` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion`: Compound or notation-heavy official bullet kept unsplit for draft v1.
-- `9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo04_solve_simple_problems_which_may_be_modelled_as` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p4.energy_work_and_power.lo01_understand_the_concept_of_the_work_done_by` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p4.energy_work_and_power.lo03_understand_and_use_the_relationship_between_the_change` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p4.energy_work_and_power.lo04_use_the_definition_of_power_as_the_rate` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power`: Compound or notation-heavy official bullet kept unsplit for draft v1.

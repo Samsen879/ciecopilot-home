@@ -167,6 +167,48 @@ describe('9709 canonical topic tree draft v1', () => {
     expect(rawSection.raw_text).toContain(objective.source_refs[0].locator);
   });
 
+  test('keeps all Newtons laws objective titles free of notes/examples fragments', () => {
+    const draft = readJson(draftPath);
+    const expectedTitles = new Map([
+      [
+        '9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo01_apply_newton_s_laws_of_motion_to_the',
+        'apply Newton\u2019s laws of motion to the linear motion of a particle of constant mass moving under the action of constant forces, which may include friction, tension in an inextensible string and thrust in a connecting rod',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo02_use_the_relationship_between_mass_and_weight',
+        'use the relationship between mass and weight',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo03_solve_simple_problems_which_may_be_modelled_as',
+        'solve simple problems which may be modelled as the motion of a particle moving vertically or on an inclined plane with constant acceleration',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p4.newton_s_laws_of_motion.lo04_solve_simple_problems_which_may_be_modelled_as',
+        'solve simple problems which may be modelled as the motion of connected particles.',
+      ],
+    ]);
+    const forbiddenFragments = [
+      'rough plane where the acceleration',
+      'up the plane is different',
+      'moving down the plane',
+      'string passing over a smooth pulley',
+      'car towing',
+      'rigid tow-bar',
+      'questions are mainly numerical',
+      'value 10',
+    ];
+
+    for (const [nodeId, expectedTitle] of expectedTitles) {
+      const objective = draft.nodes.find((node) => node.node_id === nodeId);
+      expect(objective).toBeDefined();
+      expect(objective.canonical_title).toBe(expectedTitle);
+      for (const forbidden of forbiddenFragments) {
+        expect(objective.canonical_title).not.toContain(forbidden);
+      }
+      expect(objective.source_refs.length).toBeGreaterThan(0);
+    }
+  });
+
   test('uses raw section headings as section source-ref locators', () => {
     const draft = readJson(draftPath);
     const rawSections = readJson(rawSectionsPath);

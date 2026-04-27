@@ -81,6 +81,11 @@ const noteColumnInlineMarkers = [
   /\s+of a distribution by direct\b/,
   /\s+using the density function\b/,
   /\s+in overall energy\b/,
+  /\s+rough plane where\b/,
+  /\s+up the plane is different\b/,
+  /\s+string passing over\b/,
+  /\s+a trailer by means\b/,
+  /\s+rigid tow-bar\b/,
   /\s+given y =/,
   /\s+chord joining\b/,
   /\s+from first principles\b/,
@@ -96,7 +101,7 @@ const noteColumnInlineMarkers = [
   /\s+W =/,
 ];
 
-const noteColumnOnlyLine = /^(?:e\.g\.|Including\b|Knowledge\b|No\b|Only\b|Formal\b|Implicit\b|By factorising\b|Graphs\b|Sketches\b|Calculations\b|Solutions\b|Terminology\b|Restricted\b|The term\b|Calculus required\b|Proofs\b|For calculations\b|Full details\b|Outcomes\b|The condition\b|The conditions\b|Explicit\b|Finding\b|Adapting\b|Use of\b|A volume\b|If any other\b|Questions\b|For density\b|The general\b|functions f\b|considered\b|this will be indicated\b|in the question\b|equivalent methods\b|Theorem\b|these other methods\b|and will not be referred\b|mean \u2018in limiting\b|is equal and opposite\b|be known\b|using the density function\b|function is not included\b|forms of solution are not included\b)/;
+const noteColumnOnlyLine = /^(?:e\.g\.|Including\b|Knowledge\b|No\b|Only\b|Formal\b|Implicit\b|By factorising\b|Graphs\b|Sketches\b|Calculations\b|Solutions\b|Terminology\b|Restricted\b|The term\b|Calculus required\b|Proofs\b|For calculations\b|Full details\b|Outcomes\b|The condition\b|The conditions\b|Explicit\b|Finding\b|Adapting\b|Use of\b|A volume\b|If any other\b|Questions\b|For density\b|The general\b|functions f\b|considered\b|this will be indicated\b|in the question\b|equivalent methods\b|Theorem\b|these other methods\b|and will not be referred\b|mean \u2018in limiting\b|is equal and opposite\b|be known\b|using the density function\b|function is not included\b|forms of solution are not included\b|numerical, and use\b|value 10\b|moving down the plane\b|a trailer by means\b|rigid tow-bar\b)/;
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));

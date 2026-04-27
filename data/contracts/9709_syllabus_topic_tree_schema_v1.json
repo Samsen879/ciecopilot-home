@@ -1,0 +1,522 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ciecopilot.local/contracts/syllabus_topic_tree_schema_v1.json",
+  "title": "Canonical syllabus topic tree schema v1",
+  "description": "Generic canonical syllabus topic tree document contract, first frozen for Cambridge 9709 syllabus canonicalization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "syllabus_code",
+    "syllabus_version",
+    "exam_year_range",
+    "source_lock",
+    "nodes"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v1"
+    },
+    "contract_id": {
+      "type": "string",
+      "const": "9709_syllabus_topic_tree_schema_v1"
+    },
+    "syllabus_code": {
+      "$ref": "#/definitions/syllabus_code"
+    },
+    "syllabus_version": {
+      "$ref": "#/definitions/syllabus_version"
+    },
+    "exam_year_range": {
+      "$ref": "#/definitions/exam_year_range"
+    },
+    "source_lock": {
+      "$ref": "#/definitions/source_lock"
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/node"
+      }
+    }
+  },
+  "definitions": {
+    "syllabus_code": {
+      "type": "string",
+      "pattern": "^[0-9]{4}$",
+      "description": "Cambridge syllabus code, for example 9709. The schema is intentionally not hard-coded to 9709."
+    },
+    "syllabus_version": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{4}_v[0-9]+$",
+      "description": "Normalized syllabus source version tag, for example 2026-2027_v4."
+    },
+    "exam_year_range": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{4}$"
+    },
+    "node_id": {
+      "type": "string",
+      "pattern": "^[0-9]{4}:[0-9]{4}-[0-9]{4}_v[0-9]+:(syllabus|component|section|learning_objective|note|boundary)(:[a-z0-9][a-z0-9_.-]*)?$",
+      "description": "Durable machine ID. It is never derived from display_title."
+    },
+    "nullable_node_id": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/node_id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "component_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "paper": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 9
+    },
+    "section_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Za-z0-9_.-]+$"
+    },
+    "source_lock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_document_id",
+        "official_pdf_url",
+        "official_qualification_page",
+        "sha256",
+        "accessed_date"
+      ],
+      "properties": {
+        "source_document_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "official_pdf_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "official_qualification_page": {
+          "type": "string",
+          "format": "uri"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "accessed_date": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "source_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_document_id",
+        "source_type",
+        "page_ref",
+        "section_ref",
+        "raw_section_id",
+        "locator"
+      ],
+      "properties": {
+        "source_document_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "official_syllabus",
+            "official_syllabus_update",
+            "official_past_paper",
+            "official_mark_scheme",
+            "legacy_taxonomy",
+            "manual_audit"
+          ]
+        },
+        "page_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "section_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "raw_section_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "locator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "source_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/source_ref"
+      }
+    },
+    "review_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "reviewed_by",
+        "reviewed_at",
+        "notes"
+      ],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "unreviewed",
+            "pending_human_review",
+            "accepted",
+            "rejected",
+            "blocked",
+            "deprecated"
+          ]
+        },
+        "reviewed_by": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "reviewed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "component_scope_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "component_code",
+        "paper"
+      ],
+      "properties": {
+        "component_code": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+$"
+        },
+        "paper": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9
+        }
+      }
+    },
+    "assumed_knowledge_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "topic_path",
+        "note",
+        "source_refs"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/definitions/nullable_node_id"
+        },
+        "topic_path": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/slug"
+          }
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_refs": {
+          "$ref": "#/definitions/source_refs"
+        }
+      }
+    },
+    "alias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "source",
+        "status",
+        "source_refs"
+      ],
+      "properties": {
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "official_title_variant",
+            "legacy_display_title",
+            "legacy_topic_path",
+            "manual_audit"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "approved",
+            "deprecated"
+          ]
+        },
+        "source_refs": {
+          "$ref": "#/definitions/source_refs"
+        }
+      }
+    },
+    "legacy_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "source",
+        "status",
+        "source_refs"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "legacy_topic_path",
+            "legacy_curriculum_seed",
+            "manual_audit"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "candidate",
+            "approved",
+            "deprecated"
+          ]
+        },
+        "source_refs": {
+          "$ref": "#/definitions/source_refs"
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "parent_node_id",
+        "node_type",
+        "topic_path",
+        "canonical_title",
+        "display_title",
+        "component_code",
+        "paper",
+        "section_code",
+        "component_scope",
+        "qualification_route_scope",
+        "assumed_knowledge",
+        "status",
+        "review_state",
+        "source_refs",
+        "aliases",
+        "legacy_paths"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/definitions/node_id"
+        },
+        "parent_node_id": {
+          "$ref": "#/definitions/nullable_node_id"
+        },
+        "node_type": {
+          "type": "string",
+          "enum": [
+            "syllabus",
+            "component",
+            "section",
+            "learning_objective",
+            "note",
+            "boundary"
+          ]
+        },
+        "topic_path": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/slug"
+          }
+        },
+        "canonical_title": {
+          "$ref": "#/definitions/title"
+        },
+        "display_title": {
+          "$ref": "#/definitions/title"
+        },
+        "component_code": {
+          "$ref": "#/definitions/component_code"
+        },
+        "paper": {
+          "$ref": "#/definitions/paper"
+        },
+        "section_code": {
+          "$ref": "#/definitions/section_code"
+        },
+        "component_scope": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/component_scope_item"
+          }
+        },
+        "qualification_route_scope": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": [
+              "AS Level",
+              "A Level"
+            ]
+          }
+        },
+        "assumed_knowledge": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/assumed_knowledge_item"
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "approved",
+            "deprecated",
+            "needs_human_review"
+          ]
+        },
+        "review_state": {
+          "$ref": "#/definitions/review_state"
+        },
+        "source_refs": {
+          "$ref": "#/definitions/source_refs"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/alias"
+          }
+        },
+        "legacy_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/legacy_path"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "review_state": {
+                "properties": {
+                  "state": {
+                    "const": "accepted"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "deprecated"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "review_state": {
+                "properties": {
+                  "state": {
+                    "const": "deprecated"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

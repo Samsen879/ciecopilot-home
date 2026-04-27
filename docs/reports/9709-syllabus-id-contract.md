@@ -81,7 +81,8 @@ Allowed lifecycle `status` values are:
 
 An `approved` node must have `review_state.state = accepted`. A `deprecated` node
 must have `review_state.state = deprecated`. Draft and review-needed records remain
-explicitly separate from approved baseline truth.
+explicitly separate from approved baseline truth. Conversely,
+`review_state.state = accepted` is only valid when `status = approved`.
 
 ## Durable ID Contract
 

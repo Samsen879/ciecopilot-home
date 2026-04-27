@@ -478,6 +478,32 @@
       "allOf": [
         {
           "if": {
+            "required": [
+              "node_type"
+            ],
+            "properties": {
+              "node_type": {
+                "const": "syllabus"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parent_node_id": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "parent_node_id": {
+                "$ref": "#/definitions/node_id"
+              }
+            }
+          }
+        },
+        {
+          "if": {
             "properties": {
               "status": {
                 "const": "approved"
@@ -512,6 +538,32 @@
                     "const": "deprecated"
                   }
                 }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "review_state"
+            ],
+            "properties": {
+              "review_state": {
+                "required": [
+                  "state"
+                ],
+                "properties": {
+                  "state": {
+                    "const": "accepted"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "const": "approved"
               }
             }
           }

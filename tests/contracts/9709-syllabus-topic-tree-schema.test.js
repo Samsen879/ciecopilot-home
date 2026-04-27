@@ -235,6 +235,21 @@ describe('9709 syllabus topic tree schema v1', () => {
     expectInvalid(document, 'should be equal to constant');
   });
 
+  test('rejects non-syllabus nodes without a parent node ID', () => {
+    const document = buildValidTopicTree();
+    document.nodes[1].parent_node_id = null;
+
+    expectInvalid(document, '/parent_node_id should be string');
+  });
+
+  test('rejects accepted review state unless the node status is approved', () => {
+    const document = buildValidTopicTree();
+    document.nodes[2].status = 'draft';
+    document.nodes[2].review_state.state = 'accepted';
+
+    expectInvalid(document, '/status should be equal to constant');
+  });
+
   test('keeps the schema reusable by not hard-coding 9709 as the only syllabus code', () => {
     const validate = buildValidator();
     const document = buildValidTopicTree({

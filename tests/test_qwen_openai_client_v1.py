@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import os
+import ssl
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+import urllib.error
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -212,6 +214,46 @@ def test_call_qwen_openai_v1_direct_posts_json_and_parses_response(monkeypatch):
     assert captured["timeout"] == 90
     assert captured["authorization"] == "Bearer secret-key"
     assert '"model": "qwen3.6-plus"' in captured["body"]
+
+
+def test_call_qwen_openai_v1_direct_retries_transient_url_errors(monkeypatch):
+    calls = {"count": 0}
+    sleeps = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return b'{"choices":[{"message":{"content":"ok"}}]}'
+
+    def fake_urlopen(request, timeout):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            raise urllib.error.URLError(
+                ssl.SSLEOFError("UNEXPECTED_EOF_WHILE_READING"),
+            )
+        return FakeResponse()
+
+    monkeypatch.setattr(
+        "scripts.vlm.qwen_openai_client_v1.normalize_request_for_direct_http",
+        lambda request: request,
+        raising=False,
+    )
+
+    response = call_qwen_openai_v1_direct(
+        {"model": "qwen3.6-plus", "messages": []},
+        env={"DASHSCOPE_API_KEY": "secret-key"},
+        urlopen=fake_urlopen,
+        sleeper=sleeps.append,
+    )
+
+    assert response["choices"][0]["message"]["content"] == "ok"
+    assert calls["count"] == 2
+    assert sleeps == [2.0]
 
 
 def test_call_qwen_openai_v1_routes_path_conversion_through_injected_runner(tmp_path):

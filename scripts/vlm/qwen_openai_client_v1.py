@@ -10,6 +10,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.request
 from copy import deepcopy
@@ -341,6 +342,9 @@ def call_qwen_openai_v1_direct(
     base_url: str = DEFAULT_BASE_URL,
     timeout: int = 90,
     urlopen: Callable[..., Any] = urllib.request.urlopen,
+    max_retries: int = 2,
+    retry_base_delay: float = 2.0,
+    sleeper: Callable[[float], None] = time.sleep,
 ) -> dict[str, Any]:
     if env is None:
         load_project_env()
@@ -358,16 +362,24 @@ def call_qwen_openai_v1_direct(
         },
         method="POST",
     )
-    try:
-        with urlopen(http_request, timeout=timeout) as response:
-            response_text = response.read().decode("utf-8", errors="replace")
-    except urllib.error.HTTPError as error:
-        response_text = error.read().decode("utf-8", errors="replace")
-        raise QwenOpenAIClientError(
-            f"DashScope request failed with HTTP {error.code}: {response_text}",
-        ) from error
-    except urllib.error.URLError as error:
-        raise QwenOpenAIClientError(f"DashScope request failed: {error}") from error
+    response_text: str | None = None
+    for attempt in range(max_retries + 1):
+        try:
+            with urlopen(http_request, timeout=timeout) as response:
+                response_text = response.read().decode("utf-8", errors="replace")
+            break
+        except urllib.error.HTTPError as error:
+            response_text = error.read().decode("utf-8", errors="replace")
+            raise QwenOpenAIClientError(
+                f"DashScope request failed with HTTP {error.code}: {response_text}",
+            ) from error
+        except urllib.error.URLError as error:
+            if attempt >= max_retries:
+                raise QwenOpenAIClientError(f"DashScope request failed: {error}") from error
+            sleeper(retry_base_delay * (2**attempt))
+
+    if response_text is None:
+        raise QwenOpenAIClientError("DashScope request failed without a response body")
 
     try:
         return json.loads(response_text)

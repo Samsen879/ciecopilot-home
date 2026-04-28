@@ -358,6 +358,61 @@ describe('9709 syllabus gate', () => {
     });
   });
 
+  test('keeps default human-review decision path usable for in-memory approved artifacts', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildFixture();
+    const approvedNode = fixture.canonicalTopicTree.nodes[0];
+    const approvedBoundary = fixture.boundaryAnnotations.boundary_annotations[0];
+
+    approvedNode.status = 'approved';
+    approvedNode.review_state = {
+      state: 'accepted',
+      reviewed_by: 'human_review_authority:test',
+      reviewed_at: '2026-04-28T00:00:00.000Z',
+      notes: [`Approved by test authority; decision artifact: ${approvedPaths.humanReviewDecisions}.`],
+    };
+    approvedBoundary.status = 'approved';
+    approvedBoundary.needs_human_review = false;
+    approvedBoundary.review_state = {
+      state: 'accepted',
+      reviewed_by: 'human_review_authority:test',
+      reviewed_at: '2026-04-28T00:00:00.000Z',
+      decision_artifact: approvedPaths.humanReviewDecisions,
+      decision_refs: ['synthetic-decision'],
+      notes: ['Approved by test authority.'],
+    };
+    fixture.reviewItems = { review_items: [] };
+    fixture.humanReviewDecisions = {
+      schema_version: '9709_human_review_decisions_v1',
+      issue: 293,
+      carried_review_items: [],
+      decisions: [
+        {
+          review_item_id: 'synthetic-decision',
+          decision_status: 'approved',
+          applied_to: {
+            topic_node_ids: [approvedNode.node_id],
+            boundary_ids: [approvedBoundary.boundary_id],
+          },
+          source_refs: [approvedNode.source_refs[0]],
+        },
+      ],
+      human_authority: { authority_id: 'human-approval-test' },
+    };
+
+    const report = build9709SyllabusGateReport({
+      artifacts: fixture,
+      approvedBaselineAttempted: true,
+    });
+    const humanReviewErrors = gateByName(report, 'human_review_decisions').errors;
+
+    expect(humanReviewErrors).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: 'missing_human_review_decision_ref' }),
+      ]),
+    );
+  });
+
   test('fails approved nodes that came from human-review draft state without explicit decision coverage', async () => {
     const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
     const fixture = buildFixture();

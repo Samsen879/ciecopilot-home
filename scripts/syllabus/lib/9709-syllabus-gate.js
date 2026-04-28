@@ -18,7 +18,7 @@ export const DEFAULT_9709_SYLLABUS_GATE_PATHS = {
   canonicalTopicTree: 'data/syllabus/9709/canonical_topic_tree_draft_v1.json',
   boundaryAnnotations: 'data/syllabus/9709/boundary_annotations_draft_v1.json',
   reviewItems: 'data/syllabus/9709/review_items_v1.json',
-  humanReviewDecisions: null,
+  humanReviewDecisions: 'data/syllabus/9709/human_review_decisions_v1.json',
   topicTreeSchema: 'data/contracts/9709_syllabus_topic_tree_schema_v1.json',
 };
 

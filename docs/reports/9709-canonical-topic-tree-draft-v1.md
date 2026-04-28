@@ -28,7 +28,7 @@ Existing legacy or candidate files under `data/syllabus` and `data/curriculum` w
 
 - Total nodes: 201
 - Node types: `component`: 6, `learning_objective`: 153, `note`: 3, `section`: 38, `syllabus`: 1
-- Status counts: `draft`: 122, `needs_human_review`: 79
+- Status counts: `draft`: 125, `needs_human_review`: 76
 - Mapped subject-content bullets: 155
 - Unmapped subject-content bullets: 0
 - Source-ref posture: every generated node has at least one `official_syllabus` source ref resolving to the locked raw section layer.
@@ -110,7 +110,6 @@ Repeated official section titles were retained as component-scoped nodes and mar
 Compound or notation-heavy official bullet blocks were retained as one learning-objective or note node and marked `needs_human_review` instead of being split without official granularity.
 
 - `9709:2026-2027_v4:learning_objective:p1.functions.lo02_identify_the_range_of_a_given_function_in` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_2_functions`: Compound or notation-heavy official bullet kept unsplit for draft v1.
-- `9709:2026-2027_v4:learning_objective:p1.functions.lo03_determine_whether_or_not_a_given_function_is` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_2_functions`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p1.functions.lo05_understand_and_use_the_transformations_of_the_graph` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_2_functions`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p1.coordinate_geometry.lo02_interpret_and_use_any_of_the_forms_y` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_3_coordinate_geometry`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p1.coordinate_geometry.lo05_understand_the_relationship_between_a_graph_and_its` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_3_coordinate_geometry`: Compound or notation-heavy official bullet kept unsplit for draft v1.
@@ -127,7 +126,7 @@ Compound or notation-heavy official bullet blocks were retained as one learning-
 - `9709:2026-2027_v4:learning_objective:p2.logarithmic_and_exponential_functions.lo02_understand_the_definition_and_properties_of_ex_and` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p2.logarithmic_and_exponential_functions.lo04_use_logarithms_to_transform_a_given_relationship_to` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p2.trigonometry.lo01_understand_the_relationship_of_the_secant_cosecant_and` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry`: Compound or notation-heavy official bullet kept unsplit for draft v1.
-- `9709:2026-2027_v4:learning_objective:p2.trigonometry.lo02_use_trigonometrical_identities_for_the_h_h_simplification` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry`: Compound or notation-heavy official bullet kept unsplit for draft v1.
+- `9709:2026-2027_v4:learning_objective:p2.trigonometry.lo02_use_trigonometrical_identities_for_the_simplification_and_exact` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p2.integration.lo01_extend_the_idea_of_reverse_differentiation_to_1` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_5_integration`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p2.numerical_solution_of_equations.lo03_understand_how_a_given_simple_iterative_formula_of` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_6_numerical_solution_of_equations`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p3.algebra.lo01_understand_the_meaning_of_x_sketch_the_graph` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p3.3_1_algebra`: Compound or notation-heavy official bullet kept unsplit for draft v1.
@@ -162,9 +161,7 @@ Compound or notation-heavy official bullet blocks were retained as one learning-
 - `9709:2026-2027_v4:learning_objective:p5.representation_of_data.lo05_calculate_and_use_the_mean_and_standard_deviation` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_1_representation_of_data`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p5.permutations_and_combinations.lo02_solve_problems_about_arrangements_of_objects_in_a` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_2_permutations_and_combinations`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p5.probability.lo01_evaluate_probabilities_in_simple_cases_by_means_of` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_3_probability`: Compound or notation-heavy official bullet kept unsplit for draft v1.
-- `9709:2026-2027_v4:learning_objective:p5.probability.lo02_use_addition_and_multiplication_of_probabilities_explicit_use` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_3_probability`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p5.probability.lo03_understand_the_meaning_of_exclusive_and_independent_events` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_3_probability`: Compound or notation-heavy official bullet kept unsplit for draft v1.
-- `9709:2026-2027_v4:learning_objective:p5.probability.lo04_calculate_and_use_conditional_probabilities_in_simple_cases` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_3_probability`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p5.discrete_random_variables.lo02_use_formulae_for_probabilities_for_the_binomial_and` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_4_discrete_random_variables`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p5.the_normal_distribution.lo02_solve_problems_concerning_a_variable_x_where_x` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_5_the_normal_distribution`: Compound or notation-heavy official bullet kept unsplit for draft v1.
 - `9709:2026-2027_v4:learning_objective:p5.the_normal_distribution.lo03_recall_conditions_under_which_the_normal_n_sufficiently` from `cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_5_the_normal_distribution`: Compound or notation-heavy official bullet kept unsplit for draft v1.

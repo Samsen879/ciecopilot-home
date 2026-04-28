@@ -15,8 +15,8 @@ export const DEFAULT_9709_SYLLABUS_GATE_REPORT_PATH =
 export const DEFAULT_9709_SYLLABUS_GATE_PATHS = {
   sourceInventory: 'data/syllabus/9709/source_inventory.json',
   rawSections: 'data/syllabus/9709/raw_sections_v1.json',
-  canonicalTopicTree: 'data/syllabus/9709/canonical_topic_tree_v1.json',
-  boundaryAnnotations: 'data/syllabus/9709/boundary_annotations_v1.json',
+  canonicalTopicTree: 'data/syllabus/9709/canonical_topic_tree_draft_v1.json',
+  boundaryAnnotations: 'data/syllabus/9709/boundary_annotations_draft_v1.json',
   reviewItems: 'data/syllabus/9709/review_items_v1.json',
   humanReviewDecisions: 'data/syllabus/9709/human_review_decisions_v1.json',
   topicTreeSchema: 'data/contracts/9709_syllabus_topic_tree_schema_v1.json',
@@ -35,6 +35,22 @@ const ALLOWED_BOUNDARY_STATUSES = new Set([
   'needs_human_review',
 ]);
 const OFFICIAL_SOURCE_TYPES = new Set(['official_syllabus', 'official_syllabus_update']);
+const TITLE_CONTAMINATION_PATTERNS = [
+  {
+    code: 'notes_column_fragment',
+    pattern: /using either is required|alternative questions are set|average[\u2019']\s*\.?/i,
+  },
+  {
+    code: 'ocr_math_fragment',
+    pattern: /\^ h\b|sin sin 90c/i,
+  },
+];
+const REVIEW_REQUIRED_NOTE_PATTERNS = [
+  /Repeated official section title/i,
+  /Official bullet contains multiple concepts/i,
+  /pending human/i,
+  /human split review/i,
+];
 
 function cloneJson(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
@@ -79,6 +95,10 @@ function sortByStableJson(values) {
   return [...values].sort((left, right) =>
     JSON.stringify(left).localeCompare(JSON.stringify(right)),
   );
+}
+
+function compactText(value) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
 }
 
 function buildGate(name, errors = [], warnings = []) {
@@ -136,6 +156,10 @@ function officialSourceIds(sourceInventory = {}, sourceType = 'official_syllabus
 
 function rawSectionIds(rawSections = {}) {
   return new Set(normalizeArray(rawSections.sections).map((section) => section.section_id));
+}
+
+function rawSectionsById(rawSections = {}) {
+  return new Map(normalizeArray(rawSections.sections).map((section) => [section.section_id, section]));
 }
 
 function legacyInventoryPaths(sourceInventory = {}) {
@@ -394,6 +418,7 @@ function validateSourceRefs({
   boundaryAnnotations = {},
 } = {}) {
   const rawIds = rawSectionIds(rawSections);
+  const rawById = rawSectionsById(rawSections);
   const errors = [];
 
   for (const owner of collectAllSourceRefOwners({ canonicalTopicTree, boundaryAnnotations })) {
@@ -424,11 +449,55 @@ function validateSourceRefs({
           owner_id: owner.owner_id,
           raw_section_id: sourceRef.raw_section_id ?? null,
         });
+      } else if (
+        sourceRef.locator
+        && !compactText(rawById.get(sourceRef.raw_section_id)?.raw_text).includes(
+          compactText(sourceRef.locator),
+        )
+      ) {
+        errors.push({
+          code: 'unsupported_source_locator',
+          owner_type: owner.owner_type,
+          owner_id: owner.owner_id,
+          raw_section_id: sourceRef.raw_section_id,
+          locator: sourceRef.locator,
+        });
       }
     }
   }
 
   return buildGate('source_refs', errors);
+}
+
+function validateTitleCleanliness({
+  canonicalTopicTree = {},
+  approvedBaselineAttempted = false,
+} = {}) {
+  const errors = [];
+
+  for (const node of normalizeArray(canonicalTopicTree.nodes)) {
+    if (!approvedBaselineAttempted && node.status !== 'approved') {
+      continue;
+    }
+
+    for (const field of ['canonical_title', 'display_title']) {
+      const value = node[field];
+      for (const contamination of TITLE_CONTAMINATION_PATTERNS) {
+        if (contamination.pattern.test(String(value ?? ''))) {
+          errors.push({
+            code: 'polluted_approved_title',
+            contamination_code: contamination.code,
+            owner_type: 'topic_node',
+            owner_id: node.node_id ?? null,
+            field,
+            value: value ?? null,
+          });
+        }
+      }
+    }
+  }
+
+  return buildGate('title_cleanliness', errors);
 }
 
 function validateLegacyFileLeakage({
@@ -594,6 +663,68 @@ function recommendedOption(reviewItem = {}) {
   );
 }
 
+function reviewNotesText(value = {}) {
+  return normalizeArray(value.review_state?.notes).join('\n');
+}
+
+function requiresExplicitReviewDecision(value = {}) {
+  const notes = reviewNotesText(value);
+  return REVIEW_REQUIRED_NOTE_PATTERNS.some((pattern) => pattern.test(notes));
+}
+
+function normalizeDecisionCoverage(humanReviewDecisions = {}) {
+  const topicNodeIds = new Set();
+  const boundaryIds = new Set();
+  const categoryPredicates = [];
+
+  for (const decision of normalizeArray(humanReviewDecisions.decisions)) {
+    const appliedTo = decision.applied_to ?? {};
+    for (const nodeId of normalizeArray(appliedTo.topic_node_ids)) {
+      topicNodeIds.add(nodeId);
+    }
+    for (const boundaryId of normalizeArray(appliedTo.boundary_ids)) {
+      boundaryIds.add(boundaryId);
+    }
+    categoryPredicates.push(...normalizeArray(appliedTo.category_predicates));
+  }
+
+  return { topicNodeIds, boundaryIds, categoryPredicates };
+}
+
+function predicateCoversItem(predicate = {}, item = {}) {
+  if (!predicate || typeof predicate !== 'object') {
+    return false;
+  }
+
+  if (predicate.owner_type && predicate.owner_type !== item.owner_type) {
+    return false;
+  }
+  if (predicate.node_type && predicate.node_type !== item.node_type) {
+    return false;
+  }
+  if (predicate.boundary_kind && predicate.boundary_kind !== item.boundary_kind) {
+    return false;
+  }
+  if (predicate.review_note_contains) {
+    return reviewNotesText(item).includes(predicate.review_note_contains);
+  }
+  if (predicate.review_reason_contains) {
+    return normalizeArray(item.review_reasons).join('\n').includes(predicate.review_reason_contains);
+  }
+
+  return false;
+}
+
+function hasDecisionCoverage(coverage, item = {}) {
+  if (item.owner_type === 'topic_node' && coverage.topicNodeIds.has(item.node_id)) {
+    return true;
+  }
+  if (item.owner_type === 'boundary_claim' && coverage.boundaryIds.has(item.boundary_id)) {
+    return true;
+  }
+  return coverage.categoryPredicates.some((predicate) => predicateCoversItem(predicate, item));
+}
+
 function validateHumanReviewDecisions({
   approvedBaselineAttempted,
   reviewItems = null,
@@ -657,6 +788,7 @@ function validateHumanReviewDecisions({
       .filter((decision) => decision.review_item_id)
       .map((decision) => [decision.review_item_id, decision]),
   );
+  const decisionCoverage = normalizeDecisionCoverage(humanReviewDecisions);
 
   for (const reviewItem of normalizeArray(reviewItems?.review_items)) {
     const decision = decisionMap.get(reviewItem.item_id);
@@ -699,6 +831,18 @@ function validateHumanReviewDecisions({
         owner_id: decision.review_item_id ?? null,
       });
     }
+    const appliedTo = decision.applied_to ?? {};
+    const coverageCount =
+      normalizeArray(appliedTo.topic_node_ids).length
+      + normalizeArray(appliedTo.boundary_ids).length
+      + normalizeArray(appliedTo.category_predicates).length;
+    if (coverageCount === 0) {
+      errors.push({
+        code: 'missing_human_review_decision_coverage',
+        owner_type: 'human_review_decision',
+        owner_id: decision.review_item_id ?? null,
+      });
+    }
   }
 
   for (const node of approvedNodes) {
@@ -710,12 +854,32 @@ function validateHumanReviewDecisions({
         owner_id: node.node_id ?? null,
       });
     }
+    if (
+      requiresExplicitReviewDecision({ ...node, owner_type: 'topic_node' })
+      && !hasDecisionCoverage(decisionCoverage, { ...node, owner_type: 'topic_node' })
+    ) {
+      errors.push({
+        code: 'approved_node_missing_review_decision_coverage',
+        owner_type: 'topic_node',
+        owner_id: node.node_id ?? null,
+      });
+    }
   }
 
   for (const annotation of approvedBoundaries) {
     if (annotation.review_state?.decision_artifact !== humanReviewDecisionsPath) {
       errors.push({
         code: 'missing_human_review_decision_ref',
+        owner_type: 'boundary_claim',
+        owner_id: annotation.boundary_id ?? null,
+      });
+    }
+    if (
+      normalizeArray(annotation.review_reasons).length > 0
+      && !hasDecisionCoverage(decisionCoverage, { ...annotation, owner_type: 'boundary_claim' })
+    ) {
+      errors.push({
+        code: 'approved_boundary_missing_review_decision_coverage',
         owner_type: 'boundary_claim',
         owner_id: annotation.boundary_id ?? null,
       });
@@ -788,6 +952,7 @@ export function build9709SyllabusGateReport({
     validateIdentityUniqueness({ canonicalTopicTree }),
     validateGraphIntegrity({ canonicalTopicTree }),
     validateSourceRefs({ sourceInventory, rawSections, canonicalTopicTree, boundaryAnnotations }),
+    validateTitleCleanliness({ canonicalTopicTree, approvedBaselineAttempted }),
     validateLegacyFileLeakage({ sourceInventory, canonicalTopicTree, boundaryAnnotations, paths }),
     rawSectionMapping.gate,
     validateHumanReviewDecisions({

@@ -80,7 +80,7 @@ function parseBooleanFlag(value, flagName) {
 export async function main(argv = process.argv.slice(2)) {
   const cli = parseCliArgs(argv);
   const outJsonPath = cli['out-json'] || DEFAULT_9709_SYLLABUS_GATE_REPORT_PATH;
-  const defaultApprovedBaselineAttempt = !Object.hasOwn(cli, 'attempt-approved-baseline');
+  const defaultApprovedBaselineAttempt = false;
   const approvedBaselineFlag = parseBooleanFlag(
     defaultApprovedBaselineAttempt ? true : cli['attempt-approved-baseline'],
     'attempt-approved-baseline',

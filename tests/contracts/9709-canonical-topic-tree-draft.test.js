@@ -209,6 +209,35 @@ describe('9709 canonical topic tree draft v1', () => {
     }
   });
 
+  test('keeps known 9709 notes and OCR fragments out of draft objective titles', () => {
+    const draft = readJson(draftPath);
+    const byId = new Map(draft.nodes.map((node) => [node.node_id, node]));
+    const expectedTitles = new Map([
+      [
+        '9709:2026-2027_v4:learning_objective:p6.sampling_and_estimation.lo06_calculate_unbiased_estimates_of_the_population_mean_and',
+        'calculate unbiased estimates of the population mean and variance from a sample, using either raw or summarised data',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p6.hypothesis_tests.lo01_understand_the_nature_of_a_hypothesis_test_the',
+        'understand the nature of a hypothesis test, the difference between one-tailed and two-tailed tests, and the terms null hypothesis, alternative hypothesis, significance level, rejection region (or critical region), acceptance region and test statistic',
+      ],
+    ]);
+    const pollutedPattern =
+      /using either is required|average[’']|alternative questions are set|\^ h\b|sin sin 90c/i;
+
+    for (const [nodeId, expectedTitle] of expectedTitles) {
+      const objective = byId.get(nodeId);
+      expect(objective).toBeDefined();
+      expect(objective.canonical_title).toBe(expectedTitle);
+      expect(objective.display_title).toBe(expectedTitle);
+    }
+
+    for (const node of draft.nodes) {
+      expect(node.canonical_title).not.toMatch(pollutedPattern);
+      expect(node.display_title).not.toMatch(pollutedPattern);
+    }
+  });
+
   test('uses raw section headings as section source-ref locators', () => {
     const draft = readJson(draftPath);
     const rawSections = readJson(rawSectionsPath);

@@ -1,0 +1,512 @@
+{
+  "schema_version": "9709_review_items_v1",
+  "issue": 292,
+  "parent_tracker": 286,
+  "reusable_by_issue": 293,
+  "subject_code": "9709",
+  "syllabus_version": "2026-2027_v4",
+  "generated_at": "2026-04-27T15:45:00.000Z",
+  "approved_baseline_freeze_attempted": false,
+  "source_lock": {
+    "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+    "official_pdf_url": "https://www.cambridgeinternational.org/Images/697427-2026-2027-syllabus.pdf",
+    "sha256": "dd0131f3cd8d4e3c270e7936cbb909c15f4cb8053f8337b67c16e8ec0b8bc5e5",
+    "accessed_date": "2026-04-27"
+  },
+  "source_artifacts": {
+    "source_inventory": "data/syllabus/9709/source_inventory.json",
+    "raw_sections": "data/syllabus/9709/raw_sections_v1.json",
+    "canonical_topic_tree_draft": "data/syllabus/9709/canonical_topic_tree_draft_v1.json",
+    "boundary_annotations_draft": "data/syllabus/9709/boundary_annotations_draft_v1.json",
+    "syllabus_gate_report": "docs/reports/9709-syllabus-gate-report.json"
+  },
+  "review_policy": {
+    "scope": "Only human-judgment decisions needed before issue #293 approval/freeze work.",
+    "excludes_low_risk_items": true,
+    "excluded_low_risk_counts": {
+      "draft_topic_nodes_not_in_queue": 122,
+      "draft_boundary_claims_not_in_queue": 13,
+      "mapped_subject_content_bullets_not_in_queue": 155
+    },
+    "compact_queue_limit": 10,
+    "selection_basis": [
+      "items already marked needs_human_review by predecessor artifacts",
+      "cross-component route or subset claims",
+      "OCR-damaged title or durable ID examples that would pollute approved joins",
+      "gate warnings about official content intentionally outside the topic tree"
+    ]
+  },
+  "category_summary": [
+    {
+      "category": "merge_split_candidate",
+      "included_items": 2,
+      "available_candidates_grouped": 79,
+      "grouping_note": "15 repeated section-title nodes and 64 compound or notation-heavy learning-objective nodes are grouped into policy decisions."
+    },
+    {
+      "category": "ambiguous_boundary",
+      "included_items": 1,
+      "available_candidates_grouped": 1
+    },
+    {
+      "category": "component_conflict",
+      "included_items": 1,
+      "available_candidates_grouped": 1
+    },
+    {
+      "category": "naming_or_id_issue",
+      "included_items": 1,
+      "available_candidates_grouped": 4
+    },
+    {
+      "category": "unmapped_official_bullet",
+      "included_items": 1,
+      "available_candidates_grouped": 1,
+      "subject_content_bullets_unmapped_count": 0,
+      "note": "No subject-content bullet is unmapped; the review decision is whether official non-subject-content formula/table material remains outside the topic tree."
+    }
+  ],
+  "review_items": [
+    {
+      "item_id": "9709-review-001-repeated-section-title-merge-policy",
+      "category": "merge_split_candidate",
+      "title": "Repeated section titles across P1/P2/P3",
+      "decision_prompt": "Should repeated official section titles such as Trigonometry, Differentiation, Integration, Algebra, and Numerical solution of equations remain component-scoped canonical section nodes, or should they become shared concept nodes with component-specific views?",
+      "current_posture": "The draft keeps every repeated title as a component-scoped node and marks the repeated-title group for human review.",
+      "candidate_node_ids": [
+        "9709:2026-2027_v4:section:p1.trigonometry",
+        "9709:2026-2027_v4:section:p2.trigonometry",
+        "9709:2026-2027_v4:section:p3.trigonometry",
+        "9709:2026-2027_v4:section:p2.algebra",
+        "9709:2026-2027_v4:section:p3.algebra"
+      ],
+      "candidate_group_counts": {
+        "repeated_section_nodes": 15,
+        "repeated_title_groups": 6
+      },
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 21",
+          "section_ref": "3 Subject content > 1 Pure Mathematics 1 > 1.5 Trigonometry",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_5_trigonometry",
+          "locator": "1.5 Trigonometry"
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 24",
+          "section_ref": "3 Subject content > 2 Pure Mathematics 2 > 2.3 Trigonometry",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry",
+          "locator": "2.3 Trigonometry"
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 27",
+          "section_ref": "3 Subject content > 3 Pure Mathematics 3 > 3.3 Trigonometry",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p3.3_3_trigonometry",
+          "locator": "3.3 Trigonometry"
+        }
+      ],
+      "recommended_options": [
+        {
+          "option_id": "keep_component_scoped_sections",
+          "label": "Keep component-scoped section nodes",
+          "machine_action": "approve_component_scoped_nodes_with_optional_relationship_overlay",
+          "resulting_contract_change": "No node merge; issue #293 may approve the current component-specific IDs and add relationship metadata later.",
+          "recommended": true
+        },
+        {
+          "option_id": "merge_to_shared_concept_nodes",
+          "label": "Merge repeated titles into shared concepts",
+          "machine_action": "replace_repeated_component_sections_with_shared_nodes_and_component_views",
+          "resulting_contract_change": "Issue #293 must rewrite node IDs, parent links, and question-mapping joins before approval.",
+          "recommended": false
+        },
+        {
+          "option_id": "defer_repeated_title_groups",
+          "label": "Defer repeated-title groups",
+          "machine_action": "keep_nodes_needs_human_review",
+          "resulting_contract_change": "Issue #293 may approve unrelated nodes only; repeated-title nodes remain outside the approved baseline.",
+          "recommended": false
+        }
+      ],
+      "risk_level": "high",
+      "downstream_impact": {
+        "affected_artifacts": [
+          "data/syllabus/9709/canonical_topic_tree_draft_v1.json",
+          "future approved topic tree",
+          "question-to-topic semantic mapping"
+        ],
+        "issue_293_reuse": "Selected option determines whether #293 freezes component-scoped node IDs or rewrites repeated-topic identity."
+      },
+      "decision": {
+        "status": "pending",
+        "selected_option_id": null,
+        "reusable_by_issue": 293,
+        "decided_by": null,
+        "decided_at": null,
+        "notes": []
+      }
+    },
+    {
+      "item_id": "9709-review-002-compound-objective-split-policy",
+      "category": "merge_split_candidate",
+      "title": "Compound or notation-heavy official bullets",
+      "decision_prompt": "Should compound official bullets be approved as atomic learning-objective nodes, split into child objectives before approval, or held out when OCR/notation quality is too low?",
+      "current_posture": "The draft keeps each official bullet as one node and marks 64 compound or notation-heavy nodes for split review rather than inventing finer granularity.",
+      "candidate_group_counts": {
+        "split_candidate_nodes": 64
+      },
+      "representative_node_ids": [
+        "9709:2026-2027_v4:learning_objective:p1.integration.lo01_u_o_n_f_d_d_i_e",
+        "9709:2026-2027_v4:learning_objective:p2.trigonometry.lo02_use_trigonometrical_identities_for_the_simplification_and_exact",
+        "9709:2026-2027_v4:learning_objective:p3.trigonometry.lo02_use_trigonometrical_identities_for_the_simplification_and_exact"
+      ],
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 22",
+          "section_ref": "3 Subject content > 1 Pure Mathematics 1 > 1.8 Integration",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_8_integration",
+          "locator": "u o n f d d i e ff r e s r t e a n n t d ia i t n io te n g , r a a n ti d o n in a te s g t r h a e te r e (a v x e r + se b ) p n r o (f c o e r s a s n y"
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 24",
+          "section_ref": "3 Subject content > 2 Pure Mathematics 2 > 2.3 Trigonometry",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry",
+          "locator": "use trigonometrical identities for the"
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 27",
+          "section_ref": "3 Subject content > 3 Pure Mathematics 3 > 3.3 Trigonometry",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p3.3_3_trigonometry",
+          "locator": "use trigonometrical identities for the"
+        }
+      ],
+      "recommended_options": [
+        {
+          "option_id": "approve_official_bullet_as_atomic",
+          "label": "Approve official bullets as atomic nodes",
+          "machine_action": "approve_current_bullet_nodes_and_track_subskills_separately",
+          "resulting_contract_change": "Issue #293 can approve source-faithful bullet nodes; subskills remain downstream mapping aids, not canonical syllabus nodes.",
+          "recommended": true
+        },
+        {
+          "option_id": "split_before_approval",
+          "label": "Split compound bullets before approval",
+          "machine_action": "create_child_nodes_for_human_defined_subobjectives",
+          "resulting_contract_change": "Issue #293 must add human-authored child IDs and source-ref spans before approval.",
+          "recommended": false
+        },
+        {
+          "option_id": "approve_clean_hold_noisy",
+          "label": "Approve clean bullets and hold noisy OCR cases",
+          "machine_action": "partition_split_candidates_by_ocr_quality",
+          "resulting_contract_change": "Issue #293 approves only clean official-bullet nodes while OCR-damaged rows remain pending.",
+          "recommended": false
+        }
+      ],
+      "risk_level": "high",
+      "downstream_impact": {
+        "affected_artifacts": [
+          "data/syllabus/9709/canonical_topic_tree_draft_v1.json",
+          "question semantic mapping granularity",
+          "approved baseline review queue"
+        ],
+        "issue_293_reuse": "Selected option controls whether #293 approves official bullet granularity or requires human-authored subobjective IDs first."
+      },
+      "decision": {
+        "status": "pending",
+        "selected_option_id": null,
+        "reusable_by_issue": 293,
+        "decided_by": null,
+        "decided_at": null,
+        "notes": []
+      }
+    },
+    {
+      "item_id": "9709-review-003-p2-p3-subset-boundary",
+      "category": "ambiguous_boundary",
+      "title": "Paper 2 largely-subset-of Paper 3 boundary",
+      "decision_prompt": "How should the official 'largely a subset' wording for P2/P3 be represented without overstating a one-to-one objective mapping?",
+      "current_posture": "Boundary annotation is separate from the canonical tree and marked needs_human_review.",
+      "candidate_boundary_ids": [
+        "9709:2026-2027_v4:boundary:relationship.p2_subset_p3"
+      ],
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "pp. 40-42",
+          "section_ref": "4 Details of the assessment",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.4.details_of_the_assessment",
+          "locator": "Paper 2: Pure Mathematics 2 and Paper 3: Pure Mathematics 3 build on the subject content for Paper 1: Pure\nMathematics 1."
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "pp. 40-42",
+          "section_ref": "4 Details of the assessment",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.4.details_of_the_assessment",
+          "locator": "Paper 2 subject content is largely a subset of the Paper 3 subject content."
+        }
+      ],
+      "recommended_options": [
+        {
+          "option_id": "relationship_overlay_only",
+          "label": "Keep as relationship overlay only",
+          "machine_action": "approve_boundary_annotation_without_merging_nodes",
+          "resulting_contract_change": "Issue #293 can preserve separate P2/P3 node IDs and record a non-exhaustive subset relationship.",
+          "recommended": true
+        },
+        {
+          "option_id": "map_duplicate_objectives_as_subset_links",
+          "label": "Add explicit subset links for duplicated objectives",
+          "machine_action": "add_human_reviewed_subset_edges_for_matching_p2_p3_objectives",
+          "resulting_contract_change": "Issue #293 must include reviewed per-objective relationship edges before approval.",
+          "recommended": false
+        },
+        {
+          "option_id": "block_p2_p3_until_mapping",
+          "label": "Block P2/P3 approval until full mapping",
+          "machine_action": "keep_p2_p3_boundary_and_related_nodes_pending",
+          "resulting_contract_change": "Issue #293 cannot freeze P2/P3 nodes until a full human subset map exists.",
+          "recommended": false
+        }
+      ],
+      "risk_level": "high",
+      "downstream_impact": {
+        "affected_artifacts": [
+          "data/syllabus/9709/boundary_annotations_draft_v1.json",
+          "future route eligibility and question mapping",
+          "P2/P3 canonical relationship metadata"
+        ],
+        "issue_293_reuse": "Selected option tells #293 whether this is approval-ready as a boundary overlay or requires additional relationship rows."
+      },
+      "decision": {
+        "status": "pending",
+        "selected_option_id": null,
+        "reusable_by_issue": 293,
+        "decided_by": null,
+        "decided_at": null,
+        "notes": []
+      }
+    },
+    {
+      "item_id": "9709-review-004-p4-p6-component-conflict",
+      "category": "component_conflict",
+      "title": "P4/P6 unavailable combination and P6 prior-knowledge route",
+      "decision_prompt": "Should the extracted P4/P6 route conflict be approved as a hard route constraint, downgraded to advisory wording, or held for route-table visual confirmation?",
+      "current_posture": "Boundary annotation is marked needs_human_review because it is a cross-component route claim extracted from multi-column syllabus text.",
+      "candidate_boundary_ids": [
+        "9709:2026-2027_v4:boundary:route.no_p4_p6_combination"
+      ],
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "pp. 8-17",
+          "section_ref": "2 Syllabus overview",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.2.syllabus_overview",
+          "locator": "Please note, it is not possible to combine Paper 4 and Paper 6. This is because Paper 6 depends on prior\nknowledge of the subject content for Paper 5."
+        }
+      ],
+      "recommended_options": [
+        {
+          "option_id": "approve_hard_route_constraint",
+          "label": "Approve hard route constraint",
+          "machine_action": "approve_no_p4_p6_combination_boundary",
+          "resulting_contract_change": "Issue #293 may freeze the P4/P6 disallowed-combination boundary and P6 prior-knowledge dependency.",
+          "recommended": true
+        },
+        {
+          "option_id": "downgrade_to_route_note",
+          "label": "Downgrade to advisory route note",
+          "machine_action": "change_boundary_kind_or_status_to_advisory_note",
+          "resulting_contract_change": "Issue #293 preserves wording but does not treat the claim as a hard eligibility constraint.",
+          "recommended": false
+        },
+        {
+          "option_id": "hold_for_visual_table_check",
+          "label": "Hold for visual route-table check",
+          "machine_action": "keep_boundary_pending_until_pdf_table_cell_review",
+          "resulting_contract_change": "Issue #293 cannot approve the route constraint without a visual confirmation artifact.",
+          "recommended": false
+        }
+      ],
+      "risk_level": "high",
+      "downstream_impact": {
+        "affected_artifacts": [
+          "data/syllabus/9709/boundary_annotations_draft_v1.json",
+          "route eligibility logic",
+          "future component-combination validation"
+        ],
+        "issue_293_reuse": "Selected option directly controls whether #293 may approve a hard component-combination constraint."
+      },
+      "decision": {
+        "status": "pending",
+        "selected_option_id": null,
+        "reusable_by_issue": 293,
+        "decided_by": null,
+        "decided_at": null,
+        "notes": []
+      }
+    },
+    {
+      "item_id": "9709-review-005-ocr-damaged-title-id-repair",
+      "category": "naming_or_id_issue",
+      "title": "OCR-damaged canonical titles and derived IDs",
+      "decision_prompt": "How should obvious OCR-damaged titles and IDs be repaired before any approved baseline uses them as joins?",
+      "current_posture": "The draft retains official-source provenance but some generated titles and slugs are not safe durable names.",
+      "representative_node_ids": [
+        "9709:2026-2027_v4:learning_objective:p1.integration.lo01_u_o_n_f_d_d_i_e",
+        "9709:2026-2027_v4:learning_objective:p6.the_poisson_distribution.lo05_use_the_normal_distribution_with_continuity_15_correction",
+        "9709:2026-2027_v4:learning_objective:p6.sampling_and_estimation.lo05_use_the_central_limit_appropriate_the_distribution_of"
+      ],
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 22",
+          "section_ref": "3 Subject content > 1 Pure Mathematics 1 > 1.8 Integration",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p1.1_8_integration",
+          "locator": "u o n f d d i e ff r e s r t e a n n t d ia i t n io te n g , r a a n ti d o n in a te s g t r h a e te r e (a v x e r + se b ) p n r o (f c o e r s a s n y"
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 37",
+          "section_ref": "3 Subject content > 6 Probability & Statistics 2 > 6.1 The Poisson distribution",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p6.6_1_the_poisson_distribution",
+          "locator": "use the normal distribution, with continuity"
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 38",
+          "section_ref": "3 Subject content > 6 Probability & Statistics 2 > 6.4 Sampling and estimation",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p6.6_4_sampling_and_estimation",
+          "locator": "use the Central Limit"
+        }
+      ],
+      "recommended_options": [
+        {
+          "option_id": "repair_before_approval",
+          "label": "Repair title and ID before approval",
+          "machine_action": "replace_noisy_titles_and_slugs_with_human_verified_text",
+          "resulting_contract_change": "Issue #293 must approve corrected durable IDs, aliases from draft IDs, and exact source locators.",
+          "recommended": true
+        },
+        {
+          "option_id": "repair_display_keep_id",
+          "label": "Repair display text but keep draft IDs",
+          "machine_action": "update_titles_only_and_add_review_note",
+          "resulting_contract_change": "Issue #293 freezes imperfect IDs; future compatibility relies on aliases instead of corrected primary IDs.",
+          "recommended": false
+        },
+        {
+          "option_id": "hold_noisy_rows",
+          "label": "Hold noisy rows out of baseline",
+          "machine_action": "keep_noisy_nodes_needs_human_review",
+          "resulting_contract_change": "Issue #293 approves only non-noisy nodes and leaves OCR-damaged rows pending.",
+          "recommended": false
+        }
+      ],
+      "risk_level": "high",
+      "downstream_impact": {
+        "affected_artifacts": [
+          "data/syllabus/9709/canonical_topic_tree_draft_v1.json",
+          "approved node IDs",
+          "legacy alias and question-map joins"
+        ],
+        "issue_293_reuse": "Selected option tells #293 whether to rewrite unsafe IDs before freezing any approved baseline."
+      },
+      "decision": {
+        "status": "pending",
+        "selected_option_id": null,
+        "reusable_by_issue": 293,
+        "decided_by": null,
+        "decided_at": null,
+        "notes": []
+      }
+    },
+    {
+      "item_id": "9709-review-006-unmapped-official-content-scope",
+      "category": "unmapped_official_bullet",
+      "title": "Unmapped official bullets and non-subject-content official sections",
+      "decision_prompt": "Confirm whether the current topic-tree approval may proceed with zero unmapped subject-content bullets while leaving MF19 formula/table material outside the canonical topic tree.",
+      "current_posture": "The gate reports 155 mapped subject-content bullets and 0 unmapped subject-content bullets. Six official raw sections remain outside the topic-tree mapping; only MF19 requires future visual/table handling.",
+      "coverage_counts": {
+        "mapped_subject_content_bullets": 155,
+        "unmapped_subject_content_bullets": 0,
+        "unmapped_raw_sections": 6
+      },
+      "source_refs": [
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "p. 18",
+          "section_ref": "3 Subject content",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.introduction",
+          "locator": "Notes and examples are included to clarify the subject content."
+        },
+        {
+          "source_document_id": "cambridge-9709-syllabus-2026-2027-v4",
+          "source_type": "official_syllabus",
+          "page_ref": "pp. 43-55",
+          "section_ref": "5 List of formulae and statistical tables (MF19)",
+          "raw_section_id": "cambridge-9709-syllabus-2026-2027-v4.5.formulae_and_statistical_tables_mf19",
+          "locator": "5 List of formulae and statistical tables (MF19)"
+        }
+      ],
+      "recommended_options": [
+        {
+          "option_id": "approve_zero_unmapped_subject_bullets",
+          "label": "Proceed with zero unmapped subject-content bullets",
+          "machine_action": "record_no_unmapped_subject_content_bullet_blocker",
+          "resulting_contract_change": "Issue #293 can treat subject-content bullet coverage as complete while keeping MF19 outside the topic tree.",
+          "recommended": true
+        },
+        {
+          "option_id": "create_future_mf19_review_queue",
+          "label": "Create future MF19 formula/table queue",
+          "machine_action": "record_follow_up_formula_table_extraction_needed",
+          "resulting_contract_change": "Issue #293 may approve topic nodes but must carry an explicit non-blocking MF19 follow-up.",
+          "recommended": false
+        },
+        {
+          "option_id": "block_until_mf19_mapped",
+          "label": "Block approval until MF19 is mapped",
+          "machine_action": "treat_unmapped_mf19_as_approval_blocker",
+          "resulting_contract_change": "Issue #293 cannot freeze the approved baseline until formula/table rows are represented.",
+          "recommended": false
+        }
+      ],
+      "risk_level": "medium",
+      "downstream_impact": {
+        "affected_artifacts": [
+          "docs/reports/9709-syllabus-gate-report.json",
+          "future approved topic tree",
+          "future formula/table extraction work"
+        ],
+        "issue_293_reuse": "Selected option tells #293 whether unmapped official non-topic material blocks baseline approval."
+      },
+      "decision": {
+        "status": "pending",
+        "selected_option_id": null,
+        "reusable_by_issue": 293,
+        "decided_by": null,
+        "decided_at": null,
+        "notes": []
+      }
+    }
+  ]
+}

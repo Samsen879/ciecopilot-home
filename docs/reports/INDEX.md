@@ -18,6 +18,12 @@
 - `2026-04-20-issue-252-remediation-report.md` - bounded remediation report for the remaining Wave A `9709.p3.trigonometry` aggregate-probe misses and their host-backfill verification posture.
 - `2026-04-20-issue-253-wave-a-review-lane-remediation.md` - bounded fix report for the remaining Wave A shard-3 over-conservative review-lane case on `9709/s22_qp_13/questions/q02.png`.
 - `2026-04-22-9709-syllabus-authority-vlm-dual-track-decision.md` - decision baseline for splitting `9709` topic alignment into an authoritative syllabus/paper line and a separate VLM visual-evidence line.
+- `9709-syllabus-id-contract.md` - canonical `9709` syllabus topic-tree schema and durable node ID contract for issue `#288`, scoped to schema/ID rules only with no draft tree generation.
+- `9709-canonical-topic-tree-draft-v1.md` - issue `#289` first-draft canonical `9709` topic tree report, generated only from the locked official syllabus raw sections with bullet coverage and human-review merge/split candidates.
+- `9709-boundary-audit-v1.md` - issue `#290` draft boundary annotation audit, keeping assessment scope, route constraints, assumed knowledge, exclusions, and component-only coverage separate from the canonical topic tree.
+- `9709-syllabus-human-review-pack.md` - issue `#292` compact human review queue for merge/split, boundary, component-conflict, naming/ID, and unmapped-official-content decisions reusable by issue `#293`.
+- `9709-syllabus-remediation-issue-301.md` - issue `#301` remediation report rejecting and quarantining the issue `#293` approved baseline, recording the clean draft-only posture, strengthened gates, and remaining review items.
+- `quarantine/9709-syllabus-baseline-freeze-v1.rejected.md` - rejected issue `#293` freeze report retained only as quarantined history; it is not canonical authority.
 - `ao_codex_work_dossier_2026-03-26.md` - issue-by-issue reconstruction of prior AO and Codex work, with branch-vs-mainline divergence notes.
 - `prd_progress_report_2026-03-16.md` - PRD-aligned project progress assessment after recovery, including current stage, recovery impact, and parallel workstreams.
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.
@@ -53,5 +59,12 @@
 
 ## Coverage And Inventory
 
+- `9709-syllabus-source-inventory.md` - official Cambridge `9709` syllabus source lock, raw section extraction inventory, legacy/candidate file classification, and coverage summary for issue `#287`.
+- `9709-syllabus-id-contract.md` - schema, ID, source-reference, review-state, and legacy-alias contract for future canonical syllabus topic-tree generation.
+- `9709-canonical-topic-tree-draft-v1.md` - first-draft canonical `9709` topic tree coverage report for issue `#289`, including mapped/unmapped official subject-content bullets and review candidates.
+- `9709-boundary-audit-v1.md` - draft `9709` boundary overlay report for issue `#290`, covering P1-P6 assessment scope, route eligibility, assumed knowledge, excluded knowledge, component-only coverage, and review flags.
+- `9709-syllabus-human-review-pack.md` - compact issue `#292` human review queue with machine-readable options in `data/syllabus/9709/review_items_v1.json`.
+- `9709-syllabus-remediation-issue-301.md` - rejected-baseline remediation report covering quarantine paths, clean draft regeneration, strengthened gate posture, and unresolved human-review counts.
+- `quarantine/9709-syllabus-baseline-freeze-v1.rejected.md` - rejected issue `#293` baseline freeze report retained for audit history only.
 - `rag_corpus_source_coverage.md` - corpus source coverage summary for backend RAG.
 - `rag_restricted_official_source_inventory.md` - restricted-official inventory snapshot used for governance review.

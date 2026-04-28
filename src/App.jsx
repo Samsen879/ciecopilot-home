@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 
@@ -27,7 +27,7 @@ const StudyHub = React.lazy(() => import("./pages/StudyHub"));
 const SubjectPage = React.lazy(() => import('./pages/SubjectPage'));
 const Search = React.lazy(() => import('./pages/Search'));
 const LearningPath = React.lazy(() => import('./pages/LearningPath'));
-const CommunityAndRecommendations = React.lazy(() => import('./pages/CommunityAndRecommendations'));
+const Recommendations = React.lazy(() => import('./pages/Recommendations'));
 const LearningSessionPage = React.lazy(() => import('./pages/learning-runtime/LearningSessionPage'));
 const TopicWorkspacePage = React.lazy(() => import('./pages/learning-runtime/TopicWorkspacePage'));
 const ReviewQueuePage = React.lazy(() => import('./pages/learning-runtime/ReviewQueuePage'));
@@ -50,13 +50,7 @@ const ToolsProgressTracking = React.lazy(() => import('./pages/ToolsProgressTrac
 const ToolsSmartRecommendations = React.lazy(() => import('./pages/ToolsSmartRecommendations'));
 const ToolsStudySuggestions = React.lazy(() => import('./pages/ToolsStudySuggestions'));
 
-// Pricing page - lazy loaded
 const Pricing = React.lazy(() => import('./pages/Pricing'));
-
-function CommunityRedirect() {
-  const { subjectCode } = useParams();
-  return <Navigate to={`/recommendations/${subjectCode || ''}`} replace />;
-}
 
 // Loading component
 const LoadingSpinner = () => (
@@ -85,9 +79,7 @@ function ContentWithChatShift() {
               <Route path="/study-hub/:subjectCode" element={<SubjectPage />} />
               {/* Learning Path compatibility handoff */}
               <Route path="/learning-path/:subjectCode" element={<LearningPath />} />
-              {/* Recommendations Page */}
-              <Route path="/community/:subjectCode" element={<CommunityRedirect />} />
-              <Route path="/recommendations/:subjectCode" element={<CommunityAndRecommendations />} />
+              <Route path="/recommendations/:subjectCode" element={<Recommendations />} />
               {/* Subject Selection Page */}
               <Route path="/topics" element={<SubjectSelection />} />
               {/* Paper Selection Pages */}

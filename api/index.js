@@ -48,16 +48,26 @@ function applyCors(req, res) {
 }
 
 function apiInfo() {
-  return {
+  const info = {
     name: 'CIE Copilot API',
     version: '2.0.0',
     status: 'active',
     timestamp: new Date().toISOString(),
-    routes: listRoutes(),
   };
+  if (process.env.NODE_ENV !== 'production') {
+    info.routes = listRoutes();
+  }
+  return info;
 }
 
 function healthInfo() {
+  if (process.env.NODE_ENV === 'production') {
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   return {
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -67,6 +77,16 @@ function healthInfo() {
 }
 
 function handleInternalRoutes(req, res) {
+  if (process.env.NODE_ENV === 'production' && (req.path === '/api/info' || req.path === '/api/routes')) {
+    errorResponse(res, {
+      status: 404,
+      code: 'endpoint_not_found',
+      message: 'Endpoint not found.',
+      request_id: req.request_id,
+    });
+    return true;
+  }
+
   if (req.path === '/' || req.path === '/api' || req.path === '/api/info') {
     res.status(200).json(apiInfo());
     return true;

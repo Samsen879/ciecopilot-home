@@ -7,6 +7,7 @@ import {
   _resetRateLimitStoreForTest,
   _setRateLimitBackendForTest,
   consumeRateLimit,
+  getClientIp,
 } from '../lib/security/rate-limit.js';
 import { resolveRateLimitDescriptor } from '../lib/security/rate-limit-middleware.js';
 import { SharedRateLimitStore } from '../lib/security/rate-limit-shared-store.js';
@@ -99,6 +100,87 @@ describe('shared rate limit gate coverage', () => {
     } finally {
       SharedRateLimitStore.prototype.consume = original;
       _clearRateLimitBackendOverrideForTest();
+    }
+  });
+
+  it('falls back by default when the shared rate limit store is unavailable', async () => {
+    const original = SharedRateLimitStore.prototype.consume;
+    const originalAllowDegrade = process.env.RATE_LIMIT_ALLOW_DEGRADE;
+    SharedRateLimitStore.prototype.consume = jest.fn(async () => {
+      throw new Error('rpc unavailable');
+    });
+    _setRateLimitBackendForTest('shared');
+    delete process.env.RATE_LIMIT_ALLOW_DEGRADE;
+
+    try {
+      const result = await consumeRateLimit('u:student-1:rag-search', {
+        limit: 3,
+        windowMs: 60_000,
+      });
+
+      expect(result.allowed).toBe(true);
+      expect(result.degraded).toBe(true);
+      expect(result.store).toBe('memory');
+      expect(result.degrade_reason).toContain('rpc unavailable');
+    } finally {
+      SharedRateLimitStore.prototype.consume = original;
+      if (typeof originalAllowDegrade === 'undefined') {
+        delete process.env.RATE_LIMIT_ALLOW_DEGRADE;
+      } else {
+        process.env.RATE_LIMIT_ALLOW_DEGRADE = originalAllowDegrade;
+      }
+      _clearRateLimitBackendOverrideForTest();
+    }
+  });
+
+  it('fails closed only when shared-store degradation is explicitly disabled', async () => {
+    const original = SharedRateLimitStore.prototype.consume;
+    const originalAllowDegrade = process.env.RATE_LIMIT_ALLOW_DEGRADE;
+    SharedRateLimitStore.prototype.consume = jest.fn(async () => {
+      throw new Error('rpc unavailable');
+    });
+    _setRateLimitBackendForTest('shared');
+    process.env.RATE_LIMIT_ALLOW_DEGRADE = 'false';
+
+    try {
+      await expect(consumeRateLimit('u:student-1:rag-search', {
+        limit: 3,
+        windowMs: 60_000,
+      })).rejects.toThrow('rpc unavailable');
+    } finally {
+      SharedRateLimitStore.prototype.consume = original;
+      if (typeof originalAllowDegrade === 'undefined') {
+        delete process.env.RATE_LIMIT_ALLOW_DEGRADE;
+      } else {
+        process.env.RATE_LIMIT_ALLOW_DEGRADE = originalAllowDegrade;
+      }
+      _clearRateLimitBackendOverrideForTest();
+    }
+  });
+
+  it('ignores forwarded client IP headers unless proxy trust is enabled', () => {
+    const req = {
+      headers: {
+        'x-forwarded-for': '203.0.113.10, 10.0.0.10',
+      },
+      socket: {
+        remoteAddress: '127.0.0.1',
+      },
+    };
+    const originalTrustProxy = process.env.TRUST_PROXY;
+
+    try {
+      delete process.env.TRUST_PROXY;
+      expect(getClientIp(req)).toBe('127.0.0.1');
+
+      process.env.TRUST_PROXY = 'true';
+      expect(getClientIp(req)).toBe('203.0.113.10');
+    } finally {
+      if (typeof originalTrustProxy === 'undefined') {
+        delete process.env.TRUST_PROXY;
+      } else {
+        process.env.TRUST_PROXY = originalTrustProxy;
+      }
     }
   });
 

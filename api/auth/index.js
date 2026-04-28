@@ -269,18 +269,6 @@ async function registerUser(req, res) {
       return sendError(req, res, 500, 'AUTH_REGISTRATION_FAILED', 'Registration failed', '注册失败，请稍后重试');
     }
     
-    // 创建用户社区档案
-    await supabase
-      .from('user_community_profiles')
-      .insert({
-        user_id: user.id,
-        reputation: 0,
-        questions_count: 0,
-        answers_count: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      });
-    
     // 创建用户学习档案
     await supabase
       .from('user_learning_profiles')

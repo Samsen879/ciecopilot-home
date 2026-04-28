@@ -9,7 +9,6 @@ function normalizeInput(body = {}) {
     syllabus_node_id: body.syllabus_node_id || body.topic_id || null,
     subject_code: body.subject_code || null,
     language: body.lang || 'en',
-    internal_debug: Boolean(body.internal_debug),
   };
 }
 
@@ -83,4 +82,3 @@ export default async function handler(req, res) {
     });
   }
 }
-

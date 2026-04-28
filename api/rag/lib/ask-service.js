@@ -45,9 +45,10 @@ let s2ReadinessProfileCache = {
   data: null,
 };
 
-function parseInput(input = {}) {
+function parseInput(input = {}, { allowInternalDebugBoundary = false } = {}) {
   const query = String(input.query || input.q || '').trim();
   const syllabus_node_id = input.syllabus_node_id || null;
+  const internalDebugRequested = Boolean(input.internal_debug);
   return {
     query,
     syllabus_node_id,
@@ -55,7 +56,8 @@ function parseInput(input = {}) {
     current_topic_path: input.current_topic_path || null,
     boundary_title: input.boundary_title || null,
     boundary_description: input.boundary_description || null,
-    internal_debug: Boolean(input.internal_debug),
+    internal_debug: allowInternalDebugBoundary && internalDebugRequested,
+    internal_debug_requested: internalDebugRequested,
     language: String(input.language || input.lang || 'en'),
   };
 }
@@ -748,6 +750,7 @@ export async function askWithinLearningSession(
     logger,
     config,
     s2Retriever,
+    allowInternalDebugBoundary: true,
   });
 
   return askContext.buildResponsePayload(askResponse);
@@ -762,6 +765,7 @@ export async function executeAskAI(
     logger = safeLog,
     config = null,
     s2Retriever = retrieveS2MultiHopCandidates,
+    allowInternalDebugBoundary = false,
   } = {},
 ) {
   const started = Date.now();
@@ -784,7 +788,7 @@ export async function executeAskAI(
     llm_classifier_status:
       effectiveConfig?.s2?.llmClassifierEnabled === true ? 'configured_not_invoked' : 'not_enabled',
   });
-  const parsed = parseInput(rawInput);
+  const parsed = parseInput(rawInput, { allowInternalDebugBoundary });
   const requestId = req?.request_id || null;
   const client = supabase || getServiceClient();
 

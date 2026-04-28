@@ -50,7 +50,6 @@ function renderReport(summary) {
 
 - Rate-limited modules: \`${summary.rate_limited_modules.join(', ')}\`
 - Write-only route policies:
-  - community: \`${summary.write_only_routes.community.join(', ')}\`
   - error-book: \`${summary.write_only_routes.error_book.join(', ')}\`
 
 ## Jest
@@ -73,7 +72,6 @@ function main() {
   const jestResult = JSON.parse(fs.readFileSync(RAW_OUT, 'utf8'));
   const routes = listRoutes();
   const rateLimited = routes.filter((route) => route.hasRateLimit);
-  const community = routes.find((route) => route.module === 'community');
   const errorBook = routes.find((route) => route.module === 'error-book');
   const errorBookId = routes.find((route) => route.module === 'error-book-id');
 
@@ -82,10 +80,9 @@ function main() {
     status: jestResult.success ? 'pass' : 'fail',
     workflow_source: '.github/workflows/shared-rate-limit-gate.yml',
     production_default_backend: 'shared',
-    controlled_degrade_default: true,
+    controlled_degrade_default: false,
     rate_limited_modules: rateLimited.map((route) => route.module),
     write_only_routes: {
-      community: community?.rateLimitMethods || [],
       error_book: [...new Set([...(errorBook?.rateLimitMethods || []), ...(errorBookId?.rateLimitMethods || [])])],
     },
     jest: {

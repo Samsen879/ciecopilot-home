@@ -3,6 +3,17 @@ import { executeAskAI } from './lib/ask-service.js';
 import { toRagError } from './lib/errors.js';
 import { recordRagTelemetryFailure, recordRagTelemetrySuccess } from './lib/telemetry-recorder.js';
 
+function normalizePublicAskInput(body = {}) {
+  const {
+    internal_debug: _internalDebug,
+    current_topic_path: _currentTopicPath,
+    boundary_title: _boundaryTitle,
+    boundary_description: _boundaryDescription,
+    ...safeBody
+  } = body || {};
+  return safeBody;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return errorResponse(res, {
@@ -13,13 +24,15 @@ export default async function handler(req, res) {
     });
   }
 
+  const input = normalizePublicAskInput(req.body || {});
+
   try {
-    const payload = await executeAskAI(req.body || {}, { req });
+    const payload = await executeAskAI(input, { req });
     await recordRagTelemetrySuccess({
       req,
       endpoint: '/api/rag/ask',
       method: req.method,
-      input: req.body || {},
+      input,
       response: payload,
     });
     return res.status(200).json(payload);
@@ -29,7 +42,7 @@ export default async function handler(req, res) {
       req,
       endpoint: '/api/rag/ask',
       method: req.method,
-      input: req.body || {},
+      input,
       ragError,
       partialResponse: null,
     });
@@ -42,4 +55,3 @@ export default async function handler(req, res) {
     });
   }
 }
-

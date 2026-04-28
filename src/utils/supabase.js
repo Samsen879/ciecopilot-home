@@ -1,9 +1,15 @@
 // Supabase 客户端配置文件（安全降级版）
 import { createClient } from '@supabase/supabase-js'
 
-// 从环境变量获取 Supabase 配置
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const META_ENV = typeof import.meta !== 'undefined' ? import.meta.env || {} : {}
+
+function isProductionEnv(env = META_ENV) {
+  return env.PROD === true || env.MODE === 'production' || env.NODE_ENV === 'production'
+}
+
+function resolveBrowserStorage() {
+  return typeof window !== 'undefined' ? window.localStorage : undefined
+}
 
 // 提供一个在未配置时的“空实现”，避免因抛错导致页面白屏
 function createSupabaseStub() {
@@ -49,27 +55,46 @@ function createSupabaseStub() {
   }
 }
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+export function createSupabaseClientForEnv(
+  env = META_ENV,
+  {
+    createClientImpl = createClient,
+    storage = resolveBrowserStorage(),
+    logger = console
+  } = {}
+) {
+  const supabaseUrl = env.VITE_SUPABASE_URL
+  const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY
+  const configured = Boolean(supabaseUrl && supabaseAnonKey)
 
-// 创建 Supabase 客户端或空实现
-export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey, {
+  if (!configured && isProductionEnv(env)) {
+    throw new Error('Missing Supabase frontend environment variables')
+  }
+
+  if (configured) {
+    return createClientImpl(supabaseUrl, supabaseAnonKey, {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
-        storage: window.localStorage
+        storage
       },
       realtime: {
         params: { eventsPerSecond: 10 }
       }
     })
-  : (() => {
-      console.warn(
-        'Missing Supabase environment variables. Running with a no-op Supabase client. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env to enable Supabase.'
-      )
-      return createSupabaseStub()
-    })()
+  }
+
+  logger.warn?.(
+    'Missing Supabase environment variables. Running with a no-op Supabase client. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env to enable Supabase.'
+  )
+  return createSupabaseStub()
+}
+
+export const isSupabaseConfigured = Boolean(META_ENV.VITE_SUPABASE_URL && META_ENV.VITE_SUPABASE_ANON_KEY)
+
+// 创建 Supabase 客户端或空实现
+export const supabase = createSupabaseClientForEnv(META_ENV)
 
 // 数据库表名常量
 export const TABLES = {

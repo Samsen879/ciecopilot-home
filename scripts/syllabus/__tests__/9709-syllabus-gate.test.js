@@ -37,18 +37,6 @@ function buildFixture() {
   };
 }
 
-function buildApprovedFixture() {
-  return {
-    sourceInventory: readJson(approvedPaths.sourceInventory),
-    rawSections: readJson(approvedPaths.rawSections),
-    canonicalTopicTree: readJson(approvedPaths.canonicalTopicTree),
-    boundaryAnnotations: readJson(approvedPaths.boundaryAnnotations),
-    reviewItems: readJson(approvedPaths.reviewItems),
-    humanReviewDecisions: readJson(approvedPaths.humanReviewDecisions),
-    topicTreeSchema: readJson(approvedPaths.topicTreeSchema),
-  };
-}
-
 function gateByName(report, gateName) {
   return report.gates.find((gate) => gate.name === gateName);
 }
@@ -183,6 +171,65 @@ describe('9709 syllabus gate', () => {
     );
   });
 
+  test('fails source refs whose locator text is not contained in the raw section text', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildFixture();
+    fixture.canonicalTopicTree.nodes[0].source_refs[0].locator =
+      'this locator text is not present in the cited raw section';
+
+    const report = build9709SyllabusGateReport({ artifacts: fixture });
+
+    expectBlocked(report, 'unsupported_source_locator');
+    expect(gateByName(report, 'source_refs').errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'unsupported_source_locator',
+          owner_type: 'topic_node',
+          owner_id: fixture.canonicalTopicTree.nodes[0].node_id,
+        }),
+      ]),
+    );
+  });
+
+  test('fails approved baseline attempts when approved titles contain Notes or OCR contamination', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildFixture();
+    const node = fixture.canonicalTopicTree.nodes[0];
+    node.status = 'approved';
+    node.review_state = {
+      state: 'accepted',
+      reviewed_by: 'human_review_authority:test',
+      reviewed_at: '2026-04-28T00:00:00.000Z',
+      notes: ['Synthetic approved node for title contamination gate coverage.'],
+    };
+    node.canonical_title =
+      'understand the nature of a hypothesis test, alternative questions are set. hypothesis';
+    node.display_title = 'sin sin 90c polluted display title';
+
+    const report = build9709SyllabusGateReport({
+      artifacts: fixture,
+      approvedBaselineAttempted: true,
+    });
+
+    expectBlocked(report, 'polluted_approved_title');
+    expect(gateByName(report, 'title_cleanliness').errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'polluted_approved_title',
+          owner_type: 'topic_node',
+          owner_id: node.node_id,
+          field: 'canonical_title',
+        }),
+        expect.objectContaining({
+          code: 'polluted_approved_title',
+          owner_type: 'topic_node',
+          owner_id: node.node_id,
+          field: 'display_title',
+        }),
+      ]),
+    );
+  });
+
   test('allows official syllabus update refs when the update document is in source inventory metadata', async () => {
     const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
     const fixture = buildFixture();
@@ -286,8 +333,15 @@ describe('9709 syllabus gate', () => {
 
   test('fails approved baseline attempts when review item crosscheck is unavailable', async () => {
     const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
-    const fixture = buildApprovedFixture();
+    const fixture = buildFixture();
     fixture.reviewItems = null;
+    fixture.humanReviewDecisions = {
+      schema_version: '9709_human_review_decisions_v1',
+      issue: 293,
+      carried_review_items: [],
+      decisions: [],
+      human_authority: { authority_id: 'human-approval-test' },
+    };
 
     const report = build9709SyllabusGateReport({
       artifacts: fixture,
@@ -302,6 +356,57 @@ describe('9709 syllabus gate', () => {
       code: 'missing_review_items_for_crosscheck',
       path: approvedPaths.reviewItems,
     });
+  });
+
+  test('fails approved nodes that came from human-review draft state without explicit decision coverage', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildFixture();
+    const reviewNode = fixture.canonicalTopicTree.nodes.find(
+      (node) => node.status === 'needs_human_review',
+    );
+    expect(reviewNode).toBeDefined();
+    reviewNode.status = 'approved';
+    reviewNode.review_state = {
+      state: 'accepted',
+      reviewed_by: 'human_review_authority:test',
+      reviewed_at: '2026-04-28T00:00:00.000Z',
+      notes: [
+        ...reviewNode.review_state.notes,
+        `Approved by synthetic test authority; decision artifact: ${approvedPaths.humanReviewDecisions}.`,
+      ],
+    };
+    fixture.reviewItems = { review_items: [] };
+    fixture.humanReviewDecisions = {
+      schema_version: '9709_human_review_decisions_v1',
+      issue: 293,
+      carried_review_items: [],
+      decisions: [
+        {
+          review_item_id: 'synthetic-decision-for-other-node',
+          decision_status: 'approved',
+          applied_to: { topic_node_ids: [], boundary_ids: [] },
+          source_refs: [reviewNode.source_refs[0]],
+        },
+      ],
+      human_authority: { authority_id: 'human-approval-test' },
+    };
+
+    const report = build9709SyllabusGateReport({
+      artifacts: fixture,
+      paths: approvedPaths,
+      approvedBaselineAttempted: true,
+    });
+
+    expectBlocked(report, 'approved_node_missing_review_decision_coverage');
+    expect(gateByName(report, 'human_review_decisions').errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'approved_node_missing_review_decision_coverage',
+          owner_type: 'topic_node',
+          owner_id: reviewNode.node_id,
+        }),
+      ]),
+    );
   });
 
   test('fails legacy-file leakage without rejecting candidate legacy-path metadata', async () => {
@@ -369,12 +474,12 @@ describe('9709 syllabus gate', () => {
       expect(report).toMatchObject({
         schema_version: '9709_syllabus_gate_report_v1',
         status: 'pass',
-        approved_baseline_attempted: true,
-        approved_baseline_ready: true,
+        approved_baseline_attempted: false,
+        approved_baseline_ready: false,
         blocked_reasons: [],
         subject_code: '9709',
       });
-      expect(report.artifacts).toMatchObject(approvedPaths);
+      expect(report.artifacts).toMatchObject(realPaths);
     } finally {
       process.exitCode = previousExitCode;
       fs.rmSync(path.join(process.cwd(), outJson), { force: true });

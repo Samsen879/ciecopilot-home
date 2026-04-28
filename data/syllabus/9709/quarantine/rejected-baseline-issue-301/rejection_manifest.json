@@ -1,0 +1,43 @@
+{
+  "schema_version": "9709_rejected_baseline_quarantine_v1",
+  "issue": 301,
+  "parent_tracker": 286,
+  "subject_code": "9709",
+  "syllabus_version": "2026-2027_v4",
+  "rejected_at": "2026-04-28T00:00:00.000Z",
+  "rejected_baseline": true,
+  "canonical_authority": false,
+  "replacement_posture": {
+    "canonical_topic_tree": "data/syllabus/9709/canonical_topic_tree_draft_v1.json",
+    "boundary_annotations": "data/syllabus/9709/boundary_annotations_draft_v1.json",
+    "approval_state": "draft_only",
+    "approved_baseline_available": false
+  },
+  "rejection_reasons": [
+    "OCR and Notes contamination was present in approved canonical_title/display_title fields.",
+    "The issue #293 freeze path approved draft nodes wholesale, including nodes marked needs_human_review.",
+    "The previous gate accepted source ref existence without locator containment or title cleanliness checks."
+  ],
+  "artifacts": [
+    {
+      "original_path": "data/syllabus/9709/canonical_topic_tree_v1.json",
+      "quarantine_path": "data/syllabus/9709/quarantine/rejected-baseline-issue-301/canonical_topic_tree_v1.json",
+      "canonical_authority": false
+    },
+    {
+      "original_path": "data/syllabus/9709/boundary_annotations_v1.json",
+      "quarantine_path": "data/syllabus/9709/quarantine/rejected-baseline-issue-301/boundary_annotations_v1.json",
+      "canonical_authority": false
+    },
+    {
+      "original_path": "data/syllabus/9709/human_review_decisions_v1.json",
+      "quarantine_path": "data/syllabus/9709/quarantine/rejected-baseline-issue-301/human_review_decisions_v1.json",
+      "canonical_authority": false
+    },
+    {
+      "original_path": "docs/reports/9709-syllabus-baseline-freeze-v1.md",
+      "quarantine_path": "docs/reports/quarantine/9709-syllabus-baseline-freeze-v1.rejected.md",
+      "canonical_authority": false
+    }
+  ]
+}

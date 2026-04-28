@@ -32,6 +32,14 @@ const componentRouteScope = {
 
 const noteColumnInlineMarkers = [
   /\s+e\.g\./,
+  /\s+is required,?\s+e\.g\./,
+  /\s+questions are set\./,
+  /\s+will vary\b/,
+  /\s+3cos\b/,
+  /\s+P A , B\b/,
+  /\s+Explicit use\b/,
+  /\s+space of equiprobable\b/,
+  /\s+diagram\. The use\b/,
   /\s+\(e\.g\. a child\b/,
   /\s+Including\b/,
   /\s+Knowledge of\b/,
@@ -101,7 +109,7 @@ const noteColumnInlineMarkers = [
   /\s+W =/,
 ];
 
-const noteColumnOnlyLine = /^(?:e\.g\.|Including\b|Knowledge\b|No\b|Only\b|Formal\b|Implicit\b|By factorising\b|Graphs\b|Sketches\b|Calculations\b|Solutions\b|Terminology\b|Restricted\b|The term\b|Calculus required\b|Proofs\b|For calculations\b|Full details\b|Outcomes\b|The condition\b|The conditions\b|Explicit\b|Finding\b|Adapting\b|Use of\b|A volume\b|If any other\b|Questions\b|For density\b|The general\b|functions f\b|considered\b|this will be indicated\b|in the question\b|equivalent methods\b|Theorem\b|these other methods\b|and will not be referred\b|mean \u2018in limiting\b|is equal and opposite\b|be known\b|using the density function\b|function is not included\b|forms of solution are not included\b|numerical, and use\b|value 10\b|moving down the plane\b|a trailer by means\b|rigid tow-bar\b)/;
+const noteColumnOnlyLine = /^(?:e\.g\.|Including\b|Knowledge\b|No\b|Only\b|Formal\b|Implicit\b|By factorising\b|Graphs\b|Sketches\b|Calculations\b|Solutions\b|Terminology\b|Restricted\b|The term\b|Calculus required\b|Proofs\b|For calculations\b|Full details\b|Outcomes\b|The condition\b|The conditions\b|Explicit\b|Finding\b|Adapting\b|Use of\b|A volume\b|If any other\b|Questions\b|For density\b|The general\b|functions f\b|considered\b|this will be indicated\b|in the question\b|equivalent methods\b|Theorem\b|these other methods\b|and will not be referred\b|mean \u2018in limiting\b|is equal and opposite\b|be known\b|using the density function\b|function is not included\b|forms of solution are not included\b|numerical, and use\b|value 10\b|moving down the plane\b|a trailer by means\b|rigid tow-bar\b|average[\u2019']?\.?$|\^ h(?:\s+\^ h)*$|P A \+ B$|diagram\. The use\b|may be\b|P B$|required in simple cases\.?$)/;
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -169,11 +177,35 @@ function removeNotesColumnFragment(line) {
     candidate = candidate.slice(0, cutIndex).trim();
   }
 
+  candidate = candidate
+    .replace(/\bs\s*\^\s*olving\s+h\b/g, 'solving')
+    .replace(/\^ h\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
   return noteColumnOnlyLine.test(candidate) ? '' : candidate;
 }
 
 function normalizeExtractedText(parts) {
   return parts.join(' ').replace(/\s+/g, ' ').trim();
+}
+
+function compactText(value) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function rawBackedLocator(section, rawCandidate, cleanedCandidate) {
+  const rawText = compactText(section.raw_text);
+  const cleaned = compactText(cleanedCandidate);
+  const raw = compactText(rawCandidate);
+
+  if (cleaned && rawText.includes(cleaned)) {
+    return cleaned;
+  }
+  if (raw && rawText.includes(raw)) {
+    return raw;
+  }
+  return cleaned || raw;
 }
 
 function reviewState(status, notes = []) {
@@ -242,16 +274,17 @@ function extractBulletEntries(section) {
       if (current) {
         bullets.push(current);
       }
-      const fragment = removeNotesColumnFragment(trimmed.replace(/^\u2022\s*/, ''));
+      const rawFragment = trimmed.replace(/^\u2022\s*/, '');
+      const fragment = removeNotesColumnFragment(rawFragment);
       current = {
         objective_parts: fragment ? [fragment] : [],
-        locator: fragment,
+        locator: rawBackedLocator(section, rawFragment, fragment),
       };
     } else if (current && trimmed) {
       const fragment = removeNotesColumnFragment(trimmed);
       if (fragment) {
         current.objective_parts.push(fragment);
-        current.locator ||= fragment;
+        current.locator ||= rawBackedLocator(section, trimmed, fragment);
       }
     }
   }

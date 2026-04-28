@@ -79,8 +79,108 @@ function cloneJson(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function normalizeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
 function compactArray(value) {
   return Array.isArray(value) ? value.filter(Boolean) : [];
+}
+
+function decisionCoverage(humanReviewDecisions = {}) {
+  const topicNodeIds = new Set();
+  const boundaryIds = new Set();
+  const categoryPredicates = [];
+
+  for (const decision of normalizeArray(humanReviewDecisions.decisions)) {
+    const appliedTo = decision.applied_to ?? {};
+    for (const nodeId of normalizeArray(appliedTo.topic_node_ids)) {
+      topicNodeIds.add(nodeId);
+    }
+    for (const boundaryId of normalizeArray(appliedTo.boundary_ids)) {
+      boundaryIds.add(boundaryId);
+    }
+    categoryPredicates.push(...normalizeArray(appliedTo.category_predicates));
+  }
+
+  return { topicNodeIds, boundaryIds, categoryPredicates };
+}
+
+function reviewNotesText(node = {}) {
+  return normalizeArray(node.review_state?.notes).join('\n');
+}
+
+function predicateCoversDraftItem(predicate = {}, item = {}) {
+  if (!predicate || typeof predicate !== 'object') {
+    return false;
+  }
+  if (predicate.owner_type && predicate.owner_type !== item.owner_type) {
+    return false;
+  }
+  if (predicate.node_type && predicate.node_type !== item.node_type) {
+    return false;
+  }
+  if (predicate.boundary_kind && predicate.boundary_kind !== item.boundary_kind) {
+    return false;
+  }
+  if (predicate.review_note_contains) {
+    return reviewNotesText(item).includes(predicate.review_note_contains);
+  }
+  if (predicate.review_reason_contains) {
+    return normalizeArray(item.review_reasons).join('\n').includes(predicate.review_reason_contains);
+  }
+
+  return false;
+}
+
+function hasCoverage(coverage, item = {}) {
+  if (item.owner_type === 'topic_node' && coverage.topicNodeIds.has(item.node_id)) {
+    return true;
+  }
+  if (item.owner_type === 'boundary_claim' && coverage.boundaryIds.has(item.boundary_id)) {
+    return true;
+  }
+  return coverage.categoryPredicates.some((predicate) => predicateCoversDraftItem(predicate, item));
+}
+
+export function validateFreezeDecisionCoverage({
+  draftTree = {},
+  draftBoundaries = {},
+  humanReviewDecisions = {},
+} = {}) {
+  const coverage = decisionCoverage(humanReviewDecisions);
+  const errors = [];
+
+  for (const node of normalizeArray(draftTree.nodes)) {
+    if (node.status !== 'needs_human_review') {
+      continue;
+    }
+    if (!hasCoverage(coverage, { ...node, owner_type: 'topic_node' })) {
+      errors.push({
+        code: 'approved_node_missing_review_decision_coverage',
+        owner_type: 'topic_node',
+        owner_id: node.node_id ?? null,
+      });
+    }
+  }
+
+  for (const annotation of normalizeArray(draftBoundaries.boundary_annotations)) {
+    if (annotation.status !== 'needs_human_review' && !annotation.needs_human_review) {
+      continue;
+    }
+    if (!hasCoverage(coverage, { ...annotation, owner_type: 'boundary_claim' })) {
+      errors.push({
+        code: 'approved_boundary_missing_review_decision_coverage',
+        owner_type: 'boundary_claim',
+        owner_id: annotation.boundary_id ?? null,
+      });
+    }
+  }
+
+  return {
+    ok: errors.length === 0,
+    errors,
+  };
 }
 
 function recommendedOption(reviewItem) {
@@ -399,6 +499,16 @@ export function freeze9709ApprovedBaselineV1() {
   const repairIdMap = new Map([...REPAIR_MAP].map(([oldId, repair]) => [oldId, repair.newId]));
 
   const humanDecisions = buildHumanReviewDecisions(reviewItems, repairIdMap);
+  const coverage = validateFreezeDecisionCoverage({
+    draftTree,
+    draftBoundaries,
+    humanReviewDecisions: humanDecisions,
+  });
+  if (!coverage.ok) {
+    throw new Error(
+      `Refusing to freeze 9709 approved baseline: ${coverage.errors.length} needs-human-review item(s) lack explicit decision coverage.`,
+    );
+  }
   const approvedTree = buildApprovedTopicTree(draftTree);
   const approvedBoundaries = buildApprovedBoundaryAnnotations(draftBoundaries);
 

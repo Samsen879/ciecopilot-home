@@ -120,6 +120,31 @@ describe('question evidence bundle v1', () => {
     ]);
   });
 
+  test('blocks bundle construction when surface triage flags are missing', () => {
+    expect(() => buildQuestionEvidenceBundlesV1({
+      manifest: buildManifest([
+        {
+          storage_key: '9709/s19_qp_11/questions/q06.png',
+          syllabus_code: '9709',
+          year: 2019,
+          session: 's',
+          paper: 1,
+          variant: 1,
+          q_number: 6,
+          primary_topic_path: '9709.p1.trigonometry',
+          route_hint: 'review_lane',
+          diagram_present: false,
+          formula_dense: null,
+          table_heavy: false,
+          surface_evidence_status: 'unknown_requires_surface_triage',
+          gate_critical: true,
+          requires_review: true,
+        },
+      ]),
+      laneOutputs: [],
+    })).toThrow(/Surface triage required before routing/);
+  });
+
   test('marks lazy image attachment explicitly for gate-critical or low-confidence rows', () => {
     const manifest = buildManifest([
       {
@@ -132,10 +157,10 @@ describe('question evidence bundle v1', () => {
         q_number: 6,
         primary_topic_path: '9709.p1.trigonometry',
         route_hint: 'review_lane',
-        diagram_present: null,
-        formula_dense: null,
-        table_heavy: null,
-        surface_evidence_status: 'unknown_requires_primary_asset_replay',
+        diagram_present: false,
+        formula_dense: true,
+        table_heavy: false,
+        surface_evidence_status: 'surface_triage_v1',
         gate_critical: true,
         requires_review: true,
       },
@@ -194,10 +219,10 @@ describe('question evidence bundle v1', () => {
         q_number: 6,
         primary_topic_path: '9709.p1.trigonometry',
         route_hint: 'review_lane',
-        diagram_present: null,
-        formula_dense: null,
-        table_heavy: null,
-        surface_evidence_status: 'unknown_requires_primary_asset_replay',
+        diagram_present: false,
+        formula_dense: true,
+        table_heavy: false,
+        surface_evidence_status: 'surface_triage_v1',
         gate_critical: true,
         requires_review: true,
       },
@@ -255,7 +280,7 @@ describe('question evidence bundle v1', () => {
     });
   });
 
-  test('keeps review posture but routes non-gate-critical unknown-surface rows through extraction-first OCR lane', () => {
+  test('keeps review posture but routes non-gate-critical triaged rows through OCR lane', () => {
     const manifest = buildManifest([
       {
         storage_key: '9709/s20_qp_12/questions/q02.png',
@@ -267,10 +292,10 @@ describe('question evidence bundle v1', () => {
         q_number: 2,
         primary_topic_path: '9709.p1.trigonometry',
         route_hint: 'review_lane',
-        diagram_present: null,
-        formula_dense: null,
-        table_heavy: null,
-        surface_evidence_status: 'unknown_requires_primary_asset_replay',
+        diagram_present: false,
+        formula_dense: true,
+        table_heavy: false,
+        surface_evidence_status: 'surface_triage_v1',
         gate_critical: false,
         requires_review: true,
       },
@@ -284,7 +309,7 @@ describe('question evidence bundle v1', () => {
           route: 'ocr_lane',
           model: 'qwen3.6-plus',
           confidence: 0.87,
-          warnings: ['requires_review', 'unknown_surface_flags'],
+          warnings: ['requires_review'],
           evidence: {
             ocr_text: 'Find the exact value of tan 75 degrees.',
             formula_latex_list: ['\\tan 75^\\circ'],
@@ -325,10 +350,10 @@ describe('question evidence bundle v1', () => {
         q_number: 6,
         primary_topic_path: '9709.p1.trigonometry',
         route_hint: 'review_lane',
-        diagram_present: null,
-        formula_dense: null,
-        table_heavy: null,
-        surface_evidence_status: 'unknown_requires_primary_asset_replay',
+        diagram_present: false,
+        formula_dense: true,
+        table_heavy: false,
+        surface_evidence_status: 'surface_triage_v1',
         gate_critical: true,
         requires_review: true,
       },
@@ -402,6 +427,55 @@ describe('question evidence bundle v1', () => {
     );
   });
 
+  test('uses diagram-lane OCR fields when diagram extraction includes visible text', () => {
+    const bundles = buildQuestionEvidenceBundlesV1({
+      manifest: buildManifest([
+        {
+          storage_key: '9709/s24_qp_13/questions/q09.png',
+          syllabus_code: '9709',
+          year: 2024,
+          session: 's',
+          paper: 1,
+          variant: 3,
+          q_number: 9,
+          primary_topic_path: '9709.p1.integration',
+          route_hint: 'diagram_lane',
+          diagram_present: true,
+          formula_dense: false,
+          table_heavy: false,
+          surface_evidence_status: 'surface_triage_v1',
+          gate_critical: false,
+          requires_review: true,
+        },
+      ]),
+      laneOutputs: [
+        buildLaneOutput({
+          inputAssetId: '9709/s24_qp_13/questions/q09.png',
+          route: 'diagram_lane',
+          model: 'qwen3-vl-plus',
+          evidence: {
+            ocr_text: 'The diagram shows the curve with equation y = sqrt(2x^3 + 10).',
+            formula_latex_list: ['y=\\sqrt{2x^3+10}'],
+            subquestion_blocks: ['(a) Find the equation of the tangent.'],
+            layout_hints: ['graph above text'],
+            diagram_present: true,
+            diagram_elements: ['curve', 'shaded region'],
+            spatial_evidence: ['The shaded region lies between x = 1 and x = 3.'],
+          },
+        }),
+      ],
+    });
+
+    expect(bundles[0].evidence).toMatchObject({
+      ocr_text: 'The diagram shows the curve with equation y = sqrt(2x^3 + 10).',
+      formula_latex_list: ['y=\\sqrt{2x^3+10}'],
+      subquestion_blocks: ['(a) Find the equation of the tangent.'],
+      layout_hints: ['graph above text'],
+      diagram_elements: ['curve', 'shaded region'],
+      spatial_evidence: ['The shaded region lies between x = 1 and x = 3.'],
+    });
+  });
+
   test('summarizes route and lazy-attach counts for a bundle set', () => {
     const bundles = buildQuestionEvidenceBundlesV1({
       manifest: buildManifest([
@@ -432,10 +506,10 @@ describe('question evidence bundle v1', () => {
           q_number: 6,
           primary_topic_path: '9709.p1.trigonometry',
           route_hint: 'review_lane',
-          diagram_present: null,
-          formula_dense: null,
-          table_heavy: null,
-          surface_evidence_status: 'unknown_requires_primary_asset_replay',
+          diagram_present: false,
+          formula_dense: true,
+          table_heavy: false,
+          surface_evidence_status: 'surface_triage_v1',
           gate_critical: true,
           requires_review: true,
         },

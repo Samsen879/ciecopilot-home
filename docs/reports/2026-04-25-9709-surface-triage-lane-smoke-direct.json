@@ -1,0 +1,73 @@
+[
+  {
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "route": "ocr_lane",
+    "lane": "ocr",
+    "prompt_template_id": "ocr_specialist",
+    "prompt_template_version": "v1",
+    "region": "dashscope-cn",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "input_asset_id": "9709/m16_qp_12/questions/q08.png",
+    "input_asset_hash": "426691f8141ca0e264a8cbd92e8e88b1d076c445ebaae99526cd6d1eba9ee946",
+    "response_schema_version": "v1",
+    "confidence": 0.98,
+    "failure_reason": null,
+    "lazy_attach_original_image": false,
+    "output": {
+      "summary": "8 The function f is such that f(x) = a^2x^2 - ax + 3b for x <= 1/(2a), where a and b are constants.\n(i) For the case where f(-2) = 4a^2 - b + 8 and f(-3) = 7a^2 - b + 14, find the possible values of a and b. [5]\n(ii) For the case where a = 1 and b = -1, find an expression for f^-1(x) and give the domain of f^-1. [5]",
+      "evidence": [
+        {
+          "field": "ocr_text",
+          "value": "8 The function f is such that f(x) = a^2x^2 - ax + 3b for x <= 1/(2a), where a and b are constants.\n(i) For the case where f(-2) = 4a^2 - b + 8 and f(-3) = 7a^2 - b + 14, find the possible values of a and b. [5]\n(ii) For the case where a = 1 and b = -1, find an expression for f^-1(x) and give the domain of f^-1. [5]"
+        },
+        {
+          "field": "formula_latex_list",
+          "value": [
+            "f(x) = a^2x^2 - ax + 3b",
+            "x \\leqslant \\frac{1}{2a}",
+            "f(-2) = 4a^2 - b + 8",
+            "f(-3) = 7a^2 - b + 14",
+            "a = 1",
+            "b = -1",
+            "f^{-1}(x)"
+          ]
+        },
+        {
+          "field": "subquestion_blocks",
+          "value": [
+            "{'label': '(i)', 'text': 'For the case where f(-2) = 4a^2 - b + 8 and f(-3) = 7a^2 - b + 14, find the possible values of a and b.', 'marks': '[5]'}",
+            "{'label': '(ii)', 'text': 'For the case where a = 1 and b = -1, find an expression for f^-1(x) and give the domain of f^-1.', 'marks': '[5]'}"
+          ]
+        },
+        {
+          "field": "layout_hints",
+          "value": [
+            "Question number 8 at top left",
+            "Main stem followed by two sub-questions (i) and (ii)",
+            "Marks allocated in square brackets on the right margin"
+          ]
+        },
+        {
+          "field": "symbol_inventory",
+          "value": []
+        },
+        {
+          "field": "table_blocks",
+          "value": []
+        },
+        {
+          "field": "line_boxes",
+          "value": []
+        },
+        {
+          "field": "ocr_confidence",
+          "value": 0.98
+        }
+      ],
+      "warnings": [
+        "requires_review"
+      ]
+    }
+  }
+]

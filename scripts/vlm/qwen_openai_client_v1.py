@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
+import mimetypes
 import os
 import subprocess
 import sys
 import tempfile
+import time
+import urllib.error
+import urllib.request
 from copy import deepcopy
 from pathlib import Path
 from typing import Any, Callable
@@ -15,6 +20,7 @@ from typing import Any, Callable
 from scripts.common.env import load_project_env
 
 DEFAULT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+DEFAULT_TRANSPORT = "windows-host"
 
 
 class QwenOpenAIClientError(RuntimeError):
@@ -63,6 +69,36 @@ def normalize_request_for_windows_host(
                 and part.get("image_path")
             ):
                 part["image_path"] = path_converter(part["image_path"])
+
+    return normalized
+
+
+def image_path_to_data_url(path: str | Path) -> str:
+    resolved = Path(path)
+    media_type = mimetypes.guess_type(resolved.name)[0] or "image/png"
+    encoded = base64.b64encode(resolved.read_bytes()).decode("ascii")
+    return f"data:{media_type};base64,{encoded}"
+
+
+def normalize_request_for_direct_http(
+    request: dict[str, Any],
+    image_loader: Callable[[str | Path], str] = image_path_to_data_url,
+) -> dict[str, Any]:
+    normalized = deepcopy(request)
+
+    for message in normalized.get("messages", []):
+        content = message.get("content")
+        if not isinstance(content, list):
+            continue
+        for part in content:
+            if (
+                isinstance(part, dict)
+                and part.get("type") == "image_path"
+                and part.get("image_path")
+            ):
+                part["type"] = "image_url"
+                part["image_url"] = {"url": image_loader(part["image_path"])}
+                part.pop("image_path", None)
 
     return normalized
 
@@ -223,6 +259,14 @@ def call_qwen_openai_v1(
         load_project_env()
     base_env = dict(env if env is not None else os.environ)
     api_key = get_dashscope_api_key(base_env)
+    transport = base_env.get("QWEN_OPENAI_TRANSPORT", DEFAULT_TRANSPORT).strip().lower()
+    if transport in {"direct", "direct-http", "http"}:
+        return call_qwen_openai_v1_direct(
+            request,
+            env=base_env,
+            base_url=base_url,
+            timeout=timeout,
+        )
     effective_path_converter = bind_path_converter(runner, path_converter)
 
     normalized_request = normalize_request_for_windows_host(
@@ -288,6 +332,60 @@ def call_qwen_openai_v1(
     except json.JSONDecodeError as error:
         raise QwenOpenAIClientError(
             f"Windows-host Qwen request returned non-JSON stdout: {stdout[:200]}",
+        ) from error
+
+
+def call_qwen_openai_v1_direct(
+    request: dict[str, Any],
+    *,
+    env: dict[str, str] | None = None,
+    base_url: str = DEFAULT_BASE_URL,
+    timeout: int = 90,
+    urlopen: Callable[..., Any] = urllib.request.urlopen,
+    max_retries: int = 2,
+    retry_base_delay: float = 2.0,
+    sleeper: Callable[[float], None] = time.sleep,
+) -> dict[str, Any]:
+    if env is None:
+        load_project_env()
+    base_env = dict(env if env is not None else os.environ)
+    api_key = get_dashscope_api_key(base_env)
+    normalized_request = normalize_request_for_direct_http(request)
+    uri = f"{base_url.rstrip('/')}/chat/completions"
+    body = json.dumps(normalized_request, ensure_ascii=False).encode("utf-8")
+    http_request = urllib.request.Request(
+        uri,
+        data=body,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    response_text: str | None = None
+    for attempt in range(max_retries + 1):
+        try:
+            with urlopen(http_request, timeout=timeout) as response:
+                response_text = response.read().decode("utf-8", errors="replace")
+            break
+        except urllib.error.HTTPError as error:
+            response_text = error.read().decode("utf-8", errors="replace")
+            raise QwenOpenAIClientError(
+                f"DashScope request failed with HTTP {error.code}: {response_text}",
+            ) from error
+        except urllib.error.URLError as error:
+            if attempt >= max_retries:
+                raise QwenOpenAIClientError(f"DashScope request failed: {error}") from error
+            sleeper(retry_base_delay * (2**attempt))
+
+    if response_text is None:
+        raise QwenOpenAIClientError("DashScope request failed without a response body")
+
+    try:
+        return json.loads(response_text)
+    except json.JSONDecodeError as error:
+        raise QwenOpenAIClientError(
+            f"DashScope request returned non-JSON body: {response_text[:200]}",
         ) from error
 
 

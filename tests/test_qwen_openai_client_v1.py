@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import os
+import ssl
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+import urllib.error
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -13,7 +15,10 @@ from scripts.vlm.qwen_openai_client_v1 import (  # noqa: E402
     build_powershell_command,
     build_powershell_script,
     call_qwen_openai_v1,
+    call_qwen_openai_v1_direct,
+    image_path_to_data_url,
     main,
+    normalize_request_for_direct_http,
     normalize_request_for_windows_host,
 )
 
@@ -41,6 +46,38 @@ def test_normalize_request_converts_image_paths_for_windows_host():
         "type": "image_path",
         "image_path": "WIN::/home/samsen/code/cie-assets/test.png",
     }
+
+
+def test_normalize_request_for_direct_http_embeds_image_data_urls():
+    request = {
+        "model": "qwen3.6-plus",
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "read the image"},
+                    {"type": "image_path", "image_path": "/tmp/test.png"},
+                ],
+            }
+        ],
+    }
+
+    normalized = normalize_request_for_direct_http(
+        request,
+        image_loader=lambda value: f"data:image/png;base64,ENC::{value}",
+    )
+
+    assert normalized["messages"][0]["content"][1] == {
+        "type": "image_url",
+        "image_url": {"url": "data:image/png;base64,ENC::/tmp/test.png"},
+    }
+
+
+def test_image_path_to_data_url_uses_file_bytes(tmp_path):
+    image_path = tmp_path / "q01.png"
+    image_path.write_bytes(b"png")
+
+    assert image_path_to_data_url(image_path) == "data:image/png;base64,cG5n"
 
 
 def test_build_powershell_command_targets_dashscope_chat_completions():
@@ -115,6 +152,108 @@ def test_call_qwen_openai_v1_invokes_powershell_and_parses_json_response(tmp_pat
     assert captured["env"]["DASHSCOPE_API_KEY"] == "secret-key"
     assert captured["cmd"][0] == "powershell.exe"
     assert captured["timeout"] == 90
+
+
+def test_call_qwen_openai_v1_can_use_direct_http_transport(monkeypatch):
+    captured = {}
+
+    def fake_direct(request, **kwargs):
+        captured["request"] = request
+        captured["kwargs"] = kwargs
+        return {"choices": [{"message": {"content": "ok"}}]}
+
+    monkeypatch.setattr(
+        "scripts.vlm.qwen_openai_client_v1.call_qwen_openai_v1_direct",
+        fake_direct,
+        raising=False,
+    )
+
+    response = call_qwen_openai_v1(
+        {"model": "qwen3.6-plus", "messages": []},
+        env={"DASHSCOPE_API_KEY": "secret-key", "QWEN_OPENAI_TRANSPORT": "direct"},
+    )
+
+    assert response["choices"][0]["message"]["content"] == "ok"
+    assert captured["kwargs"]["env"]["DASHSCOPE_API_KEY"] == "secret-key"
+
+
+def test_call_qwen_openai_v1_direct_posts_json_and_parses_response(monkeypatch):
+    captured = {}
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return b'{"choices":[{"message":{"content":"ok"}}]}'
+
+    def fake_urlopen(request, timeout):
+        captured["url"] = request.full_url
+        captured["timeout"] = timeout
+        captured["body"] = request.data.decode("utf-8")
+        captured["authorization"] = request.get_header("Authorization")
+        return FakeResponse()
+
+    monkeypatch.setattr(
+        "scripts.vlm.qwen_openai_client_v1.normalize_request_for_direct_http",
+        lambda request: request,
+        raising=False,
+    )
+
+    response = call_qwen_openai_v1_direct(
+        {"model": "qwen3.6-plus", "messages": []},
+        env={"DASHSCOPE_API_KEY": "secret-key"},
+        urlopen=fake_urlopen,
+    )
+
+    assert response["choices"][0]["message"]["content"] == "ok"
+    assert captured["url"] == f"{DEFAULT_BASE_URL}/chat/completions"
+    assert captured["timeout"] == 90
+    assert captured["authorization"] == "Bearer secret-key"
+    assert '"model": "qwen3.6-plus"' in captured["body"]
+
+
+def test_call_qwen_openai_v1_direct_retries_transient_url_errors(monkeypatch):
+    calls = {"count": 0}
+    sleeps = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return b'{"choices":[{"message":{"content":"ok"}}]}'
+
+    def fake_urlopen(request, timeout):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            raise urllib.error.URLError(
+                ssl.SSLEOFError("UNEXPECTED_EOF_WHILE_READING"),
+            )
+        return FakeResponse()
+
+    monkeypatch.setattr(
+        "scripts.vlm.qwen_openai_client_v1.normalize_request_for_direct_http",
+        lambda request: request,
+        raising=False,
+    )
+
+    response = call_qwen_openai_v1_direct(
+        {"model": "qwen3.6-plus", "messages": []},
+        env={"DASHSCOPE_API_KEY": "secret-key"},
+        urlopen=fake_urlopen,
+        sleeper=sleeps.append,
+    )
+
+    assert response["choices"][0]["message"]["content"] == "ok"
+    assert calls["count"] == 2
+    assert sleeps == [2.0]
 
 
 def test_call_qwen_openai_v1_routes_path_conversion_through_injected_runner(tmp_path):

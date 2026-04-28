@@ -96,13 +96,29 @@ class WindowsHostQwenProvider(VLMProvider):
             parsed = json.loads(raw_content)
         except json.JSONDecodeError as error:
             raise ValueError(
-                "Windows-host Qwen provider did not return a valid JSON object"
+                f"Windows-host Qwen provider did not return a valid JSON object: {raw_content[:300]}"
             ) from error
         if not isinstance(parsed, dict):
             raise ValueError("Windows-host Qwen provider did not return a valid JSON object")
         return self._normalize_result(parsed)
 
     def _build_prompt_text(self) -> str:
+        if self.lane == "surface_triage":
+            return (
+                "Return a single JSON object only. "
+                "This is a surface triage task, not OCR, solving, classification, or detailed diagram extraction. "
+                "Look at the visible exam-question image and answer exactly three boolean questions: "
+                "diagram_present, formula_dense, table_heavy. "
+                "diagram_present means a printed graph, geometry figure, statistical chart, table-as-visual diagram, "
+                "Argand plane, vector/3D sketch, or other non-text visual object is present. "
+                "Do not count ordinary mathematical notation, fractions, integral signs, radicals, matrices, "
+                "or instructions asking the student to sketch as a printed diagram. "
+                "formula_dense means the visible question is dominated by multiple displayed formulae or symbolic lines. "
+                "table_heavy means a substantial printed table/grid of data is present. "
+                "Include keys diagram_present, formula_dense, table_heavy, surface_confidence, surface_reasons. "
+                "Use booleans for the three flags, a number from 0 to 1 for surface_confidence, and an array of short strings for surface_reasons. "
+                "Do not include markdown fences or explanation."
+            )
         if self.lane == "ocr":
             return (
                 "Return a single JSON object only. "
@@ -118,10 +134,13 @@ class WindowsHostQwenProvider(VLMProvider):
         if self.lane == "diagram":
             return (
                 "Return a single JSON object only. "
-                "This is a diagram and spatial extraction task. "
+                "This is a combined OCR, diagram, and spatial extraction task for a question image that contains a diagram. "
                 "Do not infer topic, syllabus, or solution steps. "
-                "Include keys diagram_present, diagram_type, diagram_elements, axes_labels, "
+                "Include keys ocr_text, formula_latex_list, subquestion_blocks, layout_hints, "
+                "diagram_present, diagram_type, diagram_elements, axes_labels, "
                 "curve_point_annotations, shape_relations, object_grounding, spatial_evidence, diagram_confidence. "
+                "Use the exact visible question text for ocr_text, including subparts that belong to the visible question. "
+                "Use arrays for formula_latex_list, subquestion_blocks, and layout_hints. "
                 "Use false for diagram_present when no meaningful diagram is visible. "
                 "Use [] for list fields, an empty string for diagram_type when unknown, and 0 for diagram_confidence. "
                 "Do not include markdown fences or explanation."
@@ -150,6 +169,14 @@ class WindowsHostQwenProvider(VLMProvider):
         )
 
     def _normalize_result(self, parsed: dict[str, Any]) -> dict[str, Any]:
+        if self.lane == "surface_triage":
+            return {
+                "diagram_present": _normalize_bool(parsed.get("diagram_present")),
+                "formula_dense": _normalize_bool(parsed.get("formula_dense")),
+                "table_heavy": _normalize_bool(parsed.get("table_heavy")),
+                "surface_confidence": _normalize_float(parsed.get("surface_confidence")),
+                "surface_reasons": _normalize_string_list(parsed.get("surface_reasons")),
+            }
         if self.lane == "ocr":
             return {
                 "ocr_text": _normalize_text(parsed.get("ocr_text")),
@@ -163,6 +190,10 @@ class WindowsHostQwenProvider(VLMProvider):
             }
         if self.lane == "diagram":
             return {
+                "ocr_text": _normalize_text(parsed.get("ocr_text")),
+                "formula_latex_list": _normalize_string_list(parsed.get("formula_latex_list")),
+                "subquestion_blocks": _normalize_string_list(parsed.get("subquestion_blocks")),
+                "layout_hints": _normalize_string_list(parsed.get("layout_hints")),
                 "diagram_present": _normalize_bool(parsed.get("diagram_present")),
                 "diagram_type": _normalize_text(parsed.get("diagram_type")),
                 "diagram_elements": _normalize_string_list(parsed.get("diagram_elements")),
@@ -191,8 +222,12 @@ class WindowsHostQwenProvider(VLMProvider):
         return parsed
 
     def _max_tokens(self) -> int:
-        if self.lane in {"ocr", "review"}:
+        if self.lane == "surface_triage":
+            return 256
+        if self.lane == "ocr":
             return 768
+        if self.lane in {"diagram", "review"}:
+            return 2048
         return 512
 
 

@@ -1,0 +1,94 @@
+{
+  "schema_version": "v1",
+  "manifest_id": "9709_authority_ready_batch_300_v1_s24_qp_13_q09_only",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "frozen_on": "2026-04-22",
+  "wave": "authority_ready_batch_300",
+  "scope": "evidence_backed_9709_batch_dry_run",
+  "source_documents": [
+    "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+    "data/curriculum/9709_question_search_recovery_nodes_v1.json",
+    "docs/reports/2026-04-16-9709-qwen-wave1-live-results-hotfix-rerun-v4.json"
+  ],
+  "notes": [
+    "This 300-row manifest was created for issue #273 dry-run execution in the AO worktree.",
+    "Rows 1-220 come from the manual audit CSV and preserve gold_primary_node_path as raw provenance only; authority truth is owned by the sidecar.",
+    "Rows 221-300 come from repo textual evidence and are intentionally paired with legal missing authority packs.",
+    "Surface flags remain unknown and review-gated; this manifest does not invent visual posture."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/s24_qp_13/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2024,
+      "session": "s",
+      "paper": 1,
+      "variant": 3,
+      "q_number": 9,
+      "primary_topic_path": "9709.p1.integration",
+      "source_reason": "manual_audit_seed",
+      "descriptor_required": true,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "surface_triage_v1",
+      "gate_critical": false,
+      "requires_review": true,
+      "audit_source": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+      "audit_verdict": "wrong",
+      "canonical_primary_topic_path": "9709.p1.integration",
+      "overall_alignment_verdict": "ready",
+      "authority_alignment_run_id": "authority-alignment-a55eb079-6693-45d1-becf-ccff05f62ad5",
+      "source_manifest_digest": "8475876e8eb0e05562ebf51178acd264c6955d98fb6e59fa1ab21767a8a846df",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "provisional_alignment_verdict": "ready",
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "manual_action_required": false,
+      "visual_topic_guess": null,
+      "curriculum_version_tag": "2025-2027_v1",
+      "topic_authority_sources": [
+        "manual_audit",
+        "operator_review"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "manual_audit",
+          "locator": "data/eval/a1_topic_link_manual_audit_9709_p1p3_v1.csv",
+          "note": "storage_key=9709/s24_qp_13/questions/q09.png; gold_primary_node_path=9709.p1.integration; verdict=wrong"
+        },
+        {
+          "kind": "operator_review",
+          "locator": "issue-273-batch-prep-300",
+          "note": "Authority frozen from repo manual-audit evidence during issue #273 300-row batch prep; original paper not re-reviewed in this pass."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "surface_triage": {
+        "schema_version": "surface_triage_v1",
+        "source": "qwen3.6-plus",
+        "input_asset_hash": "da3e874e8dc900407e764acd877da5a587fb02c9696da194d0ae5440a09ab76b",
+        "surface_confidence": 1,
+        "surface_reasons": [
+          "Question 9 features a printed Cartesian graph showing a curve and a shaded region.",
+          "The page is dominated by text questions and large blank answer spaces rather than dense formulae.",
+          "No data tables or grids are present."
+        ],
+        "qwen_diagram_present": true,
+        "qwen_diagram_disagrees_with_manifest": true,
+        "formula_dense": false,
+        "table_heavy": false
+      }
+    }
+  ],
+  "surface_triage_summary": {
+    "total": 300,
+    "updated": 300,
+    "missing_triage": 0,
+    "qwen_diagram_disagreements": 1,
+    "missing_effective_surface_flags": 0
+  }
+}

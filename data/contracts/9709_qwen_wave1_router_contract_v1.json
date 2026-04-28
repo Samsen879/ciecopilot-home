@@ -23,7 +23,7 @@
   ],
   "route_hint_policy": {
     "description": "route_hint is an advisory freeze input, not permission to bypass review or to skip extraction.",
-    "unknown_surface_rule": "If any surface field is null, the router preserves review posture but should still attempt extraction-first routing unless a stronger review trigger such as gate_critical applies."
+    "unknown_surface_rule": "Surface triage is mandatory before routing. If any surface field is null, routing must fail before selecting OCR, diagram, or review lanes."
   },
   "manifest_surface_value_contract": {
     "diagram_present": [
@@ -41,7 +41,22 @@
       false,
       null
     ],
-    "null_meaning": "unknown in this freeze; null must not be coerced to false by the router"
+    "null_meaning": "unknown before surface_triage_v1; null must not be coerced to false and is a routing/preflight blocker"
+  },
+  "surface_triage_contract": {
+    "schema_version": "surface_triage_v1",
+    "provider": "windows-qwen",
+    "model": "qwen3.6-plus",
+    "prompt_template_id": "surface_triage",
+    "prompt_template_version": "v1",
+    "outputs": [
+      "diagram_present",
+      "formula_dense",
+      "table_heavy",
+      "surface_confidence",
+      "surface_reasons"
+    ],
+    "diagram_present_policy": "For human-reviewed batches, Qwen surface triage may be retained for audit comparison but must not overwrite human-reviewed diagram_present unless explicitly requested."
   },
   "route_output_required_fields": [
     "route",

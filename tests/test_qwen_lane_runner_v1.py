@@ -9,8 +9,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.vlm.contracts import validate_qwen_wave1_output  # noqa: E402
 from scripts.vlm.qwen_lane_runner_v1 import (  # noqa: E402
     build_provider_for_job,
+    load_existing_results,
     main,
     run_lane_job,
+    write_lane_results,
 )
 
 
@@ -167,6 +169,62 @@ def test_main_loads_project_env_before_running_manifest(capsys):
     assert exit_code == 0
     mock_load_env.assert_called_once()
     assert "jobs_planned: 0" in capsys.readouterr().out
+
+
+def test_lane_result_helpers_round_trip_json_array(tmp_path):
+    output = tmp_path / "lane-results.json"
+    payloads = [
+        build_lane_fixture := {
+            "input_asset_id": "9709/s20_qp_12/questions/q02.png",
+            "failure_reason": None,
+        }
+    ]
+
+    write_lane_results(output, payloads)
+
+    assert load_existing_results(output) == [build_lane_fixture]
+
+
+def test_load_existing_results_ignores_invalid_or_non_array_json(tmp_path):
+    output = tmp_path / "lane-results.json"
+    output.write_text('{"results":[]}', encoding="utf-8")
+    assert load_existing_results(output) == []
+
+    output.write_text("{", encoding="utf-8")
+    assert load_existing_results(output) == []
+
+
+def test_main_retry_failures_replaces_failed_existing_payload(tmp_path):
+    output = tmp_path / "lane-results.json"
+    write_lane_results(
+        output,
+        [
+            {"input_asset_id": "success.png", "failure_reason": None},
+            {"input_asset_id": "failed.png", "failure_reason": "timeout"},
+        ],
+    )
+    jobs = [
+        _job(storage_key="success.png"),
+        _job(storage_key="failed.png"),
+    ]
+    retried_payload = {"input_asset_id": "failed.png", "failure_reason": None}
+
+    with patch("scripts.vlm.qwen_lane_runner_v1.load_project_env"):
+        with patch("scripts.vlm.qwen_lane_runner_v1._build_jobs_from_args", return_value=jobs):
+            with patch("scripts.vlm.qwen_lane_runner_v1.run_lane_job", return_value=retried_payload):
+                exit_code = main([
+                    "--manifest",
+                    "manifest.json",
+                    "--output",
+                    str(output),
+                    "--retry-failures",
+                ])
+
+    assert exit_code == 0
+    assert load_existing_results(output) == [
+        {"input_asset_id": "success.png", "failure_reason": None},
+        retried_payload,
+    ]
 
 
 def test_main_dry_run_supports_pre_audit_wave_a_manifest(capsys):

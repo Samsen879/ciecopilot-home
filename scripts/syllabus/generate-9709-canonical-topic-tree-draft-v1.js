@@ -42,10 +42,29 @@ const noteColumnInlineMarkers = [
   /\s+diagram\. The use\b/,
   /\s+\(e\.g\. a child\b/,
   /\s+Including\b/,
+  /\s+Including the notations\b/,
   /\s+Knowledge of\b/,
+  /\s+Sketches should\b/,
+  /\s+line y\s*=/,
+  /\s+Excluding cases\b/,
+  /\s+exceeds that\b/,
+  /\s+In 2 or 3 dimensions\b/,
+  /\s+The introduction\b/,
+  /\s+proportionality\b/,
+  /\s+Where a differential equation\b/,
+  /\s+[‘']real-life[’'] situation\b/,
+  /\s+context will be required\b/,
+  /\s+Notations\b/,
+  /\s+The argument\b/,
+  /\s+refer to an angle\b/,
+  /\s+some cases\b/,
+  /\s+Answers may\b/,
   /\s+No specialised\b/,
   /\s+Only an\b/,
   /\s+Only a\b/,
+  /\s+Theorem \(CLT\)/,
+  /\s+for large sample sizes\b/,
+  /\s+the distribution of a sample mean\b/,
   /\s+Formal use\b/,
   /\s+Implicit differentiation\b/,
   /\s+By factorising\b/,
@@ -58,7 +77,12 @@ const noteColumnInlineMarkers = [
   /\s+The term\b/,
   /\s+Calculus required\b/,
   /\s+Proofs are\b/,
+  /\s+Proofs of formulae\b/,
+  /\s+For motion in one dimension only\b/,
+  /\s+n sufficiently large\b/,
+  /\s+nq >\b/,
   /\s+For calculations\b/,
+  /\s+full details\b/,
   /\s+Full details\b/,
   /\s+Outcomes of\b/,
   /\s+The condition\b/,
@@ -76,9 +100,10 @@ const noteColumnInlineMarkers = [
   /\s+functions f are not included\b/,
   /\s+considered \(e\.g\./,
   /\s+this will be indicated\b/,
+  /\s+equation, using\b/,
   /\s+in the question\./,
   /\s+equivalent methods\b/,
-  /\s+Theorem\b/,
+  /\s+Theorem, where\b/,
   /\s+these other methods\b/,
   /\s+and will not be referred\b/,
   /\s+mean \u2018in limiting\b/,
@@ -94,10 +119,12 @@ const noteColumnInlineMarkers = [
   /\s+string passing over\b/,
   /\s+a trailer by means\b/,
   /\s+rigid tow-bar\b/,
+  /\s+bodies coalesce\b/,
   /\s+given y =/,
   /\s+chord joining\b/,
   /\s+from first principles\b/,
   /\s+of values of x\b/,
+  /\s+the content for Paper 1\b/,
   /\s+details of the working\b/,
   /\s+will vary the process\b/,
   /\s+be interpreted\b/,
@@ -105,11 +132,16 @@ const noteColumnInlineMarkers = [
   /\s+as specified\b/,
   /\s+or probabilities may\b/,
   /\s+3sin2\b/,
+  /\s+h\s*:\s*x\b/,
+  /\s+m 2\b/,
   /\s+forms of solution are not included\b/,
   /\s+W =/,
 ];
 
-const noteColumnOnlyLine = /^(?:e\.g\.|Including\b|Knowledge\b|No\b|Only\b|Formal\b|Implicit\b|By factorising\b|Graphs\b|Sketches\b|Calculations\b|Solutions\b|Terminology\b|Restricted\b|The term\b|Calculus required\b|Proofs\b|For calculations\b|Full details\b|Outcomes\b|The condition\b|The conditions\b|Explicit\b|Finding\b|Adapting\b|Use of\b|A volume\b|If any other\b|Questions\b|For density\b|The general\b|functions f\b|considered\b|this will be indicated\b|in the question\b|equivalent methods\b|Theorem\b|these other methods\b|and will not be referred\b|mean \u2018in limiting\b|is equal and opposite\b|be known\b|using the density function\b|function is not included\b|forms of solution are not included\b|numerical, and use\b|value 10\b|moving down the plane\b|a trailer by means\b|rigid tow-bar\b|average[\u2019']?\.?$|\^ h(?:\s+\^ h)*$|P A \+ B$|diagram\. The use\b|may be\b|P B$|required in simple cases\.?$)/;
+const noteColumnOnlyLine = /^(?:e\.g\.|Including\b|Knowledge\b|No\b|Only\b|Formal\b|Implicit\b|By factorising\b|Graphs\b|Sketches\b|Calculations\b|Solutions\b|Terminology\b|Restricted\b|The term\b|Calculus required\b|Proofs\b|For calculations\b|Full details\b|Outcomes\b|The condition\b|The conditions\b|Explicit\b|Finding\b|Adapting\b|Use of\b|A volume\b|If any other\b|Questions\b|For density\b|The general\b|functions f\b|considered\b|this will be indicated\b|in the question\b|equivalent methods\b|Theorem\b|these other methods\b|and will not be referred\b|mean \u2018in limiting\b|is equal and opposite\b|be known\b|using the density function\b|function is not included\b|forms of solution are not included\b|numerical, and use\b|value 10\b|moving down the plane\b|a trailer by means\b|rigid tow-bar\b|the distribution of a sample mean\b|the coefficients are not required\.?$|frp$|different particles\.?$|restitution is not required\.?$|ground on the particle\.?$|normal\.?$|15$|[0-9]+(?:\s+[0-9]+)*$|average[\u2019']?\.?$|\^ h(?:\s+\^ h)*$|P A \+ B$|diagram\. The use\b|may be\b|P B$|required in simple cases\.?$)/;
+
+const hardOcrReviewPattern =
+  /d p i o v l i a s r io|recognise an integrand of the form\s*,|tan2 iand|continuity 15 correction|Central Limit appropriate|\bc m\b/i;
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -405,6 +437,10 @@ function isSplitCandidate(locator) {
   return locator.length > 220 || (locator.length > 150 && hasListMarker && hasCompoundPunctuation);
 }
 
+function needsExtractionReview(title) {
+  return hardOcrReviewPattern.test(title);
+}
+
 function buildDraft() {
   const rawSections = readJson(rawSectionsPath);
   const sourceInventory = readJson(sourceInventoryPath);
@@ -549,10 +585,13 @@ function buildDraft() {
     bullets.forEach((bullet, index) => {
       const bulletNumber = String(index + 1).padStart(2, '0');
       const slug = `lo${bulletNumber}_${compactSlug(bullet.objective, 'objective')}`;
-      const status = isSplitCandidate(bullet.objective) ? 'needs_human_review' : 'draft';
+      const status =
+        isSplitCandidate(bullet.objective) || needsExtractionReview(bullet.objective)
+          ? 'needs_human_review'
+          : 'draft';
       const reviewNotes =
         status === 'needs_human_review'
-          ? ['Official bullet contains multiple concepts or long notation-heavy wording; retained as one node pending human split review.']
+          ? ['Official bullet contains multiple concepts, long notation-heavy wording, or OCR-damaged extraction; retained as one node pending human review.']
           : [];
       const nodeType = topicParsed ? 'learning_objective' : 'note';
       const stem = topicParsed ? topicParsed.sectionIdStem : 'prior_knowledge';
@@ -565,7 +604,7 @@ function buildDraft() {
         splitCandidates.push({
           node_id: nodeId,
           raw_section_id: section.section_id,
-          reason: 'Compound or notation-heavy official bullet kept unsplit for draft v1.',
+          reason: 'Compound, notation-heavy, or OCR-damaged official bullet kept unsplit for draft v1.',
         });
       }
 

@@ -238,6 +238,67 @@ describe('9709 canonical topic tree draft v1', () => {
     }
   });
 
+  test('keeps broader notes-column fragments out of draft objective titles', () => {
+    const draft = readJson(draftPath);
+    const byId = new Map(draft.nodes.map((node) => [node.node_id, node]));
+    const expectedTitles = new Map([
+      [
+        '9709:2026-2027_v4:learning_objective:p1.functions.lo03_determine_whether_or_not_a_given_function_is',
+        'determine whether or not a given function is one-one, and find the inverse of a one-one function in simple cases',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p1.functions.lo04_illustrate_in_graphical_terms_the_relation_between_a',
+        'illustrate in graphical terms the relation between a one-one function and its inverse',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p4.momentum.lo01_use_the_definition_of_linear_momentum_and_show',
+        'use the definition of linear momentum and show understanding of its vector nature',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p5.discrete_random_variables.lo03_use_formulae_for_the_expectation_and_variance_of',
+        'use formulae for the expectation and variance of the binomial distribution and for the expectation of the geometric distribution.',
+      ],
+      [
+        '9709:2026-2027_v4:learning_objective:p6.sampling_and_estimation.lo05_use_the_central_limit_theorem_where_appropriate',
+        'use the Central Limit Theorem where appropriate',
+      ],
+    ]);
+
+    for (const [nodeId, expectedTitle] of expectedTitles) {
+      const objective = byId.get(nodeId);
+      expect(objective).toBeDefined();
+      expect(objective.status).toBe('draft');
+      expect(objective.canonical_title).toBe(expectedTitle);
+      expect(objective.display_title).toBe(expectedTitle);
+    }
+
+    const forbiddenDraftTitlePattern =
+      /Sketches should|For motion in one dimension only|Proofs of formulae|Excluding cases|In 2 or 3 dimensions|The introduction and evaluation|Where a differential equation|Notations Re|Full details of the working|ground on the particle|Central Limit appropriate/i;
+
+    for (const node of draft.nodes.filter(
+      (entry) => entry.node_type === 'learning_objective' && entry.status === 'draft',
+    )) {
+      expect(node.canonical_title).not.toMatch(forbiddenDraftTitlePattern);
+      expect(node.display_title).not.toMatch(forbiddenDraftTitlePattern);
+    }
+  });
+
+  test('keeps OCR-damaged objective titles in the human review queue', () => {
+    const draft = readJson(draftPath);
+    const reviewRequiredPattern =
+      /d p i o v l i a s r io|recognise an integrand of the form ,|continuity 15 correction|tan2 iand/i;
+
+    const damagedNodes = draft.nodes.filter((node) =>
+      reviewRequiredPattern.test(`${node.canonical_title} ${node.display_title}`),
+    );
+
+    expect(damagedNodes.length).toBeGreaterThan(0);
+    for (const node of damagedNodes) {
+      expect(node.status).toBe('needs_human_review');
+      expect(node.review_state.state).toBe('pending_human_review');
+    }
+  });
+
   test('uses raw section headings as section source-ref locators', () => {
     const draft = readJson(draftPath);
     const rawSections = readJson(rawSectionsPath);

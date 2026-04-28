@@ -191,6 +191,42 @@ describe('9709 syllabus gate', () => {
     );
   });
 
+  test('fails approved learning objectives whose title is unsupported by its locator', async () => {
+    const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
+    const fixture = buildFixture();
+    const node = fixture.canonicalTopicTree.nodes.find(
+      (entry) => entry.node_type === 'learning_objective' && entry.source_refs[0]?.locator,
+    );
+    expect(node).toBeDefined();
+    node.status = 'approved';
+    node.review_state = {
+      state: 'accepted',
+      reviewed_by: 'human_review_authority:test',
+      reviewed_at: '2026-04-28T00:00:00.000Z',
+      notes: [
+        'Synthetic approved node for source support gate coverage; decision artifact: data/syllabus/9709/human_review_decisions_v1.json.',
+      ],
+    };
+    node.canonical_title = 'fabricated objective unrelated to the cited official locator';
+    node.display_title = node.canonical_title;
+
+    const report = build9709SyllabusGateReport({
+      artifacts: fixture,
+      approvedBaselineAttempted: true,
+    });
+
+    expectBlocked(report, 'unsupported_title_source_ref');
+    expect(gateByName(report, 'source_refs').errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: 'unsupported_title_source_ref',
+          owner_type: 'topic_node',
+          owner_id: node.node_id,
+        }),
+      ]),
+    );
+  });
+
   test('fails approved baseline attempts when approved titles contain Notes or OCR contamination', async () => {
     const { build9709SyllabusGateReport } = await import('../lib/9709-syllabus-gate.js');
     const fixture = buildFixture();

@@ -106,7 +106,6 @@ describe('/api/rag/search telemetry', () => {
         syllabus_node_id: '9702-5-1',
         subject_code: '9702',
         language: 'en',
-        internal_debug: true,
       },
       { req },
     );
@@ -121,7 +120,6 @@ describe('/api/rag/search telemetry', () => {
         syllabus_node_id: '9702-5-1',
         subject_code: '9702',
         language: 'en',
-        internal_debug: true,
       },
       response: askResponse,
     });
@@ -198,7 +196,6 @@ describe('/api/rag/search telemetry', () => {
         syllabus_node_id: '9231-2-1',
         subject_code: '9231',
         language: 'en',
-        internal_debug: false,
       },
       ragError,
       partialResponse: null,

@@ -9,4 +9,8 @@ describe('vite dev server config', () => {
       changeOrigin: true,
     });
   });
+
+  test('does not publish browser source maps by default', () => {
+    expect(config.build.sourcemap).not.toBe(true);
+  });
 });

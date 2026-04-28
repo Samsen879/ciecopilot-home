@@ -88,6 +88,14 @@ describe('/api/rag/ask telemetry', () => {
 
     await handler(req, res);
 
+    const expectedInput = {
+      query: 'Explain this node',
+      subject_code: '9702',
+      syllabus_node_id: '9702-5-1',
+      language: 'en',
+    };
+
+    expect(mockExecuteAskAI).toHaveBeenCalledWith(expectedInput, { req });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(payload);
     expect(mockRecordRagTelemetrySuccess).toHaveBeenCalledTimes(1);
@@ -96,7 +104,7 @@ describe('/api/rag/ask telemetry', () => {
       req,
       endpoint: '/api/rag/ask',
       method: 'POST',
-      input: req.body,
+      input: expectedInput,
       response: payload,
     });
     expect(mockRecordRagTelemetrySuccess.mock.calls[0][0].response.request_id).toBe(
@@ -146,6 +154,14 @@ describe('/api/rag/ask telemetry', () => {
 
     await handler(req, res);
 
+    const expectedInput = {
+      query: 'Find support for this node',
+      subject_code: '9231',
+      syllabus_node_id: '9231-2-1',
+      language: 'en',
+    };
+
+    expect(mockExecuteAskAI).toHaveBeenCalledWith(expectedInput, { req });
     expect(mockToRagError).toHaveBeenCalledWith(thrown);
     expect(mockRecordRagTelemetrySuccess).not.toHaveBeenCalled();
     expect(mockRecordRagTelemetryFailure).toHaveBeenCalledTimes(1);
@@ -153,7 +169,7 @@ describe('/api/rag/ask telemetry', () => {
       req,
       endpoint: '/api/rag/ask',
       method: 'POST',
-      input: req.body,
+      input: expectedInput,
       ragError,
       partialResponse: null,
     });

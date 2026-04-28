@@ -479,6 +479,7 @@ describe('ask service', () => {
         fetchImpl: fetchStub,
         logger: () => {},
         config: createConfig(),
+        allowInternalDebugBoundary: true,
       },
     );
 
@@ -517,6 +518,7 @@ describe('ask service', () => {
         fetchImpl: fetchStub,
         logger: () => {},
         config: createConfig(),
+        allowInternalDebugBoundary: true,
       },
     );
 
@@ -796,6 +798,7 @@ describe('ask service', () => {
         fetchImpl: fetchStub,
         logger: () => {},
         config: createConfig(),
+        allowInternalDebugBoundary: true,
       },
     );
 
@@ -1309,6 +1312,7 @@ describe('ask service', () => {
         fetchImpl: fetchStub,
         logger: () => {},
         config: createConfig(),
+        allowInternalDebugBoundary: true,
       },
     );
 
@@ -1317,6 +1321,30 @@ describe('ask service', () => {
     expect(result.metrics.retrieval_audit.query_mode).toBe('hybrid_rpc');
     expect(result.metrics.route_audit.retrieval_route).toBe('s1_default');
     expect(supabase.__rpcCalls).toHaveLength(1);
+  });
+
+  it('does not trust client-supplied internal_debug boundary without an explicit internal allowance', async () => {
+    const fetchStub = createFetchStub();
+    const supabase = createSupabaseNoBoundaryLookupStub();
+
+    await expect(executeAskAI(
+      {
+        query: 'Explain this node using the available evidence.',
+        syllabus_node_id: 'node-integration',
+        subject_code: '9709',
+        current_topic_path: '9709.P2.Integration',
+        boundary_title: 'Integration',
+        boundary_description: '2.5 Integration',
+        internal_debug: true,
+      },
+      {
+        req: { request_id: 'req-6a-public-boundary-override', auth_user: null },
+        supabase,
+        fetchImpl: fetchStub,
+        logger: () => {},
+        config: createConfig(),
+      },
+    )).rejects.toThrow('boundary lookup should be skipped');
   });
 
   it('records rules-based s2 route eligibility audit when s2 is enabled', async () => {

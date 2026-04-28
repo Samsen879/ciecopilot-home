@@ -52,6 +52,30 @@ describe('security baseline', () => {
     expect(allowed.headers['access-control-allow-origin']).not.toBe('*');
   });
 
+  it('does not expose route inventory or process internals from production internal endpoints', async () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    try {
+      const info = await request(server).get('/api/info').set('Origin', 'http://localhost:3000');
+      expect(info.status).toBe(404);
+      expect(info.body.code).toBe('endpoint_not_found');
+
+      const routes = await request(server).get('/api/routes').set('Origin', 'http://localhost:3000');
+      expect(routes.status).toBe(404);
+      expect(routes.body.code).toBe('endpoint_not_found');
+
+      const health = await request(server).get('/api/health').set('Origin', 'http://localhost:3000');
+      expect(health.status).toBe(200);
+      expect(health.body).toMatchObject({ status: 'ok' });
+      expect(health.body).not.toHaveProperty('memory');
+      expect(health.body).not.toHaveProperty('uptime');
+      expect(health.body).not.toHaveProperty('routes');
+    } finally {
+      process.env.NODE_ENV = originalNodeEnv;
+    }
+  });
+
   it('applies sliding-window rate limit utility', async () => {
     const key = 'ip:127.0.0.1:rag';
     const profile = { limit: 5, windowMs: 60_000 };

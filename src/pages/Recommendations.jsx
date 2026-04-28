@@ -5,35 +5,33 @@ import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import PersonalizedRecommendations from '../components/Recommendations/PersonalizedRecommendations';
 
-const CommunityAndRecommendations = () => {
+const Recommendations = () => {
   const { subjectCode } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // 学科信息映射
   const subjectInfo = {
     '9709': {
       name: 'Mathematics',
       fullName: 'CIE A-Level Mathematics',
       icon: '📐',
-      color: 'blue'
+      badgeClass: 'bg-blue-100',
     },
     '9702': {
       name: 'Physics',
       fullName: 'CIE A-Level Physics',
       icon: '⚛️',
-      color: 'purple'
-    }
+      badgeClass: 'bg-purple-100',
+    },
   };
 
   const currentSubject = subjectInfo[subjectCode] || {
     name: 'All Subjects',
     fullName: 'CIE A-Level 全学科',
     icon: '📚',
-    color: 'gray'
+    badgeClass: 'bg-gray-100',
   };
 
-  // 处理推荐点击
   const handleRecommendationClick = (recommendation) => {
     console.log('推荐点击:', recommendation);
     if (recommendation.actionUrl) {
@@ -41,15 +39,12 @@ const CommunityAndRecommendations = () => {
     }
   };
 
-  // 处理偏好更新
   const handlePreferencesUpdate = (preferences) => {
     console.log('偏好更新:', preferences);
-    // 这里可以保存用户偏好到后端
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* 头部导航 */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -60,9 +55,9 @@ const CommunityAndRecommendations = () => {
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              
+
               <div className="flex items-center space-x-3">
-                <div className={`w-10 h-10 bg-${currentSubject.color}-100 rounded-lg flex items-center justify-center text-lg`}>
+                <div className={`w-10 h-10 ${currentSubject.badgeClass} rounded-lg flex items-center justify-center text-lg`}>
                   {currentSubject.icon}
                 </div>
                 <div>
@@ -73,7 +68,7 @@ const CommunityAndRecommendations = () => {
                 </div>
               </div>
             </div>
-            
+
             {user && (
               <div className="flex items-center space-x-3">
                 <div className="text-sm text-gray-600">
@@ -90,7 +85,6 @@ const CommunityAndRecommendations = () => {
         </div>
       </div>
 
-      {/* 主内容区域 - recommendations only */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -109,4 +103,4 @@ const CommunityAndRecommendations = () => {
   );
 };
 
-export default CommunityAndRecommendations;
+export default Recommendations;

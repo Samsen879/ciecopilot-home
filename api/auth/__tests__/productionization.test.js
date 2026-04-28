@@ -271,7 +271,7 @@ describe('auth backend productionization', () => {
           error: null,
         };
       }
-      if (query.table === 'user_community_profiles' || query.table === 'user_learning_profiles') {
+      if (query.table === 'user_learning_profiles') {
         return { data: null, error: null };
       }
       if (query.table === 'security_events') {

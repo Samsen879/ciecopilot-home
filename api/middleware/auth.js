@@ -64,30 +64,12 @@ const PERMISSIONS = {
   'recommendations.update': ['teacher', 'moderator', 'admin'],
   'recommendations.delete': ['moderator', 'admin'],
 
-  // Community
-  'community.questions.read': ['student', 'teacher', 'moderator', 'admin'],
-  'community.questions.create': ['student', 'teacher', 'moderator', 'admin'],
-  'community.questions.update': ['teacher', 'moderator', 'admin'],
-  'community.questions.delete': ['moderator', 'admin'],
-  'community.answers.read': ['student', 'teacher', 'moderator', 'admin'],
-  'community.answers.create': ['student', 'teacher', 'moderator', 'admin'],
-  'community.answers.update': ['teacher', 'moderator', 'admin'],
-  'community.answers.delete': ['moderator', 'admin'],
-  'community.interactions.read': ['student', 'teacher', 'moderator', 'admin'],
-  'community.interactions.create': ['student', 'teacher', 'moderator', 'admin'],
-  'community.interactions.delete': ['moderator', 'admin'],
-
   // Root middleware compatibility
   read_own_profile: ['student', 'teacher', 'moderator', 'admin'],
   update_own_profile: ['student', 'teacher', 'moderator', 'admin'],
-  create_question: ['student', 'teacher', 'moderator', 'admin'],
-  create_answer: ['student', 'teacher', 'moderator', 'admin'],
-  vote_content: ['student', 'teacher', 'moderator', 'admin'],
-  bookmark_content: ['student', 'teacher', 'moderator', 'admin'],
   moderate_own_content: ['teacher', 'moderator', 'admin'],
   create_exercise: ['teacher', 'moderator', 'admin'],
   grade_submissions: ['teacher', 'moderator', 'admin'],
-  moderate_community: ['moderator', 'admin'],
   delete_any_content: ['moderator', 'admin'],
   ban_users: ['moderator', 'admin'],
   manage_tags: ['moderator', 'admin'],
@@ -102,8 +84,6 @@ const PERMISSION_CONFIG = Object.fromEntries(
 );
 
 const OWNERSHIP_RESOURCES = {
-  question: { table: 'community_questions', ownerField: 'author_id' },
-  answer: { table: 'community_answers', ownerField: 'author_id' },
   recommendation: { table: 'recommendations', ownerField: 'user_id' },
   feedback: { table: 'recommendation_feedback', ownerField: 'user_id' }
 };

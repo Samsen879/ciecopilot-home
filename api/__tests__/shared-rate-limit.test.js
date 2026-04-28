@@ -103,7 +103,7 @@ describe('shared rate limit gate coverage', () => {
     }
   });
 
-  it('fails closed by default when the shared rate limit store is unavailable', async () => {
+  it('falls back by default when the shared rate limit store is unavailable', async () => {
     const original = SharedRateLimitStore.prototype.consume;
     const originalAllowDegrade = process.env.RATE_LIMIT_ALLOW_DEGRADE;
     SharedRateLimitStore.prototype.consume = jest.fn(async () => {
@@ -111,6 +111,36 @@ describe('shared rate limit gate coverage', () => {
     });
     _setRateLimitBackendForTest('shared');
     delete process.env.RATE_LIMIT_ALLOW_DEGRADE;
+
+    try {
+      const result = await consumeRateLimit('u:student-1:rag-search', {
+        limit: 3,
+        windowMs: 60_000,
+      });
+
+      expect(result.allowed).toBe(true);
+      expect(result.degraded).toBe(true);
+      expect(result.store).toBe('memory');
+      expect(result.degrade_reason).toContain('rpc unavailable');
+    } finally {
+      SharedRateLimitStore.prototype.consume = original;
+      if (typeof originalAllowDegrade === 'undefined') {
+        delete process.env.RATE_LIMIT_ALLOW_DEGRADE;
+      } else {
+        process.env.RATE_LIMIT_ALLOW_DEGRADE = originalAllowDegrade;
+      }
+      _clearRateLimitBackendOverrideForTest();
+    }
+  });
+
+  it('fails closed only when shared-store degradation is explicitly disabled', async () => {
+    const original = SharedRateLimitStore.prototype.consume;
+    const originalAllowDegrade = process.env.RATE_LIMIT_ALLOW_DEGRADE;
+    SharedRateLimitStore.prototype.consume = jest.fn(async () => {
+      throw new Error('rpc unavailable');
+    });
+    _setRateLimitBackendForTest('shared');
+    process.env.RATE_LIMIT_ALLOW_DEGRADE = 'false';
 
     try {
       await expect(consumeRateLimit('u:student-1:rag-search', {

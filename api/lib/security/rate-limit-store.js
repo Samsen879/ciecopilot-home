@@ -12,7 +12,7 @@ function getPreferredBackend() {
 }
 
 function allowDegrade() {
-  return process.env.RATE_LIMIT_ALLOW_DEGRADE === 'true';
+  return process.env.RATE_LIMIT_ALLOW_DEGRADE !== 'false';
 }
 
 function getSharedStore() {

@@ -38,11 +38,13 @@ const OFFICIAL_SOURCE_TYPES = new Set(['official_syllabus', 'official_syllabus_u
 const TITLE_CONTAMINATION_PATTERNS = [
   {
     code: 'notes_column_fragment',
-    pattern: /using either is required|alternative questions are set|average[\u2019']\s*\.?/i,
+    pattern:
+      /using either is required|alternative questions are set|average[\u2019']\s*\.?|Sketches should|For motion in one dimension only|Proofs of formulae|Excluding cases|In 2 or 3 dimensions|The introduction and evaluation|Where a differential equation|Notations Re|Full details of the working|ground on the particle|Central Limit appropriate/i,
   },
   {
     code: 'ocr_math_fragment',
-    pattern: /\^ h\b|sin sin 90c/i,
+    pattern:
+      /\^ h\b|sin sin 90c|d p i o v l i a s r io|recognise an integrand of the form\s*,|tan2 iand|continuity 15 correction/i,
   },
 ];
 const REVIEW_REQUIRED_NOTE_PATTERNS = [
@@ -99,6 +101,47 @@ function sortByStableJson(values) {
 
 function compactText(value) {
   return String(value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeSupportText(value) {
+  return compactText(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function significantTokens(value) {
+  const stopWords = new Set([
+    'and',
+    'are',
+    'for',
+    'from',
+    'into',
+    'that',
+    'the',
+    'then',
+    'this',
+    'use',
+    'when',
+    'where',
+    'with',
+  ]);
+
+  return normalizeSupportText(value)
+    .split(' ')
+    .filter((token) => token.length > 2 && !stopWords.has(token));
+}
+
+function titleSupportedByLocator(owner = {}, sourceRef = {}) {
+  const locatorTokens = significantTokens(sourceRef.locator);
+  if (locatorTokens.length === 0) {
+    return true;
+  }
+
+  const titleTokens = new Set(significantTokens(owner.canonical_title));
+  const supportedTokens = locatorTokens.filter((token) => titleTokens.has(token)).length;
+  return supportedTokens / locatorTokens.length >= 0.6;
 }
 
 function buildGate(name, errors = [], warnings = []) {
@@ -183,6 +226,10 @@ function collectTopicSourceRefOwners(canonicalTopicTree = {}) {
     owners.push({
       owner_type: 'topic_node',
       owner_id: node.node_id ?? null,
+      node_type: node.node_type ?? null,
+      status: node.status ?? null,
+      canonical_title: node.canonical_title ?? null,
+      display_title: node.display_title ?? null,
       source_refs: node.source_refs,
     });
 
@@ -416,6 +463,7 @@ function validateSourceRefs({
   rawSections = {},
   canonicalTopicTree = {},
   boundaryAnnotations = {},
+  approvedBaselineAttempted = false,
 } = {}) {
   const rawIds = rawSectionIds(rawSections);
   const rawById = rawSectionsById(rawSections);
@@ -461,6 +509,20 @@ function validateSourceRefs({
           owner_id: owner.owner_id,
           raw_section_id: sourceRef.raw_section_id,
           locator: sourceRef.locator,
+        });
+      } else if (
+        owner.owner_type === 'topic_node'
+        && owner.node_type === 'learning_objective'
+        && (approvedBaselineAttempted || owner.status === 'approved')
+        && !titleSupportedByLocator(owner, sourceRef)
+      ) {
+        errors.push({
+          code: 'unsupported_title_source_ref',
+          owner_type: owner.owner_type,
+          owner_id: owner.owner_id,
+          raw_section_id: sourceRef.raw_section_id,
+          locator: sourceRef.locator ?? null,
+          canonical_title: owner.canonical_title ?? null,
         });
       }
     }
@@ -951,7 +1013,13 @@ export function build9709SyllabusGateReport({
     validateStatuses({ canonicalTopicTree, boundaryAnnotations }),
     validateIdentityUniqueness({ canonicalTopicTree }),
     validateGraphIntegrity({ canonicalTopicTree }),
-    validateSourceRefs({ sourceInventory, rawSections, canonicalTopicTree, boundaryAnnotations }),
+    validateSourceRefs({
+      sourceInventory,
+      rawSections,
+      canonicalTopicTree,
+      boundaryAnnotations,
+      approvedBaselineAttempted,
+    }),
     validateTitleCleanliness({ canonicalTopicTree, approvedBaselineAttempted }),
     validateLegacyFileLeakage({ sourceInventory, canonicalTopicTree, boundaryAnnotations, paths }),
     rawSectionMapping.gate,

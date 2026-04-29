@@ -89,7 +89,7 @@ def _rendered_page_paths(
 ) -> list[str]:
     stem = Path(pdf_path).stem
     return [
-        str(Path(render_root) / stem / f"{stem}_page_{page_index:03d}.png")
+        str(Path(render_root) / stem / f"{stem}_page_{page_index + 1:03d}.png")
         for page_index in page_indices
     ]
 

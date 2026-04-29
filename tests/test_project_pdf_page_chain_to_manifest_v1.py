@@ -96,8 +96,8 @@ def test_build_projection_joins_manifest_item_to_page_chain_question(tmp_path):
     assert item["subpart_labels"] == ["(i)"]
     assert item["extraction_model"] == "qwen3-vl-plus"
     assert item["source_rendered_page_paths"] == [
-        str(tmp_path / "renders/9709_m16_qp_12/9709_m16_qp_12_page_002.png"),
         str(tmp_path / "renders/9709_m16_qp_12/9709_m16_qp_12_page_003.png"),
+        str(tmp_path / "renders/9709_m16_qp_12/9709_m16_qp_12_page_004.png"),
     ]
     assert item["old"]["manifest_diagram_present"] is False
     assert item["old"]["overall_alignment_verdict"] == "ready"

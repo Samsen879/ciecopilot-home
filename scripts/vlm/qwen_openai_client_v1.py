@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import http.client
 import json
 import mimetypes
 import os
@@ -21,6 +22,7 @@ from scripts.common.env import load_project_env
 
 DEFAULT_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 DEFAULT_TRANSPORT = "windows-host"
+RETRYABLE_DIRECT_HTTP_STATUS_CODES = {308, 408, 429, 500, 502, 503, 504}
 
 
 class QwenOpenAIClientError(RuntimeError):
@@ -370,10 +372,20 @@ def call_qwen_openai_v1_direct(
             break
         except urllib.error.HTTPError as error:
             response_text = error.read().decode("utf-8", errors="replace")
+            if (
+                error.code in RETRYABLE_DIRECT_HTTP_STATUS_CODES
+                and attempt < max_retries
+            ):
+                sleeper(retry_base_delay * (2**attempt))
+                continue
             raise QwenOpenAIClientError(
                 f"DashScope request failed with HTTP {error.code}: {response_text}",
             ) from error
         except urllib.error.URLError as error:
+            if attempt >= max_retries:
+                raise QwenOpenAIClientError(f"DashScope request failed: {error}") from error
+            sleeper(retry_base_delay * (2**attempt))
+        except http.client.RemoteDisconnected as error:
             if attempt >= max_retries:
                 raise QwenOpenAIClientError(f"DashScope request failed: {error}") from error
             sleeper(retry_base_delay * (2**attempt))

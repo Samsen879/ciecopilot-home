@@ -120,6 +120,57 @@ describe('question evidence bundle v1', () => {
     ]);
   });
 
+  test('sanitizes OCR text before storing structured evidence', () => {
+    const manifest = buildManifest([
+      {
+        storage_key: '9709/s20_qp_31/questions/q10.png',
+        syllabus_code: '9709',
+        year: 2020,
+        session: 's',
+        paper: 3,
+        variant: 1,
+        q_number: 10,
+        primary_topic_path: '9709.p3.complex_numbers',
+        route_hint: 'ocr_lane',
+        diagram_present: false,
+        formula_dense: true,
+        table_heavy: false,
+        surface_evidence_status: 'verified_primary_asset',
+        gate_critical: false,
+        requires_review: false,
+      },
+    ]);
+
+    const bundles = buildQuestionEvidenceBundlesV1({
+      manifest,
+      laneOutputs: [
+        buildLaneOutput({
+          inputAssetId: '9709/s20_qp_31/questions/q10.png',
+          route: 'ocr_lane',
+          model: 'qwen3.6-plus',
+          evidence: {
+            ocr_text: [
+              '10 (a) The complex number u is defined by u = 3i / (a + 2i), where a is real.',
+              '(ii) Find the exact value of a for which arg u* = 1/3 pi. [3]',
+              '老师微信：liuxue119118（题目有修改过，请加微信确认是否完整，以免影响您的学习！',
+              '17',
+              '(b) (i) On a sketch of an Argand diagram, shade the region whose points represent complex numbers z satisfying |z - 2i| <= |z - 1 - i|. [4]',
+              '© UCLES 2020',
+              '9709/31/M/J/20',
+              '[Turn over',
+            ].join('\n'),
+          },
+        }),
+      ],
+    });
+
+    expect(bundles[0].evidence.ocr_text).toContain('10 (a) The complex number u is defined');
+    expect(bundles[0].evidence.ocr_text).toContain('(b) (i) On a sketch of an Argand diagram');
+    expect(bundles[0].evidence.ocr_text).not.toMatch(/老师微信|liuxue|题目有修改|加微信/);
+    expect(bundles[0].evidence.ocr_text).not.toMatch(/© UCLES|9709\/31\/M\/J\/20|Turn over/);
+    expect(bundles[0].evidence.ocr_text).not.toMatch(/^\s*17\s*$/m);
+  });
+
   test('blocks bundle construction when surface triage flags are missing', () => {
     expect(() => buildQuestionEvidenceBundlesV1({
       manifest: buildManifest([

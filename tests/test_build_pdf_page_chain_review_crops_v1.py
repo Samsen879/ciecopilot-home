@@ -84,6 +84,27 @@ def test_compute_question_page_bands_uses_pdf_question_starts_when_available():
     assert bands[1]["crop_box"] == [0, 580, 1000, 880]
 
 
+def test_compute_question_page_bands_keeps_next_pdf_question_out_of_crop():
+    page_result = {
+        "page_index": 0,
+        "fragments": [
+            {"q_number": 1, "bbox_norm": [80, 70, 915, 145]},
+            {"q_number": 2, "bbox_norm": [80, 125, 915, 190]},
+        ],
+    }
+
+    bands = compute_question_page_bands(
+        page_result,
+        page_width=1000,
+        page_height=2000,
+        padding_px=20,
+        question_start_y_by_number={1: 120, 2: 250},
+    )
+
+    assert bands[0]["q_number"] == 1
+    assert bands[0]["crop_box"] == [0, 100, 1000, 230]
+
+
 def test_compute_question_page_bands_expands_diagram_question_above_text_bbox():
     page_result = {
         "page_index": 0,

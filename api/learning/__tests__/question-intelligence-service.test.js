@@ -1,4 +1,6 @@
 import { analyzeQuestionEnvelope } from '../lib/question-analysis/question-intelligence-service.js';
+import fs from 'node:fs';
+import path from 'node:path';
 
 function buildEnvelope(promptValue) {
   return {
@@ -8,6 +10,13 @@ function buildEnvelope(promptValue) {
     paper_scope: null,
     provenance_summary: {},
   };
+}
+
+function analyze(promptValue, analysisHints = null) {
+  return analyzeQuestionEnvelope({
+    envelope: buildEnvelope(promptValue),
+    analysisHints,
+  });
 }
 
 describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
@@ -110,6 +119,19 @@ describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
     expect(result.analysis_audit_metadata.hint_matched).toBe(false);
   });
 
+  test('does not treat ordinary dy/dx curve differentiation as a differential equation', () => {
+    const result = analyze(
+      'A curve has equation y = x^3. Find dy/dx and the coordinates of the stationary point.',
+      {
+        topic_path_hint: '9709.p1.differentiation',
+      },
+    );
+
+    expect(result.primary_question_type_id).toBe('9709.differentiation.application');
+    expect(result.family_id).toBe('9709.differentiation');
+    expect(result.primary_question_type_id).not.toBe('9709.differential_equations.separable');
+  });
+
   // ─── fallback path ───
 
   test('unrecognized prompt with no hints gives null classification', () => {
@@ -136,6 +158,110 @@ describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
     expect(result.classification_confidence).toBe(0.76);
     expect(result.confidence_band).toBe('low');
     expect(result.analysis_audit_metadata.detector_signals).toContain('hint_only_low_confidence');
+  });
+
+  test.each([
+    [
+      'Functions',
+      'The function f is defined by f(x) = (x - 3)^2 for x < a. Find the greatest possible value of a.',
+      '9709.functions.core',
+    ],
+    [
+      'Circular measure',
+      'A sector of a circle has radius r and angle theta radians. Find the area of the segment.',
+      '9709.circular_measure.arc_sector',
+    ],
+    [
+      'Differentiation',
+      'Find the stationary point of the curve and determine whether it is a maximum or minimum.',
+      '9709.differentiation.application',
+    ],
+    [
+      'Series',
+      'The first three terms of an arithmetic progression are given. Find the sum of the first n terms.',
+      '9709.series.sequence_binomial',
+    ],
+    [
+      'Coordinate geometry',
+      'A line has equation y = 2x + 3 and is perpendicular to another line through A. Find the coordinates of P.',
+      '9709.coordinate_geometry.lines_curves',
+    ],
+    [
+      'Complex numbers',
+      'On an Argand diagram, shade the locus satisfying |z - 2i| <= |z - 1 - i|.',
+      '9709.complex_numbers.argand_mod_arg',
+    ],
+    [
+      'Vectors',
+      'The position vectors of A and B are given in terms of i, j and k. Find the scalar product.',
+      '9709.vectors.geometry',
+    ],
+    [
+      'Logarithmic and exponential functions',
+      'Solve the equation ln(x + 2) - ln(x + 1) = 3.',
+      '9709.log_exp.equations_models',
+    ],
+    [
+      'Numerical methods',
+      'Use the iterative formula x_{n+1} = sqrt(3x_n + 1) to find the root.',
+      '9709.numerical_methods.iteration',
+    ],
+    [
+      'Algebra',
+      'Find the quotient and remainder when p(x) is divided by x + 2.',
+      '9709.algebra.polynomial_rational',
+    ],
+  ])('detects %s production topic family', (_label, prompt, expectedQuestionTypeId) => {
+    const result = analyze(prompt);
+
+    expect(result.primary_question_type_id).toBe(expectedQuestionTypeId);
+    expect(result.classification_confidence).toBeGreaterThanOrEqual(0.84);
+    expect(result.confidence_band).toBe('high');
+  });
+
+  test('falls back from authoritative topic-path hint when prompt signals are weak', () => {
+    const result = analyze('A terse imported question with limited OCR context.', {
+      topic_path_hint: '9709.p3.complex_numbers',
+    });
+
+    expect(result.primary_question_type_id).toBe('9709.complex_numbers.argand_mod_arg');
+    expect(result.family_id).toBe('9709.complex_numbers');
+    expect(result.classification_confidence).toBe(0.84);
+    expect(result.confidence_band).toBe('medium');
+    expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
+  });
+
+  test('does not classify explicit out-of-scope 9709 topic hints', () => {
+    const result = analyze('A statistics question about representation of data.', {
+      topic_path_hint: '9709.p5.representation_of_data',
+    });
+
+    expect(result.primary_question_type_id).toBeNull();
+    expect(result.family_id).toBeNull();
+    expect(result.uncertainty_validated).toBe(false);
+  });
+
+  test('classifies the authority-ready 300 evidence set except explicit non-P1/P3 out-of-scope rows', () => {
+    const filePath = path.resolve(
+      'docs/reports/2026-04-23-9709-prompt-backfill-evidence-bundles.json',
+    );
+    const payload = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const failures = [];
+
+    for (const bundle of payload.bundles) {
+      const result = analyzeQuestionEnvelope({
+        envelope: buildEnvelope(bundle.evidence.ocr_text),
+        analysisHints: bundle.analysis_hints,
+      });
+      const topicPath = bundle.question_identity.primary_topic_path ?? '';
+      const expectedOutOfScope = /^9709\.p[456]\./.test(topicPath);
+
+      if (!expectedOutOfScope && !result.primary_question_type_id) {
+        failures.push(bundle.storage_key);
+      }
+    }
+
+    expect(failures).toEqual([]);
   });
 
   // ─── edge cases ───

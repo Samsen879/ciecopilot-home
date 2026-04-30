@@ -200,6 +200,52 @@ function pickFirstString(...values) {
   return '';
 }
 
+function isOcrNoiseLine(line, expectedQuestionNumber = null) {
+  const stripped = normalizeString(line);
+  if (!stripped) {
+    return false;
+  }
+
+  if (/(?:老师微信|liuxue\d*|题目有修改|加微信确认|影响您的学习)/i.test(stripped)) {
+    return true;
+  }
+
+  if (/^(?:©\s*)?UCLES\b/i.test(stripped)) {
+    return true;
+  }
+
+  if (/^9709\/\d{2}\/[A-Z]\/[A-Z]\/\d{2}$/i.test(stripped)) {
+    return true;
+  }
+
+  if (/^\[?\s*Turn over\s*\]?$/i.test(stripped)) {
+    return true;
+  }
+
+  if (/^\d{1,3}$/.test(stripped)) {
+    const numericValue = Number(stripped);
+    return numericValue !== expectedQuestionNumber;
+  }
+
+  return false;
+}
+
+function sanitizeOcrText(value, { expectedQuestionNumber = null } = {}) {
+  const text = normalizeString(value);
+  if (!text) {
+    return '';
+  }
+
+  const lines = text
+    .split(/\r?\n/)
+    .filter((line) => !isOcrNoiseLine(line, expectedQuestionNumber));
+
+  return lines
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 function pickArray(...values) {
   for (const value of values) {
     if (Array.isArray(value) && value.length > 0) {
@@ -230,7 +276,10 @@ function buildStructuredEvidence(manifestItem, laneOutputs) {
   const reviewEvidence = laneEvidenceMap(reviewOutput);
 
   return {
-    ocr_text: pickFirstString(ocrEvidence.ocr_text, diagramEvidence.ocr_text, reviewEvidence.ocr_text),
+    ocr_text: sanitizeOcrText(
+      pickFirstString(ocrEvidence.ocr_text, diagramEvidence.ocr_text, reviewEvidence.ocr_text),
+      { expectedQuestionNumber: manifestItem.q_number ?? null },
+    ),
     formula_latex_list: pickArray(
       ocrEvidence.formula_latex_list,
       diagramEvidence.formula_latex_list,

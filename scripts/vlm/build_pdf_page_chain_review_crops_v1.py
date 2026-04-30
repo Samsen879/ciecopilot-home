@@ -125,9 +125,11 @@ def compute_question_page_bands(
     bands: list[dict[str, Any]] = []
     for index, item in enumerate(starts):
         next_y = page_height
+        next_start: dict[str, Any] | None = None
         for later in starts[index + 1 :]:
             if later["y1"] > item["y1"] and later["q_number"] != item["q_number"]:
                 next_y = later["y1"]
+                next_start = later
                 break
         crop_top = item["y1"] - padding_px
         if item["has_diagram"] and not item["has_pdf_start"]:
@@ -141,6 +143,8 @@ def compute_question_page_bands(
                 next_y + padding_px,
                 max(crop_bottom, item["y2"] + (padding_px * 2)),
             )
+            if next_start and next_start["has_pdf_start"]:
+                crop_bottom = min(crop_bottom, next_y - padding_px)
         crop_box = _clamp_box(
             [
                 0,

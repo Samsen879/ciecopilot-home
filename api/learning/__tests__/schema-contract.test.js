@@ -3,6 +3,8 @@ import path from 'path';
 
 const LEARNING_QUESTION_SEARCH_MIGRATION =
   'supabase/migrations/20260415152950_create_learning_question_search_projection.sql';
+const DRAFT_9709_P1_CLASSIFIER_REGISTRY_MIGRATION =
+  'supabase/migrations/20260504160000_seed_9709_p1_classifier_registry_draft.sql';
 
 const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
@@ -293,6 +295,40 @@ describe('learning runtime schema contract', () => {
 
     expect(sql).toContain('on conflict (family_id) do nothing');
     expect(sql).toContain('on conflict (question_type_id) do nothing');
+  });
+
+  test('9709 p1 classifier registry draft seed covers non-released topic families', () => {
+    const migrationPath = path.join(process.cwd(), DRAFT_9709_P1_CLASSIFIER_REGISTRY_MIGRATION);
+    const migrationExists = fs.existsSync(migrationPath);
+
+    expect(migrationExists).toBe(true);
+    if (!migrationExists) {
+      return;
+    }
+
+    const sql = normalizeSql(readMigration(DRAFT_9709_P1_CLASSIFIER_REGISTRY_MIGRATION));
+
+    [
+      '9709.series',
+      '9709.functions',
+      '9709.coordinate_geometry',
+      '9709.circular_measure',
+      '9709.differentiation',
+      '9709.vectors',
+      '9709.quadratics',
+      '9709.trigonometry.general',
+      '9709.series.sequence_binomial',
+      '9709.functions.core',
+      '9709.coordinate_geometry.lines_curves',
+      '9709.circular_measure.arc_sector',
+      '9709.differentiation.application',
+      '9709.vectors.geometry',
+      '9709.quadratics.equations_inequalities'
+    ].forEach((token) => expect(sql).toContain(token));
+
+    expect(sql).toContain("'draft'");
+    expect(sql).toContain('on conflict (family_id) do update');
+    expect(sql).toContain('on conflict (question_type_id) do update');
   });
 
   test('question_bank keeps a compatibility arbiter for legacy storage key upserts', () => {

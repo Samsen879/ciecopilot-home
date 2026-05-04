@@ -18,6 +18,7 @@
 - `2026-04-20-issue-252-remediation-report.md` - bounded remediation report for the remaining Wave A `9709.p3.trigonometry` aggregate-probe misses and their host-backfill verification posture.
 - `2026-04-20-issue-253-wave-a-review-lane-remediation.md` - bounded fix report for the remaining Wave A shard-3 over-conservative review-lane case on `9709/s22_qp_13/questions/q02.png`.
 - `2026-04-22-9709-syllabus-authority-vlm-dual-track-decision.md` - decision baseline for splitting `9709` topic alignment into an authoritative syllabus/paper line and a separate VLM visual-evidence line.
+- `2026-04-30-9709-wave1-screenshot-analysis-summary.md` - Wave 1 `9709_authority_ready_batch_300_v1` closeout summary covering PDF page-chain screenshot rebuild, 300-question analysis backfill, classifier/search/release gate evidence, and remaining scale-out boundaries.
 - `9709-syllabus-id-contract.md` - canonical `9709` syllabus topic-tree schema and durable node ID contract for issue `#288`, scoped to schema/ID rules only with no draft tree generation.
 - `9709-canonical-topic-tree-draft-v1.md` - issue `#289` first-draft canonical `9709` topic tree report, generated only from the locked official syllabus raw sections with bullet coverage and human-review merge/split candidates.
 - `9709-boundary-audit-v1.md` - issue `#290` draft boundary annotation audit, keeping assessment scope, route constraints, assumed knowledge, exclusions, and component-only coverage separate from the canonical topic tree.

@@ -1,0 +1,57 @@
+{
+  "schema_version": "9709_page_chain_warning_disposition_v1",
+  "generated_on": "2026-05-04",
+  "shard_id": "p1_m_standard_001",
+  "summary": {
+    "warning_items": 1,
+    "blockers": 0,
+    "accepted_with_normalized_structure": 1,
+    "write_back_allowed_without_normalization": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/m21_qp_12/questions/q09.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
+      "q_number": 9,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/renders/9709_m21_qp_12/9709_m21_qp_12_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/renders/9709_m21_qp_12/9709_m21_qp_12_page_015.png"
+      ],
+      "raw_subpart_labels": [
+        "(a)",
+        "(i)",
+        "(ii)",
+        "(b)"
+      ],
+      "raw_marks": [
+        3,
+        2,
+        3,
+        2,
+        4
+      ],
+      "normalized_subpart_labels": [
+        "(a)(i)",
+        "(a)(ii)",
+        "(b)"
+      ],
+      "normalized_marks": [
+        3,
+        2,
+        4
+      ],
+      "review_reasons": [
+        "nested subparts require normalized marks before write-back",
+        "OCR text dropped theta symbols in q09 statement"
+      ],
+      "ambiguity_flags": [
+        "ocr_symbol_omission"
+      ],
+      "review_summary": "q09 spans rendered pages 014-015; the page-chain boundary is accepted, but raw page-chain marks over-counted the nested (a)(i)/(a)(ii)/(b) structure."
+    }
+  ]
+}

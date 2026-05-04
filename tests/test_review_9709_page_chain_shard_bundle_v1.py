@@ -170,3 +170,97 @@ def test_post_extraction_review_carries_warning_disposition_review_flags(tmp_pat
     assert queue_item["storage_key"] == storage_key
     assert "warning_disposition" in queue_item["review_reasons"]
     assert "ocr_symbol_omission" in queue_item["review_reasons"]
+
+
+def test_post_extraction_review_accepts_complete_human_visual_disposition(tmp_path: Path):
+    crop_path = tmp_path / "crop.png"
+    render_path = tmp_path / "page.png"
+    crop_path.write_bytes(b"png")
+    render_path.write_bytes(b"png")
+    manifest_path = tmp_path / "manifest.json"
+    projection_path = tmp_path / "projection.json"
+    bundle_path = tmp_path / "bundles.json"
+    dispositions_path = tmp_path / "human-dispositions.json"
+    _write_json(manifest_path, {"items": [_manifest_item("q1", diagram_present=True, review_crop_path=str(crop_path))]})
+    _write_json(
+        projection_path,
+        {"items": [_projection_item("q1", diagram_present=True, page_indices=[0, 1], rendered_page_path=str(render_path))]},
+    )
+    _write_json(bundle_path, {"bundles": [_bundle("q1", diagram_present=True)]})
+    _write_json(
+        dispositions_path,
+        {
+            "items": [
+                {
+                    "storage_key": "q1",
+                    "disposition": "accepted",
+                    "accepted_review_reasons": ["diagram_lane", "multi_page_question"],
+                    "visual_checks": {
+                        "question_boundary_accepted": True,
+                        "diagram_presence_accepted": True,
+                        "cross_page_continuity_accepted": True,
+                    },
+                },
+            ],
+        },
+    )
+
+    review = build_post_extraction_review(
+        manifest_path=manifest_path,
+        projection_path=projection_path,
+        evidence_bundles_path=bundle_path,
+        expected_count=1,
+        human_dispositions_path=dispositions_path,
+    )
+
+    assert review["status"] == "pass"
+    assert review["summary"]["human_review_items"] == 0
+    assert review["summary"]["accepted_human_dispositions"] == 1
+    assert review["accepted_human_dispositions"][0]["storage_key"] == "q1"
+
+
+def test_post_extraction_review_keeps_incomplete_human_visual_disposition_in_queue(tmp_path: Path):
+    crop_path = tmp_path / "crop.png"
+    render_path = tmp_path / "page.png"
+    crop_path.write_bytes(b"png")
+    render_path.write_bytes(b"png")
+    manifest_path = tmp_path / "manifest.json"
+    projection_path = tmp_path / "projection.json"
+    bundle_path = tmp_path / "bundles.json"
+    dispositions_path = tmp_path / "human-dispositions.json"
+    _write_json(manifest_path, {"items": [_manifest_item("q1", diagram_present=True, review_crop_path=str(crop_path))]})
+    _write_json(
+        projection_path,
+        {"items": [_projection_item("q1", diagram_present=True, page_indices=[0, 1], rendered_page_path=str(render_path))]},
+    )
+    _write_json(bundle_path, {"bundles": [_bundle("q1", diagram_present=True)]})
+    _write_json(
+        dispositions_path,
+        {
+            "items": [
+                {
+                    "storage_key": "q1",
+                    "disposition": "accepted",
+                    "accepted_review_reasons": ["diagram_lane"],
+                    "visual_checks": {
+                        "question_boundary_accepted": True,
+                        "diagram_presence_accepted": True,
+                    },
+                },
+            ],
+        },
+    )
+
+    review = build_post_extraction_review(
+        manifest_path=manifest_path,
+        projection_path=projection_path,
+        evidence_bundles_path=bundle_path,
+        expected_count=1,
+        human_dispositions_path=dispositions_path,
+    )
+
+    assert review["status"] == "needs_human_review"
+    assert review["summary"]["human_review_items"] == 1
+    assert review["summary"]["accepted_human_dispositions"] == 0
+    assert review["human_review_queue"][0]["disposition_status"] == "incomplete"
+    assert review["human_review_queue"][0]["missing_accepted_review_reasons"] == ["multi_page_question"]

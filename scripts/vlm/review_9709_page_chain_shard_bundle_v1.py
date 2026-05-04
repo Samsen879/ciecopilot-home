@@ -112,26 +112,60 @@ def _review_reasons_for_item(
     return sorted(set(reasons))
 
 
+def _accepted_disposition_result(
+    *,
+    disposition: dict[str, Any] | None,
+    review_reasons: list[str],
+) -> tuple[bool, str, list[str], list[str]]:
+    if not disposition:
+        return False, "missing", review_reasons, []
+    if disposition.get("disposition") != "accepted":
+        return False, "not_accepted", review_reasons, []
+
+    accepted_reasons = {str(reason) for reason in _as_list(disposition.get("accepted_review_reasons"))}
+    missing_reasons = sorted(set(review_reasons) - accepted_reasons)
+    visual_checks = disposition.get("visual_checks") if isinstance(disposition.get("visual_checks"), dict) else {}
+    required_checks = ["question_boundary_accepted"]
+    if "diagram_lane" in review_reasons:
+        required_checks.append("diagram_presence_accepted")
+    if "multi_page_question" in review_reasons:
+        required_checks.append("cross_page_continuity_accepted")
+    if "warning_disposition" in review_reasons:
+        required_checks.append("warning_disposition_accepted")
+    if "ocr_symbol_omission" in review_reasons:
+        required_checks.append("ocr_symbol_omission_accepted")
+
+    missing_checks = sorted({check for check in required_checks if visual_checks.get(check) is not True})
+    if missing_reasons or missing_checks:
+        return False, "incomplete", missing_reasons, missing_checks
+    return True, "accepted", [], []
+
+
 def build_post_extraction_review(
     *,
     manifest_path: str | Path,
     projection_path: str | Path,
     evidence_bundles_path: str | Path,
+    human_dispositions_path: str | Path | None = None,
     expected_count: int | None = None,
     generated_on: str | None = None,
 ) -> dict[str, Any]:
     manifest = _load_json(manifest_path)
     projection = _load_json(projection_path)
     evidence_bundles = _load_json(evidence_bundles_path)
+    human_dispositions = _load_json(human_dispositions_path) if human_dispositions_path else {}
     manifest_items = _items(manifest, "items")
     projection_items = _items(projection, "items")
     bundle_items = _items(evidence_bundles, "bundles")
+    disposition_items = _items(human_dispositions, "items")
     manifest_by_key, manifest_duplicates = _index_by_storage_key(manifest_items)
     projection_by_key, projection_duplicates = _index_by_storage_key(projection_items)
     bundle_by_key, bundle_duplicates = _index_by_storage_key(bundle_items)
+    disposition_by_key, disposition_duplicates = _index_by_storage_key(disposition_items)
     blockers: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
     human_review_queue: list[dict[str, Any]] = []
+    accepted_human_dispositions: list[dict[str, Any]] = []
 
     if expected_count is not None:
         for label, items in (
@@ -153,6 +187,7 @@ def build_post_extraction_review(
         ("manifest", manifest_duplicates),
         ("projection", projection_duplicates),
         ("evidence_bundles", bundle_duplicates),
+        ("human_dispositions", disposition_duplicates),
     ):
         for storage_key in duplicates:
             _push_finding(
@@ -278,8 +313,23 @@ def build_post_extraction_review(
             bundle=bundle,
         )
         if review_reasons:
-            human_review_queue.append(
-                {
+            disposition = disposition_by_key.get(storage_key)
+            disposition_accepted, disposition_status, missing_reasons, missing_checks = _accepted_disposition_result(
+                disposition=disposition,
+                review_reasons=review_reasons,
+            )
+            if disposition_accepted:
+                accepted_human_dispositions.append(
+                    {
+                        "storage_key": storage_key,
+                        "accepted_review_reasons": review_reasons,
+                        "reviewed_by": disposition.get("reviewed_by"),
+                        "reviewed_on": disposition.get("reviewed_on"),
+                        "notes": disposition.get("notes"),
+                    },
+                )
+            else:
+                queue_item = {
                     "storage_key": storage_key,
                     "source_pdf_path": projection_item.get("source_pdf_path"),
                     "q_number": projection_item.get("q_number"),
@@ -287,8 +337,12 @@ def build_post_extraction_review(
                     "route": (bundle.get("route") or {}).get("route"),
                     "page_indices": projection_item.get("page_indices") or [],
                     "review_crop_paths": projection_item.get("review_crop_paths") or [],
-                },
-            )
+                }
+                if human_dispositions_path:
+                    queue_item["disposition_status"] = disposition_status
+                    queue_item["missing_accepted_review_reasons"] = missing_reasons
+                    queue_item["missing_visual_checks"] = missing_checks
+                human_review_queue.append(queue_item)
 
     reason_counts = Counter(
         reason
@@ -304,19 +358,23 @@ def build_post_extraction_review(
             "manifest": str(manifest_path),
             "projection": str(projection_path),
             "evidence_bundles": str(evidence_bundles_path),
+            "human_dispositions": str(human_dispositions_path) if human_dispositions_path else None,
         },
         "summary": {
             "manifest_items": len(manifest_items),
             "projection_items": len(projection_items),
             "evidence_bundle_items": len(bundle_items),
+            "human_disposition_items": len(disposition_items),
             "blockers": len(blockers),
             "warnings": len(warnings),
             "human_review_items": len(human_review_queue),
+            "accepted_human_dispositions": len(accepted_human_dispositions),
             "manual_review_reason_counts": dict(sorted(reason_counts.items())),
         },
         "blockers": blockers,
         "warnings": warnings,
         "human_review_queue": human_review_queue,
+        "accepted_human_dispositions": accepted_human_dispositions,
     }
 
 
@@ -333,9 +391,11 @@ def render_review_markdown(review: dict[str, Any]) -> str:
         f"- manifest items: `{summary.get('manifest_items')}`",
         f"- projection items: `{summary.get('projection_items')}`",
         f"- evidence bundle items: `{summary.get('evidence_bundle_items')}`",
+        f"- human disposition items: `{summary.get('human_disposition_items')}`",
         f"- blockers: `{summary.get('blockers')}`",
         f"- warnings: `{summary.get('warnings')}`",
         f"- human review items: `{summary.get('human_review_items')}`",
+        f"- accepted human dispositions: `{summary.get('accepted_human_dispositions')}`",
         "",
         "## Manual Review Reasons",
         "",
@@ -373,6 +433,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--projection", required=True, type=Path)
     parser.add_argument("--evidence-bundles", required=True, type=Path)
+    parser.add_argument("--human-dispositions", type=Path)
     parser.add_argument("--expected-count", type=int)
     parser.add_argument("--generated-on")
     parser.add_argument("--json-out", type=Path)
@@ -386,6 +447,7 @@ def main(argv: list[str] | None = None) -> int:
         manifest_path=args.manifest,
         projection_path=args.projection,
         evidence_bundles_path=args.evidence_bundles,
+        human_dispositions_path=args.human_dispositions,
         expected_count=args.expected_count,
         generated_on=args.generated_on,
     )

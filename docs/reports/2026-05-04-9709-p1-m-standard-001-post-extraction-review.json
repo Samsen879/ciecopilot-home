@@ -1,836 +1,471 @@
 {
   "schema_version": "9709_page_chain_shard_post_extraction_review_v1",
   "generated_on": "2026-05-04",
-  "status": "needs_human_review",
+  "status": "pass",
   "inputs": {
     "manifest": "data/manifests/9709_p1_m_standard_001_page_chain_surface_v1.json",
     "projection": "docs/reports/2026-05-04-9709-p1-m-standard-001-page-chain-projection.json",
-    "evidence_bundles": "docs/reports/2026-05-04-9709-p1-m-standard-001-evidence-bundles.json"
+    "evidence_bundles": "docs/reports/2026-05-04-9709-p1-m-standard-001-evidence-bundles.json",
+    "human_dispositions": "docs/reports/2026-05-04-9709-p1-m-standard-001-human-visual-dispositions.json"
   },
   "summary": {
     "manifest_items": 85,
     "projection_items": 85,
     "evidence_bundle_items": 85,
+    "human_disposition_items": 47,
     "blockers": 0,
     "warnings": 0,
-    "human_review_items": 47,
-    "manual_review_reason_counts": {
-      "diagram_lane": 26,
-      "multi_page_question": 40,
-      "ocr_symbol_omission": 1,
-      "warning_disposition": 1
-    }
+    "human_review_items": 0,
+    "accepted_human_dispositions": 47,
+    "manual_review_reason_counts": {}
   },
   "blockers": [],
   "warnings": [],
-  "human_review_queue": [
+  "human_review_queue": [],
+  "accepted_human_dispositions": [
     {
       "storage_key": "9709/m16_qp_12/questions/q07.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m16_qp_12.pdf",
-      "q_number": 7,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        2
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m16_qp_12/q07/q07_page_003.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m16_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m16_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        3
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m16_qp_12/q09/q09_page_004.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m16_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m16_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        4
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m16_qp_12/q10/q10_page_005.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m17_qp_12/questions/q03.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
-      "q_number": 3,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        3,
-        4
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q03/q03_page_004.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q03/q03_page_005.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m17_qp_12/questions/q04.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
-      "q_number": 4,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        5,
-        6
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q04/q04_page_006.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q04/q04_page_007.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m17_qp_12/questions/q05.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
-      "q_number": 5,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        7,
-        8
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q05/q05_page_008.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q05/q05_page_009.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m17_qp_12/questions/q06.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
-      "q_number": 6,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        9,
-        10
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q06/q06_page_010.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q06/q06_page_011.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m17_qp_12/questions/q08.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
-      "q_number": 8,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        13,
-        14
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q08/q08_page_014.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q08/q08_page_015.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m17_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        15,
-        16
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q09/q09_page_016.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q09/q09_page_017.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m17_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        17,
-        18,
-        19
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q10/q10_page_018.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q10/q10_page_019.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m17_qp_12/q10/q10_page_020.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m18_qp_12/questions/q05.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
-      "q_number": 5,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        5,
-        6
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q05/q05_page_006.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q05/q05_page_007.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m18_qp_12/questions/q06.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
-      "q_number": 6,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        7,
-        8
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q06/q06_page_008.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q06/q06_page_009.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m18_qp_12/questions/q07.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
-      "q_number": 7,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        9,
-        10
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q07/q07_page_010.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q07/q07_page_011.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m18_qp_12/questions/q08.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
-      "q_number": 8,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        11,
-        12
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q08/q08_page_012.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q08/q08_page_013.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m18_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        13,
-        14
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q09/q09_page_014.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q09/q09_page_015.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m18_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        15,
-        16
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q10/q10_page_016.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q10/q10_page_017.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m18_qp_12/questions/q11.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
-      "q_number": 11,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        17,
-        18
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q11/q11_page_018.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m18_qp_12/q11/q11_page_019.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q03.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 3,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        4
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q03/q03_page_005.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q04.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 4,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        5,
-        6
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q04/q04_page_006.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q04/q04_page_007.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q05.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 5,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        7,
-        8
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q05/q05_page_008.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q05/q05_page_009.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q06.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 6,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        9,
-        10
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q06/q06_page_010.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q06/q06_page_011.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q07.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 7,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        11,
-        12
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q07/q07_page_012.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q07/q07_page_013.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q08.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 8,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        13,
-        14
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q08/q08_page_014.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q08/q08_page_015.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        15,
-        16
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q09/q09_page_016.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q09/q09_page_017.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m19_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        17,
-        18
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q10/q10_page_018.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m19_qp_12/q10/q10_page_019.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m21_qp_12/questions/q05.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
-      "q_number": 5,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        6
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q05/q05_page_007.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m21_qp_12/questions/q06.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
-      "q_number": 6,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        7,
-        8
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q06/q06_page_008.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q06/q06_page_009.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m21_qp_12/questions/q07.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
-      "q_number": 7,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        9,
-        10
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q07/q07_page_010.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q07/q07_page_011.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m21_qp_12/questions/q08.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
-      "q_number": 8,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        11,
-        12
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q08/q08_page_012.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q08/q08_page_013.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m21_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question",
         "ocr_symbol_omission",
         "warning_disposition"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        13,
-        14
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q09/q09_page_014.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q09/q09_page_015.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted q09 page boundary and cross-page continuity. The OCR symbol omission is accepted as non-blocking because rendered pages show the intended theta symbols, including cos theta and theta bounds, and the complete q09 boundary."
     },
     {
       "storage_key": "9709/m21_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        15,
-        16
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q10/q10_page_016.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q10/q10_page_017.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m21_qp_12/questions/q11.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
-      "q_number": 11,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        17,
-        18
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q11/q11_page_018.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m21_qp_12/q11/q11_page_019.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m22_qp_12/questions/q06.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m22_qp_12.pdf",
-      "q_number": 6,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        7,
-        8
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q06/q06_page_008.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q06/q06_page_009.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m22_qp_12/questions/q07.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m22_qp_12.pdf",
-      "q_number": 7,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        9,
-        10
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q07/q07_page_010.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q07/q07_page_011.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m22_qp_12/questions/q08.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m22_qp_12.pdf",
-      "q_number": 8,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        11,
-        12
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q08/q08_page_012.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q08/q08_page_013.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m22_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m22_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        13,
-        14
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q09/q09_page_014.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q09/q09_page_015.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m22_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m22_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        15,
-        16
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q10/q10_page_016.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q10/q10_page_017.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m22_qp_12/questions/q11.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m22_qp_12.pdf",
-      "q_number": 11,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        17,
-        18
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q11/q11_page_018.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m22_qp_12/q11/q11_page_019.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m23_qp_12/questions/q07.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m23_qp_12.pdf",
-      "q_number": 7,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        7,
-        8
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q07/q07_page_008.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q07/q07_page_009.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m23_qp_12/questions/q08.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m23_qp_12.pdf",
-      "q_number": 8,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        9,
-        10
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q08/q08_page_010.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q08/q08_page_011.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m23_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m23_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        11,
-        12
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q09/q09_page_012.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q09/q09_page_013.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m23_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m23_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        13,
-        14
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q10/q10_page_014.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q10/q10_page_015.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m23_qp_12/questions/q11.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m23_qp_12.pdf",
-      "q_number": 11,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        15
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m23_qp_12/q11/q11_page_016.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m24_qp_12/questions/q02.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m24_qp_12.pdf",
-      "q_number": 2,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        2
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m24_qp_12/q02/q02_page_003.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m24_qp_12/questions/q09.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m24_qp_12.pdf",
-      "q_number": 9,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "multi_page_question"
       ],
-      "route": "ocr_lane",
-      "page_indices": [
-        9,
-        10
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m24_qp_12/q09/q09_page_010.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m24_qp_12/q09/q09_page_011.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m24_qp_12/questions/q10.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m24_qp_12.pdf",
-      "q_number": 10,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        11,
-        12
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m24_qp_12/q10/q10_page_012.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m24_qp_12/q10/q10_page_013.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     },
     {
       "storage_key": "9709/m24_qp_12/questions/q11.png",
-      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m24_qp_12.pdf",
-      "q_number": 11,
-      "review_reasons": [
+      "accepted_review_reasons": [
         "diagram_lane",
         "multi_page_question"
       ],
-      "route": "diagram_lane",
-      "page_indices": [
-        13,
-        14
-      ],
-      "review_crop_paths": [
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m24_qp_12/q11/q11_page_014.png",
-        "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/review-crops/9709_m24_qp_12/q11/q11_page_015.png"
-      ]
+      "reviewed_by": "codex_manual_visual_review",
+      "reviewed_on": "2026-05-04",
+      "notes": "Visual crop review accepted the queued review reasons for this item."
     }
   ]
 }

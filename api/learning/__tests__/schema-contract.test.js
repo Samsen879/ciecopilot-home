@@ -5,6 +5,8 @@ const LEARNING_QUESTION_SEARCH_MIGRATION =
   'supabase/migrations/20260415152950_create_learning_question_search_projection.sql';
 const DRAFT_9709_P1_CLASSIFIER_REGISTRY_MIGRATION =
   'supabase/migrations/20260504160000_seed_9709_p1_classifier_registry_draft.sql';
+const DRAFT_9709_P3_CLASSIFIER_REGISTRY_MIGRATION =
+  'supabase/migrations/20260505120000_seed_9709_p3_classifier_registry_draft.sql';
 
 const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
@@ -324,6 +326,35 @@ describe('learning runtime schema contract', () => {
       '9709.differentiation.application',
       '9709.vectors.geometry',
       '9709.quadratics.equations_inequalities'
+    ].forEach((token) => expect(sql).toContain(token));
+
+    expect(sql).toContain("'draft'");
+    expect(sql).toContain('on conflict (family_id) do update');
+    expect(sql).toContain('on conflict (question_type_id) do update');
+  });
+
+  test('9709 p3 classifier registry draft seed covers deterministic classifier outputs', () => {
+    const migrationPath = path.join(process.cwd(), DRAFT_9709_P3_CLASSIFIER_REGISTRY_MIGRATION);
+    const migrationExists = fs.existsSync(migrationPath);
+
+    expect(migrationExists).toBe(true);
+    if (!migrationExists) {
+      return;
+    }
+
+    const sql = normalizeSql(readMigration(DRAFT_9709_P3_CLASSIFIER_REGISTRY_MIGRATION));
+
+    [
+      '9709.algebra',
+      '9709.complex_numbers',
+      '9709.logarithmic_and_exponential_functions',
+      '9709.numerical_solution_of_equations',
+      '9709.algebra.polynomial_rational',
+      '9709.complex_numbers.argand_mod_arg',
+      '9709.log_exp.equations_models',
+      '9709.numerical_methods.iteration',
+      'paper:p3',
+      'source:deterministic_classifier'
     ].forEach((token) => expect(sql).toContain(token));
 
     expect(sql).toContain("'draft'");

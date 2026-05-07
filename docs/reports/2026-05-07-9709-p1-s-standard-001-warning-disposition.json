@@ -1,0 +1,57 @@
+{
+  "schema_version": "9709_page_chain_warning_disposition_v1",
+  "generated_on": "2026-05-07",
+  "shard_id": "p1_s_standard_001",
+  "summary": {
+    "warning_items": 1,
+    "blockers": 0,
+    "accepted_with_normalized_structure": 1,
+    "write_back_allowed_without_normalization": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/s18_qp_13/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_s18_qp_13.pdf",
+      "q_number": 7,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": true,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p1_s_standard_001/renders/9709_s18_qp_13/9709_s18_qp_13_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p1_s_standard_001/renders/9709_s18_qp_13/9709_s18_qp_13_page_011.png"
+      ],
+      "raw_subpart_labels": [
+        "(a)",
+        "(i)",
+        "(ii)"
+      ],
+      "raw_marks": [
+        3,
+        2,
+        2,
+        2
+      ],
+      "normalized_subpart_labels": [
+        "(a)(i)",
+        "(a)(ii)",
+        "(b)(i)",
+        "(b)(ii)"
+      ],
+      "normalized_marks": [
+        3,
+        2,
+        2,
+        2
+      ],
+      "review_reasons": [
+        "nested subparts require normalized marks before write-back",
+        "diagram-backed part (b) spans the second rendered page"
+      ],
+      "ambiguity_flags": [
+        "nested_subpart_normalization"
+      ],
+      "review_summary": "q07 spans rendered pages 010-011; the page-chain boundary is accepted. Page 010 contains 7(a)(i) [3] and 7(a)(ii) [2]. Page 011 contains 7(b)(i) [2] and 7(b)(ii) [2] with the graph diagram. The raw page-chain labels under-counted the nested part (b) structure, so write-back is allowed only with normalized labels and marks."
+    }
+  ]
+}

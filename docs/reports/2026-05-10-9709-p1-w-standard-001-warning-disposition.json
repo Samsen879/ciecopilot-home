@@ -1,0 +1,127 @@
+{
+  "schema_version": "9709_page_chain_warning_disposition_v1",
+  "generated_on": "2026-05-10",
+  "shard_id": "p1_w_standard_001",
+  "summary": {
+    "warning_items": 3,
+    "blockers": 0,
+    "accepted_with_normalized_structure": 3,
+    "write_back_allowed_without_normalization": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/w18_qp_11/questions/q11.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_w18_qp_11.pdf",
+      "q_number": 11,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p1_w_standard_001/renders/9709_w18_qp_11/9709_w18_qp_11_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p1_w_standard_001/renders/9709_w18_qp_11/9709_w18_qp_11_page_019.png"
+      ],
+      "raw_subpart_labels": [
+        "(a)",
+        "(i)",
+        "(ii)",
+        "(b)"
+      ],
+      "raw_marks": [
+        1,
+        3,
+        2,
+        4
+      ],
+      "normalized_subpart_labels": [
+        "(a)(i)",
+        "(a)(ii)",
+        "(b)(i)",
+        "(b)(ii)"
+      ],
+      "normalized_marks": [
+        1,
+        3,
+        2,
+        4
+      ],
+      "review_reasons": [
+        "nested subparts require normalized marks before write-back"
+      ],
+      "ambiguity_flags": [
+        "nested_subpart_normalization"
+      ],
+      "review_summary": "q11 spans rendered pages 018-019; the page-chain boundary is accepted. Page 018 contains 11(a)(i) [1] and 11(a)(ii) [3]. Page 019 contains 11(b)(i) [2] and 11(b)(ii) [4]. Write-back is allowed only with normalized nested labels and marks."
+    },
+    {
+      "storage_key": "9709/w21_qp_11/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_w21_qp_11.pdf",
+      "q_number": 5,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": true,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p1_w_standard_001/renders/9709_w21_qp_11/9709_w21_qp_11_page_007.png"
+      ],
+      "raw_subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "raw_marks": [
+        3,
+        1,
+        1
+      ],
+      "normalized_subpart_labels": [
+        "(a)",
+        "(b)(i)",
+        "(b)(ii)"
+      ],
+      "normalized_marks": [
+        3,
+        1,
+        1
+      ],
+      "review_reasons": [
+        "nested subparts require normalized marks before write-back",
+        "diagram-backed trigonometric graph question"
+      ],
+      "ambiguity_flags": [
+        "nested_subpart_normalization"
+      ],
+      "review_summary": "q05 is wholly present on rendered page 007; the page-chain boundary is accepted. The rendered page shows 5(a) [3], then 5(b)(i) [1] and 5(b)(ii) [1]. Write-back is allowed only with normalized labels and marks."
+    },
+    {
+      "storage_key": "9709/w23_qp_11/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/9709_w23_qp_11.pdf",
+      "q_number": 2,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p1_w_standard_001/renders/9709_w23_qp_11/9709_w23_qp_11_page_004.png"
+      ],
+      "raw_subpart_labels": [
+        "A",
+        "B",
+        "C"
+      ],
+      "raw_marks": [
+        4
+      ],
+      "normalized_subpart_labels": [],
+      "normalized_marks": [
+        4
+      ],
+      "review_reasons": [
+        "multiple-choice answer statements are not mark-bearing subparts"
+      ],
+      "ambiguity_flags": [
+        "choice_labels_not_subparts"
+      ],
+      "review_summary": "q02 is wholly present on rendered page 004; the page-chain boundary is accepted. Labels A, B, and C are answer choices in one four-mark question, not subparts. Write-back should preserve one mark-bearing question block with marks [4]."
+    }
+  ]
+}

@@ -463,7 +463,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.markdown_out:
         _write_text(args.markdown_out, render_review_markdown(review))
     print(json.dumps({"status": review["status"], **review["summary"]}, ensure_ascii=False, indent=2))
-    return 1 if review["status"] == "blocked" else 0
+    return 0 if review["status"] == "pass" else 1
 
 
 if __name__ == "__main__":

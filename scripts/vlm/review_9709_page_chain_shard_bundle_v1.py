@@ -350,9 +350,15 @@ def build_post_extraction_review(
         for reason in item.get("review_reasons", [])
     )
     status = "blocked" if blockers else ("needs_human_review" if human_review_queue else "pass")
+    shard_id = (
+        manifest.get("scope", {}).get("shard_id")
+        if isinstance(manifest.get("scope"), dict)
+        else None
+    ) or projection.get("shard_id")
     return {
         "schema_version": SCHEMA_VERSION,
         "generated_on": generated_on or date.today().isoformat(),
+        "shard_id": shard_id,
         "status": status,
         "inputs": {
             "manifest": str(manifest_path),
@@ -381,8 +387,9 @@ def build_post_extraction_review(
 def render_review_markdown(review: dict[str, Any]) -> str:
     summary = review.get("summary") or {}
     reason_counts = summary.get("manual_review_reason_counts") or {}
+    shard_id = str(review.get("shard_id") or "unknown")
     lines = [
-        "# 9709 p1_m_standard_001 post-extraction review",
+        f"# 9709 {shard_id} post-extraction review",
         "",
         f"status: `{review.get('status')}`",
         "",

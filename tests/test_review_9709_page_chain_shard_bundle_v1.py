@@ -5,6 +5,7 @@ from pathlib import Path
 
 from scripts.vlm.review_9709_page_chain_shard_bundle_v1 import (  # noqa: E402
     build_post_extraction_review,
+    render_review_markdown,
 )
 
 
@@ -97,6 +98,29 @@ def test_post_extraction_review_flags_manual_queue_without_blockers(tmp_path: Pa
     assert review["summary"]["manual_review_reason_counts"]["diagram_lane"] == 1
     assert review["summary"]["manual_review_reason_counts"]["multi_page_question"] == 1
     assert review["human_review_queue"][0]["storage_key"] == "q1"
+
+
+def test_review_markdown_uses_review_shard_id_in_title() -> None:
+    markdown = render_review_markdown(
+        {
+            "status": "needs_human_review",
+            "shard_id": "p1_m_watermarked_001",
+            "summary": {
+                "manifest_items": 12,
+                "projection_items": 12,
+                "evidence_bundle_items": 12,
+                "human_disposition_items": 0,
+                "blockers": 0,
+                "warnings": 0,
+                "human_review_items": 12,
+                "accepted_human_dispositions": 0,
+                "manual_review_reason_counts": {"watermarked_source_pdf": 12},
+            },
+            "blockers": [],
+        },
+    )
+
+    assert markdown.startswith("# 9709 p1_m_watermarked_001 post-extraction review")
 
 
 def test_post_extraction_review_blocks_diagram_mismatch(tmp_path: Path):

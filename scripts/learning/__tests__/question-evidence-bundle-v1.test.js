@@ -389,6 +389,56 @@ describe('question evidence bundle v1', () => {
     });
   });
 
+  test('keeps review evidence from the selected OCR lane when a row stays OCR-routed', () => {
+    const bundles = buildQuestionEvidenceBundlesV1({
+      manifest: buildManifest([
+        {
+          storage_key: '9709/m21_qp_12/questions/q09.png',
+          syllabus_code: '9709',
+          year: 2021,
+          session: 'm',
+          paper: 1,
+          variant: 2,
+          q_number: 9,
+          primary_topic_path: null,
+          route_hint: 'ocr_lane',
+          diagram_present: false,
+          formula_dense: true,
+          table_heavy: false,
+          surface_evidence_status: 'page_chain_extracted_pending_review',
+          gate_critical: false,
+          requires_review: true,
+        },
+      ]),
+      laneOutputs: [
+        buildLaneOutput({
+          inputAssetId: '9709/m21_qp_12/questions/q09.png',
+          route: 'ocr_lane',
+          model: 'qwen3-vl-plus',
+          evidence: {
+            ocr_text: '9 The first term of a progression is cos theta.',
+            requires_review: true,
+            review_reasons: ['nested subparts require normalized marks before write-back'],
+            ambiguity_flags: ['subpart_mark_count_mismatch'],
+            review_summary: 'Raw page-chain marks over-counted nested structure.',
+          },
+        }),
+      ],
+    });
+
+    expect(bundles[0]).toMatchObject({
+      route: {
+        route: 'ocr_lane',
+      },
+      review_posture: {
+        requires_review: true,
+        review_reasons: ['nested subparts require normalized marks before write-back'],
+        ambiguity_flags: ['subpart_mark_count_mismatch'],
+        review_summary: 'Raw page-chain marks over-counted nested structure.',
+      },
+    });
+  });
+
   test('does not copy model or confidence from an unrelated fallback lane when the decided lane output is missing', () => {
     const manifest = buildManifest([
       {

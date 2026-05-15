@@ -312,7 +312,17 @@ function buildStructuredEvidence(manifestItem, laneOutputs) {
 }
 
 function buildReviewPosture(manifestItem, laneOutputs) {
-  const reviewOutput = laneOutputs.find((entry) => entry.route === 'review_lane');
+  const reviewOutput = laneOutputs.find((entry) => entry.route === 'review_lane')
+    ?? laneOutputs.find((entry) => {
+      const evidence = laneEvidenceMap(entry);
+      return Boolean(
+        evidence.requires_review
+        || evidence.review_reasons
+        || evidence.ambiguity_flags
+        || evidence.review_summary
+        || entry?.output?.warnings?.includes?.('requires_review'),
+      );
+    });
   const reviewEvidence = laneEvidenceMap(reviewOutput);
 
   return {

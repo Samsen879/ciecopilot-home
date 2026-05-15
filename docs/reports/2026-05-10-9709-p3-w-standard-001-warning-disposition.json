@@ -1,0 +1,54 @@
+{
+  "schema_version": "9709_page_chain_warning_disposition_v1",
+  "generated_on": "2026-05-10",
+  "shard_id": "p3_w_standard_001",
+  "summary": {
+    "warning_items": 1,
+    "blockers": 0,
+    "accepted_with_normalized_structure": 1,
+    "write_back_allowed_without_normalization": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/w16_qp_33/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/9709_w16_qp_33.pdf",
+      "q_number": 7,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_standard_001/renders/9709_w16_qp_33/9709_w16_qp_33_page_003.png"
+      ],
+      "raw_subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(a)",
+        "(b)",
+        "(iii)"
+      ],
+      "raw_marks": [
+        2,
+        4,
+        3
+      ],
+      "normalized_subpart_labels": [
+        "(i)",
+        "(ii)(a)/(ii)(b)",
+        "(iii)"
+      ],
+      "normalized_marks": [
+        2,
+        4,
+        3
+      ],
+      "review_reasons": [
+        "nested subparts require normalized marks before write-back"
+      ],
+      "ambiguity_flags": [
+        "nested_subpart_normalization"
+      ],
+      "review_summary": "q07 is wholly present on rendered page 003; the page-chain boundary is accepted. The raw extraction lists nested labels (ii), (a), and (b), but the paper assigns one [4] mark allocation to the combined q07(ii)(a)/(ii)(b) request. Write-back is allowed only with the normalized three mark-bearing blocks [(i), (ii)(a)/(ii)(b), (iii)] and marks [2, 4, 3]."
+    }
+  ]
+}

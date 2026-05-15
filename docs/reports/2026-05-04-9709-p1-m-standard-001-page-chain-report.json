@@ -1,0 +1,128 @@
+{
+  "schema_version": "9709_shard_page_chain_report_v1",
+  "generated_on": "2026-05-04",
+  "shard_id": "p1_m_standard_001",
+  "manifest_id": "9709_full_scaleout_manifest_v1_p1_m_standard_001",
+  "scope": {
+    "syllabus_code": "9709",
+    "paper": 1,
+    "session": "m",
+    "source_class": "standard",
+    "watermarked": false,
+    "manifest_rows": 85,
+    "pdfs": 8,
+    "risk_tier": "core",
+    "risk_tags": [
+      "paper_1_or_3_core_classifier_covered"
+    ]
+  },
+  "provider_call": {
+    "approved_by_operator": true,
+    "approved_scope": "p1_m_standard_001 only",
+    "provider": "DashScope/Qwen",
+    "model": "qwen3-vl-plus",
+    "transport": "direct",
+    "sent_material": "rendered PDF pages for the 8 p1_m_standard_001 PDFs"
+  },
+  "summary": {
+    "total_pdfs": 8,
+    "passed_pdfs": 8,
+    "blocked_pdfs": 0,
+    "warning_pdfs": 1,
+    "blocker_counts": {},
+    "warning_counts": {
+      "subpart_mark_count_mismatch": 1
+    }
+  },
+  "items": [
+    {
+      "pdf": "9709_m16_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m16_qp_12.pdf",
+      "processed_pages": 8,
+      "total_pages": 8,
+      "question_count": 10,
+      "status": "passed",
+      "warnings": []
+    },
+    {
+      "pdf": "9709_m17_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m17_qp_12.pdf",
+      "processed_pages": 20,
+      "total_pages": 20,
+      "question_count": 10,
+      "status": "passed",
+      "warnings": []
+    },
+    {
+      "pdf": "9709_m18_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m18_qp_12.pdf",
+      "processed_pages": 20,
+      "total_pages": 20,
+      "question_count": 11,
+      "status": "passed",
+      "warnings": []
+    },
+    {
+      "pdf": "9709_m19_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m19_qp_12.pdf",
+      "processed_pages": 20,
+      "total_pages": 20,
+      "question_count": 10,
+      "status": "passed",
+      "warnings": []
+    },
+    {
+      "pdf": "9709_m21_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m21_qp_12.pdf",
+      "processed_pages": 20,
+      "total_pages": 20,
+      "question_count": 11,
+      "status": "passed",
+      "warnings": [
+        "subpart_mark_count_mismatch"
+      ]
+    },
+    {
+      "pdf": "9709_m22_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m22_qp_12.pdf",
+      "processed_pages": 20,
+      "total_pages": 20,
+      "question_count": 11,
+      "status": "passed",
+      "warnings": []
+    },
+    {
+      "pdf": "9709_m23_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m23_qp_12.pdf",
+      "processed_pages": 20,
+      "total_pages": 20,
+      "question_count": 11,
+      "status": "passed",
+      "warnings": []
+    },
+    {
+      "pdf": "9709_m24_qp_12.pdf",
+      "pdf_path": "data/past-papers/9709Mathematics/paper1/9709_m24_qp_12.pdf",
+      "processed_pages": 16,
+      "total_pages": 16,
+      "question_count": 11,
+      "status": "passed",
+      "warnings": []
+    }
+  ],
+  "warning_review": {
+    "pdf": "9709_m21_qp_12.pdf",
+    "question": 9,
+    "warning": "subpart_mark_count_mismatch",
+    "local_spot_check": "warning is concentrated around nested subparts and cross-page continuation; page-chain preserved continuation evidence, but mark mapping needs human review or normalization before write-back",
+    "disposition": "passed_with_warning",
+    "write_back_allowed": false
+  },
+  "verification": {
+    "payload_rebuild_report": "tmp/pdf-page-chain/full-scaleout/p1_m_standard_001/report-rebuilt.json",
+    "summary_matches_original": true,
+    "normalized_items_match_original": true,
+    "no_new_external_model_calls_for_rebuild": true
+  },
+  "stop_point": "human warning review before screenshot/evidence bundle, registry/analysis backfill, search/classifier/release gate, and any production-ready claim"
+}

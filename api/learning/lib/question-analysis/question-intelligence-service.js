@@ -595,7 +595,7 @@ const QUESTION_TYPE_RULES = Object.freeze([
       }
 
       const applicationSignals = [];
-      if (/(find the value of|evaluate|hence|area|volume|curve)/u.test(prompt)) {
+      if (/(find the value of|find .*exact value|exact value|evaluate|hence|area|volume|curve)/u.test(prompt)) {
         applicationSignals.push('application_language');
       }
       if (/\(.*\)\^/u.test(prompt) || /\bsubstitut/u.test(prompt)) {
@@ -605,7 +605,7 @@ const QUESTION_TYPE_RULES = Object.freeze([
       return buildRuleMatch({
         questionTypeId: '9709.integration.application',
         familyId: '9709.integration_techniques',
-        baseConfidence: applicationSignals.length >= 2 ? 0.84 : 0.77,
+        baseConfidence: applicationSignals.length >= 2 ? 0.9 : 0.77,
         variantTags: ['paper:p3', 'answer_form:exact'],
         skeletonSteps: [
           'identify the integration structure',

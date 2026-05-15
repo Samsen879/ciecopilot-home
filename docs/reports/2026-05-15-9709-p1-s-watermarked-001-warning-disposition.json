@@ -1,0 +1,50 @@
+{
+  "schema_version": "9709_page_chain_warning_disposition_v1",
+  "generated_on": "2026-05-15",
+  "shard_id": "p1_s_watermarked_001",
+  "summary": {
+    "warning_items": 1,
+    "blockers": 0,
+    "accepted_with_normalized_structure": 1,
+    "write_back_allowed_without_normalization": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/s20_qp_11/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+      "q_number": 6,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p1_s_watermarked_001/renders/WM_9709_s20_qp_11/WM_9709_s20_qp_11_page_007.png"
+      ],
+      "raw_subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "raw_marks": [
+        4,
+        2,
+        2
+      ],
+      "normalized_subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "normalized_marks": [
+        4,
+        2
+      ],
+      "review_reasons": [
+        "raw page-chain marks contain one duplicate trailing mark",
+        "visible rendered page shows exactly two subparts with mark allocations [4] and [2]"
+      ],
+      "ambiguity_flags": [
+        "mark_count_normalization"
+      ],
+      "review_summary": "q06 is fully contained on rendered page 007. The boundary is accepted. The visible paper shows q06(a) [4] and q06(b) [2]; there is no third visible subpart or third independent mark allocation. Write-back is allowed only with normalized labels [\"(a)\", \"(b)\"] and marks [4, 2]."
+    }
+  ]
+}

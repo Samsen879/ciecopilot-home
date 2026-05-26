@@ -1,0 +1,1515 @@
+{
+  "schema_version": "9709_page_chain_shard_projection_v1",
+  "manifest_id": "9709_full_scaleout_manifest_v1_p3_w_watermarked_001",
+  "shard_id": "p3_w_watermarked_001",
+  "generated_on": "2026-05-26",
+  "manifest_path": "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/input-manifest.json",
+  "payload_dir": "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/outputs",
+  "render_root": "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders",
+  "review_crop_root": "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops",
+  "item_count": 30,
+  "items": [
+    {
+      "index": 1,
+      "storage_key": "9709/w19_qp_31/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 1,
+      "ocr_text": "1 Given that ln(1 + e^{2y}) = x, express y in terms of x.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q01/q01_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' clearly printed at left margin",
+          "Full question stem present",
+          "Mark allocation '[3]' visible at right"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 2,
+      "storage_key": "9709/w19_qp_31/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 2,
+      "ocr_text": "2 Solve the inequality |2x − 3| > 4|x + 1|.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        3
+      ],
+      "marks": [
+        4
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q02/q02_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '2' printed at left margin",
+          "Full inequality statement follows",
+          "Marks [4] in right margin"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 3,
+      "storage_key": "9709/w19_qp_31/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 3,
+      "ocr_text": "3 The parametric equations of a curve are\nx = 2t + sin 2t,   y = ln(1 − cos 2t).\nShow that dy/dx = cosec 2t.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        5
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q03/q03_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Printed question number '3' at top-left",
+          "Full statement and instruction 'Show that...' present",
+          "Marks [5] aligned to right"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 4,
+      "storage_key": "9709/w19_qp_31/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 4,
+      "ocr_text": "4 The number of insects in a population t weeks after the start of observations is denoted by N. The population is decreasing at a rate proportional to Ne^{-0.02t}. The variables N and t are treated as continuous, and it is given that when t = 0, N = 1000 and dN/dt = -10.\n(i) Show that N and t satisfy the differential equation\ndN/dt = -0.01e^{-0.02t}N.\n(ii) Solve the differential equation and find the value of t when N = 800.\n(iii) State what happens to the value of N as t becomes large.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        1,
+        6,
+        1
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q04/q04_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          1,
+          6,
+          1
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Printed question number '4' at top-left",
+          "Text introduces new context about insect population",
+          "Subparts (i) and (ii) follow directly",
+          "Label '(i)' indented under Q4",
+          "Mathematical expression matches context from main stem",
+          "Mark allocation [1] shown inline",
+          "Label '(ii)' appears after blank space following (i)",
+          "Continues same question context",
+          "Mark allocation [6] shown inline",
+          "Printed subpart label '(iii)' appears; follows from previous page's open Question 4, subpart (ii); no new question number visible; blank answer lines below indicate end of question"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 5,
+      "storage_key": "9709/w19_qp_31/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 5,
+      "ocr_text": "5 The curve with equation y = e^{-2x} ln(x - 1) has a stationary point when x = p.\n\n(i) Show that p satisfies the equation x = 1 + exp\\left(\\frac{1}{2(x - 1)}\\right), where exp(x) denotes e^x.\n(ii) Verify by calculation that p lies between 2.2 and 2.6.\n(iii) Use an iterative formula based on the equation in part (i) to determine p correct to 2 decimal places. Give the result of each iteration to 4 decimal places.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7,
+        8
+      ],
+      "marks": [
+        3,
+        2,
+        3
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q05/q05_page_009.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          2,
+          3
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Question number '5' printed at left margin",
+          "New question stem begins with 'The curve with equation...'",
+          "Subpart (i) follows directly",
+          "No prior open question indicated in carry state",
+          "Label '(ii)' indicates continuation of Question 5",
+          "Carry state shows open_q_number=5, open_subpart_label='(i)'",
+          "No new question number visible on page",
+          "Label '(iii)' follows '(ii)', continuing Question 5",
+          "No new question number appears",
+          "Text references 'part (i)', confirming same question"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 6,
+      "storage_key": "9709/w19_qp_31/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 6,
+      "ocr_text": "(i) By differentiating $\\frac{\\cos x}{\\sin x}$, show that if $y = \\cot x$ then $\\frac{\\mathrm{d}y}{\\mathrm{d}x} = -\\cosec^2 x$.\n(ii) Show that $\\int_{\\frac{1}{4}\\pi}^{\\frac{1}{2}\\pi} x \\cosec^2 x \\, \\mathrm{d}x = \\frac{1}{4}(\\pi + \\ln 4)$.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        9
+      ],
+      "marks": [
+        2,
+        6
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q06/q06_page_010.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          6
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '6' printed at left margin",
+          "Subpart label '(i)' present",
+          "No prior question 6 on previous pages per carry state",
+          "Same question number 6",
+          "Subpart label '(ii)' follows '(i)'",
+          "No new question number introduced"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 7,
+      "storage_key": "9709/w19_qp_31/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 7,
+      "ocr_text": "7 Two lines l and m have equations r = ai + 2j + 3k + λ(i − 2j + 3k) and r = 2i + j + 2k + μ(2i − j + k) respectively, where a is a constant. It is given that the lines intersect.\n\n(i) Find the value of a.\n(ii) When a has this value, find the equation of the plane containing l and m.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        11,
+        12
+      ],
+      "marks": [
+        4,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q07/q07_page_013.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '7' printed at left margin",
+          "New question stem begins with 'Two lines l and m...'",
+          "No continuation markers like '(ii)', 'Hence', etc. from prior question",
+          "Subpart label '(ii)' matches expected continuation from previous page's open subpart (i)",
+          "No new printed question number visible on page",
+          "Text logically follows from prior vector/plane context typical of Q7 in Paper 31"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 8,
+      "storage_key": "9709/w19_qp_31/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 8,
+      "ocr_text": "8 Let f(x) = (x² + x + 6) / (x²(x + 2)).\n(i) Express f(x) in partial fractions. [5]\n(ii) Hence, showing full working, show that the exact value of ∫₁⁴ f(x) dx is 9/4.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        13,
+        14
+      ],
+      "marks": [
+        5,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_015.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q08/q08_page_015.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Printed question number '8' at left margin",
+          "New function definition and subpart (i) with mark allocation",
+          "Printed subpart label '(ii)' matches carry state open_subpart_label",
+          "Integral expression and instruction continue Q8 context from prior page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 9,
+      "storage_key": "9709/w19_qp_31/questions/q09.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 9,
+      "ocr_text": "(i) By first expanding cos(2x + x), show that cos 3x ≡ 4 cos³ x − 3 cos x.\n(ii) Hence solve the equation cos 3x + 3 cos x + 1 = 0, for 0 ≤ x ≤ π.\n(iii) Find the exact value of \\(\\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} \\cos^3 x \\, dx\\).",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        15,
+        16
+      ],
+      "marks": [
+        4,
+        2,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_017.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q09/q09_page_017.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          2,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Printed question number '9' appears at top-left of page",
+          "Subpart label '(i)' follows directly",
+          "No prior question 9 on previous pages per carry state",
+          "Subpart label '(ii)' clearly continues question 9",
+          "Uses 'Hence', indicating dependency on part (i)",
+          "No new question number printed",
+          "Page starts with subpart label '(iii)', continuing from previous page's open question 9 (subpart (ii))",
+          "No new printed question number visible at top of page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 10,
+      "storage_key": "9709/w19_qp_31/questions/q10.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 10,
+      "ocr_text": "10 (a) The complex number u is given by u = −3 − (2√10)i. Showing all necessary working and without using a calculator, find the square roots of u. Give your answers in the form a + ib, where the numbers a and b are real and exact. [5]\n(b) On a sketch of an Argand diagram shade the region whose points represent complex numbers z satisfying the inequalities |z − 3 − i| ⩽ 3, arg z ⩾ ¼π and Im z ⩾ 2, where Im z denotes the imaginary part of the complex number z.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        17,
+        18
+      ],
+      "marks": [
+        5,
+        5
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_019.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q10/q10_page_019.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          5
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Question number '10' explicitly printed at start of line",
+          "Subpart label '(a)' follows question number",
+          "No prior open question continuation indicators (e.g., '(iii)', 'Hence')",
+          "Carry state indicated open_q_number=9, but page starts with new Q10, so overrides",
+          "Label '(b)' appears at start of line",
+          "Follows question 10(a) from previous page",
+          "Marks [5] shown at end",
+          "No further subparts visible on page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 11,
+      "storage_key": "9709/w19_qp_32/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 1,
+      "ocr_text": "1 Solve the equation 5 ln(4 − 3^x) = 6. Show all necessary working and give the answer correct to 3 decimal places.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q01/q01_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' explicitly printed at start of line",
+          "Full question statement present",
+          "Marks bracket '[3]' visible"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 12,
+      "storage_key": "9709/w19_qp_32/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 2,
+      "ocr_text": "2 The curve with equation y = e^{-2x} / (1 - x^2) has a stationary point in the interval -1 < x < 1. Find dy/dx and hence find the x-coordinate of this stationary point, giving the answer correct to 3 decimal places. [5]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        3
+      ],
+      "marks": [
+        5
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q02/q02_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Printed question number '2' at left margin",
+          "Full question statement follows",
+          "Marks bracket '[5]' present"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 13,
+      "storage_key": "9709/w19_qp_32/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 3,
+      "ocr_text": "3 The polynomial x^4 + 3x^3 + ax + b, where a and b are constants, is denoted by p(x). When p(x) is divided by x^2 + x - 1 the remainder is 2x + 3. Find the values of a and b.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        5
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q03/q03_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Printed question number '3' at start of line",
+          "Full question statement follows"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 14,
+      "storage_key": "9709/w19_qp_32/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 4,
+      "ocr_text": "(i) Express (√6) sin x + cos x in the form R sin(x + α), where R > 0 and 0° < α < 90°. State the exact value of R and give α correct to 3 decimal places.\n(ii) Hence solve the equation (√6) sin 2θ + cos 2θ = 2, for 0° < θ < 180°.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        3,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q04/q04_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Printed question number '4' at left margin",
+          "Subpart label '(i)' present",
+          "Question text follows immediately",
+          "Printed label '(ii)' indicates continuation of question 4",
+          "No new printed question number on page",
+          "Carry state open_q_number=4 matches context"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 15,
+      "storage_key": "9709/w19_qp_32/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 5,
+      "ocr_text": "5 The equation of a curve is 2x²y − xy² = a³, where a is a positive constant. Show that there is only one point on the curve at which the tangent is parallel to the x-axis and find the y-coordinate of this point. [7]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7
+      ],
+      "marks": [
+        7
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_008.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q05/q05_page_008.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          7
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '5' clearly printed at start of line",
+          "No subpart label like (i), (ii) present; new standalone question"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 16,
+      "storage_key": "9709/w19_qp_32/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 6,
+      "ocr_text": "6 The variables x and θ satisfy the differential equation\nsin½θ dx/dθ = (x + 2) cos½θ\nfor 0 < θ < π. It is given that x = 1 when θ = ⅓π. Solve the differential equation and obtain an expression for x in terms of cos θ.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        9
+      ],
+      "marks": [
+        8
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q06/q06_page_010.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          8
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Printed question number '6' at start of page",
+          "Full question statement with differential equation and condition",
+          "Marks [8] indicated at end"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 17,
+      "storage_key": "9709/w19_qp_32/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 7,
+      "ocr_text": "7 (a) Find the complex number z satisfying the equation\n\nz + \\frac{iz}{z^*} - 2 = 0,\n\nwhere z^* denotes the complex conjugate of z. Give your answer in the form x + iy, where x and y are real.\n(b) (i) On a single Argand diagram sketch the loci given by the equations |z − 2i| = 2 and Im z = 3, where Im z denotes the imaginary part of z.\n(ii) In the first quadrant the two loci intersect at the point P. Find the exact argument of the complex number represented by P.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        11,
+        12
+      ],
+      "marks": [
+        5,
+        2
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)(i)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q07/q07_page_013.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          2
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)(i)"
+        ],
+        "evidence": [
+          "Printed question number '7' at top left",
+          "Subpart label '(a)' present",
+          "Equation and instruction text follow",
+          "Page starts with '(b) (i)' indicating continuation of question 7",
+          "Carry state shows open_q_number=7",
+          "No new printed question number visible",
+          "Label '(ii)' directly follows (i), same question 7",
+          "No new question number introduced",
+          "Blank answer space below indicates continuation"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 18,
+      "storage_key": "9709/w19_qp_32/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 8,
+      "ocr_text": "8 Let f(x) = (2x² + x + 8) / ((2x - 1)(x² + 2)).\n(i) Express f(x) in partial fractions.\n(ii) Hence, showing full working, find ∫₁⁵ f(x) dx, giving the answer in the form ln c, where c is an integer.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        13,
+        14
+      ],
+      "marks": [
+        5,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_015.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q08/q08_page_015.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Printed question number '8' at left margin",
+          "New function definition and subpart (i) with mark allocation [5]",
+          "Subpart label '(ii)' indicates continuation of question 8",
+          "No new printed question number visible on page",
+          "Text follows logically from prior subpart (i)"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 19,
+      "storage_key": "9709/w19_qp_32/questions/q09.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 9,
+      "ocr_text": "9 It is given that ∫₀ᵃ x cos(1/3 x) dx = 3, where the constant a is such that 0 < a < 3/2 π.\n\n(i) Show that a satisfies the equation\n\na = (4 − 3 cos(1/3 a)) / sin(1/3 a).\n(ii) Verify by calculation that a lies between 2.5 and 3.\n(iii) Use an iterative formula based on the equation in part (i) to calculate a correct to 3 decimal places. Give the result of each iteration to 5 decimal places.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        15,
+        16
+      ],
+      "marks": [
+        5,
+        2,
+        3
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_017.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q09/q09_page_017.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          2,
+          3
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Question number '9' printed at left margin",
+          "New question stem begins with 'It is given that'",
+          "Subpart '(i)' explicitly labeled",
+          "No continuation markers from prior question",
+          "Subpart label '(ii)' follows from previous subpart (i) of question 9",
+          "No new printed question number visible on page",
+          "Subpart label '(iii)' logically follows (ii) of same question",
+          "No new question number printed; continues question 9"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 20,
+      "storage_key": "9709/w19_qp_32/questions/q10.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 10,
+      "ocr_text": "10 The line l has equation r = i + 3j − 2k + λ(i − 2j + 3k). The plane p has equation 2x + y − 3z = 5.\n(i) Find the position vector of the point of intersection of l and p.\n(ii) Calculate the acute angle between l and p.\n(iii) A second plane q is perpendicular to the plane p and contains the line l. Find the equation of q, giving your answer in the form ax + by + cz = d.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        17,
+        18
+      ],
+      "marks": [
+        3,
+        3,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_019.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q10/q10_page_019.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          3,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Printed question number '10' at start of page",
+          "No prior open question number 10 in carry state; previous open was 9",
+          "Subparts (i) and (ii) clearly belong to question 10",
+          "Subpart label '(iii)' follows previous subparts (i) and (ii) from prior page",
+          "Question 10 is still open per carry state",
+          "No new printed question number visible on this page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 21,
+      "storage_key": "9709/w19_qp_33/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 1,
+      "ocr_text": "1 Solve the inequality 2|x + 2| > |3x - 1|.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        4
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q01/q01_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' clearly printed at left margin",
+          "Full question statement present",
+          "Marks '[4]' visible at right margin"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 22,
+      "storage_key": "9709/w19_qp_33/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 2,
+      "ocr_text": "2 The polynomial 6x^3 + ax^2 + bx - 2, where a and b are constants, is denoted by p(x). It is given that (2x + 1) is a factor of p(x) and that when p(x) is divided by (x + 2) the remainder is -24. Find the values of a and b.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        3
+      ],
+      "marks": [
+        5
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q02/q02_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Printed question number '2' at start of line",
+          "Full question statement with instruction 'Find the values of a and b.'",
+          "Marks bracket [5] present"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 23,
+      "storage_key": "9709/w19_qp_33/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 3,
+      "ocr_text": "3 Showing all necessary working, solve the equation \\(\\frac{3^{2x} + 3^{-x}}{3^{2x} - 3^{-x}} = 4\\). Give your answer correct to 3 decimal places.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        4
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q03/q03_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Printed question number '3' at top-left",
+          "Full question statement with equation and instruction"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 24,
+      "storage_key": "9709/w19_qp_33/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 4,
+      "ocr_text": "(i) By first expanding tan(2x + x), show that the equation tan 3x = 3 cot x can be written in the form tan⁴x − 12 tan²x + 3 = 0.\n(ii) Hence solve the equation tan 3x = 3 cot x for 0° < x < 90°.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        4,
+        3
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q04/q04_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          3
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Printed question number '4' at left margin",
+          "Subpart label '(i)' present",
+          "Mathematical expression and instruction clearly visible",
+          "Printed label '(ii)' indicates continuation of question 4",
+          "No new printed question number visible on page",
+          "Carry state shows open_q_number=4"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 25,
+      "storage_key": "9709/w19_qp_33/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 5,
+      "ocr_text": "(i) By sketching a suitable pair of graphs, show that the equation ln(x + 2) = 4e^{-x} has exactly one real root.\n(ii) Show by calculation that this root lies between x = 1 and x = 1.5.\n(iii) Use the iterative formula $x_{n+1} = \\ln\\left(\\frac{4}{\\ln(x_n + 2)}\\right)$ to determine the root correct to 2 decimal places. Give the result of each iteration to 4 decimal places.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7,
+        8
+      ],
+      "marks": [
+        2,
+        2,
+        3
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q05/q05_page_009.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          2,
+          3
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Question number '5' printed at left margin",
+          "Subpart label '(i)' follows question number",
+          "No prior question 5 on previous pages per carry state",
+          "Subpart label '(ii)' appears after (i) on same page",
+          "Refers to 'this root' — clearly continuing Q5(i)",
+          "No new question number introduced before (ii)",
+          "Label '(iii)' indicates continuation of question 5",
+          "No new question number visible at top of page",
+          "Carry state shows open_q_number=5, open_subpart_label='(ii)' — this is next subpart (iii)"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 26,
+      "storage_key": "9709/w19_qp_33/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 6,
+      "ocr_text": "6 Throughout this question the use of a calculator is not permitted.\n\nThe complex number with modulus 1 and argument $\\frac{1}{3}\\pi$ is denoted by $w$.\n\n(i) Express $w$ in the form $x + iy$, where $x$ and $y$ are real and exact.\nThe complex number $1 + 2i$ is denoted by $u$. The complex number $v$ is such that $|v| = 2|u|$ and $\\arg v = \\arg u + \\frac{1}{3}\\pi$.\n\n(ii) Sketch an Argand diagram showing the points representing $u$ and $v$.\n(iii) Explain why v can be expressed as 2uw. Hence find v, giving your answer in the form a + ib, where a and b are real and exact.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        9,
+        10
+      ],
+      "marks": [
+        1,
+        2,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q06/q06_page_011.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          1,
+          2,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Question number '6' explicitly printed at start of page",
+          "New question stem introduced after previous question (Q5) ended on prior page",
+          "No new question number; continues Q6",
+          "Subpart label '(ii)' follows logically from (i)",
+          "Text refers to same variables $u$, $v$ defined in context of Q6",
+          "Label '(iii)' indicates continuation of question 6",
+          "Text refers to variables v, u, w consistent with prior subparts of Q6",
+          "Marks [4] shown inline"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 27,
+      "storage_key": "9709/w19_qp_33/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 7,
+      "ocr_text": "7 The plane m has equation x + 4y - 8z = 2. The plane n is parallel to m and passes through the point P with coordinates (5, 2, -2).\n\n(i) Find the equation of n, giving your answer in the form ax + by + cz = d.\n\n(ii) Calculate the perpendicular distance between m and n.\n(iii) The line l lies in the plane n, passes through the point P and is perpendicular to OP, where O is the origin. Find a vector equation for l.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        11,
+        12
+      ],
+      "marks": [
+        2,
+        3,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q07/q07_page_013.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          3,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Question number '7' clearly printed at start of page",
+          "No continuation markers like '(iii)' or 'Hence' from previous question",
+          "New problem about planes m and n",
+          "Subpart label '(iii)' follows previous subparts (i) and (ii) of Q7",
+          "No new question number visible at top of page",
+          "Text continues logical progression of Q7 geometry/vector problem"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 28,
+      "storage_key": "9709/w19_qp_33/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 8,
+      "ocr_text": "The diagram shows the graph of y = sec x for 0 ≤ x < ½π.\n\n(i) Use the trapezium rule with 2 intervals to estimate the value of ∫₀¹·² sec x dx, giving your answer correct to 2 decimal places.\n(ii) Explain, with reference to the diagram, whether the trapezium rule gives an overestimate or an underestimate of the true value of the integral in part (i).\n(iii) P is the point on the part of the curve y = sec x for 0 ≤ x < ½π at which the gradient is 2. By first differentiating 1/cos x, find the x-coordinate of P, giving your answer correct to 3 decimal places.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "coordinate axes labeled x and y",
+        "origin O",
+        "curve y = sec x",
+        "vertical dashed asymptote at x = ½π",
+        "same as above"
+      ],
+      "page_indices": [
+        13,
+        14
+      ],
+      "marks": [
+        3,
+        1,
+        6
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_015.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q08/q08_page_015.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          1,
+          6
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Subpart label '(i)' appears after diagram",
+          "Carried state indicates Q7 open with subpart (iii) — but this page shows (i), suggesting a reset or misalignment; however, visual layout shows no new question number, and the diagram + integral context matches typical Q7 structure in past papers; likely the carry state is stale — but per instruction: 'if this page visibly starts a new printed question number, that overrides'; no new number visible, so we retain q_number=7 as continuation. However, note discrepancy: carried open_subpart_label was '(iii)', but page shows '(i)'. Since no new question number is printed, and the content is self-contained with diagram and two parts (i) and (ii), it is most plausible this is a *new* question (Q8) — but the page number is 14/20 and prior state says last_seen_q_number=7. Crucially, the top-left corner has '8', which is likely the question number printed in margin. In Cambridge papers, marginal numbers indicate question numbers. Therefore, '8' in top-left is Q8. So this is a new question.",
+          "Top-left margin shows '8', standard Cambridge placement for question number",
+          "No preceding subpart (i) on this page for Q7; instead, (i) and (ii) are presented under the diagram with no Q7 header",
+          "Carry state likely outdated; visual evidence of '8' overrides",
+          "Subpart label '(iii)' follows prior subparts (i) and (ii) from previous page",
+          "No new question number printed on this page",
+          "Question 8 is still open per carry state",
+          "Marks bracket [6] appears at end of fragment"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 29,
+      "storage_key": "9709/w19_qp_33/questions/q09.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 9,
+      "ocr_text": "9 The variables x and t satisfy the differential equation 5 dx/dt = (20 - x)(40 - x). It is given that x = 10 when t = 0.\n\n(i) Using partial fractions, solve the differential equation, obtaining an expression for x in terms of t. [9]\n(ii) State what happens to the value of x when t becomes large.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        15,
+        16
+      ],
+      "marks": [
+        9,
+        1
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_017.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q09/q09_page_017.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          9,
+          1
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '9' printed at left margin",
+          "New question stem begins with 'The variables x and t...'",
+          "Subpart '(i)' present",
+          "No continuation markers like 'Hence', 'Show', or '(ii)' indicating prior part",
+          "Subpart label '(ii)' indicates continuation of Q9",
+          "No new question number printed on page",
+          "Blank answer space below suggests end of question",
+          "Carried state open_q_number=9 matches"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 30,
+      "storage_key": "9709/w19_qp_33/questions/q10.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 10,
+      "ocr_text": "The diagram shows the graph of y = e^{cos x} sin^3 x for 0 ≤ x ≤ π, and its maximum point M. The shaded region R is bounded by the curve and the x-axis.\n\n(i) Find the x-coordinate of M. Show all necessary working and give your answer correct to 2 decimal places.\n(ii) By first using the substitution u = cos x, find the exact value of the area of R.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "coordinate axes",
+        "curve y = e^{cos x} sin^3 x",
+        "point M (maximum)",
+        "shaded region R",
+        "x-axis intercept at π"
+      ],
+      "page_indices": [
+        17,
+        18
+      ],
+      "marks": [
+        5,
+        7
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_019.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q10/q10_page_019.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          7
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '10' printed in top-left corner",
+          "No subpart label like (ii) or continuation marker",
+          "New diagram and problem statement",
+          "Subpart label '(ii)' indicates continuation of question 10",
+          "No new question number visible on page",
+          "Carry state shows open_q_number=10 and last_seen_q_number=10"
+        ]
+      },
+      "warning_disposition": null
+    }
+  ]
+}

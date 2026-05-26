@@ -1,0 +1,194 @@
+{
+  "schema_version": "9709_contact_sheet_vlm_review_v1",
+  "generated_on": "2026-05-26",
+  "shard_id": "p3_w_watermarked_001",
+  "items": [
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/visual-review-contact-sheets/WM_9709_w19_qp_31-contact-sheet.png",
+      "parsed": {
+        "accepted": false,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "blockers": [
+          "Red watermark occludes prompt text in q01p003, q02p004, q03p005, q04p006, q04p007, q05p008, q05p009, q06p010, q07p012, q08p014, q09p016, q10p018, q10p019",
+          "Watermark covers mark allocations (e.g., [3], [4], [5]) and formulae in multiple questions",
+          "q06p010 part (a) appears truncated at top (missing '6 (a) By differentiating...')",
+          "q07p012 part (b) missing diagram reference (expected plane sketch/Argand diagram not visible)",
+          "q10p019 part (b) mentions 'On a sketch of an Argand diagram' but no diagram visible"
+        ],
+        "warnings": [
+          "All crops contain red watermark overlay; some partially obscure critical content",
+          "Question boundaries appear intact but watermark interferes with readability",
+          "No obvious multi-page continuity issues (single-page crops only)"
+        ],
+        "notes": "Watermark consistently overlays prompt text, mark schemes, and key mathematical expressions across all crops, violating acceptance criteria. Diagrams expected in q07, q10 are absent or not rendered.",
+        "checked": {
+          "question_boundaries": true,
+          "watermark_occlusion": false,
+          "diagram_visibility": false,
+          "multi_page_continuity": true
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"blockers\": [\n    \"Red watermark occludes prompt text in q01p003, q02p004, q03p005, q04p006, q04p007, q05p008, q05p009, q06p010, q07p012, q08p014, q09p016, q10p018, q10p019\",\n    \"Watermark covers mark allocations (e.g., [3], [4], [5]) and formulae in multiple questions\",\n    \"q06p010 part (a) appears truncated at top (missing '6 (a) By differentiating...')\",\n    \"q07p012 part (b) missing diagram reference (expected plane sketch/Argand diagram not visible)\",\n    \"q10p019 part (b) mentions 'On a sketch of an Argand diagram' but no diagram visible\"\n  ],\n  \"warnings\": [\n    \"All crops contain red watermark overlay; some partially obscure critical content\",\n    \"Question boundaries appear intact but watermark interferes with readability\",\n    \"No obvious multi-page continuity issues (single-page crops only)\"\n  ],\n  \"notes\": \"Watermark consistently overlays prompt text, mark schemes, and key mathematical expressions across all crops, violating acceptance criteria. Diagrams expected in q07, q10 are absent or not rendered.\",\n  \"checked\": {\n    \"question_boundaries\": true,\n    \"watermark_occlusion\": false,\n    \"diagram_visibility\": false,\n    \"multi_page_continuity\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2683,
+          "completion_tokens": 398,
+          "total_tokens": 3081,
+          "completion_tokens_details": {
+            "text_tokens": 398
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2543,
+            "text_tokens": 140,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779778271,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-13d079a3-5ef0-9d51-b27b-5a582bc77bd9"
+      }
+    },
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/visual-review-contact-sheets/WM_9709_w19_qp_32-contact-sheet.png",
+      "parsed": {
+        "accepted": false,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "blockers": [
+          "q01p003: red watermark occludes prompt text (visible over 'Show all essential working...')",
+          "q02p004: red watermark occludes prompt text (visible over 'Find dy/dx and hence...')",
+          "q03p005: red watermark occludes prompt text (visible over 'The polynomial...')",
+          "q04p006: red watermark occludes prompt text (visible over 'Express y in the form R sin(x + α)...')",
+          "q05p008: red watermark occludes prompt text (visible over 'Show that there is only one point...')",
+          "q06p010: red watermark occludes prompt text (visible over 'The variables x and θ satisfy...')",
+          "q07p012: red watermark occludes prompt text (visible over 'Find the complex number z...')",
+          "q08p015: red watermark occludes prompt text (visible over 'Hence, showing full working...')",
+          "q09p017: red watermark occludes prompt text (visible over 'Verify by calculation that a lies between 2.5 and 3.')",
+          "q10p018: red watermark occludes prompt text (visible over 'The line l has equation...')",
+          "q10p019: red watermark occludes prompt text (visible over 'A second plane q is perpendicular...')"
+        ],
+        "warnings": [],
+        "notes": "All question crops contain the red watermark '老师微信：liuxue119118（题目有修改过，请加微信确认是否完整，以免影响您的学习！）' overlaid directly on the question prompts, violating the occlusion rule for prompt text. No blank or truncated crops observed, but universal watermark occlusion invalidates acceptance.",
+        "checked": {
+          "question_boundaries": true,
+          "watermark_occlusion": false,
+          "diagram_visibility": true,
+          "multi_page_continuity": true
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"blockers\": [\n    \"q01p003: red watermark occludes prompt text (visible over 'Show all essential working...')\",\n    \"q02p004: red watermark occludes prompt text (visible over 'Find dy/dx and hence...')\",\n    \"q03p005: red watermark occludes prompt text (visible over 'The polynomial...')\",\n    \"q04p006: red watermark occludes prompt text (visible over 'Express y in the form R sin(x + α)...')\",\n    \"q05p008: red watermark occludes prompt text (visible over 'Show that there is only one point...')\",\n    \"q06p010: red watermark occludes prompt text (visible over 'The variables x and θ satisfy...')\",\n    \"q07p012: red watermark occludes prompt text (visible over 'Find the complex number z...')\",\n    \"q08p015: red watermark occludes prompt text (visible over 'Hence, showing full working...')\",\n    \"q09p017: red watermark occludes prompt text (visible over 'Verify by calculation that a lies between 2.5 and 3.')\",\n    \"q10p018: red watermark occludes prompt text (visible over 'The line l has equation...')\",\n    \"q10p019: red watermark occludes prompt text (visible over 'A second plane q is perpendicular...')\"\n  ],\n  \"warnings\": [],\n  \"notes\": \"All question crops contain the red watermark '老师微信：liuxue119118（题目有修改过，请加微信确认是否完整，以免影响您的学习！）' overlaid directly on the question prompts, violating the occlusion rule for prompt text. No blank or truncated crops observed, but universal watermark occlusion invalidates acceptance.\",\n  \"checked\": {\n    \"question_boundaries\": true,\n    \"watermark_occlusion\": false,\n    \"diagram_visibility\": true,\n    \"multi_page_continuity\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2683,
+          "completion_tokens": 484,
+          "total_tokens": 3167,
+          "completion_tokens_details": {
+            "text_tokens": 484
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2543,
+            "text_tokens": 140,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779778290,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-21e168dc-5cb5-9c4f-8438-3f389bc586f9"
+      }
+    },
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/visual-review-contact-sheets/WM_9709_w19_qp_33-contact-sheet.png",
+      "parsed": {
+        "accepted": false,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "blockers": [
+          "q01p003: blank crop (only header and ruled lines, no question text)",
+          "q02p004: blank crop (only header and ruled lines, no question text)",
+          "q03p005: blank crop (only header and ruled lines, no question text)",
+          "q04p006: blank crop (only header and ruled lines, no question text)",
+          "q04p007: blank crop (only header and ruled lines, no question text)",
+          "q05p008: blank crop (only header and ruled lines, no question text)",
+          "q05p009: blank crop (only header and ruled lines, no question text)",
+          "q06p010: blank crop (only header and ruled lines, no question text)",
+          "q06p011: blank crop (only header and ruled lines, no question text)",
+          "q07p012: blank crop (only header and ruled lines, no question text)",
+          "q07p013: blank crop (only header and ruled lines, no question text)",
+          "q08p014: diagram present but red watermark overlays part of prompt text and mark allocation [5]",
+          "q09p015: blank crop (only header and ruled lines, no question text)",
+          "q09p016: blank crop (only header and ruled lines, no question text)",
+          "q09p017: blank crop (only header and ruled lines, no question text)",
+          "q10p018: diagram present but red watermark overlays part of prompt text and mark allocation [5]",
+          "q10p019: blank crop (only header and ruled lines, no question text)"
+        ],
+        "warnings": [
+          "Multiple crops are entirely blank (no question content visible)",
+          "Red watermark consistently occludes critical elements (prompt text, mark allocations) in q08p014 and q10p018"
+        ],
+        "notes": "All visible crops either lack question content (blank) or have critical occlusion by red watermark. No question boundary truncation or merging observed because most crops contain no question text at all. Diagrams in q08p014 and q10p018 are visible but partially obscured by watermark over textual elements.",
+        "checked": {
+          "question_boundaries": true,
+          "watermark_occlusion": false,
+          "diagram_visibility": false,
+          "multi_page_continuity": true
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"blockers\": [\n    \"q01p003: blank crop (only header and ruled lines, no question text)\",\n    \"q02p004: blank crop (only header and ruled lines, no question text)\",\n    \"q03p005: blank crop (only header and ruled lines, no question text)\",\n    \"q04p006: blank crop (only header and ruled lines, no question text)\",\n    \"q04p007: blank crop (only header and ruled lines, no question text)\",\n    \"q05p008: blank crop (only header and ruled lines, no question text)\",\n    \"q05p009: blank crop (only header and ruled lines, no question text)\",\n    \"q06p010: blank crop (only header and ruled lines, no question text)\",\n    \"q06p011: blank crop (only header and ruled lines, no question text)\",\n    \"q07p012: blank crop (only header and ruled lines, no question text)\",\n    \"q07p013: blank crop (only header and ruled lines, no question text)\",\n    \"q08p014: diagram present but red watermark overlays part of prompt text and mark allocation [5]\",\n    \"q09p015: blank crop (only header and ruled lines, no question text)\",\n    \"q09p016: blank crop (only header and ruled lines, no question text)\",\n    \"q09p017: blank crop (only header and ruled lines, no question text)\",\n    \"q10p018: diagram present but red watermark overlays part of prompt text and mark allocation [5]\",\n    \"q10p019: blank crop (only header and ruled lines, no question text)\"\n  ],\n  \"warnings\": [\n    \"Multiple crops are entirely blank (no question content visible)\",\n    \"Red watermark consistently occludes critical elements (prompt text, mark allocations) in q08p014 and q10p018\"\n  ],\n  \"notes\": \"All visible crops either lack question content (blank) or have critical occlusion by red watermark. No question boundary truncation or merging observed because most crops contain no question text at all. Diagrams in q08p014 and q10p018 are visible but partially obscured by watermark over textual elements.\",\n  \"checked\": {\n    \"question_boundaries\": true,\n    \"watermark_occlusion\": false,\n    \"diagram_visibility\": false,\n    \"multi_page_continuity\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2642,
+          "completion_tokens": 600,
+          "total_tokens": 3242,
+          "completion_tokens_details": {
+            "text_tokens": 600
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2502,
+            "text_tokens": 140,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779778313,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-ea267eb7-9ed5-9451-b926-a7d428fbd7c5"
+      }
+    }
+  ]
+}

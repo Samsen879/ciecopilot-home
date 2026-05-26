@@ -19,9 +19,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout repository without Actions token
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init "$GITHUB_WORKSPACE"
+          cd "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch --no-tags --prune origin               "+refs/heads/*:refs/remotes/origin/*"               "+refs/pull/${{ github.event.pull_request.number }}/merge:refs/remotes/pull/${{ github.event.pull_request.number }}/merge"
+            git checkout --force "refs/remotes/pull/${{ github.event.pull_request.number }}/merge"
+          else
+            git fetch --no-tags --prune origin               "+refs/heads/*:refs/remotes/origin/*"               "${GITHUB_SHA}"
+            git checkout --force "${GITHUB_SHA}"
+          fi
 
       - name: Determine execution scope
         id: scope

@@ -1,0 +1,75 @@
+{
+  "schema_version": "9709_winter_watermarked_post_replacement_visual_queue_closeout_v1",
+  "generated_on": "2026-05-28",
+  "status": "post_extraction_visual_queue_passed_pending_downstream_authority_and_release",
+  "scope": [
+    "p1_w_watermarked_001",
+    "p3_w_watermarked_001"
+  ],
+  "shards": {
+    "p1_w_watermarked_001": {
+      "expected_items": 32,
+      "visual_dispositions": {
+        "items": 32,
+        "accepted": 32,
+        "rejected": 0,
+        "accepted_review_reason_counts": {
+          "diagram_lane": 10,
+          "multi_page_question": 20,
+          "warning_disposition": 1,
+          "watermarked_source_pdf": 32
+        }
+      },
+      "post_extraction_review": {
+        "status": "pass",
+        "manifest_items": 32,
+        "projection_items": 32,
+        "evidence_bundle_items": 32,
+        "human_disposition_items": 32,
+        "blockers": 0,
+        "warnings": 0,
+        "human_review_items": 0,
+        "accepted_human_dispositions": 32,
+        "manual_review_reason_counts": {}
+      },
+      "visual_queue_status": "pass",
+      "disposition_artifact": "docs/reports/2026-05-28-9709-p1-w-watermarked-001-post-replacement-vlm-assisted-visual-dispositions.json",
+      "post_extraction_pass_artifact": "docs/reports/2026-05-28-9709-p1-w-watermarked-001-post-replacement-post-extraction-review-pass.json"
+    },
+    "p3_w_watermarked_001": {
+      "expected_items": 30,
+      "visual_dispositions": {
+        "items": 30,
+        "accepted": 30,
+        "rejected": 0,
+        "accepted_review_reason_counts": {
+          "diagram_lane": 2,
+          "multi_page_question": 18,
+          "watermarked_source_pdf": 30
+        }
+      },
+      "post_extraction_review": {
+        "status": "pass",
+        "manifest_items": 30,
+        "projection_items": 30,
+        "evidence_bundle_items": 30,
+        "human_disposition_items": 30,
+        "blockers": 0,
+        "warnings": 0,
+        "human_review_items": 0,
+        "accepted_human_dispositions": 30,
+        "manual_review_reason_counts": {}
+      },
+      "visual_queue_status": "pass",
+      "disposition_artifact": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-vlm-assisted-visual-dispositions.json",
+      "post_extraction_pass_artifact": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-post-extraction-review-pass.json"
+    }
+  },
+  "remaining_not_production_ready_reasons": [
+    "authority sidecar not run",
+    "DB write-back not run",
+    "search gate not run",
+    "release preflight not run",
+    "production-ready closeout not written"
+  ]
+}

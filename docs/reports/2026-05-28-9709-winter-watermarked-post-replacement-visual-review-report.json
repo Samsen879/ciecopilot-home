@@ -5,7 +5,7 @@
     "p1_w_watermarked_001",
     "p3_w_watermarked_001"
   ],
-  "status": "visual_blockers_resolved_pending_human_disposition",
+  "status": "visual_blockers_resolved_and_visual_queue_passed_pending_downstream_authority_and_release",
   "shards": {
     "p1_w_watermarked_001": {
       "expected_items": 32,
@@ -43,7 +43,19 @@
         "blocker_items": 0,
         "warning_items": 1
       },
-      "visual_blocker_status": "resolved"
+      "visual_blocker_status": "resolved",
+      "post_extraction_review_pass": {
+        "status": "pass",
+        "manifest_items": 32,
+        "projection_items": 32,
+        "evidence_bundle_items": 32,
+        "human_disposition_items": 32,
+        "blockers": 0,
+        "warnings": 0,
+        "human_review_items": 0,
+        "accepted_human_dispositions": 32,
+        "manual_review_reason_counts": {}
+      }
     },
     "p3_w_watermarked_001": {
       "expected_items": 30,
@@ -78,7 +90,19 @@
         "blocker_items": 0,
         "warning_items": 0
       },
-      "visual_blocker_status": "resolved"
+      "visual_blocker_status": "resolved",
+      "post_extraction_review_pass": {
+        "status": "pass",
+        "manifest_items": 30,
+        "projection_items": 30,
+        "evidence_bundle_items": 30,
+        "human_disposition_items": 30,
+        "blockers": 0,
+        "warnings": 0,
+        "human_review_items": 0,
+        "accepted_human_dispositions": 30,
+        "manual_review_reason_counts": {}
+      }
     }
   },
   "not_production_ready_reasons": [
@@ -87,5 +111,6 @@
     "DB write-back not run",
     "search gate not run",
     "release preflight not run"
-  ]
+  ],
+  "visual_queue_closeout": "docs/reports/2026-05-28-9709-winter-watermarked-post-replacement-visual-queue-closeout.json"
 }

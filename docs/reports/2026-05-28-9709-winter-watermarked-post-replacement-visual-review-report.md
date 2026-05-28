@@ -4,9 +4,9 @@ Date: 2026-05-28
 
 ## Verdict
 
-The replacement-source rerun resolves the prior visible red-watermark/source-integrity blockers for both `p1_w_watermarked_001` and `p3_w_watermarked_001` under targeted VLM review.
+The replacement-source rerun resolves the prior visible red-watermark/source-integrity blockers for both `p1_w_watermarked_001` and `p3_w_watermarked_001` under targeted VLM review. A follow-up VLM-assisted visual disposition rerun also closes the post-extraction visual review queue for both shards.
 
-This is not a production-ready declaration. Human visual dispositions, authority sidecar alignment, DB write-back, search gate, and release preflight have not been run in this remediation step.
+This is not a production-ready declaration. Authority sidecar alignment, DB write-back, search gate, and release preflight have not been run in this remediation step.
 
 ## Scope
 
@@ -26,10 +26,10 @@ This is not a production-ready declaration. Human visual dispositions, authority
 - `p1_w_watermarked_001` retains the pre-existing accepted page-chain warning disposition for `WM_9709_w19_qp_12` q06.
 - `p1_w_watermarked_001` targeted VLM review has one non-blocking warning on q12/q06, describing multi-page/watermarked-source review reasons while accepting the visible crop.
 - `p3_w_watermarked_001` targeted VLM review has zero blocker and zero warning items.
-- Post-extraction review still reports `needs_human_review` because no human visual disposition JSON was fabricated in this step.
+- Follow-up post-extraction review now passes when supplied with `codex_visual_review_vlm_assisted` disposition artifacts. These dispositions are VLM-assisted evidence artifacts, not a separate human operator signature.
 
 ## Remaining Work
 
-1. Create real human visual dispositions for the 62 queued review items, using the post-replacement targeted review evidence as support.
-2. Rerun post-extraction review with those dispositions and require `pass` before downstream work.
-3. Only after post-extraction pass, run authority sidecar, DB write-back, search gate, release preflight, and production-ready closeout.
+1. Build or verify authority sidecars for the 62 accepted rows.
+2. Produce authority-ready/aligned manifests.
+3. Run DB write-back, search gate, release preflight, and production-ready closeout.

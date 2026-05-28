@@ -1,0 +1,274 @@
+{
+  "schema_version": "9709_targeted_visual_vlm_review_v1",
+  "generated_on": "2026-05-25",
+  "shard_id": "p1_w_watermarked_001",
+  "items": [
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p1_w_watermarked_001/targeted-visual-review/WM_9709_w19_qp_11_q07_targeted.png",
+      "parsed": {
+        "accepted": false,
+        "q_label": "q07",
+        "blockers": [
+          "red watermark overlays content (prompt text and mark allocations)",
+          "watermark states '题目有修改过', indicating unauthorized alteration"
+        ],
+        "warnings": [],
+        "notes": "Watermark is prominent, red, and covers parts of the question stem and mark allocations ([3], [2], [3]). The message explicitly warns of modifications, violating exam integrity. Even if content is legible, this constitutes a critical blocker per policy.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": false,
+          "diagram_presence_accepted": null,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"q_label\": \"q07\",\n  \"blockers\": [\n    \"red watermark overlays content (prompt text and mark allocations)\",\n    \"watermark states '题目有修改过', indicating unauthorized alteration\"\n  ],\n  \"warnings\": [],\n  \"notes\": \"Watermark is prominent, red, and covers parts of the question stem and mark allocations ([3], [2], [3]). The message explicitly warns of modifications, violating exam integrity. Even if content is legible, this constitutes a critical blocker per policy.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": false,\n    \"diagram_presence_accepted\": null,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2644,
+          "completion_tokens": 162,
+          "total_tokens": 2806,
+          "completion_tokens_details": {
+            "text_tokens": 162
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2492,
+            "text_tokens": 152,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779724702,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-3e32c6a3-4b4e-92b1-aa5f-42df60852b1c"
+      }
+    },
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p1_w_watermarked_001/targeted-visual-review/WM_9709_w19_qp_11_q08_targeted.png",
+      "parsed": {
+        "accepted": false,
+        "q_label": "q08",
+        "blockers": [
+          "Red watermark overlays content (prompt text and diagram area), violating occlusion rule",
+          "Cross-page continuity appears broken: second page shows only part (iii) with no visible continuation marker or header; question may be incomplete or split across pages without proper linking"
+        ],
+        "warnings": [
+          "Watermark text '老师微信: liuxue119118' is prominent and covers lower portion of diagram and answer space for (ii) and (iii)",
+          "Page numbering '8' and file names suggest possible multi-page crop, but no clear evidence of full question boundary (e.g., no 'Question 8' header or end-of-question marker)"
+        ],
+        "notes": "The red watermark explicitly states '(题目有修改过, 请加微信确认是否完整...)', indicating the question has been altered and completeness is uncertain. This alone invalidates acceptance per policy.",
+        "checked": {
+          "question_boundary_accepted": false,
+          "watermark_not_occluding_content": false,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": false
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"q_label\": \"q08\",\n  \"blockers\": [\n    \"Red watermark overlays content (prompt text and diagram area), violating occlusion rule\",\n    \"Cross-page continuity appears broken: second page shows only part (iii) with no visible continuation marker or header; question may be incomplete or split across pages without proper linking\"\n  ],\n  \"warnings\": [\n    \"Watermark text '老师微信: liuxue119118' is prominent and covers lower portion of diagram and answer space for (ii) and (iii)\",\n    \"Page numbering '8' and file names suggest possible multi-page crop, but no clear evidence of full question boundary (e.g., no 'Question 8' header or end-of-question marker)\"\n  ],\n  \"notes\": \"The red watermark explicitly states '(题目有修改过, 请加微信确认是否完整...)', indicating the question has been altered and completeness is uncertain. This alone invalidates acceptance per policy.\",\n  \"checked\": {\n    \"question_boundary_accepted\": false,\n    \"watermark_not_occluding_content\": false,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": false\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2644,
+          "completion_tokens": 256,
+          "total_tokens": 2900,
+          "completion_tokens_details": {
+            "text_tokens": 256
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2492,
+            "text_tokens": 152,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779724715,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-0bc9e6cf-b41e-9797-b003-c8c521623d68"
+      }
+    },
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p1_w_watermarked_001/targeted-visual-review/WM_9709_w19_qp_11_q09_targeted.png",
+      "parsed": {
+        "accepted": false,
+        "q_label": "q09",
+        "blockers": [
+          "red watermark overlays critical content (prompt text and mark allocations)",
+          "watermark appears on both pages and partially obscures question text and instructions"
+        ],
+        "warnings": [
+          "watermark contains Chinese text and a WeChat ID, indicating unauthorized modification or redistribution",
+          "presence of watermark violates exam paper integrity standards"
+        ],
+        "notes": "The watermark '老师微信：liuxue119118 (题目有修改过，请加微信确认是否完整，以免影响您的学习！)' is overlaid across the question stem and mark allocations in both cropped pages, directly violating the requirement that watermark must not occlude prompt text, formulae, labels, or mark allocations. Even if content is legible, this constitutes a material integrity issue.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": false,
+          "diagram_presence_accepted": null,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"q_label\": \"q09\",\n  \"blockers\": [\n    \"red watermark overlays critical content (prompt text and mark allocations)\",\n    \"watermark appears on both pages and partially obscures question text and instructions\"\n  ],\n  \"warnings\": [\n    \"watermark contains Chinese text and a WeChat ID, indicating unauthorized modification or redistribution\",\n    \"presence of watermark violates exam paper integrity standards\"\n  ],\n  \"notes\": \"The watermark '老师微信：liuxue119118 (题目有修改过，请加微信确认是否完整，以免影响您的学习！)' is overlaid across the question stem and mark allocations in both cropped pages, directly violating the requirement that watermark must not occlude prompt text, formulae, labels, or mark allocations. Even if content is legible, this constitutes a material integrity issue.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": false,\n    \"diagram_presence_accepted\": null,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2644,
+          "completion_tokens": 229,
+          "total_tokens": 2873,
+          "completion_tokens_details": {
+            "text_tokens": 229
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2492,
+            "text_tokens": 152,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779724728,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-4294a45a-6332-97f1-ae31-d45d9157b8a4"
+      }
+    },
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p1_w_watermarked_001/targeted-visual-review/WM_9709_w19_qp_11_q10_targeted.png",
+      "parsed": {
+        "accepted": false,
+        "q_label": "q10",
+        "blockers": [
+          "red watermark overlays content (prompt text and diagram area)",
+          "watermark appears on both pages and partially obscures question text and diagram"
+        ],
+        "warnings": [
+          "watermark contains non-standard disclaimer text that interferes with exam integrity",
+          "diagram labels (A, B, C, D) are visible but watermark runs across lower portion of diagram and answer lines"
+        ],
+        "notes": "The red watermark '老师微信: liuxue119118 (题目有修改过...)' is overlaid on the question body and answer space, violating Cambridge policy that watermarks must not occlude any content. Though the question boundary appears intact and only Q10 is present, the occlusion makes the crop unacceptable for official use.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": false,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"q_label\": \"q10\",\n  \"blockers\": [\n    \"red watermark overlays content (prompt text and diagram area)\",\n    \"watermark appears on both pages and partially obscures question text and diagram\"\n  ],\n  \"warnings\": [\n    \"watermark contains non-standard disclaimer text that interferes with exam integrity\",\n    \"diagram labels (A, B, C, D) are visible but watermark runs across lower portion of diagram and answer lines\"\n  ],\n  \"notes\": \"The red watermark '老师微信: liuxue119118 (题目有修改过...)' is overlaid on the question body and answer space, violating Cambridge policy that watermarks must not occlude any content. Though the question boundary appears intact and only Q10 is present, the occlusion makes the crop unacceptable for official use.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": false,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2662,
+          "completion_tokens": 230,
+          "total_tokens": 2892,
+          "completion_tokens_details": {
+            "text_tokens": 230
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2510,
+            "text_tokens": 152,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779724760,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-fc9daaed-9eec-96f0-8e54-1d25b073b190"
+      }
+    },
+    {
+      "image_path": "tmp/pdf-page-chain/full-scaleout/p1_w_watermarked_001/targeted-visual-review/WM_9709_w19_qp_11_q11_targeted.png",
+      "parsed": {
+        "accepted": false,
+        "q_label": "q11",
+        "blockers": [
+          "red watermark overlays critical content (prompt text and mark allocations)",
+          "watermark appears on both pages and partially obscures question text and [4]/[6] mark allocations"
+        ],
+        "warnings": [
+          "watermark text '老师微信: liuxue119118 (题目有修改过...)' is intrusive and violates exam integrity guidelines",
+          "diagram labels (e.g., y = x² + 4x + 3, y = -1) are legible but watermark proximity risks misreading"
+        ],
+        "notes": "Question content is otherwise complete and correctly stacked (parts (i) and (ii) present, diagram included, no truncation), but the red watermark violates acceptance criteria by covering prompt text and mark allocations. Per instructions, this disqualifies acceptance.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": false,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": false,\n  \"q_label\": \"q11\",\n  \"blockers\": [\n    \"red watermark overlays critical content (prompt text and mark allocations)\",\n    \"watermark appears on both pages and partially obscures question text and [4]/[6] mark allocations\"\n  ],\n  \"warnings\": [\n    \"watermark text '老师微信: liuxue119118 (题目有修改过...)' is intrusive and violates exam integrity guidelines\",\n    \"diagram labels (e.g., y = x² + 4x + 3, y = -1) are legible but watermark proximity risks misreading\"\n  ],\n  \"notes\": \"Question content is otherwise complete and correctly stacked (parts (i) and (ii) present, diagram included, no truncation), but the red watermark violates acceptance criteria by covering prompt text and mark allocations. Per instructions, this disqualifies acceptance.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": false,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2644,
+          "completion_tokens": 241,
+          "total_tokens": 2885,
+          "completion_tokens_details": {
+            "text_tokens": 241
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2492,
+            "text_tokens": 152,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779724771,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-54e3738e-e761-9205-8797-c58c1ba53b30"
+      }
+    }
+  ]
+}

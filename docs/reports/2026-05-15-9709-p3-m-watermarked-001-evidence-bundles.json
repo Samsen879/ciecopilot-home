@@ -1,0 +1,1022 @@
+{
+  "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+  "bundles": [
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 0,
+      "storage_key": "9709/m20_qp_32/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(a) Sketch the graph of y = |x - 2|.\n(b) Solve the inequality |x - 2| < 3x - 4.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q01.png",
+        "input_asset_hash": "403a16564716575a5ac48977996dbb9d8340072335639850852c1da85785ea9b",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q01.png",
+          "input_asset_hash": "403a16564716575a5ac48977996dbb9d8340072335639850852c1da85785ea9b",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q01.png",
+        "input_asset_hash": "403a16564716575a5ac48977996dbb9d8340072335639850852c1da85785ea9b"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 1,
+      "storage_key": "9709/m20_qp_32/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 Solve the equation ln 3 + ln(2x + 5) = 2 ln(x + 2). Give your answer in a simplified exact form. [4]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q02.png",
+        "input_asset_hash": "c07ab190ba4aeb8011c43d17565d8ffec9e5f8f3e8f29ededaca0717b9737c96",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q02.png",
+          "input_asset_hash": "c07ab190ba4aeb8011c43d17565d8ffec9e5f8f3e8f29ededaca0717b9737c96",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q02.png",
+        "input_asset_hash": "c07ab190ba4aeb8011c43d17565d8ffec9e5f8f3e8f29ededaca0717b9737c96"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 2,
+      "storage_key": "9709/m20_qp_32/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(a) By sketching a suitable pair of graphs, show that the equation sec x = 2 − ½x has exactly one root in the interval 0 ≤ x < ½π.\n(b) Verify by calculation that this root lies between 0.8 and 1.\n(c) Use the iterative formula x_{n+1} = cos⁻¹(2/(4 − x_n)) to determine the root correct to 2 decimal places. Give the result of each iteration to 4 decimal places.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          },
+          {
+            "label": "(c)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=3",
+          "page_indices=[3]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q03.png",
+        "input_asset_hash": "bcd52332884d8d9af39edd5ea6f6fc25eaecb45ae680c1bd928a58eb9854ee2c",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q03.png",
+          "input_asset_hash": "bcd52332884d8d9af39edd5ea6f6fc25eaecb45ae680c1bd928a58eb9854ee2c",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q03.png",
+        "input_asset_hash": "bcd52332884d8d9af39edd5ea6f6fc25eaecb45ae680c1bd928a58eb9854ee2c"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 3,
+      "storage_key": "9709/m20_qp_32/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 Find ∫_{1/6 π}^{1/3 π} x sec²x dx. Give your answer in a simplified exact form.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 7
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=4",
+          "page_indices=[4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q04.png",
+        "input_asset_hash": "905536247a2edd8131f0cf7e242ce0399f8d4cca2785b882e2e5128ab538fffd",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q04.png",
+          "input_asset_hash": "905536247a2edd8131f0cf7e242ce0399f8d4cca2785b882e2e5128ab538fffd",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q04.png",
+        "input_asset_hash": "905536247a2edd8131f0cf7e242ce0399f8d4cca2785b882e2e5128ab538fffd"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 4,
+      "storage_key": "9709/m20_qp_32/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 (a) Show that \\(\\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 2 \\cot 2x\\).\n(b) Hence solve the equation \\(\\frac{\\cos 3x}{\\sin x} + \\frac{\\sin 3x}{\\cos x} = 4\\), for \\(0 < x < \\pi\\).",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=5",
+          "page_indices=[5, 6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q05.png",
+        "input_asset_hash": "b403ce377aa122a3cf8518719b4011b5c93b57b70104cbd7da5dbfa9235e6237",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q05.png",
+          "input_asset_hash": "b403ce377aa122a3cf8518719b4011b5c93b57b70104cbd7da5dbfa9235e6237",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q05.png",
+        "input_asset_hash": "b403ce377aa122a3cf8518719b4011b5c93b57b70104cbd7da5dbfa9235e6237"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 5,
+      "storage_key": "9709/m20_qp_32/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 The variables x and y satisfy the differential equation\n\\[\n\\frac{\\mathrm{d} y}{\\mathrm{~d} x}=\\frac{1+4 y^{2}}{\\mathrm{e}^{x}}\n\\]\nIt is given that y = 0 when x = 1.\n(a) Solve the differential equation, obtaining an expression for y in terms of x.\n(b) State what happens to the value of y as x tends to infinity.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 7
+          },
+          {
+            "label": "(b)",
+            "marks": 1
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=6",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q06.png",
+        "input_asset_hash": "259115b5d1e104c61ef47c9dda4c0820e2efde6faf8951f43572c2f9f61d2ec0",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q06.png",
+          "input_asset_hash": "259115b5d1e104c61ef47c9dda4c0820e2efde6faf8951f43572c2f9f61d2ec0",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q06.png",
+        "input_asset_hash": "259115b5d1e104c61ef47c9dda4c0820e2efde6faf8951f43572c2f9f61d2ec0"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 6,
+      "storage_key": "9709/m20_qp_32/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "7 The equation of a curve is x³ + 3xy² − y³ = 5.\n(a) Show that dy/dx = (x² + y²)/(y² − 2xy).\n(b) Find the coordinates of the points on the curve where the tangent is parallel to the y-axis. [5]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=7",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q07.png",
+        "input_asset_hash": "4ca06de15a1dfdccef9a523a1a34cc154c80a1ca27e14d37c947d01548a4e696",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q07.png",
+          "input_asset_hash": "4ca06de15a1dfdccef9a523a1a34cc154c80a1ca27e14d37c947d01548a4e696",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q07.png",
+        "input_asset_hash": "4ca06de15a1dfdccef9a523a1a34cc154c80a1ca27e14d37c947d01548a4e696"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 7,
+      "storage_key": "9709/m20_qp_32/questions/q08.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 8,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "In the diagram, OABCDEFG is a cuboid in which OA = 2 units, OC = 3 units and OD = 2 units. Unit vectors i, j and k are parallel to OA, OC and OD respectively. The point M on AB is such that MB = 2AM. The midpoint of FG is N.\n\n(a) Express the vectors OM and MN in terms of i, j and k.\n\n(b) Find a vector equation for the line through M and N.\n(c) Find the position vector of P, the foot of the perpendicular from D to the line through M and N. [4]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          },
+          {
+            "label": "(c)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=8",
+          "page_indices=[11, 12]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "cuboid OABCDEFG",
+          "origin O",
+          "vectors i, j, k along OA, OC, OD",
+          "point M on AB",
+          "point N midpoint of FG"
+        ],
+        "spatial_evidence": [
+          "Page starts with descriptive text continuing from previous page",
+          "Subparts (a) and (b) match carry state open_q_number=7 and open_subpart_label='(b)'",
+          "No new question number printed",
+          "Dotted answer lines indicate continuation",
+          "Label '(c)' indicates continuation of question 8",
+          "No new question number visible",
+          "Follows logically from prior subparts (a), (b) on previous page"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q08.png",
+        "input_asset_hash": "4210f216b67c2ad0f254712ff02ac1e539331f26c0ce993efcade4d99b32bc2b",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q08.png",
+          "input_asset_hash": "4210f216b67c2ad0f254712ff02ac1e539331f26c0ce993efcade4d99b32bc2b",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q08.png",
+        "input_asset_hash": "4210f216b67c2ad0f254712ff02ac1e539331f26c0ce993efcade4d99b32bc2b"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 8,
+      "storage_key": "9709/m20_qp_32/questions/q09.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 9,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "9 Let f(x) = (2 + 11x - 10x^2) / ((1 + 2x)(1 - 2x)(2 + x)).\n(a) Express f(x) in partial fractions.\n(b) Hence obtain the expansion of f(x) in ascending powers of x, up to and including the term in x². [5]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=9",
+          "page_indices=[13, 14]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q09.png",
+        "input_asset_hash": "8d537c946f82e1a26e709d3c2566a94d4c367802ca3e5051e4e8673d7509b8a0",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q09.png",
+          "input_asset_hash": "8d537c946f82e1a26e709d3c2566a94d4c367802ca3e5051e4e8673d7509b8a0",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q09.png",
+        "input_asset_hash": "8d537c946f82e1a26e709d3c2566a94d4c367802ca3e5051e4e8673d7509b8a0"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p3_m_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 9,
+      "storage_key": "9709/m20_qp_32/questions/q10.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "m",
+        "paper": 3,
+        "variant": 2,
+        "q_number": 10,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "10 (a) The complex numbers v and w satisfy the equations\nv + iw = 5      and      (1 + 2i)v - w = 3i.\nSolve the equations for v and w, giving your answers in the form x + iy, where x and y are real. [6]\n(b) (i) On an Argand diagram, sketch the locus of points representing complex numbers z satisfying |z − 2 − 3i| = 1.\n(ii) Calculate the least value of arg z for points on this locus.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 6
+          },
+          {
+            "label": "(b)(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper3/WM_9709_m20_qp_32.pdf",
+          "q_number=10",
+          "page_indices=[15, 16]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m20_qp_32/questions/q10.png",
+        "input_asset_hash": "f7fc67296416a4c82e20d6b9167ae8d044eb2a31ef43dac690559eddadf2f780",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/m20_qp_32/questions/q10.png",
+          "input_asset_hash": "f7fc67296416a4c82e20d6b9167ae8d044eb2a31ef43dac690559eddadf2f780",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m20_qp_32/questions/q10.png",
+        "input_asset_hash": "f7fc67296416a4c82e20d6b9167ae8d044eb2a31ef43dac690559eddadf2f780"
+      }
+    }
+  ],
+  "summary": {
+    "bundles_planned": 10,
+    "route_counts": {
+      "ocr_lane": 9,
+      "diagram_lane": 1
+    },
+    "lazy_attach_original_image": 10
+  }
+}

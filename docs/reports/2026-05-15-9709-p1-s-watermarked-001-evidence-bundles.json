@@ -1,0 +1,3460 @@
+{
+  "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+  "bundles": [
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 0,
+      "storage_key": "9709/s20_qp_11/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "1 The sum of the first nine terms of an arithmetic progression is 117. The sum of the next four terms is 91.\n\nFind the first term and the common difference of the progression.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q01.png",
+        "input_asset_hash": "9adfeb1d84e8a62ca91ff7f917e032bac5dd06939b65073db58b6e382df40ba1",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q01.png",
+          "input_asset_hash": "9adfeb1d84e8a62ca91ff7f917e032bac5dd06939b65073db58b6e382df40ba1",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q01.png",
+        "input_asset_hash": "9adfeb1d84e8a62ca91ff7f917e032bac5dd06939b65073db58b6e382df40ba1"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 1,
+      "storage_key": "9709/s20_qp_11/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 The coefficient of $\\frac{1}{x}$ in the expansion of $\\left(kx + \\frac{1}{x}\\right)^5 + \\left(1 - \\frac{2}{x}\\right)^8$ is 74.\n\nFind the value of the positive constant $k$.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q02.png",
+        "input_asset_hash": "8ffeca6013da4b7c816a455e73eebc6af61d9ff8de7b2a741480c92c7baae3b4",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q02.png",
+          "input_asset_hash": "8ffeca6013da4b7c816a455e73eebc6af61d9ff8de7b2a741480c92c7baae3b4",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q02.png",
+        "input_asset_hash": "8ffeca6013da4b7c816a455e73eebc6af61d9ff8de7b2a741480c92c7baae3b4"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 2,
+      "storage_key": "9709/s20_qp_11/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 Each year the selling price of a diamond necklace increases by 5% of the price the year before. The selling price of the necklace in the year 2000 was $36 000.\n(a) Write down an expression for the selling price of the necklace n years later and hence find the selling price in 2008.\n(b) The company that makes the necklace only sells one each year. Find the total amount of money obtained in the ten-year period starting in the year 2000.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=3",
+          "page_indices=[3]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q03.png",
+        "input_asset_hash": "02b9bfa36f913942a8971c066bb8ea464331ec546c4c12f077362a62c9ebc3c7",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q03.png",
+          "input_asset_hash": "02b9bfa36f913942a8971c066bb8ea464331ec546c4c12f077362a62c9ebc3c7",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q03.png",
+        "input_asset_hash": "02b9bfa36f913942a8971c066bb8ea464331ec546c4c12f077362a62c9ebc3c7"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 3,
+      "storage_key": "9709/s20_qp_11/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows the graph of y = f(x), where f(x) = \\frac{3}{2} \\cos 2x + \\frac{1}{2} for 0 \\leq x \\leq \\pi.\n(a) State the range of f.\nA function g is such that g(x) = f(x) + k, where k is a positive constant. The x-axis is a tangent to the curve y = g(x).\n(b) State the value of k and hence describe fully the transformation that maps the curve y = f(x) on to y = g(x).\n(c) State the equation of the curve which is the reflection of y = f(x) in the x-axis. Give your answer in the form y = a cos 2x + b, where a and b are constants.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          },
+          {
+            "label": "(c)",
+            "marks": 1
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=4",
+          "page_indices=[4]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coordinate axes",
+          "origin O",
+          "x-axis label",
+          "y-axis label",
+          "curve y = f(x)",
+          "x-intercepts",
+          "minimum point",
+          "point (π, 0) marked",
+          "label 'π' on x-axis"
+        ],
+        "spatial_evidence": [
+          "Printed question number 3 not visible on this page but carried from previous page",
+          "Subpart (a) appears after diagram",
+          "Dotted answer lines extend below (b) and (c), indicating continuation",
+          "Subpart (b) directly follows (a) without new question number",
+          "Text refers to f(x) defined above",
+          "Dotted answer lines continue below",
+          "Subpart (c) follows (b) sequentially",
+          "Refers to same f(x)",
+          "No new question number printed",
+          "Answer lines extend to bottom of page"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q04.png",
+        "input_asset_hash": "b70fe7f2c74b025e231c97915462131c6b974429a587d60452e4e66f700b7c7c",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q04.png",
+          "input_asset_hash": "b70fe7f2c74b025e231c97915462131c6b974429a587d60452e4e66f700b7c7c",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q04.png",
+        "input_asset_hash": "b70fe7f2c74b025e231c97915462131c6b974429a587d60452e4e66f700b7c7c"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 4,
+      "storage_key": "9709/s20_qp_11/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 The equation of a line is y = mx + c, where m and c are constants, and the equation of a curve is xy = 16.\n(a) Given that the line is a tangent to the curve, express m in terms of c.\n(b) Given instead that m = −4, find the set of values of c for which the line intersects the curve at two distinct points.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=5",
+          "page_indices=[5]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q05.png",
+        "input_asset_hash": "2ccf3b0ea570da11c8d49bdcf0f964cfa5bc0616e2adb72161220e90146c0eaa",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q05.png",
+          "input_asset_hash": "2ccf3b0ea570da11c8d49bdcf0f964cfa5bc0616e2adb72161220e90146c0eaa",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q05.png",
+        "input_asset_hash": "2ccf3b0ea570da11c8d49bdcf0f964cfa5bc0616e2adb72161220e90146c0eaa"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 5,
+      "storage_key": "9709/s20_qp_11/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 Functions f and g are defined for x ∈ ℝ by\nf : x ↦ ½x − a,\ng : x ↦ 3x + b,\nwhere a and b are constants.\n(a) Given that gg(2) = 10 and f⁻¹(2) = 14, find the values of a and b. [4]\n(b) Using these values of a and b, find an expression for gf(x) in the form cx + d, where c and d are constants. [2]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=6",
+          "page_indices=[6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [
+          "raw page-chain marks contain one duplicate trailing mark",
+          "visible rendered page shows exactly two subparts with mark allocations [4] and [2]"
+        ],
+        "ambiguity_flags": [
+          "mark_count_normalization"
+        ],
+        "review_summary": "q06 is fully contained on rendered page 007. The boundary is accepted. The visible paper shows q06(a) [4] and q06(b) [2]; there is no third visible subpart or third independent mark allocation. Write-back is allowed only with normalized labels [\"(a)\", \"(b)\"] and marks [4, 2].",
+        "review_confidence": 0.9
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q06.png",
+        "input_asset_hash": "d140ce1dca5699b041631ea230bf5b14abebd3bdb56853489a7cc01306504d50",
+        "confidence": 0.9,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q06.png",
+          "input_asset_hash": "d140ce1dca5699b041631ea230bf5b14abebd3bdb56853489a7cc01306504d50",
+          "confidence": 0.9,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q06.png",
+        "input_asset_hash": "d140ce1dca5699b041631ea230bf5b14abebd3bdb56853489a7cc01306504d50"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 6,
+      "storage_key": "9709/s20_qp_11/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(a) Prove the identity \\(\\frac{1 + \\sin \\theta}{\\cos \\theta} + \\frac{\\cos \\theta}{1 + \\sin \\theta} \\equiv \\frac{2}{\\cos \\theta}\\).\n(b) Hence solve the equation \\(\\frac{1 + \\sin \\theta}{\\cos \\theta} + \\frac{\\cos \\theta}{1 + \\sin \\theta} = \\frac{3}{\\sin \\theta}\\), for \\(0 \\leqslant \\theta \\leqslant 2\\pi\\).",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=7",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q07.png",
+        "input_asset_hash": "0c20174a61b9ee7c3a85c47870a014b4b15d36dd140bd3843c8ee44784fba8d7",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q07.png",
+          "input_asset_hash": "0c20174a61b9ee7c3a85c47870a014b4b15d36dd140bd3843c8ee44784fba8d7",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q07.png",
+        "input_asset_hash": "0c20174a61b9ee7c3a85c47870a014b4b15d36dd140bd3843c8ee44784fba8d7"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 7,
+      "storage_key": "9709/s20_qp_11/questions/q08.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 8,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "In the diagram, ABC is a semicircle with diameter AC, centre O and radius 6 cm. The length of the arc AB is 15 cm. The point X lies on AC and BX is perpendicular to AX.\n\nFind the perimeter of the shaded region BXC.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=8",
+          "page_indices=[9]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "semicircle",
+          "diameter AC",
+          "centre O",
+          "radius 6 cm",
+          "arc AB = 15 cm",
+          "point X on AC",
+          "BX ⟂ AC",
+          "shaded region BXC"
+        ],
+        "spatial_evidence": [
+          "Printed question number '8' in top-left margin",
+          "New problem statement with diagram and instruction",
+          "No subpart labels like (a)/(b), indicating start of new question",
+          "Marks [6] aligned with full question"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q08.png",
+        "input_asset_hash": "c346d65ddbe8172b39b7f9ce3ac079a8b753470d1f18246c69eac2345e24e1f7",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q08.png",
+          "input_asset_hash": "c346d65ddbe8172b39b7f9ce3ac079a8b753470d1f18246c69eac2345e24e1f7",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q08.png",
+        "input_asset_hash": "c346d65ddbe8172b39b7f9ce3ac079a8b753470d1f18246c69eac2345e24e1f7"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 8,
+      "storage_key": "9709/s20_qp_11/questions/q09.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 9,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "9 The equation of a curve is y = (3 - 2x)^3 + 24x.\n(a) Find expressions for dy/dx and d^2y/dx^2.\n(b) Find the coordinates of each of the stationary points on the curve.\n(c) Determine the nature of each stationary point.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=9",
+          "page_indices=[11, 12]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q09.png",
+        "input_asset_hash": "4ca2706a7eef56166b76e32fed6ea89123e5ae1c9001c7b70abc8d86b90d19a7",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q09.png",
+          "input_asset_hash": "4ca2706a7eef56166b76e32fed6ea89123e5ae1c9001c7b70abc8d86b90d19a7",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q09.png",
+        "input_asset_hash": "4ca2706a7eef56166b76e32fed6ea89123e5ae1c9001c7b70abc8d86b90d19a7"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 9,
+      "storage_key": "9709/s20_qp_11/questions/q10.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 10,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "10 The coordinates of the points A and B are (−1, −2) and (7, 4) respectively.\n(a) Find the equation of the circle, C, for which AB is a diameter.\n(b) Find the equation of the tangent, T, to circle C at the point B.\n(c) Find the equation of the circle which is the reflection of circle C in the line T.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          },
+          {
+            "label": "(c)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=10",
+          "page_indices=[13, 14]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q10.png",
+        "input_asset_hash": "4b4f845939b7b8bfb856fe755025795bd8461321085b3221a76eb1a066ae03a9",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q10.png",
+          "input_asset_hash": "4b4f845939b7b8bfb856fe755025795bd8461321085b3221a76eb1a066ae03a9",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q10.png",
+        "input_asset_hash": "4b4f845939b7b8bfb856fe755025795bd8461321085b3221a76eb1a066ae03a9"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 10,
+      "storage_key": "9709/s20_qp_11/questions/q11.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 1,
+        "q_number": 11,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows part of the curve $y = \\frac{8}{x + 2}$ and the line $2y + x = 8$, intersecting at points $A$ and $B$. The point $C$ lies on the curve and the tangent to the curve at $C$ is parallel to $AB$.\n\n(a) Find, by calculation, the coordinates of $A$, $B$ and $C$.\n(b) Find the volume generated when the shaded region, bounded by the curve and the line, is rotated through 360° about the x-axis.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 6
+          },
+          {
+            "label": "(b)",
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_11.pdf",
+          "q_number=11",
+          "page_indices=[15, 16]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "x-axis",
+          "y-axis",
+          "origin O",
+          "curve y = 8/(x+2)",
+          "line 2y + x = 8",
+          "point A",
+          "point B",
+          "point C",
+          "shaded region"
+        ],
+        "spatial_evidence": [
+          "No new printed question number visible",
+          "Text begins with 'The diagram shows...' continuing description from prior page",
+          "Subpart label '(a)' appears, but carry state indicates open question 10 with subpart (c) — this suggests a misalignment; however, visual inspection shows this is actually the start of question 11 (see note below)",
+          "Wait: Carry state says open_q_number=10, open_subpart_label='(c)', but this page shows only subpart (a) and a diagram — this contradicts. Re-examining: Page 16 is likely the start of Question 11. The top-left '11' is a question number, not page number. In Cambridge papers, question numbers appear in top-left corner of question pages. Here, '11' is clearly printed at top-left, indicating new question 11. Therefore, carry state must be updated.",
+          "Printed '(b)' label indicates continuation of question 11",
+          "No new printed question number visible on page",
+          "Marks bracket [6] follows part (b) text"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_11/questions/q11.png",
+        "input_asset_hash": "04c66309615ee6d9e7b27a2b384d51c97d3eb4148dbaf9aa06104fd36fbffbae",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_11/questions/q11.png",
+          "input_asset_hash": "04c66309615ee6d9e7b27a2b384d51c97d3eb4148dbaf9aa06104fd36fbffbae",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_11/questions/q11.png",
+        "input_asset_hash": "04c66309615ee6d9e7b27a2b384d51c97d3eb4148dbaf9aa06104fd36fbffbae"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 11,
+      "storage_key": "9709/s20_qp_12/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(a) Find the coefficient of $x^2$ in the expansion of $\\left(x - \\frac{2}{x}\\right)^6$.\n(b) Find the coefficient of $x^2$ in the expansion of $(2 + 3x^2)\\left(x - \\frac{2}{x}\\right)^6$.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q01.png",
+        "input_asset_hash": "b929fd4e650843fe6b719319c4a06255be81d5dd6ec353105d524185ebd6746c",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q01.png",
+          "input_asset_hash": "b929fd4e650843fe6b719319c4a06255be81d5dd6ec353105d524185ebd6746c",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q01.png",
+        "input_asset_hash": "b929fd4e650843fe6b719319c4a06255be81d5dd6ec353105d524185ebd6746c"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 12,
+      "storage_key": "9709/s20_qp_12/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(a) Express the equation 3 cos θ = 8 tan θ as a quadratic equation in sin θ.\n(b) Hence find the acute angle, in degrees, for which 3 cos θ = 8 tan θ.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q02.png",
+        "input_asset_hash": "1c67a2b0f795e290baad89a52bbc0e8febb0512b4bc28d79eaffa1688f2cd1a7",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q02.png",
+          "input_asset_hash": "1c67a2b0f795e290baad89a52bbc0e8febb0512b4bc28d79eaffa1688f2cd1a7",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q02.png",
+        "input_asset_hash": "1c67a2b0f795e290baad89a52bbc0e8febb0512b4bc28d79eaffa1688f2cd1a7"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 13,
+      "storage_key": "9709/s20_qp_12/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 A weather balloon in the shape of a sphere is being inflated by a pump. The volume of the balloon is increasing at a constant rate of 600 cm³ per second. The balloon was empty at the start of pumping.\n(a) Find the radius of the balloon after 30 seconds.\n(b) Find the rate of increase of the radius after 30 seconds.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=3",
+          "page_indices=[3]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q03.png",
+        "input_asset_hash": "67165da0c16d4de6a468409f8cf67cd24ddd192095d51dd7ca46a355d4334e36",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q03.png",
+          "input_asset_hash": "67165da0c16d4de6a468409f8cf67cd24ddd192095d51dd7ca46a355d4334e36",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q03.png",
+        "input_asset_hash": "67165da0c16d4de6a468409f8cf67cd24ddd192095d51dd7ca46a355d4334e36"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 14,
+      "storage_key": "9709/s20_qp_12/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 The nth term of an arithmetic progression is \\(\\frac{1}{2}(3n - 15)\\).\n\nFind the value of \\(n\\) for which the sum of the first \\(n\\) terms is 84.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=4",
+          "page_indices=[4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q04.png",
+        "input_asset_hash": "8d0af0bdb9aeb07e32f4b43a8b923ca7b5db2f20f3e8c9d8275f8e5bac5e3820",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q04.png",
+          "input_asset_hash": "8d0af0bdb9aeb07e32f4b43a8b923ca7b5db2f20f3e8c9d8275f8e5bac5e3820",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q04.png",
+        "input_asset_hash": "8d0af0bdb9aeb07e32f4b43a8b923ca7b5db2f20f3e8c9d8275f8e5bac5e3820"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 15,
+      "storage_key": "9709/s20_qp_12/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 The function f is defined for x ∈ ℝ by\nf : x ↦ a − 2x,\nwhere a is a constant.\n(a) Express ff(x) and f⁻¹(x) in terms of a and x.\n(b) Given that ff(x) = f⁻¹(x), find x in terms of a.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=5",
+          "page_indices=[5]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q05.png",
+        "input_asset_hash": "f986e9c35bf8878abd84aa094eb6a4e8c104c831c330a27e928ac205a106d7da",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q05.png",
+          "input_asset_hash": "f986e9c35bf8878abd84aa094eb6a4e8c104c831c330a27e928ac205a106d7da",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q05.png",
+        "input_asset_hash": "f986e9c35bf8878abd84aa094eb6a4e8c104c831c330a27e928ac205a106d7da"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 16,
+      "storage_key": "9709/s20_qp_12/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 The equation of a curve is y = 2x² + kx + k − 1, where k is a constant.\n(a) Given that the line y = 2x + 3 is a tangent to the curve, find the value of k.\nIt is now given that k = 2.\n(b) Express the equation of the curve in the form y = 2(x + a)² + b, where a and b are constants, and hence state the coordinates of the vertex of the curve.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=6",
+          "page_indices=[6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q06.png",
+        "input_asset_hash": "b14856529971093f2ea7a48cf654eb0b6e95167171c67ab04b890e1e51921633",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q06.png",
+          "input_asset_hash": "b14856529971093f2ea7a48cf654eb0b6e95167171c67ab04b890e1e51921633",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q06.png",
+        "input_asset_hash": "b14856529971093f2ea7a48cf654eb0b6e95167171c67ab04b890e1e51921633"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 17,
+      "storage_key": "9709/s20_qp_12/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "In the diagram, OAB is a sector of a circle with centre O and radius 2r, and angle AOB = 1/6 π radians. The point C is the midpoint of OA.\n(a) Show that the exact length of BC is r√(5 − 2√3).\n(b) Find the exact perimeter of the shaded region.\n(c) Find the exact area of the shaded region.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          },
+          {
+            "label": "(c)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=7",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "sector",
+          "triangle",
+          "points O, A, B, C",
+          "radius labels",
+          "angle label"
+        ],
+        "spatial_evidence": [
+          "Page 8 follows page 7 which ended with Question 6 open at subpart (b)",
+          "This page shows only subpart (a) of Question 6, but carry state says open_q_number=6 and open_subpart_label='(b)' — contradiction resolved by visual inspection: the page actually starts with diagram and description for Q6, then (a); no (b) visible, so likely (a) is first subpart and page 7’s state was misinterpreted. However, per instruction: 'If this page visibly starts a new printed question number, that visible new question number overrides the carry state.' But here, no explicit 'Question 6' header; only diagram and text. Given prior state said page 7 ended Q6 with (b) open, and this page has only (a), it's inconsistent. Re-examining: the PDF page 8 shows only one question fragment beginning with diagram and '(a)', and no prior question header — thus this is the *start* of Question 6. Therefore, carry state should be updated: open_q_number=6, open_subpart_label='(a)', last_seen_q_number=6, reason='Page visually begins Question 6 with diagram and part (a); no prior subpart visible, so previous carry state was erroneous.'",
+          "Label '(b)' indicates continuation of prior question; no new question number visible",
+          "Label '(c)' follows '(b)', same question; no new question number"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q07.png",
+        "input_asset_hash": "e818a9c79acb44ad12fb4a35df43dc77b5ed981a74c327eaba2e73855229cfe4",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q07.png",
+          "input_asset_hash": "e818a9c79acb44ad12fb4a35df43dc77b5ed981a74c327eaba2e73855229cfe4",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q07.png",
+        "input_asset_hash": "e818a9c79acb44ad12fb4a35df43dc77b5ed981a74c327eaba2e73855229cfe4"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 18,
+      "storage_key": "9709/s20_qp_12/questions/q08.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 8,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows part of the curve y = 6/x. The points (1, 6) and (3, 2) lie on the curve. The shaded region is bounded by the curve and the lines y = 2 and x = 1.\n(a) Find the volume generated when the shaded region is rotated through 360° about the y-axis. [5]\n(b) The tangent to the curve at a point X is parallel to the line y + 2x = 0. Show that X lies on the line y = 2x.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=8",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "curve y=6/x",
+          "points (1,6), (3,2), (1,2)",
+          "shaded region",
+          "axes labeled x, y",
+          "origin O",
+          "right-angle marker at (1,2)"
+        ],
+        "spatial_evidence": [
+          "Text begins with 'The diagram shows...', continuing description from prior page",
+          "Subpart label '(a)' indicates this is first subpart of a new question, but carry state says open_q_number=7 and last_seen_q_number=7, and no visible Q8 or new number on page",
+          "Page 10 follows page 9 which ended with Q6(c); standard Cambridge layout places Q7 starting on next page — here Q7(a) appears, so it's a new question, but carry state says open_q_number=7; we must respect carry state unless new printed number visible — none visible, so treat as continuation of Q7",
+          "Label '(b)' indicates continuation of Question 7",
+          "No new question number printed on page",
+          "Carried state shows Q7 open with subpart (a) on previous page"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q08.png",
+        "input_asset_hash": "1c00fa4d48bf3345e326a93da3164cbfc001baa12936d6fe6c2e4d46a87695aa",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q08.png",
+          "input_asset_hash": "1c00fa4d48bf3345e326a93da3164cbfc001baa12936d6fe6c2e4d46a87695aa",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q08.png",
+        "input_asset_hash": "1c00fa4d48bf3345e326a93da3164cbfc001baa12936d6fe6c2e4d46a87695aa"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 19,
+      "storage_key": "9709/s20_qp_12/questions/q09.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 9,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "9 Functions f and g are such that\nf(x) = 2 − 3 sin 2x for 0 ≤ x ≤ π,\ng(x) = −2f(x) for 0 ≤ x ≤ π.\n(a) State the ranges of f and g.\nThe diagram below shows the graph of y = f(x).\n[graph: coordinate axes with origin O, x-axis labeled π at right end, y-axis upward arrow, curve y = f(x) starting above x-axis, dipping below, crossing x-axis twice, peaking before x=π]\n(b) Sketch, on this diagram, the graph of y = g(x).\n(b) Sketch, on this diagram, the graph of y = g(x). [2]\nThe function h is such that\nh(x) = g(x + π) for −π ≤ x ≤ 0.\n(c) Describe fully a sequence of transformations that maps the curve y = f(x) on to y = h(x). [3]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          },
+          {
+            "label": "(c)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=9",
+          "page_indices=[11]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coordinate axes",
+          "origin O",
+          "x-axis label π",
+          "curve y = f(x)",
+          "y-axis arrow"
+        ],
+        "spatial_evidence": [
+          "Question number '9' printed at left margin",
+          "New question stem with definitions of f and g",
+          "Subpart (a) follows directly",
+          "No new question number",
+          "Text 'The diagram below...' follows from previous part",
+          "Subpart (b) explicitly labeled",
+          "Graph is part of Q9 context",
+          "Subpart (c) continues Q9",
+          "Refers to previously defined g(x) and f(x)",
+          "No new question number"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q09.png",
+        "input_asset_hash": "8266cd99b40b83edf07bb6544d87a7090bd6d78c848152f311483c43529e8afa",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q09.png",
+          "input_asset_hash": "8266cd99b40b83edf07bb6544d87a7090bd6d78c848152f311483c43529e8afa",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q09.png",
+        "input_asset_hash": "8266cd99b40b83edf07bb6544d87a7090bd6d78c848152f311483c43529e8afa"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 20,
+      "storage_key": "9709/s20_qp_12/questions/q10.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 10,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "10 The equation of a curve is y = 54x − (2x − 7)^3.\n(a) Find dy/dx and d²y/dx². [4]\n(b) Find the coordinates of each of the stationary points on the curve. [3]\n(c) Determine the nature of each of the stationary points. [2]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=10",
+          "page_indices=[12]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q10.png",
+        "input_asset_hash": "b294eadcb264c1b7adf71fe07f3afbc821aa4c0fa3d07f9087e649694fcbd14c",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q10.png",
+          "input_asset_hash": "b294eadcb264c1b7adf71fe07f3afbc821aa4c0fa3d07f9087e649694fcbd14c",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q10.png",
+        "input_asset_hash": "b294eadcb264c1b7adf71fe07f3afbc821aa4c0fa3d07f9087e649694fcbd14c"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 21,
+      "storage_key": "9709/s20_qp_12/questions/q11.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 11,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "11 The equation of a circle with centre C is x² + y² − 8x + 4y − 5 = 0.\n(a) Find the radius of the circle and the coordinates of C. [3]\n\nThe point P(1, 2) lies on the circle.\n(b) Show that the equation of the tangent to the circle at P is 4y = 3x + 5. [3]\nThe point Q also lies on the circle and PQ is parallel to the x-axis.\n(c) Write down the coordinates of Q.\nThe tangents to the circle at P and Q meet at T.\n(d) Find the coordinates of T.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 2
+          },
+          {
+            "label": "(d)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_12.pdf",
+          "q_number=11",
+          "page_indices=[13, 14]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_12/questions/q11.png",
+        "input_asset_hash": "adcc2b2c0dcfca5231041b3bf6249208c6f3c103785587e47ee9361fe91af5a9",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_12/questions/q11.png",
+          "input_asset_hash": "adcc2b2c0dcfca5231041b3bf6249208c6f3c103785587e47ee9361fe91af5a9",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_12/questions/q11.png",
+        "input_asset_hash": "adcc2b2c0dcfca5231041b3bf6249208c6f3c103785587e47ee9361fe91af5a9"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 22,
+      "storage_key": "9709/s20_qp_13/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "1 Find the set of values of m for which the line with equation y = mx + 1 and the curve with equation y = 3x^2 + 2x + 4 intersect at two distinct points.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q01.png",
+        "input_asset_hash": "e0f5c7b66050609230b7d4d3ca2a2ef3866c6f89e591fd035900ed83a6635aa6",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q01.png",
+          "input_asset_hash": "e0f5c7b66050609230b7d4d3ca2a2ef3866c6f89e591fd035900ed83a6635aa6",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q01.png",
+        "input_asset_hash": "e0f5c7b66050609230b7d4d3ca2a2ef3866c6f89e591fd035900ed83a6635aa6"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 23,
+      "storage_key": "9709/s20_qp_13/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 The equation of a curve is such that $\\frac{dy}{dx} = 3x^{\\frac{1}{2}} - 3x^{-\\frac{1}{2}}$. It is given that the point $(4, 7)$ lies on the curve.\n\nFind the equation of the curve.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q02.png",
+        "input_asset_hash": "e8f774ad753a240340dad50b4d6baecc6db6f01eb08f3ab39257a17c3b67b36a",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q02.png",
+          "input_asset_hash": "e8f774ad753a240340dad50b4d6baecc6db6f01eb08f3ab39257a17c3b67b36a",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q02.png",
+        "input_asset_hash": "e8f774ad753a240340dad50b4d6baecc6db6f01eb08f3ab39257a17c3b67b36a"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 24,
+      "storage_key": "9709/s20_qp_13/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 In each of parts (a), (b) and (c), the graph shown with solid lines has equation y = f(x). The graph shown with broken lines is a transformation of y = f(x).\n(a)\nState, in terms of f, the equation of the graph shown with broken lines.\n(b)\nState, in terms of f, the equation of the graph shown with broken lines.\n(c)\nState, in terms of f, the equation of the graph shown with broken lines.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 1
+          },
+          {
+            "label": "(c)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=3",
+          "page_indices=[3]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coordinate axes",
+          "solid line graph y=f(x)",
+          "dashed line graph",
+          "grid lines",
+          "labels 'y', 'x', 'y = f(x)'",
+          "coordinate axes",
+          "solid line graph y=f(x)",
+          "dashed line graph",
+          "grid lines",
+          "labels 'y', 'x', 'y = f(x)'",
+          "coordinate axes",
+          "solid line graph y=f(x)",
+          "dashed line graph",
+          "grid lines",
+          "labels 'y', 'x', 'y = f(x)'"
+        ],
+        "spatial_evidence": [
+          "Printed question number '3' at top-left",
+          "Subpart '(a)' explicitly labeled",
+          "Graph and instruction for part (a) present",
+          "No closing mark or 'End of Question'",
+          "Subpart label '(b)' follows directly after (a)",
+          "Same question stem context ('In each of parts (a), (b) and (c)...') applies",
+          "No new question number",
+          "Subpart label '(c)' follows (b)",
+          "Same question stem context",
+          "Marks [2] indicate final part of Q3 but no end marker visible"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q03.png",
+        "input_asset_hash": "30f1dddfa79e0b428c150b8e1792dc96ab2f5a099cd53e59db55cdac0ce83d79",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q03.png",
+          "input_asset_hash": "30f1dddfa79e0b428c150b8e1792dc96ab2f5a099cd53e59db55cdac0ce83d79",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q03.png",
+        "input_asset_hash": "30f1dddfa79e0b428c150b8e1792dc96ab2f5a099cd53e59db55cdac0ce83d79"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 25,
+      "storage_key": "9709/s20_qp_13/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(a) Expand (1 + a)^5 in ascending powers of a up to and including the term in a^3.\n(b) Hence expand [1 + (x + x^2)]^5 in ascending powers of x up to and including the term in x^3, simplifying your answer.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=4",
+          "page_indices=[4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q04.png",
+        "input_asset_hash": "f33cf943e3360b22a5e1a310c5b10b929e3599ec73fcbd199259b7df6ad86e5b",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q04.png",
+          "input_asset_hash": "f33cf943e3360b22a5e1a310c5b10b929e3599ec73fcbd199259b7df6ad86e5b",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q04.png",
+        "input_asset_hash": "f33cf943e3360b22a5e1a310c5b10b929e3599ec73fcbd199259b7df6ad86e5b"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 26,
+      "storage_key": "9709/s20_qp_13/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows a cord going around a pulley and a pin. The pulley is modelled as a circle with centre O and radius 5 cm. The thickness of the cord and the size of the pin P can be neglected. The pin is situated 13 cm vertically below O. Points A and B are on the circumference of the circle such that AP and BP are tangents to the circle. The cord passes over the major arc AB of the circle and under the pin such that the cord is taut.\n\nCalculate the length of the cord. [6]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=5",
+          "page_indices=[5]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "circle",
+          "centre O",
+          "radius 5",
+          "point P",
+          "distance OP = 13",
+          "tangents AP and BP",
+          "right angles at A and B",
+          "dashed lines OA, OB, OP"
+        ],
+        "spatial_evidence": [
+          "Page starts with descriptive text continuing from Q4(b)",
+          "No new question number printed",
+          "Question ends with instruction 'Calculate...' and mark allocation [6]",
+          "No turn-over indicator or next question visible"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q05.png",
+        "input_asset_hash": "e39dfc09d65f89148799ff51f319ffbfcd313795655b9b35a7821e3144f3a708",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q05.png",
+          "input_asset_hash": "e39dfc09d65f89148799ff51f319ffbfcd313795655b9b35a7821e3144f3a708",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q05.png",
+        "input_asset_hash": "e39dfc09d65f89148799ff51f319ffbfcd313795655b9b35a7821e3144f3a708"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 27,
+      "storage_key": "9709/s20_qp_13/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 A point P is moving along a curve in such a way that the x-coordinate of P is increasing at a constant rate of 2 units per minute. The equation of the curve is y = (5x - 1)^{1/2}.\n\n(a) Find the rate at which the y-coordinate is increasing when x = 1.\n(b) Find the value of x when the y-coordinate is increasing at 5/8 units per minute.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=6",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q06.png",
+        "input_asset_hash": "04c98ac26dfd4d77339d7da1510ffcd0e7d3a75f03025f90c50de7db480e82a7",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q06.png",
+          "input_asset_hash": "04c98ac26dfd4d77339d7da1510ffcd0e7d3a75f03025f90c50de7db480e82a7",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q06.png",
+        "input_asset_hash": "04c98ac26dfd4d77339d7da1510ffcd0e7d3a75f03025f90c50de7db480e82a7"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 28,
+      "storage_key": "9709/s20_qp_13/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "7 (a) Show that \\(\\frac{\\tan \\theta}{1 + \\cos \\theta} + \\frac{\\tan \\theta}{1 - \\cos \\theta} \\equiv \\frac{2}{\\sin \\theta \\cos \\theta}\\).\n(b) Hence solve the equation \\(\\frac{\\tan \\theta}{1 + \\cos \\theta} + \\frac{\\tan \\theta}{1 - \\cos \\theta} = \\frac{6}{\\tan \\theta}\\) for \\(0^\\circ < \\theta < 180^\\circ\\).",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=7",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q07.png",
+        "input_asset_hash": "7f62222738cad1504c2b4e6d5d135e2759d78c9719c08e06a91ff935655cf922",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q07.png",
+          "input_asset_hash": "7f62222738cad1504c2b4e6d5d135e2759d78c9719c08e06a91ff935655cf922",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q07.png",
+        "input_asset_hash": "7f62222738cad1504c2b4e6d5d135e2759d78c9719c08e06a91ff935655cf922"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 29,
+      "storage_key": "9709/s20_qp_13/questions/q08.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 8,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "8 The first term of a progression is sin²θ, where 0 < θ < ½π. The second term of the progression is sin²θ cos²θ.\n(a) Given that the progression is geometric, find the sum to infinity.\nIt is now given instead that the progression is arithmetic.\n(b) (i) Find the common difference of the progression in terms of sin θ.\n(ii) Find the sum of the first 16 terms when θ = 1/3 π.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)(i)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=8",
+          "page_indices=[11, 12]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q08.png",
+        "input_asset_hash": "0c300938d67121ba24c30fc3d35789631b9de2ad92f74a79886cef4386bb554e",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q08.png",
+          "input_asset_hash": "0c300938d67121ba24c30fc3d35789631b9de2ad92f74a79886cef4386bb554e",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q08.png",
+        "input_asset_hash": "0c300938d67121ba24c30fc3d35789631b9de2ad92f74a79886cef4386bb554e"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 30,
+      "storage_key": "9709/s20_qp_13/questions/q09.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 9,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "9 The functions f and g are defined by\nf(x) = x² - 4x + 3 for x > c, where c is a constant,\ng(x) = 1/(x + 1) for x > -1.\n\n(a) Express f(x) in the form (x - a)² + b. [2]\n\nIt is given that f is a one-one function.\n(b) State the smallest possible value of c. [1]\nIt is now given that c = 5.\n(c) Find an expression for f⁻¹(x) and state the domain of f⁻¹.\n(d) Find an expression for gf(x) and state the range of gf.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 1
+          },
+          {
+            "label": "(c)",
+            "marks": 3
+          },
+          {
+            "label": "(d)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=9",
+          "page_indices=[13, 14]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q09.png",
+        "input_asset_hash": "1f5dbca831489b7793a95066edcf921a26daaa38380331df1a412bdcca90abd8",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q09.png",
+          "input_asset_hash": "1f5dbca831489b7793a95066edcf921a26daaa38380331df1a412bdcca90abd8",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q09.png",
+        "input_asset_hash": "1f5dbca831489b7793a95066edcf921a26daaa38380331df1a412bdcca90abd8"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 31,
+      "storage_key": "9709/s20_qp_13/questions/q10.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 10,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "10 (a) The coordinates of two points A and B are (−7, 3) and (5, 11) respectively.\nShow that the equation of the perpendicular bisector of AB is 3x + 2y = 11.\n(b) A circle passes through A and B and its centre lies on the line 12x - 5y = 70.\nFind an equation of the circle.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=10",
+          "page_indices=[15, 16]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q10.png",
+        "input_asset_hash": "2a46aafd71a36186f076446940f3b35893af47fefffb05872cd0e0686aa22b4b",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q10.png",
+          "input_asset_hash": "2a46aafd71a36186f076446940f3b35893af47fefffb05872cd0e0686aa22b4b",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q10.png",
+        "input_asset_hash": "2a46aafd71a36186f076446940f3b35893af47fefffb05872cd0e0686aa22b4b"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p1_s_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 32,
+      "storage_key": "9709/s20_qp_13/questions/q11.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2020,
+        "session": "s",
+        "paper": 1,
+        "variant": 3,
+        "q_number": 11,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows part of the curve with equation $y = x^3 - 2bx^2 + b^2x$ and the line $OA$, where $A$ is the maximum point on the curve. The $x$-coordinate of $A$ is $a$ and the curve has a minimum point at $(b, 0)$, where $a$ and $b$ are positive constants.\n\n(a) Show that $b = 3a$.\n(b) Show that the area of the shaded region between the line and the curve is $ka^4$, where $k$ is a fraction to be found.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 7
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/WM_9709_s20_qp_13.pdf",
+          "q_number=11",
+          "page_indices=[17, 18]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "x-axis",
+          "y-axis",
+          "origin O",
+          "point A at (a, y_A)",
+          "point (b, 0)",
+          "curve y = x^3 - 2bx^2 + b^2x",
+          "line OA",
+          "vertical dashed line from A to x-axis at x = a",
+          "shaded region between OA and curve from O to A"
+        ],
+        "spatial_evidence": [
+          "Page starts with description continuing from previous page",
+          "Subpart (a) is present, matching carry state open_q_number=10",
+          "No new question number visible",
+          "Diagram and text refer to same curve and points as typical Q10 context",
+          "Label '(b)' indicates continuation of Q10",
+          "No new question number visible",
+          "Marks [7] align with typical subpart marking",
+          "Text refers to 'the line and the curve' implying prior diagram/stem on previous page"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s20_qp_13/questions/q11.png",
+        "input_asset_hash": "6e72d5c3d1ee9b6eb9a0339332f6d59d7b329fc3f465d249d773de9b81d7a046",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/s20_qp_13/questions/q11.png",
+          "input_asset_hash": "6e72d5c3d1ee9b6eb9a0339332f6d59d7b329fc3f465d249d773de9b81d7a046",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s20_qp_13/questions/q11.png",
+        "input_asset_hash": "6e72d5c3d1ee9b6eb9a0339332f6d59d7b329fc3f465d249d773de9b81d7a046"
+      }
+    }
+  ],
+  "summary": {
+    "bundles_planned": 33,
+    "route_counts": {
+      "ocr_lane": 24,
+      "diagram_lane": 9
+    },
+    "lazy_attach_original_image": 33
+  }
+}

@@ -5,6 +5,8 @@ from pathlib import Path
 
 from scripts.vlm.review_9709_page_chain_shard_bundle_v1 import (  # noqa: E402
     build_post_extraction_review,
+    main as review_main,
+    render_review_markdown,
 )
 
 
@@ -97,6 +99,94 @@ def test_post_extraction_review_flags_manual_queue_without_blockers(tmp_path: Pa
     assert review["summary"]["manual_review_reason_counts"]["diagram_lane"] == 1
     assert review["summary"]["manual_review_reason_counts"]["multi_page_question"] == 1
     assert review["human_review_queue"][0]["storage_key"] == "q1"
+
+
+def test_review_cli_returns_nonzero_for_manual_review_queue(tmp_path: Path):
+    crop_path = tmp_path / "crop.png"
+    render_path = tmp_path / "page.png"
+    crop_path.write_bytes(b"png")
+    render_path.write_bytes(b"png")
+    manifest_path = tmp_path / "manifest.json"
+    projection_path = tmp_path / "projection.json"
+    bundle_path = tmp_path / "bundles.json"
+    _write_json(manifest_path, {"items": [_manifest_item("q1", diagram_present=True, review_crop_path=str(crop_path))]})
+    _write_json(
+        projection_path,
+        {"items": [_projection_item("q1", diagram_present=True, page_indices=[0, 1], rendered_page_path=str(render_path))]},
+    )
+    _write_json(bundle_path, {"bundles": [_bundle("q1", diagram_present=True)]})
+
+    assert review_main([
+        "--manifest", str(manifest_path),
+        "--projection", str(projection_path),
+        "--evidence-bundles", str(bundle_path),
+        "--expected-count", "1",
+    ]) == 1
+
+
+def test_review_cli_returns_zero_only_for_pass(tmp_path: Path):
+    crop_path = tmp_path / "crop.png"
+    render_path = tmp_path / "page.png"
+    crop_path.write_bytes(b"png")
+    render_path.write_bytes(b"png")
+    manifest_path = tmp_path / "manifest.json"
+    projection_path = tmp_path / "projection.json"
+    bundle_path = tmp_path / "bundles.json"
+    dispositions_path = tmp_path / "human-dispositions.json"
+    _write_json(manifest_path, {"items": [_manifest_item("q1", diagram_present=True, review_crop_path=str(crop_path))]})
+    _write_json(
+        projection_path,
+        {"items": [_projection_item("q1", diagram_present=True, page_indices=[0, 1], rendered_page_path=str(render_path))]},
+    )
+    _write_json(bundle_path, {"bundles": [_bundle("q1", diagram_present=True)]})
+    _write_json(
+        dispositions_path,
+        {
+            "items": [
+                {
+                    "storage_key": "q1",
+                    "disposition": "accepted",
+                    "accepted_review_reasons": ["diagram_lane", "multi_page_question"],
+                    "visual_checks": {
+                        "question_boundary_accepted": True,
+                        "diagram_presence_accepted": True,
+                        "cross_page_continuity_accepted": True,
+                    },
+                },
+            ],
+        },
+    )
+
+    assert review_main([
+        "--manifest", str(manifest_path),
+        "--projection", str(projection_path),
+        "--evidence-bundles", str(bundle_path),
+        "--human-dispositions", str(dispositions_path),
+        "--expected-count", "1",
+    ]) == 0
+
+
+def test_review_markdown_uses_review_shard_id_in_title() -> None:
+    markdown = render_review_markdown(
+        {
+            "status": "needs_human_review",
+            "shard_id": "p1_m_watermarked_001",
+            "summary": {
+                "manifest_items": 12,
+                "projection_items": 12,
+                "evidence_bundle_items": 12,
+                "human_disposition_items": 0,
+                "blockers": 0,
+                "warnings": 0,
+                "human_review_items": 12,
+                "accepted_human_dispositions": 0,
+                "manual_review_reason_counts": {"watermarked_source_pdf": 12},
+            },
+            "blockers": [],
+        },
+    )
+
+    assert markdown.startswith("# 9709 p1_m_watermarked_001 post-extraction review")
 
 
 def test_post_extraction_review_blocks_diagram_mismatch(tmp_path: Path):

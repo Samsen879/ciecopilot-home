@@ -1,0 +1,91 @@
+{
+  "schema_version": "9709_winter_watermarked_post_replacement_visual_review_report_v1",
+  "generated_on": "2026-05-28",
+  "scope": [
+    "p1_w_watermarked_001",
+    "p3_w_watermarked_001"
+  ],
+  "status": "visual_blockers_resolved_pending_human_disposition",
+  "shards": {
+    "p1_w_watermarked_001": {
+      "expected_items": 32,
+      "page_chain": {
+        "total_pdfs": 3,
+        "passed_pdfs": 3,
+        "blocked_pdfs": 0,
+        "warning_pdfs": 1,
+        "blocker_counts": {},
+        "warning_counts": {
+          "subpart_mark_count_mismatch": 1
+        }
+      },
+      "post_extraction_review": {
+        "manifest_items": 32,
+        "projection_items": 32,
+        "evidence_bundle_items": 32,
+        "human_disposition_items": 0,
+        "blockers": 0,
+        "warnings": 0,
+        "human_review_items": 32,
+        "accepted_human_dispositions": 0,
+        "manual_review_reason_counts": {
+          "diagram_lane": 10,
+          "multi_page_question": 20,
+          "warning_disposition": 1,
+          "watermarked_source_pdf": 32
+        },
+        "status": "needs_human_review"
+      },
+      "targeted_visual_vlm_review": {
+        "items": 32,
+        "accepted": 32,
+        "rejected": 0,
+        "blocker_items": 0,
+        "warning_items": 1
+      },
+      "visual_blocker_status": "resolved"
+    },
+    "p3_w_watermarked_001": {
+      "expected_items": 30,
+      "page_chain": {
+        "total_pdfs": 3,
+        "passed_pdfs": 3,
+        "blocked_pdfs": 0,
+        "warning_pdfs": 0,
+        "blocker_counts": {},
+        "warning_counts": {}
+      },
+      "post_extraction_review": {
+        "manifest_items": 30,
+        "projection_items": 30,
+        "evidence_bundle_items": 30,
+        "human_disposition_items": 0,
+        "blockers": 0,
+        "warnings": 0,
+        "human_review_items": 30,
+        "accepted_human_dispositions": 0,
+        "manual_review_reason_counts": {
+          "diagram_lane": 2,
+          "multi_page_question": 18,
+          "watermarked_source_pdf": 30
+        },
+        "status": "needs_human_review"
+      },
+      "targeted_visual_vlm_review": {
+        "items": 30,
+        "accepted": 30,
+        "rejected": 0,
+        "blocker_items": 0,
+        "warning_items": 0
+      },
+      "visual_blocker_status": "resolved"
+    }
+  },
+  "not_production_ready_reasons": [
+    "human visual dispositions not created",
+    "authority sidecar not run",
+    "DB write-back not run",
+    "search gate not run",
+    "release preflight not run"
+  ]
+}

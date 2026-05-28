@@ -1,0 +1,733 @@
+{
+  "schema_version": "9709_authority_visual_review_v1",
+  "generated_on": "2026-05-28",
+  "shard_id": "p3_w_watermarked_001",
+  "manifest_path": "data/manifests/9709_p3_w_watermarked_001_page_chain_surface_v1.json",
+  "sidecar_path": "data/manifests/9709_p3_w_watermarked_001_authority_sidecar_v1.json",
+  "curriculum_seed": "data/curriculum/9709_question_search_recovery_nodes_v1.json",
+  "counts": {
+    "manifest_items": 30,
+    "mapped_items": 30,
+    "seeded_topic_paths": 9,
+    "new_syllabus_nodes": 0
+  },
+  "topic_distribution": [
+    {
+      "topic_path": "9709.p3.algebra",
+      "topic_title": "Algebra",
+      "count": 4
+    },
+    {
+      "topic_path": "9709.p3.complex_numbers",
+      "topic_title": "Complex Numbers",
+      "count": 3
+    },
+    {
+      "topic_path": "9709.p3.differential_equations",
+      "topic_title": "Differential Equations",
+      "count": 3
+    },
+    {
+      "topic_path": "9709.p3.differentiation",
+      "topic_title": "Differentiation",
+      "count": 3
+    },
+    {
+      "topic_path": "9709.p3.integration",
+      "topic_title": "Integration",
+      "count": 5
+    },
+    {
+      "topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic And Exponential Functions",
+      "count": 3
+    },
+    {
+      "topic_path": "9709.p3.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution Of Equations",
+      "count": 3
+    },
+    {
+      "topic_path": "9709.p3.trigonometry",
+      "topic_title": "Trigonometry",
+      "count": 3
+    },
+    {
+      "topic_path": "9709.p3.vectors",
+      "topic_title": "Vectors",
+      "count": 3
+    }
+  ],
+  "method": [
+    "Mapped from post-replacement page-chain OCR text, diagram flags, marks, page indices, and review crop references.",
+    "Used only existing seeded topic paths from the curriculum seed.",
+    "Did not introduce new syllabus nodes or prompt material.",
+    "Post-replacement targeted visual VLM review and VLM-assisted visual disposition are treated as source-legibility evidence, not standalone topic authority."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/w19_qp_31/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic And Exponential Functions",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "logarithmic expression involving e^(2y) rearranged for y",
+      "ocr_text": "1 Given that ln(1 + e^{2y}) = x, express y in terms of x.",
+      "marks": [
+        3
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        2
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q01/q01_page_003.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "topic_title": "Algebra",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "absolute-value inequality",
+      "ocr_text": "2 Solve the inequality |2x − 3| > 4|x + 1|.",
+      "marks": [
+        4
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        3
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q02/q02_page_004.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.differentiation",
+      "topic_title": "Differentiation",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "parametric differentiation",
+      "ocr_text": "3 The parametric equations of a curve are\nx = 2t + sin 2t,   y = ln(1 − cos 2t).\nShow that dy/dx = cosec 2t.",
+      "marks": [
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q03/q03_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.differential_equations",
+      "topic_title": "Differential Equations",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "population model differential equation with initial condition",
+      "ocr_text": "4 The number of insects in a population t weeks after the start of observations is denoted by N. The population is decreasing at a rate proportional to Ne^{-0.02t}. The variables N and t are treated as continuous, and it is given that when t = 0, N = 1000 and dN/dt = -10.\n(i) Show that N and t satisfy the differential equation\ndN/dt = -0.01e^{-0.02t}N.\n(ii) Solve the differential equation and find the value of t when N = 800.\n(iii) State what happens to the value of N as t becomes large.",
+      "marks": [
+        1,
+        6,
+        1
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution Of Equations",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "fixed-point iteration for stationary-point equation",
+      "ocr_text": "5 The curve with equation y = e^{-2x} ln(x - 1) has a stationary point when x = p.\n\n(i) Show that p satisfies the equation x = 1 + exp\\left(\\frac{1}{2(x - 1)}\\right), where exp(x) denotes e^x.\n(ii) Verify by calculation that p lies between 2.2 and 2.6.\n(iii) Use an iterative formula based on the equation in part (i) to determine p correct to 2 decimal places. Give the result of each iteration to 4 decimal places.",
+      "marks": [
+        3,
+        2,
+        3
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "topic_title": "Integration",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "integration by parts with trigonometric derivative",
+      "ocr_text": "(i) By differentiating $\\frac{\\cos x}{\\sin x}$, show that if $y = \\cot x$ then $\\frac{\\mathrm{d}y}{\\mathrm{d}x} = -\\cosec^2 x$.\n(ii) Show that $\\int_{\\frac{1}{4}\\pi}^{\\frac{1}{2}\\pi} x \\cosec^2 x \\, \\mathrm{d}x = \\frac{1}{4}(\\pi + \\ln 4)$.",
+      "marks": [
+        2,
+        6
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        9
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q06/q06_page_010.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "topic_title": "Vectors",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "3D vector lines and plane through intersecting lines",
+      "ocr_text": "7 Two lines l and m have equations r = ai + 2j + 3k + λ(i − 2j + 3k) and r = 2i + j + 2k + μ(2i − j + k) respectively, where a is a constant. It is given that the lines intersect.\n\n(i) Find the value of a.\n(ii) When a has this value, find the equation of the plane containing l and m.",
+      "marks": [
+        4,
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q08.png",
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "topic_title": "Integration",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "partial fractions and definite integration",
+      "ocr_text": "8 Let f(x) = (x^2 + x + 6) / (x^2 (x + 2)).\n(i) Express f(x) in partial fractions.\n(ii) Hence, showing full working, show that the exact value of ∫₁⁴ f(x) dx is 9/4.",
+      "marks": [
+        5,
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        13,
+        14
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q08/q08_page_015.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q09.png",
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.trigonometry",
+      "topic_title": "Trigonometry",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "triple-angle identity, trigonometric equation and exact trigonometric integral",
+      "ocr_text": "(i) By first expanding cos(2x + x), show that cos 3x ≡ 4 cos³ x − 3 cos x.\n(ii) Hence solve the equation cos 3x + 3 cos x + 1 = 0, for 0 ⩽ x ⩽ π.\n(iii) Find the exact value of \\(\\int_{\\frac{1}{6}\\pi}^{\\frac{1}{3}\\pi} \\cos^3 x \\, \\mathrm{d}x\\).",
+      "marks": [
+        4,
+        2,
+        4
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        15,
+        16
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q09/q09_page_017.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q10.png",
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "canonical_primary_topic_path": "9709.p3.complex_numbers",
+      "topic_title": "Complex Numbers",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "complex square roots and Argand diagram",
+      "ocr_text": "10 (a) The complex number u is given by u = -3 - (2√10)i. Showing all necessary working and without using a calculator, find the square roots of u. Give your answers in the form a + ib, where the numbers a and b are real and exact. [5]\n(b) On a sketch of an Argand diagram shade the region whose points represent complex numbers z satisfying the inequalities |z − 3 − i| ⩽ 3, arg z ⩾ ¼π and Im z ⩾ 2, where Im z denotes the imaginary part of the complex number z.",
+      "marks": [
+        5,
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        17,
+        18
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q10/q10_page_019.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic And Exponential Functions",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "logarithmic equation involving exponential term",
+      "ocr_text": "1 Solve the equation 5 ln(4 − 3^x) = 6. Show all necessary working and give the answer correct to 3 decimal places.",
+      "marks": [
+        3
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        2
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q01/q01_page_003.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.differentiation",
+      "topic_title": "Differentiation",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "stationary point of exponential rational curve",
+      "ocr_text": "2 The curve with equation y = e^{-2x} / (1 - x^2) has a stationary point in the interval -1 < x < 1. Find dy/dx and hence find the x-coordinate of this stationary point, giving the answer correct to 3 decimal places. [5]",
+      "marks": [
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        3
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q02/q02_page_004.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "topic_title": "Algebra",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "polynomial division and remainder theorem",
+      "ocr_text": "3 The polynomial x^4 + 3x^3 + ax + b, where a and b are constants, is denoted by p(x). When p(x) is divided by x^2 + x - 1 the remainder is 2x + 3. Find the values of a and b.",
+      "marks": [
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q03/q03_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.trigonometry",
+      "topic_title": "Trigonometry",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "R sin form and trigonometric equation",
+      "ocr_text": "(i) Express (√6) sin x + cos x in the form R sin(x + α), where R > 0 and 0° < α < 90°. State the exact value of R and give α correct to 3 decimal places.\n(ii) Hence solve the equation (√6) sin 2θ + cos 2θ = 2, for 0° < θ < 180°.",
+      "marks": [
+        3,
+        4
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.differentiation",
+      "topic_title": "Differentiation",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "implicit differentiation and horizontal tangent",
+      "ocr_text": "5 The equation of a curve is 2x²y − xy² = a³, where a is a positive constant. Show that there is only one point on the curve at which the tangent is parallel to the x-axis and find the y-coordinate of this point. [7]",
+      "marks": [
+        7
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        7
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q05/q05_page_008.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.differential_equations",
+      "topic_title": "Differential Equations",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "first-order differential equation with trigonometric variables",
+      "ocr_text": "6 The variables x and θ satisfy the differential equation\nsin½θ dx/dθ = (x + 2) cos½θ\nfor 0 < θ < π. It is given that x = 1 when θ = ⅓π. Solve the differential equation and obtain an expression for x in terms of cos θ.",
+      "marks": [
+        8
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        9
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q06/q06_page_010.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.complex_numbers",
+      "topic_title": "Complex Numbers",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "complex conjugate equation and Argand loci",
+      "ocr_text": "(a) Find the complex number z satisfying the equation\n\nz + \\frac{iz}{z^*} - 2 = 0,\n\nwhere z^* denotes the complex conjugate of z. Give your answer in the form x + iy, where x and y are real.\n(b) (i) On a single Argand diagram sketch the loci given by the equations |z − 2i| = 2 and Im z = 3, where Im z denotes the imaginary part of z.\n(ii) In the first quadrant the two loci intersect at the point P. Find the exact argument of the complex number represented by P.",
+      "marks": [
+        5,
+        2
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q08.png",
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "topic_title": "Integration",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "partial fractions and logarithmic definite integral",
+      "ocr_text": "8 Let f(x) = (2x^2 + x + 8)/((2x - 1)(x^2 + 2)).\n(i) Express f(x) in partial fractions.\n(ii) Hence, showing full working, find ∫₁⁵ f(x) dx, giving the answer in the form ln c, where c is an integer.",
+      "marks": [
+        5,
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        13,
+        14
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q08/q08_page_015.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q09.png",
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution Of Equations",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "fixed-point iteration derived from integral equation",
+      "ocr_text": "9 It is given that ∫₀ᵃ x cos(1/3 x) dx = 3, where the constant a is such that 0 < a < 3/2 π.\n\n(i) Show that a satisfies the equation\n\na = (4 − 3 cos(1/3 a)) / sin(1/3 a).\n(ii) Verify by calculation that a lies between 2.5 and 3.\n(iii) Use an iterative formula based on the equation in part (i) to calculate a correct to 3 decimal places. Give the result of each iteration to 5 decimal places.",
+      "marks": [
+        5,
+        2,
+        3
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        15,
+        16
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q09/q09_page_017.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q10.png",
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "topic_title": "Vectors",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "vector line-plane intersection, angle and perpendicular plane",
+      "ocr_text": "10 The line l has equation r = i + 3j − 2k + λ(i − 2j + 3k). The plane p has equation 2x + y − 3z = 5.\n(i) Find the position vector of the point of intersection of l and p. [3]\n(ii) Calculate the acute angle between l and p. [3]\n(iii) A second plane q is perpendicular to the plane p and contains the line l. Find the equation of q, giving your answer in the form ax + by + cz = d.",
+      "marks": [
+        3,
+        3,
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        17,
+        18
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q10/q10_page_019.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "topic_title": "Algebra",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "absolute-value inequality",
+      "ocr_text": "1 Solve the inequality 2|x + 2| > |3x − 1|.",
+      "marks": [
+        4
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        2
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q01/q01_page_003.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "topic_title": "Algebra",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "polynomial factor and remainder theorem",
+      "ocr_text": "2 The polynomial 6x^3 + ax^2 + bx - 2, where a and b are constants, is denoted by p(x). It is given that (2x + 1) is a factor of p(x) and that when p(x) is divided by (x + 2) the remainder is -24. Find the values of a and b.",
+      "marks": [
+        5
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        3
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q02/q02_page_004.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic And Exponential Functions",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "exponential equation in powers of 3",
+      "ocr_text": "3 Showing all necessary working, solve the equation \\(\\frac{3^{2x} + 3^{-x}}{3^{2x} - 3^{-x}} = 4\\). Give your answer correct to 3 decimal places.",
+      "marks": [
+        4
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q03/q03_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.trigonometry",
+      "topic_title": "Trigonometry",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "trigonometric identity and equation in tan x",
+      "ocr_text": "(i) By first expanding tan(2x + x), show that the equation tan 3x = 3 cot x can be written in the form tan⁴x − 12 tan²x + 3 = 0.\n(ii) Hence solve the equation tan 3x = 3 cot x for 0° < x < 90°.",
+      "marks": [
+        4,
+        3
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution Of Equations",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "root existence and iterative formula",
+      "ocr_text": "(i) By sketching a suitable pair of graphs, show that the equation ln(x + 2) = 4e^{-x} has exactly one real root.\n(ii) Show by calculation that this root lies between x = 1 and x = 1.5.\n(iii) Use the iterative formula $x_{n+1} = \\ln\\left(\\frac{4}{\\ln(x_n + 2)}\\right)$ to determine the root correct to 2 decimal places. Give the result of each iteration to 4 decimal places.",
+      "marks": [
+        2,
+        2,
+        3
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.complex_numbers",
+      "topic_title": "Complex Numbers",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "modulus-argument complex number and exact Cartesian form",
+      "ocr_text": "6 Throughout this question the use of a calculator is not permitted.\n\nThe complex number with modulus 1 and argument \\(\\frac{1}{3}\\pi\\) is denoted by \\(w\\).\n\n(i) Express \\(w\\) in the form \\(x + iy\\), where \\(x\\) and \\(y\\) are real and exact. [1]\n\nThe complex number \\(1 + 2i\\) is denoted by \\(u\\). The complex number \\(v\\) is such that \\(|v| = 2|u|\\) and \\(\\arg v = \\arg u + \\frac{1}{3}\\pi\\).\n\n(ii) Sketch an Argand diagram showing the points representing \\(u\\) and \\(v\\). [2]\n(iii) Explain why v can be expressed as 2uw. Hence find v, giving your answer in the form a + ib, where a and b are real and exact.",
+      "marks": [
+        1,
+        2,
+        4
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q06/q06_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "topic_title": "Vectors",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "planes, perpendicular distance and angle",
+      "ocr_text": "7 The plane m has equation x + 4y - 8z = 2. The plane n is parallel to m and passes through the point P with coordinates (5, 2, -2).\n\n(i) Find the equation of n, giving your answer in the form ax + by + cz = d.\n\n(ii) Calculate the perpendicular distance between m and n.\n(iii) The line l lies in the plane n, passes through the point P and is perpendicular to OP, where O is the origin. Find a vector equation for l.",
+      "marks": [
+        2,
+        3,
+        4
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q08.png",
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "topic_title": "Integration",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "trapezium-rule estimate and integral of sec x with diagram",
+      "ocr_text": "The diagram shows the graph of y = sec x for 0 ≤ x < ½π.\n\n(i) Use the trapezium rule with 2 intervals to estimate the value of ∫₀¹·² sec x dx, giving your answer correct to 2 decimal places. [3]\n\n(ii) Explain, with reference to the diagram, whether the trapezium rule gives an overestimate or an underestimate of the true value of the integral in part (i). [1]\n(iii) P is the point on the part of the curve y = sec x for 0 ≤ x < ½π at which the gradient is 2. By first differentiating 1/cos x, find the x-coordinate of P, giving your answer correct to 3 decimal places.",
+      "marks": [
+        3,
+        1,
+        6
+      ],
+      "diagram_present": true,
+      "page_indices": [
+        13,
+        14
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q08/q08_page_015.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q09.png",
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.differential_equations",
+      "topic_title": "Differential Equations",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "separable differential equation solved with partial fractions",
+      "ocr_text": "9 The variables x and t satisfy the differential equation 5 dx/dt = (20 − x)(40 − x). It is given that x = 10 when t = 0.\n\n(i) Using partial fractions, solve the differential equation, obtaining an expression for x in terms of t.\n(ii) State what happens to the value of x when t becomes large.",
+      "marks": [
+        9,
+        1
+      ],
+      "diagram_present": false,
+      "page_indices": [
+        15,
+        16
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q09/q09_page_017.png"
+      ]
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q10.png",
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "topic_title": "Integration",
+      "source": "post_replacement_operator_visual_mapping",
+      "evidence_note": "area under exponential-trigonometric curve after maximum point",
+      "ocr_text": "The diagram shows the graph of y = e^{cos x} sin^3 x for 0 ≤ x ≤ π, and its maximum point M. The shaded region R is bounded by the curve and the x-axis.\n\n(i) Find the x-coordinate of M. Show all necessary working and give your answer correct to 2 decimal places.\n(ii) By first using the substitution u = cos x, find the exact value of the area of R.",
+      "marks": [
+        5,
+        7
+      ],
+      "diagram_present": true,
+      "page_indices": [
+        17,
+        18
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q10/q10_page_019.png"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": "9709_p2_m_standard_001_authority_stop_v1",
+  "generated_on": "2026-05-30",
+  "shard_id": "p2_m_standard_001",
+  "status": "blocked_authority_missing",
+  "passed_before_stop": {
+    "page_chain": {
+      "total_pdfs": 8,
+      "passed_pdfs": 8,
+      "blocked_pdfs": 0,
+      "warning_pdfs": 0,
+      "blocker_counts": {},
+      "warning_counts": {}
+    },
+    "evidence_bundle": {
+      "bundles_planned": 57,
+      "route_counts": {
+        "ocr_lane": 47,
+        "diagram_lane": 10
+      },
+      "lazy_attach_original_image": 57
+    },
+    "post_extraction_review": {
+      "manifest_items": 57,
+      "projection_items": 57,
+      "evidence_bundle_items": 57,
+      "human_disposition_items": 27,
+      "blockers": 0,
+      "warnings": 0,
+      "human_review_items": 0,
+      "accepted_human_dispositions": 27,
+      "manual_review_reason_counts": {}
+    }
+  },
+  "authority_preflight": {
+    "path": "docs/reports/2026-05-30-9709-p2-m-standard-001-authority-stop-preflight.json",
+    "status": "fail",
+    "counts": {
+      "manifest_items": 57,
+      "sidecar_items": 300,
+      "diagram_present": {
+        "true": 10,
+        "false": 47,
+        "invalid": 0
+      },
+      "sidecar_canonical_missing": 0,
+      "sidecar_distinct_topics": 0,
+      "blockers": 57,
+      "warnings": 0
+    },
+    "blocker_reason_counts": {
+      "missing_authority_sidecar_entry": 57
+    }
+  },
+  "existing_authority_sidecar": {
+    "path": "data/manifests/9709_authority_ready_batch_300_authority_sidecar_v2.json",
+    "items": 300,
+    "p2_m_standard_001_covered_rows": 0
+  },
+  "seed_coverage": {
+    "curriculum_seed": "data/curriculum/9709_question_search_recovery_nodes_v1.json",
+    "topic_count_by_paper": {
+      "1": 8,
+      "3": 9,
+      "5": 1
+    },
+    "p2_topic_count": 0,
+    "p4_topic_count": 0
+  },
+  "decision": "Do not fabricate P2 mechanics topic mappings. Stop before authority sidecar, registry write-back, search/classifier gates, and production-ready closeout.",
+  "next_valid_step": "Create or approve seeded 9709 P2 mechanics topic paths and a shard-scoped authority sidecar template, then rerun authority preflight for p2_m_standard_001."
+}

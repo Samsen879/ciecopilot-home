@@ -1,0 +1,55 @@
+{
+  "schema_version": "9709_page_chain_evidence_bundle_summary_v1",
+  "generated_on": "2026-05-30",
+  "shard_id": "p2_m_standard_001",
+  "inputs": {
+    "shard_manifest": "tmp/pdf-page-chain/full-scaleout/p2_m_standard_001/shard-manifest.json",
+    "payload_glob": "tmp/pdf-page-chain/full-scaleout/p2_m_standard_001/outputs/*_page_chain.json",
+    "render_root": "tmp/pdf-page-chain/full-scaleout/p2_m_standard_001/renders",
+    "review_crop_root": "tmp/pdf-page-chain/full-scaleout/p2_m_standard_001/review-crops"
+  },
+  "review_crops": {
+    "payload_count": 8,
+    "question_count": 57,
+    "crop_count": 82,
+    "tracked_index": "docs/reports/2026-05-30-9709-p2-m-standard-001-review-crops-index.json"
+  },
+  "projection": {
+    "projected_items": 57,
+    "diagram_present": {
+      "true": 10,
+      "false": 47
+    },
+    "route_counts": {
+      "diagram_lane": 10,
+      "ocr_lane": 47
+    },
+    "warning_dispositions_applied": 0
+  },
+  "evidence_bundle": {
+    "bundles_planned": 57,
+    "route_counts": {
+      "ocr_lane": 47,
+      "diagram_lane": 10
+    },
+    "lazy_attach_original_image": 57
+  },
+  "post_extraction_review": {
+    "manifest_items": 57,
+    "projection_items": 57,
+    "evidence_bundle_items": 57,
+    "human_disposition_items": 27,
+    "blockers": 0,
+    "warnings": 0,
+    "human_review_items": 0,
+    "accepted_human_dispositions": 27,
+    "manual_review_reason_counts": {}
+  },
+  "tracked_artifacts": {
+    "resolution_audit": "docs/reports/2026-05-30-9709-p2-m-standard-001-resolution-audit.json",
+    "projection": "docs/reports/2026-05-30-9709-p2-m-standard-001-page-chain-projection.json",
+    "lane_results": "docs/reports/2026-05-30-9709-p2-m-standard-001-lane-results.json",
+    "surface_manifest": "data/manifests/9709_p2_m_standard_001_page_chain_surface_v1.json",
+    "evidence_bundles": "docs/reports/2026-05-30-9709-p2-m-standard-001-evidence-bundles.json"
+  }
+}

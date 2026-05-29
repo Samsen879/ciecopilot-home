@@ -1,0 +1,600 @@
+{
+  "schema_version": "9709_p2_m_standard_001_authority_layer_v1",
+  "generated_on": "2026-05-30",
+  "shard_id": "p2_m_standard_001",
+  "status": "authority_preflight_passed",
+  "inputs": {
+    "surface_manifest": "data/manifests/9709_p2_m_standard_001_page_chain_surface_v1.json",
+    "evidence_bundles": "docs/reports/2026-05-30-9709-p2-m-standard-001-evidence-bundles.json",
+    "official_syllabus_raw_sections": "data/syllabus/9709/raw_sections_v1.json",
+    "canonical_topic_tree_draft": "data/syllabus/9709/canonical_topic_tree_draft_v1.json",
+    "boundary_audit": "docs/reports/9709-boundary-audit-v1.md"
+  },
+  "outputs": {
+    "curriculum_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_v1.json",
+    "authority_sidecar": "data/manifests/9709_p2_m_standard_001_authority_sidecar_v1.json",
+    "release_preflight": {
+      "json": "docs/reports/2026-05-30-9709-p2-m-standard-001-release-preflight-authority-aligned.json",
+      "markdown": "docs/reports/2026-05-30-9709-p2-m-standard-001-release-preflight-authority-aligned.md"
+    }
+  },
+  "seeded_topic_paths": [
+    {
+      "topic_path": "9709.p2",
+      "title": "Pure Mathematics 2",
+      "level": "paper"
+    },
+    {
+      "topic_path": "9709.p2.algebra",
+      "title": "Algebra",
+      "section_code": "2.1",
+      "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra"
+    },
+    {
+      "topic_path": "9709.p2.logarithmic_and_exponential_functions",
+      "title": "Logarithmic and Exponential Functions",
+      "section_code": "2.2",
+      "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions"
+    },
+    {
+      "topic_path": "9709.p2.trigonometry",
+      "title": "Trigonometry",
+      "section_code": "2.3",
+      "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry"
+    },
+    {
+      "topic_path": "9709.p2.differentiation",
+      "title": "Differentiation",
+      "section_code": "2.4",
+      "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_4_differentiation"
+    },
+    {
+      "topic_path": "9709.p2.integration",
+      "title": "Integration",
+      "section_code": "2.5",
+      "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_5_integration"
+    },
+    {
+      "topic_path": "9709.p2.numerical_solution_of_equations",
+      "title": "Numerical Solution of Equations",
+      "section_code": "2.6",
+      "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_6_numerical_solution_of_equations"
+    }
+  ],
+  "topic_distribution": {
+    "9709.p2.algebra": 16,
+    "9709.p2.differentiation": 11,
+    "9709.p2.integration": 8,
+    "9709.p2.logarithmic_and_exponential_functions": 5,
+    "9709.p2.numerical_solution_of_equations": 8,
+    "9709.p2.trigonometry": 9
+  },
+  "items": [
+    {
+      "storage_key": "9709/m16_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Polynomial division by a linear factor; quotient and remainder.",
+      "evidence_snippet": "Find the quotient and the remainder when $2x^3 + 3x^2 + 10$ is divided by $(x + 2)$."
+    },
+    {
+      "storage_key": "9709/m16_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Modulus inequality with absolute-value comparison.",
+      "evidence_snippet": "Solve the inequality $|x - 5| < |2x + 3|$."
+    },
+    {
+      "storage_key": "9709/m16_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic and Exponential Functions",
+      "rationale": "Logarithm laws used to solve an equation.",
+      "evidence_snippet": "It is given that $k$ is a positive constant. Solve the equation $2 \\ln x = \\ln(3k + x) + \\ln(2k - x)$, expressing $x$ in terms of $k$."
+    },
+    {
+      "storage_key": "9709/m16_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Given iterative formula converging to a root and exact root check.",
+      "evidence_snippet": "The sequence of values given by the iterative formula $$ x_{n+1} = \\sqrt{\\left(\\frac{1}{2}x_n^2 + 4x_n^{-3}\\right)}, $$ with initial value $x_1 = 1.5$, converges to $\\alpha$. ..."
+    },
+    {
+      "storage_key": "9709/m16_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Definite integration of an exponential function to solve for a limit.",
+      "evidence_snippet": "Given that $\\displaystyle\\int_0^a 6e^{2x+1} \\, \\mathrm{d}x = 65$, find the value of $a$ correct to 3 decimal places."
+    },
+    {
+      "storage_key": "9709/m16_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Tangent and stationary point on an exponential-trigonometric curve.",
+      "evidence_snippet": "The diagram shows the part of the curve $y = 3e^{-x} \\sin 2x$ for $0 \\leqslant x \\leqslant \\frac{1}{2}\\pi$, and the stationary point $M$. (i) Find the equation of the tangent ..."
+    },
+    {
+      "storage_key": "9709/m16_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Implicit differentiation and gradient conditions.",
+      "evidence_snippet": "The equation of a curve is $2x^3 + y^3 = 24$. (i) Express $\\dfrac{\\mathrm{d}y}{\\mathrm{d}x}$ in terms of $x$ and $y$, and show that the gradient of the curve is never positive. ..."
+    },
+    {
+      "storage_key": "9709/m16_qp_22/questions/q08.png",
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m16_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Trigonometric identity and exact evaluation using trig functions.",
+      "evidence_snippet": "8 (i) Show that sin 2x cot x ≡ 2 cos²x. [2] (ii) Using the identity in part (i), (a) find the least possible value of 3 sin 2x cot x + 5 cos 2x + 8 as x varies, [4] (b) find ..."
+    },
+    {
+      "storage_key": "9709/m17_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m17_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic and Exponential Functions",
+      "rationale": "Logarithm equation solved using log laws.",
+      "evidence_snippet": "1 Solve the equation 2 ln(2x) − ln(x + 3) = ln(3x + 5)."
+    },
+    {
+      "storage_key": "9709/m17_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m17_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Trig equation involving tan, cot, and double-angle relationships.",
+      "evidence_snippet": "(i) Given that tan 2θ cot θ = 8, show that tan² θ = 3/4. (ii) Hence solve the equation tan 2θ cot θ = 8 for 0° < θ < 180°."
+    },
+    {
+      "storage_key": "9709/m17_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m17_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Modulus inequality and substitution with ln y.",
+      "evidence_snippet": "(i) Solve the inequality |2x − 5| < |x + 3|. (ii) Hence find the largest integer y satisfying the inequality |2 ln y − 5| < |ln y + 3|."
+    },
+    {
+      "storage_key": "9709/m17_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m17_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Implicit differentiation of a trigonometric equation.",
+      "evidence_snippet": "4 Find the gradient of the curve x² sin y + cos 3y = 4 at the point (2, ½π)."
+    },
+    {
+      "storage_key": "9709/m17_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m17_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Integral equation rearranged into an iterative formula.",
+      "evidence_snippet": "5 It is given that a is a positive constant such that ∫₀ᵃ (1 + 2x + 3e³ˣ) dx = 250. (i) Show that a = ⅓ ln(251 − a − a²). (ii) Use an iterative formula based on the equation in ..."
+    },
+    {
+      "storage_key": "9709/m17_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m17_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Factor theorem, remainder theorem, factorisation, and roots.",
+      "evidence_snippet": "6 The polynomial p(x) is defined by p(x) = ax^3 + bx^2 - 17x - a, where a and b are constants. It is given that (x + 2) is a factor of p(x) and that the remainder is 28 when ..."
+    },
+    {
+      "storage_key": "9709/m17_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m17_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Area under a trigonometric curve after identity transformation.",
+      "evidence_snippet": "The diagram shows part of the curve y = 2 cos 2x cos(2x + 1/6 π). The shaded region is bounded by the curve and the two axes. (i) Show that 2 cos 2x cos(2x + 1/6 π) can be ..."
+    },
+    {
+      "storage_key": "9709/m18_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m18_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Modulus inequality.",
+      "evidence_snippet": "1 Solve the inequality |5x + 2| > |4x + 3|."
+    },
+    {
+      "storage_key": "9709/m18_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m18_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Tangent to a trigonometric product curve.",
+      "evidence_snippet": "2 A curve has equation y = 4x sin ½x. Find the equation of the tangent to the curve at the point for which x = π. [4]"
+    },
+    {
+      "storage_key": "9709/m18_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m18_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Trapezium rule approximation for definite integrals.",
+      "evidence_snippet": "(i) Use the trapezium rule with four intervals to find an approximation to \\[ \\int_{0}^{8} \\ln(x + 2) \\, dx, \\] giving your answer correct to 3 significant figures. (ii) Hence ..."
+    },
+    {
+      "storage_key": "9709/m18_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m18_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Factor theorem and polynomial equation transformed with logarithms.",
+      "evidence_snippet": "4 The polynomial p(x) is defined by p(x) = 4x³ + 4x² − 29x − 15. (i) Use the factor theorem to show that (x + 3) is a factor of p(x). (iii) Hence, given that \\[ 2^{3u+2} + ..."
+    },
+    {
+      "storage_key": "9709/m18_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m18_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Definite integral equation solved with a prescribed iteration.",
+      "evidence_snippet": "5 It is given that ∫_{-a}^{2a} 4e^{-2x} dx = 25, where a is a positive constant. (i) Show that a = \\frac{1}{2}\\ln(12.5 + e^{-4a}). (ii) Use the equation in part (i) to show by ..."
+    },
+    {
+      "storage_key": "9709/m18_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m18_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Trig identities, exact cotangent value, and related trig integral.",
+      "evidence_snippet": "(i) Show that cosec 2x + cot 2x ≡ cot x. (ii) Hence find the exact value of cot \\frac{1}{12}\\pi. (iii) Find \\int \\sin 2x(\\cosec 4x + \\cot 4x) \\, dx."
+    },
+    {
+      "storage_key": "9709/m18_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m18_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Parametric differentiation, stationary point, and gradient range.",
+      "evidence_snippet": "The diagram shows part of the curve defined by the parametric equations x = t² + 4t, y = t³ − 3t². The curve has a minimum point at M and crosses the x-axis at the point P. (i) ..."
+    },
+    {
+      "storage_key": "9709/m19_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m19_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Trig equation involving secant and tangent.",
+      "evidence_snippet": "1 Solve the equation sec² θ + tan² θ = 5 tan θ + 4 for 0° < θ < 180°. Show all necessary working. [4]"
+    },
+    {
+      "storage_key": "9709/m19_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m19_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Modulus equation and evaluation of modulus expressions.",
+      "evidence_snippet": "2 Given that x satisfies the equation |2x + 3| = |2x − 1|, find the value of |4x − 3| − |6x|."
+    },
+    {
+      "storage_key": "9709/m19_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m19_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic and Exponential Functions",
+      "rationale": "Linearisation of an exponential relationship using ln y.",
+      "evidence_snippet": "The variables x and y satisfy the equation y = Ae^(px+p), where A and p are constants. The graph of ln y against x is a straight line passing through the points (1, 2.835) and ..."
+    },
+    {
+      "storage_key": "9709/m19_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m19_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Polynomial division and argument about real roots.",
+      "evidence_snippet": "(i) Find the quotient when 4x³ + 8x² + 11x + 9 is divided by (2x + 1), and show that the remainder is 5. (ii) Show that the equation 4x³ + 8x² + 11x + 4 = 0 has exactly one ..."
+    },
+    {
+      "storage_key": "9709/m19_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m19_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Iteration to locate a curve point, with derivative evidence as secondary.",
+      "evidence_snippet": "5 The equation of a curve is y = e^{2x}/(4x + 1) and the point P on the curve has y-coordinate 10. (i) Show that the x-coordinate of P satisfies the equation x = ..."
+    },
+    {
+      "storage_key": "9709/m19_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m19_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Exact integration of rational and trigonometric expressions.",
+      "evidence_snippet": "6 (a) Show that ∫₁⁴ (2/x + 2/(2x+1)) dx = ln 48. (b) Find ∫ sin 2x (cot x + 2 cosec x) dx."
+    },
+    {
+      "storage_key": "9709/m19_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m19_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Parametric gradient condition with trigonometric solving.",
+      "evidence_snippet": "7 The parametric equations of a curve are x = 2t − sin 2t, y = 5t + cos 2t, for 0 ≤ t ≤ ½π. At the point P on the curve, the gradient of the curve is 2. (i) Show that the value ..."
+    },
+    {
+      "storage_key": "9709/m21_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m21_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Sketch and solve an equation involving a modulus graph.",
+      "evidence_snippet": "(a) Sketch, on the same diagram, the graphs of y = |3x − 5| and y = x + 2. (b) Solve the equation |3x − 5| = x + 2."
+    },
+    {
+      "storage_key": "9709/m21_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m21_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Equation involving secant and cotangent.",
+      "evidence_snippet": "2 Solve the equation sec² θ cot θ = 8 for 0 < θ < π."
+    },
+    {
+      "storage_key": "9709/m21_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m21_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Parametric differentiation with exponential and trigonometric components.",
+      "evidence_snippet": "3 The parametric equations of a curve are x = e^{2t} cos 4t, y = 3 sin 2t. Find the gradient of the curve at the point for which t = 0."
+    },
+    {
+      "storage_key": "9709/m21_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m21_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Trapezium rule estimate for area, with derivative used for curve shape.",
+      "evidence_snippet": "The diagram shows part of the curve with equation $y = \\frac{5x}{4x^3 + 1}$. The shaded region is bounded by the curve and the lines $x = 1$, $x = 3$ and $y = 0$. (a) Find ..."
+    },
+    {
+      "storage_key": "9709/m21_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m21_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Logarithmic equation rearranged and solved by iteration.",
+      "evidence_snippet": "5 (a) Given that 2 ln(x + 1) + ln x = ln(x + 9), show that x = √(9/(x + 2)). (b) It is given that the equation $x = \\sqrt{\\frac{9}{x + 2}}$ has a single root. Show by ..."
+    },
+    {
+      "storage_key": "9709/m21_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m21_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Polynomial factor/remainder theorem and exact transformed root.",
+      "evidence_snippet": "6 The polynomial p(x) is defined by p(x) = x³ + ax + b, where a and b are constants. It is given that (x + 2) is a factor of p(x) and that the remainder is 5 when p(x) is ..."
+    },
+    {
+      "storage_key": "9709/m21_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m21_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "R cos form, least value, and exact trigonometric integral.",
+      "evidence_snippet": "(a) Express $5\\sqrt{3} \\cos x + 5 \\sin x$ in the form $R \\cos(x - \\alpha)$, where $R > 0$ and $0 < \\alpha < \\frac{1}{2}\\pi$. (b) As $x$ varies, find the least possible value of ..."
+    },
+    {
+      "storage_key": "9709/m22_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m22_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Modulus equation.",
+      "evidence_snippet": "1 Solve the equation |5x − 2| = |4x + 9|."
+    },
+    {
+      "storage_key": "9709/m22_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m22_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Tangent to a logarithmic curve.",
+      "evidence_snippet": "2 A curve has equation y = 7 + 4 ln(2x + 5). Find the equation of the tangent to the curve at the point (−2, 7), giving your answer in the form y = mx + c."
+    },
+    {
+      "storage_key": "9709/m22_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m22_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic and Exponential Functions",
+      "rationale": "Log-linear transformation of an exponential relationship.",
+      "evidence_snippet": "3 The variables x and y satisfy the equation y = 3^{2a} a^x, where a is a constant. The graph of ln y against x is a straight line with gradient 0.239. (a) Find the value of a ..."
+    },
+    {
+      "storage_key": "9709/m22_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m22_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Trig identity, exact value, and trig equation.",
+      "evidence_snippet": "(a) Show that sin 2θ cot θ − cos 2θ ≡ 1. (b) Hence find the exact value of sin \\frac{1}{6}\\pi \\cot \\frac{1}{12}\\pi. (c) Find the smallest positive value of θ (in radians) ..."
+    },
+    {
+      "storage_key": "9709/m22_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m22_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Exact integral supported by a derivative identity.",
+      "evidence_snippet": "5 (a) Given that y = tan²x, show that dy/dx = 2 tan x + 2 tan³x. (b) Find the exact value of ∫_{1/4 π}^{1/3 π} (tan x + tan²x + tan³x) dx."
+    },
+    {
+      "storage_key": "9709/m22_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m22_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Polynomial division, factorisation, and transformed trig equation.",
+      "evidence_snippet": "6 The polynomial p(x) is defined by p(x) = 4x³ + 16x² + 9x − 15. (a) Find the quotient when p(x) is divided by (2x + 3), and show that the remainder is −6. [3] (b) Find ∫ ..."
+    },
+    {
+      "storage_key": "9709/m22_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m22_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Implicit derivative condition rearranged into an iterative formula.",
+      "evidence_snippet": "7 A curve has equation e^{2x}y - e^y = 100. (a) Show that \\frac{dy}{dx} = \\frac{2e^{2x}y}{e^y - e^{2x}}. (b) Show that the curve has no stationary points. It is required to ..."
+    },
+    {
+      "storage_key": "9709/m23_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m23_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Exact integration of a trigonometric function.",
+      "evidence_snippet": "1 Find the exact value of ∫₀^(½π) 2 tan²(½x) dx."
+    },
+    {
+      "storage_key": "9709/m23_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m23_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Trig equation involving tan and cot.",
+      "evidence_snippet": "2 Solve the equation tan(θ − 60°) = 3 cot θ for −90° < θ < 90°."
+    },
+    {
+      "storage_key": "9709/m23_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m23_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Polynomial factor theorem, remainder theorem, and root count.",
+      "evidence_snippet": "3 The polynomial p(x) is defined by p(x) = ax^3 - ax^2 + ax + b, where a and b are constants. It is given that (x + 2) is a factor of p(x), and that the remainder is 35 when ..."
+    },
+    {
+      "storage_key": "9709/m23_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m23_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Modulus graph and inequality, with logarithmic substitution.",
+      "evidence_snippet": "(a) Sketch, on the same diagram, the graphs of y = |2x − 11| and y = 3x − 3. (b) Solve the inequality |2x − 11| < 3x − 3. (c) Find the smallest integer N satisfying the ..."
+    },
+    {
+      "storage_key": "9709/m23_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m23_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Integral equation rearranged and solved by iteration.",
+      "evidence_snippet": "5 It is given that ∫₁ᵃ (4/(1+2x) + 3/x) dx = ln 10, where a is a constant greater than 1. (a) Show that a = ∛[90(1+2a)⁻²]. (b) Use an iterative formula, based on the equation ..."
+    },
+    {
+      "storage_key": "9709/m23_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m23_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Gradient and minimum point of an exponential quotient curve.",
+      "evidence_snippet": "The diagram shows the curve with equation $ y = \\frac{4e^{2x} + 9}{e^x + 2} $. The curve has a minimum point $ M $ and crosses the y-axis at the point $ P $. (a) Find the exact ..."
+    },
+    {
+      "storage_key": "9709/m23_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m23_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Parametric derivative and normal-gradient condition.",
+      "evidence_snippet": "The diagram shows the curve with parametric equations x = k tan t, y = 3 sin 2t − 4 sin t, for 0 < t < ½π. It is given that k is a positive constant. The curve crosses the ..."
+    },
+    {
+      "storage_key": "9709/m24_qp_22/questions/q01.png",
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m24_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+      "topic_title": "Logarithmic and Exponential Functions",
+      "rationale": "Use logarithms to solve an exponential equation.",
+      "evidence_snippet": "1 Use logarithms to solve the equation $3^{4x+3} = 5^{2x+7}$. Give your answer correct to 3 significant figures. [4]"
+    },
+    {
+      "storage_key": "9709/m24_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m24_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Modulus graph and root-count condition.",
+      "evidence_snippet": "(a) Sketch the graph of $y = |3x - 7|$, stating the coordinates of the points where the graph meets the axes. (b) Hence find the set of values of the constant $k$ for which the ..."
+    },
+    {
+      "storage_key": "9709/m24_qp_22/questions/q03.png",
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m24_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.algebra",
+      "topic_title": "Algebra",
+      "rationale": "Polynomial factorisation and transformed trigonometric equation.",
+      "evidence_snippet": "3 The polynomial p(x) is defined by p(x) = 6x^3 + ax^2 + 3x - 10, where a is a constant. It is given that (2x - 1) is a factor of p(x). (a) Find the value of a and hence ..."
+    },
+    {
+      "storage_key": "9709/m24_qp_22/questions/q04.png",
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m24_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.integration",
+      "topic_title": "Integration",
+      "rationale": "Trapezium rule area and exact volume by integration.",
+      "evidence_snippet": "The diagram shows the curve with equation $y = \\sqrt{1 + e^{0.5x}}$. The shaded region is bounded by the curve and the straight lines $x = 0$, $x = 6$ and $y = 0$. (a) Use the ..."
+    },
+    {
+      "storage_key": "9709/m24_qp_22/questions/q05.png",
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m24_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+      "topic_title": "Numerical Solution of Equations",
+      "rationale": "Curve condition rearranged into an iterative formula.",
+      "evidence_snippet": "The diagram shows part of the curve with equation $y = \\frac{x^3}{x + 2}$. At the point $P$, the gradient of the curve is 6. (a) Show that the $x$-coordinate of $P$ satisfies ..."
+    },
+    {
+      "storage_key": "9709/m24_qp_22/questions/q06.png",
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m24_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.differentiation",
+      "topic_title": "Differentiation",
+      "rationale": "Parametric differentiation and minimum point.",
+      "evidence_snippet": "The diagram shows the curve with parametric equations x = 1 + √t, y = (ln t + 2)(ln t − 3), for 0 < t < 25. The curve crosses the x-axis at the points A and B and has a minimum ..."
+    },
+    {
+      "storage_key": "9709/m24_qp_22/questions/q07.png",
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_m24_qp_22.pdf",
+      "canonical_primary_topic_path": "9709.p2.trigonometry",
+      "topic_title": "Trigonometry",
+      "rationale": "Trig identity, exact integral, and trig equation.",
+      "evidence_snippet": "(a) Prove that \\[ \\sin 2\\theta (a \\cot \\theta + b \\tan \\theta) \\equiv a + b + (a - b) \\cos 2\\theta, \\] where $a$ and $b$ are constants. (b) Find the exact value of ..."
+    }
+  ],
+  "posture": {
+    "authority_scope": "shard-scoped P2 runtime authority only",
+    "p2_p3_boundary": "preserved as boundary overlay; no silent P2-to-P3 merge",
+    "production_ready_claim": false,
+    "authority_preflight": "passed with 0 blockers and 57 expected manifest-topic warnings"
+  },
+  "preflight_result": {
+    "status": "pass",
+    "blockers": 0,
+    "warnings": 57,
+    "warning_reason": "manifest_primary_topic_missing_sidecar_canonical_present",
+    "warning_posture": "expected because the page-chain surface manifest still leaves primary_topic_path unset while the authority sidecar supplies canonical P2 topic authority"
+  }
+}

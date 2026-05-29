@@ -231,6 +231,18 @@ describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
     expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
   });
 
+  test('falls back from P2 algebra topic-path hint when prompt signals are weak', () => {
+    const result = analyze('Solve the equation |5x - 2| = |4x + 9|.', {
+      topic_path_hint: '9709.p2.algebra',
+    });
+
+    expect(result.primary_question_type_id).toBe('9709.algebra.polynomial_rational');
+    expect(result.family_id).toBe('9709.algebra');
+    expect(result.classification_confidence).toBe(0.84);
+    expect(result.confidence_band).toBe('medium');
+    expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
+  });
+
   test('does not classify explicit out-of-scope 9709 topic hints', () => {
     const result = analyze('A statistics question about representation of data.', {
       topic_path_hint: '9709.p5.representation_of_data',

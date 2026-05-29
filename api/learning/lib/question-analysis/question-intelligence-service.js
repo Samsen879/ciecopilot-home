@@ -174,6 +174,60 @@ const TOPIC_PATH_CLASSIFICATIONS = Object.freeze({
       'interpret the result as an angle, length, area, volume, intersection, or proof',
     ],
   }),
+  '9709.p2.algebra': Object.freeze({
+    questionTypeId: '9709.algebra.polynomial_rational',
+    familyId: '9709.algebra',
+    skeletonSteps: [
+      'identify the polynomial, rational expression, inequality, or partial fraction structure',
+      'apply the relevant algebraic manipulation or theorem',
+      'solve for constants, factors, remainders, coefficients, or inequalities',
+    ],
+  }),
+  '9709.p2.logarithmic_and_exponential_functions': Object.freeze({
+    questionTypeId: '9709.log_exp.equations_models',
+    familyId: '9709.logarithmic_and_exponential_functions',
+    skeletonSteps: [
+      'rewrite the logarithmic or exponential relationship using laws of logs or indices',
+      'solve the equation or linearised model condition',
+      'state the requested value, expression, or straight-line form',
+    ],
+  }),
+  '9709.p2.trigonometry': Object.freeze({
+    questionTypeId: '9709.trigonometry.general',
+    familyId: '9709.trigonometry_manipulation_equations',
+    skeletonSteps: [
+      'identify the A Level trigonometric structure',
+      'apply identities, transformations, or equation-solving in the required domain',
+      'state exact values or all required solutions',
+    ],
+  }),
+  '9709.p2.differentiation': Object.freeze({
+    questionTypeId: '9709.differentiation.application',
+    familyId: '9709.differentiation',
+    skeletonSteps: [
+      'differentiate using the appropriate A Level technique',
+      'use the derivative condition required by the model or curve',
+      'interpret the result and state any requested exact or numerical value',
+    ],
+  }),
+  '9709.p2.integration': Object.freeze({
+    questionTypeId: '9709.integration.application',
+    familyId: '9709.integration_techniques',
+    skeletonSteps: [
+      'identify the integration technique or application',
+      'set up and evaluate the integral, including bounds where required',
+      'simplify the exact or numerical result',
+    ],
+  }),
+  '9709.p2.numerical_solution_of_equations': Object.freeze({
+    questionTypeId: '9709.numerical_methods.iteration',
+    familyId: '9709.numerical_solution_of_equations',
+    skeletonSteps: [
+      'identify the numerical method, iteration, or interval argument',
+      'apply the formula or sign-change reasoning to the required accuracy',
+      'state the root, iteration result, or convergence conclusion',
+    ],
+  }),
   '9709.p3.algebra': Object.freeze({
     questionTypeId: '9709.algebra.polynomial_rational',
     familyId: '9709.algebra',

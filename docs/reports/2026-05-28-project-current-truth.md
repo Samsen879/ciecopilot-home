@@ -8,6 +8,8 @@
 
 本报告只写文档事实，不修改题库数据、manifest、DB、source PDFs 或 runtime 代码。
 
+Update note (2026-05-29): 本报告中的 9709 production-readiness 数字已被 `docs/reports/2026-05-29-9709-production-readiness-status.md` supersede。当前 repo truth 是 `1267/2935` production-ready rows、zero active visual-stop rows、`1668` remaining rows。
+
 ## Baseline Snapshot
 
 | Item | Value |

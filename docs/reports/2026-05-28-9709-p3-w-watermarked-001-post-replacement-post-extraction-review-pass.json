@@ -1,0 +1,318 @@
+{
+  "schema_version": "9709_page_chain_shard_post_extraction_review_v1",
+  "generated_on": "2026-05-28",
+  "shard_id": "p3_w_watermarked_001",
+  "status": "pass",
+  "inputs": {
+    "manifest": "tmp/pdf-page-chain/w19-remediation/bundles/p3_w_watermarked_001/triaged-manifest.json",
+    "projection": "tmp/pdf-page-chain/w19-remediation/bundles/p3_w_watermarked_001/projection.json",
+    "evidence_bundles": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-evidence-bundles.json",
+    "human_dispositions": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-vlm-assisted-visual-dispositions.json"
+  },
+  "summary": {
+    "manifest_items": 30,
+    "projection_items": 30,
+    "evidence_bundle_items": 30,
+    "human_disposition_items": 30,
+    "blockers": 0,
+    "warnings": 0,
+    "human_review_items": 0,
+    "accepted_human_dispositions": 30,
+    "manual_review_reason_counts": {}
+  },
+  "blockers": [],
+  "warnings": [],
+  "human_review_queue": [],
+  "accepted_human_dispositions": [
+    {
+      "storage_key": "9709/w19_qp_31/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Question content is fully visible; no occluding watermark present. Footer contains standard UCL/UCLES copyright and paper code, which does not interfere with question text or answer space. 'Turn over' instruction is clear."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question text visible: 'Solve the inequality |2x − 3| > 4|x + 1|.' Mark allocation [4] present. No watermark occludes content; faint footer watermark (© UCLES 2019, 9709/31/O/N/19) is non-intrusive and does not cover prompt, formula, or answer lines."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible; no occluding watermark. Parametric equations and derivative instruction are clear. Dotted answer lines present. Footer contains standard ULES copyright and paper code, not a disruptive watermark."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two pages; watermark (© UCLES 2019 and paper ID) is present at bottom margin and does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with '[Turn over]' indicator. No red/foreign watermark over content."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two cropped pages; watermark (© UCLES 2019, reference number) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this question; cross-page continuity is intact (part (iii) continues on second page with '[Turn over]' indicating expected continuation)."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q06.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible; no occluding watermark. Footer contains standard UCL/UCLES copyright and paper code, which is acceptable per policy. No diagrams required for this question."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two pages; watermark (UCLES 2019, paper ID) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear 'Turn over' indicator. No red/foreign watermark or truncation observed."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q08.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Question content fully visible across two pages; watermark (© UCLES 2019, code 9709/31/O/N/19) is present but does not occlude any prompt text, formulae, or mark allocations. No red/foreign watermark text over content. Cross-page continuity is intact with clear 'Turn over' indicator."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q09.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content (parts i, ii, iii) is clearly visible across two pages. No red/foreign watermark occludes text, formulae, or mark allocations. Faint '© UCLES 2019' and '9709/31/O/N/19' footer text are present but do not interfere with content. Cross-page continuity is intact (part (iii) on second page follows part (ii) logically; '[Turn over]' indicates expected continuation)."
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q10.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content (parts (a) and (b)) is clearly visible. Watermark '© UCLES 2019' and code '9709/31/O/N/19' appear at bottom margin and do not occlude any prompt text, formulae, or required elements. No diagrams are required for part (a); part (b) only requests a sketch (no diagram provided in crop, but instruction is textual and sufficient). Cross-page continuity is acceptable as both parts of Q10 are present on the same page (page 19), with no truncation."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and '9709/32/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation [3]. 'Turn over' is visible but does not interfere with content. Full question is legible and complete."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question text is clearly visible; no watermark occludes content. Bottom footer contains standard UCL/UCLES copyright and paper code, which is acceptable per policy. Dotted answer lines are present and unobstructed."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and '9709/32/O/N/19' at bottom margin; '[Turn over]' at bottom right. No occlusion of question text, formulae, or mark allocation [5]. Dotted answer lines fully visible. Question boundary credible."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content (parts (i) and (ii)) is clearly visible. Watermarks are faint, non-red, and do not occlude any text, formulae, or mark allocations. Bottom of second crop shows '[Turn over]' indicating proper page continuity. No diagrams required for this question."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q05.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question text is clearly visible. No watermark occludes the prompt, formula, or mark allocation [7]. Dotted answer lines are present but do not interfere with content. Footer contains standard ULES copyright and paper code, which is acceptable per guidelines."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q06.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and identifier '9709/32/O/N/19' are present at bottom margin but do not occlude any question content, formulae, or mark allocation. Full question text and differential equation are clearly visible. No diagrams required for this question."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two pages; watermark (© UCLES 2019 and code) is faint, positioned in footer, does not occlude any prompt text, formulae, or mark allocations. Diagrams are not present in this crop but part (b)(i) explicitly asks to sketch loci—no diagram is required in the question stem itself. Cross-page continuity is intact: page 12 ends with question 7(a), page 13 continues with 7(b)(i) and (ii), and '[Turn over]' is correctly placed."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q08.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two crops; watermark (© UCLES 2019 and code) is present but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this algebra/calculus question. Cross-page continuity is intact (part (i) on first page, part (ii) on second with '[Turn over]' indicator)."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q09.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two cropped pages; watermark (UCLES 2019, paper code) is present in footer but does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear '[Turn over]' indicator. No red/foreign watermark over content."
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q10.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content (parts i, ii, iii) is clearly visible. No red/foreign watermark occludes text, formulae, or structure. Faint '© UCLES 2019' and identifier footer are present but do not interfere with readability. Question boundaries are credible; multi-page continuity is preserved as indicated by crop metadata and layout."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and '9709/33/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation [4]. '[Turn over]' is visible and unobscured. Full question content is legible and complete."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and '9709/33/O/N/19' appear only in footer, not overlapping question text, formulae, or answer lines. Full question content is visible and legible."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and '9709/33/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation. '[Turn over]' is visible and unobscured. Full question content is legible and complete."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two crops; watermark (© UCLES 2019 and identifier) is present at bottom but does not occlude prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear 'Turn over' indicator. No red/foreign watermark over content."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two cropped pages; watermark (UCLES 2019, paper ID) is present but does not occlude any prompt text, formulae, or mark allocations. No red/foreign watermark over content. Diagrams are not required for this question (graph sketching is requested but no pre-drawn diagram is provided or needed). Cross-page continuity is intact: part (i) on first page, parts (ii) and (iii) on second page with clear continuation. Question boundaries credible."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two cropped pages; watermark (UCLES 2019, paper ID) is present in footer but does not occlude any prompt text, formulae, labels, or mark allocations. Diagram instruction (part ii) is present though diagram itself is not drawn (as expected for candidate response area). Cross-page continuity is intact with clear 'Turn over' indicator."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible across two cropped pages; watermark (© UCLES 2019 and identifier) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this question. Cross-page continuity is maintained (part (iii) appears on second crop with '[Turn over]' indicating expected continuation)."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q08.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and identifier '9709/33/O/N/19' are present at bottom but do not occlude any question text, diagram, labels, axes, or mark allocations. Diagram of y = sec x is fully visible with clear axes, curve, and vertical asymptote at x = π/2. Question content spans two pages (page 8 and page 15), with '[Turn over]' indicating continuity; both pages are present and correctly ordered. No red/foreign watermark over content. Crop boundaries are credible."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q09.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Full question content visible; watermark (© UCLES 2019 and code) is present at bottom margin and does not occlude any prompt text, formulae, or mark allocations. Question spans two pages as indicated by '[Turn over]' and page numbering; both parts (i) and (ii) are fully legible. No red/foreign watermark over content."
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q10.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-28",
+      "notes": "Accepted from post-replacement targeted VLM visual review evidence. The crop stack was accepted with no blockers; red watermark/source-integrity occlusion was not visible after source replacement. VLM notes: Watermark '© UCLES 2019' and '9709/33/O/N/19' appear at bottom margin, not overlapping question text, diagram, axes, labels, or mark allocations. Diagram is fully visible with clear axes, curve, point M, and shaded region R. Question content (parts (i) and (ii)) is complete and legible. No truncation or missing elements observed."
+    }
+  ]
+}

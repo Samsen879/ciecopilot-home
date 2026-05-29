@@ -1,0 +1,1967 @@
+{
+  "schema_version": "9709_page_chain_triaged_manifest_v1",
+  "manifest_id": "9709_full_scaleout_manifest_v1_p3_w_watermarked_001_page_chain_surface_v1",
+  "subject_code": "9709",
+  "generated_on": "2026-05-26",
+  "scope": {
+    "source_inventory_id": "9709_full_scaleout_inventory_v1",
+    "source_inventory_schema_version": "9709_full_scaleout_inventory_v1",
+    "question_rows_parseable": 2935,
+    "shards_total": 36,
+    "operator_decision": "single-shard p3_w_watermarked_001 launch only; external VLM call not yet approved for this shard"
+  },
+  "shards": [
+    {
+      "shard_id": "p3_w_watermarked_001",
+      "group_key": "p3_w_watermarked",
+      "risk_tier": "core",
+      "item_count": 30,
+      "pdf_count": 3,
+      "pdf_paths": [
+        "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+        "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+        "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf"
+      ],
+      "paper_set": [
+        3
+      ],
+      "session_set": [
+        "w"
+      ],
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ]
+    }
+  ],
+  "source_manifest_id": "9709_full_scaleout_manifest_v1_p3_w_watermarked_001",
+  "items": [
+    {
+      "storage_key": "9709/w19_qp_31/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q01/q01_page_003.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "7c70f1ef9f04bc01f5f099016e3b1bf239b5e840164d2d7969620f24dc66056d",
+      "canonical_primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q01.png; source=post_replacement_operator_visual_mapping; logarithmic expression involving e^(2y) rearranged for y; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q01.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.algebra",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q02/q02_page_004.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "fe39d8c6c1a61080202a29cf3d8b8e14c3ddd50ce827fe29509d854547459028",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q02.png; source=post_replacement_operator_visual_mapping; absolute-value inequality; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q02.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.differentiation",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q03/q03_page_005.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "8a4f18e45a838227048b084f7d4b8dfa17e181ceed099a42de1894ac3439469b",
+      "canonical_primary_topic_path": "9709.p3.differentiation",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q03.png; source=post_replacement_operator_visual_mapping; parametric differentiation; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q03.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.differential_equations",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q04/q04_page_007.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "ceb5598711df732c4417344862b2f7495e3c052cff71d5f155942e99e33b0d8d",
+      "canonical_primary_topic_path": "9709.p3.differential_equations",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q04.png; source=post_replacement_operator_visual_mapping; population model differential equation with initial condition; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q04.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q05/q05_page_009.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "e5f674c945718d34de79ffcbbde8c5bd4eab344f5789096a4424a9db0e779c1e",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q05.png; source=post_replacement_operator_visual_mapping; fixed-point iteration for stationary-point equation; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q05.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.integration",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q06/q06_page_010.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "489731427d94134f7343e69e2dace0247f074ab89914e6a2d8c7da239d0461eb",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q06.png; source=post_replacement_operator_visual_mapping; integration by parts with trigonometric derivative; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q06.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.vectors",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q07/q07_page_013.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "98fc90d7f88b6ddab6f4bc3822090683f12ec09d528b0d185ec497f050241f77",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q07.png; source=post_replacement_operator_visual_mapping; 3D vector lines and plane through intersecting lines; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q07.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.integration",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_015.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q08/q08_page_015.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "672fa747205cb91d44ae356441cf673e9a5b9caae369a82d5e2578833450672c",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q08.png; source=post_replacement_operator_visual_mapping; partial fractions and definite integration; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q08.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.trigonometry",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_017.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q09/q09_page_017.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "8f934f48e26ca18acd7dcbf5e41da02255b51fe90eb80aea23f58337ec242a4a",
+      "canonical_primary_topic_path": "9709.p3.trigonometry",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q09.png; source=post_replacement_operator_visual_mapping; triple-angle identity, trigonometric equation and exact trigonometric integral; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q09.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 1,
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.complex_numbers",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_31/WM_9709_w19_qp_31_page_019.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_31/q10/q10_page_019.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "09315ff084b339b11508c52436854376cb8d33252b16e400bb68a462183b11e5",
+      "canonical_primary_topic_path": "9709.p3.complex_numbers",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_31/questions/q10.png; source=post_replacement_operator_visual_mapping; complex square roots and Argand diagram; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_31/questions/q10.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q01/q01_page_003.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "ccddafc803fa6f18e944dfb2a8497ccd57580fd3854335e321acd9c3d6bfd333",
+      "canonical_primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q01.png; source=post_replacement_operator_visual_mapping; logarithmic equation involving exponential term; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q01.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.differentiation",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q02/q02_page_004.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "e440bdba433a31f72abbdfffe1a901e2a62e5cf393ba986bd49d3097fe30c92c",
+      "canonical_primary_topic_path": "9709.p3.differentiation",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q02.png; source=post_replacement_operator_visual_mapping; stationary point of exponential rational curve; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q02.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.algebra",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q03/q03_page_005.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "f05428fe87b60122c4344f60913e43773e8c0cc6eeb9d0694f371c2006f181a9",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q03.png; source=post_replacement_operator_visual_mapping; polynomial division and remainder theorem; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q03.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.trigonometry",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q04/q04_page_007.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "6025ff1db948450e3ef081650f9ef7ef4bed5ed21e390d313648e44181592598",
+      "canonical_primary_topic_path": "9709.p3.trigonometry",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q04.png; source=post_replacement_operator_visual_mapping; R sin form and trigonometric equation; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q04.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.differentiation",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_008.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q05/q05_page_008.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "04af48e333aa434254d84b93542b65e5a0e0357a9e5136bd48ef446923c749fe",
+      "canonical_primary_topic_path": "9709.p3.differentiation",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q05.png; source=post_replacement_operator_visual_mapping; implicit differentiation and horizontal tangent; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q05.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.differential_equations",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q06/q06_page_010.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "2afd8729fbd95cf7ee14ca4c05862b6bb5318e7dc623da168b54d91b6ed57cba",
+      "canonical_primary_topic_path": "9709.p3.differential_equations",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q06.png; source=post_replacement_operator_visual_mapping; first-order differential equation with trigonometric variables; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q06.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.complex_numbers",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q07/q07_page_013.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "bd655ed119209d78ea65f72c8d281f3ca4b9f4f9418267c04997b8d2b9ae6a73",
+      "canonical_primary_topic_path": "9709.p3.complex_numbers",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q07.png; source=post_replacement_operator_visual_mapping; complex conjugate equation and Argand loci; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q07.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.integration",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_015.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q08/q08_page_015.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "76e8444abe59f7b93df50cc2b05b657cb0df3386a9d523da19b056fc7220e95d",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q08.png; source=post_replacement_operator_visual_mapping; partial fractions and logarithmic definite integral; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q08.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_017.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q09/q09_page_017.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "ff58026d1a51f240141e1f290a4a323c1414c7896581e1ca96d13bcafb8536c1",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q09.png; source=post_replacement_operator_visual_mapping; fixed-point iteration derived from integral equation; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q09.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 2,
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.vectors",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_32/WM_9709_w19_qp_32_page_019.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_32/q10/q10_page_019.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "b0adc183cdd3eafa68662c62441efdcaa228549024408e09c8af571fea84a248",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_32/questions/q10.png; source=post_replacement_operator_visual_mapping; vector line-plane intersection, angle and perpendicular plane; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_32/questions/q10.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.algebra",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q01/q01_page_003.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "529ab251112507d4adc6de0e7283a02adebc805a2a93079bb2a7ed943d2b149e",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q01.png; source=post_replacement_operator_visual_mapping; absolute-value inequality; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q01.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.algebra",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q02/q02_page_004.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "8b61cd9bfd08054fa42abfd9c2d98f15b5c62d6fe1b5eded2985ce4e3538be43",
+      "canonical_primary_topic_path": "9709.p3.algebra",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q02.png; source=post_replacement_operator_visual_mapping; polynomial factor and remainder theorem; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q02.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q03/q03_page_005.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "8a012c16c6475db6274e3bc29cea0e932d5a83ada058b976d9b455165cf4506d",
+      "canonical_primary_topic_path": "9709.p3.logarithmic_and_exponential_functions",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q03.png; source=post_replacement_operator_visual_mapping; exponential equation in powers of 3; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q03.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.trigonometry",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q04/q04_page_007.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "2b021a600d03392c2c05755df55dde4a973f2196fc848ee6952a002a1e4d0eaa",
+      "canonical_primary_topic_path": "9709.p3.trigonometry",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q04.png; source=post_replacement_operator_visual_mapping; trigonometric identity and equation in tan x; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q04.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q05/q05_page_009.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "f29ac5038f58dbafdda1aaf87bf6b854aed948d2d0ed156e5f98b79baec4c6d6",
+      "canonical_primary_topic_path": "9709.p3.numerical_solution_of_equations",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q05.png; source=post_replacement_operator_visual_mapping; root existence and iterative formula; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q05.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.complex_numbers",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q06/q06_page_011.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "29c92a2a46afddacc7efa13f1d4c479828a18ba6ea35364effe8a33175334299",
+      "canonical_primary_topic_path": "9709.p3.complex_numbers",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q06.png; source=post_replacement_operator_visual_mapping; modulus-argument complex number and exact Cartesian form; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q06.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.vectors",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q07/q07_page_013.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "2258d8f2e39af906cdb85c45157b24e542c96497d823209ced5ad570c720ece4",
+      "canonical_primary_topic_path": "9709.p3.vectors",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q07.png; source=post_replacement_operator_visual_mapping; planes, perpendicular distance and angle; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q07.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.integration",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_015.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q08/q08_page_015.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "8c387ffd691b7fd96ed61f21b2c6460750f37c6b8a9db3b173543a3bc1870c5d",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q08.png; source=post_replacement_operator_visual_mapping; trapezium-rule estimate and integral of sec x with diagram; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q08.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.differential_equations",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_017.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q09/q09_page_017.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "cc0913491b148196567dc6dae7b0636369f8bd346939dcc6d2b7d5fb35e96ca4",
+      "canonical_primary_topic_path": "9709.p3.differential_equations",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q09.png; source=post_replacement_operator_visual_mapping; separable differential equation solved with partial fractions; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q09.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2019,
+      "session": "w",
+      "paper": 3,
+      "variant": 3,
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "source_pdf_watermarked": true,
+      "shard_id": "p3_w_watermarked_001",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered",
+        "watermarked_source_pdf"
+      ],
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "surface_evidence_status": "page_chain_extracted_pending_review",
+      "requires_review": true,
+      "source": "9709_full_scaleout_inventory_v1",
+      "primary_topic_path": "9709.p3.integration",
+      "gate_critical": false,
+      "descriptor_required": true,
+      "page_chain_projection_status": "projected",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/renders/WM_9709_w19_qp_33/WM_9709_w19_qp_33_page_019.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/full-scaleout/p3_w_watermarked_001/review-crops/WM_9709_w19_qp_33/q10/q10_page_019.png"
+      ],
+      "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948",
+      "source_manifest_digest": "fa8a311b6b9a8dccc2f26495edd06ee343f78625cfdae26fbde2ec7f0d34b229",
+      "canonical_primary_topic_path": "9709.p3.integration",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_page_chain_evidence"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-authority-visual-review.md",
+          "note": "storage_key=9709/w19_qp_33/questions/q10.png; source=post_replacement_operator_visual_mapping; area under exponential-trigonometric curve after maximum point; mapped to an existing seeded topic path."
+        },
+        {
+          "kind": "repo_page_chain_evidence",
+          "locator": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-page-chain-projection.json",
+          "note": "storage_key=9709/w19_qp_33/questions/q10.png; reviewed post-replacement OCR text, marks, diagram flag, page_indices, and review_crop_paths from page-chain projection."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": null,
+      "alignment_status": "not_compared",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    }
+  ],
+  "authority_alignment_run_id": "authority-alignment-d61d8aa0-0c87-4218-a005-541da3b9c948"
+}

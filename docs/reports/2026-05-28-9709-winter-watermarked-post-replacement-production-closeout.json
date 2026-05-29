@@ -1,0 +1,102 @@
+{
+  "schema_version": "9709_winter_watermarked_post_replacement_production_closeout_v1",
+  "generated_on": "2026-05-28",
+  "status": "production-ready-shards",
+  "scope": [
+    "p1_w_watermarked_001",
+    "p3_w_watermarked_001"
+  ],
+  "shards": [
+    {
+      "shard_id": "p1_w_watermarked_001",
+      "status": "production-ready",
+      "rows": 32,
+      "registry": {
+        "processed": 32,
+        "inserted": 27,
+        "updated": 5,
+        "conflicts": 0
+      },
+      "analysis": {
+        "processed": 32,
+        "backfilled": 32,
+        "skipped": 0
+      },
+      "release_preflight": {
+        "status": "pass",
+        "blockers": 0,
+        "warnings": 32
+      },
+      "db_coverage": {
+        "present": 32,
+        "manifest_count": 32,
+        "prompt_missing": 0,
+        "joined_snapshots": 32,
+        "missing_registry": 0,
+        "snapshot_missing": 0,
+        "provenance_missing": 0,
+        "search_text_missing": 0,
+        "snapshot_ref_missing": 0,
+        "materialized_classifier_missing": 0
+      },
+      "search_gate": {
+        "pass": true,
+        "metrics": {
+          "exact_structured_match_rate": 1,
+          "subject_leakage_rate": 0,
+          "metadata_completeness_rate": 1,
+          "null_summary_rate": 0
+        }
+      },
+      "production_ready_report": "docs/reports/2026-05-28-9709-p1-w-watermarked-001-post-replacement-production-ready.md"
+    },
+    {
+      "shard_id": "p3_w_watermarked_001",
+      "status": "production-ready",
+      "rows": 30,
+      "registry": {
+        "processed": 30,
+        "inserted": 26,
+        "updated": 4,
+        "conflicts": 0
+      },
+      "analysis": {
+        "processed": 30,
+        "backfilled": 30,
+        "skipped": 0
+      },
+      "release_preflight": {
+        "status": "pass",
+        "blockers": 0,
+        "warnings": 30
+      },
+      "db_coverage": {
+        "present": 30,
+        "manifest_count": 30,
+        "prompt_missing": 0,
+        "joined_snapshots": 30,
+        "missing_registry": 0,
+        "snapshot_missing": 0,
+        "provenance_missing": 0,
+        "search_text_missing": 0,
+        "snapshot_ref_missing": 0,
+        "materialized_classifier_missing": 0
+      },
+      "search_gate": {
+        "pass": true,
+        "metrics": {
+          "exact_structured_match_rate": 1,
+          "subject_leakage_rate": 0,
+          "metadata_completeness_rate": 1,
+          "null_summary_rate": 0
+        }
+      },
+      "production_ready_report": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-production-ready.md"
+    }
+  ],
+  "remaining_boundaries": [
+    "This closes only p1_w_watermarked_001 and p3_w_watermarked_001.",
+    "Full 9709 production readiness still depends on the remaining unclosed shards.",
+    "This report does not authorize broad P2/P4/P5/P6 expansion or release-scope promotion."
+  ]
+}

@@ -1,0 +1,1883 @@
+{
+  "schema_version": "9709_post_replacement_targeted_visual_vlm_review_v1",
+  "generated_on": "2026-05-28",
+  "shard_id": "p3_w_watermarked_001",
+  "model": "qwen3-vl-plus",
+  "items": [
+    {
+      "storage_key": "9709/w19_qp_31/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 1,
+      "q_label": "q01",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q01/q01_page_003.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q01_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q01\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Question content is fully visible; no occluding watermark present. Footer contains standard UCL/UCLES copyright and paper code, which does not interfere with question text or answer space. 'Turn over' instruction is clear.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 145,
+          "total_tokens": 2401,
+          "completion_tokens_details": {
+            "text_tokens": 145
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980909,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-8fe6fcdd-bf7e-9acc-8e54-022efac67211"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q01",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Question content is fully visible; no occluding watermark present. Footer contains standard UCL/UCLES copyright and paper code, which does not interfere with question text or answer space. 'Turn over' instruction is clear.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 7.88
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 2,
+      "q_label": "q02",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q02/q02_page_004.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q02_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q02\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question text visible: 'Solve the inequality |2x − 3| > 4|x + 1|.' Mark allocation [4] present. No watermark occludes content; faint footer watermark (© UCLES 2019, 9709/31/O/N/19) is non-intrusive and does not cover prompt, formula, or answer lines.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 184,
+          "total_tokens": 2440,
+          "completion_tokens_details": {
+            "text_tokens": 184
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980918,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-f3d0d8e1-0596-9ea9-b344-b57840fc1ee0"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q02",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question text visible: 'Solve the inequality |2x − 3| > 4|x + 1|.' Mark allocation [4] present. No watermark occludes content; faint footer watermark (© UCLES 2019, 9709/31/O/N/19) is non-intrusive and does not cover prompt, formula, or answer lines.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 22.75
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 3,
+      "q_label": "q03",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q03/q03_page_005.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q03_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q03\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible; no occluding watermark. Parametric equations and derivative instruction are clear. Dotted answer lines present. Footer contains standard ULES copyright and paper code, not a disruptive watermark.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 141,
+          "total_tokens": 2397,
+          "completion_tokens_details": {
+            "text_tokens": 141
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980929,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-5583b021-e0a8-9ec0-9826-0ddb1567654c"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q03",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible; no occluding watermark. Parametric equations and derivative instruction are clear. Dotted answer lines present. Footer contains standard ULES copyright and paper code, not a disruptive watermark.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 10.66
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 4,
+      "q_label": "q04",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q04/q04_page_007.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q04_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q04\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two pages; watermark (© UCLES 2019 and paper ID) is present at bottom margin and does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with '[Turn over]' indicator. No red/foreign watermark over content.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2821,
+          "completion_tokens": 164,
+          "total_tokens": 2985,
+          "completion_tokens_details": {
+            "text_tokens": 164
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2486,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980938,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-cc6e56a3-f9ab-99e7-8e99-57cb72f2e3a8"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q04",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two pages; watermark (© UCLES 2019 and paper ID) is present at bottom margin and does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with '[Turn over]' indicator. No red/foreign watermark over content.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 9.09
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 5,
+      "q_label": "q05",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q05/q05_page_009.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q05_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q05\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two cropped pages; watermark (© UCLES 2019, reference number) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this question; cross-page continuity is intact (part (iii) continues on second page with '[Turn over]' indicating expected continuation).\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 180,
+          "total_tokens": 3037,
+          "completion_tokens_details": {
+            "text_tokens": 180
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980947,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-f9b6d603-03d7-9da5-9ce9-d970cdd3b068"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q05",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two cropped pages; watermark (© UCLES 2019, reference number) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this question; cross-page continuity is intact (part (iii) continues on second page with '[Turn over]' indicating expected continuation).",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 0
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 6,
+      "q_label": "q06",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q06/q06_page_010.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q06_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q06\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible; no occluding watermark. Footer contains standard UCL/UCLES copyright and paper code, which is acceptable per policy. No diagrams required for this question.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 137,
+          "total_tokens": 2393,
+          "completion_tokens_details": {
+            "text_tokens": 137
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980956,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-3d29a53b-b340-9adf-a77b-d75f081b6220"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q06",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible; no occluding watermark. Footer contains standard UCL/UCLES copyright and paper code, which is acceptable per policy. No diagrams required for this question.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 9.21
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 7,
+      "q_label": "q07",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q07/q07_page_013.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q07_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q07\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two pages; watermark (UCLES 2019, paper ID) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear 'Turn over' indicator. No red/foreign watermark or truncation observed.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 165,
+          "total_tokens": 3022,
+          "completion_tokens_details": {
+            "text_tokens": 165
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980965,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-6bb4fbbc-f583-97fe-88fb-0f33cd25fa48"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q07",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two pages; watermark (UCLES 2019, paper ID) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear 'Turn over' indicator. No red/foreign watermark or truncation observed.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 8.96
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 8,
+      "q_label": "q08",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q08/q08_page_015.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q08_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q08\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Question content fully visible across two pages; watermark (© UCLES 2019, code 9709/31/O/N/19) is present but does not occlude any prompt text, formulae, or mark allocations. No red/foreign watermark text over content. Cross-page continuity is intact with clear 'Turn over' indicator.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 175,
+          "total_tokens": 3032,
+          "completion_tokens_details": {
+            "text_tokens": 175
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980979,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-050ca515-2a55-916a-967f-bcf8255cfb57"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q08",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Question content fully visible across two pages; watermark (© UCLES 2019, code 9709/31/O/N/19) is present but does not occlude any prompt text, formulae, or mark allocations. No red/foreign watermark text over content. Cross-page continuity is intact with clear 'Turn over' indicator.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 26.82
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q09.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 9,
+      "q_label": "q09",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q09/q09_page_017.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q09_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q09\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content (parts i, ii, iii) is clearly visible across two pages. No red/foreign watermark occludes text, formulae, or mark allocations. Faint '© UCLES 2019' and '9709/31/O/N/19' footer text are present but do not interfere with content. Cross-page continuity is intact (part (iii) on second page follows part (ii) logically; '[Turn over]' indicates expected continuation).\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2865,
+          "completion_tokens": 202,
+          "total_tokens": 3067,
+          "completion_tokens_details": {
+            "text_tokens": 202
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2530,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980989,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-772442cd-a073-908e-a072-4459d2dc7ebb"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q09",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content (parts i, ii, iii) is clearly visible across two pages. No red/foreign watermark occludes text, formulae, or mark allocations. Faint '© UCLES 2019' and '9709/31/O/N/19' footer text are present but do not interfere with content. Cross-page continuity is intact (part (iii) on second page follows part (ii) logically; '[Turn over]' indicates expected continuation).",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 0
+    },
+    {
+      "storage_key": "9709/w19_qp_31/questions/q10.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_31.pdf",
+      "q_number": 10,
+      "q_label": "q10",
+      "pdf_stem": "WM_9709_w19_qp_31",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_31/q10/q10_page_019.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_31_q10_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_31\",\n  \"q_label\": \"q10\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content (parts (a) and (b)) is clearly visible. Watermark '© UCLES 2019' and code '9709/31/O/N/19' appear at bottom margin and do not occlude any prompt text, formulae, or required elements. No diagrams are required for part (a); part (b) only requests a sketch (no diagram provided in crop, but instruction is textual and sufficient). Cross-page continuity is acceptable as both parts of Q10 are present on the same page (page 19), with no truncation.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2802,
+          "completion_tokens": 225,
+          "total_tokens": 3027,
+          "completion_tokens_details": {
+            "text_tokens": 225
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2467,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779980999,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-7f8bbebc-5997-9a16-a288-b1177122cae3"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_31",
+        "q_label": "q10",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content (parts (a) and (b)) is clearly visible. Watermark '© UCLES 2019' and code '9709/31/O/N/19' appear at bottom margin and do not occlude any prompt text, formulae, or required elements. No diagrams are required for part (a); part (b) only requests a sketch (no diagram provided in crop, but instruction is textual and sufficient). Cross-page continuity is acceptable as both parts of Q10 are present on the same page (page 19), with no truncation.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 23.93
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 1,
+      "q_label": "q01",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q01/q01_page_003.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q01_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q01\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and '9709/32/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation [3]. 'Turn over' is visible but does not interfere with content. Full question is legible and complete.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 170,
+          "total_tokens": 2426,
+          "completion_tokens_details": {
+            "text_tokens": 170
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981009,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-acff0eef-1f7a-9d75-bcc9-543f8a562d3b"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q01",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and '9709/32/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation [3]. 'Turn over' is visible but does not interfere with content. Full question is legible and complete.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 10.23
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 2,
+      "q_label": "q02",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q02/q02_page_004.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q02_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q02\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question text is clearly visible; no watermark occludes content. Bottom footer contains standard UCL/UCLES copyright and paper code, which is acceptable per policy. Dotted answer lines are present and unobstructed.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 146,
+          "total_tokens": 2402,
+          "completion_tokens_details": {
+            "text_tokens": 146
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981018,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-eedc0d92-ac7c-9818-823c-1d46e83b97d5"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q02",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question text is clearly visible; no watermark occludes content. Bottom footer contains standard UCL/UCLES copyright and paper code, which is acceptable per policy. Dotted answer lines are present and unobstructed.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 0
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 3,
+      "q_label": "q03",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q03/q03_page_005.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q03_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q03\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and '9709/32/O/N/19' at bottom margin; '[Turn over]' at bottom right. No occlusion of question text, formulae, or mark allocation [5]. Dotted answer lines fully visible. Question boundary credible.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 167,
+          "total_tokens": 2423,
+          "completion_tokens_details": {
+            "text_tokens": 167
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981027,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-c84575b3-f2d7-9d47-9293-c3bbd5b7b86a"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q03",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and '9709/32/O/N/19' at bottom margin; '[Turn over]' at bottom right. No occlusion of question text, formulae, or mark allocation [5]. Dotted answer lines fully visible. Question boundary credible.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 9.17
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 4,
+      "q_label": "q04",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q04/q04_page_007.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q04_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q04\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content (parts (i) and (ii)) is clearly visible. Watermarks are faint, non-red, and do not occlude any text, formulae, or mark allocations. Bottom of second crop shows '[Turn over]' indicating proper page continuity. No diagrams required for this question.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 161,
+          "total_tokens": 3018,
+          "completion_tokens_details": {
+            "text_tokens": 161
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981036,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-3995067e-dfc7-9530-b01c-72c2c8e9986f"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q04",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content (parts (i) and (ii)) is clearly visible. Watermarks are faint, non-red, and do not occlude any text, formulae, or mark allocations. Bottom of second crop shows '[Turn over]' indicating proper page continuity. No diagrams required for this question.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 22.55
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 5,
+      "q_label": "q05",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q05/q05_page_008.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q05_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q05\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question text is clearly visible. No watermark occludes the prompt, formula, or mark allocation [7]. Dotted answer lines are present but do not interfere with content. Footer contains standard ULES copyright and paper code, which is acceptable per guidelines.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 152,
+          "total_tokens": 2408,
+          "completion_tokens_details": {
+            "text_tokens": 152
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981045,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-e21ba605-fb3d-9c09-a4e8-bc42f7041f95"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q05",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question text is clearly visible. No watermark occludes the prompt, formula, or mark allocation [7]. Dotted answer lines are present but do not interfere with content. Footer contains standard ULES copyright and paper code, which is acceptable per guidelines.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 0
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 6,
+      "q_label": "q06",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q06/q06_page_010.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q06_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q06\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and identifier '9709/32/O/N/19' are present at bottom margin but do not occlude any question content, formulae, or mark allocation. Full question text and differential equation are clearly visible. No diagrams required for this question.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 167,
+          "total_tokens": 2423,
+          "completion_tokens_details": {
+            "text_tokens": 167
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981055,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-1d267242-5e96-90f2-94d8-3ee278707f5d"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q06",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and identifier '9709/32/O/N/19' are present at bottom margin but do not occlude any question content, formulae, or mark allocation. Full question text and differential equation are clearly visible. No diagrams required for this question.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 9.43
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 7,
+      "q_label": "q07",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q07/q07_page_013.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q07_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q07\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two pages; watermark (© UCLES 2019 and code) is faint, positioned in footer, does not occlude any prompt text, formulae, or mark allocations. Diagrams are not present in this crop but part (b)(i) explicitly asks to sketch loci—no diagram is required in the question stem itself. Cross-page continuity is intact: page 12 ends with question 7(a), page 13 continues with 7(b)(i) and (ii), and '[Turn over]' is correctly placed.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": null,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2802,
+          "completion_tokens": 218,
+          "total_tokens": 3020,
+          "completion_tokens_details": {
+            "text_tokens": 218
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2467,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981069,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-70c2ba42-a593-9164-bbd5-4b91e13c4faf"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q07",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two pages; watermark (© UCLES 2019 and code) is faint, positioned in footer, does not occlude any prompt text, formulae, or mark allocations. Diagrams are not present in this crop but part (b)(i) explicitly asks to sketch loci—no diagram is required in the question stem itself. Cross-page continuity is intact: page 12 ends with question 7(a), page 13 continues with 7(b)(i) and (ii), and '[Turn over]' is correctly placed.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": null,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 27.72
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 8,
+      "q_label": "q08",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q08/q08_page_015.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q08_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q08\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two crops; watermark (© UCLES 2019 and code) is present but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this algebra/calculus question. Cross-page continuity is intact (part (i) on first page, part (ii) on second with '[Turn over]' indicator).\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 183,
+          "total_tokens": 3040,
+          "completion_tokens_details": {
+            "text_tokens": 183
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981078,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-3f4a2334-5645-9ea2-b26b-89e6b6880375"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q08",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two crops; watermark (© UCLES 2019 and code) is present but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this algebra/calculus question. Cross-page continuity is intact (part (i) on first page, part (ii) on second with '[Turn over]' indicator).",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 8.8
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q09.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 9,
+      "q_label": "q09",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q09/q09_page_017.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q09_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q09\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two cropped pages; watermark (UCLES 2019, paper code) is present in footer but does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear '[Turn over]' indicator. No red/foreign watermark over content.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 164,
+          "total_tokens": 3021,
+          "completion_tokens_details": {
+            "text_tokens": 164
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981089,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-5b41f6d5-b9e5-9924-a51b-79d3852b3e70"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q09",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two cropped pages; watermark (UCLES 2019, paper code) is present in footer but does not occlude any prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear '[Turn over]' indicator. No red/foreign watermark over content.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 11.42
+    },
+    {
+      "storage_key": "9709/w19_qp_32/questions/q10.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_32.pdf",
+      "q_number": 10,
+      "q_label": "q10",
+      "pdf_stem": "WM_9709_w19_qp_32",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_32/q10/q10_page_019.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_32_q10_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_32\",\n  \"q_label\": \"q10\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content (parts i, ii, iii) is clearly visible. No red/foreign watermark occludes text, formulae, or structure. Faint '© UCLES 2019' and identifier footer are present but do not interfere with readability. Question boundaries are credible; multi-page continuity is preserved as indicated by crop metadata and layout.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": null,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 173,
+          "total_tokens": 3030,
+          "completion_tokens_details": {
+            "text_tokens": 173
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981103,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-91d62a7c-e803-9572-aca2-7095662d68e9"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_32",
+        "q_label": "q10",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content (parts i, ii, iii) is clearly visible. No red/foreign watermark occludes text, formulae, or structure. Faint '© UCLES 2019' and identifier footer are present but do not interfere with readability. Question boundaries are credible; multi-page continuity is preserved as indicated by crop metadata and layout.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": null,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 13.96
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 1,
+      "q_label": "q01",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q01/q01_page_003.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q01_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q01\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and '9709/33/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation [4]. '[Turn over]' is visible and unobscured. Full question content is legible and complete.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 170,
+          "total_tokens": 2426,
+          "completion_tokens_details": {
+            "text_tokens": 170
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981112,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-8c95f82f-7df9-99ae-a000-e00403fb829e"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q01",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and '9709/33/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation [4]. '[Turn over]' is visible and unobscured. Full question content is legible and complete.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 8.56
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 2,
+      "q_label": "q02",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q02/q02_page_004.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q02_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q02\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and '9709/33/O/N/19' appear only in footer, not overlapping question text, formulae, or answer lines. Full question content is visible and legible.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 154,
+          "total_tokens": 2410,
+          "completion_tokens_details": {
+            "text_tokens": 154
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981120,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-87c1cc0a-b710-9d07-8f92-d8e0bbb7b000"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q02",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and '9709/33/O/N/19' appear only in footer, not overlapping question text, formulae, or answer lines. Full question content is visible and legible.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 8.42
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 3,
+      "q_label": "q03",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q03/q03_page_005.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q03_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q03\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and '9709/33/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation. '[Turn over]' is visible and unobscured. Full question content is legible and complete.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2256,
+          "completion_tokens": 168,
+          "total_tokens": 2424,
+          "completion_tokens_details": {
+            "text_tokens": 168
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 1926,
+            "text_tokens": 330,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981128,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-7046374b-0945-9a99-9715-0f461365fbbe"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q03",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and '9709/33/O/N/19' are present at bottom margin and do not occlude question text, formula, or mark allocation. '[Turn over]' is visible and unobscured. Full question content is legible and complete.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 8.14
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 4,
+      "q_label": "q04",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q04/q04_page_007.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q04_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q04\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two crops; watermark (© UCLES 2019 and identifier) is present at bottom but does not occlude prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear 'Turn over' indicator. No red/foreign watermark over content.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 162,
+          "total_tokens": 3019,
+          "completion_tokens_details": {
+            "text_tokens": 162
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981138,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-6b7493a7-7f36-9ef5-a354-2e14b92c3ec4"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q04",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two crops; watermark (© UCLES 2019 and identifier) is present at bottom but does not occlude prompt text, formulae, or mark allocations. Cross-page continuity is intact with clear 'Turn over' indicator. No red/foreign watermark over content.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 10.22
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 5,
+      "q_label": "q05",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q05/q05_page_009.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q05_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q05\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two cropped pages; watermark (UCLES 2019, paper ID) is present but does not occlude any prompt text, formulae, or mark allocations. No red/foreign watermark over content. Diagrams are not required for this question (graph sketching is requested but no pre-drawn diagram is provided or needed). Cross-page continuity is intact: part (i) on first page, parts (ii) and (iii) on second page with clear continuation. Question boundaries credible.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 207,
+          "total_tokens": 3064,
+          "completion_tokens_details": {
+            "text_tokens": 207
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981148,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-a321b49a-3604-9c11-8196-28af5644329e"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q05",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two cropped pages; watermark (UCLES 2019, paper ID) is present but does not occlude any prompt text, formulae, or mark allocations. No red/foreign watermark over content. Diagrams are not required for this question (graph sketching is requested but no pre-drawn diagram is provided or needed). Cross-page continuity is intact: part (i) on first page, parts (ii) and (iii) on second page with clear continuation. Question boundaries credible.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 9.44
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 6,
+      "q_label": "q06",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q06/q06_page_011.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q06_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q06\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two cropped pages; watermark (UCLES 2019, paper ID) is present in footer but does not occlude any prompt text, formulae, labels, or mark allocations. Diagram instruction (part ii) is present though diagram itself is not drawn (as expected for candidate response area). Cross-page continuity is intact with clear 'Turn over' indicator.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 180,
+          "total_tokens": 3037,
+          "completion_tokens_details": {
+            "text_tokens": 180
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981158,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-f28d8eb6-cdac-9717-a9ed-cac395f3cde9"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q06",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two cropped pages; watermark (UCLES 2019, paper ID) is present in footer but does not occlude any prompt text, formulae, labels, or mark allocations. Diagram instruction (part ii) is present though diagram itself is not drawn (as expected for candidate response area). Cross-page continuity is intact with clear 'Turn over' indicator.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 10.62
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 7,
+      "q_label": "q07",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q07/q07_page_013.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q07_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q07\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible across two cropped pages; watermark (© UCLES 2019 and identifier) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this question. Cross-page continuity is maintained (part (iii) appears on second crop with '[Turn over]' indicating expected continuation).\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2857,
+          "completion_tokens": 179,
+          "total_tokens": 3036,
+          "completion_tokens_details": {
+            "text_tokens": 179
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981168,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-c2a7188f-9351-9788-befc-5f71b8bcea22"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q07",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible across two cropped pages; watermark (© UCLES 2019 and identifier) is present at bottom but does not occlude any prompt text, formulae, or mark allocations. Question boundary is credible; no diagrams required for this question. Cross-page continuity is maintained (part (iii) appears on second crop with '[Turn over]' indicating expected continuation).",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 0
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 8,
+      "q_label": "q08",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q08/q08_page_015.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q08_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q08\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and identifier '9709/33/O/N/19' are present at bottom but do not occlude any question text, diagram, labels, axes, or mark allocations. Diagram of y = sec x is fully visible with clear axes, curve, and vertical asymptote at x = π/2. Question content spans two pages (page 8 and page 15), with '[Turn over]' indicating continuity; both pages are present and correctly ordered. No red/foreign watermark over content. Crop boundaries are credible.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2862,
+          "completion_tokens": 222,
+          "total_tokens": 3084,
+          "completion_tokens_details": {
+            "text_tokens": 222
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 340,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981180,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-e9d2dd78-72d9-94a0-ad8d-fae177350ea8"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q08",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and identifier '9709/33/O/N/19' are present at bottom but do not occlude any question text, diagram, labels, axes, or mark allocations. Diagram of y = sec x is fully visible with clear axes, curve, and vertical asymptote at x = π/2. Question content spans two pages (page 8 and page 15), with '[Turn over]' indicating continuity; both pages are present and correctly ordered. No red/foreign watermark over content. Crop boundaries are credible.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 24.94
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q09.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 9,
+      "q_label": "q09",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q09/q09_page_016.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q09/q09_page_017.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q09_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q09\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Full question content visible; watermark (© UCLES 2019 and code) is present at bottom margin and does not occlude any prompt text, formulae, or mark allocations. Question spans two pages as indicated by '[Turn over]' and page numbering; both parts (i) and (ii) are fully legible. No red/foreign watermark over content.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": true\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2890,
+          "completion_tokens": 177,
+          "total_tokens": 3067,
+          "completion_tokens_details": {
+            "text_tokens": 177
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2555,
+            "text_tokens": 335,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981190,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-2de9d769-708b-9602-97cc-4d19d7cbb143"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q09",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Full question content visible; watermark (© UCLES 2019 and code) is present at bottom margin and does not occlude any prompt text, formulae, or mark allocations. Question spans two pages as indicated by '[Turn over]' and page numbering; both parts (i) and (ii) are fully legible. No red/foreign watermark over content.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        }
+      },
+      "duration_seconds": 0
+    },
+    {
+      "storage_key": "9709/w19_qp_33/questions/q10.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper3/WM_9709_w19_qp_33.pdf",
+      "q_number": 10,
+      "q_label": "q10",
+      "pdf_stem": "WM_9709_w19_qp_33",
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q10/q10_page_018.png",
+        "tmp/pdf-page-chain/w19-remediation/review-crops/WM_9709_w19_qp_33/q10/q10_page_019.png"
+      ],
+      "image_path": "tmp/pdf-page-chain/w19-remediation/targeted-visual-review/p3_w_watermarked_001/WM_9709_w19_qp_33_q10_targeted.png",
+      "raw_response": {
+        "choices": [
+          {
+            "message": {
+              "content": "{\n  \"accepted\": true,\n  \"pdf_stem\": \"WM_9709_w19_qp_33\",\n  \"q_label\": \"q10\",\n  \"blockers\": [],\n  \"warnings\": [],\n  \"notes\": \"Watermark '© UCLES 2019' and '9709/33/O/N/19' appear at bottom margin, not overlapping question text, diagram, axes, labels, or mark allocations. Diagram is fully visible with clear axes, curve, point M, and shaded region R. Question content (parts (i) and (ii)) is complete and legible. No truncation or missing elements observed.\",\n  \"checked\": {\n    \"question_boundary_accepted\": true,\n    \"watermark_not_occluding_content\": true,\n    \"diagram_presence_accepted\": true,\n    \"cross_page_continuity_accepted\": null\n  }\n}",
+              "reasoning_content": "",
+              "role": "assistant"
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null
+          }
+        ],
+        "object": "chat.completion",
+        "usage": {
+          "prompt_tokens": 2862,
+          "completion_tokens": 191,
+          "total_tokens": 3053,
+          "completion_tokens_details": {
+            "text_tokens": 191
+          },
+          "prompt_tokens_details": {
+            "image_tokens": 2522,
+            "text_tokens": 340,
+            "cached_tokens": 0
+          }
+        },
+        "created": 1779981200,
+        "system_fingerprint": null,
+        "model": "qwen3-vl-plus",
+        "id": "chatcmpl-d7508e80-3592-9cd3-a582-aa5182646f8d"
+      },
+      "parsed": {
+        "accepted": true,
+        "pdf_stem": "WM_9709_w19_qp_33",
+        "q_label": "q10",
+        "blockers": [],
+        "warnings": [],
+        "notes": "Watermark '© UCLES 2019' and '9709/33/O/N/19' appear at bottom margin, not overlapping question text, diagram, axes, labels, or mark allocations. Diagram is fully visible with clear axes, curve, point M, and shaded region R. Question content (parts (i) and (ii)) is complete and legible. No truncation or missing elements observed.",
+        "checked": {
+          "question_boundary_accepted": true,
+          "watermark_not_occluding_content": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": null
+        }
+      },
+      "duration_seconds": 9.71
+    }
+  ],
+  "summary": {
+    "items": 30,
+    "accepted": 30,
+    "rejected": 0,
+    "blocker_items": 0,
+    "warning_items": 0
+  }
+}

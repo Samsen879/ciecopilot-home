@@ -243,6 +243,28 @@ describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
     expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
   });
 
+  test('falls back from P4 mechanics topic-path hint when prompt signals are weak', () => {
+    const result = analyze('A car and trailer move on a straight road with a tow-bar tension.', {
+      topic_path_hint: '9709.p4.newtons_laws_of_motion',
+    });
+
+    expect(result.primary_question_type_id).toBe('9709.mechanics.newtons_laws');
+    expect(result.family_id).toBe('9709.mechanics');
+    expect(result.classification_confidence).toBe(0.84);
+    expect(result.confidence_band).toBe('medium');
+    expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
+  });
+
+  test('P4 mechanics topic-path hint wins over generic algebraic prompt signals', () => {
+    const result = analyze('The displacement of a particle is s = t^3 - 4t. Find the distance travelled.', {
+      topic_path_hint: '9709.p4.kinematics_of_motion_in_a_straight_line',
+    });
+
+    expect(result.primary_question_type_id).toBe('9709.mechanics.kinematics_straight_line');
+    expect(result.family_id).toBe('9709.mechanics');
+    expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
+  });
+
   test('does not classify explicit out-of-scope 9709 topic hints', () => {
     const result = analyze('A statistics question about representation of data.', {
       topic_path_hint: '9709.p5.representation_of_data',

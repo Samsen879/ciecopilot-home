@@ -255,6 +255,51 @@ const TOPIC_PATH_CLASSIFICATIONS = Object.freeze({
       'state the root, iteration result, or convergence conclusion',
     ],
   }),
+  '9709.p4.forces_and_equilibrium': Object.freeze({
+    questionTypeId: '9709.mechanics.forces_equilibrium',
+    familyId: '9709.mechanics',
+    skeletonSteps: [
+      'identify the forces acting and choose resolving directions',
+      'apply equilibrium, resultant, normal reaction, or limiting-friction relationships',
+      'solve for the requested force, coefficient, angle, or direction',
+    ],
+  }),
+  '9709.p4.kinematics_of_motion_in_a_straight_line': Object.freeze({
+    questionTypeId: '9709.mechanics.kinematics_straight_line',
+    familyId: '9709.mechanics',
+    skeletonSteps: [
+      'extract the displacement, velocity, acceleration, or graph information',
+      'apply constant-acceleration formulae or calculus with respect to time',
+      'state the requested time, speed, displacement, distance, or graph feature',
+    ],
+  }),
+  '9709.p4.momentum': Object.freeze({
+    questionTypeId: '9709.mechanics.momentum',
+    familyId: '9709.mechanics',
+    skeletonSteps: [
+      'identify the particles, masses, directions, and collision model',
+      'apply conservation of linear momentum in one dimension',
+      'use the post-collision motion information to find the requested speed, time, or distance',
+    ],
+  }),
+  '9709.p4.newtons_laws_of_motion': Object.freeze({
+    questionTypeId: '9709.mechanics.newtons_laws',
+    familyId: '9709.mechanics',
+    skeletonSteps: [
+      'draw or infer the force balance for each particle or body',
+      'apply Newton\'s laws along the line of motion, including tension, thrust, friction, or weight components',
+      'solve for acceleration, tension, force, speed, or time as required',
+    ],
+  }),
+  '9709.p4.energy_work_and_power': Object.freeze({
+    questionTypeId: '9709.mechanics.energy_work_power',
+    familyId: '9709.mechanics',
+    skeletonSteps: [
+      'identify kinetic energy, gravitational potential energy, work done, resistance, or power relationships',
+      'apply the work-energy principle or power-force-velocity relationship',
+      'solve for the requested speed, work, power, distance, or height',
+    ],
+  }),
   '9709.p3.differential_equations': Object.freeze({
     questionTypeId: '9709.differential_equations.separable',
     familyId: '9709.differential_equations',
@@ -279,7 +324,9 @@ function buildRuleMatchFromTopicClassification({
     baseConfidence,
     variantTags: unique([
       topicPath?.includes('.p1.') ? 'paper:p1' : null,
+      topicPath?.includes('.p2.') ? 'paper:p2' : null,
       topicPath?.includes('.p3.') ? 'paper:p3' : null,
+      topicPath?.includes('.p4.') ? 'paper:p4' : null,
       `topic_path:${topicPath}`,
     ]),
     skeletonSteps: classification.skeletonSteps,
@@ -829,6 +876,11 @@ function buildHintOnlyClassification(normalizedHints, envelope) {
     '9709.algebra.polynomial_rational': '9709.algebra',
     '9709.log_exp.equations_models': '9709.logarithmic_and_exponential_functions',
     '9709.numerical_methods.iteration': '9709.numerical_solution_of_equations',
+    '9709.mechanics.forces_equilibrium': '9709.mechanics',
+    '9709.mechanics.kinematics_straight_line': '9709.mechanics',
+    '9709.mechanics.momentum': '9709.mechanics',
+    '9709.mechanics.newtons_laws': '9709.mechanics',
+    '9709.mechanics.energy_work_power': '9709.mechanics',
   };
 
   return {

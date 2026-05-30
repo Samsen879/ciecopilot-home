@@ -1,0 +1,272 @@
+{
+  "schema_version": "9709_p4_m_standard_001_production_ready_closeout_v1",
+  "generated_on": "2026-05-30",
+  "shard_id": "p4_m_standard_001",
+  "status": "production-ready",
+  "scope": {
+    "pdfs": 8,
+    "paper_session_family": "March Paper 4 standard, qp_42",
+    "manifest_rows": 55,
+    "ready_manifest": "docs/reports/2026-05-30-9709-p4-m-standard-001-ready-manifest.json"
+  },
+  "visual_evidence": {
+    "page_chain": {
+      "total_pdfs": 8,
+      "passed_pdfs": 8,
+      "blocked_pdfs": 0,
+      "warning_pdfs": 0,
+      "blocker_counts": {},
+      "warning_counts": {}
+    },
+    "evidence_bundles": {
+      "bundles_planned": 55,
+      "ocr_lane": 33,
+      "diagram_lane": 22,
+      "lazy_attach_original_image": 55
+    },
+    "targeted_visual_review": {
+      "items": 34,
+      "accepted": 34,
+      "rejected": 0
+    },
+    "post_extraction_review": {
+      "status": "pass",
+      "manifest_items": 55,
+      "projection_items": 55,
+      "evidence_bundle_items": 55,
+      "human_disposition_items": 34,
+      "blockers": 0,
+      "warnings": 0,
+      "human_review_items": 0,
+      "accepted_human_dispositions": 34,
+      "manual_review_reason_counts": {}
+    }
+  },
+  "authority": {
+    "sidecar": "data/manifests/9709_p4_m_standard_001_authority_sidecar_v1.json",
+    "p4_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_v1.json",
+    "seeded_topic_paths": [
+      {
+        "topic_path": "9709.p4",
+        "title": "Mechanics",
+        "level": "paper",
+        "paper": 4,
+        "parent_topic_path": "9709",
+        "sort_order": 400,
+        "metadata": {
+          "paper_code": "P4",
+          "seed_reason": "p4_m_standard_001_authority_layer",
+          "official_section_ref": "3 Subject content > 4 Mechanics (for Paper 4)",
+          "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.introduction",
+          "boundary_note": "P4 mechanics remains component-scoped; P1 calculus used inside kinematics is not a topic-path substitute."
+        }
+      },
+      {
+        "topic_path": "9709.p4.forces_and_equilibrium",
+        "title": "Forces and Equilibrium",
+        "level": "topic",
+        "paper": 4,
+        "parent_topic_path": "9709.p4",
+        "sort_order": 401,
+        "metadata": {
+          "section_code": "4.1",
+          "seed_reason": "p4_m_standard_001_authority_layer",
+          "official_section_ref": "3 Subject content > 4 Mechanics > 4.1 Forces and equilibrium",
+          "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_1_forces_and_equilibrium",
+          "canonical_draft_section_node_id": "9709:2026-2027_v4:section:p4.forces_and_equilibrium",
+          "approval_scope": "shard_runtime_authority_seed_for_p4_m_standard_001"
+        }
+      },
+      {
+        "topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "title": "Kinematics of Motion in a Straight Line",
+        "level": "topic",
+        "paper": 4,
+        "parent_topic_path": "9709.p4",
+        "sort_order": 402,
+        "metadata": {
+          "section_code": "4.2",
+          "seed_reason": "p4_m_standard_001_authority_layer",
+          "official_section_ref": "3 Subject content > 4 Mechanics > 4.2 Kinematics of motion in a straight line",
+          "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line",
+          "canonical_draft_section_node_id": "9709:2026-2027_v4:section:p4.kinematics_of_motion_in_a_straight_line",
+          "approval_scope": "shard_runtime_authority_seed_for_p4_m_standard_001"
+        }
+      },
+      {
+        "topic_path": "9709.p4.momentum",
+        "title": "Momentum",
+        "level": "topic",
+        "paper": 4,
+        "parent_topic_path": "9709.p4",
+        "sort_order": 403,
+        "metadata": {
+          "section_code": "4.3",
+          "seed_reason": "p4_m_standard_001_authority_layer",
+          "official_section_ref": "3 Subject content > 4 Mechanics > 4.3 Momentum",
+          "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_3_momentum",
+          "canonical_draft_section_node_id": "9709:2026-2027_v4:section:p4.momentum",
+          "approval_scope": "shard_runtime_authority_seed_for_p4_m_standard_001"
+        }
+      },
+      {
+        "topic_path": "9709.p4.newtons_laws_of_motion",
+        "title": "Newton's Laws of Motion",
+        "level": "topic",
+        "paper": 4,
+        "parent_topic_path": "9709.p4",
+        "sort_order": 404,
+        "metadata": {
+          "section_code": "4.4",
+          "seed_reason": "p4_m_standard_001_authority_layer",
+          "official_section_ref": "3 Subject content > 4 Mechanics > 4.4 Newton's laws of motion",
+          "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion",
+          "canonical_draft_section_node_id": "9709:2026-2027_v4:section:p4.newtons_laws_of_motion",
+          "approval_scope": "shard_runtime_authority_seed_for_p4_m_standard_001"
+        }
+      },
+      {
+        "topic_path": "9709.p4.energy_work_and_power",
+        "title": "Energy, Work and Power",
+        "level": "topic",
+        "paper": 4,
+        "parent_topic_path": "9709.p4",
+        "sort_order": 405,
+        "metadata": {
+          "section_code": "4.5",
+          "seed_reason": "p4_m_standard_001_authority_layer",
+          "official_section_ref": "3 Subject content > 4 Mechanics > 4.5 Energy, work and power",
+          "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power",
+          "canonical_draft_section_node_id": "9709:2026-2027_v4:section:p4.energy_work_and_power",
+          "approval_scope": "shard_runtime_authority_seed_for_p4_m_standard_001"
+        }
+      }
+    ],
+    "topic_distribution": [
+      {
+        "count": 13,
+        "topic_path": "9709.p4.energy_work_and_power"
+      },
+      {
+        "count": 12,
+        "topic_path": "9709.p4.forces_and_equilibrium"
+      },
+      {
+        "count": 16,
+        "topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      {
+        "count": 4,
+        "topic_path": "9709.p4.momentum"
+      },
+      {
+        "count": 10,
+        "topic_path": "9709.p4.newtons_laws_of_motion"
+      }
+    ],
+    "operator_rule_review": 55
+  },
+  "classifier_support": {
+    "migration": "supabase/migrations/20260531100000_seed_9709_p4_classifier_registry_draft.sql",
+    "classifier_file": "api/learning/lib/question-analysis/question-intelligence-service.js",
+    "focused_test_file": "api/learning/__tests__/question-intelligence-service.test.js",
+    "taxonomy_family": "9709.mechanics",
+    "taxonomy_question_types": [
+      "9709.mechanics.forces_equilibrium",
+      "9709.mechanics.kinematics_straight_line",
+      "9709.mechanics.momentum",
+      "9709.mechanics.newtons_laws",
+      "9709.mechanics.energy_work_power"
+    ]
+  },
+  "registry_backfill": {
+    "processed": 55,
+    "final_present": 55,
+    "missing_registry": 0,
+    "conflicts": 0,
+    "note": "Formal ready-batch registry step populated the shard; final DB coverage is the durable proof for current registry presence."
+  },
+  "analysis_hydration": {
+    "processed": 55,
+    "backfilled": 55,
+    "skipped": 0,
+    "note": "Fresh host-wrapper hydration rerun after the P4 classifier taxonomy seed returned processed=55, backfilled=55, skipped=0."
+  },
+  "db_coverage": {
+    "present": 55,
+    "manifest_count": 55,
+    "prompt_missing": 0,
+    "joined_snapshots": 55,
+    "missing_registry": 0,
+    "snapshot_missing": 0,
+    "provenance_missing": 0,
+    "search_text_missing": 0,
+    "snapshot_ref_missing": 0,
+    "materialized_classifier_missing": 0
+  },
+  "release_scope_distribution": [
+    {
+      "count": 55,
+      "type_release_state": "draft",
+      "release_scope_status": "non_released_fallback"
+    }
+  ],
+  "search_gate": {
+    "gate_pass": true,
+    "metrics": {
+      "exact_structured_match_rate": 1,
+      "subject_leakage_rate": 0,
+      "metadata_completeness_rate": 1,
+      "null_summary_rate": 0
+    }
+  },
+  "release_preflight": {
+    "status": "pass",
+    "blockers": 0,
+    "warnings": 55,
+    "manifest_items": 55,
+    "sidecar_items": 55
+  },
+  "artifacts": [
+    "data/manifests/9709_p4_m_standard_001_input_v1.json",
+    "data/manifests/9709_p4_m_standard_001_page_chain_surface_v1.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-page-chain-report.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-page-chain-projection.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-page-chain-bundle-summary.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-resolution-audit.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-lane-results.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-evidence-bundles.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-targeted-visual-vlm-review.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-vlm-assisted-visual-disposition.md",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-vlm-assisted-visual-dispositions.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-post-extraction-review.md",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-post-extraction-review.json",
+    "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_v1.json",
+    "data/manifests/9709_p4_m_standard_001_authority_sidecar_v1.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-authority-layer.md",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-authority-layer.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-release-preflight-authority-aligned.md",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-release-preflight-authority-aligned.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-authority-manifest.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-aligned-manifest.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-ready-manifest.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-authority-evidence-bundles.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-db-coverage.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-search-gate-report.md",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-search-gate.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-release-preflight-final.md",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-release-preflight-final.json",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-production-ready.md",
+    "docs/reports/2026-05-30-9709-p4-m-standard-001-production-ready.json",
+    "supabase/migrations/20260531100000_seed_9709_p4_classifier_registry_draft.sql",
+    "api/learning/lib/question-analysis/question-intelligence-service.js",
+    "api/learning/__tests__/question-intelligence-service.test.js"
+  ],
+  "boundaries": [
+    "This closeout is shard-scoped to p4_m_standard_001 only.",
+    "It does not claim full 9709 production readiness.",
+    "The P4 classifier registry rows are draft FK targets, not released scoring promotion.",
+    "The 55 release preflight warnings are expected sidecar-authority warnings under the current contract.",
+    "The targeted visual review used the explicitly approved external VLM/API call for p4_m_standard_001; this closeout generation made no new external VLM/API call."
+  ]
+}

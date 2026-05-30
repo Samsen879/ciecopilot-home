@@ -1,0 +1,44 @@
+{
+  "schema_version": "9709_p2_s_standard_001_inventory_correction_v1",
+  "generated_on": "2026-05-30",
+  "shard_id": "p2_s_standard_001",
+  "source_manifest": "tmp/pdf-page-chain/full-scaleout/p2_s_standard_001/shard-manifest.json",
+  "corrected_manifest": "tmp/pdf-page-chain/full-scaleout/p2_s_standard_001/shard-manifest.corrected.json",
+  "reason": "PDF page-chain extraction proved six local locator mismatches: S16 false-positive question slots and S17 missing printed q2 rows. This correction keeps shard row count at 173 while aligning storage keys and q_number values to printed PDF question boundaries.",
+  "removed_false_positive_rows": [
+    {
+      "storage_key": "9709/s16_qp_21/questions/q14.png",
+      "q_number": 14,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_s16_qp_21.pdf"
+    },
+    {
+      "storage_key": "9709/s16_qp_22/questions/q10.png",
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_s16_qp_22.pdf"
+    },
+    {
+      "storage_key": "9709/s16_qp_23/questions/q10.png",
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_s16_qp_23.pdf"
+    }
+  ],
+  "added_printed_question_rows": [
+    {
+      "storage_key": "9709/s17_qp_21/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_s17_qp_21.pdf"
+    },
+    {
+      "storage_key": "9709/s17_qp_22/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_s17_qp_22.pdf"
+    },
+    {
+      "storage_key": "9709/s17_qp_23/questions/q02.png",
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_s17_qp_23.pdf"
+    }
+  ],
+  "row_count_before": 173,
+  "row_count_after": 173
+}

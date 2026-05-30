@@ -1,0 +1,192 @@
+{
+  "schema_version": "9709_p2_s_standard_001_production_ready_closeout_v1",
+  "generated_on": "2026-05-30",
+  "shard_id": "p2_s_standard_001",
+  "status": "production-ready",
+  "scope": {
+    "pdfs": 24,
+    "paper_session_family": "Summer Paper 2 standard, qp_21/22/23",
+    "manifest_rows": 173,
+    "ready_manifest": "docs/reports/2026-05-30-9709-p2-s-standard-001-ready-manifest.json"
+  },
+  "visual_evidence": {
+    "page_chain": {
+      "total_pdfs": 24,
+      "passed_pdfs": 24,
+      "blocked_pdfs": 0,
+      "warning_pdfs": 0
+    },
+    "evidence_bundles": {
+      "bundles_planned": 173,
+      "ocr_lane": 132,
+      "diagram_lane": 41,
+      "lazy_attach_original_image": 173
+    },
+    "targeted_visual_review": {
+      "items": 85,
+      "accepted": 85,
+      "rejected": 0
+    },
+    "post_extraction_review": {
+      "status": "pass",
+      "manifest_items": 173,
+      "projection_items": 173,
+      "evidence_bundle_items": 173,
+      "human_disposition_items": 85,
+      "blockers": 0,
+      "warnings": 0,
+      "human_review_items": 0
+    }
+  },
+  "authority": {
+    "sidecar": "data/manifests/9709_p2_s_standard_001_authority_sidecar_v1.json",
+    "p2_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_v1.json",
+    "seeded_topic_paths": [
+      {
+        "topic_path": "9709.p2",
+        "title": "Pure Mathematics 2",
+        "level": "paper"
+      },
+      {
+        "topic_path": "9709.p2.algebra",
+        "title": "Algebra",
+        "section_code": "2.1",
+        "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra"
+      },
+      {
+        "topic_path": "9709.p2.logarithmic_and_exponential_functions",
+        "title": "Logarithmic and Exponential Functions",
+        "section_code": "2.2",
+        "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions"
+      },
+      {
+        "topic_path": "9709.p2.trigonometry",
+        "title": "Trigonometry",
+        "section_code": "2.3",
+        "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry"
+      },
+      {
+        "topic_path": "9709.p2.differentiation",
+        "title": "Differentiation",
+        "section_code": "2.4",
+        "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_4_differentiation"
+      },
+      {
+        "topic_path": "9709.p2.integration",
+        "title": "Integration",
+        "section_code": "2.5",
+        "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_5_integration"
+      },
+      {
+        "topic_path": "9709.p2.numerical_solution_of_equations",
+        "title": "Numerical Solution of Equations",
+        "section_code": "2.6",
+        "official_locator": "cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_6_numerical_solution_of_equations"
+      }
+    ],
+    "topic_distribution": {
+      "9709.p2.algebra": 35,
+      "9709.p2.differentiation": 37,
+      "9709.p2.integration": 31,
+      "9709.p2.logarithmic_and_exponential_functions": 21,
+      "9709.p2.numerical_solution_of_equations": 24,
+      "9709.p2.trigonometry": 25
+    },
+    "operator_review_overrides": 21
+  },
+  "registry_backfill": {
+    "processed": 173,
+    "inserted": 0,
+    "updated": 173,
+    "conflicts": 0,
+    "curriculum_nodes_inserted": 0,
+    "curriculum_nodes_existing": 29,
+    "verification_note": "The final write run updated 173 existing paper_question rows. A post-run dry-run rechecked the same update posture with 0 conflicts."
+  },
+  "analysis_hydration": {
+    "processed": 173,
+    "backfilled": 173,
+    "skipped": 0,
+    "rerun_note": "The ready-batch host runner uses forced paper_question analysis hydration; final DB coverage confirms 173 active joined snapshots."
+  },
+  "db_coverage": {
+    "manifest_count": 173,
+    "present": 173,
+    "missing_registry": 0,
+    "prompt_missing": 0,
+    "provenance_missing": 0,
+    "search_text_missing": 0,
+    "snapshot_ref_missing": 0,
+    "joined_snapshots": 173,
+    "snapshot_missing": 0,
+    "materialized_classifier_missing": 0
+  },
+  "release_scope_distribution": [
+    {
+      "release_scope_status": "non_released_fallback",
+      "type_release_state": "draft",
+      "count": 117
+    },
+    {
+      "release_scope_status": "non_released_fallback",
+      "type_release_state": "released",
+      "count": 22
+    },
+    {
+      "release_scope_status": "released_scoring",
+      "type_release_state": "released",
+      "count": 34
+    }
+  ],
+  "search_gate": {
+    "gate_pass": true,
+    "metrics": {
+      "exact_structured_match_rate": 1,
+      "subject_leakage_rate": 0,
+      "metadata_completeness_rate": 1,
+      "null_summary_rate": 0
+    }
+  },
+  "release_preflight": {
+    "status": "pass",
+    "counts": {
+      "manifest_items": 173,
+      "sidecar_items": 173,
+      "diagram_present": {
+        "true": 41,
+        "false": 132,
+        "invalid": 0
+      },
+      "sidecar_canonical_missing": 0,
+      "sidecar_distinct_topics": 6,
+      "blockers": 0,
+      "warnings": 173
+    }
+  },
+  "artifacts": [
+    "data/manifests/9709_p2_s_standard_001_page_chain_surface_v1.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-page-chain-report.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-page-chain-projection.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-evidence-bundles.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-vlm-assisted-visual-disposition.md",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-vlm-assisted-visual-dispositions.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-post-extraction-review.md",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-post-extraction-review.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-authority-layer.md",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-authority-layer.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-authority-manifest.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-aligned-manifest.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-ready-manifest.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-authority-evidence-bundles.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-db-coverage.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-search-gate-report.md",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-search-gate.json",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-release-preflight-final.md",
+    "docs/reports/2026-05-30-9709-p2-s-standard-001-release-preflight-final.json"
+  ],
+  "boundaries": [
+    "This closes only p2_s_standard_001.",
+    "This does not declare full 9709 production readiness.",
+    "The shard used explicitly approved targeted VLM/API review earlier; this production-ready closeout step did not make additional external VLM/API calls."
+  ]
+}

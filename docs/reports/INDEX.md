@@ -198,6 +198,21 @@
 - `2026-05-30-9709-p2-s-standard-001-search-gate-report.md` - question-search gate report after `p2_s_standard_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
 - `2026-05-30-9709-p2-s-standard-001-release-preflight-final.md` - final release preflight for `p2_s_standard_001`, passing with 173 sidecar rows, 0 blockers, and 173 expected manifest-topic warnings.
 - `2026-05-30-9709-p2-s-standard-001-production-ready.md` - shard-scoped production-ready closeout for `p2_s_standard_001`, covering P2 authority seed/sidecar, registry and analysis hydration, DB coverage, search gate, targeted visual disposition, and final release preflight.
+- `data/manifests/9709_p2_w_standard_001_page_chain_surface_v1.json` - shard-scoped page-chain surface manifest for `p2_w_standard_001`, covering 151 Winter Paper 2 standard rows from variants 21, 22, and 23.
+- `2026-05-30-9709-p2-w-standard-001-page-chain-report.json` - Paper 2 Winter standard shard page-chain execution record for `p2_w_standard_001`, covering 21/21 PDF pass status, 151 extracted questions, and zero page-chain warnings.
+- `2026-05-30-9709-p2-w-standard-001-vlm-assisted-visual-disposition.md` - VLM-assisted visual disposition for `p2_w_standard_001`, accepting 73/73 queued visual review items from targeted rendered-crop evidence.
+- `2026-05-30-9709-p2-w-standard-001-post-extraction-review.md` - shard-scoped post-extraction review for `p2_w_standard_001`, passing with 0 blockers, 0 warnings, and 0 remaining visual-review items after accepted VLM-assisted visual dispositions.
+- `data/manifests/9709_p2_w_standard_001_authority_sidecar_v1.json` - shard-scoped authority sidecar for `p2_w_standard_001`, covering 151 Paper 2 rows mapped to approved `9709.p2.*` seeded topic paths.
+- `2026-05-30-9709-p2-w-standard-001-authority-layer.md` - authority-layer report for `p2_w_standard_001`, recording the P2 seed paths, official syllabus locators, row-to-topic distribution, and downstream scope boundary.
+- `2026-05-30-9709-p2-w-standard-001-release-preflight-authority-aligned.md` - authority-aligned release preflight rerun for `p2_w_standard_001`, passing with 151 sidecar rows, 0 blockers, and 151 expected manifest-topic warnings.
+- `2026-05-30-9709-p2-w-standard-001-authority-manifest.json` - authority-freeze manifest for `p2_w_standard_001`, covering 151 Paper 2 Winter standard rows after P2 seeded topic-path approval.
+- `2026-05-30-9709-p2-w-standard-001-aligned-manifest.json` - aligned manifest for `p2_w_standard_001`, marking 151/151 rows ready after authority and visual/evidence join.
+- `2026-05-30-9709-p2-w-standard-001-ready-manifest.json` - ready manifest for `p2_w_standard_001`, used for registry and analysis hydration.
+- `2026-05-30-9709-p2-w-standard-001-authority-evidence-bundles.json` - authority-ready evidence bundles for `p2_w_standard_001`, covering 151/151 rows.
+- `2026-05-30-9709-p2-w-standard-001-db-coverage.json` - local DB coverage proof for `p2_w_standard_001`, confirming 151/151 registry rows, snapshots, prompts, provenance, search text, and materialized classifier fields.
+- `2026-05-30-9709-p2-w-standard-001-search-gate-report.md` - question-search gate report after `p2_w_standard_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
+- `2026-05-30-9709-p2-w-standard-001-release-preflight-final.md` - final release preflight for `p2_w_standard_001`, passing with 151 sidecar rows, 0 blockers, and 151 expected manifest-topic warnings.
+- `2026-05-30-9709-p2-w-standard-001-production-ready.md` - shard-scoped production-ready closeout for `p2_w_standard_001`, covering P2 authority seed/sidecar, registry and analysis hydration, DB coverage, search gate, targeted visual disposition, and final release preflight.
 - `9709-syllabus-id-contract.md` - canonical `9709` syllabus topic-tree schema and durable node ID contract for issue `#288`, scoped to schema/ID rules only with no draft tree generation.
 - `9709-canonical-topic-tree-draft-v1.md` - issue `#289` first-draft canonical `9709` topic tree report, generated only from the locked official syllabus raw sections with bullet coverage and human-review merge/split candidates.
 - `9709-boundary-audit-v1.md` - issue `#290` draft boundary annotation audit, keeping assessment scope, route constraints, assumed knowledge, exclusions, and component-only coverage separate from the canonical topic tree.
@@ -210,7 +225,6 @@
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.
 - `learning_runtime_9709_differential_equations_separable_promotion_2026-03-25.md` - evidence-first justification for promoting `9709.differential_equations.separable` into released runtime scoring while keeping broader differential-equations scope conservative.
 - `ao_operator_smoke_guide.md` - reproducible AO reconcile/doctor/lifecycle smoke flow and acceptance-fixture guide.
-
 ## RAG S2
 
 - `rag_current_state_2026-03-16.md` - reconstructed `S2` state, artifact recovery status, and remaining blockers.

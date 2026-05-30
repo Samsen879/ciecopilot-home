@@ -119,3 +119,43 @@ def test_build_visual_dispositions_records_required_checks_for_accepted_items():
         "diagram_presence_accepted": True,
         "cross_page_continuity_accepted": True,
     }
+
+
+def test_build_visual_dispositions_marks_warning_disposition_as_accepted():
+    review_payload = {
+        "schema_version": "9709_targeted_visual_vlm_review_v1",
+        "generated_on": "2026-05-30",
+        "shard_id": "p4_s_standard_001",
+        "source_review": "docs/reports/post-extraction.json",
+        "items": [
+            {
+                "storage_key": "9709/s16_qp_43/questions/q06.png",
+                "source_pdf_path": "data/past-papers/9709Mathematics/paper4/9709_s16_qp_43.pdf",
+                "q_number": 6,
+                "review_reasons": ["warning_disposition"],
+                "page_indices": [2],
+                "review_crop_paths": [
+                    "tmp/pdf-page-chain/full-scaleout/p4_s_standard_001/review-crops/9709_s16_qp_43/q06/q06_page_003.png",
+                ],
+                "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p4_s_standard_001/targeted-stacks/s16_qp_43_questions_q06_targeted.png",
+                "status": "accepted",
+                "vlm_checked": {
+                    "question_boundary_accepted": True,
+                },
+                "vlm_warnings": ["warning_disposition"],
+                "vlm_notes": "The normalized warning disposition is visually consistent.",
+            },
+        ],
+    }
+
+    dispositions = build_visual_dispositions(
+        review_payload,
+        manifest_id="9709_full_scaleout_manifest_v1_p4_s_standard_001_page_chain_surface_v1",
+        evidence_review_path="docs/reports/targeted-visual.json",
+        reviewed_on="2026-05-30",
+    )
+
+    assert dispositions["items"][0]["visual_checks"] == {
+        "question_boundary_accepted": True,
+        "warning_disposition_accepted": True,
+    }

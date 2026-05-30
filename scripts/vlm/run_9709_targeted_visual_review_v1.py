@@ -341,6 +341,8 @@ def build_visual_dispositions(
             visual_checks["diagram_presence_accepted"] = checked.get("diagram_presence_accepted") is True
         if "multi_page_question" in review_reasons:
             visual_checks["cross_page_continuity_accepted"] = checked.get("cross_page_continuity_accepted") is True
+        if "warning_disposition" in review_reasons:
+            visual_checks["warning_disposition_accepted"] = accepted
         items.append(
             {
                 "storage_key": review_item.get("storage_key"),

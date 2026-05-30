@@ -1,0 +1,231 @@
+{
+  "schema_version": "9709_p4_s_standard_001_production_ready_closeout_v1",
+  "generated_on": "2026-05-30T20:35:29.251Z",
+  "shard_id": "p4_s_standard_001",
+  "status": "production-ready",
+  "scope": {
+    "pdfs": 24,
+    "paper_session_family": "Summer Paper 4 standard, variants 41/42/43",
+    "manifest_rows": 164,
+    "ready_manifest": "docs/reports/2026-05-30-9709-p4-s-standard-001-ready-manifest.json"
+  },
+  "visual_and_extraction": {
+    "page_chain": {
+      "total_pdfs": 24,
+      "passed_pdfs": 24,
+      "blocked_pdfs": 0,
+      "warning_pdfs": 1,
+      "blocker_counts": {},
+      "warning_counts": {
+        "subpart_mark_count_mismatch": 1
+      }
+    },
+    "bundle_summary": {
+      "schema_version": "9709_page_chain_shard_bundle_v1",
+      "generated_on": "2026-05-30",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p4_s_standard_001",
+      "shard_id": "p4_s_standard_001",
+      "projected_items": 164,
+      "diagram_present": {
+        "true": 59,
+        "false": 105
+      },
+      "route_counts": {
+        "diagram_lane": 59,
+        "ocr_lane": 105
+      },
+      "warning_dispositions_applied": 1
+    },
+    "targeted_visual": {
+      "items": 98,
+      "accepted": 98,
+      "rejected": 0,
+      "accepted_review_reason_counts": {
+        "diagram_lane": 59,
+        "multi_page_question": 65,
+        "warning_disposition": 1
+      },
+      "paper_counts": {
+        "s16_qp_41": 2,
+        "s16_qp_42": 4,
+        "s16_qp_43": 2,
+        "s17_qp_41": 4,
+        "s17_qp_42": 4,
+        "s17_qp_43": 5,
+        "s18_qp_41": 6,
+        "s18_qp_42": 4,
+        "s18_qp_43": 5,
+        "s19_qp_41": 5,
+        "s19_qp_42": 3,
+        "s19_qp_43": 4,
+        "s21_qp_41": 4,
+        "s21_qp_42": 3,
+        "s21_qp_43": 4,
+        "s22_qp_41": 3,
+        "s22_qp_42": 6,
+        "s22_qp_43": 5,
+        "s23_qp_41": 4,
+        "s23_qp_42": 4,
+        "s23_qp_43": 4,
+        "s24_qp_41": 5,
+        "s24_qp_42": 4,
+        "s24_qp_43": 4
+      }
+    },
+    "post_extraction_review": {
+      "manifest_items": 164,
+      "projection_items": 164,
+      "evidence_bundle_items": 164,
+      "human_disposition_items": 98,
+      "blockers": 0,
+      "warnings": 0,
+      "human_review_items": 0,
+      "accepted_human_dispositions": 98,
+      "manual_review_reason_counts": {}
+    }
+  },
+  "authority": {
+    "items": 164,
+    "topic_counts": {
+      "9709.p4.energy_work_and_power": 43,
+      "9709.p4.forces_and_equilibrium": 38,
+      "9709.p4.kinematics_of_motion_in_a_straight_line": 49,
+      "9709.p4.momentum": 13,
+      "9709.p4.newtons_laws_of_motion": 21
+    },
+    "operator_rule_review": 145,
+    "operator_rule_review_override": 19,
+    "operator_rule_review_fallback": 0
+  },
+  "db_coverage": {
+    "present": 164,
+    "manifest_count": 164,
+    "prompt_missing": 0,
+    "joined_snapshots": 164,
+    "missing_registry": 0,
+    "snapshot_missing": 0,
+    "provenance_missing": 0,
+    "search_text_missing": 0,
+    "snapshot_ref_missing": 0,
+    "materialized_classifier_missing": 0
+  },
+  "search_gate": {
+    "metrics": {
+      "exact_structured_match_rate": 1,
+      "subject_leakage_rate": 0,
+      "metadata_completeness_rate": 1,
+      "null_summary_rate": 0
+    },
+    "gate": {
+      "pass": true,
+      "checks": [
+        {
+          "metric": "exact_structured_match_rate",
+          "required": 0.9,
+          "actual": 1,
+          "comparator": ">=",
+          "pass": true
+        },
+        {
+          "metric": "subject_leakage_rate",
+          "required": 0,
+          "actual": 0,
+          "comparator": "<=",
+          "pass": true
+        },
+        {
+          "metric": "metadata_completeness_rate",
+          "required": 0.95,
+          "actual": 1,
+          "comparator": ">=",
+          "pass": true
+        },
+        {
+          "metric": "null_summary_rate",
+          "required": 0.05,
+          "actual": 0,
+          "comparator": "<=",
+          "pass": true
+        }
+      ],
+      "failing_checks": []
+    }
+  },
+  "release_preflight": {
+    "status": "pass",
+    "blockers": 0,
+    "warnings": 164,
+    "warning_codes": [
+      "manifest_primary_topic_missing_sidecar_canonical_present"
+    ]
+  },
+  "topic_distribution": [
+    {
+      "count": 43,
+      "topic_path": "9709.p4.energy_work_and_power"
+    },
+    {
+      "count": 38,
+      "topic_path": "9709.p4.forces_and_equilibrium"
+    },
+    {
+      "count": 49,
+      "topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+    },
+    {
+      "count": 13,
+      "topic_path": "9709.p4.momentum"
+    },
+    {
+      "count": 21,
+      "topic_path": "9709.p4.newtons_laws_of_motion"
+    }
+  ],
+  "release_scope_distribution": [
+    {
+      "count": 164,
+      "type_release_state": "draft",
+      "release_scope_status": "non_released_fallback"
+    }
+  ],
+  "boundary": [
+    "Shard-scoped production-ready closeout for p4_s_standard_001 only.",
+    "Does not claim full 9709 production readiness.",
+    "P4 topic authority is supplied by a shard-scoped sidecar and component-scoped 9709.p4.* seed nodes.",
+    "P4 classifier registry rows remain draft FK targets and are not scoring-release promotion."
+  ],
+  "artifacts": [
+    "data/manifests/9709_p4_s_standard_001_input_v1.json",
+    "data/manifests/9709_p4_s_standard_001_page_chain_surface_v1.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-page-chain-report.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-page-chain-projection.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-page-chain-bundle-summary.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-resolution-audit.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-lane-results.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-evidence-bundles.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-warning-disposition.md",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-warning-disposition.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-targeted-visual-vlm-review.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-vlm-assisted-visual-disposition.md",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-vlm-assisted-visual-dispositions.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-post-extraction-review.md",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-post-extraction-review.json",
+    "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_v1.json",
+    "data/manifests/9709_p4_s_standard_001_authority_sidecar_v1.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-authority-layer.md",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-authority-layer.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-authority-manifest.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-aligned-manifest.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-ready-manifest.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-authority-evidence-bundles.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-db-coverage.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-search-gate-report.md",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-search-gate.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-release-preflight-final.md",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-release-preflight-final.json",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-production-ready.md",
+    "docs/reports/2026-05-30-9709-p4-s-standard-001-production-ready.json",
+    "scripts/vlm/run_9709_targeted_visual_review_v1.py",
+    "tests/test_run_9709_targeted_visual_review_v1.py"
+  ]
+}

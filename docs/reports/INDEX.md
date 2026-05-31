@@ -360,6 +360,15 @@
 - `2026-05-31-9709-p5-m-watermarked-001-search-gate-report.md` - question-search gate report after `p5_m_watermarked_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
 - `2026-05-31-9709-p5-m-watermarked-001-release-preflight-final.md` - final release preflight for `p5_m_watermarked_001`, passing with 6 sidecar rows, 0 blockers, 6 expected manifest-topic warnings, and 6 expected Paper 5/6 scope warnings.
 - `2026-05-31-9709-p5-m-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p5_m_watermarked_001`, covering P5 authority seed/sidecar, P5 draft classifier taxonomy support, registry and analysis hydration, DB coverage, search gate, targeted/operator visual disposition, and final release preflight.
+- `data/manifests/9709_p5_s_watermarked_001_page_chain_surface_v1.json` - shard-scoped page-chain surface manifest for `p5_s_watermarked_001`, covering 21 Summer 2020 Paper 5 watermarked rows from `qp_51/52/53`.
+- `2026-05-31-9709-p5-s-watermarked-001-page-chain-report.json` - Paper 5 Summer watermarked shard page-chain execution record for `p5_s_watermarked_001`, covering 3/3 PDF pass status and zero page-chain warnings.
+- `2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md` - operator visual disposition for `p5_s_watermarked_001`, accepting 21/21 queued visual review items with 4 watermark-only operator overrides.
+- `data/manifests/9709_p5_s_watermarked_001_authority_sidecar_v1.json` - shard-scoped authority sidecar for `p5_s_watermarked_001`, covering 21 Paper 5 rows mapped to approved `9709.p5.*` seeded topic paths.
+- `2026-05-31-9709-p5-s-watermarked-001-authority-layer.md` - authority-layer report for `p5_s_watermarked_001`, recording P5 topic mapping, official locators, operator visual closure, and authority preflight result.
+- `2026-05-31-9709-p5-s-watermarked-001-db-coverage.json` - local DB coverage proof for `p5_s_watermarked_001`, confirming 21/21 registry rows, snapshots, prompts, provenance, search text, and materialized classifier fields.
+- `2026-05-31-9709-p5-s-watermarked-001-search-gate-report.md` - question-search gate report after `p5_s_watermarked_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
+- `2026-05-31-9709-p5-s-watermarked-001-release-preflight-final.md` - final release preflight for `p5_s_watermarked_001`, passing with 21 sidecar rows, 0 blockers, 21 expected manifest-topic warnings, and 21 expected Paper 5/6 scope warnings.
+- `2026-05-31-9709-p5-s-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p5_s_watermarked_001`, covering P5 authority sidecar, registry and analysis hydration, DB coverage, search gate, targeted/operator visual disposition, and final release preflight.
 
 ## RAG S2
 

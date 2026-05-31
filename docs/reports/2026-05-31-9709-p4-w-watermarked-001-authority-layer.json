@@ -1,0 +1,35 @@
+{
+  "schema_version": "9709_authority_layer_report_v1",
+  "generated_on": "2026-05-31",
+  "shard_id": "p4_w_watermarked_001",
+  "status": "created",
+  "manifest": "data/manifests/9709_p4_w_watermarked_001_page_chain_surface_v1.json",
+  "projection": "docs/reports/2026-05-31-9709-p4-w-watermarked-001-page-chain-projection.json",
+  "authority_sidecar": "data/manifests/9709_p4_w_watermarked_001_authority_sidecar_v1.json",
+  "runtime_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_v1.json",
+  "rows": 21,
+  "seeded_topic_paths": [
+    "9709.p4.forces_and_equilibrium",
+    "9709.p4.kinematics_of_motion_in_a_straight_line",
+    "9709.p4.momentum",
+    "9709.p4.newtons_laws_of_motion",
+    "9709.p4.energy_work_and_power"
+  ],
+  "topic_distribution": {
+    "9709.p4.energy_work_and_power": 5,
+    "9709.p4.forces_and_equilibrium": 4,
+    "9709.p4.kinematics_of_motion_in_a_straight_line": 6,
+    "9709.p4.newtons_laws_of_motion": 6
+  },
+  "review_method": {
+    "basis": "local page-chain OCR/projection evidence plus P4 syllabus seed nodes; no new external VLM/API call was used for authority mapping",
+    "operator_rule_review_rows": 21,
+    "explicit_override_rows": 0,
+    "fallback_rows": 0
+  },
+  "boundaries": [
+    "This authority layer is shard-scoped to p4_w_watermarked_001.",
+    "It does not claim Paper 4 or full 9709 production readiness.",
+    "Downstream DB write-back/search/release gates must pass separately."
+  ]
+}

@@ -1,0 +1,828 @@
+{
+  "schema_version": "9709_page_chain_shard_post_extraction_review_v1",
+  "generated_on": "2026-05-30",
+  "shard_id": "p4_w_standard_001",
+  "status": "pass",
+  "inputs": {
+    "manifest": "data/manifests/9709_p4_w_standard_001_page_chain_surface_v1.json",
+    "projection": "docs/reports/2026-05-30-9709-p4-w-standard-001-page-chain-projection.json",
+    "evidence_bundles": "docs/reports/2026-05-30-9709-p4-w-standard-001-evidence-bundles.json",
+    "human_dispositions": "docs/reports/2026-05-30-9709-p4-w-standard-001-vlm-assisted-visual-dispositions.json"
+  },
+  "summary": {
+    "manifest_items": 145,
+    "projection_items": 145,
+    "evidence_bundle_items": 145,
+    "human_disposition_items": 86,
+    "blockers": 0,
+    "warnings": 0,
+    "human_review_items": 0,
+    "accepted_human_dispositions": 86,
+    "manual_review_reason_counts": {}
+  },
+  "blockers": [],
+  "warnings": [],
+  "human_review_queue": [],
+  "accepted_human_dispositions": [
+    {
+      "storage_key": "9709/w16_qp_41/questions/q01.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. No continuation pages needed (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/w16_qp_41/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; question boundary intact; single crop covers full question including diagram and text; no missing continuation pages required for this question.']"
+    },
+    {
+      "storage_key": "9709/w16_qp_41/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' indicates single-page question; all text and graph elements are clear; question boundary intact; no missing continuation pages required as it's a single-page question.\"]"
+    },
+    {
+      "storage_key": "9709/w16_qp_41/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. All parts (i)–(iv) visible and continuous. Diagram shows 50 N force at 10° above horizontal on flat surface, then transition to 5° incline with force now 10° above the incline — consistent with text description. No missing continuation pages; single-page question as indicated by '[Turn over]' at bottom right.\"]"
+    },
+    {
+      "storage_key": "9709/w16_qp_42/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; labeled angles (25°, 15°) and forces (60 N, 50 N) clearly shown with boat and river direction reference. Question text fully visible and matches diagram. Single crop stack contains complete question (Q3) with no missing continuation pages.']"
+    },
+    {
+      "storage_key": "9709/w16_qp_43/questions/q02.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; angles (50° and 10°) and points (A, P, B) clearly labeled; question text fully visible and complete; no missing continuation pages; visual quality sufficient for review.']"
+    },
+    {
+      "storage_key": "9709/w16_qp_43/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; labeled distances (0.5 m, 0.4 m) and particles P/Q clearly shown; question text fully visible including parts (i) and (ii); no missing continuation pages; question boundary intact.']"
+    },
+    {
+      "storage_key": "9709/w17_qp_41/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. All parts (i)-(iii) visible with clear text and graph. No missing continuation pages (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/w17_qp_41/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible. Crop 1/2 contains parts (i) and (ii); crop 2/2 contains part (iii) and 'Turn over' marker. Question boundary intact, no cut-off text. No diagram/table required per review reason; none present, which is acceptable.\"]"
+    },
+    {
+      "storage_key": "9709/w17_qp_41/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', \"Diagram is present and clear in crop 1/2, matching 'diagram_lane' requirement.\", \"Question continues on second crop with part (ii), satisfying 'multi_page_question' continuity.\", \"Question boundary intact: starts with diagram and part (i), ends with part (ii) and '[Turn over]'.\"]"
+    },
+    {
+      "storage_key": "9709/w17_qp_41/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', 'Question spans two labeled crops (q07.png crop 1/2 and crop 2/2), both present and continuous; continuation page included and legible (multi_page_question satisfied).']"
+    },
+    {
+      "storage_key": "9709/w17_qp_42/questions/q02.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; question boundary intact; single-page question (no continuation needed); visual legibility satisfactory.']"
+    },
+    {
+      "storage_key": "9709/w17_qp_42/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both contain legible text, clear question boundary, no diagrams required per review reason, and cross-page continuity is maintained with explicit continuation statement and consistent formatting.']"
+    },
+    {
+      "storage_key": "9709/w17_qp_42/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Two crops present: crop 1/2 (question stem + part (i)) and crop 2/2 (part (ii) + 'Turn over').\", \"Diagram is present and legible in crop 1/2, satisfying 'diagram_lane'.\", \"Question continues across two crops with clear continuity; continuation page (crop 2/2) is present and legible, satisfying 'multi_page_question'.\", \"Question boundary is intact: starts at top of crop 1/2 with printed number '6', ends at bottom of crop 2/2 before '[Turn over]'.\"]"
+    },
+    {
+      "storage_key": "9709/w17_qp_42/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts i, ii, iii) fully present across two labeled crops in vertical stack; all parts legible and continuous; no diagram/table required per question content']"
+    },
+    {
+      "storage_key": "9709/w17_qp_43/questions/q01.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; question boundary intact; single-page question with no continuation required; visual legibility satisfactory.']"
+    },
+    {
+      "storage_key": "9709/w17_qp_43/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible. Crop 1/2 contains part (i); crop 2/2 contains parts (ii) and (iii), with clear 'Turn over' indicator. Question boundary intact, no diagram/table required per review reason.\"]"
+    },
+    {
+      "storage_key": "9709/w17_qp_43/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (v-t graph for particles P and Q with labeled segments and axes).', \"Question spans two crops/pages (q06.png crop 1/2 and crop 2/2), both included in the stack; continuation is clear and legible with 'Turn over' marker.\", \"Question boundary intact: starts at printed question number 6, ends at '[Turn over]' without truncation.\"]"
+    },
+    {
+      "storage_key": "9709/w17_qp_43/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', 'Question spans two labeled crops (crop 1/2 and crop 2/2), both present and continuous; continuation text and context are clear (multi_page_question satisfied).']"
+    },
+    {
+      "storage_key": "9709/w18_qp_41/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', \"Diagram is present and clear in crop 1/2, matching 'diagram_lane' requirement.\", \"Question continues seamlessly to second crop with part (ii); 'multi_page_question' continuity satisfied.\", \"Question boundary intact: starts at top of crop 1/2 with printed number '5', ends at bottom of crop 2/2 with '[Turn over]'.\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_41/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) verified: crop 1/2 contains part (i), crop 2/2 contains part (ii) and 'Turn over' marker; continuity is clear and legible.\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_41/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible. Crop 1/2 contains parts (i) and (ii); crop 2/2 contains part (iii) and 'Turn over' marker. Question boundary intact, no cut-off text. No diagram/table required per review reason; none present, which is acceptable.\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_42/questions/q01.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. Visual legibility sufficient. No continuation pages needed (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_42/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (velocity-time graph with labeled axes, segments, and key points).', 'Multi-page question: crop 1/2 contains parts (i) and (ii); crop 2/2 contains part (iii) and continuation text; cross-page continuity is clear and legible.', 'Question boundary intact: printed question number 3 visible at top; no cut-off of problem statement or diagram.']"
+    },
+    {
+      "storage_key": "9709/w18_qp_42/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) are present in the vertical stack, forming a complete question with diagram and both parts (i) and (ii).', \"Diagram is clearly visible and referenced in text ('see diagram').\", \"Cross-page continuity is maintained: part (i) on first crop, part (ii) on second crop, with 'Turn over' indicating expected continuation.\", \"All text is legible; question boundary is intact (starts with 'Two particles P and Q...' and ends with part (ii) and 'Turn over').\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_42/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (parts i, ii, iii) spans two labeled crops (crop 1/2 and crop 2/2). All parts are present and legible. Continuation is clear with 'Turn over' marker on second crop. No diagram or table required per review reason; text-only question.\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_43/questions/q01.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled angles (45°, 70°) and perpendicularity at B clearly shown. Question text fully visible and complete. Single crop stack contains all required content for Q1. 'diagram_lane' review reason satisfied.\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_43/questions/q02.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack; question boundary intact; visual legibility sufficient; no continuation pages needed as single-page question.\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_43/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', \"Question boundary intact: starts with printed question number 4 and ends with '[Turn over]' on second crop.\", \"Diagram (velocity-time axes) present in first crop as required by 'diagram_lane'.\", 'Cross-page continuity valid: part (i) on crop 1/2, part (ii) on crop 2/2, with clear continuation and no missing content.']"
+    },
+    {
+      "storage_key": "9709/w18_qp_43/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) are present in a single vertical stack image; both are legible.', \"Diagram is clearly present and matches 'diagram_lane' requirement.\", \"Question continues across two crops with clear textual continuity (part (i) on first crop, part (ii) and continuation on second crop); 'multi_page_question' condition satisfied.\", \"Question boundary is intact: starts with printed number '5' and ends with '[Turn over]' marker.\"]"
+    },
+    {
+      "storage_key": "9709/w18_qp_43/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts i, ii, iii) fully present across two labeled crops (crop 1/2 and crop 2/2).', \"Question boundary intact: starts with printed number '6' and ends with part (iii) and answer lines; no truncation.\", 'No diagram or table required per question text; none expected — consistent with review reason.', 'Cross-page continuity verified: part (ii) continues logically from part (i), and part (iii) follows part (ii) with clear transition; all text legible.']"
+    },
+    {
+      "storage_key": "9709/w18_qp_43/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible; continuation from crop 1/2 to crop 2/2 is clear with consistent formatting and no missing content. Question boundary intact. No diagram or table required per review reason, and none are expected for this question type.']"
+    },
+    {
+      "storage_key": "9709/w20_qp_41/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; labeled forces (8N, 12N, 10N, PN), angles (θ, 30°, 45°), and equilibrium condition clearly shown. Question boundary intact. Single crop (1/1) sufficient for question 3. No missing continuation pages required.']"
+    },
+    {
+      "storage_key": "9709/w20_qp_41/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', \"Question spans two labeled crops (q05_crop1/2 and q05_crop2/2), both present and continuous; continuation page includes part (b) and 'Turn over' marker (multi_page_question satisfied).\", \"Question boundary intact: printed number '5' at top, full text and diagram included, no cut-off content.\"]"
+    },
+    {
+      "storage_key": "9709/w20_qp_41/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Question 6 is split across two labeled crops (crop 1/2 and crop 2/2) in a single vertical stack image. Both parts are present, legible, and show clear cross-page continuity: part (a) ends with '[5]' and part (b) begins with 'After reaching the top of the hill...', indicating proper continuation. The question boundary is intact (starts with '6' and ends with '[Turn over]'). No diagram or table is required per review reason; none is missing.\"]"
+    },
+    {
+      "storage_key": "9709/w20_qp_41/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', 'Question spans two labeled crops (crop 1/2 and crop 2/2), both present and continuous; continuation pages are included and legible (multi_page_question satisfied).']"
+    },
+    {
+      "storage_key": "9709/w20_qp_42/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; angles (45°, 60°), tensions (T N, 20 N), and mass (m kg) clearly labeled. Question text fully visible and complete. No missing continuation pages; single-page question. 'diagram_lane' review reason satisfied.\"]"
+    },
+    {
+      "storage_key": "9709/w20_qp_42/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (velocity-time graph with labeled axes and segments).', \"Multi-page question: both crop 1/2 (part a) and crop 2/2 (part b) are included in the stack, with clear continuation and 'Turn over' indicator on second crop.\", 'Question boundary intact: printed question number 4 visible at top; full question text and diagram contained within crops.']"
+    },
+    {
+      "storage_key": "9709/w20_qp_42/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. Both parts (a) and (b) are fully legible, question boundary is intact, no diagrams/tables are required per the question text, and cross-page continuity is clear with part (b) following part (a) without omission."
+    },
+    {
+      "storage_key": "9709/w20_qp_42/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', \"Diagram 'Fig. 6.1' appears in crop 1/2, 'Fig. 6.2' in crop 2/2 — both required diagrams are present and clear.\", \"Question boundary intact: starts with printed question number 6 and ends with '[Turn over]' on second page.\", 'Cross-page continuity confirmed: continuation text and diagram (Fig. 6.2) logically follow part (a); no missing pages.']"
+    },
+    {
+      "storage_key": "9709/w20_qp_42/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible; part (a) on first crop, part (b) on second crop with clear continuation; no diagram required per question text; question boundary intact.']"
+    },
+    {
+      "storage_key": "9709/w20_qp_42/questions/q08.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', 'Question spans two labeled crops (crop 1/2 and crop 2/2), both present and continuous; continuation pages are included and legible (multi_page_question satisfied).']"
+    },
+    {
+      "storage_key": "9709/w20_qp_43/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"The stack contains two labeled crops (q05.png crop 1/2 and crop 2/2), covering all parts (a)–(d) of question 5. Cross-page continuity is maintained: part (d) appears on the second crop with clear continuation, and the '[Turn over]' marker confirms expected page break. All text is legible, question boundary is intact, and no diagram/table is required for this question type (kinematics with given velocity function).\"]"
+    },
+    {
+      "storage_key": "9709/w20_qp_43/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible; continuation from crop 1/2 to crop 2/2 is clear with no missing content or cut-off text; question boundary intact; no diagram/table required per review reason, and none expected for this question type.']"
+    },
+    {
+      "storage_key": "9709/w20_qp_43/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) are present in the vertical stack, corresponding to parts (a) and (b) of question 7.', 'Diagram is clearly visible and legible in crop 1/2; includes labeled masses, angles, planes P and Q, pulley, and string configuration as described.', \"Cross-page continuity is maintained: part (a) ends with answer space, part (b) begins immediately below with clear continuation marker ('**' separator), same font/style, and no missing content.\", \"Question boundary is intact: printed question number '7' at top, full text for both parts, and answer lines provided.\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_41/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; includes labeled forces (24 N, P N, 20 N, 36 N), angles α and θ, and right-angle marker. Question text is fully visible and complete. No continuation pages needed; single-page question. Review reason 'diagram_lane' satisfied.\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_41/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a–d) spans two labeled crops (crop 1/2 and crop 2/2).', \"Continuation is present and legible: part (c) and (d) appear on second crop, with 'Turn over' indicator confirming page break.\", 'Question boundary intact: full question stem and all parts visible without truncation.', 'No diagram or table required per review reason; none present, which is acceptable.']"
+    },
+    {
+      "storage_key": "9709/w21_qp_41/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible. Crop 1/2 contains parts (a) and (b); crop 2/2 contains part (c) and 'Turn over' marker. Question boundary intact, no cut-off text. No diagram/table required per review reason; velocity-time graph is to be sketched by candidate, not provided.\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_41/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; includes labeled particles A (2 kg), B (3 kg), pulley, plane angle (18°), and vertical distance (0.45 m). Question text is fully legible and complete. Single crop stack contains all required content for question 7; no missing continuation pages. Review reason 'diagram_lane' satisfied.\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_42/questions/q01.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack; question boundary intact; all text and graph elements clear; no missing continuation pages (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_42/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. Visual legibility sufficient. No missing continuation pages (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_42/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible; part (a) on first crop, part (b) on second crop with clear continuation; no diagram/table required per review reason 'multi_page_question'\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_42/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: The crop stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete question. Diagram is present and legible in crop 1/2; text continues clearly into crop 2/2 with no missing content. Question boundary is intact, and cross-page continuity is maintained (e.g., part (b) appears on second crop with proper formatting and '[Turn over]' indicator). All review reasons ('diagram_lane', 'multi_page_question') are satisfied visually."
+    },
+    {
+      "storage_key": "9709/w21_qp_42/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete question. Diagram is present and legible in crop 1/2; text continues clearly into crop 2/2 with no missing content. Question boundary is intact (starts at top of crop 1/2, ends at bottom of crop 2/2). All required parts (a), (b), (c) are present and legible."
+    },
+    {
+      "storage_key": "9709/w21_qp_43/questions/q01.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled masses (120 kg, 40 kg) and direction arrow clear. Question text fully legible. Single-page question; no cross-page continuity required. 'diagram_lane' review reason satisfied.\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_43/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible; continuation from crop 1/2 to crop 2/2 is clear with no missing content; 'Turn over' marker correctly placed at bottom of second crop.\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_43/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a), (b), (c) are present and legible. Continuation is clear with 'Turn over' on second crop. No diagram or table is required per question content; none expected for this mechanics problem.\"]"
+    },
+    {
+      "storage_key": "9709/w21_qp_43/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: The crop stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete question. Diagram is present and legible; question boundary is intact; cross-page continuity is maintained with clear continuation from part (a) to (b) and (c). All text and diagram elements are visually legible."
+    },
+    {
+      "storage_key": "9709/w22_qp_41/questions/q01.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; labeled forces (PN, QN, 16N, 22N) with angles (25°, 55°) and equilibrium condition clearly stated. Question boundary intact. Single crop (1/1) sufficient for question 1; no continuation pages needed.']"
+    },
+    {
+      "storage_key": "9709/w22_qp_41/questions/q03.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (parts a, b, c) fully present across two labeled crops (crop 1/2 and crop 2/2); all text legible; question boundary intact; no diagrams or tables required per review reason 'multi_page_question'; cross-page continuity confirmed with clear continuation from part (b) to (c).\"]"
+    },
+    {
+      "storage_key": "9709/w22_qp_41/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', \"Question spans two labeled crops (1/2 and 2/2) with clear continuation; 'Turn over' on second crop confirms multi-page structure (multi_page_question satisfied).\", 'Question boundary intact: starts at top of crop 1/2, ends at bottom of crop 2/2 with no cut-off text or diagram.']"
+    },
+    {
+      "storage_key": "9709/w22_qp_41/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. Both parts (a) and (b) are present, legible, and properly sequenced. The 'Turn over' marker on crop 2/2 confirms expected continuation. No diagram is required for this question; the problem is purely textual/calculative, consistent with review reason 'multi_page_question'.\"]"
+    },
+    {
+      "storage_key": "9709/w22_qp_41/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', \"Diagram present in both crops (Fig. 6.1 and Fig. 6.2), satisfying 'diagram_lane' requirement.\", 'Question continues from page 6 to page 11 with clear continuation text and figure reference; cross-page continuity maintained.', 'Question boundary intact: starts with printed number 6 and ends with part (b) and answer space; no truncation.']"
+    },
+    {
+      "storage_key": "9709/w22_qp_42/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; labeled angles (60°, α°), mass (0.3 kg), and right-angle indicator visible. Question text fully legible. Single crop covers entire question including diagram and stem. No missing continuation pages required for this question.']"
+    },
+    {
+      "storage_key": "9709/w22_qp_42/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', \"Question spans two labeled crops (1/2 and 2/2), both present and continuous; continuation page includes part (b) and 'Turn over' marker (multi_page_question satisfied).\", \"Question boundary intact: starts with printed number '5', ends with '[Turn over]' on second crop.\"]"
+    },
+    {
+      "storage_key": "9709/w22_qp_42/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible; cross-page continuity is maintained with clear continuation from part (a) to (b) to (c); no diagram/table required per review reason 'multi_page_question' and none expected for this mechanics question type.\"]"
+    },
+    {
+      "storage_key": "9709/w22_qp_42/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a–d) presented as a single vertical stack with two labeled crops (q07.png crop 1/2 and crop 2/2). All parts (a) through (d) are present and legible. Cross-page continuity is maintained: part (b) continues directly after (a), and (c)–(d) follow on the second crop without missing content. Question boundary is intact; no truncation at top or bottom. No diagrams or tables are required for this question per review context.']"
+    },
+    {
+      "storage_key": "9709/w22_qp_43/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. Visual legibility sufficient. No continuation pages needed (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/w22_qp_43/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible; part (a) on first crop, part (b) on second crop with clear continuation; 'Turn over' marker confirms expected page break; no diagram/table required per question text.\"]"
+    },
+    {
+      "storage_key": "9709/w22_qp_43/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both parts of multi-page question 5 are included and legible. Cross-page continuity is maintained: part (a) on first crop, part (b) on second crop with clear continuation. No diagram or table required per review reason 'multi_page_question'. Question boundary fully captured from start of Q5 to end of part (b) including '[Turn over]'.\"]"
+    },
+    {
+      "storage_key": "9709/w22_qp_43/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible; cross-page continuity is maintained with clear continuation from crop 1/2 to crop 2/2. Question boundary intact. No diagram/table required per review reason, and none expected for this question type.']"
+    },
+    {
+      "storage_key": "9709/w22_qp_43/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', 'Question spans two labeled crops (crop 1/2 and crop 2/2), both present and continuous; continuation pages are included and legible (multi_page_question satisfied).', 'Question boundary intact: printed question number 7 visible, full text and diagram contained without truncation.']"
+    },
+    {
+      "storage_key": "9709/w23_qp_41/questions/q02.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; angles (35°, 40°) and mass (2.4 kg) clearly labeled; question text complete and readable; no missing continuation pages; single crop stack contains full question 2 including diagram and instruction.']"
+    },
+    {
+      "storage_key": "9709/w23_qp_41/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (velocity-time graph with labeled axes, values, and time intervals).', \"Question spans two crops/pages (crop 1/2 and crop 2/2), both included in the stack; continuation is clear and legible with 'Turn over' indicator on second crop.\", \"Question boundary intact: printed question number '3' at top, full text and parts (a)-(c) visible, no truncation.\"]"
+    },
+    {
+      "storage_key": "9709/w23_qp_41/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible. Continuation from crop 1/2 to crop 2/2 is clear: part (c) appears on second crop with required friction coefficient statement and instruction. Question boundary intact. No diagrams or tables required per review reason.']"
+    },
+    {
+      "storage_key": "9709/w23_qp_41/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled crop 'crop 1/1' contains full question including diagram, text, and answer space. Question boundary intact. No missing continuation pages (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/w23_qp_41/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) is fully present and legible; cross-page continuity is maintained with clear continuation from crop 1/2 to crop 2/2. Question boundary intact. No diagrams or tables required per review reason 'multi_page_question'.\"]"
+    },
+    {
+      "storage_key": "9709/w23_qp_42/questions/q02.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; labeled angles (30°, 40°), forces (2 N horizontal, mg vertical), and points (A, B, R) clearly visible. Question text fully legible and complete. Single crop covers entire question including diagram and text. No missing continuation pages required for Q2 as it is self-contained on one page.']"
+    },
+    {
+      "storage_key": "9709/w23_qp_42/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. No continuation pages needed (single-page question). Visual legibility sufficient for review purposes.\"]"
+    },
+    {
+      "storage_key": "9709/w23_qp_42/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a), (b), and (c) are present and legible. Cross-page continuity is maintained with clear continuation from first to second crop. No diagram or table is required for this question; text-only presentation is appropriate per syllabus style.']"
+    },
+    {
+      "storage_key": "9709/w23_qp_42/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both contain legible text, clear question boundary, no diagrams required per context, and cross-page continuity is maintained with part (a) on first crop and part (b) on second crop including continuation context and 'Turn over' marker.\"]"
+    },
+    {
+      "storage_key": "9709/w23_qp_42/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"The question is split across two labeled crops (crop 1/2 and crop 2/2) in a single vertical stack image. All parts (a), (b), and (c) are present and legible. Cross-page continuity is maintained: part (b) continues directly after part (a), and part (c) follows on the second crop with no missing content. No diagram or table is required per the question text; only a velocity-time graph sketch is requested, which is not expected to be pre-drawn. Question boundary is intact (starts with '7' and ends with part (c) and mark allocation [5]).\"]"
+    },
+    {
+      "storage_key": "9709/w23_qp_43/questions/q02.png",
+      "accepted_review_reasons": [
+        "diagram_lane"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible; labeled masses (1.2 kg, 0.004 kg) and direction arrow clearly visible. Question text fully legible, includes parts (a) and (b), with required diagram reference. Single crop stack contains complete question 2 with no missing continuation pages. Visual quality sufficient for review.']"
+    },
+    {
+      "storage_key": "9709/w23_qp_43/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', 'Diagram is present and clear in crop 1/2, referenced in question text.', \"Question boundary intact: starts with printed number '5' and ends with '[Turn over]' on second crop.\", 'Cross-page continuity confirmed: part (a) on first crop, part (b) on second crop, with consistent formatting and no missing content.']"
+    },
+    {
+      "storage_key": "9709/w23_qp_43/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Multi-page question (2 crops) verified: crop 1/2 contains part (a), crop 2/2 contains part (b) and 'Turn over' marker; continuity is clear and legible; no diagram/table required per review reason\"]"
+    },
+    {
+      "storage_key": "9709/w23_qp_43/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-30",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', \"Diagram is present and clear in crop 1/2, matching 'diagram_lane' requirement.\", 'Question continues from crop 1/2 to crop 2/2 with clear cross-page continuity; part (a) ends and part (b) begins seamlessly.', 'Printed question number 7 is visible at top of first crop.']"
+    }
+  ]
+}

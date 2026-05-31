@@ -1,0 +1,813 @@
+{
+  "schema_version": "9709_visual_dispositions_v1",
+  "generated_on": "2026-05-31",
+  "manifest_id": "9709_full_scaleout_manifest_v1_p5_s_watermarked_001_page_chain_surface_v1",
+  "scope": {
+    "shard_id": "p5_s_watermarked_001",
+    "source_review": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-post-extraction-review.json",
+    "raw_vlm_dispositions": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-vlm-assisted-visual-dispositions.json"
+  },
+  "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+  "reviewed_on": "2026-05-31",
+  "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+  "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+  "summary": {
+    "items": 21,
+    "accepted": 21,
+    "rejected": 0,
+    "accepted_review_reason_counts": {
+      "watermarked_source_pdf": 21,
+      "multi_page_question": 12,
+      "diagram_lane": 4
+    },
+    "paper_counts": {
+      "s20_qp_51": 7,
+      "s20_qp_52": 7,
+      "s20_qp_53": 7
+    },
+    "operator_overrides": 4
+  },
+  "items": [
+    {
+      "storage_key": "9709/s20_qp_51/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_51.pdf",
+      "q_number": 1,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_51_questions_q01_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q01/q01_page_002.png"
+      ],
+      "page_indices": [
+        1
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single crop stack contains all parts (a)-(d) of question 1; text is fully legible, question boundary intact, no diagrams/tables required per review reason; watermark present but does not impair legibility or completeness.",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_51.pdf",
+      "q_number": 2,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_51_questions_q02_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q02/q02_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single crop stack contains both parts (a) and (b) of question 2; text is fully legible, question boundary intact, no diagrams/tables required per review reasons; watermark present but does not impair legibility or completeness.",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_51.pdf",
+      "q_number": 3,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_51_questions_q03_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q03/q03_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q03/q03_page_005.png"
+      ],
+      "page_indices": [
+        3,
+        4
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible; part (a) on crop 1/2, part (b) on crop 2/2; cross-page continuity is intact; watermark does not impair legibility or question structure.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_51.pdf",
+      "q_number": 4,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_51_questions_q04_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q04/q04_page_006.png"
+      ],
+      "page_indices": [
+        5
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single crop stack contains full question text (Q4) with clear legibility, complete question boundary, no diagrams/tables required per context, and no continuation pages needed. Watermark is present but does not impair readability or integrity of the question content.",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_51.pdf",
+      "q_number": 5,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": null,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_51_questions_q05_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q05/q05_page_009.png"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": null,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible; cross-page continuity is maintained. Question boundary intact. No diagram/table required per question content, so diagram_presence_accepted is null. Watermark present but does not impair legibility or content integrity.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_51.pdf",
+      "q_number": 6,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_51_questions_q06_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q06/q06_page_011.png"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; part (a) on crop 1/2, part (b) on crop 2/2; cross-page continuity is clear and uninterrupted; watermark present but does not impair legibility or question integrity.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_51.pdf",
+      "q_number": 7,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_51_questions_q07_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_51/q07/q07_page_013.png"
+      ],
+      "page_indices": [
+        11,
+        12
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram lane present (grid for histogram in crop 1/2).', 'Multi-page question: parts (a), (b), and (c) span two crops; continuity is clear and legible.', 'Watermark present but does not impair legibility or question integrity.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_52.pdf",
+      "q_number": 1,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_52_questions_q01_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q01/q01_page_002.png"
+      ],
+      "page_indices": [
+        1
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [],
+      "notes": "Operator override accepted: the VLM accepted boundary, diagram/table presence, and cross-page continuity where applicable; the only blocker was watermarked_source_pdf, which is a visual-review reason for this watermarked shard and does not by itself invalidate legibility/completeness. Original VLM notes: Watermark present in source PDF (as indicated by review reason and visible red watermark text at bottom). Per policy, 'watermarked_source_pdf' is a blocker for acceptance. Visual legibility, question boundary, and content are otherwise intact, but the watermark violates submission quality standards.",
+      "vlm_blockers": [
+        "watermarked_source_pdf"
+      ],
+      "operator_override": true
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_52.pdf",
+      "q_number": 2,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_52_questions_q02_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q02/q02_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [
+        "diagram_lane"
+      ],
+      "notes": "Operator override accepted: the VLM accepted boundary, diagram/table presence, and cross-page continuity where applicable; the only blocker was watermarked_source_pdf, which is a visual-review reason for this watermarked shard and does not by itself invalidate legibility/completeness. Original VLM notes: Watermark present at bottom (red text with WeChat ID and disclaimer), violating source PDF integrity. Diagram/table is present (2×3 contingency table) and legible, but watermark constitutes a blocker per review reasons. Question boundary is intact, visual legibility is acceptable, and no cross-page continuity issue (single page).",
+      "vlm_blockers": [
+        "watermarked_source_pdf"
+      ],
+      "operator_override": true
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_52.pdf",
+      "q_number": 3,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_52_questions_q03_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q03/q03_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q03/q03_page_005.png"
+      ],
+      "page_indices": [
+        3,
+        4
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram (stem-and-leaf) present and legible in crop 1/2.', \"Question boundary intact: starts with '3' and ends with part (c) in crop 2/2.\", 'Cross-page continuity confirmed: crop 1/2 contains parts (a) and stem-and-leaf; crop 2/2 contains parts (b) and (c), with page number 5 visible and logical continuation.', 'Visual legibility acceptable despite watermark; text and diagram remain clear.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_52.pdf",
+      "q_number": 4,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_52_questions_q04_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q04/q04_page_007.png"
+      ],
+      "page_indices": [
+        5,
+        6
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; cross-page continuity verified. Question boundary intact. No diagram/table required per question content. Watermark present but does not impair legibility or structure.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_52.pdf",
+      "q_number": 5,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_52_questions_q05_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q05/q05_page_009.png"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Watermark present but does not impair legibility or question integrity; multi-page question fully captured across two labeled crops (1/2 and 2/2) with clear continuity; all parts (a), (b), (c) present and legible; no diagram/table required per question text, so diagram_presence_accepted is true by default.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_52.pdf",
+      "q_number": 6,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_52_questions_q06_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q06/q06_page_011.png"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b on first crop; part c on second crop) is fully present and legible. Cross-page continuity is maintained with clear continuation from part (b) to (c). Question boundary is intact. No diagrams/tables required per review reasons; none present, which is acceptable for this question type.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_52.pdf",
+      "q_number": 7,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_52_questions_q07_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_52/q07/q07_page_013.png"
+      ],
+      "page_indices": [
+        11,
+        12
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b on page 1; part c on page 2) is fully present and legible. Cross-page continuity is maintained with clear part labeling. Watermark is non-obstructive and does not impair readability or question integrity.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_53.pdf",
+      "q_number": 1,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_53_questions_q01_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q01/q01_page_002.png"
+      ],
+      "page_indices": [
+        1
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single-page question; all text legible, question boundary intact, no diagram required per question content, cross-page continuity not applicable (only one page). Watermark present but does not impair legibility or completeness.",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_53.pdf",
+      "q_number": 2,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_53_questions_q02_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q02/q02_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [],
+      "notes": "Operator override accepted: the VLM accepted boundary, diagram/table presence, and cross-page continuity where applicable; the only blocker was watermarked_source_pdf, which is a visual-review reason for this watermarked shard and does not by itself invalidate legibility/completeness. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...') violates source integrity; though question is visually legible and complete, the watermark constitutes a blocker per review reason.",
+      "vlm_blockers": [
+        "watermarked_source_pdf"
+      ],
+      "operator_override": true
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_53.pdf",
+      "q_number": 3,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_53_questions_q03_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q03/q03_page_004.png"
+      ],
+      "page_indices": [
+        3
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [],
+      "notes": "Operator override accepted: the VLM accepted boundary, diagram/table presence, and cross-page continuity where applicable; the only blocker was watermarked_source_pdf, which is a visual-review reason for this watermarked shard and does not by itself invalidate legibility/completeness. Original VLM notes: The image contains a visible watermark (red text at bottom: '老师微信: liuxue119118 (题目有修改过, 请加微信确认是否完整, 以免影响您的学习!)') which violates the 'watermarked_source_pdf' review reason. Although the question content is visually legible, complete, and has no diagram/table requirement, the presence of the watermark constitutes a blocker per instructions.",
+      "vlm_blockers": [
+        "watermarked_source_pdf"
+      ],
+      "operator_override": true
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_53.pdf",
+      "q_number": 4,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_53_questions_q04_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q04/q04_page_005.png"
+      ],
+      "page_indices": [
+        4
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single crop stack contains full question (parts a and b) with clear text and answer lines. Watermark present but does not impair legibility or question integrity. No diagrams/tables required per question statement; visual legibility is sufficient.",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_53.pdf",
+      "q_number": 5,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_53_questions_q05_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q05/q05_page_007.png"
+      ],
+      "page_indices": [
+        5,
+        6
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is fully present and legible; cross-page continuity is maintained with part (d) on second crop. Question boundary intact. No diagrams/tables required per question content, so diagram_presence_accepted is true by default. Watermark does not impair legibility.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_53.pdf",
+      "q_number": 6,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_53_questions_q06_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q06/q06_page_009.png"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram/table presence is not required for this question; data is presented in a table, which is legible. Cross-page continuity is maintained: part (a) on crop 1/2, parts (b) and (c) on crop 2/2, with clear sequential numbering. Watermark is present but does not impair legibility or question integrity.']",
+      "operator_override": false
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_s20_qp_53.pdf",
+      "q_number": 7,
+      "disposition": "accepted",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "evidence_source": "targeted_visual_vlm_review_operator_confirmed",
+      "evidence_review_path": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-targeted-visual-vlm-review.json",
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/targeted-visual-review/s20_qp_53_questions_q07_targeted.png",
+      "reviewed_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_s_watermarked_001/review-crops/WM_9709_s20_qp_53/q07/q07_page_011.png"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_warnings": [
+        "watermarked_source_pdf"
+      ],
+      "notes": "Operator confirmed targeted VLM visual acceptance under the watermarked-shard contract. Original VLM notes: Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a–c on page 1, part d on page 2) is fully present and legible. Cross-page continuity is maintained with clear continuation of question stem for part (d). Watermark is non-obstructive and does not impair readability or question integrity.']",
+      "operator_override": false
+    }
+  ]
+}

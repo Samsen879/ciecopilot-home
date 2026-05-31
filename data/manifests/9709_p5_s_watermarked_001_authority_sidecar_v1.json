@@ -1,0 +1,777 @@
+{
+  "schema_version": "9709_authority_sidecar_v1",
+  "sidecar_id": "9709_p5_s_watermarked_001_authority_sidecar_v1",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "generated_on": "2026-05-31",
+  "scope": {
+    "shard_id": "p5_s_watermarked_001",
+    "manifest_path": "data/manifests/9709_p5_s_watermarked_001_page_chain_surface_v1.json",
+    "item_count": 21,
+    "curriculum_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_p5_v1.json"
+  },
+  "notes": [
+    "Shard-scoped authority sidecar for p5_s_watermarked_001.",
+    "Uses component-scoped 9709.p5.* topic paths from the P2/P4/P5 runtime seed extension.",
+    "Watermarked-source status is accepted only because targeted/operator visual review found no content occlusion.",
+    "This sidecar authorizes authority preflight only; DB write-back/search/release still require separate execution."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/s20_qp_51/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.discrete_random_variables",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_4_discrete_random_variables",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.4 Discrete Random Variables; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q01.png; approved P5 authority-layer mapping to 9709.p5.discrete_random_variables; rationale=Repeated dice throws until the first score of 4 define a geometric random variable X; mean and probability questions are discrete-random-variable work."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q01.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_51/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 1 The score when two fair six-sided dice are thrown is the sum of the two numbers on the upper faces. (a) Show that the probability that the score is 4 is \\frac{1}{12}. The two dice are thrown repeatedly until a score of 4 is obtained. The number of throws taken is denoted by the random variable X. (b) Find the mean of X. (c) Find the probability that a score of 4 is first obtained on the 6th throw. (d) Find P(X < 8)."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.permutations_and_combinations",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_2_permutations_and_combinations",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.2 Permutations and Combinations; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q02.png; approved P5 authority-layer mapping to 9709.p5.permutations_and_combinations; rationale=Arrangements of the letters in JEWELLERY with repeated letters and adjacency restrictions are permutations/combinations."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q02.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_51/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Find the number of different arrangements that can be made from the 9 letters of the word JEWELLERY in which the three Es are together and the two Ls are together. (b) Find the number of different arrangements that can be made from the 9 letters of the word JEWELLERY in which the two Ls are not next to each other."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.discrete_random_variables",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_4_discrete_random_variables",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.4 Discrete Random Variables; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q03.png; approved P5 authority-layer mapping to 9709.p5.discrete_random_variables; rationale=The question asks for a probability distribution table for a random variable and a binomial probability over 10 boxes."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q03.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_51/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 A company produces small boxes of sweets that contain 5 jellies and 3 chocolates. Jemeel chooses 3 sweets at random from a box. (a) Draw up the probability distribution table for the number of jellies that Jemeel chooses. [4] The company also produces large boxes of sweets. For any large box, the probability that it contains more jellies than chocolates is 0.64. 10 large boxes are chosen at random. (b) Find the probability that no more than 7 of these boxes contain more jellies than chocolates. [3]"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.permutations_and_combinations",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_2_permutations_and_combinations",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.2 Permutations and Combinations; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q04.png; approved P5 authority-layer mapping to 9709.p5.permutations_and_combinations; rationale=Selecting finalists under lower-bound and comparison constraints is a combinations/counting problem."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q04.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_51/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 4 In a music competition, there are 8 pianists, 4 guitarists and 6 violinists. 7 of these musicians will be selected to go through to the final. How many different selections of 7 finalists can be made if there must be at least 2 pianists, at least 1 guitarist and more violinists than guitarists?"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.probability",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_3_probability",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.3 Probability; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q05.png; approved P5 authority-layer mapping to 9709.p5.probability; rationale=A fully labelled tree diagram, total probability, and conditional probability control the question."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q05.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_51/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 5 On Mondays, Rani cooks her evening meal. She has a pizza, a burger or a curry with probabilities 0.35, 0.44, 0.21 respectively. When she cooks a pizza, Rani has some fruit with probability 0.3. When she cooks a burger, she has some fruit with probability 0.8. When she cooks a curry, she never has any fruit. (a) Draw a fully labelled tree diagram to represent this information. (b) Find the probability that Rani has some fruit. (c) Find the probability that Rani does not have a burger given that she does not have a"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.the_normal_distribution",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_5_the_normal_distribution",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.5 The Normal Distribution; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q06.png; approved P5 authority-layer mapping to 9709.p5.the_normal_distribution; rationale=Normally distributed snake lengths, tail probabilities, and estimating normal parameters control the question."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q06.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_51/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 6 The lengths of female snakes of a particular species are normally distributed with mean 54 cm and standard deviation 6.1 cm. (a) Find the probability that a randomly chosen female snake of this species has length between 50 cm and 60 cm. The lengths of male snakes of this species also have a normal distribution. A scientist measures the lengths of a random sample of 200 male snakes of this species. He finds that 32 have lengths less than 45 cm and 17 have lengths more than 56 cm. (b) Find estimates for the mean a"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_51/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.representation_of_data",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_1_representation_of_data",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.1 Representation of Data; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q07.png; approved P5 authority-layer mapping to 9709.p5.representation_of_data; rationale=Grouped frequency data, histogram, interquartile range, mean, and standard deviation are representation-of-data work."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_51/questions/q07.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_51/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 7 The numbers of chocolate bars sold per day in a cinema over a period of 100 days are summarised in the following table. Number of chocolate bars sold | 1–10 | 11–15 | 16–30 | 31–50 | 51–60 ---|---|---|---|---|--- Number of days | 18 | 24 | 30 | 20 | 8 (a) Draw a histogram to represent this information. (b) What is the greatest possible value of the interquartile range for the data? (c) Calculate estimates of the mean and standard deviation of the number of chocolate bars sold."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.representation_of_data",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_1_representation_of_data",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.1 Representation of Data; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q01.png; approved P5 authority-layer mapping to 9709.p5.representation_of_data; rationale=Summation notation for a data set and deriving n from sigma expressions belongs to representation/summary statistics."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q01.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_52/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 1 For n values of the variable x, it is given that Σ(x − 50) = 144 and Σx = 944. Find the value of n."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.probability",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_3_probability",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.3 Probability; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q02.png; approved P5 authority-layer mapping to 9709.p5.probability; rationale=A two-way frequency table, conditional probability, and independence check are probability work."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q02.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_52/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 A total of 500 students were asked which one of four colleges they attended and whether they preferred soccer or hockey. The numbers of students in each category are shown in the following table. \\begin{tabular}{|l|c|c|c|} \\hline & Soccer & Hockey & Total \\\\ \\hline Amos & 54 & 32 & 86 \\\\ \\hline Benn & 84 & 72 & 156 \\\\ \\hline Canton & 22 & 56 & 78 \\\\ \\hline Devar & 120 & 60 & 180 \\\\ \\hline Total & 280 & 220 & 500 \\\\ \\hline \\end{tabular} (a) Find the probability that a randomly chosen student is at Canton college a"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.representation_of_data",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_1_representation_of_data",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.1 Representation of Data; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q03.png; approved P5 authority-layer mapping to 9709.p5.representation_of_data; rationale=Stem-and-leaf data, median, interquartile range, box-and-whisker plots, and comparisons are representation-of-data work."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q03.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_52/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 Two machines, A and B, produce metal rods of a certain type. The lengths, in metres, of 19 rods produced by machine A and 19 rods produced by machine B are shown in the following back-to-back stem-and-leaf diagram. A | | B ---|---|--- |21|1 2 4 7 6 3 0|22|2 4 5 5 6 8 7 4 3 1 1|23|0 2 6 8 9 9 5 5 5 3 2|24|3 3 4 6 4 3 1 0|25|6 Key: 7 | 22 | 4 means 0.227 m for machine A and 0.224 m for machine B. (a) Find the median and the interquartile range for machine A. [3] It is given that for machine B the median is 0.232 m,"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.the_normal_distribution",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_5_the_normal_distribution",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.5 The Normal Distribution; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q04.png; approved P5 authority-layer mapping to 9709.p5.the_normal_distribution; rationale=Normal model for tree heights, tail probability, classification threshold, and inverse normal calculation control the question."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q04.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_52/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 4 Trees in the Redian forest are classified as tall, medium or short, according to their height. The heights can be modelled by a normal distribution with mean 40 m and standard deviation 12 m. Trees with a height of less than 25 m are classified as short. (a) Find the probability that a randomly chosen tree is classified as short. Of the trees that are classified as tall or medium, one third are tall and two thirds are medium. (b) Show that the probability that a randomly chosen tree is classified as tall is 0.298"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.discrete_random_variables",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_4_discrete_random_variables",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.4 Discrete Random Variables; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q05.png; approved P5 authority-layer mapping to 9709.p5.discrete_random_variables; rationale=The spinner outcome defines a discrete random variable X and asks for its distribution, expectation, and variance."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q05.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_52/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 5 A fair three-sided spinner has sides numbered 1, 2, 3. A fair five-sided spinner has sides numbered 1, 1, 2, 2, 3. Both spinners are spun once. For each spinner, the number on the side on which it lands is noted. The random variable X is the larger of the two numbers if they are different, and their common value if they are the same. (a) Show that P(X = 3) = 7/15. (b) Draw up the probability distribution table for X. (c) Find E(X) and Var(X)."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.permutations_and_combinations",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_2_permutations_and_combinations",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.2 Permutations and Combinations; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q06.png; approved P5 authority-layer mapping to 9709.p5.permutations_and_combinations; rationale=Arrangements and selections from SUMMERTIME with repeated letters and restrictions are permutations/combinations."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q06.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_52/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Find the number of different ways in which the 10 letters of the word SUMMERTIME can be arranged so that there is an E at the beginning and an E at the end. (b) Find the number of different ways in which the 10 letters of the word SUMMERTIME can be arranged so that the Es are not together. (c) Four letters are selected from the 10 letters of the word SUMMERTIME. Find the number of different selections if the four letters include at least one M and exactly one E."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_52/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.the_normal_distribution",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_5_the_normal_distribution",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.5 The Normal Distribution; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q07.png; approved P5 authority-layer mapping to 9709.p5.the_normal_distribution; rationale=The question combines binomial/geometric calculations with a required approximation for a 100-day count; following the P5 shard rule, the normal-approximation part determines the primary authority path."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_52/questions/q07.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_52/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 7 On any given day, the probability that Moena messages her friend Pasha is 0.72. (a) Find the probability that for a random sample of 12 days Moena messages Pasha on no more than 9 days. (b) Moena messages Pasha on 1 January. Find the probability that the next day on which she messages Pasha is 5 January. (c) Use an approximation to find the probability that in any period of 100 days Moena messages Pasha on fewer than 64 days."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.probability",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_3_probability",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.3 Probability; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q01.png; approved P5 authority-layer mapping to 9709.p5.probability; rationale=A tree diagram and conditional probability about travel mode and arriving early are probability work."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q01.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_53/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 1 Juan goes to college each day by any one of car or bus or walking. The probability that he goes by car is 0.2, the probability that he goes by bus is 0.45 and the probability that he walks is 0.35. When Juan goes by car, the probability that he arrives early is 0.6. When he goes by bus, the probability that he arrives early is 0.1. When he walks he always arrives early. (a) Draw a fully labelled tree diagram to represent this information. (b) Find the probability that Juan goes to college by car given that he arr"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.discrete_random_variables",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_4_discrete_random_variables",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.4 Discrete Random Variables; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q02.png; approved P5 authority-layer mapping to 9709.p5.discrete_random_variables; rationale=Repeated random choices with a fixed car-ownership probability require binomial probability calculations."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q02.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_53/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 In a certain large college, 22% of students own a car. (a) 3 students from the college are chosen at random. Find the probability that all 3 students own a car. (b) 16 students from the college are chosen at random. Find the probability that the number of these students who own a car is at least 2 and at most 4."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.the_normal_distribution",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_5_the_normal_distribution",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.5 The Normal Distribution; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q03.png; approved P5 authority-layer mapping to 9709.p5.the_normal_distribution; rationale=A normally distributed weekly television time, tail probability, and inverse normal quantile define the topic."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q03.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_53/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 In a certain town, the time, X hours, for which people watch television in a week has a normal distribution with mean 15.8 hours and standard deviation 4.2 hours. (a) Find the probability that a randomly chosen person from this town watches television for less than 21 hours in a week. (b) Find the value of k such that P(X < k) = 0.75."
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.discrete_random_variables",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_4_discrete_random_variables",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.4 Discrete Random Variables; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q04.png; approved P5 authority-layer mapping to 9709.p5.discrete_random_variables; rationale=Spinner sums define a discrete random variable X and ask for its probability distribution and variance."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q04.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_53/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 4 A fair four-sided spinner has edges numbered 1, 2, 2, 3. A fair three-sided spinner has edges numbered -2, -1, 1. Each spinner is spun and the number on the edge on which it comes to rest is noted. The random variable X is the sum of the two numbers that have been noted. (a) Draw up the probability distribution table for X. [3] (b) Find Var(X). [3]"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.the_normal_distribution",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_5_the_normal_distribution",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.5 The Normal Distribution; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q05.png; approved P5 authority-layer mapping to 9709.p5.the_normal_distribution; rationale=The question combines geometric waiting-time calculations with a higher-mark normal approximation for 80 coin-pair trials; the approximation requirement determines the primary authority path."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q05.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_53/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 5 A pair of fair coins is thrown repeatedly until a pair of tails is obtained. The random variable X denotes the number of throws required to obtain a pair of tails. (a) Find the expected value of X. (b) Find the probability that exactly 3 throws are required to obtain a pair of tails. (c) Find the probability that fewer than 6 throws are required to obtain a pair of tails. On a different occasion, a pair of fair coins is thrown 80 times. (d) Use an approximation to find the probability that a pair of tails is obta"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.representation_of_data",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_1_representation_of_data",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.1 Representation of Data; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q06.png; approved P5 authority-layer mapping to 9709.p5.representation_of_data; rationale=Salary data, a back-to-back stem-and-leaf diagram, median, interquartile range, and mean calculation are representation-of-data work."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q06.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_53/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 6 The annual salaries, in thousands of dollars, for 11 employees at each of two companies A and B are shown below. Company A | 30 | 32 | 35 | 41 | 41 | 42 | 47 | 49 | 52 | 53 | 64 ---|---|---|---|---|---|---|---|---|---|--- Company B | 26 | 47 | 30 | 52 | 41 | 38 | 35 | 42 | 49 | 31 | 42 (a) Represent the data by drawing a back-to-back stem-and-leaf diagram with company A on the left-hand side of the diagram. [4] (b) Find the median and the interquartile range of the salaries of the employees in company A. [3] A ne"
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_53/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p5.permutations_and_combinations",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p5.5_2_permutations_and_combinations",
+            "note": "3 Subject content > 5 Probability & Statistics 1 > 5.2 Permutations and Combinations; component-scoped P5 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q07.png; approved P5 authority-layer mapping to 9709.p5.permutations_and_combinations; rationale=Arrangements and selections from CELESTIAL with repeated letters and position/restriction constraints are permutations/combinations."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_53/questions/q07.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_53/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Find the number of different possible arrangements of the 9 letters in the word CELESTIAL. (b) Find the number of different arrangements of the 9 letters in the word CELESTIAL in which the first letter is C, the fifth letter is T and the last letter is E. (c) Find the probability that a randomly chosen arrangement of the 9 letters in the word CELESTIAL does not have the two Es together. 5 letters are selected at random from the 9 letters in the word CELESTIAL. (d) Find the number of different selections if the "
+          }
+        ],
+        "cross_paper_dependency_note": "P5 remains component-scoped. Do not silently merge probability/statistics rows into P1, P2, P3, P4, or future P6 topic paths."
+      }
+    }
+  ]
+}

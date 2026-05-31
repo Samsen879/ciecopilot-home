@@ -1,0 +1,246 @@
+{
+  "fixture_path": "data/eval/question_search_gold_9709_v1.json",
+  "metrics": {
+    "exact_structured_match_rate": 1,
+    "subject_leakage_rate": 0,
+    "metadata_completeness_rate": 1,
+    "null_summary_rate": 0
+  },
+  "gate": {
+    "pass": true,
+    "checks": [
+      {
+        "metric": "exact_structured_match_rate",
+        "required": 0.9,
+        "actual": 1,
+        "comparator": ">=",
+        "pass": true
+      },
+      {
+        "metric": "subject_leakage_rate",
+        "required": 0,
+        "actual": 0,
+        "comparator": "<=",
+        "pass": true
+      },
+      {
+        "metric": "metadata_completeness_rate",
+        "required": 0.95,
+        "actual": 1,
+        "comparator": ">=",
+        "pass": true
+      },
+      {
+        "metric": "null_summary_rate",
+        "required": 0.05,
+        "actual": 0,
+        "comparator": "<=",
+        "pass": true
+      }
+    ],
+    "failing_checks": []
+  },
+  "environment": {
+    "selected_branch": "question_descriptions_v0_status_ok",
+    "surfaces": {
+      "question_descriptions_prod_v1": {
+        "exists": false,
+        "count": null,
+        "count_9709": null
+      },
+      "question_descriptions_v1": {
+        "exists": false,
+        "count": null,
+        "count_9709": null
+      },
+      "question_descriptions_v0": {
+        "exists": true,
+        "count": 0,
+        "count_9709": 0
+      },
+      "learning_question_search_projection_9709": {
+        "total": 2151,
+        "paper_question": 2140,
+        "imported_question": 11
+      },
+      "question_bank_9709": {
+        "total": 2151,
+        "paper_question": 2140,
+        "imported_question": 11
+      },
+      "curriculum_nodes_9709": {
+        "count": 41
+      }
+    }
+  },
+  "case_results": [
+    {
+      "id": "imported-fallback-browser-repair",
+      "description": "Imported browser-repair fixture must stay retrievable through prompt-backed fallback text.",
+      "query_summary": "topic=9709.codex_cli.browser_fixture.repair, q=1, type=9709.trigonometry.equations, text~2cos(2x)-3sin x",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "0c100001-7a3e-4d82-9d7c-1f1000010001",
+        "primary_question_type_id": "9709.trigonometry.equations",
+        "q_number": 1,
+        "query": "2cos(2x)-3sin x"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "0c100001-7a3e-4d82-9d7c-1f1000010201",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": false,
+      "summary_present": false,
+      "alignment_blocked": false,
+      "alignment_error": null,
+      "authority_alignment_run_id": null,
+      "source_manifest_digest": null,
+      "authority_truth_status": null,
+      "taxonomy_resolution_status": null,
+      "alignment_status": null,
+      "alignment_review_required": null,
+      "manual_action_required": null,
+      "provisional_alignment_verdict": null,
+      "overall_alignment_verdict": null
+    },
+    {
+      "id": "imported-fallback-browser-continuity",
+      "description": "Imported browser-continuity fixture must stay retrievable with identity metadata intact.",
+      "query_summary": "topic=9709.codex_cli.browser_fixture.continuity, q=2, type=9709.trigonometry.identities, text~tan^2",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "0c100001-7a3e-4d82-9d7c-1f1000010003",
+        "primary_question_type_id": "9709.trigonometry.identities",
+        "q_number": 2,
+        "query": "tan^2"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "0c100001-7a3e-4d82-9d7c-1f1000010202",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": false,
+      "summary_present": false,
+      "alignment_blocked": false,
+      "alignment_error": null,
+      "authority_alignment_run_id": null,
+      "source_manifest_digest": null,
+      "authority_truth_status": null,
+      "taxonomy_resolution_status": null,
+      "alignment_status": null,
+      "alignment_review_required": null,
+      "manual_action_required": null,
+      "provisional_alignment_verdict": null,
+      "overall_alignment_verdict": null
+    },
+    {
+      "id": "paper-pin-s19-p1-q6",
+      "description": "Paper-backed p1 trigonometry retrieval should pin topic + year + session + paper + q_number together.",
+      "query_summary": "topic=9709.p1.trigonometry, year=2019, session=s, paper=1, q=6, text~Prove trigonometric identity and solve equation",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "bfcd2264-e2ce-4255-815b-5ceb6a83fc01",
+        "year": 2019,
+        "session": "s",
+        "paper_number": 1,
+        "q_number": 6,
+        "query": "Prove trigonometric identity and solve equation"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "69776499-41a2-4af2-b992-d22c92ef9ece",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true,
+      "alignment_blocked": true,
+      "alignment_error": "alignment_posture_not_found",
+      "authority_alignment_run_id": null,
+      "source_manifest_digest": null,
+      "authority_truth_status": null,
+      "taxonomy_resolution_status": null,
+      "alignment_status": null,
+      "alignment_review_required": null,
+      "manual_action_required": null,
+      "provisional_alignment_verdict": null,
+      "overall_alignment_verdict": null
+    },
+    {
+      "id": "paper-pin-s16-p3-q7",
+      "description": "Paper-backed p3 integration retrieval should pin topic + year + session + paper + q_number together.",
+      "query_summary": "topic=9709.p3.integration, year=2016, session=s, paper=3, q=7, text~Evaluate integral I using substitution",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "36c8cf6d-2073-4df3-8368-26d8ac7512d4",
+        "year": 2016,
+        "session": "s",
+        "paper_number": 3,
+        "q_number": 7,
+        "query": "Evaluate integral I using substitution"
+      },
+      "resolution_error": null,
+      "total_results": 1,
+      "top_result_question_id": "3cd91c38-598a-4e85-a3a3-d8898568427a",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 8,
+      "metadata_required_count": 8,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true,
+      "alignment_blocked": true,
+      "alignment_error": "alignment_posture_not_found",
+      "authority_alignment_run_id": null,
+      "source_manifest_digest": null,
+      "authority_truth_status": null,
+      "taxonomy_resolution_status": null,
+      "alignment_status": null,
+      "alignment_review_required": null,
+      "manual_action_required": null,
+      "provisional_alignment_verdict": null,
+      "overall_alignment_verdict": null
+    },
+    {
+      "id": "mixed-ranking-paper-authority",
+      "description": "When paper-backed and imported rows both match the same trig prompt, the paper-backed result must rank first.",
+      "query_summary": "topic=9709.p1.trigonometry, type=9709.trigonometry.identities, text~identity solve equation",
+      "resolved_query": {
+        "subject_code": "9709",
+        "primary_topic_id": "bfcd2264-e2ce-4255-815b-5ceb6a83fc01",
+        "primary_question_type_id": "9709.trigonometry.identities",
+        "query": "identity solve equation"
+      },
+      "resolution_error": null,
+      "total_results": 38,
+      "top_result_question_id": "53bf89f0-6f15-4db0-9828-891ce5f54526",
+      "exact_structured_match": true,
+      "subject_leakage": false,
+      "metadata_present_count": 6,
+      "metadata_required_count": 6,
+      "missing_metadata": [],
+      "summary_required": true,
+      "summary_present": true,
+      "alignment_blocked": true,
+      "alignment_error": "alignment_posture_not_found",
+      "authority_alignment_run_id": null,
+      "source_manifest_digest": null,
+      "authority_truth_status": null,
+      "taxonomy_resolution_status": null,
+      "alignment_status": null,
+      "alignment_review_required": null,
+      "manual_action_required": null,
+      "provisional_alignment_verdict": null,
+      "overall_alignment_verdict": null
+    }
+  ]
+}

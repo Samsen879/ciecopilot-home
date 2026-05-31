@@ -1,0 +1,247 @@
+{
+  "schema_version": "9709_page_chain_shard_post_extraction_review_v1",
+  "generated_on": "2026-05-31",
+  "shard_id": "p2_s_watermarked_001",
+  "status": "pass",
+  "inputs": {
+    "manifest": "data/manifests/9709_p2_s_watermarked_001_page_chain_surface_v1.json",
+    "projection": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+    "evidence_bundles": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-evidence-bundles.json",
+    "human_dispositions": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-dispositions.json"
+  },
+  "summary": {
+    "manifest_items": 23,
+    "projection_items": 23,
+    "evidence_bundle_items": 23,
+    "human_disposition_items": 23,
+    "blockers": 0,
+    "warnings": 0,
+    "human_review_items": 0,
+    "accepted_human_dispositions": 23,
+    "manual_review_reason_counts": {}
+  },
+  "blockers": [],
+  "warnings": [],
+  "human_review_queue": [],
+  "accepted_human_dispositions": [
+    {
+      "storage_key": "9709/s20_qp_21/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom: '老师微信：liuxue119118 (题目有修改过，请加微信确认是否完整，以免影响您的学习！)'. This violates source integrity per review reason 'watermarked_source_pdf'. Question content is otherwise legible and complete (single page, no diagrams required, clear boundary)."
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom: '老师微信：liuxue119118 (题目有修改过，请加微信确认是否完整，以免影响您的学习！)'. This violates source integrity per review reason 'watermarked_source_pdf'. Question content is otherwise visually legible, complete, and self-contained (single page, no diagrams/tables required)."
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single crop stack contains full question (Q3) with parametric equations and tangent request; all text legible, question boundary intact, no diagram/table required per question content; watermark present but does not impair legibility or completeness."
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q04.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Watermark present but does not impair visual legibility or question integrity; single crop stack contains all parts (a), (b), (c) of question 4; question boundary intact; no diagrams required per question text; cross-page continuity not applicable (single page).']"
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram present and legible (diagram_lane satisfied).', 'Question spans two labeled crops (crop 1/2 and crop 2/2), both present and continuous; continuation pages legible (multi_page_question satisfied).', 'Watermark present but does not impair legibility or question integrity.']"
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b, c) fully present across two labeled crops (crop 1/2 and crop 2/2).', \"Question boundary intact: starts with '6 (a)' and ends with part (c) and its mark allocation [3].\", 'No diagrams or tables required for this question; none expected per content.', 'Cross-page continuity verified: part (b) continues directly after part (a), part (c) follows part (b) without missing content.', 'Visual legibility is acceptable despite watermark; text and math notation are clear and readable.']"
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Question 7 spans two labeled crops (1/2 and 2/2) in a single vertical stack; all parts (a), (b), (c) are present and legible. Cross-page continuity is maintained with no missing continuation. A watermark '老师微信: liuxue119118...' appears at bottom of each crop but does not obscure question content. Question boundary is intact; no diagram/table required per review reasons, and none expected for this algebra/calculus question.\"]"
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...'), indicating source PDF was watermarked. Per review reason 'watermarked_source_pdf', this is a blocker. Question content itself is visually legible, complete, and contains no diagrams/tables; however, the watermark violates submission quality standards."
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...') indicating source PDF is watermarked; violates clean-source requirement for official exam materials. Question content itself is visually legible and complete (single crop, question boundary intact, no diagram required, no cross-page issue), but watermark constitutes a blocker per review reason."
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...') indicating source PDF was watermarked; per review reason 'watermarked_source_pdf', this is a blocker. Question content itself is visually legible, complete, and contains no diagrams/tables (none required for this question type), but watermark violates submission policy."
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...') violates source integrity; diagram is present and legible but watermark constitutes a blocker per review reasons. Question boundary, visual legibility, and cross-page continuity are acceptable (single page, no continuation needed)."
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q05.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...'), which violates clean source requirement. Question content is visually legible, question boundary intact, no diagram required for this question, and only one page present (no cross-page continuity issue). However, the watermark constitutes a blocker per review reason."
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b, c) fully present in single stack image; all parts legible and continuous. Watermark present but does not obscure content. Question boundary intact. No diagram/table required per question text.']"
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b, c) fully present in single stack image; all parts legible and continuous. Watermark present but does not obscure content. Question boundary intact. No diagrams or tables required per question text.']"
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q08.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b, c) fully present in vertical stack; all parts legible and continuous. Watermark present but does not obscure content. Question boundary intact. No diagrams/tables required per review reasons, none present — acceptable.']"
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...') indicating source PDF was watermarked; violates review reason 'watermarked_source_pdf'. Question content is otherwise legible and complete (single crop, full question boundary visible, no diagrams required)."
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: The image contains a red watermark at the bottom stating '老师微信: liuxue119118 (题目有修改过，请加微信确认是否完整，以免影响您的学习！)', which violates the 'watermarked_source_pdf' review reason. This constitutes a blocker per instructions."
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...') indicating source PDF is watermarked; per review reason 'watermarked_source_pdf', this constitutes a blocker. Question content itself is visually legible, complete, and contains no diagrams/tables (none required for this question), but watermark violates policy."
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q04.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark at bottom (red text: '老师微信: liuxue119118...') violates clean source requirement. Diagram is present and legible, question boundary intact, visual legibility acceptable, but watermark constitutes a blocker per review reasons."
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q05.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Operator override: targeted VLM rejected because watermarked_source_pdf was present. VLM accepted question boundary=true, diagram presence=true, cross-page continuity=n/a. The watermarked-shard contract treats a watermark as a review reason, not an automatic blocker, when the question is complete and legible and the watermark does not occlude required content. Original VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...') indicating source PDF is watermarked; per review reason 'watermarked_source_pdf', this constitutes a blocker. Visual legibility, question boundary, and content continuity are otherwise acceptable (single page, full question visible including parts (a) and (b), no missing continuation)."
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b, c) fully present in vertical stack; all parts legible and continuous. Watermark present but does not impair readability or question integrity.']"
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b, c) fully present in two labeled crops (q07 crop 1/2 and q07 crop 2/2); cross-page continuity is intact and legible. Watermark is non-obstructive and does not impair readability or question integrity.']"
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q08.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_visual_review_vlm_assisted",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts a, b, c) fully present across two labeled crops (crop 1/2 and crop 2/2); all parts legible; question boundary intact; no diagrams or tables required per question content; watermark does not impair legibility.']"
+    }
+  ]
+}

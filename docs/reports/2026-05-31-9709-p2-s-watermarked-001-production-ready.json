@@ -1,0 +1,192 @@
+{
+  "schema_version": "9709_p2_s_watermarked_001_production_ready_v1",
+  "generated_on": "2026-05-31",
+  "shard_id": "p2_s_watermarked_001",
+  "status": "production-ready",
+  "scope": {
+    "pdfs": 3,
+    "paper_session_family": "Summer Paper 2 watermarked, qp_21/22/23",
+    "source_pdfs": [
+      "data/past-papers/9709Mathematics/paper2/WM_9709_s20_qp_21.pdf",
+      "data/past-papers/9709Mathematics/paper2/WM_9709_s20_qp_22.pdf",
+      "data/past-papers/9709Mathematics/paper2/WM_9709_s20_qp_23.pdf"
+    ],
+    "manifest_rows": 23,
+    "ready_manifest": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-ready-manifest.json"
+  },
+  "visual_and_extraction": {
+    "page_chain": {
+      "passed_pdfs": 3,
+      "total_pdfs": 3,
+      "extracted_questions": 23,
+      "blocked_pdfs": 0,
+      "warning_pdfs": 0
+    },
+    "evidence_bundles": {
+      "bundles": 23,
+      "route_counts": {
+        "ocr_lane": 20,
+        "diagram_lane": 3
+      },
+      "lazy_attach_original_image": 23
+    },
+    "targeted_visual_review": {
+      "raw_accepted": 11,
+      "raw_rejected": 12,
+      "operator_accepted": 23,
+      "operator_rejected": 0,
+      "operator_overrides": 12,
+      "accepted_review_reason_counts": {
+        "diagram_lane": 3,
+        "multi_page_question": 9,
+        "watermarked_source_pdf": 23
+      }
+    },
+    "post_extraction_review": {
+      "status": "pass",
+      "blockers": 0,
+      "warnings": 0,
+      "human_review_items": 0
+    }
+  },
+  "authority": {
+    "sidecar": "data/manifests/9709_p2_s_watermarked_001_authority_sidecar_v1.json",
+    "rows": 23,
+    "seeded_topic_paths_used": 6,
+    "runtime_seed_file": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_v1.json",
+    "topic_distribution": {
+      "9709.p2.algebra": 6,
+      "9709.p2.differentiation": 5,
+      "9709.p2.integration": 1,
+      "9709.p2.logarithmic_and_exponential_functions": 5,
+      "9709.p2.numerical_solution_of_equations": 3,
+      "9709.p2.trigonometry": 3
+    },
+    "release_blockers_after_authority_alignment": 0
+  },
+  "registry_backfill": {
+    "processed": 23,
+    "inserted": 23,
+    "updated": 0,
+    "conflicts": 0,
+    "curriculum_nodes_inserted": 0,
+    "curriculum_nodes_existing": 35
+  },
+  "analysis_hydration": {
+    "processed": 23,
+    "backfilled": 23,
+    "skipped": 0
+  },
+  "db_coverage": {
+    "present": 23,
+    "manifest_count": 23,
+    "prompt_missing": 0,
+    "joined_snapshots": 23,
+    "missing_registry": 0,
+    "snapshot_missing": 0,
+    "provenance_missing": 0,
+    "search_text_missing": 0,
+    "snapshot_ref_missing": 0,
+    "materialized_classifier_missing": 0
+  },
+  "release_scope_distribution": [
+    {
+      "count": 19,
+      "type_release_state": "draft",
+      "release_scope_status": "non_released_fallback"
+    },
+    {
+      "count": 1,
+      "type_release_state": "released",
+      "release_scope_status": "non_released_fallback"
+    },
+    {
+      "count": 3,
+      "type_release_state": "released",
+      "release_scope_status": "released_scoring"
+    }
+  ],
+  "topic_distribution": [
+    {
+      "count": 6,
+      "topic_path": "9709.p2.algebra"
+    },
+    {
+      "count": 5,
+      "topic_path": "9709.p2.differentiation"
+    },
+    {
+      "count": 1,
+      "topic_path": "9709.p2.integration"
+    },
+    {
+      "count": 5,
+      "topic_path": "9709.p2.logarithmic_and_exponential_functions"
+    },
+    {
+      "count": 3,
+      "topic_path": "9709.p2.numerical_solution_of_equations"
+    },
+    {
+      "count": 3,
+      "topic_path": "9709.p2.trigonometry"
+    }
+  ],
+  "search_gate": {
+    "gate_pass": true,
+    "metrics": {
+      "exact_structured_match_rate": 1,
+      "subject_leakage_rate": 0,
+      "metadata_completeness_rate": 1,
+      "null_summary_rate": 0
+    }
+  },
+  "release_preflight": {
+    "status": "pass",
+    "blockers": 0,
+    "warnings": 23,
+    "warning_reason_counts": {
+      "manifest_primary_topic_missing_sidecar_canonical_present": 23
+    },
+    "expected_warning_reason": "manifest_primary_topic_missing_sidecar_canonical_present"
+  },
+  "boundaries": [
+    "This closes only p2_s_watermarked_001.",
+    "Full 9709 production readiness remains shard-bound and still requires remaining shard closeouts.",
+    "Watermarked source status is accepted only for this shard because visual review and operator disposition found no content occlusion.",
+    "This report does not authorize mixing additional shards into the same batch."
+  ],
+  "artifacts": [
+    "data/manifests/9709_p2_s_watermarked_001_input_v1.json",
+    "data/manifests/9709_p2_s_watermarked_001_page_chain_surface_v1.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-report.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-bundle-summary.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-resolution-audit.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-lane-results.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-evidence-bundles.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-targeted-visual-vlm-review.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-vlm-assisted-visual-disposition.md",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-vlm-assisted-visual-dispositions.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-dispositions.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-post-extraction-review-pass.md",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-post-extraction-review-pass.json",
+    "data/manifests/9709_p2_s_watermarked_001_authority_sidecar_v1.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-release-preflight-authority-aligned.md",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-release-preflight-authority-aligned.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-manifest.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-aligned-manifest.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-ready-manifest.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-evidence-bundles.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-db-coverage.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-search-gate-report.md",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-search-gate.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-release-preflight-final.md",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-release-preflight-final.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-production-ready.json",
+    "docs/reports/2026-05-31-9709-p2-s-watermarked-001-production-ready.md"
+  ]
+}

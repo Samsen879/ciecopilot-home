@@ -1,0 +1,850 @@
+{
+  "schema_version": "9709_authority_sidecar_v1",
+  "sidecar_id": "9709_p2_s_watermarked_001_authority_sidecar_v1",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "generated_on": "2026-05-31",
+  "scope": {
+    "shard_id": "p2_s_watermarked_001",
+    "manifest_path": "data/manifests/9709_p2_s_watermarked_001_page_chain_surface_v1.json",
+    "item_count": 23,
+    "curriculum_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_v1.json"
+  },
+  "notes": [
+    "Shard-scoped authority sidecar for p2_s_watermarked_001.",
+    "Uses checked-in component-scoped 9709.p2.* topic paths from the P2/P4 runtime seed extension.",
+    "No P2 row is silently remapped to P3; P2/P3 subset remains a boundary overlay.",
+    "Watermarked-source status is accepted only because targeted visual review plus operator disposition found no content occlusion.",
+    "This sidecar authorizes authority preflight only; DB write-back/search/release still require separate explicit execution."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/s20_qp_21/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.2 Logarithmic and Exponential Functions; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q01.png; approved P2 authority-layer mapping to 9709.p2.logarithmic_and_exponential_functions; rationale=Logarithmic equation using laws of logarithms to solve for x."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q01.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_21/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 1 Solve the equation ln(x + 1) − ln x = 2 ln 2."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.algebra",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.1 Algebra; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q02.png; approved P2 authority-layer mapping to 9709.p2.algebra; rationale=Polynomial factor theorem constraints are used to determine unknown coefficients."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q02.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_21/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 The polynomial p(x) is defined by p(x) = 6x³ + ax² + 9x + b, where a and b are constants. It is given that (x − 2) and (2x + 1) are factors of p(x). Find the values of a and b."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.differentiation",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_4_differentiation",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.4 Differentiation; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q03.png; approved P2 authority-layer mapping to 9709.p2.differentiation; rationale=Parametric differentiation is required to find a tangent equation."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q03.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_21/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 A curve has parametric equations x = e^t - 2e^{-t}, y = 3e^{2t} + 1. Find the equation of the tangent to the curve at the point for which t = 0."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.algebra",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.1 Algebra; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q04.png; approved P2 authority-layer mapping to 9709.p2.algebra; rationale=Modulus graph sketching, intersections, and inequality solution control the task."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q04.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_21/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Sketch, on the same diagram, the graphs of y = |3x + 2a| and y = |3x − 4a|, where a is a positive constant. Give the coordinates of the points where each graph meets the axes. (b) Find the coordinates of the point of intersection of the two graphs. (c) Ded"
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_6_numerical_solution_of_equations",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.6 Numerical Solution of Equations; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q05.png; approved P2 authority-layer mapping to 9709.p2.numerical_solution_of_equations; rationale=The differentiation setup leads to a fixed-point equation and iterative numerical solution."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q05.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_21/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: The diagram shows part of the curve with equation y = x³ cos 2x. The curve has a maximum at the point M. (a) Show that the x-coordinate of M satisfies the equation x = ∛(1.5x² cot 2x). (b) Use the equation in part (a) to show by calculation that the x-coordina"
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.trigonometry",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.3 Trigonometry; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q06.png; approved P2 authority-layer mapping to 9709.p2.trigonometry; rationale=Trigonometric identity and equation solving are the controlling parts, with a related trigonometric integral."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q06.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_21/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Prove that sin 2θ(cosec θ − sec θ) ≡ √8 cos(θ + ¼π). (b) Solve the equation sin 2θ(cosec θ − sec θ) = 1 for 0 < θ < ½π. Give the answer correct to 3 significant figures. (c) Find ∫ sin x(cosec ½x − sec ½x) dx."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_21/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.integration",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_5_integration",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.5 Integration; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q07.png; approved P2 authority-layer mapping to 9709.p2.integration; rationale=Polynomial division is used to evaluate a definite integral in logarithmic form."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_21/questions/q07.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_21/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Find the quotient when 9x³ − 6x² − 20x + 1 is divided by (3x + 2), and show that the remainder is 9. (b) Hence find ∫₁⁶ (9x³ − 6x² − 20x + 1)/(3x + 2) dx, giving the answer in the form a + ln b where a and b are integers. (c) Find the exact root of the equ"
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.2 Logarithmic and Exponential Functions; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q01.png; approved P2 authority-layer mapping to 9709.p2.logarithmic_and_exponential_functions; rationale=Logarithms are used to linearise an exponential relation."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q01.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 1 Given that 2^y = 9^{3x}, use logarithms to show that y = kx and find the value of k correct to 3 significant figures."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.differentiation",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_4_differentiation",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.4 Differentiation; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q02.png; approved P2 authority-layer mapping to 9709.p2.differentiation; rationale=Stationary point requires differentiating an exponential product."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q02.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 Find the exact coordinates of the stationary point on the curve with equation y = 5xe^{\\frac{1}{2}x}. [5]"
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.differentiation",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_4_differentiation",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.4 Differentiation; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q03.png; approved P2 authority-layer mapping to 9709.p2.differentiation; rationale=Implicit differentiation is required to find the gradient of the curve."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q03.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 The equation of a curve is cos 3x + 5 sin y = 3. Find the gradient of the curve at the point (¹⁄₉π, ¹⁄₆π)."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.2 Logarithmic and Exponential Functions; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q04.png; approved P2 authority-layer mapping to 9709.p2.logarithmic_and_exponential_functions; rationale=Logarithmic transformation of a power-law model is used to infer constants from a straight-line graph."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q04.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: The variables x and y satisfy the equation y = Ax^{-2p}, where A and p are constants. The graph of ln y against ln x is a straight line passing through the points (−0.68, 3.02) and (1.07, −1.53), as shown in the diagram."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.algebra",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.1 Algebra; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q05.png; approved P2 authority-layer mapping to 9709.p2.algebra; rationale=Modulus graph sketching and inequality solution are algebraic."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q05.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Sketch, on the same diagram, the graphs of y = |2x − 3| and y = 3x + 5. (b) Solve the inequality 3x + 5 < |2x − 3|."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.algebra",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.1 Algebra; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q06.png; approved P2 authority-layer mapping to 9709.p2.algebra; rationale=Polynomial factorisation is the primary structure, followed by substitution into a trigonometric equation."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q06.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 6 The polynomial p(x) is defined by p(x) = 6x^3 + ax^2 - 4x - 3, where a is a constant. It is given that (x + 3) is a factor of p(x). (a) Find the value of a. (c) Hence solve the equation p(cosec θ) = 0 for 0° < θ < 360°."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_6_numerical_solution_of_equations",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.6 Numerical Solution of Equations; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q07.png; approved P2 authority-layer mapping to 9709.p2.numerical_solution_of_equations; rationale=The integral equation is rearranged into a fixed-point form and solved by iteration."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q07.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 7 It is given that ∫₀ᵃ (4/(2x+1) + 8x) dx = 10, where a is a positive constant. (a) Show that a = √(2.5 − 0.5 ln(2a + 1)). (b) Using the equation in part (a), show by calculation that 1 < a < 2. (c) Use an iterative formula, based on the equation in part (a), "
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_22/questions/q08.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.trigonometry",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.3 Trigonometry; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q08.png; approved P2 authority-layer mapping to 9709.p2.trigonometry; rationale=Trigonometric identity and equation solving control the question, with a related exact integral."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_22/questions/q08.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_22/questions/q08.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Show that 3 sin 2θ cot θ ≡ 6 cos² θ. (b) Solve the equation 3 sin 2θ cot θ = 5 for 0 < θ < π. (c) Find the exact value of $\\int_{\\frac{1}{4}\\pi}^{\\frac{1}{2}\\pi} 3 \\sin x \\cot \\frac{1}{2}x \\, \\mathrm{d}x$."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.2 Logarithmic and Exponential Functions; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q01.png; approved P2 authority-layer mapping to 9709.p2.logarithmic_and_exponential_functions; rationale=Logarithms are used to linearise an exponential relation."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q01.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 1 Given that 2^y = 9^(3x), use logarithms to show that y = kx and find the value of k correct to 3 significant figures."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.differentiation",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_4_differentiation",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.4 Differentiation; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q02.png; approved P2 authority-layer mapping to 9709.p2.differentiation; rationale=Stationary point requires differentiating an exponential product."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q02.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 Find the exact coordinates of the stationary point on the curve with equation y = 5xe^{\\frac{1}{2}x}. [5]"
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.differentiation",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_4_differentiation",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.4 Differentiation; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q03.png; approved P2 authority-layer mapping to 9709.p2.differentiation; rationale=Implicit differentiation is required to find the gradient of the curve."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q03.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 The equation of a curve is cos 3x + 5 sin y = 3. Find the gradient of the curve at the point (1/9 π, 1/6 π)."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.logarithmic_and_exponential_functions",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_2_logarithmic_and_exponential_functions",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.2 Logarithmic and Exponential Functions; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q04.png; approved P2 authority-layer mapping to 9709.p2.logarithmic_and_exponential_functions; rationale=Logarithmic transformation of a power-law model is used to infer constants from a straight-line graph."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q04.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: The variables x and y satisfy the equation y = Ax^{-2p}, where A and p are constants. The graph of ln y against ln x is a straight line passing through the points (−0.68, 3.02) and (1.07, −1.53), as shown in the diagram. Find the values of A and p."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.algebra",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.1 Algebra; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q05.png; approved P2 authority-layer mapping to 9709.p2.algebra; rationale=Modulus graph sketching and inequality solution are algebraic."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q05.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Sketch, on the same diagram, the graphs of y = |2x − 3| and y = 3x + 5. (b) Solve the inequality 3x + 5 < |2x − 3|."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.algebra",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_1_algebra",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.1 Algebra; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q06.png; approved P2 authority-layer mapping to 9709.p2.algebra; rationale=Polynomial factorisation is the primary structure, followed by substitution into a trigonometric equation."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q06.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 6 The polynomial p(x) is defined by p(x) = 6x³ + ax² − 4x − 3, where a is a constant. It is given that (x + 3) is a factor of p(x). (a) Find the value of a. (b) Using this value of a, factorise p(x) completely. (c) Hence solve the equation p(cosec θ) = 0 for 0"
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.numerical_solution_of_equations",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_6_numerical_solution_of_equations",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.6 Numerical Solution of Equations; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q07.png; approved P2 authority-layer mapping to 9709.p2.numerical_solution_of_equations; rationale=The integral equation is rearranged into a fixed-point form and solved by iteration."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q07.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 7 It is given that ∫₀ᵃ (4/(2x+1) + 8x) dx = 10, where a is a positive constant. (a) Show that a = √(2.5 − 0.5 ln(2a + 1)). (b) Using the equation in part (a), show by calculation that 1 < a < 2. (c) Use an iterative formula, based on the equation in part (a), "
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    },
+    {
+      "storage_key": "9709/s20_qp_23/questions/q08.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p2.trigonometry",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p2.2_3_trigonometry",
+            "note": "3 Subject content > 2 Pure Mathematics 2 > 2.3 Trigonometry; component-scoped P2 topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q08.png; approved P2 authority-layer mapping to 9709.p2.trigonometry; rationale=Trigonometric identity and equation solving control the question, with a related exact integral."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/s20_qp_23/questions/q08.png; visual extraction queue closed before authority mapping; watermarked source accepted as review reason for this shard only."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/s20_qp_23/questions/q08.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: (a) Show that 3 sin 2θ cot θ ≡ 6 cos² θ. (b) Solve the equation 3 sin 2θ cot θ = 5 for 0 < θ < π. (c) Find the exact value of ∫_{¼π}^{½π} 3 sin x cot ½x dx."
+          }
+        ],
+        "cross_paper_dependency_note": "P2 remains component-scoped. Do not silently merge this row into P3 despite the separate syllabus boundary note that P2 is largely a subset of P3."
+      }
+    }
+  ]
+}

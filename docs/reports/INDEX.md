@@ -349,6 +349,18 @@
 - `learning_runtime_9709_integration_application_promotion_2026-03-24.md` - evidence-first justification for promoting `9709.integration.application` into released runtime scoring while keeping broader integration scope conservative.
 - `learning_runtime_9709_differential_equations_separable_promotion_2026-03-25.md` - evidence-first justification for promoting `9709.differential_equations.separable` into released runtime scoring while keeping broader differential-equations scope conservative.
 - `ao_operator_smoke_guide.md` - reproducible AO reconcile/doctor/lifecycle smoke flow and acceptance-fixture guide.
+- `data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_p5_v1.json` - runtime curriculum seed extension adding approved component-scoped `9709.p5.*` topic paths for Paper 5 authority preflight.
+- `supabase/migrations/20260531153000_seed_9709_p5_classifier_registry_draft.sql` - draft FK-target classifier registry seed for `9709.statistics` and five Paper 5 question types; does not promote released scoring.
+- `data/manifests/9709_p5_m_watermarked_001_page_chain_surface_v1.json` - shard-scoped page-chain surface manifest for `p5_m_watermarked_001`, covering 6 March 2020 Paper 5 watermarked rows from `qp_52`.
+- `2026-05-31-9709-p5-m-watermarked-001-page-chain-report.json` - Paper 5 March watermarked shard page-chain execution record for `p5_m_watermarked_001`, covering 1/1 PDF pass status and zero page-chain warnings.
+- `2026-05-31-9709-p5-m-watermarked-001-operator-visual-disposition.md` - operator visual disposition for `p5_m_watermarked_001`, accepting 6/6 queued visual review items from targeted VLM evidence with no overrides.
+- `data/manifests/9709_p5_m_watermarked_001_authority_sidecar_v1.json` - shard-scoped authority sidecar for `p5_m_watermarked_001`, covering 6 Paper 5 rows mapped to approved `9709.p5.*` seeded topic paths.
+- `2026-05-31-9709-p5-m-watermarked-001-authority-layer.md` - authority-layer report for `p5_m_watermarked_001`, recording P5 topic mapping, official locators, P5 classifier support, and authority preflight result.
+- `2026-05-31-9709-p5-m-watermarked-001-db-coverage.json` - local DB coverage proof for `p5_m_watermarked_001`, confirming 6/6 registry rows, snapshots, prompts, provenance, search text, and materialized classifier fields.
+- `2026-05-31-9709-p5-m-watermarked-001-search-gate-report.md` - question-search gate report after `p5_m_watermarked_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
+- `2026-05-31-9709-p5-m-watermarked-001-release-preflight-final.md` - final release preflight for `p5_m_watermarked_001`, passing with 6 sidecar rows, 0 blockers, 6 expected manifest-topic warnings, and 6 expected Paper 5/6 scope warnings.
+- `2026-05-31-9709-p5-m-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p5_m_watermarked_001`, covering P5 authority seed/sidecar, P5 draft classifier taxonomy support, registry and analysis hydration, DB coverage, search gate, targeted/operator visual disposition, and final release preflight.
+
 ## RAG S2
 
 - `rag_current_state_2026-03-16.md` - reconstructed `S2` state, artifact recovery status, and remaining blockers.

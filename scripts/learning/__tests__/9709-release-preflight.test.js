@@ -113,7 +113,7 @@ describe('9709 release preflight', () => {
     expect(result.status).toBe('pass');
     expect(result.blockers).toHaveLength(0);
     expect(result.counts.manifest_items).toBe(300);
-    expect(result.counts.diagram_present).toEqual({ true: 64, false: 236, invalid: 0 });
+    expect(result.counts.diagram_present).toEqual({ true: 65, false: 235, invalid: 0 });
     expect(result.counts.sidecar_items).toBe(300);
     expect(result.counts.sidecar_canonical_missing).toBe(0);
     expect(result.counts.sidecar_distinct_topics).toBe(18);

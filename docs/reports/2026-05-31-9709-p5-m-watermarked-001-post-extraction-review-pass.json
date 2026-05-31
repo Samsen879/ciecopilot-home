@@ -1,0 +1,87 @@
+{
+  "schema_version": "9709_page_chain_shard_post_extraction_review_v1",
+  "generated_on": "2026-05-31",
+  "shard_id": "p5_m_watermarked_001",
+  "status": "pass",
+  "inputs": {
+    "manifest": "data/manifests/9709_p5_m_watermarked_001_page_chain_surface_v1.json",
+    "projection": "docs/reports/2026-05-31-9709-p5-m-watermarked-001-page-chain-projection.json",
+    "evidence_bundles": "docs/reports/2026-05-31-9709-p5-m-watermarked-001-evidence-bundles.json",
+    "human_dispositions": "docs/reports/2026-05-31-9709-p5-m-watermarked-001-operator-visual-dispositions.json"
+  },
+  "summary": {
+    "manifest_items": 6,
+    "projection_items": 6,
+    "evidence_bundle_items": 6,
+    "human_disposition_items": 6,
+    "blockers": 0,
+    "warnings": 0,
+    "human_review_items": 0,
+    "accepted_human_dispositions": 6,
+    "manual_review_reason_counts": {}
+  },
+  "blockers": [],
+  "warnings": [],
+  "human_review_queue": [],
+  "accepted_human_dispositions": [
+    {
+      "storage_key": "9709/m20_qp_52/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence; operator disposition records the same visual acceptance under the watermarked-shard contract. Original VLM notes: Single-page question; all text legible, question boundary intact, no diagrams/tables required per context; watermark present but does not impair legibility or content integrity."
+    },
+    {
+      "storage_key": "9709/m20_qp_52/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence; operator disposition records the same visual acceptance under the watermarked-shard contract. Original VLM notes: Single crop stack contains full question (parts a and b) with clear text and answer lines. Watermark present but does not impair legibility or question integrity. No diagrams/tables required for this question; none expected per problem statement."
+    },
+    {
+      "storage_key": "9709/m20_qp_52/questions/q04.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence; operator disposition records the same visual acceptance under the watermarked-shard contract. Original VLM notes: Single crop stack contains full question 4 with parts (a) and (b); text is legible, question boundary intact, no diagrams/tables required per content; watermark present but does not impair legibility or completeness."
+    },
+    {
+      "storage_key": "9709/m20_qp_52/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence; operator disposition records the same visual acceptance under the watermarked-shard contract. Original VLM notes: ['Multi-page question (parts (a) and (b)) fully present across two labeled crops; cross-page continuity is clear and legible. Question boundary intact. No diagrams or tables required for this question; none present, which is acceptable. Watermark is non-obstructive and does not impair legibility.']"
+    },
+    {
+      "storage_key": "9709/m20_qp_52/questions/q06.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence; operator disposition records the same visual acceptance under the watermarked-shard contract. Original VLM notes: ['Diagram present in crop 1/2 (tree diagram for part (a))', 'Parts (b) and (c) fully legible in crop 2/2', 'Cross-page continuity confirmed: question flows from crop 1/2 to crop 2/2 without missing content', 'Question boundary intact; all parts (a), (b), (c) included']"
+    },
+    {
+      "storage_key": "9709/m20_qp_52/questions/q07.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-05-31",
+      "notes": "Accepted from targeted VLM visual review evidence; operator disposition records the same visual acceptance under the watermarked-shard contract. Original VLM notes: ['Diagram lane present (grid for cumulative frequency graph) in crop 1/2.', 'Multi-page question: crop 1/2 contains part (a); crop 2/2 contains parts (b) and (c), with clear continuity and no missing continuation pages.', 'Watermark present but does not impair legibility or question integrity.']"
+    }
+  ]
+}

@@ -265,9 +265,21 @@ describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
     expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
   });
 
-  test('does not classify explicit out-of-scope 9709 topic hints', () => {
-    const result = analyze('A statistics question about representation of data.', {
-      topic_path_hint: '9709.p5.representation_of_data',
+  test('falls back from P5 statistics topic-path hint when prompt signals are weak', () => {
+    const result = analyze('A statistics question about a normally distributed variable.', {
+      topic_path_hint: '9709.p5.the_normal_distribution',
+    });
+
+    expect(result.primary_question_type_id).toBe('9709.statistics.normal_distribution');
+    expect(result.family_id).toBe('9709.statistics');
+    expect(result.classification_confidence).toBe(0.84);
+    expect(result.confidence_band).toBe('medium');
+    expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
+  });
+
+  test('does not classify explicit P6 topic hints before P6 authority support exists', () => {
+    const result = analyze('A statistics question about hypothesis testing.', {
+      topic_path_hint: '9709.p6.hypothesis_testing',
     });
 
     expect(result.primary_question_type_id).toBeNull();

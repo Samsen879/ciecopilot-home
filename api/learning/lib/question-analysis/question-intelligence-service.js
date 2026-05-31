@@ -300,6 +300,51 @@ const TOPIC_PATH_CLASSIFICATIONS = Object.freeze({
       'solve for the requested speed, work, power, distance, or height',
     ],
   }),
+  '9709.p5.representation_of_data': Object.freeze({
+    questionTypeId: '9709.statistics.representation_of_data',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the statistical representation, grouped data, graph, or summary measure required',
+      'read, draw, or calculate using the given table, graph, or coded totals',
+      'state the requested estimate, graph feature, mean, variance, or comparison',
+    ],
+  }),
+  '9709.p5.permutations_and_combinations': Object.freeze({
+    questionTypeId: '9709.statistics.permutations_combinations',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the selection or arrangement restrictions',
+      'apply combinations, permutations, repeated-object arrangements, or case splits',
+      'combine cases and state the requested number of ways',
+    ],
+  }),
+  '9709.p5.probability': Object.freeze({
+    questionTypeId: '9709.statistics.probability',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the sample space, tree diagram, event relationship, or conditional structure',
+      'apply addition, multiplication, independence, exclusivity, or conditional probability rules',
+      'state the requested probability with clear event interpretation',
+    ],
+  }),
+  '9709.p5.discrete_random_variables': Object.freeze({
+    questionTypeId: '9709.statistics.discrete_random_variables',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the discrete random variable or binomial/geometric distribution',
+      'apply the probability, expectation, or variance formula required by the model',
+      'state the requested probability or distribution parameter',
+    ],
+  }),
+  '9709.p5.the_normal_distribution': Object.freeze({
+    questionTypeId: '9709.statistics.normal_distribution',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the normal model or normal approximation and its parameters',
+      'standardise using the normal distribution table, applying continuity correction when relevant',
+      'state the requested probability, parameter, or approximation result',
+    ],
+  }),
   '9709.p3.differential_equations': Object.freeze({
     questionTypeId: '9709.differential_equations.separable',
     familyId: '9709.differential_equations',
@@ -327,6 +372,7 @@ function buildRuleMatchFromTopicClassification({
       topicPath?.includes('.p2.') ? 'paper:p2' : null,
       topicPath?.includes('.p3.') ? 'paper:p3' : null,
       topicPath?.includes('.p4.') ? 'paper:p4' : null,
+      topicPath?.includes('.p5.') ? 'paper:p5' : null,
       `topic_path:${topicPath}`,
     ]),
     skeletonSteps: classification.skeletonSteps,
@@ -881,6 +927,11 @@ function buildHintOnlyClassification(normalizedHints, envelope) {
     '9709.mechanics.momentum': '9709.mechanics',
     '9709.mechanics.newtons_laws': '9709.mechanics',
     '9709.mechanics.energy_work_power': '9709.mechanics',
+    '9709.statistics.representation_of_data': '9709.statistics',
+    '9709.statistics.permutations_combinations': '9709.statistics',
+    '9709.statistics.probability': '9709.statistics',
+    '9709.statistics.discrete_random_variables': '9709.statistics',
+    '9709.statistics.normal_distribution': '9709.statistics',
   };
 
   return {

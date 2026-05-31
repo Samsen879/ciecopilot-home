@@ -1,0 +1,1085 @@
+{
+  "schema_version": "9709_page_chain_shard_projection_v1",
+  "manifest_id": "9709_full_scaleout_manifest_v1_p4_s_watermarked_001",
+  "shard_id": "p4_s_watermarked_001",
+  "generated_on": "2026-05-31",
+  "manifest_path": "data/manifests/9709_p4_s_watermarked_001_input_v1.json",
+  "payload_dir": "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/payloads",
+  "render_root": "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders",
+  "review_crop_root": "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops",
+  "item_count": 20,
+  "items": [
+    {
+      "index": 1,
+      "storage_key": "9709/s20_qp_41/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_41.pdf",
+      "q_number": 1,
+      "ocr_text": "Three coplanar forces of magnitudes 100 N, 50 N and 50 N act at a point A, as shown in the diagram. The value of cos α is 4/5.\n\nFind the magnitude of the resultant of the three forces and state its direction.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "point A",
+        "100 N force arrow left",
+        "50 N force arrow up-right",
+        "50 N force arrow down-right",
+        "dashed horizontal line through A",
+        "angle α labeled twice"
+      ],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q01/q01_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' visible in top-left corner",
+          "Text begins with 'Three coplanar forces...', no preceding subpart label",
+          "Diagram present with labeled forces and angle α",
+          "Marks [3] indicated after instruction"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 2,
+      "storage_key": "9709/s20_qp_41/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_41.pdf",
+      "q_number": 2,
+      "ocr_text": "2 A car of mass 1800 kg is towing a trailer of mass 400 kg along a straight horizontal road. The car and trailer are connected by a light rigid tow-bar. The car is accelerating at 1.5 m s⁻². There are constant resistance forces of 250 N on the car and 100 N on the trailer.\n\n(a) Find the tension in the tow-bar. [2]\n\n(b) Find the power of the engine of the car at the instant when the speed is 20 m s⁻¹. [3]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        3
+      ],
+      "marks": [
+        2,
+        3
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q02/q02_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          3
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Printed question number '2' at top-left",
+          "Text describes full mechanics scenario with two subparts (a) and (b)",
+          "No diagram present",
+          "Subpart (b) ends mid-page with answer space continuing below"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 3,
+      "storage_key": "9709/s20_qp_41/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_41.pdf",
+      "q_number": 3,
+      "ocr_text": "3 A particle P is projected vertically upwards with speed 5 m s⁻¹ from a point A which is 2.8 m above horizontal ground.\n(a) Find the greatest height above the ground reached by P. [3]\n(b) Find the length of time for which P is at a height of more than 3.6 m above the ground. [4]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        3,
+        4
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q03/q03_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          4
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Question number '3' printed at left margin",
+          "Subparts (a) and (b) present with mark allocations",
+          "No diagram visible",
+          "Page ends with answer lines and no closing statement"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 4,
+      "storage_key": "9709/s20_qp_41/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_41.pdf",
+      "q_number": 4,
+      "ocr_text": "The diagram shows a ring of mass 0.1 kg threaded on a fixed horizontal rod. The rod is rough and the coefficient of friction between the ring and the rod is 0.8. A force of magnitude T N acts on the ring in a direction at 30° to the rod, downwards in the vertical plane containing the rod. Initially the ring is at rest.\n(b) Find the acceleration of the ring when T = 3.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "horizontal rod",
+        "ring at O",
+        "force vector TN at 30° below horizontal",
+        "angle label '30°'"
+      ],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [
+        "(b)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q04/q04_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [
+          "(b)"
+        ],
+        "evidence": [
+          "Page starts with descriptive text continuing from previous page (no new question number)",
+          "Subpart (a) is present and fully stated",
+          "No visible subpart (b) or further continuation indicators",
+          "Answer space ends before bottom margin, suggesting question concludes here",
+          "Label '(b)' indicates continuation of Question 4",
+          "Carry state shows last_seen_q_number=4 and open_q_number=null, but page starts with (b), implying Question 4 is still open and this is part (b)",
+          "No closing marker (e.g., 'Hence', 'End', or next question number) on this page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 5,
+      "storage_key": "9709/s20_qp_41/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_41.pdf",
+      "q_number": 5,
+      "ocr_text": "A child of mass 35 kg is swinging on a rope. The child is modelled as a particle P and the rope is modelled as a light inextensible string of length 4 m. Initially P is held at an angle of 45° to the vertical (see diagram).\n\n(a) Given that there is no resistance force, find the speed of P when it has travelled half way along the circular arc from its initial position to its lowest point.\n(b) It is given instead that there is a resistance force. The work done against the resistance force as P travels from its initial position to its lowest point is X J. The speed of P at its lowest point is 4 m s⁻¹.\n\nFind X.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "vertical dashed line",
+        "4 m string",
+        "45° angle label",
+        "particle P",
+        "dashed circular arc"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "marks": [
+        4,
+        3
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q05/q05_page_009.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          3
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Page starts with descriptive text continuing from previous page",
+          "Subpart (a) is present; no (b) or new question number visible",
+          "Diagram matches context of Question 4 (pendulum)",
+          "Carry state indicates Question 4 open with subpart (b) — but here (a) appears, suggesting possible misalignment; however, visual evidence shows this is the first subpart on this page, implying previous page likely ended at start of Q4, and carry state may be outdated. Yet per instruction: 'If this page visibly starts a new printed question number, that overrides carry state'; no new number visible, and text is clearly Q4 context. Since (a) appears and no prior subpart shown on this page, we treat as continuation of Q4, and update open_subpart_label to '(a)'.",
+          "Label '(b)' indicates continuation of Question 4",
+          "No new question number visible on page",
+          "Text refers to 'P' and 'lowest point', consistent with prior context of Question 4 (mechanics pendulum/vertical motion)",
+          "Marks bracket [3] appears after 'Find X.' indicating final part of question"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 6,
+      "storage_key": "9709/s20_qp_41/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_41.pdf",
+      "q_number": 6,
+      "ocr_text": "6 A particle moves in a straight line AB. The velocity v m s⁻¹ of the particle t s after leaving A is given by v = k(t² − 10t + 21), where k is a constant. The displacement of the particle from A, in the direction towards B, is 2.85 m when t = 3 and is 2.4 m when t = 6.\n\n(a) Find the value of k. Hence find an expression, in terms of t, for the displacement of the particle from A.\n(b) Find the displacement of the particle from A when its velocity is a minimum.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        9,
+        10
+      ],
+      "marks": [
+        7,
+        4
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q06/q06_page_011.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          7,
+          4
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Question number '6' printed at start of page",
+          "No preceding subpart label like (b) or (ii)",
+          "Carry state had open_q_number = null, so this is a new question",
+          "Label '(b)' indicates continuation of Question 6",
+          "Carried state shows open_q_number=6, open_subpart_label='(a)'",
+          "No new question number visible on page",
+          "Marks [4] shown for part (b)",
+          "Dotted lines below indicate space for answer, no end marker"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 7,
+      "storage_key": "9709/s20_qp_41/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_41.pdf",
+      "q_number": 7,
+      "ocr_text": "A particle P of mass 0.3 kg, lying on a smooth plane inclined at 30° to the horizontal, is released from rest. P slides down the plane for a distance of 2.5 m and then reaches a horizontal plane. There is no change in speed when P reaches the horizontal plane. A particle Q of mass 0.2 kg lies at rest on the horizontal plane 1.5 m from the end of the inclined plane (see diagram). P collides directly with Q.\n\n(a) It is given that the horizontal plane is smooth and that, after the collision, P continues moving in the same direction, with speed 2 m s⁻¹.\n\nFind the speed of Q after the collision.\n(b) It is given instead that the horizontal plane is rough and that when P and Q collide, they coalesce and move with speed 1.2 m s⁻¹.\n\nFind the coefficient of friction between P and the horizontal plane.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "inclined plane at 30°",
+        "particle P (0.3 kg)",
+        "distance 2.5 m along incline",
+        "horizontal plane",
+        "particle Q (0.2 kg)",
+        "distance 1.5 m on horizontal",
+        "angle label 30°",
+        "mass labels"
+      ],
+      "page_indices": [
+        11,
+        12
+      ],
+      "marks": [
+        5,
+        5
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_41/WM_9709_s20_qp_41_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_41/q07/q07_page_013.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          5
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Text begins with 'A particle P...', continuing narrative from previous page",
+          "Subpart (a) explicitly labeled",
+          "No new question number visible",
+          "Marks [5] shown after part (a)",
+          "No 'Question 7' or similar header",
+          "Label '(b)' indicates continuation of previous question",
+          "No new question number visible",
+          "Carry state shows last_seen_q_number = 7",
+          "Text logically follows from prior mechanics context (P and Q collision)",
+          "Marks bracket [5] present at end"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 8,
+      "storage_key": "9709/s20_qp_42/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_42.pdf",
+      "q_number": 1,
+      "ocr_text": "A tram starts from rest and moves with uniform acceleration for 20 s. The tram then travels at a constant speed, V m s⁻¹, for 170 s before being brought to rest with a uniform deceleration of magnitude twice that of the acceleration. The total distance travelled by the tram is 2.775 km.\n(a) Sketch a velocity-time graph for the motion, stating the total time for which the tram is moving.\n(b) Find V.\n(c) Find the magnitude of the acceleration.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        1
+      ],
+      "marks": [
+        2,
+        2,
+        2
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)",
+        "(c)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q01/q01_page_002.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          2,
+          2
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)",
+          "(c)"
+        ],
+        "evidence": [
+          "Question number '1' printed at left margin",
+          "Full stem paragraph follows",
+          "(a) subpart label present",
+          "Subpart (a) directly follows stem",
+          "No new question number",
+          "Marks [2] aligned with (a)",
+          "Subpart (b) appears after blank space but same question number context",
+          "Follows logical sequence after (a)",
+          "No new question number introduced",
+          "Subpart (c) follows (b) in same vertical layout",
+          "Same question numbering implied",
+          "Marks [2] consistent with prior subparts"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 9,
+      "storage_key": "9709/s20_qp_42/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_42.pdf",
+      "q_number": 2,
+      "ocr_text": "Coplanar forces of magnitudes 20 N, P N, 3P N and 4P N act at a point in the directions shown in the diagram. The system is in equilibrium.\n\nFind P and θ.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "forces: 20 N, P N, 3P N, 4P N",
+        "angles: 30°, 30°, θ",
+        "right angle symbol",
+        "horizontal and vertical dashed reference lines"
+      ],
+      "page_indices": [
+        2
+      ],
+      "marks": [],
+      "subpart_labels": [],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q02/q02_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [],
+        "subpart_labels": [],
+        "evidence": [
+          "Text begins with 'Coplanar forces...', continuing from prior parts (a) and (b) of Q1",
+          "No new question number visible",
+          "Subpart label '(c)' matches carry state",
+          "Answer space continues beyond page (dotted lines fill remainder)",
+          "No 'End of Question' marker"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 10,
+      "storage_key": "9709/s20_qp_42/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_42.pdf",
+      "q_number": 3,
+      "ocr_text": "A particle of mass 2.5 kg is held in equilibrium on a rough plane inclined at 20° to the horizontal by a force of magnitude T N making an angle of 60° with a line of greatest slope of the plane (see diagram). The coefficient of friction between the particle and the plane is 0.3.\n\nFind the greatest and least possible values of T.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "inclined plane",
+        "particle (2.5 kg)",
+        "force vector T N",
+        "angle 20° (plane to horizontal)",
+        "angle 60° (T to line of greatest slope)"
+      ],
+      "page_indices": [
+        3
+      ],
+      "marks": [],
+      "subpart_labels": [],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q03/q03_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [],
+        "subpart_labels": [],
+        "evidence": [
+          "Text begins mid-sentence describing setup already introduced in Q2(c) on previous page",
+          "No new question number visible",
+          "Subpart label '(c)' not printed but context matches carried state",
+          "Answer space continues below with dotted lines indicating continuation"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 11,
+      "storage_key": "9709/s20_qp_42/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_42.pdf",
+      "q_number": 4,
+      "ocr_text": "4 Small smooth spheres A and B, of equal radii and of masses 4 kg and 2 kg respectively, lie on a smooth horizontal plane. Initially B is at rest and A is moving towards B with speed 10 m s⁻¹. After the spheres collide A continues to move in the same direction but with half the speed of B.\n(a) Find the speed of B after the collision.\nA third small smooth sphere C, of mass 1 kg and with the same radius as A and B, is at rest on the plane. B now collides directly with C. After this collision B continues to move in the same direction but with one third the speed of C.\n(b) Show that there is another collision between A and B.\n(c) A and B coalesce during this collision.\nFind the total loss of kinetic energy in the system due to the three collisions.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        2,
+        3,
+        5
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)",
+        "(c)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q04/q04_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          3,
+          5
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)",
+          "(c)"
+        ],
+        "evidence": [
+          "Question number '4' explicitly printed at start of page",
+          "New physical scenario introduced (spheres A, B, C), distinct from prior question context",
+          "Subpart label '(a)' directly follows main stem of Q4",
+          "No new question number; same context as preceding paragraph",
+          "Continues Q4 narrative with new sphere C",
+          "Same physical setup, sequential events",
+          "Leads into subpart (b)",
+          "Subpart label '(b)' clearly marked",
+          "Follows directly from preceding paragraph about C",
+          "Marks [3] indicated",
+          "Label '(c)' indicates continuation of Question 4",
+          "Text refers to 'this collision' and 'the three collisions', consistent with prior context of spheres A, B, C",
+          "No new question number visible on page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 12,
+      "storage_key": "9709/s20_qp_42/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_42.pdf",
+      "q_number": 5,
+      "ocr_text": "5 A car of mass 1250 kg is moving on a straight road.\n(a) On a horizontal section of the road, the car has a constant speed of 32 m s⁻¹ and there is a constant force of 750 N resisting the motion.\n(i) Calculate, in kW, the power developed by the engine of the car.\n(b) On a section of the road inclined at sin⁻¹ 0.096 to the horizontal, the resistance to the motion of the car is (1000 + 8v) N when the speed of the car is v m s⁻¹. The car travels up this section of the road at constant speed with the engine working at 60 kW.\n\nFind this constant speed.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7,
+        8
+      ],
+      "marks": [
+        2,
+        5
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(i)",
+        "(ii)",
+        "(b)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q05/q05_page_009.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          5
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(i)",
+          "(ii)",
+          "(b)"
+        ],
+        "evidence": [
+          "Printed question number '5' at start of page",
+          "New scenario (car, mass, speed, force) unrelated to prior spheres/collisions",
+          "Label '(b)' appears without preceding '(a)' on this page, but carry state indicates question 5 was open with subpart (ii) continuing; however, visual layout shows (b) as new subpart of same question 5, and no further subparts visible — question ends here as no turn-over or continuation marker"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 13,
+      "storage_key": "9709/s20_qp_42/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_42.pdf",
+      "q_number": 6,
+      "ocr_text": "6 A particle P moves in a straight line. The velocity v m s⁻¹ at time t s is given by\nv = 2t + 1      for 0 ≤ t ≤ 5,\nv = 36 − t²     for 5 ≤ t ≤ 7,\nv = 2t − 27     for 7 ≤ t ≤ 13.5.\n\n(a) Sketch the velocity-time graph for 0 ≤ t ≤ 13.5. [3]\n\n(b) Find the acceleration at the instant when t = 6. [2]\n(c) Find the total distance travelled by P in the interval 0 ≤ t ≤ 13.5.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        9,
+        10
+      ],
+      "marks": [
+        3,
+        2,
+        5
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)",
+        "(c)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_42/WM_9709_s20_qp_42_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_42/q06/q06_page_011.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          2,
+          5
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)",
+          "(c)"
+        ],
+        "evidence": [
+          "Question number '6' printed at start of page",
+          "No continuation markers from previous page (e.g., 'continued', '(b)' without prior '(a)' on same page)",
+          "Full statement of question 6 with two subparts present",
+          "Subpart (c) is present and marked [5]; no further subparts visible; answer lines continue but no new question number appears; typical exam layout suggests this is the final part of Q6 as (a), (b), (c) form a complete sequence for kinematics question; no 'turn over' or next question header on this page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 14,
+      "storage_key": "9709/s20_qp_43/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_43.pdf",
+      "q_number": 1,
+      "ocr_text": "1 Particles P of mass m kg and Q of mass 0.2 kg are free to move on a smooth horizontal plane. P is projected at a speed of 2 m s⁻¹ towards Q which is stationary. After the collision P and Q move in opposite directions with speeds of 0.5 m s⁻¹ and 1 m s⁻¹ respectively.\n\nFind m.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        1
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q01/q01_page_002.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' explicitly printed at start of line",
+          "Full question statement and instruction 'Find m.' present",
+          "Mark allocation '[3]' visible"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 15,
+      "storage_key": "9709/s20_qp_43/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_43.pdf",
+      "q_number": 2,
+      "ocr_text": "2 A minibus of mass 4000 kg is travelling along a straight horizontal road. The resistance to motion is 900 N.\n(a) Find the driving force when the acceleration of the minibus is 0.5 m s⁻². [2]\n(b) Find the power required for the minibus to maintain a constant speed of 25 m s⁻¹. [2]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        2,
+        2
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q02/q02_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          2
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Question number '2' printed at left margin",
+          "New question stem introduced",
+          "Subparts (a) and (b) follow immediately",
+          "Label '(a)' directly follows question stem",
+          "No prior open question on this page",
+          "Marks bracket [2] present",
+          "Label '(b)' appears after blank space following (a)",
+          "Same question number 2",
+          "Marks bracket [2] present"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 16,
+      "storage_key": "9709/s20_qp_43/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_43.pdf",
+      "q_number": 3,
+      "ocr_text": "Four coplanar forces of magnitudes 40 N, 20 N, 50 N and F N act at a point in the directions shown in the diagram. The four forces are in equilibrium.\n\nFind F and α.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "dashed horizontal reference line",
+        "40 N force arrow",
+        "20 N force arrow",
+        "50 N force arrow",
+        "F N force arrow",
+        "angle labels: 60°, 30°, 45°, α°"
+      ],
+      "page_indices": [
+        3
+      ],
+      "marks": [],
+      "subpart_labels": [],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q03/q03_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [],
+        "subpart_labels": [],
+        "evidence": [
+          "Page starts with descriptive text continuing from previous page (no new question number visible)",
+          "Subpart label '(b)' matches carry state",
+          "Diagram and text clearly belong to Question 2 part (b)",
+          "Marks [6] aligned with typical part (b) allocation for this question"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 17,
+      "storage_key": "9709/s20_qp_43/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_43.pdf",
+      "q_number": 4,
+      "ocr_text": "4 A car starts from rest and moves in a straight line with constant acceleration a m s⁻² for a distance of 50 m. The car then travels with constant velocity for 500 m for a period of 25 s, before decelerating to rest. The magnitude of this deceleration is 2a m s⁻².\n\n(a) Sketch the velocity-time graph for the motion of the car.\n\n(b) Find the value of a.\n\n(c) Find the total time for which the car is in motion.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "v (m s⁻¹) axis",
+        "t (s) axis",
+        "origin",
+        "arrow on v-axis upward",
+        "arrow on t-axis rightward"
+      ],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        1,
+        3,
+        3
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)",
+        "(c)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q04/q04_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          1,
+          3,
+          3
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)",
+          "(c)"
+        ],
+        "evidence": [
+          "Printed question number '4' at start of page",
+          "No continuation markers like '(b)' without preceding question number",
+          "Content is self-contained new question"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 18,
+      "storage_key": "9709/s20_qp_43/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_43.pdf",
+      "q_number": 5,
+      "ocr_text": "5 A block B of mass 4 kg is pushed up a line of greatest slope of a smooth plane inclined at 30° to the horizontal by a force applied to B, acting in the direction of motion of B. The block passes through points P and Q with speeds 12 m s⁻¹ and 8 m s⁻¹ respectively. P and Q are 10 m apart with P below the level of Q.\n(a) Find the decrease in kinetic energy of the block as it moves from P to Q.\n(b) Hence find the work done by the force pushing the block up the slope as the block moves from P to Q.\n(c) At the instant the block reaches Q, the force pushing the block up the slope is removed.\nFind the time taken, after this instant, for the block to return to P.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        2,
+        3,
+        4
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)",
+        "(c)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q05/q05_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          3,
+          4
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)",
+          "(c)"
+        ],
+        "evidence": [
+          "Printed question number '5' at top-left",
+          "Text describes full scenario for Q5",
+          "Subparts (a) and (b) both present on this page",
+          "Label '(a)' directly follows Q5 stem",
+          "No preceding question content on this page before Q5",
+          "Answer space follows, indicating continuation",
+          "Label '(b)' appears after (a), same question",
+          "Uses 'Hence', indicating logical dependency on (a)",
+          "Answer space follows",
+          "Printed subpart label '(c)' follows prior subparts (a) and (b) from previous page",
+          "No end-of-question marker (e.g., 'End of Question' or new question number)",
+          "Question context (block, slope, points P and Q) matches continuity from Q5"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 19,
+      "storage_key": "9709/s20_qp_43/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_43.pdf",
+      "q_number": 6,
+      "ocr_text": "6 A particle travels in a straight line PQ. The velocity of the particle t s after leaving P is v m s⁻¹, where v = 4.5 + 4t − 0.5t².\n\n(a) Find the velocity of the particle at the instant when its acceleration is zero.\nThe particle comes to instantaneous rest at Q.\n(b) Find the distance PQ.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7,
+        8
+      ],
+      "marks": [
+        3,
+        6
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q06/q06_page_009.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          6
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)"
+        ],
+        "evidence": [
+          "Printed question number '6' at start of page",
+          "New question stem with velocity formula",
+          "Subpart (a) introduced",
+          "Text follows directly from prior question 6 context",
+          "Subpart label '(b)' indicates continuation of question 6",
+          "No new printed question number visible on page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 20,
+      "storage_key": "9709/s20_qp_43/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper4/WM_9709_s20_qp_43.pdf",
+      "q_number": 7,
+      "ocr_text": "Two particles A and B, of masses 3m kg and 2m kg respectively, are attached to the ends of a light inextensible string. The string passes over a fixed smooth pulley which is attached to the edge of a plane. The plane is inclined at an angle θ to the horizontal. A lies on the plane and B hangs vertically, 0.8 m above the floor, which is horizontal. The string between A and the pulley is parallel to a line of greatest slope of the plane (see diagram). Initially A and B are at rest.\n\n(a) Given that the plane is smooth, find the value of θ for which A remains at rest. [3]\n\nIt is given instead that the plane is rough, θ = 30° and the acceleration of A up the plane is 0.1 m s⁻².\n\n(b) Show that the coefficient of friction between A and the plane is 1/10 √3. [5]\n(c) When B reaches the floor it comes to rest.\nFind the length of time after B reaches the floor for which A is moving up the plane. [You may assume that A does not reach the pulley.]",
+      "diagram_present": true,
+      "diagram_elements": [
+        "inclined plane",
+        "angle θ",
+        "particle A (3m kg)",
+        "particle B (2m kg)",
+        "pulley",
+        "string",
+        "vertical height 0.8 m"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "marks": [
+        3,
+        5,
+        4
+      ],
+      "subpart_labels": [
+        "(a)",
+        "(b)",
+        "(c)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/renders/WM_9709_s20_qp_43/WM_9709_s20_qp_43_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p4_s_watermarked_001/review-crops/WM_9709_s20_qp_43/q07/q07_page_011.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          5,
+          4
+        ],
+        "subpart_labels": [
+          "(a)",
+          "(b)",
+          "(c)"
+        ],
+        "evidence": [
+          "Text begins with description continuing from previous page",
+          "Subpart (a) and (b) both present and fully stated",
+          "No new question number printed",
+          "Page ends after part (b) with answer lines only",
+          "Label '(c)' indicates continuation of Question 7",
+          "No new question number visible on page",
+          "Carry state shows last_seen_q_number = 7 and open_q_number = null, but context implies Q7 is ongoing",
+          "Text refers to objects A and B and a pulley, consistent with typical mechanics question structure"
+        ]
+      },
+      "warning_disposition": null
+    }
+  ]
+}

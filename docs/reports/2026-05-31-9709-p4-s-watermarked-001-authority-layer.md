@@ -1,0 +1,48 @@
+# 9709 p4_s_watermarked_001 authority layer
+
+Verdict: created a shard-scoped P4 authority layer for `p4_s_watermarked_001`. This uses component-scoped `9709.p4.*` runtime seed nodes and a 20-row authority sidecar. It does not claim full 9709 production readiness.
+
+## Artifacts
+
+- authority sidecar: `data/manifests/9709_p4_s_watermarked_001_authority_sidecar_v1.json`
+- runtime seed: `data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_v1.json`
+- machine-readable report: `docs/reports/2026-05-31-9709-p4-s-watermarked-001-authority-layer.json`
+
+## Scope
+
+- shard: `p4_s_watermarked_001`
+- rows: `20`
+- source manifest: `data/manifests/9709_p4_s_watermarked_001_page_chain_surface_v1.json`
+- projection evidence: `docs/reports/2026-05-31-9709-p4-s-watermarked-001-page-chain-projection.json`
+
+## Seeded Topic Paths
+
+- `9709.p4.forces_and_equilibrium` - Forces and Equilibrium (4.1)
+- `9709.p4.kinematics_of_motion_in_a_straight_line` - Kinematics of Motion in a Straight Line (4.2)
+- `9709.p4.momentum` - Momentum (4.3)
+- `9709.p4.newtons_laws_of_motion` - Newton's Laws of Motion (4.4)
+- `9709.p4.energy_work_and_power` - Energy, Work and Power (4.5)
+
+## Topic Distribution
+
+- `9709.p4.energy_work_and_power`: `3`
+- `9709.p4.forces_and_equilibrium`: `4`
+- `9709.p4.kinematics_of_motion_in_a_straight_line`: `6`
+- `9709.p4.momentum`: `3`
+- `9709.p4.newtons_laws_of_motion`: `4`
+
+## Review Method
+
+- operator rule review rows: `20`
+- explicit override rows: `0`
+- fallback rows: `0`
+- basis: local page-chain OCR/projection evidence plus the P4 syllabus seed nodes; no new external VLM/API call was used for authority mapping.
+
+## Authority Preflight
+
+- status: `pending`
+- expected warning after preflight: `manifest_primary_topic_missing_sidecar_canonical_present` because the surface manifest intentionally starts without primary topic paths and the sidecar supplies canonical authority.
+
+## Boundary
+
+This authority layer is shard-scoped. It authorizes `p4_s_watermarked_001` rows for the local ready-batch path only after the evidence/visual review gates have passed. It is not a statement that all Paper 4 or all 9709 rows are production-ready.

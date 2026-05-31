@@ -213,6 +213,23 @@
 - `2026-05-30-9709-p2-w-standard-001-search-gate-report.md` - question-search gate report after `p2_w_standard_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
 - `2026-05-30-9709-p2-w-standard-001-release-preflight-final.md` - final release preflight for `p2_w_standard_001`, passing with 151 sidecar rows, 0 blockers, and 151 expected manifest-topic warnings.
 - `2026-05-30-9709-p2-w-standard-001-production-ready.md` - shard-scoped production-ready closeout for `p2_w_standard_001`, covering P2 authority seed/sidecar, registry and analysis hydration, DB coverage, search gate, targeted visual disposition, and final release preflight.
+- `data/manifests/9709_p2_m_watermarked_001_input_v1.json` - shard-scoped input manifest for `p2_m_watermarked_001`, covering the single March 2020 Paper 2 watermarked source PDF.
+- `data/manifests/9709_p2_m_watermarked_001_page_chain_surface_v1.json` - shard-scoped page-chain surface manifest for `p2_m_watermarked_001`, covering 7 rows from `WM_9709_m20_qp_22.pdf`.
+- `data/manifests/9709_p2_m_watermarked_001_authority_sidecar_v1.json` - shard-scoped authority sidecar for `p2_m_watermarked_001`, covering 7 Paper 2 watermarked rows mapped to approved `9709.p2.*` seeded topic paths.
+- `2026-05-31-9709-p2-m-watermarked-001-page-chain-report.json` - Paper 2 March watermarked page-chain execution record for `p2_m_watermarked_001`, covering 1/1 PDF pass status and 7 extracted questions.
+- `2026-05-31-9709-p2-m-watermarked-001-targeted-visual-vlm-review.json` - approved VLM-assisted targeted visual review for `p2_m_watermarked_001`, preserving the raw 5 accepted and 2 watermark-only rejected dispositions.
+- `2026-05-31-9709-p2-m-watermarked-001-operator-visual-disposition.md` - operator disposition resolving the watermark-only VLM rejections and accepting 7/7 visual-review rows.
+- `2026-05-31-9709-p2-m-watermarked-001-post-extraction-review-pass.md` - shard-scoped post-extraction review for `p2_m_watermarked_001`, passing with 0 blockers, 0 warnings, and 0 remaining visual-review items.
+- `2026-05-31-9709-p2-m-watermarked-001-authority-layer.md` - authority-layer report for `p2_m_watermarked_001`, recording P2 topic mapping, official locators, and authority preflight result.
+- `2026-05-31-9709-p2-m-watermarked-001-release-preflight-authority-aligned.md` - authority-aligned release preflight rerun for `p2_m_watermarked_001`, passing with 7 sidecar rows, 0 blockers, and 7 expected manifest-topic warnings.
+- `2026-05-31-9709-p2-m-watermarked-001-authority-manifest.json` - authority-freeze manifest for `p2_m_watermarked_001`, covering 7 Paper 2 rows after P2 seeded topic-path approval.
+- `2026-05-31-9709-p2-m-watermarked-001-aligned-manifest.json` - aligned manifest for `p2_m_watermarked_001`, marking 7/7 rows ready after authority and visual/evidence join.
+- `2026-05-31-9709-p2-m-watermarked-001-ready-manifest.json` - ready manifest for `p2_m_watermarked_001`, used for registry and analysis hydration.
+- `2026-05-31-9709-p2-m-watermarked-001-authority-evidence-bundles.json` - authority-ready evidence bundles for `p2_m_watermarked_001`, covering 7/7 rows.
+- `2026-05-31-9709-p2-m-watermarked-001-db-coverage.json` - local DB coverage proof for `p2_m_watermarked_001`, confirming 7/7 registry rows, snapshots, prompts, provenance, search text, and materialized classifier fields.
+- `2026-05-31-9709-p2-m-watermarked-001-search-gate-report.md` - question-search gate report after `p2_m_watermarked_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
+- `2026-05-31-9709-p2-m-watermarked-001-release-preflight-final.md` - final release preflight for `p2_m_watermarked_001`, passing with 7 sidecar rows, 0 blockers, and 7 expected manifest-topic warnings.
+- `2026-05-31-9709-p2-m-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p2_m_watermarked_001`, covering watermarked-source visual disposition, P2 authority sidecar, registry and analysis hydration, DB coverage, search gate, and final release preflight.
 - `data/manifests/9709_p4_m_standard_001_page_chain_surface_v1.json` - shard-scoped page-chain surface manifest for `p4_m_standard_001`, covering 55 March Paper 4 standard rows from variant 42.
 - `2026-05-30-9709-p4-m-standard-001-page-chain-report.json` - Paper 4 March standard shard page-chain execution record for `p4_m_standard_001`, covering 8/8 PDF pass status, 55 extracted questions, and zero page-chain warnings.
 - `2026-05-30-9709-p4-m-standard-001-vlm-assisted-visual-disposition.md` - VLM-assisted visual disposition for `p4_m_standard_001`, accepting 34/34 queued visual review items from targeted rendered-crop evidence.

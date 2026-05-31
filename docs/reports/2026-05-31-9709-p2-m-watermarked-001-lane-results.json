@@ -1,0 +1,479 @@
+{
+  "schema_version": "9709_page_chain_shard_lane_results_v1",
+  "source_manifest_id": "9709_full_scaleout_manifest_v1_p2_m_watermarked_001",
+  "triaged_manifest_id": "9709_full_scaleout_manifest_v1_p2_m_watermarked_001_page_chain_surface_v1",
+  "generated_on": "2026-05-31",
+  "results": [
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m20_qp_22/questions/q01.png",
+      "input_asset_hash": "de803d75bbf6c223fbebd8ef5ca7ad4db156964be3533399c6b79d9a7f55bedb",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 Solve the equation 2 sin(θ + 30°) + 5 cos θ = 2 sin θ for 0° < θ < 90°."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper2/WM_9709_m20_qp_22.pdf",
+              "q_number=1",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' printed at left margin",
+              "Full question statement present",
+              "Marks [4] in top-right corner"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m20_qp_22/questions/q02.png",
+      "input_asset_hash": "f7bae7316ec0892d75e217f1b1ab207ffe9ce7b84358cea9249a203f36ae4896",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "(a) Find the quotient when 4x³ + 17x² + 9x is divided by x² + 5x + 6, and show that the remainder is 18.\n(b) Hence solve the equation 4x³ + 17x² + 9x − 18 = 0."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper2/WM_9709_m20_qp_22.pdf",
+              "q_number=2",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '2' at left margin",
+              "Subpart label '(a)' present",
+              "No prior question 2 on previous page (carry state had open_q_number=1)",
+              "Subpart label '(b)' follows directly after (a)",
+              "Uses 'Hence' indicating logical continuation",
+              "Same question number 2 as above fragment"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m20_qp_22/questions/q03.png",
+      "input_asset_hash": "b733d2d845a3221eb5bd71c1ae9a22a587f6ca026f56fb70329b83e658febd8c",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 It is given that ∫_a^{3a} 2/(2x−5) dx = ln 7/2.\nFind the value of the positive constant a."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 6
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper2/WM_9709_m20_qp_22.pdf",
+              "q_number=3",
+              "page_indices=[3]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '3' at top-left",
+              "Integral expression and instruction clearly form a complete new question stem",
+              "Marks [6] indicated on right"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m20_qp_22/questions/q04.png",
+      "input_asset_hash": "99a2845d6b85f961f32fa7bda07fa09913de44118ff0a77cf9ff188bd4f1c57e",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 A curve has equation\n\n3x² − y² − 4 ln(2y + 3) = 26.\n\nFind the equation of the tangent to the curve at the point (3, −1)."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 6
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper2/WM_9709_m20_qp_22.pdf",
+              "q_number=4",
+              "page_indices=[4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '4' at top-left",
+              "Full question statement present",
+              "Dotted answer lines fill remainder of page indicating continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m20_qp_22/questions/q05.png",
+      "input_asset_hash": "9933ffe32f698a9d293b2e494ecff4053bd9a98ed83dd2bee63f668548621896",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "(a) Sketch, on the same diagram, the graphs of y = |x + 2k| and y = |2x − 3k|, where k is a positive constant.\n\nGive, in terms of k, the coordinates of the points where each graph meets the axes. [3]\n(b) Find, in terms of k, the coordinates of each of the two points where the graphs intersect. [4]\n(c) Find, in terms of k, the largest value of t satisfying the inequality\n|2^t + 2k| ≥ |2^{t+1} - 3k|."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              },
+              {
+                "label": "(c)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper2/WM_9709_m20_qp_22.pdf",
+              "q_number=5",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '5' at top left",
+              "Subpart label '(a)' visible",
+              "Dotted lines below indicate continuation",
+              "Subpart label '(b)' follows directly after (a)",
+              "Same question number 5",
+              "Dotted answer lines indicate continuation to next page",
+              "Label '(c)' indicates continuation of Q5",
+              "No new question number printed on page",
+              "Dotted lines below indicate continuation to next page"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m20_qp_22/questions/q06.png",
+      "input_asset_hash": "ce0ba78b832058f939c4c9fe5430ab2348336969af936a2797a0dcb68458f45a",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 A curve has equation y = x³e⁰·²ˣ where x ≥ 0. At the point P on the curve, the gradient of the curve is 15.\n\n(a) Show that the x-coordinate of P satisfies the equation x = √(75e⁻⁰·²ˣ / (15 + x)).\n(b) Use the equation in part (a) to show by calculation that the x-coordinate of P lies between 1.7 and 1.8.\n(c) Use an iterative formula, based on the equation in part (a), to find the x-coordinate of P correct to 4 significant figures. Give the result of each iteration to 6 significant figures."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper2/WM_9709_m20_qp_22.pdf",
+              "q_number=6",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '6' at top-left",
+              "No preceding subpart labels like (b), (ii), etc.",
+              "Clear new question stem starting with 'A curve has equation...'",
+              "Label '(b)' indicates continuation of question 6",
+              "Reference to 'part (a)' confirms dependency on prior subpart",
+              "Dotted lines below indicate space for answer, not end of question",
+              "Label '(c)' follows '(b)', same question number inferred from context",
+              "Reference to 'part (a)' and point 'P' matches prior subparts",
+              "Dotted lines below indicate continuation expected"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m20_qp_22/questions/q07.png",
+      "input_asset_hash": "94f2df0fa0a5ec1c050bf9d16400278f36f9278969d8d82bf384bc61dda0ac22",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "The diagram shows part of the curve with equation\n\ny = 4 sin²x + 8 sin x + 3,\n\nwhere x is measured in radians. The curve crosses the x-axis at the point A and the shaded region is bounded by the curve and the lines x = 0 and y = 0.\n\n(a) Find the exact x-coordinate of A. [2]\n\n(b) Find the exact gradient of the curve at A. [3]\n(c) Find the exact area of the shaded region."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper2/WM_9709_m20_qp_22.pdf",
+              "q_number=7",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "coordinate axes (x, y)",
+              "origin O",
+              "curve",
+              "point A on x-axis",
+              "shaded region under curve from x=0 to A"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Subpart labels (a) and (b) follow prior state's open subpart (c) — but note: carry state says open_subpart_label is '(c)', yet page shows only (a) and (b); however, visual inspection confirms this is *not* a new question — the diagram and equation match typical Q6 structure; likely carry state was misaligned; page clearly continues Q6 as it references point A and shaded region introduced earlier; no new question number printed; dotted answer lines indicate continuation; the presence of (a) and (b) suggests the page may be a reprinted or mis-ordered segment, but per instructions we trust visual layout: since no new printed question number appears and content logically follows Q6 context, treat as continuation of Q6; also, the carry state reason mentions 'dotted lines and reference to part (a)' — here part (a) is present, confirming continuity.",
+              "Subpart label '(c)' appears, indicating continuation of Q6 (previous page had (a) and (b))",
+              "No new printed question number visible on this page",
+              "Answer lines follow the subpart, consistent with exam format for multi-part questions",
+              "No 'End of Question' marker present"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    }
+  ]
+}

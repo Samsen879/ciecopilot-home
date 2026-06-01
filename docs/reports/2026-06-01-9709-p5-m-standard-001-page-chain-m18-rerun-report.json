@@ -1,0 +1,28 @@
+{
+  "schema_version": "pdf_page_chain_batch_evaluation_v1",
+  "model": "qwen3-vl-plus",
+  "summary": {
+    "total_pdfs": 1,
+    "passed_pdfs": 0,
+    "blocked_pdfs": 1,
+    "warning_pdfs": 0,
+    "blocker_counts": {
+      "question_page_gap": 1
+    },
+    "warning_counts": {}
+  },
+  "items": [
+    {
+      "pdf_path": "data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+      "status": "blocked",
+      "question_count": 7,
+      "processed_pages": 16,
+      "total_pages": 16,
+      "blockers": [
+        "question_page_gap"
+      ],
+      "warnings": [],
+      "output_path": "tmp/pdf-page-chain/full-scaleout/p5_m_standard_001/payloads/9709_m18_qp_52_page_chain.json"
+    }
+  ]
+}

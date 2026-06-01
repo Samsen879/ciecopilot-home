@@ -1,0 +1,3800 @@
+{
+  "schema_version": "9709_page_chain_shard_lane_results_v1",
+  "source_manifest_id": "9709_full_scaleout_manifest_v1_p5_m_standard_001",
+  "triaged_manifest_id": "9709_full_scaleout_manifest_v1_p5_m_standard_001_page_chain_surface_v1",
+  "generated_on": "2026-06-01",
+  "results": [
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m16_qp_52/questions/q01.png",
+      "input_asset_hash": "c2635455f14a60d1b5a98b02e18b422eb6535836b71351fbbc16ff208c010671",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A particle is projected from a point on horizontal ground. At the instant 2 s after projection, the particle has travelled a horizontal distance of 30 m and is at its greatest height above the ground. Find the initial speed and the angle of projection of the particle."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m16_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' printed at left margin",
+              "Full question statement follows"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m16_qp_52/questions/q02.png",
+      "input_asset_hash": "49d1213f5d485e00e13960ca8f146ab0f7ee2b53d16c48b89eff7e9d4a7c4006",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A uniform solid hemisphere of weight 60 N and radius 0.8 m rests in limiting equilibrium with its curved surface on a rough horizontal plane. The axis of symmetry of the hemisphere is inclined at an angle of θ to the horizontal, where cos θ = 0.28. Equilibrium is maintained by a horizontal force of magnitude PN applied to the lowest point of the circular rim of the hemisphere (see diagram). (i) Show that P = 8.75. (ii) Find the coefficient of friction between the hemisphere and the plane."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m16_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "hemisphere",
+              "radius 0.8 m",
+              "angle θ",
+              "force P N",
+              "horizontal plane"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '2' printed at left margin",
+              "Diagram present",
+              "Subparts (i) and (ii) listed"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m16_qp_52/questions/q03.png",
+      "input_asset_hash": "5c647937774c77e08d81b2e8440e7347518753929dbb4261fc662de208f4490c",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A stone is thrown with speed 9 m s⁻¹ at an angle of 60° above the horizontal from a point on horizontal ground. Find the distance between the two points at which the path of the stone makes an angle of 45° with the horizontal."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m16_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '3' printed at left margin",
+              "Complete question statement"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m16_qp_52/questions/q04.png",
+      "input_asset_hash": "cbe40df62a2d1fb3f0faa5879db1bec1a1c6994a74921b70acd87403cd994601",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A uniform lamina is made by joining a rectangle ABCD, in which AB = CD = 0.56 m and BC = AD = 2 m, and a square EFGA of side 1.2 m. The vertex E of the square lies on the edge AD of the rectangle (see diagram). The centre of mass of the lamina is a distance h m from BC and a distance v m from BAG. (i) Find the value of h and show that v = h. The lamina is freely suspended at the point B and hangs in equilibrium. (ii) State the angle which the edge BC makes with the horizontal. Instead, the lamina is now freely suspended at the point F and hangs in equilibrium. (iii) Calculate the angle between FG and the vertical."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 4
+              },
+              {
+                "label": "(ii)",
+                "marks": 1
+              },
+              {
+                "label": "(iii)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m16_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "rectangle ABCD",
+              "square EFGA",
+              "dimensions: 0.56 m, 2 m, 1.2 m",
+              "points A–G labeled"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '4' printed at left margin",
+              "Diagram present",
+              "Three subparts (i)–(iii) with marks"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m16_qp_52/questions/q05.png",
+      "input_asset_hash": "87a804af219b84ca2149043cb5c576548bcd14a66ea287c454dc943baded3b44",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 A particle P of mass 0.6 kg is attached to one end of a light elastic string of natural length 0.8 m and modulus of elasticity 24 N. The other end of the string is attached to a fixed point A, and P hangs in equilibrium.\n\n(i) Calculate the extension of the string. [2]\n\nP is projected vertically downwards from the equilibrium position with speed 4.5 m s⁻¹.\n\n(ii) Find the distance AP when the speed of P is 3.5 m s⁻¹ and P is below the equilibrium position. [4]\n\n(iii) Calculate the speed of P when it is 0.5 m above the equilibrium position. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 2
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              },
+              {
+                "label": "(iii)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m16_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at start of page",
+              "All subparts (i)-(iii) present with mark allocations",
+              "No continuation indicator or incomplete sentence"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m16_qp_52/questions/q06.png",
+      "input_asset_hash": "b3fe33f5fc865ea81ab7e8232af6bcfc9f77acb8abd7b7b68d83f3dceddb2e25",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 A particle P of mass 0.2 kg is released from rest at a point O on a plane inclined at 30° to the horizontal. At time t s after its release, P has velocity v m s⁻¹ and displacement x m down the plane from O. The coefficient of friction between P and the plane increases as P moves down the plane, and equals 0.1x².\n\n(i) Show that 2v dv/dx = 10 − (√3)x². [2]\n\n(ii) Calculate the maximum speed of P. [5]\n\n(iii) Find the value of x at the point where P comes to rest. [2]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 2
+              },
+              {
+                "label": "(ii)",
+                "marks": 5
+              },
+              {
+                "label": "(iii)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m16_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed clearly",
+              "All three subparts fully stated with marks",
+              "No dangling text or turn-over marker"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m16_qp_52/questions/q07.png",
+      "input_asset_hash": "2145e281c9740b1177a55285cb47c699eb232be999483f346e58461d00a8b429",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "7\n\nOne end of a light inextensible string is attached to the highest point A of a solid fixed sphere with centre O and radius 0.6 m. The other end of the string is attached to a particle P of mass 0.2 kg which rests in contact with the smooth surface of the sphere. The angle AOP = 60° (see diagram). The sphere exerts a contact force of magnitude R N on P and the tension in the string is T N.\n\n(i) By resolving vertically, show that R + (√3)T = 4. [2]\n\nP is now set in motion, and moves with angular speed ω rad s⁻¹ in a horizontal circle on the surface of the sphere.\n\n(ii) Find an equation involving R, T and ω. [2]\n\n(iii) Hence\n(a) calculate R when ω = 2, [2]\n(b) find the greatest possible value of T and the corresponding speed of P. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 2
+              },
+              {
+                "label": "(ii)",
+                "marks": 2
+              },
+              {
+                "label": "(iii)(a)",
+                "marks": 2
+              },
+              {
+                "label": "(iii)(b)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m16_qp_52.pdf",
+              "q_number=7",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "circle",
+              "center O",
+              "point A (top)",
+              "point P (on circumference)",
+              "dashed vertical AO",
+              "angle AOP = 60°",
+              "radius OP = 0.6 m"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '7' printed",
+              "Diagram present with labels",
+              "Subparts (i)-(iii) fully introduced",
+              "Page ends mid-sentence after part (iii)(b) with no turn-over indicator; last line is '[4]' but no closing punctuation or blank space indicating completion"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m17_qp_52/questions/q01.png",
+      "input_asset_hash": "0f7f6835d147cab564c1addf242209246dd4e34bb79a737dc3d9e1e25034f93f",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 A small ball is projected with speed 15 m s⁻¹ at an angle of 60° above the horizontal. Find the distance from the point of projection of the ball at the instant when it is travelling horizontally."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m17_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' explicitly printed at start of line",
+              "Full question statement present",
+              "Marks [5] indicated at end"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m17_qp_52/questions/q02.png",
+      "input_asset_hash": "2358b80a37c835013da702d6eefabc40933f3de58499581cd01fbf2d3711bd0f",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 A cylindrical container is open at the top. The curved surface and the circular base of the container are both made from the same thin uniform material. The container has radius 0.2 m and height 0.9 m.\n(i) Show that the centre of mass of the container is 0.405 m from the base.\nThe container is placed with its base on a rough inclined plane. The container is in equilibrium on the point of slipping down the plane and also on the point of toppling.\n(ii) Find the coefficient of friction between the container and the plane."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m17_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '2' at start of page",
+              "Text describes a new physical scenario distinct from previous question",
+              "Subpart label '(i)' directly follows question stem",
+              "No new question number introduced",
+              "Same physical context as preceding fragment",
+              "Continues same container scenario",
+              "Introduces new condition for part (ii)",
+              "No break or new question number",
+              "Subpart label '(ii)' matches prior context",
+              "Follows directly after descriptive paragraph",
+              "Marks bracket [3] present"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m17_qp_52/questions/q03.png",
+      "input_asset_hash": "85a977553b88cce8d838126ec833fc36963922be520d70fcd38f61b214b5774d",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 A particle P is projected with speed 20 m s⁻¹ at an angle of 60° below the horizontal, from a point O which is 30 m above horizontal ground.\n\n(i) Calculate the time taken by P to reach the ground.\n(ii) Calculate the speed and direction of motion of P immediately before it reaches the ground. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m17_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[3, 4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '3' at left margin",
+              "New problem statement starting with 'A particle P...'",
+              "Subpart '(i)' follows directly after question stem",
+              "Printed subpart label '(ii)' matches continuation of Q3 from previous page",
+              "No new printed question number visible on this page"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m17_qp_52/questions/q04.png",
+      "input_asset_hash": "9c0ed4e50cf451d7120cabdb9013f74b7c60a9c245de5853677d95dcf44bf986",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "The diagram shows a uniform lamina ABCD with AB = 0.75 m, AD = 0.6 m and BC = 0.9 m. Angle BAD = angle ABC = 90°.\n\n(i) Show that the distance of the centre of mass of the lamina from AB is 0.38 m, and find the distance of the centre of mass from BC.\nThe lamina is freely suspended at B and hangs in equilibrium.\n(ii) Find the angle between BC and the vertical."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 5
+              },
+              {
+                "label": "(ii)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m17_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "vertices A, B, C, D",
+              "right-angle markers at A and B",
+              "length labels: AB=0.75 m, AD=0.6 m, BC=0.9 m"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "No new question number printed",
+              "Subpart label '(i)' appears, indicating continuation of prior question",
+              "Large answer space suggests continuation to next page",
+              "Carry state indicates open question 3, subpart (ii) — but this page shows (i), suggesting possible misalignment; however, visual evidence shows only (i) on this page, and no closure marker, so likely this is the start of Q3 on this page, overriding carry state",
+              "Text refers to 'BC' and 'vertical', implying prior diagram on previous page",
+              "Subpart label '(ii)' indicates continuation of question 3",
+              "No new question number visible"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m17_qp_52/questions/q05.png",
+      "input_asset_hash": "f8114bc707da6fd409ea55c84abb695c22c293184bb474238c6c3c36d872e57d",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Two particles P and Q have masses 0.4 kg and m kg respectively. P is attached to a fixed point A by a light inextensible string of length 0.5 m which is inclined at an angle of 60° to the vertical. P and Q are joined to each other by a light inextensible vertical string. Q is attached to a fixed point B, which is vertically below A, by a light inextensible string. The string BQ is taut and horizontal. The particles rotate in horizontal circles about an axis through A and B with constant angular speed ω rad s⁻¹ (see diagram). The tension in the string joining P and Q is 1.5 N.\n\n(i) Find the tension in the string AP and the value of ω.\n(ii) Find m and the tension in the string BQ."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 4
+              },
+              {
+                "label": "(ii)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m17_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "points A, B, P, Q",
+              "string AP (0.5 m, 60° to vertical)",
+              "vertical string PQ",
+              "horizontal string BQ",
+              "right angles at B and Q",
+              "angular speed ω indicated"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at top-left margin",
+              "New paragraph starting with 'Two particles P and Q...'",
+              "Subpart label '(i)' present",
+              "Diagram included",
+              "Marks [4] shown",
+              "Subpart label '(ii)' indicates continuation of question 5",
+              "No new question number visible on page",
+              "Carried state shows open_q_number=5",
+              "Answer space below suggests continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m17_qp_52/questions/q06.png",
+      "input_asset_hash": "ab9fee57a9ac5425c7fff821ee8736f67df19137846bcb6b7647ffb9aff46744",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 O and A are fixed points on a rough horizontal surface, with OA = 1 m. A particle P of mass 0.4 kg is projected horizontally with speed U m s⁻¹ from A in the direction OA and moves in a straight line. After projection, when the displacement of P from O is x m, the velocity of P is v m s⁻¹. The coefficient of friction between the surface and P is 0.4. A force of magnitude 0.8/x N acts on P in the direction PO.\n\n(i) Show that, while the particle is in motion, v dv/dx = -4 - 2/x. [3]\n\nIt is given that P comes to instantaneous rest between x = 2.0 and x = 2.1.\n\n(ii) Find the set of possible values of U. [5]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m17_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[9]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed at start of page",
+              "No prior question 6 seen on previous pages (carry state was q5)",
+              "Full problem statement and two subparts present"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m17_qp_52/questions/q07.png",
+      "input_asset_hash": "b0b8dc0926e8cb7ebb54b8ef2ba92cc56c8c3d7e98bdc437f0eec5cfb08cce82",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "7 One end of a light elastic string of natural length 0.6 m and modulus of elasticity 24 N is attached to a fixed point O. The other end of the string is attached to a particle P of mass 0.4 kg which hangs in equilibrium vertically below O.\n\n(i) Calculate the extension of the string.\nP is projected vertically downwards from the equilibrium position with speed 5 m s⁻¹.\n\n(ii) Calculate the distance P travels before it is first at instantaneous rest.\nWhen P is first at instantaneous rest a stationary particle of mass 0.4 kg becomes attached to P.\n(iii) Find the greatest speed of the combined particle in the subsequent motion."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 2
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              },
+              {
+                "label": "(iii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m17_qp_52.pdf",
+              "q_number=7",
+              "page_indices=[11, 12]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '7' clearly printed at start of page",
+              "New problem statement with physical setup",
+              "Subpart (i) with mark allocation [2]",
+              "Text continues Q7 context (particle P, equilibrium)",
+              "Explicit subpart label '(ii)'",
+              "Mark allocation [4]",
+              "No new question number introduced",
+              "Page starts with text continuing from previous question context",
+              "(iii) is a subpart label following (i) and (ii) from prior page",
+              "No new question number visible",
+              "Answer space continues below with dotted lines indicating continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m18_qp_52/questions/q01.png",
+      "input_asset_hash": "40d0edc43ba7cec9c626a795c592a17175bc8631cb45647c59b1cde66c106c6f",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A uniform rectangular block has a square base ABCD with AB = BC = 0.4 m. The height of the block is h m. The block is placed with its base on a rough plane inclined at 30° to the horizontal. The block does not slide. It is given that the block is on the point of toppling when the diagonal AC lies along a line of greatest slope. Calculate h."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' clearly printed at start of page",
+              "Full question stem present",
+              "Marks indicated as [3]"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m18_qp_52/questions/q02.png",
+      "input_asset_hash": "c7a799da3a66fb335658a5f2e1982a1db3890c1d51dba1b2f57694b47f71c070",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 An object is projected with speed 15 m s−1 at an angle of 35° above the horizontal from a point on horizontal ground. Find the speed and direction of motion of the object at time 2 s after the instant of projection."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[3]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '2' printed at left margin",
+              "Full question statement follows",
+              "Marks [5] in brackets at end"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m18_qp_52/questions/q03.png",
+      "input_asset_hash": "f031d92b43294e41c0592c00f96a88e4d2e1797ae9712759fc87d06e07d43e24",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 A small ball B is connected to one end of a light elastic string of natural length 0.4 m and modulus of elasticity 12 N. The other end of the string is attached to a fixed point A. The ball is projected with speed 1 m s⁻¹ vertically downwards from a position 0.4 m vertically below A, and reaches its greatest speed at the point 0.7 m below A.\n\n(i) Show that the mass of B is 0.9 kg. [2]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 2
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '3' printed at left margin",
+              "New question stem begins with 'A small ball B...'",
+              "Subparts (i) and (ii) present on this page",
+              "No prior question 3 on previous pages per carry state"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m18_qp_52/questions/q04.png",
+      "input_asset_hash": "5cd0b61ee977b838eef19ae201f106c70a98f0d2411c9f8b65b00bdb2f7ad64c",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 A particle P is projected from a point O on horizontal ground. At the instant t s after projection, the horizontal and vertically upwards displacements of P from O are x m and y m respectively. The equation of the trajectory of P is y = 3x − 0.05x².\n(i) Find the angle of projection and the initial speed of P.\n(ii) Find the coordinates of P at the instant when OP makes an angle of 45° with the horizontal.\n(iii) For the instant when P is at its greatest height above the ground, calculate this height and the corresponding value of t."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 2
+              },
+              {
+                "label": "(iii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '4' printed at left margin",
+              "New question stem introduced",
+              "Subparts (i) and (ii) both present on this page",
+              "No 'Turn over' visible but space suggests continuation",
+              "Label '(i)' directly follows question stem",
+              "Marks [3] shown inline",
+              "Dotted answer lines follow",
+              "Label '(ii)' appears lower on page",
+              "Marks [2] shown inline",
+              "Dotted answer lines follow",
+              "No closing indicator",
+              "Subpart label '(iii)' follows previous subparts (i) and (ii) of Question 4",
+              "No new question number visible on page",
+              "Blank answer space below indicates continuation",
+              "Standard exam layout with 'Turn over' at bottom right implies question continues"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m18_qp_52/questions/q05.png",
+      "input_asset_hash": "421e6948fe87509f3c3606e39ad362506598a7112099547eb8fe4cb8d897fdc0",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "One end of a light inextensible string of length 0.4 m is attached to the lowest point of a hemisphere of radius 0.4 m fixed with its axis vertical. A particle P of mass 0.3 kg is attached to the other end of the string. The string is straight and makes an angle of 30° with the horizontal. P moves on the smooth inner surface of the hemisphere in a horizontal circle (see diagram).\n\n(i) Calculate the smallest possible angular speed of P.\n(ii) Given that the greatest possible tension in the string is 5 N, calculate the greatest possible speed of P."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 4
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "hemisphere (semicircle)",
+              "point P",
+              "string (0.4 m)",
+              "radius (0.4 m)",
+              "30° angle",
+              "horizontal reference line",
+              "circular motion arrow"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' appears at top-left margin",
+              "New physical scenario described, unrelated to prior question",
+              "Subpart label '(i)' indicates start of new question",
+              "Subpart label '(ii)' indicates continuation of question 5",
+              "No new printed question number visible on page",
+              "Carry state shows open_q_number=5 and subpart (i) was last seen"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m18_qp_52/questions/q06.png",
+      "input_asset_hash": "2f6088948c2cc6c222f77138b6b81b8272c47b3dc88b493f94d3dfd9c0ca4c06",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A small object of mass 0.2 kg rests at a point O on a rough horizontal surface. The coefficient of friction between the object and the surface is 0.5. A force of magnitude PN acting at an angle θ below the horizontal is applied to the object. The velocity of the object is v m s⁻¹ away from O at time t s after the force begins to act (see diagram). It is given that tan θ = 3/4 and that P = 0.4t for 0 ≤ t ≤ 8.\n\n(i) Find the value of t when the object starts to move. [3]\n\n(ii) Show that, when the force is acting and the object is in motion, dv/dt = t − 5. [2]\nWhen t = 8 the force of magnitude P N ceases to act.\n(iii) Find the distance travelled by the object after t = 8 before it comes to rest."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 2
+              },
+              {
+                "label": "(iii)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "horizontal surface",
+              "point O",
+              "object (dot)",
+              "force vector PN at angle θ below horizontal",
+              "velocity vector v m s⁻¹ to the right",
+              "angle θ labeled",
+              "dashed horizontal line indicating reference"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Text begins with description continuing from previous page (no new question number printed)",
+              "Subparts (i) and (ii) are labeled sequentially",
+              "Question 5 was open from previous page",
+              "No new question number appears on this page",
+              "Page ends after subpart (ii); next page likely starts new question",
+              "The text begins with 'When t = 8...', continuing from prior context about a force acting on an object; subpart (iii) is explicitly labeled; marks [5] shown; no new question number visible; page ends with '[Turn over]' indicating end of question"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m18_qp_52/questions/q07.png",
+      "input_asset_hash": "b115679e8d1f275ba2ec94fb412f603c326d04e8f5cfd81b904122132de38d2d",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "ABCD is a uniform square lamina with sides of length 0.6 m. A circular hole of radius r m is made in the lamina. The centre of the hole is 0.3 m from AB and 0.25 m from AD. The lamina is freely suspended at A and hangs with the axis of symmetry making an angle of 48° with the horizontal (see Fig. 1).\n\n(i) Show that r = 0.214, correct to 3 significant figures.\nThe lamina is held in equilibrium with AD horizontal by a force of magnitude 15 N acting in the plane of the lamina applied at D. The line of action of this force makes an angle of 60° with the vertical (see Fig. 2).\n\n(ii) Find the weight of the original square lamina, before the hole was made. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 5
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m18_qp_52.pdf",
+              "q_number=7",
+              "page_indices=[11, 13]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "square ABCD",
+              "circular hole",
+              "dimensions: 0.6 m, 0.3 m, 0.25 m, r m",
+              "angle 48°",
+              "point labels A, B, C, D",
+              "square ABCD",
+              "circle (hole)",
+              "force arrow labeled '15 N'",
+              "angle '60°' between force and vertical dashed line at D"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '7' visible in top-left corner",
+              "New paragraph starting with 'ABCD is a uniform square lamina...'",
+              "No subpart label like (ii) or continuation marker",
+              "Carry state indicated last seen q=6, so this is new q=7",
+              "Text begins with 'The lamina is held...', continuing context from previous question part (i)",
+              "Subpart label '(ii)' matches expected continuation of Q7",
+              "Figure 2 referenced explicitly",
+              "No new question number visible"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m19_qp_52/questions/q01.png",
+      "input_asset_hash": "f2a6f040a6dedc95798ef33b1fa2d7ddc220cabef1279b571f190cfd1c729686",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 A particle is projected with speed 24 m s⁻¹ at an angle of 30° above the horizontal. Find the speed and direction of motion of the particle at the instant 4 s after projection."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m19_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' explicitly printed at start of line",
+              "Full question statement present",
+              "Marks bracket '[5]' visible"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m19_qp_52/questions/q02.png",
+      "input_asset_hash": "7a95a0b120e52b319eae38a1d496a1ea15d711fe155ff0223b53b78a6ef0f57a",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A uniform object is made by joining together three solid cubes with edges 3 m, 2 m and 1 m. The object has an axis of symmetry, with the cubes stacked vertically and the cube of edge 2 m between the other two cubes (see diagram).\n\n(i) Calculate the distance of the centre of mass of the object above the base of the largest cube. [3]\nThe smallest cube is now removed from the object. It is replaced by a heavier uniform cube with 1 m edges which is made of a different material. The centre of mass of the object is now at the base of the 2 m cube.\n\n(ii) Find the ratio of the masses of the two cubes of edge 1 m."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m19_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[3, 4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "cube",
+              "edge labels: 1 m, 2 m, 3 m",
+              "vertical stacking"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Text begins with descriptive sentence continuing from previous page",
+              "Subpart (i) is present",
+              "No further subparts visible",
+              "'[Turn over]' not on this page but page ends with answer lines and no new question starts",
+              "Page number 4 of 16, and next page likely contains new question",
+              "Text begins with 'The smallest cube is now removed...', indicating continuation of prior context (Q2 part (i) must have been on previous page).",
+              "Subpart label '(ii)' confirms continuation of Question 2.",
+              "Marks [3] assigned to (ii), and no further subparts or text follow — answer lines occupy remainder, implying completion of Q2 on this page."
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m19_qp_52/questions/q03.png",
+      "input_asset_hash": "cf01aa8b7980927e0dfd1deea55c0c613261faba2740d102797da0ee4961c554",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 A small ball is projected from a point O on horizontal ground. At time t s after projection the horizontal and vertically upwards displacements of the ball from O are x m and y m respectively, where x = 4t and y = 6t − 5t².\n\n(i) Find the equation of the trajectory of the ball.\n\n(ii) Hence or otherwise calculate the angle of projection of the ball and its initial speed."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 2
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m19_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[5]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '3' printed at left margin",
+              "New problem statement begins with 'A small ball...'",
+              "Subparts (i) and (ii) clearly labeled",
+              "No prior open question indicated in carry state for Q3"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m19_qp_52/questions/q04.png",
+      "input_asset_hash": "25cc39d04559ce9c2ca86b9da0f82833fcc0fbdd10b373614860ebe95f0dab12",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A particle P of mass 0.3 kg is attached to a fixed point A by a light elastic string of natural length 0.8 m and modulus of elasticity 16 N. The particle P moves in a horizontal circle which has centre O. It is given that AO is vertical and that angle OAP is 60° (see diagram). Calculate the speed of P. [6]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": []
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m19_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "point A",
+              "point O",
+              "point P",
+              "dashed AO",
+              "dashed OP",
+              "solid AP",
+              "60° angle at A",
+              "circular motion arrow at P"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "The text begins mid-sentence with 'A particle P...', indicating continuation.",
+              "Subpart label '(ii)' matches carry state open_subpart_label.",
+              "Answer space (dotted lines) continues below, implying question not finished.",
+              "No new question number visible on page."
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m19_qp_52/questions/q05.png",
+      "input_asset_hash": "b191211e23dfe8c5c2e6bfbf24fe826dcfd032a1d81d85a55d03e2ee87a1eeea",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 A particle P of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 24 N. The other end of the string is attached to a fixed point O. The particle P is released from rest at the point 0.4 m vertically below O.\n\n(i) Find the greatest speed of P.\n(ii) Calculate the greatest distance of P below O."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 5
+              },
+              {
+                "label": "(ii)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m19_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at left margin",
+              "New problem statement with particle P, elastic string, fixed point O",
+              "Subpart (i) explicitly labeled",
+              "Marks [5] shown",
+              "Subpart label (ii) matches expected continuation from previous page's open subpart (i)",
+              "No new printed question number visible on this page",
+              "Answer space (dotted lines) continues below, indicating continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m19_qp_52/questions/q06.png",
+      "input_asset_hash": "5caa1b33ffaec7b20a4c60faf24dcb0bf2785693a4860421ae0905ec2ca7a57e",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Fig. 1 shows the cross-section of a solid cylinder through which a cylindrical hole has been drilled to make a uniform prism. The radius of the cylinder is 5r and the radius of the hole is r. The centre of the hole is a distance 2r from the centre of the cylinder.\n\n(i) Find, in terms of r, the distance of the centre of mass of the prism from the centre of the cylinder. [4]\nThe prism has weight W N and is placed with its curved surface on a rough horizontal plane. The axis of symmetry of the cross-section makes an angle of 30° with the vertical. A horizontal force of magnitude P N acting in the plane of the cross-section through the centre of mass is applied to the cylinder at the highest point of this cross-section (see Fig. 2). The prism rests in limiting equilibrium.\n\n(ii) Find the coefficient of friction between the prism and the plane."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 4
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m19_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "large circle",
+              "small circle (hole)",
+              "dashed centerline",
+              "distance labels: 5r, 2r, 2r",
+              "circle representing cross-section",
+              "horizontal line for plane",
+              "vertical dashed line for reference",
+              "30° angle标注",
+              "arrow labeled 'P N' horizontal at top",
+              "small inner circle (hole)",
+              "dashed line from center to hole edge"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Text begins with 'Fig. 1 shows...', continuing description from previous page",
+              "Subpart label '(i)' appears, indicating continuation of Q5",
+              "Answer space extends to bottom of page with dotted lines, implying continuation",
+              "Subpart label '(ii)' indicates continuation of question 6",
+              "No new printed question number visible",
+              "Answer space continues to bottom with dotted lines",
+              "Page ends with '[Turn over]' indicating more content"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m19_qp_52/questions/q07.png",
+      "input_asset_hash": "507a2df375419e298ed5a9d113cf45c10782998e5e228019630ed79af76f4295",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "7 A particle P is projected horizontally from a point O on a rough horizontal surface. The coefficient of friction between the particle and the surface is 0.2. A horizontal force of magnitude 0.06t N directed away from O acts on P, where t s is the time after projection. P comes to rest when t = 4.\n\n(i) The particle begins to move again when t = 8. Show that the mass of P is 0.24 kg. [2]\n\n(ii) Show that, for 0 ≤ t ≤ 4, dv/dt = 0.25t − 2, and find the speed of projection of P. [5]\n(iii) Find the distance from O at which P comes to rest."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(i)",
+                "marks": 2
+              },
+              {
+                "label": "(ii)",
+                "marks": 5
+              },
+              {
+                "label": "(iii)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m19_qp_52.pdf",
+              "q_number=7",
+              "page_indices=[11, 12]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '7' at top-left",
+              "No prior question 7 on previous pages (previous carry state was q6)",
+              "Full question stem followed by subparts (i) and (ii)",
+              "Subpart label '(iii)' follows previous subparts (i) and (ii) of Q7 on prior page",
+              "No new question number printed on this page",
+              "Page ends with answer space and no explicit end-of-question marker"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m21_qp_52/questions/q01.png",
+      "input_asset_hash": "426bbbd0c445b82e568784fa244fd2016933d087efb6a31896a171b04e1c0824",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 A fair spinner with 5 sides numbered 1, 2, 3, 4, 5 is spun repeatedly. The score on each spin is the number on the side on which the spinner lands.\n(a) Find the probability that a score of 3 is obtained for the first time on the 8th spin.\n(b) Find the probability that fewer than 6 spins are required to obtain a score of 3 for the first time."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m21_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' printed at left margin",
+              "Text begins with full question stem",
+              "Subparts (a) and (b) follow immediately",
+              "Label '(a)' indented under Q1",
+              "Follows directly from Q1 stem",
+              "Mark allocation [1] shown",
+              "Label '(b)' indented under Q1",
+              "Follows after (a) with blank space",
+              "Mark allocation [2] shown"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m21_qp_52/questions/q02.png",
+      "input_asset_hash": "7b4efbdbddb643953ef93a6c516ab7b286f547569db3a657d8711979e4fa77b6",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 Georgie has a red scarf, a blue scarf and a yellow scarf. Each day she wears exactly one of these scarves. The probabilities for the three colours are 0.2, 0.45 and 0.35 respectively. When she wears a red scarf, she always wears a hat. When she wears a blue scarf, she wears a hat with probability 0.4. When she wears a yellow scarf, she wears a hat with probability 0.3.\n\n(a) Find the probability that on a randomly chosen day Georgie wears a hat. [2]\n\n(b) Find the probability that on a randomly chosen day Georgie wears a yellow scarf given that she does not wear a hat. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m21_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '2' printed at left margin",
+              "New question stem begins with 'Georgie has...'",
+              "Subparts (a) and (b) follow directly after stem",
+              "No continuation markers from prior question"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m21_qp_52/questions/q03.png",
+      "input_asset_hash": "20a65c12714e95eb0a8054b0db01f51e80771c877dc16c48987c8ca6761fb547",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 The time spent by shoppers in a large shopping centre has a normal distribution with mean 96 minutes and standard deviation 18 minutes.\n\n(a) Find the probability that a shopper chosen at random spends between 85 and 100 minutes in the shopping centre.\n88% of shoppers spend more than t minutes in the shopping centre.\n\n(b) Find the value of t."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m21_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[3]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '3' at top left",
+              "New problem statement about normal distribution",
+              "Subpart (a) present with mark allocation [3]",
+              "No new printed question number",
+              "Text continues context from part (a)",
+              "Subpart label '(b)' appears",
+              "Mark allocation [3] shown"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m21_qp_52/questions/q04.png",
+      "input_asset_hash": "5635255793509191e329d0ad61768b757598cd040e17c5e1db60adbfd3a57ed7",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 The random variable X takes the values 1, 2, 3, 4 only. The probability that X takes the value x is kx(5 − x), where k is a constant."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": []
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m21_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '4' printed at left margin",
+              "Full question stem and two subparts (a) and (b) present on page",
+              "No indication of continuation beyond this page (no 'continued' text or dangling sentence)"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m21_qp_52/questions/q05.png",
+      "input_asset_hash": "19f50d61f31a82cebb851d0615f66269f31539ec6c0442c87464a60a06be7c79",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 A driver records the distance travelled in each of 150 journeys. These distances, correct to the nearest km, are summarised in the following table.\n\nDistance (km) | 0–4 | 5–10 | 11–20 | 21–30 | 31–40 | 41–60\n---|---|---|---|---|---|---\nFrequency | 12 | 16 | 32 | 66 | 20 | 4\n\n(a) Draw a cumulative frequency graph to illustrate the data.\n(b) For 30% of these journeys the distance travelled is d km or more.\nUse your graph to estimate the value of d.\n(c) Calculate an estimate of the mean distance travelled for the 150 journeys."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m21_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "grid",
+              "axes placeholders (implied by grid layout)"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at left margin",
+              "New problem statement begins with 'A driver records...'",
+              "Table and subpart (a) fully present",
+              "No continuation markers like '(b)' or 'Hence'",
+              "Page ends with '[Turn over]' after graph grid",
+              "Subpart (b) follows from prior subpart (a) on previous page",
+              "No new question number printed",
+              "Page ends with '[Turn over]' indicating continuation",
+              "Subpart (c) directly follows (b) on same page",
+              "No new question number",
+              "Page ends with '[Turn over]'"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m21_qp_52/questions/q06.png",
+      "input_asset_hash": "c324e5dd56946ae9b39ee9cd73cdab653c8fdeeb966826f9b90ec3be34405532",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "(a) Find the total number of different arrangements of the 11 letters in the word CATERPILLAR.\n(b) Find the total number of different arrangements of the 11 letters in the word CATERPILLAR in which there is an R at the beginning and an R at the end, and the two As are not together.\n(c) Find the total number of different selections of 6 letters from the 11 letters of the word CATERPILLAR that contain both Rs and at least one A and at least one L. [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              },
+              {
+                "label": "(c)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m21_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed at left margin",
+              "Subpart '(a)' follows directly",
+              "No prior question 6 on previous pages per carry state",
+              "Subpart '(b)' immediately follows '(a)' on same page",
+              "Same question number 6",
+              "No new question number introduced",
+              "Subpart label '(c)' follows previous subparts (a) and (b) of Q6",
+              "Marks [4] indicate final part of question",
+              "No further subparts visible on page",
+              "Page ends with '[Turn over]' in footer, but per instruction we ignore turn-over labels; however, absence of any continuation text or new question confirms closure"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m21_qp_52/questions/q07.png",
+      "input_asset_hash": "a6ad7d8910435eeee60a01d2da0849ebcce69e465845c250d76064d1dee2ae92",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "7 There are 400 students at a school in a certain country. Each student was asked whether they preferred swimming, cycling or running and the results are given in the following table.\n\n\\begin{tabular}{|l|c|c|c|}\n\\hline\n & Swimming & Cycling & Running \\\\\n\\hline\nFemale & 104 & 50 & 66 \\\\\n\\hline\nMale & 31 & 57 & 92 \\\\\n\\hline\n\\end{tabular}\n\nA student is chosen at random.\n\n(a) (i) Find the probability that the student prefers swimming. [1]\n\n(ii) Determine whether the events ‘the student is male’ and ‘the student prefers swimming’ are independent, justifying your answer. [2]\n(b) (i) 10 of the students from this country are chosen at random.\nFind the probability that at least 3 of these students do not like any sports.\n(ii) 90 students from this country are now chosen at random.\nUse an approximation to find the probability that fewer than 32 of them do not like any sports."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)(i)",
+                "marks": 1
+              },
+              {
+                "label": "(a)(ii)",
+                "marks": 2
+              },
+              {
+                "label": "(b)(i)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m21_qp_52.pdf",
+              "q_number=7",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "table",
+              "row headers: Female, Male",
+              "column headers: Swimming, Cycling, Running",
+              "numeric entries: 104, 50, 66, 31, 57, 92"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '7' printed at start of page",
+              "No preceding subpart labels like (b) or (ii) without (a)",
+              "Table and two subparts (a)(i), (a)(ii) present",
+              "No indication of question completion (no final mark bracket like [4] or 'End of Question')",
+              "Label '(b)(i)' follows previous subpart '(a)(ii)' from prior page",
+              "No new question number visible on this page",
+              "Question 7 context (sports preference, 30%) established on prior page",
+              "Label '(b)(ii)' directly follows '(b)(i)' on same page",
+              "Same context (30% dislike sports), no new question number",
+              "Marks [5] indicate continuation of Q7"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m22_qp_52/questions/q01.png",
+      "input_asset_hash": "8df2b21f726cedf12d4262fd861347aa4b69db27901e334dfb620c280064f44d",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 A fair red spinner has edges numbered 1, 2, 2, 3. A fair blue spinner has edges numbered −3, −2, −1, −1. Each spinner is spun once and the number on the edge on which each spinner lands is noted. The random variable X denotes the sum of the resulting two numbers.\n\n(a) Draw up the probability distribution table for X. [3]\n\n(b) Given that E(X) = 0.25, find the value of Var(X). [2]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m22_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' explicitly printed at start of page",
+              "Text describes full setup for question 1",
+              "Subparts (a) and (b) present with mark allocations"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m22_qp_52/questions/q02.png",
+      "input_asset_hash": "efae82ea7ff68df349f9193376cfed5ece2eabe1f31ce71fd293d9e9df5d67f1",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 In a certain country, the probability of more than 10cm of rain on any particular day is 0.18, independently of the weather on any other day.\n(a) Find the probability that in any randomly chosen 7-day period, more than 2 days have more than 10 cm of rain.\n(b) For 3 randomly chosen 7-day periods, find the probability that exactly two of these periods have at least one day with more than 10 cm of rain."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m22_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[3]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '2' printed at left margin",
+              "Full stem provided",
+              "Subparts (a) and (b) both present with mark allocations",
+              "No '[Turn over]' or continuation indicator after (b)",
+              "Label '(a)' directly follows question stem",
+              "Text continues logically from stem",
+              "Mark allocation [3] shown",
+              "Label '(b)' appears after blank space following (a)",
+              "Complete subpart with mark allocation [3]",
+              "No further text or continuation marker after this subpart"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m22_qp_52/questions/q03.png",
+      "input_asset_hash": "2d7a46567320ed4ff890f25e8a067529b4ec48a51a32dd633c4b224eae35c801",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 At a summer camp an arithmetic test is taken by 250 children. The times taken, to the nearest minute, to complete the test were recorded. The results are summarised in the table.\n\n\\begin{tabular}{|l|c|c|c|c|c|}\n\\hline\nTime taken, in minutes & 1–30 & 31–45 & 46–65 & 66–75 & 76–100 \\\\\n\\hline\nFrequency & 21 & 30 & 68 & 86 & 45 \\\\\n\\hline\n\\end{tabular}\n\n(a) Draw a histogram to represent this information. [4]\n\n(b) State which class interval contains the median. [1]\n\n(c) Given that an estimate of the mean time is 61.05 minutes, state what feature of the distribution accounts for the median and the mean being different. [1]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 1
+              },
+              {
+                "label": "(c)",
+                "marks": 1
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m22_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "grid",
+              "axes (implied by grid layout)"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '3' printed at top left",
+              "No preceding subpart label like '(b)' or 'Hence' indicating continuation",
+              "Table and three subparts (a), (b), (c) present",
+              "'[Turn over]' at bottom right indicates question continues"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m22_qp_52/questions/q04.png",
+      "input_asset_hash": "8d4b986d647ca0a0a32124de1640b50475c9aa3e5ed669c50207cd3b2e4b9bd6",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 The weights of male leopards in a particular region are normally distributed with mean 55 kg and standard deviation 6 kg.\n\n(a) Find the probability that a randomly chosen male leopard from this region weighs between 46 and 62 kg.\nThe distributions of the weights of male and female leopards are independent of each other. A male leopard and a female leopard are each chosen at random.\n(c) Find the probability that both the weights of these leopards are less than 46 kg."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m22_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '4' printed at left margin",
+              "New context about male leopards (distinct from previous question's context)",
+              "Subpart (a) starts new calculation; subpart (b) follows on same page",
+              "Text begins with continuation context (independent distributions, random selection), followed by subpart (c) which is the final subpart visible on this page",
+              "No further subparts or text after (c); '[Turn over]' appears at bottom right, indicating end of question"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m22_qp_52/questions/q05.png",
+      "input_asset_hash": "f2d9b3eece1f74aa2da7f64ceb0188ee16b984c949bc39d8ae70715193c19dcb",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 A group of 12 people consists of 3 boys, 4 girls and 5 adults.\n(a) In how many ways can a team of 5 people be chosen from the group if exactly one adult is included?\nThe same group of 12 people stand in a line.\n(c) How many different arrangements are there in which the 3 boys stand together and an adult is at each end of the line?"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              },
+              {
+                "label": "(c)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m22_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at left margin",
+              "New question stem begins with 'A group of 12 people...'",
+              "Subparts (a) and (b) present on this page",
+              "Text begins with '(c)', indicating continuation of Question 5",
+              "No new question number visible on page",
+              "Answer space (dotted lines) follows, then '[Turn over]' at bottom right"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m22_qp_52/questions/q06.png",
+      "input_asset_hash": "9ee9770879d56a2c61bf4d3358174334f0f3de269c61abaed7fb30185bed1fdf",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 A factory produces chocolates in three flavours: lemon, orange and strawberry in the ratio 3 : 5 : 7 respectively. Nell checks the chocolates on the production line by choosing chocolates randomly one at a time.\n\n(a) Find the probability that the first chocolate with lemon flavour that Nell chooses is the 7th chocolate that she checks. [1]\n\n(b) Find the probability that the first chocolate with lemon flavour that Nell chooses is after she has checked at least 6 chocolates. [2]\n\n'Surprise' boxes of chocolates each contain 15 chocolates: 3 are lemon, 5 are orange and 7 are strawberry.\n\nPetra has a box of Surprise chocolates. She chooses 3 chocolates at random from the box. She eats each chocolate before choosing the next one.\n\n(c) Find the probability that none of Petra's 3 chocolates has orange flavour. [2]\n(d) Find the probability that each of Petra’s 3 chocolates has a different flavour.\n(e) Find the probability that at least 2 of Petra’s 3 chocolates have strawberry flavour given that none of them has orange flavour."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 2
+              },
+              {
+                "label": "(d)",
+                "marks": 3
+              },
+              {
+                "label": "(e)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m22_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed at start of page",
+              "No prior open question indicated in carry state",
+              "Page contains full statement of Q6 with parts (a), (b), (c)",
+              "Label '(d)' follows previous part (c) from prior page; no '[Turn over]' or end marker; space remains below for more parts",
+              "Label '(e)' directly follows (d); same question context (Petra’s 3 chocolates); no end marker; page ends with blank lines and no '[Turn over]'"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m23_qp_52/questions/q01.png",
+      "input_asset_hash": "9d4ec523a66ba9976593f85b87effbe9a2b706e00b82161548284c6230bcf635",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 Each year the total number of hours, x, of sunshine in Kintoo is recorded during the month of June. The results for the last 60 years are summarised in the table.\n\nx | 30 ≤ x < 60 | 60 ≤ x < 90 | 90 ≤ x < 110 | 110 ≤ x < 140 | 140 ≤ x < 180 | 180 ≤ x ≤ 240\n--|-------------|-------------|--------------|---------------|---------------|---------------\nNumber of years | 4 | 8 | 14 | 25 | 7 | 2\n\n(a) Draw a cumulative frequency graph to illustrate the data.\n(b) Use your graph to estimate the 70th percentile of the data.\n(c) Calculate an estimate for the mean number of hours of sunshine in Kintoo during June over the last 60 years."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m23_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[1, 2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "grid lines",
+              "axes implied by context"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' printed at start",
+              "Table and part (a) present",
+              "Grid provided for answer",
+              "No closing punctuation or 'end of question' marker",
+              "Label '(b)' indicates continuation of question 1",
+              "No new question number printed on this page",
+              "Previous state had open_q_number=1 and open_subpart_label='(a)'",
+              "Label '(c)' follows '(b)', continuing same question",
+              "No new question number visible",
+              "Question 1 remains open per prior state"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m23_qp_52/questions/q02.png",
+      "input_asset_hash": "ce7eaa57044ab8c94a6645a1453d58769291f10b9a207260128cc5b947b6ca35",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 Alisha has four coins. One of these coins is biased so that the probability of obtaining a head is 0.6. The other three coins are fair. Alisha throws the four coins at the same time. The random variable X denotes the number of heads obtained.\n\n(a) Show that the probability of obtaining exactly one head is 0.225.\n\n(b) Complete the following probability distribution table for X.\n(c) Given that E(X) = 2.1, find the value of Var(X)."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m23_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[3, 4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '2' printed at start of page",
+              "New problem context about coins and random variable X",
+              "No continuation markers like '(c)', 'Hence', etc. from previous question",
+              "Page starts with subpart label '(c)', indicating continuation of Q2; previous state had open_q_number=2 and open_subpart_label='(b)'; no new printed question number visible"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m23_qp_52/questions/q03.png",
+      "input_asset_hash": "93e608da1ce8b37a2b7e6227aba91bea47c08970b78b821e89815c715e17bd0b",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 80% of the residents of Kinwawa are in favour of a leisure centre being built in the town.\n20 residents of Kinwawa are chosen at random and asked, in turn, whether they are in favour of the leisure centre.\n\n(a) Find the probability that more than 17 of these residents are in favour of the leisure centre. [3]\n(b) Find the probability that the 5th person asked is the first person who is not in favour of the leisure centre.\n(c) Find the probability that the 7th person asked is the second person who is not in favour of the leisure centre."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 1
+              },
+              {
+                "label": "(c)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m23_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '3' printed at left margin",
+              "New context about Kinwawa residents",
+              "No continuation markers like '(c)' or 'Hence'",
+              "Previous carry state was q=2, but this page starts with new q=3",
+              "Label '(b)' appears without preceding question number, indicating continuation of Q3",
+              "Carry state shows open_q_number=3 and open_subpart_label='(a)'",
+              "No new printed question number visible on page",
+              "Label '(c)' follows '(b)', same question context",
+              "No new question number printed",
+              "Consistent with continuation of Q3"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m23_qp_52/questions/q04.png",
+      "input_asset_hash": "0a51d191d52aa21b3fbaf88802aa6db85cba72e7ba49249eceed27de9d4b6891",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 The probability that it will rain on any given day is x. If it is raining, the probability that Aran wears a hat is 0.8 and if it is not raining, the probability that he wears a hat is 0.3. Whether it is raining or not, if Aran wears a hat, the probability that he wears a scarf is 0.4. If he does not wear a hat, the probability that he wears a scarf is 0.1. The probability that on a randomly chosen day it is not raining and Aran is not wearing a hat or a scarf is 0.36.\n\nFind the value of x."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m23_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[7]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '4' at start of page",
+              "No prior question number visible on this page",
+              "Full question statement and instruction 'Find the value of x.' present",
+              "Marks [3] shown in bracket"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m23_qp_52/questions/q05.png",
+      "input_asset_hash": "99c2d745662134a4d7c4ac0f9a6e41fbe0b5205b958a475917142cd4ae2c2c02",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 Marco has four boxes labelled K, L, M and N. He places them in a straight line in the order K, L, M, N with K on the left. Marco also has four coloured marbles: one is red, one is green, one is white and one is yellow. He places a single marble in each box, at random. Events A and B are defined as follows.\n\nA: The white marble is in either box L or box M.\n\nB: The red marble is to the left of both the green marble and the yellow marble.\n\nDetermine whether or not events A and B are independent."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m23_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '5' at start of page",
+              "No preceding subpart labels like (b) or (ii)",
+              "New scenario introduced"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m23_qp_52/questions/q06.png",
+      "input_asset_hash": "0135783d18340d9ee42cb5a711acc134af0629ac616a58ecc358022746f3ab90",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 In a cycling event the times taken to complete a course are modelled by a normal distribution with mean 62.3 minutes and standard deviation 8.4 minutes.\n(a) Find the probability that a randomly chosen cyclist has a time less than 74 minutes. [2]\n(b) Find the probability that 4 randomly chosen cyclists all have times between 50 and 74 minutes. [4]\nIn a different cycling event, the times can also be modelled by a normal distribution. 23% of the cyclists have times less than 36 minutes and 10% of the cyclists have times greater than 54 minutes.\n(c) Find estimates for the mean and standard deviation of this distribution."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              },
+              {
+                "label": "(c)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m23_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '6' at top-left of page",
+              "Subpart label '(a)' directly follows Q6 stem; no prior subpart on this page",
+              "Subpart label '(b)' appears after (a); same question number 6",
+              "Page starts with text continuing from Q6 context (normal distribution, percentages), no new printed question number",
+              "(c) is a subpart label following (a) and (b) of Q6 per carry state",
+              "Marks [5] assigned to (c) only; no further subparts visible"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m23_qp_52/questions/q07.png",
+      "input_asset_hash": "5ba226b29ed562a4dfb5977e6856b437218877d23991b2c0ad4ac01897212349",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "(a) Find the number of different arrangements of the 9 letters in the word DELIVERED in which the three Es are together and the two Ds are not next to each other.\n(b) Find the probability that a randomly chosen arrangement of the 9 letters in the word DELIVERED has exactly 4 letters between the two Ds.\nFive letters are selected from the 9 letters in the word DELIVERED.\n(c) Find the number of different selections if the 5 letters include at least one D and at least one E."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 5
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m23_qp_52.pdf",
+              "q_number=7",
+              "page_indices=[11, 12]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '7' printed at left margin",
+              "Subpart label '(a)' follows question number",
+              "No prior open question indicated on this page",
+              "Marks [4] shown inline",
+              "Subpart label '(b)' appears after (a), same question number 7",
+              "No new question number introduced",
+              "Marks [5] shown inline",
+              "Page ends with blank answer lines but no 'Turn over' or closure marker for Q7",
+              "The text begins with 'Five letters...', continuing the context of Q7 (which involved selecting letters from DELIVERED), and subpart label '(c)' follows logically after (a) and (b) from previous page.",
+              "No end-of-question marker such as '[total]', 'Hence', or 'Turn over' appears after the question text; blank lines below suggest continuation."
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m24_qp_52/questions/q01.png",
+      "input_asset_hash": "7d6e663e25a36cda2b928698a92387833b664f163b8d5a846f1ffea8fed17211",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 A bag contains 9 blue marbles and 3 red marbles. One marble is chosen at random from the bag. If this marble is blue, it is replaced back into the bag. If this marble is red, it is not returned to the bag. A second marble is now chosen at random from the bag.\n\n(a) Find the probability that both the marbles chosen are red. [1]\n\n(b) Find the probability that the first marble chosen is blue given that the second marble chosen is red. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m24_qp_52.pdf",
+              "q_number=1",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' explicitly printed at start of page",
+              "Text describes full scenario for Q1",
+              "Subparts (a) and (b) present with mark allocations"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m24_qp_52/questions/q02.png",
+      "input_asset_hash": "edca2a4ba774385c0676143df3265669765fc07ab3152c2387491474a2056fe7",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 Sam is a member of a soccer club. She is practising scoring goals. The probability that Sam will score a goal on any attempt is 0.7, independently of all other attempts.\n\n(a) Sam makes 10 attempts at scoring goals.\n\nFind the probability that Sam will score goals on fewer than 8 of these attempts. [3]\n\n(b) Find the probability that Sam’s first successful attempt will be before her 5th attempt. [2]\n(c) Wei is a member of the same soccer club. He is also practising scoring goals. The probability that Wei will score a goal on any attempt is 0.6, independently of all other attempts.\n\nWei is going to keep making attempts until he scores 3 goals.\n\nFind the probability that he scores his third goal on his 7th attempt."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m24_qp_52.pdf",
+              "q_number=2",
+              "page_indices=[3, 4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '2' printed at left margin",
+              "Full question stem and two subparts visible",
+              "No continuation markers like 'Hence' or '(ii)' indicating prior part",
+              "Answer lines present but no overflow text",
+              "Subpart (c) follows from previous subparts (a), (b) of Q2",
+              "No 'continued' marker or overflow text",
+              "Page ends with '[Turn over]' indicating no further content for Q2"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m24_qp_52/questions/q03.png",
+      "input_asset_hash": "4e2ee311c25bda31a1cd3c090191bfea23b7fd541e8357ca2b540f70a168dedf",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 The times taken, in minutes, by 150 students to complete a puzzle are summarised in the table.\n\nTime taken (t minutes) | 0 ≤ t < 20 | 20 ≤ t < 30 | 30 ≤ t < 35 | 35 ≤ t < 40 | 40 ≤ t < 50 | 50 ≤ t < 70\n---|---|---|---|---|---|---\nFrequency | 8 | 23 | 35 | 52 | 20 | 12\n\n(a) Draw a histogram to represent this information.\n(b) Calculate an estimate for the mean time for these students to complete the puzzle.\n(c) In which class interval does the lower quartile of the times lie?"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 1
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m24_qp_52.pdf",
+              "q_number=3",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "grid",
+              "x-axis intervals implied by table",
+              "y-axis scale not marked"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '3' printed at start of page",
+              "No continuation indicator like '(b)' or 'Hence'",
+              "Table and part (a) present",
+              "Marks [4] shown after (a)",
+              "No 'Turn over' or end-of-question marker",
+              "Label '(b)' indicates continuation of Question 3",
+              "No new question number visible at top of page",
+              "Carry state indicates open Question 3",
+              "Label '(c)' follows '(b)', continuing Question 3",
+              "No new question number introduced",
+              "Marks [1] consistent with subpart of same question"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m24_qp_52/questions/q04.png",
+      "input_asset_hash": "b8f9562543dabcdca94a7a5305a6d61c0f91e68abd2d188c040ec2e72b42fe7f",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "A company sells small and large bags of rice. The masses of the small bags of rice are normally distributed with mean 1.20 kg and standard deviation 0.16 kg.\n(a) In a random sample of 500 of these small bags of rice, how many would you expect to have a mass greater than 1.26 kg?\nThe masses of the large bags of rice are normally distributed with mean 2.50 kg and standard deviation σ kg. 20% of these large bags of rice have a mass less than 2.40 kg.\n(b) Find the value of σ.\n(c) Use a suitable approximation to find the probability that fewer than 22 of these large bags of rice have a mass less than 2.40 kg."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m24_qp_52.pdf",
+              "q_number=4",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '4' printed at left margin",
+              "New context about rice bags, distinct from previous question's content",
+              "Subpart label '(a)' directly follows introductory paragraph for Q4",
+              "No break or new question marker before this",
+              "New sentence introducing large bags, logically continuing Q4",
+              "Followed by subpart (b) asking to find σ",
+              "Subpart label '(b)' matches preceding context",
+              "Marks [3] aligned with part (b)",
+              "The page starts with '(c)', indicating continuation of Question 4; previous state had open_q_number=4 and open_subpart_label='(b)'; this is subpart (c), so it continues Question 4; no '[Turn over]' in content area; answer space follows but not filled; footer says '[Turn over]' but that does not end the question text."
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m24_qp_52/questions/q05.png",
+      "input_asset_hash": "9ea9d650db64501c84ff628515cbfa9264f38159aa21e46eb9453331c635afab",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 Anil is taking part in a tournament. In each game in this tournament, players are awarded 2 points for a win, 1 point for a draw and 0 points for a loss. For each of Anil's games, the probabilities that he will win, draw or lose are 0.5, 0.3 and 0.2 respectively. The results of the games are all independent of each other.\n\nThe random variable X is the total number of points that Anil scores in his first 3 games in the tournament.\n\n(a) Show that P(X = 2) = 0.114 .\n\n(b) Complete the probability distribution table for X.\n(c) Find the value of Var(X)."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m24_qp_52.pdf",
+              "q_number=5",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at left margin",
+              "New problem statement starting with 'Anil is taking part...'",
+              "Subparts (a) and (b) present",
+              "No prior question visible on page",
+              "Page ends with '[Turn over]' but question not closed",
+              "Label '(c)' follows previous part (b) from page 10",
+              "Question 5 not closed; '[Turn over]' at bottom indicates continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/m24_qp_52/questions/q06.png",
+      "input_asset_hash": "fafafbcd71d1ea7d9002201631bcbfc0f4afaa6055e8fc6e16072eb1b631e62e",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 A new village social club has 10 members of whom 6 are men and 4 are women. The club committee will consist of 5 members.\n(a) In how many ways can the committee of 5 members be chosen if it must include at least 2 men and at least 1 woman?\nThe 10 members of the club stand in a line for a photograph.\n(b) How many different arrangements are there of the 10 members if all the men stand together and all the women stand together?\nFor a second photograph, the members stand in two rows, with 6 on the back row and 4 on the front row. Olly and his sister Petra are two of the members of the club.\n(c) How many different arrangements are there of the 10 members in which Olly and Petra stand next to each other on the front row? [4]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper5/9709_m24_qp_52.pdf",
+              "q_number=6",
+              "page_indices=[11, 12]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed at left margin",
+              "New question stem begins with 'A new village social club...'",
+              "Part (a) follows immediately",
+              "Label '(a)' matches previous fragment's subpart",
+              "Same question number 6",
+              "Text continues logical flow of part (a)",
+              "Label '(b)' indicates next subpart of same question 6",
+              "Stem 'The 10 members...' is continuation of context from part (a)",
+              "Marks [2] shown inline",
+              "The text begins with 'For a second photograph...', continuing the context from Question 6 part (b) on previous page",
+              "Subpart label '(c)' matches expected progression after '(b)'",
+              "Question ends with '[4]' mark allocation and no further subparts visible",
+              "No '[Turn over]' or new question number appears on this page"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,777 @@
+{
+  "schema_version": "9709_authority_sidecar_v1",
+  "sidecar_id": "9709_p5_w_watermarked_001_authority_sidecar_v1",
+  "subject_code": "9709",
+  "curriculum_version_tag": "2025-2027_v1",
+  "generated_on": "2026-06-01",
+  "scope": {
+    "shard_id": "p5_w_watermarked_001",
+    "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+    "source_manifest": "data/manifests/9709_p5_w_watermarked_001_page_chain_surface_v1.json",
+    "legacy_boundary": "W19 watermarked Paper 5 rows are legacy Mechanics 2 crosswalked to current repo 9709.p4.* mechanics paths.",
+    "watermarked_source_boundary": "The source PDFs are watermarked-source PDFs; operator visual disposition accepted the rendered question crops only after targeted VLM review and watermark-only override handling."
+  },
+  "notes": [
+    "Authority mapping used local page-chain OCR/projection evidence plus current repo P4 syllabus seed nodes.",
+    "No external VLM/API call was used for authority mapping.",
+    "This sidecar is shard-scoped and does not declare full 9709 production readiness."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/w19_qp_51/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_1_forces_and_equilibrium",
+            "note": "3 Subject content > 4.1 Forces and Equilibrium; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q01.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.forces_and_equilibrium; rationale=legacy centre-of-mass, toppling, rigid-body equilibrium, or statics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q01.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_51/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: A uniform solid cone has weight 5 N and base radius 0.1 m. AB is a diameter of the base of the cone. The cone is held in equilibrium, with A in contact with a rough horizontal surface and AB vertical, by a force applied at B. This force has magnitude 3 N and acts parallel to the axis of the cone (see diagram). Calculate the height of the cone."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_51/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line",
+            "note": "3 Subject content > 4.2 Kinematics of Motion in a Straight Line; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q02.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; rationale=legacy projectile or trajectory kinematics row crosswalked to current P4 kinematics authority."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q02.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_51/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 A particle is projected from a point on horizontal ground with speed 15 m s⁻¹ at an angle of θ° above the horizontal. The particle strikes the ground 2 s after projection. (i) Find θ. (ii) Calculate the time after projection at which the direction of motion of the particle is 20° below the horizontal."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_51/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion",
+            "note": "3 Subject content > 4.4 Newtons Laws of Motion; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q03.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.newtons_laws_of_motion; rationale=legacy circular-motion or variable-force dynamics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q03.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_51/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 A smooth horizontal surface has two fixed points O and A which are 0.8 m apart. A particle P of mass 0.25 kg is projected with velocity 3 m s⁻¹ horizontally from A in the direction away from O. The velocity of P is v m s⁻¹ when the displacement of P from O is x m. A force of magnitude kv²x⁻² N opposes the motion of P. (i) Show that v dv/dx = -4kv²x⁻². (ii) Express v in terms of k and x."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_51/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line",
+            "note": "3 Subject content > 4.2 Kinematics of Motion in a Straight Line; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q04.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; rationale=legacy projectile or trajectory kinematics row crosswalked to current P4 kinematics authority."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q04.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_51/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 4 A small ball B is projected with speed 30 m s⁻¹ at an angle of 60° above the horizontal from a point O. At time t s after projection the horizontal and vertically upwards displacements of B from O are x m and y m respectively. (i) Express x and y in terms of t and hence find the equation of the trajectory of the ball. [4] (ii) Find the value of x for which OB makes an angle of 45° above the horizontal. [3]"
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_51/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power",
+            "note": "3 Subject content > 4.5 Energy, Work and Power; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q05.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.energy_work_and_power; rationale=legacy elastic-string, work-energy, or greatest-speed row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q05.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_51/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 5 A particle P of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth plane inclined at 30° to the horizontal. OA is a line of greatest slope of the plane with A below the level of O and OA = 0.8 m. The particle P is released from rest at A. (i) Find the initial acceleration of P. (ii) Find the greatest speed of P."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_51/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion",
+            "note": "3 Subject content > 4.4 Newtons Laws of Motion; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q06.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.newtons_laws_of_motion; rationale=legacy circular-motion or variable-force dynamics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q06.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_51/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 6 A and B are two fixed points on a vertical axis with A 0.6 m above B. A particle P of mass 0.3 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by a light elastic string with modulus of elasticity 46 N. The particle P moves with constant angular speed 8 rad s⁻¹ in a horizontal circle with centre at the mid-point of AB. (i) Find the speed of P. (ii) Calculate the tension in the string BP and hence find the natural length of this string."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_51/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_1_forces_and_equilibrium",
+            "note": "3 Subject content > 4.1 Forces and Equilibrium; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q07.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.forces_and_equilibrium; rationale=legacy centre-of-mass, toppling, rigid-body equilibrium, or statics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_51/questions/q07.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_51/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: ABC is the cross-section through the centre of mass of a uniform prism which rests with AB on a rough horizontal surface. AB = 0.4 m and C is 0.9 m above the surface (see diagram). The prism is on the point of toppling about its edge through B. (i) Show that angle BAC = 48.4°, correct to 3 significant figures. A force of magnitude 18 N acting in the plane of the cross-section and perpendicular to AC is now applied to the prism at C. The prism is on the point of rotating about its edge through A. (ii) Calculate the weight of the prism. (iii) Given also that the prism is on the point of slipping, calculate the coefficient of friction between th"
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_52/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power",
+            "note": "3 Subject content > 4.5 Energy, Work and Power; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q01.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.energy_work_and_power; rationale=legacy elastic-string, work-energy, or greatest-speed row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q01.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_52/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 1 A particle of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth horizontal surface. The particle is projected horizontally from O with speed 4 m s⁻¹. Find the greatest distance of the particle from O."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_52/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line",
+            "note": "3 Subject content > 4.2 Kinematics of Motion in a Straight Line; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q02.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; rationale=legacy projectile or trajectory kinematics row crosswalked to current P4 kinematics authority."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q02.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_52/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 A small ball is projected from a point O on horizontal ground at an angle of 30° above the horizontal. At time t s after projection the horizontal and vertically upwards displacements of the ball from O are x m and y m respectively. It is given that x = 40t. (i) Calculate the initial speed of the ball, and express y in terms of t. [3]"
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_52/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power",
+            "note": "3 Subject content > 4.5 Energy, Work and Power; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q03.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.energy_work_and_power; rationale=legacy elastic-string, work-energy, or greatest-speed row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q03.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_52/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 A particle P of mass 0.5 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 12 N. The other end of the string is attached to a fixed point O. The particle P is projected vertically downwards with speed 2 m s⁻¹ from the point 0.5 m vertically below O. For an instant when the acceleration of P is 4 m s⁻² downwards, find the extension of the string and the speed of P."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_52/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line",
+            "note": "3 Subject content > 4.2 Kinematics of Motion in a Straight Line; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q04.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; rationale=legacy projectile or trajectory kinematics row crosswalked to current P4 kinematics authority."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q04.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_52/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 4 A particle is projected from a point O on horizontal ground with speed V m s⁻¹ at an angle of 60° above the horizontal. At the instant 3 s after projection the direction of motion of the particle is 30° below the horizontal. (i) Find V. (ii) Calculate the distance of the particle from O at the instant 3 s after projection."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_52/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion",
+            "note": "3 Subject content > 4.4 Newtons Laws of Motion; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q05.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.newtons_laws_of_motion; rationale=legacy circular-motion or variable-force dynamics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q05.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_52/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: A and B are two fixed points on a vertical axis with A above B. A particle P of mass 0.4 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by another light inextensible string. P moves with constant speed in a horizontal circle with centre O between A and B. Angle BAP = 30° and angle ABP = 70° (see diagram). (i) Given that the tensions in the two strings are equal, find the speed of P. (ii) Given instead that the angular speed of P is 12 rad s⁻¹, find the tensions in the strings."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_52/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion",
+            "note": "3 Subject content > 4.4 Newtons Laws of Motion; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q06.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.newtons_laws_of_motion; rationale=legacy circular-motion or variable-force dynamics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q06.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_52/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 6 A particle P of mass 0.2 kg is projected horizontally from a fixed point O on a smooth horizontal surface. When the displacement of P from O is x m the velocity of P is v m s⁻¹. A horizontal force of variable magnitude 0.09√x N directed away from O acts on P. An additional force of constant magnitude 0.3 N directed towards O acts on P. (i) Show that v dv/dx = 0.45√x − 1.5. (ii) Find the value of x for which the acceleration of P is zero. (iii) Given that the minimum value of v is positive, find the set of possible values for the speed of projection."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_52/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_1_forces_and_equilibrium",
+            "note": "3 Subject content > 4.1 Forces and Equilibrium; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q07.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.forces_and_equilibrium; rationale=legacy centre-of-mass, toppling, rigid-body equilibrium, or statics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_52/questions/q07.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_52/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: ABCD is a uniform lamina in the shape of a trapezium which has centre of mass G. The sides AD and BC are parallel and 1.8 m apart, with AD = 2.4 m and BC = 1.2 m (see diagram). (i) Show that the distance of G from AD is 0.8 m. The lamina is freely suspended at A and hangs in equilibrium with AD making an angle of 30° with the vertical. (ii) Calculate the distance AG. With the lamina still freely suspended at A a horizontal force of magnitude 7 N acting in the plane of the lamina is applied at D. The lamina is in equilibrium with AG making an angle of 10° with the downward vertical. (iii) Find the two possible values for the weight of the lami"
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_53/questions/q01.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_1_forces_and_equilibrium",
+            "note": "3 Subject content > 4.1 Forces and Equilibrium; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q01.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.forces_and_equilibrium; rationale=legacy centre-of-mass, toppling, rigid-body equilibrium, or statics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q01.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_53/questions/q01.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: A uniform solid cone has weight 5 N and base radius 0.1 m. AB is a diameter of the base of the cone. The cone is held in equilibrium, with A in contact with a rough horizontal surface and AB vertical, by a force applied at B. This force has magnitude 3 N and acts parallel to the axis of the cone (see diagram). Calculate the height of the cone."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_53/questions/q02.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line",
+            "note": "3 Subject content > 4.2 Kinematics of Motion in a Straight Line; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q02.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; rationale=legacy projectile or trajectory kinematics row crosswalked to current P4 kinematics authority."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q02.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_53/questions/q02.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 2 A particle is projected from a point on horizontal ground with speed 15 m s⁻¹ at an angle of θ° above the horizontal. The particle strikes the ground 2 s after projection. (i) Find θ. (ii) Calculate the time after projection at which the direction of motion of the particle is 20° below the horizontal."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_53/questions/q03.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion",
+            "note": "3 Subject content > 4.4 Newtons Laws of Motion; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q03.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.newtons_laws_of_motion; rationale=legacy circular-motion or variable-force dynamics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q03.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_53/questions/q03.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 3 A smooth horizontal surface has two fixed points O and A which are 0.8 m apart. A particle P of mass 0.25 kg is projected with velocity 3 m s⁻¹ horizontally from A in the direction away from O. The velocity of P is v m s⁻¹ when the displacement of P from O is x m. A force of magnitude kv²x⁻² N opposes the motion of P. (i) Show that v dv/dx = -4kv²x⁻². (ii) Express v in terms of k and x."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_53/questions/q04.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_2_kinematics_of_motion_in_a_straight_line",
+            "note": "3 Subject content > 4.2 Kinematics of Motion in a Straight Line; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q04.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; rationale=legacy projectile or trajectory kinematics row crosswalked to current P4 kinematics authority."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q04.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_53/questions/q04.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 4 A small ball B is projected with speed 30 m s⁻¹ at an angle of 60° above the horizontal from a point O. At time t s after projection the horizontal and vertically upwards displacements of B from O are x m and y m respectively. (i) Express x and y in terms of t and hence find the equation of the trajectory of the ball. [4] (ii) Find the value of x for which OB makes an angle of 45° above the horizontal. [3]"
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_53/questions/q05.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_5_energy_work_and_power",
+            "note": "3 Subject content > 4.5 Energy, Work and Power; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q05.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.energy_work_and_power; rationale=legacy elastic-string, work-energy, or greatest-speed row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q05.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_53/questions/q05.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 5 A particle P of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth plane inclined at 30° to the horizontal. OA is a line of greatest slope of the plane with A below the level of O and OA = 0.8 m. The particle P is released from rest at A. (i) Find the initial acceleration of P. (ii) Find the greatest speed of P."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_53/questions/q06.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_4_newtons_laws_of_motion",
+            "note": "3 Subject content > 4.4 Newtons Laws of Motion; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q06.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.newtons_laws_of_motion; rationale=legacy circular-motion or variable-force dynamics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q06.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_53/questions/q06.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: 6 A and B are two fixed points on a vertical axis with A 0.6 m above B. A particle P of mass 0.3 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by a light elastic string with modulus of elasticity 46 N. The particle P moves with constant angular speed 8 rad s⁻¹ in a horizontal circle with centre at the mid-point of AB."
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    },
+    {
+      "storage_key": "9709/w19_qp_53/questions/q07.png",
+      "authority_input_pack": {
+        "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+        "curriculum_version_tag": "2025-2027_v1",
+        "topic_authority_sources": [
+          "official_syllabus",
+          "operator_authority_layer",
+          "operator_visual_review",
+          "repo_page_chain_evidence"
+        ],
+        "topic_authority_refs": [
+          {
+            "kind": "official_syllabus",
+            "locator": "data/syllabus/9709/raw_sections_v1.json#cambridge-9709-syllabus-2026-2027-v4.3.subject_content.p4.4_1_forces_and_equilibrium",
+            "note": "3 Subject content > 4.1 Forces and Equilibrium; component-scoped P4 Mechanics topic path approved for this shard."
+          },
+          {
+            "kind": "operator_authority_layer",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-authority-layer.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q07.png; approved W19 legacy Paper 5 Mechanics 2 mapping to 9709.p4.forces_and_equilibrium; rationale=legacy centre-of-mass, toppling, rigid-body equilibrium, or statics row."
+          },
+          {
+            "kind": "operator_visual_review",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-operator-visual-disposition.md",
+            "note": "storage_key=9709/w19_qp_53/questions/q07.png; targeted/operator visual review queue closed before authority mapping."
+          },
+          {
+            "kind": "repo_page_chain_evidence",
+            "locator": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-page-chain-projection.json",
+            "note": "storage_key=9709/w19_qp_53/questions/q07.png; page-chain projection and OCR evidence reviewed for topic mapping. Snippet: ABC is the cross-section through the centre of mass of a uniform prism which rests with AB on a rough horizontal surface. AB = 0.4 m and C is 0.9 m above the surface (see diagram). The prism is on the point of toppling about its edge through B. (i) Show that angle BAC = 48.4°, correct to 3 significant figures. A force of magnitude 18 N acting in the plane of the cross-section and perpendicular to AC is now applied to the prism at C. The prism is on the point of rotating about its edge through A. (ii) Calculate the weight of the prism. (iii) Given also that the prism is on the point of slipping, calculate the coefficient of friction between th"
+          }
+        ],
+        "cross_paper_dependency_note": "Winter 2019 Paper 5 rows are legacy Mechanics 2 in this shard. The current repo taxonomy has no separate legacy M2 branch, so these rows crosswalk to component-scoped 9709.p4.* mechanics authority rather than to 9709.p5 statistics."
+      }
+    }
+  ]
+}

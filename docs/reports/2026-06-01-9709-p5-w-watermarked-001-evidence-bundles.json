@@ -1,0 +1,2173 @@
+{
+  "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+  "bundles": [
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 0,
+      "storage_key": "9709/w19_qp_51/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 1,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "A uniform solid cone has weight 5 N and base radius 0.1 m. AB is a diameter of the base of the cone. The cone is held in equilibrium, with A in contact with a rough horizontal surface and AB vertical, by a force applied at B. This force has magnitude 3 N and acts parallel to the axis of the cone (see diagram). Calculate the height of the cone.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "cone",
+          "horizontal surface",
+          "point A",
+          "point B",
+          "vertical segment AB = 0.1 m",
+          "horizontal arrow labeled '3 N' at B"
+        ],
+        "spatial_evidence": [
+          "Question number '1' appears at top-left margin",
+          "Text begins with 'A uniform solid cone...', no subpart label like (a) or (b)",
+          "Diagram present above text",
+          "Marks [3] indicated at end"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_51/questions/q01.png",
+        "input_asset_hash": "775d3f53766ebcc1169046d4d48f2a633891a48b1a316b7a0f8d2be24286c1e3",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_51/questions/q01.png",
+          "input_asset_hash": "775d3f53766ebcc1169046d4d48f2a633891a48b1a316b7a0f8d2be24286c1e3",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_51/questions/q01.png",
+        "input_asset_hash": "775d3f53766ebcc1169046d4d48f2a633891a48b1a316b7a0f8d2be24286c1e3"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 1,
+      "storage_key": "9709/w19_qp_51/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 1,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 A particle is projected from a point on horizontal ground with speed 15 m s⁻¹ at an angle of θ° above the horizontal. The particle strikes the ground 2 s after projection.\n\n(i) Find θ.\n\n(ii) Calculate the time after projection at which the direction of motion of the particle is 20° below the horizontal.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_51/questions/q02.png",
+        "input_asset_hash": "38965e55288296614c558a168d1d5f650b36949c0eb32164fb96384c25cdd92b",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_51/questions/q02.png",
+          "input_asset_hash": "38965e55288296614c558a168d1d5f650b36949c0eb32164fb96384c25cdd92b",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_51/questions/q02.png",
+        "input_asset_hash": "38965e55288296614c558a168d1d5f650b36949c0eb32164fb96384c25cdd92b"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 2,
+      "storage_key": "9709/w19_qp_51/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 1,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 A smooth horizontal surface has two fixed points O and A which are 0.8 m apart. A particle P of mass 0.25 kg is projected with velocity 3 m s⁻¹ horizontally from A in the direction away from O. The velocity of P is v m s⁻¹ when the displacement of P from O is x m. A force of magnitude kv²x⁻² N opposes the motion of P.\n(i) Show that v dv/dx = -4kv²x⁻².\n(ii) Express v in terms of k and x.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 1
+          },
+          {
+            "label": "(ii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+          "q_number=3",
+          "page_indices=[3]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_51/questions/q03.png",
+        "input_asset_hash": "4cccc66ebeb4e2221f05b1f2b13e93522f6cfdc94c7640d9d9ec58faa7fad076",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_51/questions/q03.png",
+          "input_asset_hash": "4cccc66ebeb4e2221f05b1f2b13e93522f6cfdc94c7640d9d9ec58faa7fad076",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_51/questions/q03.png",
+        "input_asset_hash": "4cccc66ebeb4e2221f05b1f2b13e93522f6cfdc94c7640d9d9ec58faa7fad076"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 3,
+      "storage_key": "9709/w19_qp_51/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 1,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 A small ball B is projected with speed 30 m s⁻¹ at an angle of 60° above the horizontal from a point O. At time t s after projection the horizontal and vertically upwards displacements of B from O are x m and y m respectively.\n(i) Express x and y in terms of t and hence find the equation of the trajectory of the ball. [4]\n(ii) Find the value of x for which OB makes an angle of 45° above the horizontal. [3]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+          "q_number=4",
+          "page_indices=[4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_51/questions/q04.png",
+        "input_asset_hash": "cc36f4482e42a453f7a205b4fb05336ffac0954791731da74d75001107042b70",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_51/questions/q04.png",
+          "input_asset_hash": "cc36f4482e42a453f7a205b4fb05336ffac0954791731da74d75001107042b70",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_51/questions/q04.png",
+        "input_asset_hash": "cc36f4482e42a453f7a205b4fb05336ffac0954791731da74d75001107042b70"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 4,
+      "storage_key": "9709/w19_qp_51/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 1,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 A particle P of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth plane inclined at 30° to the horizontal. OA is a line of greatest slope of the plane with A below the level of O and OA = 0.8 m. The particle P is released from rest at A.\n\n(i) Find the initial acceleration of P.\n(ii) Find the greatest speed of P.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+          "q_number=5",
+          "page_indices=[5, 6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_51/questions/q05.png",
+        "input_asset_hash": "7627d9facb7b36848383536268971771c5f0c3d530e848279ce403044b5c4287",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_51/questions/q05.png",
+          "input_asset_hash": "7627d9facb7b36848383536268971771c5f0c3d530e848279ce403044b5c4287",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_51/questions/q05.png",
+        "input_asset_hash": "7627d9facb7b36848383536268971771c5f0c3d530e848279ce403044b5c4287"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 5,
+      "storage_key": "9709/w19_qp_51/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 1,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 A and B are two fixed points on a vertical axis with A 0.6 m above B. A particle P of mass 0.3 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by a light elastic string with modulus of elasticity 46 N. The particle P moves with constant angular speed 8 rad s⁻¹ in a horizontal circle with centre at the mid-point of AB.\n(i) Find the speed of P.\n(ii) Calculate the tension in the string BP and hence find the natural length of this string.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 7
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+          "q_number=6",
+          "page_indices=[7]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_51/questions/q06.png",
+        "input_asset_hash": "4e1f58132b382ad62277095e015db20e505e655d8542f3532a9b39a91af4a78f",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_51/questions/q06.png",
+          "input_asset_hash": "4e1f58132b382ad62277095e015db20e505e655d8542f3532a9b39a91af4a78f",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_51/questions/q06.png",
+        "input_asset_hash": "4e1f58132b382ad62277095e015db20e505e655d8542f3532a9b39a91af4a78f"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 6,
+      "storage_key": "9709/w19_qp_51/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 1,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "ABC is the cross-section through the centre of mass of a uniform prism which rests with AB on a rough horizontal surface. AB = 0.4 m and C is 0.9 m above the surface (see diagram). The prism is on the point of toppling about its edge through B.\n\n(i) Show that angle BAC = 48.4°, correct to 3 significant figures.\nA force of magnitude 18 N acting in the plane of the cross-section and perpendicular to AC is now applied to the prism at C. The prism is on the point of rotating about its edge through A.\n(ii) Calculate the weight of the prism.\n(iii) Given also that the prism is on the point of slipping, calculate the coefficient of friction between the prism and the surface.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          },
+          {
+            "label": "(iii)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+          "q_number=7",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "triangle",
+          "horizontal line AB",
+          "vertical height 0.9 m",
+          "segment AB labeled 0.4 m",
+          "point C above base"
+        ],
+        "spatial_evidence": [
+          "Page 10 follows page 9 where question 6 began",
+          "Text starts mid-sentence without new question number",
+          "Subpart (i) is present, implying continuation of Q6",
+          "Answer space extends to bottom of page, indicating continuation",
+          "Text continues description from previous page; subpart (ii) follows logically from prior context; answer space extends full page height indicating continuation",
+          "Subpart label (ii) matches carry state open_subpart_label; no new question number; answer lines fill remainder of page",
+          "Subpart (iii) directly follows (ii); same question context; answer space continues to bottom; no new question number visible"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_51/questions/q07.png",
+        "input_asset_hash": "e4c7b547a096938081682828c28f57fb569d9a19fff2c4756657d08b32177a33",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_51/questions/q07.png",
+          "input_asset_hash": "e4c7b547a096938081682828c28f57fb569d9a19fff2c4756657d08b32177a33",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_51/questions/q07.png",
+        "input_asset_hash": "e4c7b547a096938081682828c28f57fb569d9a19fff2c4756657d08b32177a33"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 7,
+      "storage_key": "9709/w19_qp_52/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 2,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "1 A particle of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth horizontal surface. The particle is projected horizontally from O with speed 4 m s⁻¹. Find the greatest distance of the particle from O.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_52/questions/q01.png",
+        "input_asset_hash": "8ca08b53aab6936fbb8fef596173ba29ceed32f2419ab85ae4aaaf8f1ad9331e",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_52/questions/q01.png",
+          "input_asset_hash": "8ca08b53aab6936fbb8fef596173ba29ceed32f2419ab85ae4aaaf8f1ad9331e",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_52/questions/q01.png",
+        "input_asset_hash": "8ca08b53aab6936fbb8fef596173ba29ceed32f2419ab85ae4aaaf8f1ad9331e"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 8,
+      "storage_key": "9709/w19_qp_52/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 2,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 A small ball is projected from a point O on horizontal ground at an angle of 30° above the horizontal. At time t s after projection the horizontal and vertically upwards displacements of the ball from O are x m and y m respectively. It is given that x = 40t.\n\n(i) Calculate the initial speed of the ball, and express y in terms of t. [3]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_52/questions/q02.png",
+        "input_asset_hash": "2c613c458862e89bc830c113454f3e6b2fa589464a3f04fb75880c6c5f508065",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_52/questions/q02.png",
+          "input_asset_hash": "2c613c458862e89bc830c113454f3e6b2fa589464a3f04fb75880c6c5f508065",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_52/questions/q02.png",
+        "input_asset_hash": "2c613c458862e89bc830c113454f3e6b2fa589464a3f04fb75880c6c5f508065"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 9,
+      "storage_key": "9709/w19_qp_52/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 2,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 A particle P of mass 0.5 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 12 N. The other end of the string is attached to a fixed point O. The particle P is projected vertically downwards with speed 2 m s⁻¹ from the point 0.5 m vertically below O. For an instant when the acceleration of P is 4 m s⁻² downwards, find the extension of the string and the speed of P.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+          "q_number=3",
+          "page_indices=[3]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_52/questions/q03.png",
+        "input_asset_hash": "c5339373bb9d7ae374158e1310de25ca4ddd4414200cfe7148e491e45b349612",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_52/questions/q03.png",
+          "input_asset_hash": "c5339373bb9d7ae374158e1310de25ca4ddd4414200cfe7148e491e45b349612",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_52/questions/q03.png",
+        "input_asset_hash": "c5339373bb9d7ae374158e1310de25ca4ddd4414200cfe7148e491e45b349612"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 10,
+      "storage_key": "9709/w19_qp_52/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 2,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 A particle is projected from a point O on horizontal ground with speed V m s⁻¹ at an angle of 60° above the horizontal. At the instant 3 s after projection the direction of motion of the particle is 30° below the horizontal.\n\n(i) Find V.\n\n(ii) Calculate the distance of the particle from O at the instant 3 s after projection.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+          "q_number=4",
+          "page_indices=[4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_52/questions/q04.png",
+        "input_asset_hash": "6d4bc034eec8957d78523502cfeb84c7d34f748fe1aaad73f270c94abc022657",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_52/questions/q04.png",
+          "input_asset_hash": "6d4bc034eec8957d78523502cfeb84c7d34f748fe1aaad73f270c94abc022657",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_52/questions/q04.png",
+        "input_asset_hash": "6d4bc034eec8957d78523502cfeb84c7d34f748fe1aaad73f270c94abc022657"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 11,
+      "storage_key": "9709/w19_qp_52/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 2,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "A and B are two fixed points on a vertical axis with A above B. A particle P of mass 0.4 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by another light inextensible string. P moves with constant speed in a horizontal circle with centre O between A and B. Angle BAP = 30° and angle ABP = 70° (see diagram).\n(i) Given that the tensions in the two strings are equal, find the speed of P.\n(ii) Given instead that the angular speed of P is 12 rad s⁻¹, find the tensions in the strings.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 5
+          },
+          {
+            "label": "(ii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+          "q_number=5",
+          "page_indices=[5, 6]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "vertical dashed line through A, O, B",
+          "point P to the right of axis",
+          "string AP labeled 0.5 m",
+          "angle at A = 30°",
+          "angle at B = 70°",
+          "curved arrow indicating rotation of P"
+        ],
+        "spatial_evidence": [
+          "Page continues question 4 from previous page",
+          "Subpart (i) present with mark allocation [5]",
+          "No end-of-question marker or blank space after answer lines",
+          "Answer lines continue to bottom of page",
+          "Subpart (i) explicitly labeled",
+          "Follows directly from preceding paragraph",
+          "Mark allocation [5] shown",
+          "Answer lines below indicate continuation",
+          "Subpart label '(ii)' indicates continuation of question 5",
+          "No new question number printed",
+          "Answer lines extend to bottom of page"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_52/questions/q05.png",
+        "input_asset_hash": "d498c7fcd037ea6ae59f436b40a91940eb7f0c9a0f8aaf1369a6c41494ed5036",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_52/questions/q05.png",
+          "input_asset_hash": "d498c7fcd037ea6ae59f436b40a91940eb7f0c9a0f8aaf1369a6c41494ed5036",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_52/questions/q05.png",
+        "input_asset_hash": "d498c7fcd037ea6ae59f436b40a91940eb7f0c9a0f8aaf1369a6c41494ed5036"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 12,
+      "storage_key": "9709/w19_qp_52/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 2,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 A particle P of mass 0.2 kg is projected horizontally from a fixed point O on a smooth horizontal surface. When the displacement of P from O is x m the velocity of P is v m s⁻¹. A horizontal force of variable magnitude 0.09√x N directed away from O acts on P. An additional force of constant magnitude 0.3 N directed towards O acts on P.\n\n(i) Show that v dv/dx = 0.45√x − 1.5.\n\n(ii) Find the value of x for which the acceleration of P is zero.\n(iii) Given that the minimum value of v is positive, find the set of possible values for the speed of projection.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          },
+          {
+            "label": "(iii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+          "q_number=6",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_52/questions/q06.png",
+        "input_asset_hash": "27a1933f5d816c02f37aec87bab374366d491c55961c015acf83a89227481a48",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_52/questions/q06.png",
+          "input_asset_hash": "27a1933f5d816c02f37aec87bab374366d491c55961c015acf83a89227481a48",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_52/questions/q06.png",
+        "input_asset_hash": "27a1933f5d816c02f37aec87bab374366d491c55961c015acf83a89227481a48"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 13,
+      "storage_key": "9709/w19_qp_52/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 2,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "ABCD is a uniform lamina in the shape of a trapezium which has centre of mass G. The sides AD and BC are parallel and 1.8 m apart, with AD = 2.4 m and BC = 1.2 m (see diagram).\n\n(i) Show that the distance of G from AD is 0.8 m.\n\nThe lamina is freely suspended at A and hangs in equilibrium with AD making an angle of 30° with the vertical.\n\n(ii) Calculate the distance AG.\nWith the lamina still freely suspended at A a horizontal force of magnitude 7 N acting in the plane of the lamina is applied at D. The lamina is in equilibrium with AG making an angle of 10° with the downward vertical.\n\n(iii) Find the two possible values for the weight of the lamina.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          },
+          {
+            "label": "(iii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+          "q_number=7",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "trapezium ABCD",
+          "labels A, B, C, D",
+          "lengths: BC=1.2m, AD=2.4m, height=1.8m",
+          "point G"
+        ],
+        "spatial_evidence": [
+          "Text begins with 'ABCD is a uniform lamina...', continuing description from previous page",
+          "Subparts (i) and (ii) follow directly after description",
+          "Answer lines extend to bottom of page, indicating continuation",
+          "Text begins with 'With the lamina still freely suspended...', continuing physical context from prior subparts",
+          "Subpart label '(iii)' matches expected progression after (i) and (ii)",
+          "Marks [5] shown inline",
+          "No new question number visible on page"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_52/questions/q07.png",
+        "input_asset_hash": "a8bfc99a4042b80c079594cba271a55187a2f9da236888584a43ed35100f56bc",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_52/questions/q07.png",
+          "input_asset_hash": "a8bfc99a4042b80c079594cba271a55187a2f9da236888584a43ed35100f56bc",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_52/questions/q07.png",
+        "input_asset_hash": "a8bfc99a4042b80c079594cba271a55187a2f9da236888584a43ed35100f56bc"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 14,
+      "storage_key": "9709/w19_qp_53/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 3,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "A uniform solid cone has weight 5 N and base radius 0.1 m. AB is a diameter of the base of the cone. The cone is held in equilibrium, with A in contact with a rough horizontal surface and AB vertical, by a force applied at B. This force has magnitude 3 N and acts parallel to the axis of the cone (see diagram). Calculate the height of the cone.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "cone",
+          "horizontal surface",
+          "vertical diameter AB labeled 0.1 m",
+          "3 N force arrow at B",
+          "point A",
+          "point B"
+        ],
+        "spatial_evidence": [
+          "Question number '1' visible at top-left margin",
+          "Full question stem present",
+          "Diagram included above text",
+          "Marks [3] indicated"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_53/questions/q01.png",
+        "input_asset_hash": "714bb3f221a953aa67fa46cea9925c1a1cd3a6058f8e7fe523621c21aa0aa9a9",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_53/questions/q01.png",
+          "input_asset_hash": "714bb3f221a953aa67fa46cea9925c1a1cd3a6058f8e7fe523621c21aa0aa9a9",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_53/questions/q01.png",
+        "input_asset_hash": "714bb3f221a953aa67fa46cea9925c1a1cd3a6058f8e7fe523621c21aa0aa9a9"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 15,
+      "storage_key": "9709/w19_qp_53/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 3,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 A particle is projected from a point on horizontal ground with speed 15 m s⁻¹ at an angle of θ° above the horizontal. The particle strikes the ground 2 s after projection.\n\n(i) Find θ.\n\n(ii) Calculate the time after projection at which the direction of motion of the particle is 20° below the horizontal.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_53/questions/q02.png",
+        "input_asset_hash": "ca31c7f30f911a3ed26f07f445c3496db9f28c457c1799ccd939b9ff3014a98c",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_53/questions/q02.png",
+          "input_asset_hash": "ca31c7f30f911a3ed26f07f445c3496db9f28c457c1799ccd939b9ff3014a98c",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_53/questions/q02.png",
+        "input_asset_hash": "ca31c7f30f911a3ed26f07f445c3496db9f28c457c1799ccd939b9ff3014a98c"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 16,
+      "storage_key": "9709/w19_qp_53/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 3,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 A smooth horizontal surface has two fixed points O and A which are 0.8 m apart. A particle P of mass 0.25 kg is projected with velocity 3 m s⁻¹ horizontally from A in the direction away from O. The velocity of P is v m s⁻¹ when the displacement of P from O is x m. A force of magnitude kv²x⁻² N opposes the motion of P.\n(i) Show that v dv/dx = -4kv²x⁻².\n(ii) Express v in terms of k and x.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 1
+          },
+          {
+            "label": "(ii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+          "q_number=3",
+          "page_indices=[3]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_53/questions/q03.png",
+        "input_asset_hash": "3f9ecce8cc1f6e1a3f5600ba8443157a5cc3de37325674c1ef641a40a6166c73",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_53/questions/q03.png",
+          "input_asset_hash": "3f9ecce8cc1f6e1a3f5600ba8443157a5cc3de37325674c1ef641a40a6166c73",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_53/questions/q03.png",
+        "input_asset_hash": "3f9ecce8cc1f6e1a3f5600ba8443157a5cc3de37325674c1ef641a40a6166c73"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 17,
+      "storage_key": "9709/w19_qp_53/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 3,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 A small ball B is projected with speed 30 m s⁻¹ at an angle of 60° above the horizontal from a point O. At time t s after projection the horizontal and vertically upwards displacements of B from O are x m and y m respectively.\n(i) Express x and y in terms of t and hence find the equation of the trajectory of the ball. [4]\n(ii) Find the value of x for which OB makes an angle of 45° above the horizontal. [3]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+          "q_number=4",
+          "page_indices=[4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_53/questions/q04.png",
+        "input_asset_hash": "fb59d3993b4e91f8f059b00d048918a3180dcb3c3fdbdc8171a54f7eb6a7b775",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_53/questions/q04.png",
+          "input_asset_hash": "fb59d3993b4e91f8f059b00d048918a3180dcb3c3fdbdc8171a54f7eb6a7b775",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_53/questions/q04.png",
+        "input_asset_hash": "fb59d3993b4e91f8f059b00d048918a3180dcb3c3fdbdc8171a54f7eb6a7b775"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 18,
+      "storage_key": "9709/w19_qp_53/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 3,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 A particle P of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth plane inclined at 30° to the horizontal. OA is a line of greatest slope of the plane with A below the level of O and OA = 0.8 m. The particle P is released from rest at A.\n\n(i) Find the initial acceleration of P.\n(ii) Find the greatest speed of P.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+          "q_number=5",
+          "page_indices=[5, 6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_53/questions/q05.png",
+        "input_asset_hash": "f6837b0d4d4c7251efc33ad290eff8fb9e9b1a8d6a20fc1ebda651ad0143c5ce",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_53/questions/q05.png",
+          "input_asset_hash": "f6837b0d4d4c7251efc33ad290eff8fb9e9b1a8d6a20fc1ebda651ad0143c5ce",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_53/questions/q05.png",
+        "input_asset_hash": "f6837b0d4d4c7251efc33ad290eff8fb9e9b1a8d6a20fc1ebda651ad0143c5ce"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 19,
+      "storage_key": "9709/w19_qp_53/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 3,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 A and B are two fixed points on a vertical axis with A 0.6 m above B. A particle P of mass 0.3 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by a light elastic string with modulus of elasticity 46 N. The particle P moves with constant angular speed 8 rad s⁻¹ in a horizontal circle with centre at the mid-point of AB.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+          "q_number=6",
+          "page_indices=[7]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_53/questions/q06.png",
+        "input_asset_hash": "f050a18408da5bdb29ca48a584936f0fdb5bb86650297d48bd02a099b6ac3538",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_53/questions/q06.png",
+          "input_asset_hash": "f050a18408da5bdb29ca48a584936f0fdb5bb86650297d48bd02a099b6ac3538",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_53/questions/q06.png",
+        "input_asset_hash": "f050a18408da5bdb29ca48a584936f0fdb5bb86650297d48bd02a099b6ac3538"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 20,
+      "storage_key": "9709/w19_qp_53/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 5,
+        "variant": 3,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "ABC is the cross-section through the centre of mass of a uniform prism which rests with AB on a rough horizontal surface. AB = 0.4 m and C is 0.9 m above the surface (see diagram). The prism is on the point of toppling about its edge through B.\n\n(i) Show that angle BAC = 48.4°, correct to 3 significant figures.\nA force of magnitude 18 N acting in the plane of the cross-section and perpendicular to AC is now applied to the prism at C. The prism is on the point of rotating about its edge through A.\n\n(ii) Calculate the weight of the prism.\n\n(iii) Given also that the prism is on the point of slipping, calculate the coefficient of friction between the prism and the surface.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          },
+          {
+            "label": "(iii)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+          "q_number=7",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "triangle",
+          "horizontal line AB",
+          "vertical height 0.9 m",
+          "segment AB labeled 0.4 m",
+          "point C above base"
+        ],
+        "spatial_evidence": [
+          "Text begins with 'ABC is the cross-section...', continuing physical context from prior page",
+          "Subpart label '(i)' matches expected continuation after open Q6(ii) — but note: carry state indicated open subpart was (ii), yet this page shows (i); however, visual evidence shows this is a *new* printed question fragment starting with (i), suggesting prior carry state was erroneous or page 9 had misinterpreted layout. Since page 10 visually starts with Q6(i) and no prior text on this page indicates continuation of (ii), we treat this as new Q6(i) and update state accordingly.",
+          "Diagram present and referenced explicitly",
+          "Marks [3] shown in brackets",
+          "Text begins with continuation context (refers to 'the prism', 'AC', 'edge through A' implying prior diagram/context), no new question number visible",
+          "Subparts (ii) and (iii) are sequential and follow logically from prior part (i) on previous page",
+          "No 'Question 8' or new numbered question appears on this page"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_53/questions/q07.png",
+        "input_asset_hash": "0487a22fb0d8b7d3eeb485bd85de5f6254d3034a2affeabcecf03862befbf642",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_53/questions/q07.png",
+          "input_asset_hash": "0487a22fb0d8b7d3eeb485bd85de5f6254d3034a2affeabcecf03862befbf642",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_53/questions/q07.png",
+        "input_asset_hash": "0487a22fb0d8b7d3eeb485bd85de5f6254d3034a2affeabcecf03862befbf642"
+      }
+    }
+  ],
+  "summary": {
+    "bundles_planned": 21,
+    "route_counts": {
+      "diagram_lane": 6,
+      "ocr_lane": 15
+    },
+    "lazy_attach_original_image": 21
+  }
+}

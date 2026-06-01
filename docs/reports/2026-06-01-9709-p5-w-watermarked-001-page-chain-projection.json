@@ -1,0 +1,1096 @@
+{
+  "schema_version": "9709_page_chain_shard_projection_v1",
+  "manifest_id": "9709_full_scaleout_manifest_v1_p5_w_watermarked_001",
+  "shard_id": "p5_w_watermarked_001",
+  "generated_on": "2026-06-01",
+  "manifest_path": "data/manifests/9709_p5_w_watermarked_001_input_v1.json",
+  "payload_dir": "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/payloads",
+  "render_root": "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders",
+  "review_crop_root": "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops",
+  "item_count": 21,
+  "items": [
+    {
+      "index": 1,
+      "storage_key": "9709/w19_qp_51/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+      "q_number": 1,
+      "ocr_text": "A uniform solid cone has weight 5 N and base radius 0.1 m. AB is a diameter of the base of the cone. The cone is held in equilibrium, with A in contact with a rough horizontal surface and AB vertical, by a force applied at B. This force has magnitude 3 N and acts parallel to the axis of the cone (see diagram). Calculate the height of the cone.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "cone",
+        "horizontal surface",
+        "point A",
+        "point B",
+        "vertical segment AB = 0.1 m",
+        "horizontal arrow labeled '3 N' at B"
+      ],
+      "page_indices": [
+        1
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q01/q01_page_002.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' appears at top-left margin",
+          "Text begins with 'A uniform solid cone...', no subpart label like (a) or (b)",
+          "Diagram present above text",
+          "Marks [3] indicated at end"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 2,
+      "storage_key": "9709/w19_qp_51/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+      "q_number": 2,
+      "ocr_text": "2 A particle is projected from a point on horizontal ground with speed 15 m s⁻¹ at an angle of θ° above the horizontal. The particle strikes the ground 2 s after projection.\n\n(i) Find θ.\n\n(ii) Calculate the time after projection at which the direction of motion of the particle is 20° below the horizontal.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        2,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q02/q02_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '2' printed at left margin",
+          "New question stem begins with 'A particle is projected...'",
+          "No continuation markers like 'Hence', 'Show', or subpart labels without preceding main question on this page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 3,
+      "storage_key": "9709/w19_qp_51/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+      "q_number": 3,
+      "ocr_text": "3 A smooth horizontal surface has two fixed points O and A which are 0.8 m apart. A particle P of mass 0.25 kg is projected with velocity 3 m s⁻¹ horizontally from A in the direction away from O. The velocity of P is v m s⁻¹ when the displacement of P from O is x m. A force of magnitude kv²x⁻² N opposes the motion of P.\n(i) Show that v dv/dx = -4kv²x⁻².\n(ii) Express v in terms of k and x.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        3
+      ],
+      "marks": [
+        1,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q03/q03_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          1,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Printed question number '3' at top-left",
+          "No prior question visible on this page",
+          "Subparts (i) and (ii) both present",
+          "Answer space continues to bottom with no end marker",
+          "Label '(i)' directly follows main stem",
+          "Mathematical expression matches context of Q3",
+          "No new question number introduced",
+          "Label '(ii)' appears after (i) with answer space below",
+          "Consistent with Q3 context",
+          "No closure indicator"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 4,
+      "storage_key": "9709/w19_qp_51/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+      "q_number": 4,
+      "ocr_text": "4 A small ball B is projected with speed 30 m s⁻¹ at an angle of 60° above the horizontal from a point O. At time t s after projection the horizontal and vertically upwards displacements of B from O are x m and y m respectively.\n(i) Express x and y in terms of t and hence find the equation of the trajectory of the ball. [4]\n(ii) Find the value of x for which OB makes an angle of 45° above the horizontal. [3]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        4,
+        3
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q04/q04_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          3
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '4' printed at left margin",
+          "New question stem introduced",
+          "Subparts (i) and (ii) both present on this page",
+          "No end-of-question marker; answer space continues to bottom",
+          "Label '(i)' directly follows question stem",
+          "Marks [4] indicated",
+          "Answer space below extends full width and continues to bottom",
+          "Label '(ii)' appears after (i) content",
+          "Marks [3] indicated",
+          "Answer space below continues to bottom edge"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 5,
+      "storage_key": "9709/w19_qp_51/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+      "q_number": 5,
+      "ocr_text": "5 A particle P of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth plane inclined at 30° to the horizontal. OA is a line of greatest slope of the plane with A below the level of O and OA = 0.8 m. The particle P is released from rest at A.\n\n(i) Find the initial acceleration of P.\n(ii) Find the greatest speed of P.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        4,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q05/q05_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '5' printed at left margin",
+          "Full question stem and subpart (i) present",
+          "No end-of-question marker",
+          "Answer space continues to bottom of page",
+          "Subpart label '(ii)' indicates continuation of question 5",
+          "No new question number printed on page",
+          "Answer space continues to bottom with dotted lines"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 6,
+      "storage_key": "9709/w19_qp_51/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+      "q_number": 6,
+      "ocr_text": "6 A and B are two fixed points on a vertical axis with A 0.6 m above B. A particle P of mass 0.3 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by a light elastic string with modulus of elasticity 46 N. The particle P moves with constant angular speed 8 rad s⁻¹ in a horizontal circle with centre at the mid-point of AB.\n(i) Find the speed of P.\n(ii) Calculate the tension in the string BP and hence find the natural length of this string.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7
+      ],
+      "marks": [
+        2,
+        7
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_008.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q06/q06_page_008.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          7
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '6' printed at start of page",
+          "No continuation markers like '(ii)' alone at top; full question stem introduced here",
+          "Answer space continues to bottom of page",
+          "Subpart (i) directly follows question stem",
+          "Answer lines extend below, indicating continuation",
+          "Subpart (ii) appears after (i), same question number",
+          "Answer lines continue to bottom of page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 7,
+      "storage_key": "9709/w19_qp_51/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_51.pdf",
+      "q_number": 7,
+      "ocr_text": "ABC is the cross-section through the centre of mass of a uniform prism which rests with AB on a rough horizontal surface. AB = 0.4 m and C is 0.9 m above the surface (see diagram). The prism is on the point of toppling about its edge through B.\n\n(i) Show that angle BAC = 48.4°, correct to 3 significant figures.\nA force of magnitude 18 N acting in the plane of the cross-section and perpendicular to AC is now applied to the prism at C. The prism is on the point of rotating about its edge through A.\n(ii) Calculate the weight of the prism.\n(iii) Given also that the prism is on the point of slipping, calculate the coefficient of friction between the prism and the surface.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "triangle",
+        "horizontal line AB",
+        "vertical height 0.9 m",
+        "segment AB labeled 0.4 m",
+        "point C above base"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "marks": [
+        3,
+        3,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_51/WM_9709_w19_qp_51_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_51/q07/q07_page_011.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          3,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Page 10 follows page 9 where question 6 began",
+          "Text starts mid-sentence without new question number",
+          "Subpart (i) is present, implying continuation of Q6",
+          "Answer space extends to bottom of page, indicating continuation",
+          "Text continues description from previous page; subpart (ii) follows logically from prior context; answer space extends full page height indicating continuation",
+          "Subpart label (ii) matches carry state open_subpart_label; no new question number; answer lines fill remainder of page",
+          "Subpart (iii) directly follows (ii); same question context; answer space continues to bottom; no new question number visible"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 8,
+      "storage_key": "9709/w19_qp_52/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+      "q_number": 1,
+      "ocr_text": "1 A particle of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth horizontal surface. The particle is projected horizontally from O with speed 4 m s⁻¹. Find the greatest distance of the particle from O.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        1
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q01/q01_page_002.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' clearly printed at start of line",
+          "Full question stem present",
+          "Marks bracket '[3]' visible"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 9,
+      "storage_key": "9709/w19_qp_52/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+      "q_number": 2,
+      "ocr_text": "2 A small ball is projected from a point O on horizontal ground at an angle of 30° above the horizontal. At time t s after projection the horizontal and vertically upwards displacements of the ball from O are x m and y m respectively. It is given that x = 40t.\n\n(i) Calculate the initial speed of the ball, and express y in terms of t. [3]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        3,
+        2
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q02/q02_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          2
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Printed question number '2' at start of page",
+          "Text describes projectile motion with given x = 40t",
+          "Subparts (i) and (ii) present"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 10,
+      "storage_key": "9709/w19_qp_52/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+      "q_number": 3,
+      "ocr_text": "3 A particle P of mass 0.5 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 12 N. The other end of the string is attached to a fixed point O. The particle P is projected vertically downwards with speed 2 m s⁻¹ from the point 0.5 m vertically below O. For an instant when the acceleration of P is 4 m s⁻² downwards, find the extension of the string and the speed of P.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        3
+      ],
+      "marks": [
+        6
+      ],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q03/q03_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          6
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Printed question number '3' at start of page",
+          "Full question statement follows",
+          "Marks [6] indicated at end"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 11,
+      "storage_key": "9709/w19_qp_52/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+      "q_number": 4,
+      "ocr_text": "4 A particle is projected from a point O on horizontal ground with speed V m s⁻¹ at an angle of 60° above the horizontal. At the instant 3 s after projection the direction of motion of the particle is 30° below the horizontal.\n\n(i) Find V.\n\n(ii) Calculate the distance of the particle from O at the instant 3 s after projection.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        3,
+        3
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q04/q04_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          3
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Printed question number '4' at top-left",
+          "Two subparts labeled (i) and (ii) with mark allocations"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 12,
+      "storage_key": "9709/w19_qp_52/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+      "q_number": 5,
+      "ocr_text": "A and B are two fixed points on a vertical axis with A above B. A particle P of mass 0.4 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by another light inextensible string. P moves with constant speed in a horizontal circle with centre O between A and B. Angle BAP = 30° and angle ABP = 70° (see diagram).\n(i) Given that the tensions in the two strings are equal, find the speed of P.\n(ii) Given instead that the angular speed of P is 12 rad s⁻¹, find the tensions in the strings.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "vertical dashed line through A, O, B",
+        "point P to the right of axis",
+        "string AP labeled 0.5 m",
+        "angle at A = 30°",
+        "angle at B = 70°",
+        "curved arrow indicating rotation of P"
+      ],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        5,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q05/q05_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          5,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Page continues question 4 from previous page",
+          "Subpart (i) present with mark allocation [5]",
+          "No end-of-question marker or blank space after answer lines",
+          "Answer lines continue to bottom of page",
+          "Subpart (i) explicitly labeled",
+          "Follows directly from preceding paragraph",
+          "Mark allocation [5] shown",
+          "Answer lines below indicate continuation",
+          "Subpart label '(ii)' indicates continuation of question 5",
+          "No new question number printed",
+          "Answer lines extend to bottom of page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 13,
+      "storage_key": "9709/w19_qp_52/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+      "q_number": 6,
+      "ocr_text": "6 A particle P of mass 0.2 kg is projected horizontally from a fixed point O on a smooth horizontal surface. When the displacement of P from O is x m the velocity of P is v m s⁻¹. A horizontal force of variable magnitude 0.09√x N directed away from O acts on P. An additional force of constant magnitude 0.3 N directed towards O acts on P.\n\n(i) Show that v dv/dx = 0.45√x − 1.5.\n\n(ii) Find the value of x for which the acceleration of P is zero.\n(iii) Given that the minimum value of v is positive, find the set of possible values for the speed of projection.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7,
+        8
+      ],
+      "marks": [
+        2,
+        2,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q06/q06_page_009.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          2,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Question number '6' printed at left margin",
+          "Text begins with full problem statement, not a continuation label like '(ii)' alone",
+          "Subparts (i) and (ii) follow directly after the stem",
+          "Subpart label '(iii)' follows previous subpart '(ii)' from carry state",
+          "No new question number printed on page",
+          "Answer lines continue to bottom of page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 14,
+      "storage_key": "9709/w19_qp_52/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_52.pdf",
+      "q_number": 7,
+      "ocr_text": "ABCD is a uniform lamina in the shape of a trapezium which has centre of mass G. The sides AD and BC are parallel and 1.8 m apart, with AD = 2.4 m and BC = 1.2 m (see diagram).\n\n(i) Show that the distance of G from AD is 0.8 m.\n\nThe lamina is freely suspended at A and hangs in equilibrium with AD making an angle of 30° with the vertical.\n\n(ii) Calculate the distance AG.\nWith the lamina still freely suspended at A a horizontal force of magnitude 7 N acting in the plane of the lamina is applied at D. The lamina is in equilibrium with AG making an angle of 10° with the downward vertical.\n\n(iii) Find the two possible values for the weight of the lamina.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "trapezium ABCD",
+        "labels A, B, C, D",
+        "lengths: BC=1.2m, AD=2.4m, height=1.8m",
+        "point G"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "marks": [
+        4,
+        2,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_52/WM_9709_w19_qp_52_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_52/q07/q07_page_011.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          2,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Text begins with 'ABCD is a uniform lamina...', continuing description from previous page",
+          "Subparts (i) and (ii) follow directly after description",
+          "Answer lines extend to bottom of page, indicating continuation",
+          "Text begins with 'With the lamina still freely suspended...', continuing physical context from prior subparts",
+          "Subpart label '(iii)' matches expected progression after (i) and (ii)",
+          "Marks [5] shown inline",
+          "No new question number visible on page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 15,
+      "storage_key": "9709/w19_qp_53/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+      "q_number": 1,
+      "ocr_text": "A uniform solid cone has weight 5 N and base radius 0.1 m. AB is a diameter of the base of the cone. The cone is held in equilibrium, with A in contact with a rough horizontal surface and AB vertical, by a force applied at B. This force has magnitude 3 N and acts parallel to the axis of the cone (see diagram). Calculate the height of the cone.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "cone",
+        "horizontal surface",
+        "vertical diameter AB labeled 0.1 m",
+        "3 N force arrow at B",
+        "point A",
+        "point B"
+      ],
+      "page_indices": [
+        1
+      ],
+      "marks": [
+        3
+      ],
+      "subpart_labels": [],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q01/q01_page_002.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3
+        ],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '1' visible at top-left margin",
+          "Full question stem present",
+          "Diagram included above text",
+          "Marks [3] indicated"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 16,
+      "storage_key": "9709/w19_qp_53/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+      "q_number": 2,
+      "ocr_text": "2 A particle is projected from a point on horizontal ground with speed 15 m s⁻¹ at an angle of θ° above the horizontal. The particle strikes the ground 2 s after projection.\n\n(i) Find θ.\n\n(ii) Calculate the time after projection at which the direction of motion of the particle is 20° below the horizontal.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        2
+      ],
+      "marks": [
+        2,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q02/q02_page_003.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          2,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '2' appears at top-left",
+          "No continuation markers like 'Hence', 'Show', etc.",
+          "New stem introduced"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 17,
+      "storage_key": "9709/w19_qp_53/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+      "q_number": 3,
+      "ocr_text": "3 A smooth horizontal surface has two fixed points O and A which are 0.8 m apart. A particle P of mass 0.25 kg is projected with velocity 3 m s⁻¹ horizontally from A in the direction away from O. The velocity of P is v m s⁻¹ when the displacement of P from O is x m. A force of magnitude kv²x⁻² N opposes the motion of P.\n(i) Show that v dv/dx = -4kv²x⁻².\n(ii) Express v in terms of k and x.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        3
+      ],
+      "marks": [
+        1,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q03/q03_page_004.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          1,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '3' printed at left margin",
+          "Full stem for question 3 present",
+          "Subparts (i) and (ii) both visible on this page",
+          "No indication that question ends here",
+          "Label '(i)' directly follows stem",
+          "Mathematical expression matches physics context",
+          "Mark allocation [1] shown",
+          "Label '(ii)' appears after (i)",
+          "Mark allocation [5] shown",
+          "No answer space or end-of-question marker"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 18,
+      "storage_key": "9709/w19_qp_53/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+      "q_number": 4,
+      "ocr_text": "4 A small ball B is projected with speed 30 m s⁻¹ at an angle of 60° above the horizontal from a point O. At time t s after projection the horizontal and vertically upwards displacements of B from O are x m and y m respectively.\n(i) Express x and y in terms of t and hence find the equation of the trajectory of the ball. [4]\n(ii) Find the value of x for which OB makes an angle of 45° above the horizontal. [3]",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        4
+      ],
+      "marks": [
+        4,
+        3
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q04/q04_page_005.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          3
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '4' printed at left margin",
+          "Full stem provided",
+          "Two subparts (i) and (ii) both fully visible on this page",
+          "No continuation indicators like 'continued' or partial text",
+          "Subpart (i) directly follows stem",
+          "Mark allocation [4] shown",
+          "Answer space below indicates self-contained part",
+          "Subpart (ii) appears after blank space",
+          "Mark allocation [3] shown",
+          "No text continues beyond this line; answer space follows and ends page"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 19,
+      "storage_key": "9709/w19_qp_53/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+      "q_number": 5,
+      "ocr_text": "5 A particle P of mass 0.3 kg is attached to one end of a light elastic string of natural length 0.6 m and modulus of elasticity 9 N. The other end of the string is attached to a fixed point O on a smooth plane inclined at 30° to the horizontal. OA is a line of greatest slope of the plane with A below the level of O and OA = 0.8 m. The particle P is released from rest at A.\n\n(i) Find the initial acceleration of P.\n(ii) Find the greatest speed of P.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        5,
+        6
+      ],
+      "marks": [
+        4,
+        5
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)"
+      ],
+      "route": "ocr_lane",
+      "formula_dense": true,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q05/q05_page_007.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          4,
+          5
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)"
+        ],
+        "evidence": [
+          "Question number '5' printed at start of page",
+          "No preceding subpart labels like (ii), (b), or 'Hence'",
+          "Text describes full setup for new question",
+          "Only subpart (i) present; no indication of completion",
+          "Subpart label '(ii)' indicates continuation of Question 5",
+          "No new question number visible on page",
+          "Answer space (dotted lines) continues below, implying continuation"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 20,
+      "storage_key": "9709/w19_qp_53/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+      "q_number": 6,
+      "ocr_text": "6 A and B are two fixed points on a vertical axis with A 0.6 m above B. A particle P of mass 0.3 kg is attached to A by a light inextensible string of length 0.5 m. The particle P is attached to B by a light elastic string with modulus of elasticity 46 N. The particle P moves with constant angular speed 8 rad s⁻¹ in a horizontal circle with centre at the mid-point of AB.",
+      "diagram_present": false,
+      "diagram_elements": [],
+      "page_indices": [
+        7
+      ],
+      "marks": [],
+      "subpart_labels": [],
+      "route": "ocr_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_008.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q06/q06_page_008.png"
+      ],
+      "raw_page_chain": {
+        "marks": [],
+        "subpart_labels": [],
+        "evidence": [
+          "Question number '6' printed at left margin",
+          "New problem statement starting with 'A and B are two fixed points...'",
+          "Subparts (i) and (ii) follow immediately",
+          "Answer space extends to bottom of page with dotted lines"
+        ]
+      },
+      "warning_disposition": null
+    },
+    {
+      "index": 21,
+      "storage_key": "9709/w19_qp_53/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper5/WM_9709_w19_qp_53.pdf",
+      "q_number": 7,
+      "ocr_text": "ABC is the cross-section through the centre of mass of a uniform prism which rests with AB on a rough horizontal surface. AB = 0.4 m and C is 0.9 m above the surface (see diagram). The prism is on the point of toppling about its edge through B.\n\n(i) Show that angle BAC = 48.4°, correct to 3 significant figures.\nA force of magnitude 18 N acting in the plane of the cross-section and perpendicular to AC is now applied to the prism at C. The prism is on the point of rotating about its edge through A.\n\n(ii) Calculate the weight of the prism.\n\n(iii) Given also that the prism is on the point of slipping, calculate the coefficient of friction between the prism and the surface.",
+      "diagram_present": true,
+      "diagram_elements": [
+        "triangle",
+        "horizontal line AB",
+        "vertical height 0.9 m",
+        "segment AB labeled 0.4 m",
+        "point C above base"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "marks": [
+        3,
+        3,
+        4
+      ],
+      "subpart_labels": [
+        "(i)",
+        "(ii)",
+        "(iii)"
+      ],
+      "route": "diagram_lane",
+      "formula_dense": false,
+      "table_heavy": false,
+      "extraction_model": "qwen3-vl-plus",
+      "extraction_schema_version": "pdf_page_chain_extraction_v1",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/renders/WM_9709_w19_qp_53/WM_9709_w19_qp_53_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p5_w_watermarked_001/review-crops/WM_9709_w19_qp_53/q07/q07_page_011.png"
+      ],
+      "raw_page_chain": {
+        "marks": [
+          3,
+          3,
+          4
+        ],
+        "subpart_labels": [
+          "(i)",
+          "(ii)",
+          "(iii)"
+        ],
+        "evidence": [
+          "Text begins with 'ABC is the cross-section...', continuing physical context from prior page",
+          "Subpart label '(i)' matches expected continuation after open Q6(ii) — but note: carry state indicated open subpart was (ii), yet this page shows (i); however, visual evidence shows this is a *new* printed question fragment starting with (i), suggesting prior carry state was erroneous or page 9 had misinterpreted layout. Since page 10 visually starts with Q6(i) and no prior text on this page indicates continuation of (ii), we treat this as new Q6(i) and update state accordingly.",
+          "Diagram present and referenced explicitly",
+          "Marks [3] shown in brackets",
+          "Text begins with continuation context (refers to 'the prism', 'AC', 'edge through A' implying prior diagram/context), no new question number visible",
+          "Subparts (ii) and (iii) are sequential and follow logically from prior part (i) on previous page",
+          "No 'Question 8' or new numbered question appears on this page"
+        ]
+      },
+      "warning_disposition": null
+    }
+  ]
+}

@@ -1,0 +1,1336 @@
+{
+  "schema_version": "9709_page_chain_shard_post_extraction_review_v1",
+  "generated_on": "2026-06-01",
+  "shard_id": "p6_s_standard_001",
+  "status": "needs_human_review",
+  "inputs": {
+    "manifest": "data/manifests/9709_p6_s_standard_001_page_chain_surface_v1.json",
+    "projection": "docs/reports/2026-06-01-9709-p6-s-standard-001-page-chain-projection.json",
+    "evidence_bundles": "docs/reports/2026-06-01-9709-p6-s-standard-001-evidence-bundles.json",
+    "human_dispositions": null
+  },
+  "summary": {
+    "manifest_items": 170,
+    "projection_items": 170,
+    "evidence_bundle_items": 170,
+    "human_disposition_items": 0,
+    "blockers": 0,
+    "warnings": 0,
+    "human_review_items": 77,
+    "accepted_human_dispositions": 0,
+    "manual_review_reason_counts": {
+      "diagram_lane": 16,
+      "multi_page_question": 66,
+      "warning_disposition": 8
+    }
+  },
+  "blockers": [],
+  "warnings": [],
+  "human_review_queue": [
+    {
+      "storage_key": "9709/s16_qp_61/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s16_qp_61.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        1
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s16_qp_61/q02/q02_page_002.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s16_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s16_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        1
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s16_qp_62/q05/q05_page_002.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q04/q04_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        2
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q02/q02_page_003.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        9,
+        10,
+        11
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q07/q07_page_011.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q07/q07_page_012.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        3
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q02/q02_page_004.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q06/q06_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 1,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        1
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q01/q01_page_002.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        3
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q03/q03_page_004.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q06/q06_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 8,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        13,
+        14
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q08/q08_page_015.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s19_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_61/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_61.pdf",
+      "q_number": 8,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q08/q08_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q08/q08_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_62/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_62.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q03/q03_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q03/q03_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10,
+        11
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q06/q06_page_011.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q06/q06_page_012.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q06/q06_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_62/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_62.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q06/q06_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        3,
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q03/q03_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q03/q03_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_61/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_61.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        3,
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q02/q02_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q02/q02_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        3,
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q03/q03_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q03/q03_page_005.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        9
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q07/q07_page_010.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s23_qp_63/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_63.pdf",
+      "q_number": 8,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q08/q08_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q08/q08_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q04/q04_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q05/q05_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q06/q06_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q07/q07_page_013.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q07/q07_page_011.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        2
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q02/q02_page_003.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q05/q05_page_007.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q06/q06_page_009.png"
+      ]
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q07/q07_page_011.png"
+      ]
+    }
+  ],
+  "accepted_human_dispositions": []
+}

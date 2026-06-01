@@ -1,0 +1,92 @@
+{
+  "schema_version": "9709_operator_authority_layer_v1",
+  "generated_on": "2026-06-01",
+  "shard_id": "p6_s_watermarked_001",
+  "status": "approved",
+  "authority_sidecar": "data/manifests/9709_p6_s_watermarked_001_authority_sidecar_v1.json",
+  "runtime_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_p5_p6_v1.json",
+  "source_manifest": "data/manifests/9709_p6_s_watermarked_001_input_v1.json",
+  "projection_evidence": "docs/reports/2026-06-01-9709-p6-s-watermarked-001-page-chain-projection.json",
+  "visual_disposition": "docs/reports/2026-06-01-9709-p6-s-watermarked-001-operator-visual-disposition.md",
+  "rows": 19,
+  "seeded_topic_paths": [
+    {
+      "topic_path": "9709.p5.representation_of_data",
+      "title": "Representation of Data",
+      "section_code": "5.1",
+      "family": "P5 Probability & Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.permutations_and_combinations",
+      "title": "Permutations and Combinations",
+      "section_code": "5.2",
+      "family": "P5 Probability & Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.probability",
+      "title": "Probability",
+      "section_code": "5.3",
+      "family": "P5 Probability & Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.discrete_random_variables",
+      "title": "Discrete Random Variables",
+      "section_code": "5.4",
+      "family": "P5 Probability & Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.the_normal_distribution",
+      "title": "The Normal Distribution",
+      "section_code": "5.5",
+      "family": "P5 Probability & Statistics 1"
+    },
+    {
+      "topic_path": "9709.p6.the_poisson_distribution",
+      "title": "The Poisson Distribution",
+      "section_code": "6.1",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.linear_combinations_of_random_variables",
+      "title": "Linear Combinations of Random Variables",
+      "section_code": "6.2",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.continuous_random_variables",
+      "title": "Continuous Random Variables",
+      "section_code": "6.3",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.sampling_and_estimation",
+      "title": "Sampling and Estimation",
+      "section_code": "6.4",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.hypothesis_tests",
+      "title": "Hypothesis Tests",
+      "section_code": "6.5",
+      "family": "P6 Probability & Statistics 2"
+    }
+  ],
+  "topic_distribution": {
+    "9709.p6.sampling_and_estimation": 5,
+    "9709.p6.hypothesis_tests": 6,
+    "9709.p6.linear_combinations_of_random_variables": 1,
+    "9709.p6.the_poisson_distribution": 4,
+    "9709.p6.continuous_random_variables": 3
+  },
+  "review_method": "deterministic operator mapping from page-chain OCR, official syllabus section refs, and closed targeted visual review queue",
+  "legacy_component_boundary": "Pre-2020 Paper 6 rows are legacy Probability & Statistics 1 and are crosswalked to current repo P5 statistics paths.",
+  "p6_component_boundary": "2020+ Paper 6 rows are Probability & Statistics 2. P5 prior knowledge and Paper 3 calculus are not primary topic-path substitutes for current P6 rows.",
+  "authority_preflight": {
+    "status": "pending_release_preflight",
+    "expected_warnings": [
+      "manifest_primary_topic_missing_sidecar_canonical_present",
+      "paper_5_or_6_in_authority_ready_batch"
+    ]
+  },
+  "boundary": "This authority layer is shard-scoped and does not claim any other 9709 shard."
+}

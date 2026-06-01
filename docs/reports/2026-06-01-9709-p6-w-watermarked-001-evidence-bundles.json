@@ -1,0 +1,2197 @@
+{
+  "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+  "bundles": [
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 0,
+      "storage_key": "9709/w19_qp_61/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 1,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "1 When Shona goes to college she either catches the bus with probability 0.8 or she cycles with probability 0.2. If she catches the bus, the probability that she is late is 0.4. If she cycles, the probability that she is late is x. The probability that Shona is not late for college on a randomly chosen day is 0.63. Find the value of x.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_61.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_61/questions/q01.png",
+        "input_asset_hash": "00366ec2f8efbd288ed35b5f5f28dc3e757688e2fe8300ec61688ce305b18e6b",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_61/questions/q01.png",
+          "input_asset_hash": "00366ec2f8efbd288ed35b5f5f28dc3e757688e2fe8300ec61688ce305b18e6b",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_61/questions/q01.png",
+        "input_asset_hash": "00366ec2f8efbd288ed35b5f5f28dc3e757688e2fe8300ec61688ce305b18e6b"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 1,
+      "storage_key": "9709/w19_qp_61/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 1,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 Annan has designed a new logo for a sportswear company. A survey of a large number of customers found that 42% of customers rated the logo as good.\n\n(i) A random sample of 10 customers is chosen. Find the probability that fewer than 8 of them rate the logo as good.\n\n(ii) On another occasion, a random sample of n customers of the company is chosen. Find the smallest value of n for which the probability that at least one person rates the logo as good is greater than 0.995.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_61.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_61/questions/q02.png",
+        "input_asset_hash": "09b311d37a76f91d5626d854d2f80a46b7e2e03abad166b66f25d2cd1047f952",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_61/questions/q02.png",
+          "input_asset_hash": "09b311d37a76f91d5626d854d2f80a46b7e2e03abad166b66f25d2cd1047f952",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_61/questions/q02.png",
+        "input_asset_hash": "09b311d37a76f91d5626d854d2f80a46b7e2e03abad166b66f25d2cd1047f952"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 2,
+      "storage_key": "9709/w19_qp_61/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 1,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 The mean and standard deviation of 20 values of x are 60 and 4 respectively.\n(i) Find the values of Σx and Σx².\nAnother 10 values of x are such that their sum is 550 and the sum of their squares is 40 500.\n(ii) Find the mean and standard deviation of all these 30 values of x.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_61.pdf",
+          "q_number=3",
+          "page_indices=[3, 4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_61/questions/q03.png",
+        "input_asset_hash": "8ee250fcdc2e3d270b211cfea94aab82b7341d9ee1431152660e09dcc1967259",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_61/questions/q03.png",
+          "input_asset_hash": "8ee250fcdc2e3d270b211cfea94aab82b7341d9ee1431152660e09dcc1967259",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_61/questions/q03.png",
+        "input_asset_hash": "8ee250fcdc2e3d270b211cfea94aab82b7341d9ee1431152660e09dcc1967259"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 3,
+      "storage_key": "9709/w19_qp_61/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 1,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 In a probability distribution the random variable X takes the values −1, 0, 1, 2, 4. The probability distribution table for X is as follows.\n\nx | −1 | 0 | 1 | 2 | 4\n---|---|---|---|---|---\nP(X = x) | 1/4 | p | p | 3/8 | 4p\n\n(i) Find the value of p.\n\n(ii) Find E(X) and Var(X).\n(iii) Given that X is greater than zero, find the probability that X is equal to 2.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          },
+          {
+            "label": "(iii)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_61.pdf",
+          "q_number=4",
+          "page_indices=[5, 6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": true,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_61/questions/q04.png",
+        "input_asset_hash": "8a4617acafd345010a396756f4737d4dc56c3f79b31ad6c7a5a75b07b6c4091c",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "table_heavy"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_61/questions/q04.png",
+          "input_asset_hash": "8a4617acafd345010a396756f4737d4dc56c3f79b31ad6c7a5a75b07b6c4091c",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_61/questions/q04.png",
+        "input_asset_hash": "8a4617acafd345010a396756f4737d4dc56c3f79b31ad6c7a5a75b07b6c4091c"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 4,
+      "storage_key": "9709/w19_qp_61/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 1,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 Ransha measured the lengths, in centimetres, of 160 palm leaves. His results are illustrated in the cumulative frequency graph below.\n(i) Estimate how many leaves have a length between 14 and 24 centimetres. [1]\n(ii) 10% of the leaves have a length of L centimetres or more. Estimate the value of L. [2]\n(iii) Estimate the median and the interquartile range of the lengths.\nSharim measured the lengths, in centimetres, of 160 palm leaves of a different type. He drew a box-and-whisker plot for the data, as shown on the grid below.\n(iv) Compare the central tendency and the spread of the two sets of data.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 1
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          },
+          {
+            "label": "(iii)",
+            "marks": 3
+          },
+          {
+            "label": "(iv)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_61.pdf",
+          "q_number=5",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "x-axis labeled 'Length in centimetres'",
+          "y-axis labeled 'Cumulative frequency'",
+          "grid lines",
+          "smooth increasing curve passing through approximate points: (10,20), (15,60), (20,120), (25,160)",
+          "box-and-whisker plot",
+          "x-axis labeled 'Length in centimetres'",
+          "grid background",
+          "numerical axis ticks 0,5,10,15,20,25,30"
+        ],
+        "spatial_evidence": [
+          "Question number '5' explicitly printed at start of page",
+          "No continuation markers like '(b)', '(ii)' without preceding question header",
+          "Graph and subparts (i), (ii) belong to Q5",
+          "Subpart label '(i)' directly follows Q5 intro and graph",
+          "Mark allocation [1] shown",
+          "No new question number introduced",
+          "Subpart label '(ii)' follows (i)",
+          "Mark allocation [2] shown",
+          "Still under same question context (Ransha, palm leaves, cumulative frequency graph)",
+          "Subpart (iii) follows directly after (ii) from previous page; no new question number visible",
+          "Text introduces second dataset for same question; diagram is part of Q5 context; no new question number",
+          "Subpart (iv) follows logically from (iii) and the boxplot; no new question number; blank answer space below suggests continuation"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_61/questions/q05.png",
+        "input_asset_hash": "ea642b01fd3510a493f5fa9e8c63c8ad484a2b8dd1c69b235e228c3a4ae9fd1d",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_61/questions/q05.png",
+          "input_asset_hash": "ea642b01fd3510a493f5fa9e8c63c8ad484a2b8dd1c69b235e228c3a4ae9fd1d",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_61/questions/q05.png",
+        "input_asset_hash": "ea642b01fd3510a493f5fa9e8c63c8ad484a2b8dd1c69b235e228c3a4ae9fd1d"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 5,
+      "storage_key": "9709/w19_qp_61/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 1,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(i) Find the number of different ways in which all 12 letters of the word STEEPLECHASE can be arranged so that all four Es are together.\n(ii) Find the number of different ways in which all 12 letters of the word STEEPLECHASE can be arranged so that the Ss are not next to each other.\nFour letters are selected from the 12 letters of the word STEEPLECHASE.\n(iii) Find the number of different selections if the four letters include exactly one S.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 1
+          },
+          {
+            "label": "(ii)",
+            "marks": 4
+          },
+          {
+            "label": "(iii)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_61.pdf",
+          "q_number=6",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_61/questions/q06.png",
+        "input_asset_hash": "b84cd2914bebaeb7abce128522f02ce1987ce951dff0e17bc84b2b6fe0a64589",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_61/questions/q06.png",
+          "input_asset_hash": "b84cd2914bebaeb7abce128522f02ce1987ce951dff0e17bc84b2b6fe0a64589",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_61/questions/q06.png",
+        "input_asset_hash": "b84cd2914bebaeb7abce128522f02ce1987ce951dff0e17bc84b2b6fe0a64589"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 6,
+      "storage_key": "9709/w19_qp_61/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 1,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "7 The shortest time recorded by an athlete in a 400 m race is called their personal best (PB). The PBs of the athletes in a large athletics club are normally distributed with mean 49.2 seconds and standard deviation 2.8 seconds.\n\n(i) Find the probability that a randomly chosen athlete from this club has a PB between 46 and 53 seconds. [4]\n\n(ii) It is found that 92% of athletes from this club have PBs of more than t seconds. Find the value of t. [3]\nThree athletes from the club are chosen at random.\n(iii) Find the probability that exactly 2 have PBs of less than 46 seconds.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          },
+          {
+            "label": "(iii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_61.pdf",
+          "q_number=7",
+          "page_indices=[11, 12]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_61/questions/q07.png",
+        "input_asset_hash": "af53281c47075db4840771384b5efe2cf894ba51de2d28136ccf8e391a01109d",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_61/questions/q07.png",
+          "input_asset_hash": "af53281c47075db4840771384b5efe2cf894ba51de2d28136ccf8e391a01109d",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_61/questions/q07.png",
+        "input_asset_hash": "af53281c47075db4840771384b5efe2cf894ba51de2d28136ccf8e391a01109d"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 7,
+      "storage_key": "9709/w19_qp_62/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 2,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "1 Twelve tourists were asked to estimate the height, in metres, of a new building. Their estimates were as follows.\n50 45 62 30 40 55 110 38 52 60 55 40\n(i) Find the median and the interquartile range for the data. [3]\n(ii) Give a disadvantage of using the mean as a measure of the central tendency in this case. [1]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 1
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_62.pdf",
+          "q_number=1",
+          "page_indices=[1]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_62/questions/q01.png",
+        "input_asset_hash": "6edb08ca903c317992233b351da0773d165ad9a3b79027108d6dbfd200269292",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_62/questions/q01.png",
+          "input_asset_hash": "6edb08ca903c317992233b351da0773d165ad9a3b79027108d6dbfd200269292",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_62/questions/q01.png",
+        "input_asset_hash": "6edb08ca903c317992233b351da0773d165ad9a3b79027108d6dbfd200269292"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 8,
+      "storage_key": "9709/w19_qp_62/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 2,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "2 Benju cycles to work each morning and he has two possible routes. He chooses the hilly route with probability 0.4 and the busy route with probability 0.6. If he chooses the hilly route, the probability that he will be late for work is x and if he chooses the busy route the probability that he will be late for work is 2x. The probability that Benju is late for work on any day is 0.36.\n\n(i) Show that x = 0.225. [2]\n\n(ii) Given that Benju is not late for work, find the probability that he chooses the hilly route. [3]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_62.pdf",
+          "q_number=2",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_62/questions/q02.png",
+        "input_asset_hash": "8d6bf8531c400f244c9ac13542475e21d1f71f282f91652997a3b3c48438ec59",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_62/questions/q02.png",
+          "input_asset_hash": "8d6bf8531c400f244c9ac13542475e21d1f71f282f91652997a3b3c48438ec59",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_62/questions/q02.png",
+        "input_asset_hash": "8d6bf8531c400f244c9ac13542475e21d1f71f282f91652997a3b3c48438ec59"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 9,
+      "storage_key": "9709/w19_qp_62/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 2,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 The speeds, in km h⁻¹, of 90 cars as they passed a certain marker on a road were recorded, correct to the nearest km h⁻¹. The results are summarised in the following table.\n\nSpeed (km h⁻¹) | 10–29 | 30–39 | 40–49 | 50–59 | 60–89\n---|---|---|---|---|---\nFrequency | 10 | 24 | 30 | 14 | 12\n\n(i) On the grid, draw a histogram to illustrate the data in the table.\n(ii) Calculate an estimate for the mean speed of these 90 cars as they pass the marker.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_62.pdf",
+          "q_number=3",
+          "page_indices=[3, 4]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "grid with dotted lines, rectangular plotting area"
+        ],
+        "spatial_evidence": [
+          "Question number '3' printed at start of page",
+          "Table and subpart (i) present",
+          "No closing statement or mark allocation indicating completion",
+          "Label '(ii)' indicates continuation of Question 3",
+          "No new question number visible on page",
+          "Carries forward from previous state where open_q_number=3 and open_subpart_label='(i)'"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": true,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_62/questions/q03.png",
+        "input_asset_hash": "48cd5f549d49ba9c2465b43b60e91d71a53607139ef0b5ebed704ad993d18e64",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_62/questions/q03.png",
+          "input_asset_hash": "48cd5f549d49ba9c2465b43b60e91d71a53607139ef0b5ebed704ad993d18e64",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_62/questions/q03.png",
+        "input_asset_hash": "48cd5f549d49ba9c2465b43b60e91d71a53607139ef0b5ebed704ad993d18e64"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 10,
+      "storage_key": "9709/w19_qp_62/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 2,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 In Quarendon, 66% of households are satisfied with the speed of their wifi connection.\n(i) Find the probability that, out of 10 households chosen at random in Quarendon, at least 8 are satisfied with the speed of their wifi connection.\n(ii) A random sample of 150 households in Quarendon is chosen. Use a suitable approximation to find the probability that more than 84 are satisfied with the speed of their wifi connection. [5]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_62.pdf",
+          "q_number=4",
+          "page_indices=[5, 6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_62/questions/q04.png",
+        "input_asset_hash": "c1abb4ca5dbdf023173703f42b26f3aea468df7c77de67edffc912103ea9cdc3",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_62/questions/q04.png",
+          "input_asset_hash": "c1abb4ca5dbdf023173703f42b26f3aea468df7c77de67edffc912103ea9cdc3",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_62/questions/q04.png",
+        "input_asset_hash": "c1abb4ca5dbdf023173703f42b26f3aea468df7c77de67edffc912103ea9cdc3"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 11,
+      "storage_key": "9709/w19_qp_62/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 2,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 A fair red spinner has four sides, numbered 1, 2, 3, 3. A fair blue spinner has three sides, numbered −1, 0, 2. When a spinner is spun, the score is the number on the side on which it lands. The spinners are spun at the same time. The random variable X denotes the score on the red spinner minus the score on the blue spinner.\n\n(i) Draw up the probability distribution table for X.\n(ii) Find Var(X).",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_62.pdf",
+          "q_number=5",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": true,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_62/questions/q05.png",
+        "input_asset_hash": "ae5ecd6b3568b3cec7a2d29824d8a393748a5f6eddcdf77ae96b22fecd4e1559",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "table_heavy"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_62/questions/q05.png",
+          "input_asset_hash": "ae5ecd6b3568b3cec7a2d29824d8a393748a5f6eddcdf77ae96b22fecd4e1559",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_62/questions/q05.png",
+        "input_asset_hash": "ae5ecd6b3568b3cec7a2d29824d8a393748a5f6eddcdf77ae96b22fecd4e1559"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 12,
+      "storage_key": "9709/w19_qp_62/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 2,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 The heights, in metres, of fir trees in a large forest have a normal distribution with mean 40 and standard deviation 8.\n(i) Find the probability that a fir tree chosen at random in this forest has a height less than 45 metres.\n(ii) Find the probability that a fir tree chosen at random in this forest has a height within 5 metres of the mean.\nIn another forest, the heights of another type of fir tree are modelled by a normal distribution. A scientist measures the heights of 500 randomly chosen trees of this type. He finds that 48 trees are less than 10 m high and 76 trees are more than 24 m high.\n\n(iii) Find the mean and standard deviation of the heights of trees of this type.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          },
+          {
+            "label": "(iii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_62.pdf",
+          "q_number=6",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_62/questions/q06.png",
+        "input_asset_hash": "ad972e1d740d006ee15a67278730210fa81191b5172fe502f6c82568c83d0469",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_62/questions/q06.png",
+          "input_asset_hash": "ad972e1d740d006ee15a67278730210fa81191b5172fe502f6c82568c83d0469",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_62/questions/q06.png",
+        "input_asset_hash": "ad972e1d740d006ee15a67278730210fa81191b5172fe502f6c82568c83d0469"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 13,
+      "storage_key": "9709/w19_qp_62/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 2,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(i) Find the number of different ways in which the 9 letters of the word TOADSTOOL can be arranged so that all three Os are together and both Ts are together.\n(ii) Find the number of different ways in which the 9 letters of the word TOADSTOOL can be arranged so that the Ts are not together.\n(iii) Find the probability that a randomly chosen arrangement of the 9 letters of the word TOADSTOOL has a T at the beginning and a T at the end.\n(iv) Five letters are selected from the 9 letters of the word TOADSTOOL. Find the number of different selections if the five letters include at least 2 Os and at least 1 T.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 1
+          },
+          {
+            "label": "(ii)",
+            "marks": 4
+          },
+          {
+            "label": "(iii)",
+            "marks": 2
+          },
+          {
+            "label": "(iv)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_62.pdf",
+          "q_number=7",
+          "page_indices=[11, 12]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_62/questions/q07.png",
+        "input_asset_hash": "a2b7a7ed0ce442e4eff33893a5b89cfd8424a12bbdacbd6c0595775d1259bd81",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_62/questions/q07.png",
+          "input_asset_hash": "a2b7a7ed0ce442e4eff33893a5b89cfd8424a12bbdacbd6c0595775d1259bd81",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_62/questions/q07.png",
+        "input_asset_hash": "a2b7a7ed0ce442e4eff33893a5b89cfd8424a12bbdacbd6c0595775d1259bd81"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 14,
+      "storage_key": "9709/w19_qp_63/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 1,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "1 There are 300 students at a music college. All students play exactly one of the guitar, the piano or the flute. The numbers of male and female students that play each of the instruments are given in the following table.\n\n\\begin{tabular}{|l|c|c|c|}\n\\hline\n & Guitar & Piano & Flute \\\\\n\\hline\nFemale students & 62 & 35 & 43 \\\\\n\\hline\nMale students & 78 & 40 & 42 \\\\\n\\hline\n\\end{tabular}\n\n(i) Find the probability that a randomly chosen student at the college is a male who does not play the piano. [1]\n\n(ii) Determine whether the events ‘a randomly chosen student is male’ and ‘a randomly chosen student does not play the piano’ are independent, justifying your answer. [2]",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 1
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_63.pdf",
+          "q_number=1",
+          "page_indices=[2]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": true,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_63/questions/q01.png",
+        "input_asset_hash": "a03c3f0c22d7eac997367991c50f0150a6f0cc2bcf42ebc99f9feb6d32ebfcaf",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "table_heavy"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_63/questions/q01.png",
+          "input_asset_hash": "a03c3f0c22d7eac997367991c50f0150a6f0cc2bcf42ebc99f9feb6d32ebfcaf",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_63/questions/q01.png",
+        "input_asset_hash": "a03c3f0c22d7eac997367991c50f0150a6f0cc2bcf42ebc99f9feb6d32ebfcaf"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 15,
+      "storage_key": "9709/w19_qp_63/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 2,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "(i) How many different arrangements are there of the 9 letters in the word CORRIDORS?\n(ii) How many different arrangements are there of the 9 letters in the word CORRIDORS in which the first letter is D and the last letter is R or O?",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_63.pdf",
+          "q_number=2",
+          "page_indices=[3]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_63/questions/q02.png",
+        "input_asset_hash": "5e719d926d074c7de4e2a4489b684988beb6282274eb30ad2bd730806a43f6a0",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_63/questions/q02.png",
+          "input_asset_hash": "5e719d926d074c7de4e2a4489b684988beb6282274eb30ad2bd730806a43f6a0",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_63/questions/q02.png",
+        "input_asset_hash": "5e719d926d074c7de4e2a4489b684988beb6282274eb30ad2bd730806a43f6a0"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 16,
+      "storage_key": "9709/w19_qp_63/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 3,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "3 A sports team of 7 people is to be chosen from 6 attackers, 5 defenders and 4 midfielders. The team must include at least 3 attackers, at least 2 defenders and at least 1 midfielder.\n(i) In how many different ways can the team of 7 people be chosen?\nThe team of 7 that is chosen travels to a match in two cars. A group of 4 travel in one car and a group of 3 travel in the other car.\n(ii) In how many different ways can the team of 7 be divided into a group of 4 and a group of 3?",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 4
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_63.pdf",
+          "q_number=3",
+          "page_indices=[4]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_63/questions/q03.png",
+        "input_asset_hash": "787f4c641f9fbf6bb57984e0b6905bbe3d2b7882f6140b8dbb419fa63e0bd01c",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_63/questions/q03.png",
+          "input_asset_hash": "787f4c641f9fbf6bb57984e0b6905bbe3d2b7882f6140b8dbb419fa63e0bd01c",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_63/questions/q03.png",
+        "input_asset_hash": "787f4c641f9fbf6bb57984e0b6905bbe3d2b7882f6140b8dbb419fa63e0bd01c"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 17,
+      "storage_key": "9709/w19_qp_63/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 4,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "4 The heights of students at the Mainland college are normally distributed with mean 148 cm and standard deviation 8 cm.\n\n(i) The probability that a Mainland student chosen at random has a height less than h cm is 0.67. Find the value of h.\n120 Mainland students are chosen at random.\n(ii) Find the number of these students that would be expected to have a height within half a standard deviation of the mean.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 3
+          },
+          {
+            "label": "(ii)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_63.pdf",
+          "q_number=4",
+          "page_indices=[5, 6]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_63/questions/q04.png",
+        "input_asset_hash": "1ec40b1f10b8c102ba5c849736df5b430efbe836c23a8addb3de454e1ef37680",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_63/questions/q04.png",
+          "input_asset_hash": "1ec40b1f10b8c102ba5c849736df5b430efbe836c23a8addb3de454e1ef37680",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_63/questions/q04.png",
+        "input_asset_hash": "1ec40b1f10b8c102ba5c849736df5b430efbe836c23a8addb3de454e1ef37680"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 18,
+      "storage_key": "9709/w19_qp_63/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 5,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "5 Last Saturday, 200 drivers entering a car park were asked the time, in minutes, that it had taken them to travel from home to the car park. The results are summarised in the following cumulative frequency table.\n\nTime (t minutes) | t ≤ 10 | t ≤ 20 | t ≤ 30 | t ≤ 50 | t ≤ 70 | t ≤ 90\n---|---|---|---|---|---|---\nCumulative frequency | 16 | 50 | 106 | 146 | 176 | 200\n\n(i) On the grid, draw a cumulative frequency graph to illustrate the data. [2]\n\n(ii) Use your graph to estimate the median of the data. [1]\n(ii) For 80 of the drivers, the time taken was at least T minutes. Use your graph to estimate the value of T.\n(iv) Calculate an estimate of the mean time taken by all 200 drivers to travel to the car park.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 1
+          },
+          {
+            "label": "(iii)",
+            "marks": 2
+          },
+          {
+            "label": "(iv)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_63.pdf",
+          "q_number=5",
+          "page_indices=[7, 8]"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "grid with dotted lines, rectangular area for plotting"
+        ],
+        "spatial_evidence": [
+          "Question number '5' explicitly printed at start",
+          "New context about drivers and cumulative frequency table",
+          "Subparts (i) and (ii) both present and fully contained on page",
+          "No indication of continuation beyond this page (no 'continued' text or overflow)",
+          "Subpart label '(ii)' indicates continuation of prior question; previous carry state shows Q5 open; no new question number visible",
+          "Subpart label '(iv)' follows (ii), implying same question (Q5); no new question number appears; page ends with blank lines and footer note, not a question terminator"
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": true,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [
+          "The page-chain OCR omitted the printed '(iii)' label; local PDF text shows '(iii)' on page 9.",
+          "The raw mark list already contains the four printed mark allocations."
+        ],
+        "ambiguity_flags": [
+          "cross_page_subpart_label_normalization"
+        ],
+        "review_summary": "q05 spans local text pages 8-9. Printed marks are [2] for (i), [1] for (ii), [2] for (iii), and [4] for (iv).",
+        "review_confidence": 0.9
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_63/questions/q05.png",
+        "input_asset_hash": "bd3a97734d595a248b608fb31e4250780ecca34ea93f40a63c2ea982a16071aa",
+        "confidence": 0.9,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_63/questions/q05.png",
+          "input_asset_hash": "bd3a97734d595a248b608fb31e4250780ecca34ea93f40a63c2ea982a16071aa",
+          "confidence": 0.9,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image",
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_63/questions/q05.png",
+        "input_asset_hash": "bd3a97734d595a248b608fb31e4250780ecca34ea93f40a63c2ea982a16071aa"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 19,
+      "storage_key": "9709/w19_qp_63/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 6,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "6 A box contains 3 red balls and 5 white balls. One ball is chosen at random from the box and is not returned to the box. A second ball is now chosen at random from the box.\n\n(i) Find the probability that both balls chosen are red. [1]\n\n(ii) Show that the probability that the balls chosen are of different colours is 15/28. [2]\n\n(iii) Given that the second ball chosen is red, find the probability that the first ball chosen is red. [2]\nThe random variable X denotes the number of red balls chosen.\n(iv) Draw up the probability distribution table for X.\n(v) Find Var(X).",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)",
+            "marks": 1
+          },
+          {
+            "label": "(ii)",
+            "marks": 2
+          },
+          {
+            "label": "(iii)",
+            "marks": 2
+          },
+          {
+            "label": "(iv)",
+            "marks": 2
+          },
+          {
+            "label": "(v)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_63.pdf",
+          "q_number=6",
+          "page_indices=[9, 10]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": true,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": null,
+        "review_confidence": null
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_63/questions/q06.png",
+        "input_asset_hash": "7b3b0382128cc3d1455c5d93f0ac48654e283eaa29db4a4a54fcbff9bef55ab6",
+        "confidence": 0.98,
+        "failure_reason": null,
+        "decision_reasons": [
+          "table_heavy"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_63/questions/q06.png",
+          "input_asset_hash": "7b3b0382128cc3d1455c5d93f0ac48654e283eaa29db4a4a54fcbff9bef55ab6",
+          "confidence": 0.98,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_63/questions/q06.png",
+        "input_asset_hash": "7b3b0382128cc3d1455c5d93f0ac48654e283eaa29db4a4a54fcbff9bef55ab6"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_full_scaleout_manifest_v1_p6_w_watermarked_001_page_chain_surface_v1",
+      "manifest_position": 20,
+      "storage_key": "9709/w19_qp_63/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2019,
+        "session": "w",
+        "paper": 6,
+        "variant": 3,
+        "q_number": 7,
+        "primary_topic_path": null
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": null
+      },
+      "evidence": {
+        "ocr_text": "7 A competition is taking place between two choirs, the Notes and the Classics. There is a large audience for the competition.\n• 30% of the audience are Notes supporters.\n• 45% of the audience are Classics supporters.\n• The rest of the audience are not supporters of either of these choirs.\n• No one in the audience supports both of these choirs.\n(i) A random sample of 6 people is chosen from the audience.\n(a) Find the probability that no more than 2 of the 6 people are Notes supporters. [3]\n(b) Find the probability that none of the 6 people support either of these choirs. [2]\n(ii) A random sample of 240 people is chosen from the audience. Use a suitable approximation to find the probability that fewer than 50 do not support either of the choirs.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(i)(a)",
+            "marks": 3
+          },
+          {
+            "label": "(i)(b)",
+            "marks": 2
+          },
+          {
+            "label": "(ii)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_w19_qp_63.pdf",
+          "q_number=7",
+          "page_indices=[11, 12]"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "page_chain_extracted_pending_review",
+        "gate_critical": false,
+        "requires_review": true
+      },
+      "review_posture": {
+        "requires_review": true,
+        "gate_critical": false,
+        "review_reasons": [
+          "Printed part (i) is a container for nested parts (a) and (b); it has no separate mark allocation.",
+          "Local PDF text shows part (ii) continuing on the next page with the final [5] mark allocation."
+        ],
+        "ambiguity_flags": [
+          "nested_subpart_mark_normalization"
+        ],
+        "review_summary": "q07 spans local text pages 12-13. Printed marks are [3] for (i)(a), [2] for (i)(b), and [5] for (ii).",
+        "review_confidence": 0.9
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/w19_qp_63/questions/q07.png",
+        "input_asset_hash": "b794c68b428e6b7d7f6780d5f87e01dbc55f848a3141735ce2c128b3c1bb88c8",
+        "confidence": 0.9,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "qwen3-vl-plus",
+          "region": "dashscope-cn",
+          "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+          "api_key_scope": "DASHSCOPE_API_KEY",
+          "prompt_template_version": "pdf_page_chain_v1",
+          "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+          "input_asset_id": "9709/w19_qp_63/questions/q07.png",
+          "input_asset_hash": "b794c68b428e6b7d7f6780d5f87e01dbc55f848a3141735ce2c128b3c1bb88c8",
+          "confidence": 0.9,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "requires_review"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/w19_qp_63/questions/q07.png",
+        "input_asset_hash": "b794c68b428e6b7d7f6780d5f87e01dbc55f848a3141735ce2c128b3c1bb88c8"
+      }
+    }
+  ],
+  "summary": {
+    "bundles_planned": 21,
+    "route_counts": {
+      "ocr_lane": 18,
+      "diagram_lane": 3
+    },
+    "lazy_attach_original_image": 21
+  }
+}

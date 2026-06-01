@@ -1,0 +1,84 @@
+{
+  "schema_version": "9709_p6_all_shards_production_closeout_v1",
+  "generated_on": "2026-06-01",
+  "status": "production-ready",
+  "scope": {
+    "subject_code": "9709",
+    "paper": 6,
+    "shards": [
+      "p6_m_standard_001",
+      "p6_m_watermarked_001",
+      "p6_s_standard_001",
+      "p6_s_watermarked_001",
+      "p6_w_standard_001",
+      "p6_w_watermarked_001"
+    ],
+    "total_rows": 416
+  },
+  "shards": [
+    {
+      "shard_id": "p6_m_standard_001",
+      "rows": 55,
+      "db_present": 55,
+      "release_preflight": "pass",
+      "release_blockers": 0,
+      "search_gate_pass": true,
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-m-standard-001-production-ready.md"
+    },
+    {
+      "shard_id": "p6_m_watermarked_001",
+      "rows": 7,
+      "db_present": 7,
+      "release_preflight": "pass",
+      "release_blockers": 0,
+      "search_gate_pass": true,
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-m-watermarked-001-production-ready.md"
+    },
+    {
+      "shard_id": "p6_s_standard_001",
+      "rows": 170,
+      "db_present": 170,
+      "release_preflight": "pass",
+      "release_blockers": 0,
+      "search_gate_pass": true,
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-s-standard-001-production-ready.md"
+    },
+    {
+      "shard_id": "p6_s_watermarked_001",
+      "rows": 19,
+      "db_present": 19,
+      "release_preflight": "pass",
+      "release_blockers": 0,
+      "search_gate_pass": true,
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-s-watermarked-001-production-ready.md"
+    },
+    {
+      "shard_id": "p6_w_standard_001",
+      "rows": 144,
+      "db_present": 144,
+      "release_preflight": "pass",
+      "release_blockers": 0,
+      "search_gate_pass": true,
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-w-standard-001-production-ready.md"
+    },
+    {
+      "shard_id": "p6_w_watermarked_001",
+      "rows": 21,
+      "db_present": 21,
+      "release_preflight": "pass",
+      "release_blockers": 0,
+      "search_gate_pass": true,
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-production-ready.md"
+    }
+  ],
+  "verification": {
+    "aggregate_artifact_check": "total_rows=416; all six production-ready JSON status=production-ready; all six DB present counts equal manifest rows; all six release preflights pass with 0 blockers; all six search gates pass",
+    "focused_jest": "2 suites passed; 51 tests passed",
+    "codex_preflight": "npm script workflow:codex-preflight is absent in this repo/worktree"
+  },
+  "boundaries": [
+    "This closes Paper 6 shard-scoped production readiness only.",
+    "This report does not claim full 9709 production readiness outside these six P6 shards.",
+    "Watermarked shard VLM/API calls were run only after explicit user approval."
+  ]
+}

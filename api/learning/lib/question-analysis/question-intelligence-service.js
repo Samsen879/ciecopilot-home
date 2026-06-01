@@ -345,6 +345,51 @@ const TOPIC_PATH_CLASSIFICATIONS = Object.freeze({
       'state the requested probability, parameter, or approximation result',
     ],
   }),
+  '9709.p6.the_poisson_distribution': Object.freeze({
+    questionTypeId: '9709.statistics.poisson_distribution',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the Poisson model, mean rate, interval scaling, or approximation condition',
+      'apply the Poisson probability formula or a valid binomial or normal approximation',
+      'state the requested probability, parameter, or approximation result in context',
+    ],
+  }),
+  '9709.p6.linear_combinations_of_random_variables': Object.freeze({
+    questionTypeId: '9709.statistics.linear_combinations_random_variables',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the independent random variables and the required linear combination',
+      'apply expectation, variance, normal-combination, or Poisson-combination results',
+      'state the requested distribution, mean, variance, or probability',
+    ],
+  }),
+  '9709.p6.continuous_random_variables': Object.freeze({
+    questionTypeId: '9709.statistics.continuous_random_variables',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the continuous random variable and probability density function',
+      'integrate over the required interval or use density properties to find constants or moments',
+      'state the requested probability, median, mean, variance, or distribution condition',
+    ],
+  }),
+  '9709.p6.sampling_and_estimation': Object.freeze({
+    questionTypeId: '9709.statistics.sampling_estimation',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'identify the sample statistic, population parameter, or sampling distribution',
+      'apply unbiased-estimator, central-limit-theorem, or confidence-interval reasoning',
+      'state the requested estimate, interval, probability, or interpretation',
+    ],
+  }),
+  '9709.p6.hypothesis_tests': Object.freeze({
+    questionTypeId: '9709.statistics.hypothesis_tests',
+    familyId: '9709.statistics',
+    skeletonSteps: [
+      'state the null and alternative hypotheses and choose the appropriate test statistic',
+      'calculate the critical region, p-value, or comparison probability at the significance level',
+      'draw and interpret the conclusion in the context of the question',
+    ],
+  }),
   '9709.p3.differential_equations': Object.freeze({
     questionTypeId: '9709.differential_equations.separable',
     familyId: '9709.differential_equations',
@@ -932,6 +977,11 @@ function buildHintOnlyClassification(normalizedHints, envelope) {
     '9709.statistics.probability': '9709.statistics',
     '9709.statistics.discrete_random_variables': '9709.statistics',
     '9709.statistics.normal_distribution': '9709.statistics',
+    '9709.statistics.poisson_distribution': '9709.statistics',
+    '9709.statistics.linear_combinations_random_variables': '9709.statistics',
+    '9709.statistics.continuous_random_variables': '9709.statistics',
+    '9709.statistics.sampling_estimation': '9709.statistics',
+    '9709.statistics.hypothesis_tests': '9709.statistics',
   };
 
   return {

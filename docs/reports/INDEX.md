@@ -403,6 +403,13 @@
 - `2026-06-01-9709-p5-w-watermarked-001-search-gate-report.md` - question-search gate report after `p5_w_watermarked_001` registry and analysis hydration, passing all fixture metrics with no subject leakage.
 - `2026-06-01-9709-p5-w-watermarked-001-release-preflight-final.md` - final release preflight for `p5_w_watermarked_001`, passing with 21 sidecar rows, 0 blockers, 21 expected manifest-topic warnings, and 21 expected Paper 5/6 scope warnings.
 - `2026-06-01-9709-p5-w-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p5_w_watermarked_001`, covering P4 authority sidecar, registry and analysis hydration, DB coverage, search gate, targeted/operator visual disposition, and final release preflight.
+- `2026-06-01-9709-p6-all-shards-production-closeout.md` - aggregate Paper 6 closeout covering six P6 shard-scoped production-ready completions, 416/416 DB-covered rows, release-preflight pass status, search-gate pass status, and focused verification.
+- `2026-06-01-9709-p6-m-standard-001-production-ready.md` - shard-scoped production-ready closeout for `p6_m_standard_001`, covering 55 March Paper 6 standard rows, P5/P6 statistics authority mapping, DB coverage, search gate, targeted visual disposition, and final release preflight.
+- `2026-06-01-9709-p6-m-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p6_m_watermarked_001`, covering 7 March Paper 6 watermarked rows, operator visual disposition, authority sidecar, DB coverage, search gate, and final release preflight.
+- `2026-06-01-9709-p6-s-standard-001-production-ready.md` - shard-scoped production-ready closeout for `p6_s_standard_001`, covering 170 Summer Paper 6 standard rows, shard-local retry recovery, authority sidecar, DB coverage, search gate, and final release preflight.
+- `2026-06-01-9709-p6-s-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p6_s_watermarked_001`, covering 19 Summer Paper 6 watermarked rows, targeted/operator visual disposition, authority sidecar, DB coverage, search gate, and final release preflight.
+- `2026-06-01-9709-p6-w-standard-001-production-ready.md` - shard-scoped production-ready closeout for `p6_w_standard_001`, covering 144 Winter Paper 6 standard rows, shard-local retry recovery, authority sidecar, DB coverage, search gate, and final release preflight.
+- `2026-06-01-9709-p6-w-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p6_w_watermarked_001`, covering 21 Winter 2019 Paper 6 watermarked rows, warning disposition, operator visual override for a watermarked-only reject, authority sidecar, DB coverage, search gate, and final release preflight.
 
 ## RAG S2
 

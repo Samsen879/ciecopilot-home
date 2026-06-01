@@ -277,14 +277,28 @@ describe('question-intelligence-service: analyzeQuestionEnvelope', () => {
     expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
   });
 
-  test('does not classify explicit P6 topic hints before P6 authority support exists', () => {
-    const result = analyze('A statistics question about hypothesis testing.', {
-      topic_path_hint: '9709.p6.hypothesis_testing',
+  test('classifies P6 Poisson topic-path hints after P6 authority support is seeded', () => {
+    const result = analyze('A statistics question about a Poisson random variable.', {
+      topic_path_hint: '9709.p6.the_poisson_distribution',
     });
 
-    expect(result.primary_question_type_id).toBeNull();
-    expect(result.family_id).toBeNull();
-    expect(result.uncertainty_validated).toBe(false);
+    expect(result.primary_question_type_id).toBe('9709.statistics.poisson_distribution');
+    expect(result.family_id).toBe('9709.statistics');
+    expect(result.classification_confidence).toBe(0.84);
+    expect(result.confidence_band).toBe('medium');
+    expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
+  });
+
+  test('classifies P6 hypothesis-test topic-path hints after P6 authority support is seeded', () => {
+    const result = analyze('A statistics question about hypothesis testing.', {
+      topic_path_hint: '9709.p6.hypothesis_tests',
+    });
+
+    expect(result.primary_question_type_id).toBe('9709.statistics.hypothesis_tests');
+    expect(result.family_id).toBe('9709.statistics');
+    expect(result.classification_confidence).toBe(0.84);
+    expect(result.confidence_band).toBe('medium');
+    expect(result.analysis_audit_metadata.detector_signals).toContain('topic_path_hint');
   });
 
   test('classifies the authority-ready 300 evidence set except explicit non-P1/P3 out-of-scope rows', () => {

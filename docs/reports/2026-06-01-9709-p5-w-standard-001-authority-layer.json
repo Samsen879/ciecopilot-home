@@ -1,0 +1,107 @@
+{
+  "schema_version": "9709_shard_authority_layer_report_v1",
+  "generated_on": "2026-06-01",
+  "shard_id": "p5_w_standard_001",
+  "status": "authority-ready",
+  "authority_sidecar": "data/manifests/9709_p5_w_standard_001_authority_sidecar_v1.json",
+  "runtime_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_p5_v1.json",
+  "source_manifest": "data/manifests/9709_p5_w_standard_001_page_chain_surface_v1.json",
+  "projection_evidence": "docs/reports/2026-06-01-9709-p5-w-standard-001-page-chain-projection.json",
+  "visual_disposition": "docs/reports/2026-06-01-9709-p5-w-standard-001-vlm-assisted-visual-disposition.md",
+  "rows": 143,
+  "seeded_topic_paths": [
+    {
+      "topic_path": "9709.p4.energy_work_and_power",
+      "title": "Energy, Work and Power",
+      "section_code": "4.5",
+      "family": "P4 Mechanics"
+    },
+    {
+      "topic_path": "9709.p4.forces_and_equilibrium",
+      "title": "Forces and Equilibrium",
+      "section_code": "4.1",
+      "family": "P4 Mechanics"
+    },
+    {
+      "topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "title": "Kinematics of Motion in a Straight Line",
+      "section_code": "4.2",
+      "family": "P4 Mechanics"
+    },
+    {
+      "topic_path": "9709.p4.newtons_laws_of_motion",
+      "title": "Newton's Laws of Motion",
+      "section_code": "4.4",
+      "family": "P4 Mechanics"
+    },
+    {
+      "topic_path": "9709.p5.discrete_random_variables",
+      "title": "Discrete Random Variables",
+      "section_code": "5.4",
+      "family": "P5 Probability and Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.permutations_and_combinations",
+      "title": "Permutations and Combinations",
+      "section_code": "5.2",
+      "family": "P5 Probability and Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.probability",
+      "title": "Probability",
+      "section_code": "5.3",
+      "family": "P5 Probability and Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.representation_of_data",
+      "title": "Representation of Data",
+      "section_code": "5.1",
+      "family": "P5 Probability and Statistics 1"
+    },
+    {
+      "topic_path": "9709.p5.the_normal_distribution",
+      "title": "The Normal Distribution",
+      "section_code": "5.5",
+      "family": "P5 Probability and Statistics 1"
+    }
+  ],
+  "topic_distribution": {
+    "9709.p4.energy_work_and_power": 12,
+    "9709.p4.forces_and_equilibrium": 16,
+    "9709.p4.kinematics_of_motion_in_a_straight_line": 15,
+    "9709.p4.newtons_laws_of_motion": 20,
+    "9709.p5.discrete_random_variables": 16,
+    "9709.p5.permutations_and_combinations": 16,
+    "9709.p5.probability": 15,
+    "9709.p5.representation_of_data": 15,
+    "9709.p5.the_normal_distribution": 18
+  },
+  "review_method": {
+    "operator_rule_review_rows": 143,
+    "explicit_override_rows": 0,
+    "fallback_rows": 0,
+    "basis": "local page-chain OCR/projection evidence plus current repo P4/P5 syllabus seed nodes; no new external VLM/API call was used for authority mapping."
+  },
+  "legacy_component_boundary": {
+    "legacy_mechanics_rows": 63,
+    "current_p5_statistics_rows": 80,
+    "note": "The shard is mixed: W16-W18 standard Paper 5 rows are legacy Mechanics 2; W20-W23 standard Paper 5 rows are current Paper 5 Probability and Statistics 1."
+  },
+  "shard_local_inventory_correction": {
+    "status": "applied_to_input_manifest_only",
+    "storage_key": "9709/w18_qp_52/questions/q02.png",
+    "corrected_item_count": 143,
+    "note": "The original inventory omitted W18 QP52 q02; page-chain found the printed question and this shard input manifest includes it without broadening to global inventory remediation."
+  },
+  "authority_preflight": {
+    "status": "pass",
+    "blockers": 0,
+    "warnings": 286,
+    "warning_reason_counts": {
+      "manifest_primary_topic_missing_sidecar_canonical_present": 143,
+      "paper_5_or_6_in_authority_ready_batch": 143
+    },
+    "path": "docs/reports/2026-06-01-9709-p5-w-standard-001-release-preflight-final.json"
+  },
+  "boundary": "Shard-scoped only; does not claim full Paper 5 or full 9709 production readiness."
+}

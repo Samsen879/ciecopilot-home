@@ -1,0 +1,1349 @@
+{
+  "schema_version": "9709_page_chain_shard_lane_results_v1",
+  "source_manifest_id": "9709_full_scaleout_manifest_v1_p6_s_watermarked_001",
+  "triaged_manifest_id": "9709_full_scaleout_manifest_v1_p6_s_watermarked_001_page_chain_surface_v1",
+  "generated_on": "2026-06-01",
+  "results": [
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_61/questions/q01.png",
+      "input_asset_hash": "5fb02de96bdb5479549d5cfbf2517a01a421a7c063026e8fc61a0d59c3c67f8c",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 The lengths, X centimetres, of a random sample of 7 leaves from a certain variety of tree are as follows.\n5.2 4.8 5.5 6.1 4.8 3.9 4.4\n(a) Calculate unbiased estimates of the population mean and variance of X. [3]\n\nIt is now given that the true value of the population variance of X is 0.55, and that X has a normal distribution.\n\n(b) Find a 95% confidence interval for the population mean of X. [3]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_61.pdf",
+              "q_number=1",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' explicitly printed at start of line",
+              "Data list follows immediately",
+              "(a) subpart label present",
+              "Text 'It is now given...' continues logical flow from (a)",
+              "(b) subpart label appears after explanatory sentence",
+              "Same question number context (no new Q number)"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_61/questions/q02.png",
+      "input_asset_hash": "bbccc3718cce1b3438d244d674715254dd2f9439bbd7039e04daa1a735f125b7",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 In the past the yield of a certain crop, in tonnes per hectare, had mean 0.56 and standard deviation 0.08. Following the introduction of a new fertilizer, the farmer intends to test at the 2.5% significance level whether the mean yield has increased. He finds that the mean yield over 10 years is 0.61 tonnes per hectare.\n\n(a) State two assumptions that are necessary for the test. [2]\n\n(b) Carry out the test. [5]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_61.pdf",
+              "q_number=2",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '2' printed at left margin",
+              "Full question stem and both subparts (a) and (b) present with mark allocations",
+              "No continuation indicators like '...', 'continued', or dangling sentence"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_61/questions/q03.png",
+      "input_asset_hash": "6865485540223315ab283607583822dfd4caa1d97739782c7fbaaead88ba39a5",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 The masses, in kilograms, of large sacks of flour and small sacks of flour have the independent distributions N(40, 1.5²) and N(12, 0.7²) respectively.\n\n(a) Find the probability that the total mass of 6 randomly chosen large sacks of flour is more than 245 kg.\n(b) Find the probability that the mass of a randomly chosen large sack of flour is less than 4 times the mass of a randomly chosen small sack of flour."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 6
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_61.pdf",
+              "q_number=3",
+              "page_indices=[3, 4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '3' at top-left",
+              "No continuation indicator from prior page",
+              "Subpart (a) present with answer space below",
+              "Subpart label '(b)' follows carried open question 3; no new question number printed; answer space continues below; previous state indicated open_q_number=3 and subpart (a) was on prior page."
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_61/questions/q04.png",
+      "input_asset_hash": "193d7560cf18f78a66f3151fcea6d3086b74b373cf9c96f2b083f23a4e6e5f41",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 A fair spinner has five sides numbered 1, 2, 3, 4, 5. The score on one spin is denoted by X.\n(a) Show that Var(X) = 2.\nFiona has another spinner, also with five sides numbered 1, 2, 3, 4, 5. She suspects that it is biased so that the expected score is less than 3. In order to test her suspicion, she plans to spin her spinner 40 times. If the mean score is less than 2.6 she will conclude that her spinner is biased in this way.\n(b) Find the probability of a Type I error.\n(c) State what is meant by a Type II error in this context."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              },
+              {
+                "label": "(c)",
+                "marks": 1
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_61.pdf",
+              "q_number=4",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '4' printed at left margin",
+              "New question stem begins with 'A fair spinner...'",
+              "Subpart (a) present",
+              "No new question number; continues from Q4",
+              "Text follows logically from (a)",
+              "Subpart label '(b)' explicitly present",
+              "Answer space continues below",
+              "Page starts with '(c)' label, indicating continuation of Question 4; previous state had open_q_number=4 and open_subpart_label='(b)'; no new question number visible"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_61/questions/q05.png",
+      "input_asset_hash": "bd85aa38f2b1f6f93b4a2505b19a57505123542c216d766ba63fe0f25733b839",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 Each week a sports team plays one home match and one away match. In their home matches they score goals at a constant average rate of 2.1 goals per match. In their away matches they score goals at a constant average rate of 0.8 goals per match. You may assume that goals are scored at random times and independently of one another.\n\n(a) A week is chosen at random.\n\n(i) Find the probability that the team scores a total of 4 goals in their two matches. [2]\n\n(ii) Find the probability that the team scores a total of 4 goals, with more goals scored in the home match than in the away match. [3]\n(b) Use a suitable approximating distribution to find the probability that the team scores fewer than 25 goals in 10 randomly chosen weeks.\n(c) Justify the use of the approximating distribution used in part (b)."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 1
+              },
+              {
+                "label": "(c)"
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_61.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at left margin",
+              "New question stem begins with 'Each week a sports team...'",
+              "No continuation markers like 'Hence', 'Show', or subpart labels from prior question",
+              "Page continues Question 5 from previous page; subpart (b) appears after prior (ii) which was last seen on page 8",
+              "No new question number printed at top of page",
+              "Subpart (c) directly follows (b) without new question number",
+              "Answer space below indicates continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_61/questions/q06.png",
+      "input_asset_hash": "5e7dcf5d0bb4dd1b9c5da219ab7bf635f99d64a5b7af15997f7bf1c8be81f921",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 The length of time, T minutes, that a passenger has to wait for a bus at a certain bus stop is modelled by the probability density function given by\n\nf(t) = { 3/4000 (20t - t^2)   0 ≤ t ≤ 20,\n         { 0                  otherwise.\n\n(a) Sketch the graph of y = f(t).\n(d) It is given that P(T < 10 + a) = p, where 0 < a < 10.\nFind P(10 − a < T < 10 + a) in terms of p.\n(e) Find P(8 < T < 12).\n(f) Give one reason why this model may be unrealistic."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 1
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              },
+              {
+                "label": "(d)",
+                "marks": 2
+              },
+              {
+                "label": "(e)",
+                "marks": 3
+              },
+              {
+                "label": "(f)",
+                "marks": 1
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_61.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed at left margin",
+              "Full question stem and part (a) visible",
+              "Parts (b) and (c) follow sequentially on same page",
+              "Answer space for (c) extends to bottom with dotted lines, indicating continuation",
+              "Page continues Question 6 from previous page; (d) is sequential after (c); no new question number visible at top",
+              "(e) follows (d) without break; same question context; no new question number",
+              "(f) is final subpart of Q6; answer space continues below with dotted lines; page ends with footer but no 'End of Question' marker"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_62/questions/q01.png",
+      "input_asset_hash": "767f789db1d45ef286ac367ca9e376bcf5f8b600cee7d847c4e83266a7348a17",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 The masses, in grams, of plums of a certain type have the distribution N(40.4, 5.2²). The plums are packed in bags, with each bag containing 6 randomly chosen plums. If the total weight of the plums in a bag is less than 220 g the bag is rejected.\n\nFind the percentage of bags that are rejected."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_62.pdf",
+              "q_number=1",
+              "page_indices=[1]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' explicitly printed at start of line",
+              "Full question stem and instruction present",
+              "Marks bracket [4] visible after instruction"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_62/questions/q02.png",
+      "input_asset_hash": "c2e9fbe2830d577f18281f69f0405defca6446fb8157fa1c1c7904a69d9fc384",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 A shop obtains apples from a certain farm. It has been found that 5% of apples from this farm are Grade A. Following a change in growing conditions at the farm, the shop management plan to carry out a hypothesis test to find out whether the proportion of Grade A apples has increased. They select 25 apples at random. If the number of Grade A apples is more than 3 they will conclude that the proportion has increased.\n\n(a) State suitable null and alternative hypotheses for the test. [1]\n\n(b) Find the probability of a Type I error. [3]\n\nIn fact 2 of the 25 apples were Grade A.\n\n(c) Which of the errors, Type I or Type II, is possible? Justify your answer. [2]"
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 2
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_62.pdf",
+              "q_number=2",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '2' at top-left",
+              "Text describes full hypothesis test scenario with three subparts",
+              "No prior question visible on this page; previous carry state was q=1, but new printed '2' overrides"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_62/questions/q03.png",
+      "input_asset_hash": "1a00b94fd4e463ecd0b1c9175d8d9ead566565c246ce27b93484caa51ac73764",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 In the data-entry department of a certain firm, it is known that 0.12% of data items are entered incorrectly, and that these errors occur randomly and independently.\n\n(a) A random sample of 3600 data items is chosen. The number of these data items that are incorrectly entered is denoted by X.\n\n(i) State the distribution of X, including the values of any parameters.\n\n(ii) State an appropriate approximating distribution for X, including the values of any parameters.\n\nJustify your choice of approximating distribution.\n\n(iii) Use your approximating distribution to find P(X > 2).\n(b) Another large random sample of n data items is chosen. The probability that the sample contains no data items that are entered incorrectly is more than 0.1.\n\nUse an approximating distribution to find the largest possible value of n."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(i)",
+                "marks": 3
+              },
+              {
+                "label": "(ii)",
+                "marks": 2
+              },
+              {
+                "label": "(iii)",
+                "marks": 3
+              },
+              {
+                "label": "(b)"
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_62.pdf",
+              "q_number=3",
+              "page_indices=[3, 4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '3' at top-left",
+              "No continuation markers like 'Hence', 'Find', etc. from prior question",
+              "Full new question stem and subparts (a)(i)-(iii) present",
+              "Printed label '(b)' indicates continuation of question 3",
+              "Carry state shows open_q_number=3 and open_subpart_label='(iii)', but page starts with '(b)', suggesting subpart reset or renumbering; however, context implies this is still part of Q3 as no new question number appears"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_62/questions/q04.png",
+      "input_asset_hash": "bde0c023555fa0b33bb8ebe381b06c9d69084c81061bea3b72bbdc6fb187b4a9",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 The score on one spin of a 5-sided spinner is denoted by the random variable X with probability distribution as shown in the table.\n\n\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline\nx & 0 & 1 & 2 & 3 & 4 \\\\\n\\hline\nP(X = x) & 0.1 & 0.2 & 0.4 & 0.2 & 0.1 \\\\\n\\hline\n\\end{tabular}\n\n(a) Show that Var(X) = 1.2.\nThe spinner is spun 200 times. The score on each spin is noted and the mean, $\\bar{X}$, of the 200 scores is found.\n\n(b) Given that P($\\bar{X} > a$) = 0.1, find the value of $a$.\n(c) Explain whether it was necessary to use the Central Limit theorem in your answer to part (b).\n(d) Johann has another, similar, spinner. He suspects that it is biased so that the mean score is less than 2. He spins his spinner 200 times and finds that the mean of the 200 scores is 1.86.\n\nGiven that the variance of the score on one spin of this spinner is also 1.2, test Johann's suspicion at the 5% significance level."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              },
+              {
+                "label": "(c)",
+                "marks": 1
+              },
+              {
+                "label": "(d)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_62.pdf",
+              "q_number=4",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '4' at start of page",
+              "New table and part (a) clearly belong to Q4",
+              "No new printed question number",
+              "Text follows directly from Q4(a)",
+              "Subpart label '(b)' indicates continuation of Q4",
+              "Printed label '(c)' follows previous subpart '(b)' from carry state",
+              "Text refers explicitly to 'part (b)', confirming continuation of Q4",
+              "Printed label '(d)' directly follows '(c)' on same page",
+              "No new question number printed; context continues Q4",
+              "Content logically extends hypothesis testing theme of Q4"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_62/questions/q05.png",
+      "input_asset_hash": "1bd8150d4393cece68704abe8150aff6f5680d2fdf668aa9c7cbcd982126e9cc",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 (a) The random variable X has the distribution Po(λ).\n(i) State the values that X can take.\nIt is given that P(X = 1) = 3 × P(X = 0).\n(ii) Find λ.\n(iii) Find P(4 ≤ X ≤ 6).\n(b) The random variable Y has the distribution Po(μ) where μ is large. Using a suitable approximating distribution, it is found that P(Y < 46) = 0.0668, correct to 4 decimal places.\n\nFind μ."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(i)",
+                "marks": 1
+              },
+              {
+                "label": "(ii)",
+                "marks": 2
+              },
+              {
+                "label": "(iii)",
+                "marks": 5
+              },
+              {
+                "label": "(b)"
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_62.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '5' at top-left",
+              "Subparts (a)(i), (ii), (iii) follow sequentially",
+              "No prior question 5 on previous pages per carry state",
+              "Printed label '(b)' indicates continuation of question 5",
+              "No new printed question number appears on this page",
+              "Question ends with 'Find μ.' and mark allocation [5]"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_62/questions/q06.png",
+      "input_asset_hash": "300a480761289009b8e1c2e5edf999c7603b4a73cc779aed7873d07db8369633",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6 A random variable X has probability density function given by\nf(x) = { k/x²   1 ≤ x ≤ a,\n         0      otherwise,\nwhere k and a are positive constants.\n(a) Show that k = a/(a−1).\n(b) Find E(X) in terms of a.\n(c) Find the 60th percentile of X in terms of a."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_62.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed at left margin",
+              "New question stem begins with 'A random variable X...'",
+              "Subpart (a) present with mark allocation [3]",
+              "Subpart label '(b)' follows directly after (a)",
+              "Same question number 6 context",
+              "Mark allocation [3] shown",
+              "Label '(c)' indicates continuation of Question 6",
+              "No new question number visible on page",
+              "Carried state shows open_q_number=6"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_63/questions/q01.png",
+      "input_asset_hash": "8cc5c3e6a4ae809e090dc64b8cfed3919effc250dae41e8ca5958219f4f5f8cb",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "1 A random sample of 100 values of a variable X is taken. These values are summarised below.\n\nn = 100    Σx = 1556    Σx² = 29 004\n\nCalculate unbiased estimates of the population mean and variance of X."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_63.pdf",
+              "q_number=1",
+              "page_indices=[2]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '1' explicitly printed at start of line",
+              "No prior open question in carry state",
+              "Text begins with full question statement and data"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_63/questions/q02.png",
+      "input_asset_hash": "4ee1e7d6b48328015b00988e127a9e9f84e69986db10ef11cb6a23edc4a3e34b",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "2 Each day at the gym, Sarah completes three runs. The distances, in metres, that she completes in the three runs have the independent distributions W ~ N(1520, 450), X ~ N(2250, 720) and Y ~ N(3860, 1050).\n\nFind the probability that, on a particular day, Y is less than the total of W and X."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_63.pdf",
+              "q_number=2",
+              "page_indices=[3]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '2' at start of page",
+              "No prior question visible on this page",
+              "Dotted answer lines indicate continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_63/questions/q03.png",
+      "input_asset_hash": "eabab1b04c19caa5b2e7246b9988a0caad3239b8605b48fc6c4f4bd71ec8ba9c",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "3 The number of customers who visit a particular shop between 9.00 am and 10.00 am has the distribution Po(λ). In the past the value of λ was 5.2. Following some new advertising, the manager wishes to test whether the value of λ has increased. He chooses a random sample of 20 days and finds that the total number of customers who visited the shop between 9.00 am and 10.00 am on those days is 125.\n\nUse an approximating distribution to test at the 2.5% significance level whether the value of λ has increased."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 6
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_63.pdf",
+              "q_number=3",
+              "page_indices=[4]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '3' at start of page",
+              "Full question statement with instruction and mark allocation [6]"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_63/questions/q04.png",
+      "input_asset_hash": "e3fb14f324275a160382fa3e4bad30c8c38f6fd1f3dc09f7e8ee4a9f6e076d8c",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "4 The random variable A has the distribution Po(1.5). A₁ and A₂ are independent values of A.\n(a) Find P(A₁ + A₂ < 2).\n(b) Given that A₁ + A₂ < 2, find P(A₁ = 1).\n(c) Give a reason why A₁ − A₂ cannot have a Poisson distribution."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              },
+              {
+                "label": "(c)",
+                "marks": 1
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_63.pdf",
+              "q_number=4",
+              "page_indices=[5, 6]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Printed question number '4' at top-left",
+              "Subpart '(a)' clearly labeled",
+              "Dotted answer lines continue to bottom of page",
+              "Subpart '(b)' follows directly after (a)",
+              "Same question number context (no new printed number)",
+              "Dotted lines continue below",
+              "Subpart (c) of question 4 appears at bottom of page; dotted lines continue below; no new question number visible"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_63/questions/q05.png",
+      "input_asset_hash": "58ea9eb7d2ef5099e0553c2044a6054a916596c7b6ef2791071eb90bafe9bb3f",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "5 Sunita has a six-sided die with faces marked 1, 2, 3, 4, 5, 6. The probability that the die shows a six on any throw is p. Sunita throws the die 500 times and finds that it shows a six 70 times.\n\n(a) Calculate an approximate 99% confidence interval for p. [4]\n\n(b) Sunita believes that the die is fair. Use your answer to part (a) to comment on her belief. [1]\n(c) Sunita uses the result of her 500 throws to calculate an α% confidence interval for p. This interval has width 0.04.\n\nFind the value of α."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 1
+              },
+              {
+                "label": "(c)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_63.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '5' printed at left margin",
+              "New question stem begins with 'Sunita has a six-sided die...'",
+              "Subparts (a) and (b) fully present with mark allocations",
+              "No dotted lines or continuation indicators at bottom",
+              "Label '(c)' matches expected subpart after (b)",
+              "No new question number visible on page",
+              "Question 5 was open from previous page",
+              "Marks bracket [5] appears at end of part (c)",
+              "No continuation lines or 'continued' indicator below"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_63/questions/q06.png",
+      "input_asset_hash": "70dda87eff36692bca976c5b03114b9e1fb1f9f09a02f7b3e4bb917a69c53f08",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "6  The length, X centimetres, of worms of a certain type is modelled by the probability density function\nf(x) = { 6/125 (10−x)(x−5)   5 ≤ x ≤ 10,\n         0                  otherwise.\n(a)  State the value of E(X).                                                  [1]\n(b)  Find Var(X).                                                              [3]\n(c) Two worms of this type are chosen at random.\nFind the probability that exactly one of them has length less than 6 cm."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_63.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '6' printed at start of page",
+              "New question stem with PDF-defined piecewise pdf",
+              "Subparts (a) and (b) present with mark allocations",
+              "Subpart label '(c)' follows previous subpart '(b)' from carry state",
+              "Question 6 is still open per carry_state",
+              "No new question number visible on page",
+              "Answer space (dotted lines) present but unfilled, indicating continuation"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "qwen3-vl-plus",
+      "prompt_template_version": "pdf_page_chain_v1",
+      "region": "dashscope-cn",
+      "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+      "api_key_scope": "DASHSCOPE_API_KEY",
+      "input_asset_id": "9709/s20_qp_63/questions/q07.png",
+      "input_asset_hash": "c5d2773e47fda57d15e76deddc6e5105f058bbb24a60b4b1ba2c98ccb1aff33f",
+      "response_schema_version": "question_evidence_bundle_v1_from_page_chain",
+      "confidence": 0.98,
+      "failure_reason": null,
+      "output": {
+        "summary": null,
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "7 A market researcher is investigating the length of time that customers spend at an information desk. He plans to choose a sample of 50 customers on a particular day.\n\n(a) He considers choosing the first 50 customers who visit the information desk.\n\nExplain why this method is unsuitable.\n\nThe actual lengths of time, in minutes, that customers spend at the information desk may be assumed to have mean μ and variance 4.8. The researcher knows that in the past the value of μ was 6.0. He wishes to test, at the 2% significance level, whether this is still true. He chooses a random sample of 50 customers and notes how long they each spend at the information desk.\n\n(b) State the probability of making a Type I error and explain what is meant by a Type I error in this context.\n(c) Given that the mean time spent at the information desk by the 50 customers is 6.8 minutes, carry out the test.\n(d) Give a reason why it was necessary to use the Central Limit theorem in your answer to part (c)."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 5
+              },
+              {
+                "label": "(d)",
+                "marks": 1
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/WM_9709_s20_qp_63.pdf",
+              "q_number=7",
+              "page_indices=[11, 12]"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "Question number '7' printed at left margin",
+              "New question stem begins with 'A market researcher...'",
+              "Subparts (a) and (b) present with mark allocations [1] and [2]",
+              "No visible continuation marker from prior question",
+              "Answer lines continue below (b), indicating continuation",
+              "Subpart (c) follows from prior subparts of Q7",
+              "No new question number visible on page",
+              "Answer space continues with dotted lines",
+              "Subpart (d) directly references part (c)",
+              "Same question context (information desk, 50 customers)",
+              "No new question number introduced"
+            ]
+          }
+        ],
+        "warnings": []
+      }
+    }
+  ]
+}

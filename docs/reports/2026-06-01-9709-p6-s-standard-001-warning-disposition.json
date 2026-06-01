@@ -1,0 +1,169 @@
+{
+  "schema_version": "9709_page_chain_warning_disposition_v1",
+  "shard_id": "p6_s_standard_001",
+  "generated_on": "2026-06-01",
+  "notes": [
+    "The initial 9709_s17_qp_61 payload missed q05-q07; a single-PDF retry recovered all 7 questions and replaced the incomplete payload before this disposition.",
+    "All listed warnings are subpart mark-count normalization issues verified from local PDF text pages; none is a question-boundary blocker."
+  ],
+  "items": [
+    {
+      "storage_key": "9709/s17_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 6,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s17_qp_61/9709_s17_qp_61_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s17_qp_61/9709_s17_qp_61_page_009.png"
+      ],
+      "raw_subpart_labels": ["(a)", "(i)", "(ii)", "(b)"],
+      "raw_marks": [4, 4, 3, 4],
+      "normalized_subpart_labels": ["(a)(i)", "(a)(ii)", "(b)"],
+      "normalized_marks": [4, 3, 4],
+      "review_reasons": ["The printed part (a) is a container for (i) and (ii); it has no separate mark allocation."],
+      "ambiguity_flags": ["nested_subpart_mark_normalization"],
+      "review_summary": "q06 spans local text pages 8-9. Printed marks are [4] for (a)(i), [3] for (a)(ii), and [4] for (b)."
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_63.pdf",
+      "q_number": 6,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s17_qp_63/9709_s17_qp_63_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s17_qp_63/9709_s17_qp_63_page_009.png"
+      ],
+      "raw_subpart_labels": ["(a)", "(i)", "(ii)", "(b)"],
+      "raw_marks": [2, 3, 2, 4],
+      "normalized_subpart_labels": ["(a)(i)", "(a)(ii)", "(b)(i)", "(b)(ii)"],
+      "normalized_marks": [2, 3, 2, 4],
+      "review_reasons": ["The printed parts (a) and (b) are containers for nested roman subparts."],
+      "ambiguity_flags": ["nested_subpart_mark_normalization"],
+      "review_summary": "q06 spans local text pages 8-9. Printed marks are [2] for (a)(i), [3] for (a)(ii), [2] for (b)(i), and [4] for (b)(ii)."
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 7,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s19_qp_61/9709_s19_qp_61_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s19_qp_61/9709_s19_qp_61_page_013.png"
+      ],
+      "raw_subpart_labels": ["(i)", "(ii)"],
+      "raw_marks": [4, 3, 3],
+      "normalized_subpart_labels": ["(i)", "(ii)", "(iii)"],
+      "normalized_marks": [4, 3, 3],
+      "review_reasons": ["The page-chain text omitted the printed (iii) label on the continuation page while retaining its [3] mark."],
+      "ambiguity_flags": ["cross_page_subpart_mark_normalization"],
+      "review_summary": "q07 spans local text pages 12-13. Printed marks are [4] for (i), [3] for (ii), and [3] for (iii)."
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 6,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": true,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s19_qp_62/9709_s19_qp_62_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s19_qp_62/9709_s19_qp_62_page_009.png"
+      ],
+      "raw_subpart_labels": ["(i)", "(ii)", "(iii)", "(a)", "(b)"],
+      "raw_marks": [2, 3, 4, 1],
+      "normalized_subpart_labels": ["(i)", "(ii)", "(iii)(a)", "(iii)(b)"],
+      "normalized_marks": [2, 3, 4, 1],
+      "review_reasons": ["The printed part (iii) is a container for (a) and (b); the mark allocations belong to those nested parts."],
+      "ambiguity_flags": ["nested_subpart_mark_normalization"],
+      "review_summary": "q06 spans local text pages 8-9. Printed marks are [2] for (i), [3] for (ii), [4] for (iii)(a), and [1] for (iii)(b)."
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 7,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s19_qp_62/9709_s19_qp_62_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s19_qp_62/9709_s19_qp_62_page_011.png"
+      ],
+      "raw_subpart_labels": ["(a)", "(b)"],
+      "raw_marks": [3],
+      "normalized_subpart_labels": ["(a)", "(b)(i)", "(b)(ii)"],
+      "normalized_marks": [3, 3, 4],
+      "review_reasons": ["The page-chain text omitted the nested (b)(i) and (b)(ii) mark allocations on the continuation page."],
+      "ambiguity_flags": ["cross_page_subpart_mark_normalization", "nested_subpart_mark_normalization"],
+      "review_summary": "q07 spans local text pages 10-11. Printed marks are [3] for (a), [3] for (b)(i), and [4] for (b)(ii)."
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 3,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s21_qp_63/9709_s21_qp_63_page_005.png"
+      ],
+      "raw_subpart_labels": ["(a)", "(a)(i)", "(a)(ii)", "(b)"],
+      "raw_marks": [1, 4, 1],
+      "normalized_subpart_labels": ["(a)(i)", "(a)(ii)", "(b)"],
+      "normalized_marks": [1, 4, 1],
+      "review_reasons": ["The printed part (a) is a container for (i) and (ii); it has no separate mark allocation."],
+      "ambiguity_flags": ["nested_subpart_mark_normalization"],
+      "review_summary": "q03 is on local text page 5. Printed marks are [1] for (a)(i), [4] for (a)(ii), and [1] for (b)."
+    },
+    {
+      "storage_key": "9709/s23_qp_63/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_63.pdf",
+      "q_number": 8,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s23_qp_63/9709_s23_qp_63_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s23_qp_63/9709_s23_qp_63_page_013.png"
+      ],
+      "raw_subpart_labels": ["(a)", "(b)", "(c)", "(d)"],
+      "raw_marks": [6, 2, 2, 1, 2],
+      "normalized_subpart_labels": ["(a)", "(b)", "(c)", "(d)"],
+      "normalized_marks": [6, 2, 1, 2],
+      "review_reasons": ["The raw mark list duplicated a [2] allocation; local PDF text shows four printed subparts."],
+      "ambiguity_flags": ["cross_page_subpart_mark_normalization"],
+      "review_summary": "q08 spans local text pages 12-13. Printed marks are [6] for (a), [2] for (b), [1] for (c), and [2] for (d)."
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 2,
+      "warning": "subpart_mark_count_mismatch",
+      "disposition": "accepted_with_normalized_structure",
+      "blocker": false,
+      "diagram_present": false,
+      "reviewed_rendered_pages": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/rendered/9709_s24_qp_63/9709_s24_qp_63_page_003.png"
+      ],
+      "raw_subpart_labels": ["(a)", "(b)"],
+      "raw_marks": [3, 1, 1],
+      "normalized_subpart_labels": ["(a)", "(b)"],
+      "normalized_marks": [3, 1],
+      "review_reasons": ["The raw mark list duplicated the [1] allocation for part (b)."],
+      "ambiguity_flags": ["single_page_mark_deduplication"],
+      "review_summary": "q02 is on local text page 3. Printed marks are [3] for (a) and [1] for (b)."
+    }
+  ]
+}

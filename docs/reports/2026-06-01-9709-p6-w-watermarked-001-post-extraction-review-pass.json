@@ -1,0 +1,236 @@
+{
+  "schema_version": "9709_page_chain_shard_post_extraction_review_v1",
+  "generated_on": "2026-06-01",
+  "shard_id": "p6_w_watermarked_001",
+  "status": "pass",
+  "inputs": {
+    "manifest": "data/manifests/9709_p6_w_watermarked_001_page_chain_surface_v1.json",
+    "projection": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-page-chain-projection.json",
+    "evidence_bundles": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-evidence-bundles.json",
+    "human_dispositions": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-operator-visual-dispositions.json"
+  },
+  "summary": {
+    "manifest_items": 21,
+    "projection_items": 21,
+    "evidence_bundle_items": 21,
+    "human_disposition_items": 21,
+    "blockers": 0,
+    "warnings": 0,
+    "human_review_items": 0,
+    "accepted_human_dispositions": 21,
+    "manual_review_reason_counts": {}
+  },
+  "blockers": [],
+  "warnings": [],
+  "human_review_queue": [],
+  "accepted_human_dispositions": [
+    {
+      "storage_key": "9709/w19_qp_61/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Watermark present at bottom (teacher WeChat info), but does not impair legibility or question content. Question is fully contained in one crop; no continuation pages needed. Diagram/table not required for this question type.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_61/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single-page question (Q2) fully legible; both parts (i) and (ii) present with clear text and answer lines; watermark does not impair readability or question integrity; no diagram/table required per review reasons."
+    },
+    {
+      "storage_key": "9709/w19_qp_61/questions/q03.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; continuation from crop 1/2 to crop 2/2 is clear and uninterrupted. Question boundary intact. No diagrams or tables required for this question type, so diagram_presence_accepted is true by default. Watermark present but does not impair legibility or content integrity.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_61/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Watermark present but does not impair legibility or question integrity; multi-page question fully captured across two labeled crops with clear continuity; all parts (i), (ii), (iii) present and legible; diagram/table presence not required for this question type (only a probability distribution table, which is included).']"
+    },
+    {
+      "storage_key": "9709/w19_qp_61/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: [\"Diagram present (cumulative frequency graph in crop 1/2, box-and-whisker plot in crop 2/2) satisfying 'diagram_lane' requirement.\", 'Multi-page question: crop 1/2 contains parts (i)–(ii), crop 2/2 contains parts (iii)–(iv); continuity is clear and legible; printed continuation page (page 9) is present.', 'Watermark present but does not impair legibility or question integrity.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_61/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts i, ii on page 1; part iii on page 2) is fully present and legible.', \"Question boundary intact: starts with '6 (i)' and ends with part (iii) on second crop.\", 'No diagrams or tables required per question content; none expected.', 'Cross-page continuity confirmed: part (iii) logically follows from prior parts and references the same word STEEPLECHASE.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_61/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; continuation from crop 1/2 to crop 2/2 is clear and uninterrupted. Question boundary intact. No diagram/table required per review reasons, none present but not expected. Watermark present but does not impair legibility.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_62/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Watermark present at bottom (non-intrusive, does not obscure question content). Question is fully legible, complete, and self-contained on a single page. No diagrams/tables required per question text; cross-page continuity not applicable."
+    },
+    {
+      "storage_key": "9709/w19_qp_62/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single crop stack (1/1) contains full question 2 with both parts (i) and (ii); text is legible, question boundary intact, no diagrams required per content; watermark present but does not impair legibility or completeness."
+    },
+    {
+      "storage_key": "9709/w19_qp_62/questions/q03.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Diagram lane present: grid for histogram (part i) is included and legible.', 'Multi-page question confirmed: part (i) on first crop, part (ii) on second crop; continuity is clear and both pages are present and legible.', 'Watermark present but does not impair legibility or question integrity.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_62/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; part (i) on crop 1/2, part (ii) on crop 2/2; cross-page continuity is maintained; watermark present but does not impair legibility or question integrity.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_62/questions/q05.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; continuation from crop 1/2 to crop 2/2 is clear and uninterrupted. Question boundary intact. No diagrams or tables required per question text. Watermark present but does not impair legibility.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_62/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; cross-page continuity is maintained; question boundary intact; no diagrams/tables required per content']"
+    },
+    {
+      "storage_key": "9709/w19_qp_62/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (parts i–iv) spans two labeled crops; all parts present and legible. Question boundary intact. No diagrams/tables required per question content. Watermark present but does not impair legibility or completeness.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_63/questions/q01.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Watermark present at bottom (teacher WeChat notice), but does not impair visual legibility, question boundary, diagram presence, or cross-page continuity. Single crop contains full question with table and both parts (i) and (ii). Table is clear and complete. No missing continuation pages; question is self-contained on one page."
+    },
+    {
+      "storage_key": "9709/w19_qp_63/questions/q02.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Operator override accepted after targeted VLM review rejected only for the known watermarked-source posture. The same VLM result accepted the question boundary and stated that the question content is visually legible and complete; under the watermarked-shard contract, watermark alone is retained as source-risk evidence but is not a visual blocker when the question is legible and structurally intact. VLM notes: Watermark present at bottom (red text: '老师微信: liuxue119118...'), which violates clean-source requirement per review reason 'watermarked_source_pdf'. Question content is visually legible and complete (both parts (i) and (ii) present, no missing continuation), but watermark constitutes a blocker for quality review."
+    },
+    {
+      "storage_key": "9709/w19_qp_63/questions/q03.png",
+      "accepted_review_reasons": [
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: Single-page question crop (crop 1/1) contains full question text for Q3 with parts (i) and (ii), including all constraints and sub-questions. Visual legibility is high; question boundary is intact; no diagrams/tables required per content. Watermark present but does not impair readability or integrity of question content."
+    },
+    {
+      "storage_key": "9709/w19_qp_63/questions/q04.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; continuation from crop 1/2 to crop 2/2 is clear and uninterrupted. Question boundary intact. No diagram/table required per question content; visual legibility satisfactory despite watermark overlay.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_63/questions/q05.png",
+      "accepted_review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "warning_disposition",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; cross-page continuity verified.', 'Diagram lane present (grid for cumulative frequency graph) and usable.', 'Watermark present but does not impair legibility or question integrity.', 'Printed question number 5 matches storage key.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_63/questions/q06.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; cross-page continuity is maintained. Question boundary intact. Diagram/table not required for this question type; none expected. Watermark present but does not impair legibility or content integrity.']"
+    },
+    {
+      "storage_key": "9709/w19_qp_63/questions/q07.png",
+      "accepted_review_reasons": [
+        "multi_page_question",
+        "warning_disposition",
+        "watermarked_source_pdf"
+      ],
+      "reviewed_by": "codex_operator_visual_review_after_vlm_assist",
+      "reviewed_on": "2026-06-01",
+      "notes": "Accepted from targeted VLM visual review evidence. This is a VLM-assisted visual disposition for source legibility, question boundary, diagram presence, and cross-page continuity only; it is not authority alignment or production-ready approval. VLM notes: ['Multi-page question (2 crops) is complete and legible; cross-page continuity verified. Question boundary intact. No diagram/table required per question content. Watermark present but does not impair legibility.']"
+    }
+  ]
+}

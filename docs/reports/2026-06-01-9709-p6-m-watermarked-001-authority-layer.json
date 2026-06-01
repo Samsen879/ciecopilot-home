@@ -1,0 +1,62 @@
+{
+  "schema_version": "9709_operator_authority_layer_v1",
+  "generated_on": "2026-06-01",
+  "shard_id": "p6_m_watermarked_001",
+  "status": "approved",
+  "authority_sidecar": "data/manifests/9709_p6_m_watermarked_001_authority_sidecar_v1.json",
+  "runtime_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_p5_p6_v1.json",
+  "source_manifest": "data/manifests/9709_p6_m_watermarked_001_input_v1.json",
+  "projection_evidence": "docs/reports/2026-06-01-9709-p6-m-watermarked-001-page-chain-projection.json",
+  "visual_disposition": "docs/reports/2026-06-01-9709-p6-m-watermarked-001-operator-visual-disposition.md",
+  "rows": 7,
+  "seeded_topic_paths": [
+    {
+      "topic_path": "9709.p6.the_poisson_distribution",
+      "title": "The Poisson Distribution",
+      "section_code": "6.1",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.linear_combinations_of_random_variables",
+      "title": "Linear Combinations of Random Variables",
+      "section_code": "6.2",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.continuous_random_variables",
+      "title": "Continuous Random Variables",
+      "section_code": "6.3",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.sampling_and_estimation",
+      "title": "Sampling and Estimation",
+      "section_code": "6.4",
+      "family": "P6 Probability & Statistics 2"
+    },
+    {
+      "topic_path": "9709.p6.hypothesis_tests",
+      "title": "Hypothesis Tests",
+      "section_code": "6.5",
+      "family": "P6 Probability & Statistics 2"
+    }
+  ],
+  "topic_distribution": {
+    "9709.p6.the_poisson_distribution": 2,
+    "9709.p6.sampling_and_estimation": 1,
+    "9709.p6.hypothesis_tests": 2,
+    "9709.p6.continuous_random_variables": 1,
+    "9709.p6.linear_combinations_of_random_variables": 1
+  },
+  "review_method": "operator mapping from page-chain OCR, official syllabus section refs, and closed targeted visual review queue",
+  "p6_component_boundary": "P6 rows are Probability & Statistics 2. P5 prerequisite knowledge and Paper 3 calculus are allowed as assumptions but are not primary topic-path substitutes.",
+  "watermarked_source_boundary": "Watermarked source posture is accepted only after targeted/operator visual review verifies question boundary, legibility, and continuity.",
+  "authority_preflight": {
+    "status": "pending_release_preflight",
+    "expected_warnings": [
+      "manifest_primary_topic_missing_sidecar_canonical_present",
+      "paper_5_or_6_in_authority_ready_batch"
+    ]
+  },
+  "boundary": "This authority layer is shard-scoped and does not claim any other 9709 shard."
+}

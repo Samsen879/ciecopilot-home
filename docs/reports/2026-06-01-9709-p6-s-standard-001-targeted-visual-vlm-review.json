@@ -1,0 +1,2186 @@
+{
+  "schema_version": "9709_targeted_visual_vlm_review_v1",
+  "generated_on": "2026-06-01",
+  "shard_id": "p6_s_standard_001",
+  "source_review": "docs/reports/2026-06-01-9709-p6-s-standard-001-post-extraction-review.json",
+  "transport": "qwen_openai_client_v1",
+  "model": "qwen3-vl-plus",
+  "summary": {
+    "items": 77,
+    "accepted": 77,
+    "rejected": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/s16_qp_61/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s16_qp_61.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        1
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s16_qp_61/q02/q02_page_002.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s16_qp_61_questions_q02_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "diagram_lane"
+      ],
+      "vlm_notes": "Question 2 includes a probability distribution table (required for the question) and is fully legible. Question 3 follows immediately with clear parts (i) and (ii). No missing continuation pages; cross-page continuity is not applicable as only one page is present and all content for Q2 and Q3 fits within the crop. The 'diagram_lane' warning indicates a potential diagram expectation, but the question does not require a diagram—only a table, which is present and legible."
+    },
+    {
+      "storage_key": "9709/s16_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s16_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        1
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s16_qp_62/q05/q05_page_002.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s16_qp_62_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Diagram/table presence confirmed: a 2-row table with wind speed data for Bronlea and Rogate is clearly visible. The review reason 'diagram_lane' is satisfied as the table serves as the required diagrammatic representation of data. All parts (i)-(iii) are fully legible and intact within the single crop stack. No question boundary cut; printed question number 5 is present and complete.\"]"
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q04/q04_page_005.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_61_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Diagram lane present: grid for histogram is included and legible; question includes required table and two parts (i) and (ii); no missing continuation pages; all text and structure visually intact.']"
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_61_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (3 parts across 2 crops) is fully present and legible. Crop 1/2 contains part (i); crop 2/2 contains parts (ii) and (iii), with clear continuation. 'Turn over' marker confirms end of page. No diagram/table required per review reason, and none expected for this question type.\"]"
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_61_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "warning_disposition"
+      ],
+      "vlm_notes": "Multi-page question (6a and 6b) fully present in two labeled crops (crop 1/2 and crop 2/2). Question boundary intact, diagrams/tables not required for this question type, visual legibility acceptable. 'Turn over' marker present on second crop indicating expected continuation; no missing pages."
+    },
+    {
+      "storage_key": "9709/s17_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_61/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_61_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a), (b), and (c) are present and legible. Cross-page continuity is maintained with clear continuation from part (a)/(b) to part (c) on the second crop. No question boundary cut; diagrams/tables not required for this question type, and none are missing where expected.']"
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        2
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q02/q02_page_003.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_62_questions_q02_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Diagram present and legible; cumulative frequency graph clearly labeled with axes and curve. Question boundary intact. Single-page question; no cross-page continuity required. All parts (i)-(iii) visible and readable.']"
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_62_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (parts i, ii, iii) spans two labeled crops (1/2 and 2/2) in a single vertical stack image. All parts are present, legible, and sequentially continuous. No diagram or table is required for this question; text-only content is complete.']"
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_62_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. Both parts are legible, question boundary is intact, no diagrams/tables required per review reason, and cross-page continuity is preserved with clear continuation from part (i) to (ii).']"
+    },
+    {
+      "storage_key": "9709/s17_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_62/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_62_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (4 parts across 2 labeled crops) is fully present and legible. Cross-page continuity is maintained with clear part numbering (i–iv) and consistent formatting. No diagram or table is required per question content; text-only probability question is complete.']"
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_63_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "The stack contains two labeled crops (q05_crop_1/2 and q05_crop_2/2) forming a complete multi-page question. All parts (i), (ii), (iii) are present and legible. Cross-page continuity is maintained: part (i) ends on first crop, continuation with 'On average...' and parts (ii)/(iii) appear on second crop. No diagram or table is required per question content; visual legibility is satisfactory."
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_63_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "warning_disposition"
+      ],
+      "vlm_notes": "Multi-page question (Q6) spans two labeled crops (crop 1/2 and crop 2/2). Both parts (a) and (b) are fully present, legible, and maintain cross-page continuity. Question boundary is intact; no diagram/table required per content. Visual legibility is satisfactory."
+    },
+    {
+      "storage_key": "9709/s17_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s17_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        9,
+        10,
+        11
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q07/q07_page_011.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s17_qp_63/q07/q07_page_012.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s17_qp_63_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"The stack contains 3 labeled crops (q07 crop 1/3, 2/3, 3/3) covering the full question including diagram, parts (i)-(iv), and continuation note '[Question 7(iv) is printed on the next page.]'.\", 'Diagram is present and legible in crop 1/3; grid for cumulative frequency graph is provided in crop 2/3; part (iv) appears in crop 3/3 with clear continuation marker.', \"Cross-page continuity is maintained: part (ii) references 'the grid on the next page' (present in crop 2/3), and part (iv) is explicitly noted to be on the next page (present in crop 3/3).\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        3
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q02/q02_page_004.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_61_questions_q02_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Diagram (grid for box-and-whisker plot) is present and legible; question boundary intact; single-page question with no continuation required; all text and data clearly readable.']"
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_61_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both parts of question 4 are legible and continuous. Part (a) and part (b) are fully visible with clear text, no missing continuation pages. No diagrams or tables required for this question type; visual legibility is satisfactory.']"
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_61_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) is fully present and legible; part (i) on first crop, part (ii) on second crop with clear continuation; 'Turn over' marker confirms end of page 1; no diagram/table required per review reason\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q06/q06_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_61_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both parts legible, question boundary intact, no diagram/table required for this question type, cross-page continuity confirmed with clear continuation marker 'Turn over' and consistent formatting.\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_61/q07/q07_page_013.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_61_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (Q7) correctly split into two labeled crops (crop 1/2 and crop 2/2).', 'All parts (i)–(iv) are present and legible across both crops.', \"Question boundary is intact: starts with '7 Find the number...' and ends with '[Turn over]'.\", 'No diagram or table required per question content; none expected.']"
+    },
+    {
+      "storage_key": "9709/s18_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_62_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Diagram lane present: grid for histogram (part iii) is included and legible.', \"Multi-page question confirmed: parts (i), (ii), and (iii) span two labeled crops (q05 crop 1/2 and q05 crop 2/2); continuation page is present and legible with 'Turn over' indicator and page number 7.\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_62_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) is fully present and legible; continuation page includes 'Turn over' indicator and footer consistent with Cambridge format.\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_62/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_62_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (3 parts across 2 crops) is fully present and legible. Crop 1/2 contains parts (i) and (ii); crop 2/2 contains part (iii) and 'Turn over' marker. Question boundary intact, no missing continuation pages, diagrams/tables not required for this question type.\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q01.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 1,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        1
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q01/q01_page_002.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_63_questions_q01_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Diagram (grid for histogram) is present and legible; table and question text are fully visible; no page continuation needed as single-page question; printed question number 1 matches crop label.']"
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        3
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q03/q03_page_004.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_63_questions_q03_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Diagram present and legible; tree diagram matches description in text. Question boundary intact. Single crop (1/1) contains full question including diagram and both parts (i) and (ii).']"
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_63_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) verified: crop 1/2 contains part (i), crop 2/2 contains part (ii) and 'Turn over' marker; continuity is clear and legible; no diagram/table required per question text.\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_63_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both contain legible text, clear question boundary, no diagrams required for this question type, and cross-page continuity is maintained with part (i) on first crop and part (ii) on second crop including 'Turn over' indicator.\"]"
+    },
+    {
+      "storage_key": "9709/s18_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s18_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s18_qp_63/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s18_qp_63_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) is fully present and legible; continuation from crop 1/2 to crop 2/2 is clear with no missing content; question boundary intact; no diagrams required per review reason 'multi_page_question'\"]"
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_61_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Diagram present and legible (cumulative frequency graph with two curves labeled 'English' and 'Mathematics').\", \"Question spans two crops/pages (crop 1/2 and crop 2/2), both present and clearly continuous: question stem on first crop, instruction and answer space on second crop, with 'Turn over' indicating expected continuation.\", 'Printed question number 4 matches storage key context.', 'No question boundary cut; full question text and diagram visible.']"
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_61_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (parts (i) and (ii)) fully present in single stack image; continuation page labeled 'crop 2/2' includes part (ii) and '[Turn over]' marker, indicating completeness. All text legible, question boundary intact, no diagrams required for this question type.\"]"
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q06/q06_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_61_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (2 crops) is fully present and legible; continuation pages included with clear cross-page continuity; diagram/table not required for this question type; question boundary intact.']"
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q07/q07_page_013.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_61_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "warning_disposition"
+      ],
+      "vlm_notes": "Multi-page question (parts i, ii, iii) spans two labeled crops (1/2 and 2/2) in a single vertical stack. All parts are present, legible, and maintain cross-page continuity. Question boundary is intact; no diagram/table required per question content. 'Turn over' marker correctly placed at end of second crop."
+    },
+    {
+      "storage_key": "9709/s19_qp_61/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_61.pdf",
+      "q_number": 8,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        13,
+        14
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q08/q08_page_014.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_61/q08/q08_page_015.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_61_questions_q08_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (i)–(iv) are present, legible, and sequentially continuous. No diagram or table is required for this question; the text-only format is appropriate. Question boundary is intact (starts with '8' and ends after part (iv))."
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_62_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (i)–(iv) are present and legible. Cross-page continuity is maintained with clear continuation from page 1 to page 2, including the 'Turn over' marker on page 2. No diagram or table is required per the question text; only textual instructions and answer lines are present, which is appropriate for this question type.\"]"
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_62_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "diagram_lane",
+        "warning_disposition"
+      ],
+      "vlm_notes": "Question 6 spans two labeled crops (q06 crop 1/2 and q06 crop 2/2) in a single vertical stack. All parts (i), (ii), (iii)(a), (iii)(b) are present and legible. A grid for box-and-whisker plot is provided in (iii)(a). Cross-page continuity is maintained; no missing continuation pages. Diagram presence is satisfied by the grid. Visual legibility is acceptable despite minor compression artifacts."
+    },
+    {
+      "storage_key": "9709/s19_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_62/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_62_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "vlm_notes": "The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete Question 7 with parts (a) and (b)(i)(ii). All text is legible, question boundary is intact, no diagrams required per content, and cross-page continuity is present and clear."
+    },
+    {
+      "storage_key": "9709/s19_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_63_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) is fully present and legible; part (i) on first crop, part (ii) on second crop with clear continuation; 'Turn over' marker confirms end of page 2; question boundary intact; no diagrams required for this question type.\"]"
+    },
+    {
+      "storage_key": "9709/s19_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_63_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (i), (ii), (iii) are present and legible. No diagram or table is required per the question text; blank answer lines are appropriate. Cross-page continuity is maintained with clear continuation marker ('Turn over') and consistent formatting."
+    },
+    {
+      "storage_key": "9709/s19_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s19_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s19_qp_63/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s19_qp_63_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (i)–(iv) are present and legible. The table and instructions are fully visible. Cross-page continuity is maintained with clear continuation from part (i) to (iv).']"
+    },
+    {
+      "storage_key": "9709/s21_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_61_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) is fully present and legible; part (a) on crop 1/2, part (b) on crop 2/2; 'Turn over' marker confirms continuation; no diagram/table required per review reason\"]"
+    },
+    {
+      "storage_key": "9709/s21_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_61_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (parts (a) and (b)) fully present in single vertical stack; both crops legible, question boundary intact, no diagrams required per review reason']"
+    },
+    {
+      "storage_key": "9709/s21_qp_61/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_61.pdf",
+      "q_number": 8,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q08/q08_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_61/q08/q08_page_013.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_61_questions_q08_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"The stack contains two labeled crops (q08 crop 1/2 and q08 crop 2/2), covering the full question (parts a–e) with clear cross-page continuity. All text is legible, question boundary is intact, and no diagrams/tables are required per review reason 'multi_page_question'.\"]"
+    },
+    {
+      "storage_key": "9709/s21_qp_62/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_62.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q03/q03_page_005.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_62_questions_q03_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Diagram present and legible; labeled 'crop 1/1' in stack. Question boundary intact. No continuation pages needed (single-page question).\"]"
+    },
+    {
+      "storage_key": "9709/s21_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_62_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (2 crops) is fully present and legible. Crop 1/2 contains part (a); crop 2/2 contains parts (b) and (c), with clear continuation. Question boundary intact. No diagram/table required per review reason; none present, which is acceptable.']"
+    },
+    {
+      "storage_key": "9709/s21_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_62/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_62_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (parts a, b, c) fully present across two labeled crops (q07 crop 1/2 and q07 crop 2/2); all parts legible, question boundary intact, no diagrams required per question text, cross-page continuity maintained with clear part labeling and consistent formatting.']"
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q03/q03_page_005.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_63_questions_q03_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "warning_disposition"
+      ],
+      "vlm_notes": "Single-page crop stack; all parts (a)(i), (a)(ii), (b) present and legible. Question boundary intact. No diagram/table required per question content. Visual legibility sufficient for review purposes."
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_63_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"The crop stack contains two labeled pages (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a)–(d) are present and legible. Cross-page continuity is maintained with clear continuation from page 1 to page 2, including the 'Turn over' marker on page 2. No diagram or table is required for this question; the summary statistics and text are fully visible.\"]"
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_63_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": null,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) is fully present and legible; continuation from crop 1/2 to crop 2/2 is clear with no missing content; question boundary intact; no diagrams or tables required per review reason 'multi_page_question'\"]"
+    },
+    {
+      "storage_key": "9709/s21_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s21_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10,
+        11
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q06/q06_page_011.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s21_qp_63/q06/q06_page_012.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s21_qp_63_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": null,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (3 crops) is fully present and legible; cross-page continuity is maintained with clear continuation markers ('Turn over') and consistent formatting. All parts (a)–(d) are visible and complete. Diagram/table presence not required per review reason 'multi_page_question' and none is expected for this question type.\"]"
+    },
+    {
+      "storage_key": "9709/s22_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_61_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) correctly stacked; part (a) on first crop, part (b) on second crop with clear continuation; 'Turn over' marker present on second crop indicating expected end of question; all text legible and question boundary intact.\"]"
+    },
+    {
+      "storage_key": "9709/s22_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_61_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (2 crops) is fully present and legible; continuation from part (b) to (c) is clear with no missing content; question boundary intact; no diagrams/tables required per review reason']"
+    },
+    {
+      "storage_key": "9709/s22_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_61/q06/q06_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_61_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Two labeled crops (q06_crop_1/2 and q06_crop_2/2) present in a single vertical stack; both are legible and show full question parts (a)–(d). Cross-page continuity is maintained: part (d) appears on second crop with 'Turn over' marker, consistent with multi-page question format. No diagram/table is required per question text (only mentions 'graph of f(x)' but no actual figure is needed for the question as posed).\"]"
+    },
+    {
+      "storage_key": "9709/s22_qp_62/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_62.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_62_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a)–(e) are present and legible. Cross-page continuity is maintained: part (c) continues on second crop with the officer's note and parts (d)–(e) follow logically. No diagram or table is required per review reason 'multi_page_question', and none is missing. Question boundary is intact (starts at top of first crop, ends before 'Turn over' on second crop).\"]"
+    },
+    {
+      "storage_key": "9709/s22_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_62_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (3 parts across 2 crops) is fully present and legible. Crop 1/2 contains parts (a) and (b); crop 2/2 contains part (c) and 'Turn over' marker. Question boundary intact, no missing continuation pages. No diagram or table required per review reason 'multi_page_question'.\"]"
+    },
+    {
+      "storage_key": "9709/s22_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_62/q06/q06_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_62_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (parts (a) and (b)) correctly split across two labeled crops in a single stack image; both parts are fully legible, question boundary intact, no diagrams required per review reason, and cross-page continuity is clear with part (b) following part (a) without omission.']"
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        3,
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q03/q03_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q03/q03_page_005.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_63_questions_q03_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "The stack contains two labeled crops (q03 crop 1/2 and q03 crop 2/2) forming a complete multi-page question. All parts (a), (b), and (c) are present and legible. Cross-page continuity is maintained with clear continuation from page 1 to page 2, including the '[Turn over]' marker. No diagram or table is required for this question; none are missing."
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_63_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (parts (a) and (b)) fully present in vertical stack; both parts legible, question boundary intact, no diagrams required per review reason 'multi_page_question'\"]"
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_63_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (parts a, b, c) fully present across two labeled crops (q05 crop 1/2 and q05 crop 2/2); all parts legible, question boundary intact, no diagrams required per question text, cross-page continuity confirmed with clear continuation from part (b) to (c) and 'Turn over' indicator present.\"]"
+    },
+    {
+      "storage_key": "9709/s22_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s22_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s22_qp_63/q07/q07_page_013.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s22_qp_63_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a)(i)-(iii) and (b) are present and legible. Question boundary is intact. No diagram or table is required per the question text, so diagram_presence_accepted is true by default. Cross-page continuity is maintained with clear continuation from page 1 to page 2.']"
+    },
+    {
+      "storage_key": "9709/s23_qp_61/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_61.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        3,
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q02/q02_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q02/q02_page_005.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_61_questions_q02_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "The stack contains two labeled crops (crop 1/2 and crop 2/2) corresponding to question 2 parts (a), (b), and (c). All required diagrams (f(x), g(x), h(x)) are present and legible. Cross-page continuity is maintained: part (c) continues logically from the first crop, with clear page numbering (page 2 and page 5) and no missing content. The question boundary is intact; printed question number 2 is fully included. Diagram presence is confirmed per 'diagram_lane' requirement."
+    },
+    {
+      "storage_key": "9709/s23_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_61/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_61_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack contains two labeled crops (crop 1/2 and crop 2/2), both legible and sequentially continuous. Question boundary is intact. Diagram/table presence not required for this question type; none expected. All parts (a)–(e) are fully visible and readable across the two crops.']"
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q03.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 3,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        3,
+        4
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q03/q03_page_004.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q03/q03_page_005.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_62_questions_q03_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (2 crops) is fully present and legible. Crop 1/2 contains part (a); crop 2/2 contains part (b) with clear continuation text and no missing content. Question boundary intact. No diagram/table required per review reason, and none expected for this question type.']"
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_62_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (2 crops) is fully present and legible; continuity from part (c) to (d) is clear with proper continuation text and no missing content; question boundary intact; no diagrams/tables required per review reason, and none are expected for this question type.']"
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_62_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. Both parts are legible, question boundary is intact, no diagrams/tables required per review reason, and cross-page continuity is preserved with clear continuation from part (a) to part (b).']"
+    },
+    {
+      "storage_key": "9709/s23_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_62/q07/q07_page_013.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_62_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Two labeled crops (crop 1/2 and crop 2/2) present in vertical stack; both legible.', \"Diagram present for part (a) and part (b) as required by 'diagram_lane'.\", 'Question spans two pages (7 and 13), with clear continuation and page numbers visible; cross-page continuity maintained.']"
+    },
+    {
+      "storage_key": "9709/s23_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_63_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack image contains two labeled crops (crop 1/2 and crop 2/2), both legible and sequentially continuous.', \"Question boundary is intact: starts with printed question number 5 and ends with part (c) and '[Turn over]'.\", 'No diagram or table is present, which is consistent with the question content (purely textual/statistical).', 'Cross-page continuity is maintained: part (a) on first crop, parts (b) and (c) on second crop, with clear logical flow.']"
+    },
+    {
+      "storage_key": "9709/s23_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "diagram_lane"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        9
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q07/q07_page_010.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_63_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Diagram present and legible; labeled points A, B, O, axes, and semicircle clearly shown. Question boundary intact (includes printed number 7, full stem, parts (a) and (b), and footer). Single crop stack contains all required content for Q7; no missing continuation pages. Visual legibility is high: text, symbols, and diagram elements are sharp and readable.']"
+    },
+    {
+      "storage_key": "9709/s23_qp_63/questions/q08.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s23_qp_63.pdf",
+      "q_number": 8,
+      "review_reasons": [
+        "multi_page_question",
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q08/q08_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s23_qp_63/q08/q08_page_013.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s23_qp_63_questions_q08_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "warning_disposition"
+      ],
+      "vlm_notes": "Multi-page question (parts a–d) is fully present across two labeled crops in the stack. All text is legible, question boundary intact, no diagrams/tables required per context. Cross-page continuity is maintained with clear part labeling and continuation."
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q04.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 4,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q04/q04_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q04/q04_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_61_questions_q04_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (4a and 4b) correctly split across two labeled crops in a single stack image. Both parts are fully legible, question boundary intact, no diagrams/tables required per review reason, and cross-page continuity is clear (part (b) follows part (a) with proper numbering and context).']"
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q05/q05_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_61_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (2 crops) is fully present and legible; cross-page continuity is maintained with clear continuation from crop 1/2 to crop 2/2. Question boundary intact. No diagrams or tables required per review reason 'multi_page_question'.\"]"
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "diagram_lane",
+        "multi_page_question"
+      ],
+      "route": "diagram_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q06/q06_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_61_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Diagram present and legible (quarter circle in first quadrant, labeled axes and parameter 'a').\", \"Multi-page question: crop 1/2 contains parts (a) and (b); crop 2/2 contains part (c) and 'Turn over' marker — continuity confirmed.\", 'Question boundary intact: printed question number 6 visible at top; full question text and all parts included.']"
+    },
+    {
+      "storage_key": "9709/s24_qp_61/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_61.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        11,
+        12
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_61/q07/q07_page_013.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_61_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All text is legible, question boundary is intact, no diagrams/tables are required per review reason, and cross-page continuity is preserved with clear continuation from page 1 to page 2."
+    },
+    {
+      "storage_key": "9709/s24_qp_62/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_62.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_62_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Multi-page question (3 parts across 2 labeled crops) is fully present and legible. Cross-page continuity is maintained with clear part labeling (a), (b), (c) and consistent formatting. No diagram or table is required for this question; text-only content is complete and readable.']"
+    },
+    {
+      "storage_key": "9709/s24_qp_62/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_62.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_62_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"The stack contains two labeled crops (q06 crop 1/2 and q06 crop 2/2) forming a complete multi-page question. Both parts are legible, question boundary is intact, no diagrams/tables required per review reason, and cross-page continuity is clear with part (a) on first page and part (b) on second page including 'Turn over' indicator.\"]"
+    },
+    {
+      "storage_key": "9709/s24_qp_62/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_62.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_62/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_62_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a), (b), and (c) are present and legible. Cross-page continuity is maintained with no missing continuation pages. No diagram or table is required for this question; the PDF content is purely textual/mathematical and fully visible.']"
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q02.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 2,
+      "review_reasons": [
+        "warning_disposition"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        2
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q02/q02_page_003.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_63_questions_q02_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "warning_disposition"
+      ],
+      "vlm_notes": "Single-page question crop (crop 1/1) is fully legible, contains complete question text including parts (a) and (b), sample size (n=150), sample mean (3.12 cm), and 95% confidence interval [3.01, 3.23]. No diagram or table is present, but none is required for this question type. Question boundary is intact; no cut-off text. 'Turn over' and margin instructions are visible but do not interfere with question content."
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q05.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 5,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        5,
+        6
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q05/q05_page_006.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q05/q05_page_007.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_63_questions_q05_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"The stack contains two labeled crops (crop 1/2 and crop 2/2) forming a complete multi-page question. All parts (a), (b), and (c) are present and legible. 'Turn over' indicator confirms expected continuation. No diagram or table is required for this question; the PDF content matches standard probability density function question format.\"]"
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q06.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 6,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        7,
+        8
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q06/q06_page_008.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q06/q06_page_009.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_63_questions_q06_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (parts a–d) spans two labeled crops (crop 1/2 and crop 2/2) in a single vertical stack image. All parts are present, legible, and sequentially continuous. The 'Turn over' marker on crop 2/2 confirms expected continuation. No missing pages or cut-off content.\"]"
+    },
+    {
+      "storage_key": "9709/s24_qp_63/questions/q07.png",
+      "source_pdf_path": "data/past-papers/9709Mathematics/paper6/9709_s24_qp_63.pdf",
+      "q_number": 7,
+      "review_reasons": [
+        "multi_page_question"
+      ],
+      "route": "ocr_lane",
+      "page_indices": [
+        9,
+        10
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/review-crops/9709_s24_qp_63/q07/q07_page_011.png"
+      ],
+      "targeted_stack_image_path": "tmp/pdf-page-chain/full-scaleout/p6_s_standard_001/targeted-visual-review/s24_qp_63_questions_q07_targeted.png",
+      "vlm_status": "accepted",
+      "status": "accepted",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "diagram_presence_accepted": null,
+        "cross_page_continuity_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Multi-page question (parts a, b, c) fully present across two labeled crops in vertical stack; all parts legible and continuous; no missing continuation pages; question boundary intact; no diagrams/tables required per review reason 'multi_page_question'\"]"
+    }
+  ]
+}

@@ -411,6 +411,9 @@
 - `2026-06-01-9709-p6-w-standard-001-production-ready.md` - shard-scoped production-ready closeout for `p6_w_standard_001`, covering 144 Winter Paper 6 standard rows, shard-local retry recovery, authority sidecar, DB coverage, search gate, and final release preflight.
 - `2026-06-01-9709-p6-w-watermarked-001-production-ready.md` - shard-scoped production-ready closeout for `p6_w_watermarked_001`, covering 21 Winter 2019 Paper 6 watermarked rows, warning disposition, operator visual override for a watermarked-only reject, authority sidecar, DB coverage, search gate, and final release preflight.
 
+- `2026-06-02-9709-full-production-ready-aggregate-gate.json` - machine-readable final aggregate gate for the current 9709 surface-manifest inventory, confirming 36/36 shards, 2937/2937 rows, DB coverage, search gate, and release preflight pass with 0 blockers.
+- `2026-06-02-9709-full-production-ready-closeout.md` - final full 9709 production-ready closeout report, defining the 2937-row current-surface boundary, DB/search/release aggregate verdict, shard matrix, and non-claim over raw q01-q15 probe slots.
+
 ## RAG S2
 
 - `rag_current_state_2026-03-16.md` - reconstructed `S2` state, artifact recovery status, and remaining blockers.

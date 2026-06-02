@@ -1,0 +1,836 @@
+{
+  "schema_version": "9709_full_production_ready_aggregate_gate_v1",
+  "generated_on": "2026-06-02",
+  "status": "pass",
+  "verdict": "production-ready",
+  "scope": {
+    "subject_code": "9709",
+    "surface_shards": 36,
+    "current_surface_rows": 2937,
+    "original_2026_05_04_inventory_rows": 2935,
+    "inventory_note": "Current surface manifests contain 2937 rows after later correction/recovery: p2_s_standard_001 swapped three false-positive S16 rows for three printed S17 q02 rows, p5_w_standard_001 recovered w18_qp_52 q02, and p6_m_standard_001 recovered m21_qp_62 q04."
+  },
+  "summary": {
+    "blockers": 0,
+    "rows_by_paper": {
+      "p1": 649,
+      "p2": 433,
+      "p3": 618,
+      "p4": 412,
+      "p5": 409,
+      "p6": 416
+    },
+    "rows_by_session": {
+      "m": 438,
+      "s": 1322,
+      "w": 1177
+    },
+    "rows_by_source_type": {
+      "standard": 2595,
+      "watermarked": 342
+    },
+    "shards_by_paper": {
+      "p1": 6,
+      "p2": 6,
+      "p3": 6,
+      "p4": 6,
+      "p5": 6,
+      "p6": 6
+    },
+    "shards_by_source_type": {
+      "standard": 18,
+      "watermarked": 18
+    },
+    "db_coverage_sources": {
+      "production_ready_markdown_table": 4,
+      "json": 32
+    },
+    "gate_counts": {
+      "production_ready_report": 36,
+      "db_coverage": 36,
+      "search_gate": 36,
+      "release_preflight": 36
+    }
+  },
+  "blockers": [],
+  "shards": [
+    {
+      "shard_id": "p1_m_standard_001",
+      "paper": 1,
+      "session": "m",
+      "source_type": "standard",
+      "rows": 85,
+      "surface_manifest": "data/manifests/9709_p1_m_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-04-9709-p1-m-standard-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-04-9709-p1-m-standard-001-production-ready.md",
+      "db_coverage_source": "production_ready_markdown_table",
+      "search_gate_report": "docs/reports/2026-05-04-9709-p1-m-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-04-9709-p1-m-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 85
+    },
+    {
+      "shard_id": "p1_m_watermarked_001",
+      "paper": 1,
+      "session": "m",
+      "source_type": "watermarked",
+      "rows": 12,
+      "surface_manifest": "data/manifests/9709_p1_m_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-12-9709-p1-m-watermarked-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-12-9709-p1-m-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-12-9709-p1-m-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-12-9709-p1-m-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 12
+    },
+    {
+      "shard_id": "p1_s_standard_001",
+      "paper": 1,
+      "session": "s",
+      "source_type": "standard",
+      "rows": 259,
+      "surface_manifest": "data/manifests/9709_p1_s_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-07-9709-p1-s-standard-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-07-9709-p1-s-standard-001-production-ready.md",
+      "db_coverage_source": "production_ready_markdown_table",
+      "search_gate_report": "docs/reports/2026-05-07-9709-p1-s-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-07-9709-p1-s-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 259
+    },
+    {
+      "shard_id": "p1_s_watermarked_001",
+      "paper": 1,
+      "session": "s",
+      "source_type": "watermarked",
+      "rows": 33,
+      "surface_manifest": "data/manifests/9709_p1_s_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-15-9709-p1-s-watermarked-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-15-9709-p1-s-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-15-9709-p1-s-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-15-9709-p1-s-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 33
+    },
+    {
+      "shard_id": "p1_w_standard_001",
+      "paper": 1,
+      "session": "w",
+      "source_type": "standard",
+      "rows": 228,
+      "surface_manifest": "data/manifests/9709_p1_w_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-10-9709-p1-w-standard-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-10-9709-p1-w-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-10-9709-p1-w-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-10-9709-p1-w-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 228
+    },
+    {
+      "shard_id": "p1_w_watermarked_001",
+      "paper": 1,
+      "session": "w",
+      "source_type": "watermarked",
+      "rows": 32,
+      "surface_manifest": "data/manifests/9709_p1_w_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-28-9709-p1-w-watermarked-001-post-replacement-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-28-9709-p1-w-watermarked-001-post-replacement-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-28-9709-p1-w-watermarked-001-post-replacement-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-28-9709-p1-w-watermarked-001-post-replacement-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 32
+    },
+    {
+      "shard_id": "p2_m_standard_001",
+      "paper": 2,
+      "session": "m",
+      "source_type": "standard",
+      "rows": 57,
+      "surface_manifest": "data/manifests/9709_p2_m_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-30-9709-p2-m-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-30-9709-p2-m-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-30-9709-p2-m-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-30-9709-p2-m-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 57
+    },
+    {
+      "shard_id": "p2_m_watermarked_001",
+      "paper": 2,
+      "session": "m",
+      "source_type": "watermarked",
+      "rows": 7,
+      "surface_manifest": "data/manifests/9709_p2_m_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p2-m-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p2-m-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p2-m-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p2-m-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 7
+    },
+    {
+      "shard_id": "p2_s_standard_001",
+      "paper": 2,
+      "session": "s",
+      "source_type": "standard",
+      "rows": 173,
+      "surface_manifest": "data/manifests/9709_p2_s_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-30-9709-p2-s-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-30-9709-p2-s-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-30-9709-p2-s-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-30-9709-p2-s-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 173
+    },
+    {
+      "shard_id": "p2_s_watermarked_001",
+      "paper": 2,
+      "session": "s",
+      "source_type": "watermarked",
+      "rows": 23,
+      "surface_manifest": "data/manifests/9709_p2_s_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p2-s-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 23
+    },
+    {
+      "shard_id": "p2_w_standard_001",
+      "paper": 2,
+      "session": "w",
+      "source_type": "standard",
+      "rows": 151,
+      "surface_manifest": "data/manifests/9709_p2_w_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-30-9709-p2-w-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-30-9709-p2-w-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-30-9709-p2-w-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-30-9709-p2-w-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 151
+    },
+    {
+      "shard_id": "p2_w_watermarked_001",
+      "paper": 2,
+      "session": "w",
+      "source_type": "watermarked",
+      "rows": 22,
+      "surface_manifest": "data/manifests/9709_p2_w_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p2-w-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p2-w-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p2-w-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p2-w-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 22
+    },
+    {
+      "shard_id": "p3_m_standard_001",
+      "paper": 3,
+      "session": "m",
+      "source_type": "standard",
+      "rows": 83,
+      "surface_manifest": "data/manifests/9709_p3_m_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-05-9709-p3-m-standard-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-05-9709-p3-m-standard-001-production-ready.md",
+      "db_coverage_source": "production_ready_markdown_table",
+      "search_gate_report": "docs/reports/2026-05-05-9709-p3-m-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-05-9709-p3-m-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 83
+    },
+    {
+      "shard_id": "p3_m_watermarked_001",
+      "paper": 3,
+      "session": "m",
+      "source_type": "watermarked",
+      "rows": 10,
+      "surface_manifest": "data/manifests/9709_p3_m_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-15-9709-p3-m-watermarked-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-15-9709-p3-m-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-15-9709-p3-m-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-15-9709-p3-m-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 10
+    },
+    {
+      "shard_id": "p3_s_standard_001",
+      "paper": 3,
+      "session": "s",
+      "source_type": "standard",
+      "rows": 246,
+      "surface_manifest": "data/manifests/9709_p3_s_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-09-9709-p3-s-standard-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-09-9709-p3-s-standard-001-production-ready.md",
+      "db_coverage_source": "production_ready_markdown_table",
+      "search_gate_report": "docs/reports/2026-05-09-9709-p3-s-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-09-9709-p3-s-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 246
+    },
+    {
+      "shard_id": "p3_s_watermarked_001",
+      "paper": 3,
+      "session": "s",
+      "source_type": "watermarked",
+      "rows": 30,
+      "surface_manifest": "data/manifests/9709_p3_s_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-16-9709-p3-s-watermarked-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-16-9709-p3-s-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-16-9709-p3-s-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-16-9709-p3-s-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 30
+    },
+    {
+      "shard_id": "p3_w_standard_001",
+      "paper": 3,
+      "session": "w",
+      "source_type": "standard",
+      "rows": 219,
+      "surface_manifest": "data/manifests/9709_p3_w_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-10-9709-p3-w-standard-001-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-10-9709-p3-w-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-10-9709-p3-w-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-10-9709-p3-w-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 219
+    },
+    {
+      "shard_id": "p3_w_watermarked_001",
+      "paper": 3,
+      "session": "w",
+      "source_type": "watermarked",
+      "rows": 30,
+      "surface_manifest": "data/manifests/9709_p3_w_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-production-ready.md",
+      "db_coverage_report": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-28-9709-p3-w-watermarked-001-post-replacement-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 30
+    },
+    {
+      "shard_id": "p4_m_standard_001",
+      "paper": 4,
+      "session": "m",
+      "source_type": "standard",
+      "rows": 55,
+      "surface_manifest": "data/manifests/9709_p4_m_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-30-9709-p4-m-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-30-9709-p4-m-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-30-9709-p4-m-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-30-9709-p4-m-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 55
+    },
+    {
+      "shard_id": "p4_m_watermarked_001",
+      "paper": 4,
+      "session": "m",
+      "source_type": "watermarked",
+      "rows": 7,
+      "surface_manifest": "data/manifests/9709_p4_m_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p4-m-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p4-m-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p4-m-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p4-m-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 7
+    },
+    {
+      "shard_id": "p4_s_standard_001",
+      "paper": 4,
+      "session": "s",
+      "source_type": "standard",
+      "rows": 164,
+      "surface_manifest": "data/manifests/9709_p4_s_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-30-9709-p4-s-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-30-9709-p4-s-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-30-9709-p4-s-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-30-9709-p4-s-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 164
+    },
+    {
+      "shard_id": "p4_s_watermarked_001",
+      "paper": 4,
+      "session": "s",
+      "source_type": "watermarked",
+      "rows": 20,
+      "surface_manifest": "data/manifests/9709_p4_s_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p4-s-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p4-s-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p4-s-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p4-s-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 20
+    },
+    {
+      "shard_id": "p4_w_standard_001",
+      "paper": 4,
+      "session": "w",
+      "source_type": "standard",
+      "rows": 145,
+      "surface_manifest": "data/manifests/9709_p4_w_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-30-9709-p4-w-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-30-9709-p4-w-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-30-9709-p4-w-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-30-9709-p4-w-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 145
+    },
+    {
+      "shard_id": "p4_w_watermarked_001",
+      "paper": 4,
+      "session": "w",
+      "source_type": "watermarked",
+      "rows": 21,
+      "surface_manifest": "data/manifests/9709_p4_w_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p4-w-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p4-w-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p4-w-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p4-w-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 21
+    },
+    {
+      "shard_id": "p5_m_standard_001",
+      "paper": 5,
+      "session": "m",
+      "source_type": "standard",
+      "rows": 54,
+      "surface_manifest": "data/manifests/9709_p5_m_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p5-m-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p5-m-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p5-m-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p5-m-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 108
+    },
+    {
+      "shard_id": "p5_m_watermarked_001",
+      "paper": 5,
+      "session": "m",
+      "source_type": "watermarked",
+      "rows": 6,
+      "surface_manifest": "data/manifests/9709_p5_m_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p5-m-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p5-m-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p5-m-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p5-m-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 12
+    },
+    {
+      "shard_id": "p5_s_standard_001",
+      "paper": 5,
+      "session": "s",
+      "source_type": "standard",
+      "rows": 164,
+      "surface_manifest": "data/manifests/9709_p5_s_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p5-s-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p5-s-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p5-s-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p5-s-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 328
+    },
+    {
+      "shard_id": "p5_s_watermarked_001",
+      "paper": 5,
+      "session": "s",
+      "source_type": "watermarked",
+      "rows": 21,
+      "surface_manifest": "data/manifests/9709_p5_s_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-05-31-9709-p5-s-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 42
+    },
+    {
+      "shard_id": "p5_w_standard_001",
+      "paper": 5,
+      "session": "w",
+      "source_type": "standard",
+      "rows": 143,
+      "surface_manifest": "data/manifests/9709_p5_w_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p5-w-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p5-w-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p5-w-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p5-w-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 286
+    },
+    {
+      "shard_id": "p5_w_watermarked_001",
+      "paper": 5,
+      "session": "w",
+      "source_type": "watermarked",
+      "rows": 21,
+      "surface_manifest": "data/manifests/9709_p5_w_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p5-w-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 42
+    },
+    {
+      "shard_id": "p6_m_standard_001",
+      "paper": 6,
+      "session": "m",
+      "source_type": "standard",
+      "rows": 55,
+      "surface_manifest": "data/manifests/9709_p6_m_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-m-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p6-m-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p6-m-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p6-m-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 110
+    },
+    {
+      "shard_id": "p6_m_watermarked_001",
+      "paper": 6,
+      "session": "m",
+      "source_type": "watermarked",
+      "rows": 7,
+      "surface_manifest": "data/manifests/9709_p6_m_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-m-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p6-m-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p6-m-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p6-m-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 14
+    },
+    {
+      "shard_id": "p6_s_standard_001",
+      "paper": 6,
+      "session": "s",
+      "source_type": "standard",
+      "rows": 170,
+      "surface_manifest": "data/manifests/9709_p6_s_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-s-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p6-s-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p6-s-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p6-s-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 340
+    },
+    {
+      "shard_id": "p6_s_watermarked_001",
+      "paper": 6,
+      "session": "s",
+      "source_type": "watermarked",
+      "rows": 19,
+      "surface_manifest": "data/manifests/9709_p6_s_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-s-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p6-s-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p6-s-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p6-s-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 38
+    },
+    {
+      "shard_id": "p6_w_standard_001",
+      "paper": 6,
+      "session": "w",
+      "source_type": "standard",
+      "rows": 144,
+      "surface_manifest": "data/manifests/9709_p6_w_standard_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-w-standard-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p6-w-standard-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p6-w-standard-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p6-w-standard-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 288
+    },
+    {
+      "shard_id": "p6_w_watermarked_001",
+      "paper": 6,
+      "session": "w",
+      "source_type": "watermarked",
+      "rows": 21,
+      "surface_manifest": "data/manifests/9709_p6_w_watermarked_001_page_chain_surface_v1.json",
+      "production_ready_report": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-production-ready.json",
+      "db_coverage_report": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-db-coverage.json",
+      "db_coverage_source": "json",
+      "search_gate_report": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-search-gate.json",
+      "release_preflight_report": "docs/reports/2026-06-01-9709-p6-w-watermarked-001-release-preflight-final.json",
+      "checks": {
+        "production_ready_report": true,
+        "db_present_equals_rows": true,
+        "db_zero_missing": true,
+        "search_gate_pass": true,
+        "release_preflight_pass": true
+      },
+      "release_warnings": 42
+    }
+  ],
+  "required_gate_contract": {
+    "production_ready_closeout": "exists and row count matches the current surface manifest",
+    "db_coverage": {
+      "present_equals_manifest_count_equals_rows": true,
+      "required_zero_fields": [
+        "missing_registry",
+        "prompt_missing",
+        "provenance_missing",
+        "search_text_missing",
+        "snapshot_ref_missing",
+        "snapshot_missing",
+        "materialized_classifier_missing"
+      ]
+    },
+    "search_gate": "pass",
+    "release_preflight": "pass with zero blockers"
+  },
+  "boundaries": [
+    "This aggregate gate covers the current 9709 page-chain surface manifests only.",
+    "It does not promote raw q01-q15 probe slots that were not confirmed as printed question rows.",
+    "It does not rerun external VLM/API extraction; it aggregates already committed shard evidence."
+  ]
+}

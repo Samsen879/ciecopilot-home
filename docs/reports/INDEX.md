@@ -415,6 +415,8 @@
 - `2026-06-02-9709-full-production-ready-closeout.md` - final full 9709 production-ready closeout report, defining the 2937-row current-surface boundary, DB/search/release aggregate verdict, shard matrix, and non-claim over raw q01-q15 probe slots.
 - `2026-06-02-9709-new-paper-post-source-inventory.json` - machine-readable 9709 new-paper source-promotion inventory for 72 newly promoted question-paper PDFs, confirming 610 local parseable rows, 24 session-year shard inputs, and zero external VLM/API calls.
 - `2026-06-02-9709-new-paper-source-promotion-and-manifest-plan.md` - source-promotion and manifest plan for the 72 new `9709` PDFs, documenting SHA-verified repo source writes, 610 local locator rows, 24 non-colliding new shard ids, and the stop boundary before external page-chain extraction.
+- `2026-06-02-9231-9702-new-paper-source-promotion.json` - machine-readable source-promotion evidence for 90 newly promoted `9231` and `9702` question-paper PDFs, confirming SHA, byte count, pdfjs parse, and page-count checks.
+- `2026-06-02-9231-9702-new-paper-source-promotion-report.md` - source-promotion closeout for the `9231` and `9702` latest-paper gap fill, documenting 44 Further Mathematics PDFs and 46 Physics PDFs copied into `data/past-papers`.
 
 ## RAG S2
 

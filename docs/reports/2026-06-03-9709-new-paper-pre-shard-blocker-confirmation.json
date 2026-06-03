@@ -1,0 +1,1334 @@
+{
+  "schema_version": "9709_new_paper_pre_shard_blocker_confirmation_v1",
+  "generated_on": "2026-06-03",
+  "scope": {
+    "stage": "pre-shard screenshot/crop gate blocker confirmation",
+    "source_gate_report": "docs/reports/2026-06-02-9709-new-paper-pre-shard-screenshot-crop-gate.json",
+    "local_only": true,
+    "external_vlm_api_calls": 0,
+    "not_production_ready": true,
+    "not_vlm_reviewed": true,
+    "not_authority_db_search_release_closeout": true
+  },
+  "summary": {
+    "blocker_rows_reviewed": 17,
+    "confirmed_false_positive_input_rows": 17,
+    "rows_recovered_as_valid_questions": 0,
+    "remaining_unknown_rows": 0,
+    "pdfs_with_blockers": 6,
+    "root_cause": "prior input locator accepted PDF page numbers or non-header numeric tokens as q_number rows when strict printed left-margin question headers were absent",
+    "recommended_next_step": "rebuild the new-paper source inventory and 24 input manifests with a stricter printed-question-header locator; expected row count will drop by these 17 rows unless another source confirms missing questions"
+  },
+  "pdfs": [
+    {
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_w25_qp_15.pdf",
+      "actual_strict_left_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "actual_max_question_number": 11,
+      "strict_left_question_headers": [
+        {
+          "q_number": 1,
+          "page_index": 2,
+          "page_number": 3,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 2,
+          "page_index": 3,
+          "page_number": 4,
+          "x0": 49.6,
+          "y0": 66.2
+        },
+        {
+          "q_number": 3,
+          "page_index": 4,
+          "page_number": 5,
+          "x0": 49.6,
+          "y0": 67.1
+        },
+        {
+          "q_number": 4,
+          "page_index": 5,
+          "page_number": 6,
+          "x0": 49.6,
+          "y0": 63.2
+        },
+        {
+          "q_number": 5,
+          "page_index": 6,
+          "page_number": 7,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 6,
+          "page_index": 7,
+          "page_number": 8,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 7,
+          "page_index": 9,
+          "page_number": 10,
+          "x0": 49.6,
+          "y0": 63.2
+        },
+        {
+          "q_number": 8,
+          "page_index": 11,
+          "page_number": 12,
+          "x0": 49.6,
+          "y0": 63.2
+        },
+        {
+          "q_number": 9,
+          "page_index": 12,
+          "page_number": 13,
+          "x0": 49.6,
+          "y0": 67.1
+        },
+        {
+          "q_number": 10,
+          "page_index": 13,
+          "page_number": 14,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 11,
+          "page_index": 15,
+          "page_number": 16,
+          "x0": 49.6,
+          "y0": 63.2
+        }
+      ],
+      "blocker_q_numbers": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_15_blocker_pages.png"
+    },
+    {
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_w25_qp_22.pdf",
+      "actual_strict_left_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "actual_max_question_number": 7,
+      "strict_left_question_headers": [
+        {
+          "q_number": 1,
+          "page_index": 1,
+          "page_number": 2,
+          "x0": 49.6,
+          "y0": 64.5
+        },
+        {
+          "q_number": 2,
+          "page_index": 2,
+          "page_number": 3,
+          "x0": 49.6,
+          "y0": 67.4
+        },
+        {
+          "q_number": 3,
+          "page_index": 3,
+          "page_number": 4,
+          "x0": 49.6,
+          "y0": 66.9
+        },
+        {
+          "q_number": 4,
+          "page_index": 4,
+          "page_number": 5,
+          "x0": 49.6,
+          "y0": 64.5
+        },
+        {
+          "q_number": 5,
+          "page_index": 5,
+          "page_number": 6,
+          "x0": 49.6,
+          "y0": 63.2
+        },
+        {
+          "q_number": 6,
+          "page_index": 7,
+          "page_number": 8,
+          "x0": 49.6,
+          "y0": 71.1
+        },
+        {
+          "q_number": 7,
+          "page_index": 9,
+          "page_number": 10,
+          "x0": 49.6,
+          "y0": 67.1
+        }
+      ],
+      "blocker_q_numbers": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_22_blocker_pages.png"
+    },
+    {
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "actual_strict_left_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "actual_max_question_number": 7,
+      "strict_left_question_headers": [
+        {
+          "q_number": 1,
+          "page_index": 1,
+          "page_number": 2,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 2,
+          "page_index": 2,
+          "page_number": 3,
+          "x0": 49.6,
+          "y0": 63.2
+        },
+        {
+          "q_number": 3,
+          "page_index": 3,
+          "page_number": 4,
+          "x0": 49.6,
+          "y0": 63.2
+        },
+        {
+          "q_number": 4,
+          "page_index": 5,
+          "page_number": 6,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 5,
+          "page_index": 6,
+          "page_number": 7,
+          "x0": 49.6,
+          "y0": 67.1
+        },
+        {
+          "q_number": 6,
+          "page_index": 7,
+          "page_number": 8,
+          "x0": 49.6,
+          "y0": 63.2
+        },
+        {
+          "q_number": 7,
+          "page_index": 9,
+          "page_number": 10,
+          "x0": 49.6,
+          "y0": 64.3
+        }
+      ],
+      "blocker_q_numbers": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_41_blocker_pages.png"
+    },
+    {
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "actual_strict_left_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "actual_max_question_number": 7,
+      "strict_left_question_headers": [
+        {
+          "q_number": 1,
+          "page_index": 2,
+          "page_number": 3,
+          "x0": 49.6,
+          "y0": 63.8
+        },
+        {
+          "q_number": 2,
+          "page_index": 3,
+          "page_number": 4,
+          "x0": 49.6,
+          "y0": 63.3
+        },
+        {
+          "q_number": 3,
+          "page_index": 4,
+          "page_number": 5,
+          "x0": 49.6,
+          "y0": 63.5
+        },
+        {
+          "q_number": 4,
+          "page_index": 5,
+          "page_number": 6,
+          "x0": 49.6,
+          "y0": 63.3
+        },
+        {
+          "q_number": 5,
+          "page_index": 7,
+          "page_number": 8,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 6,
+          "page_index": 9,
+          "page_number": 10,
+          "x0": 49.6,
+          "y0": 63.8
+        },
+        {
+          "q_number": 7,
+          "page_index": 11,
+          "page_number": 12,
+          "x0": 49.6,
+          "y0": 63.3
+        }
+      ],
+      "blocker_q_numbers": [
+        12
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_45_blocker_pages.png"
+    },
+    {
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_w25_qp_45.pdf",
+      "actual_strict_left_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "actual_max_question_number": 6,
+      "strict_left_question_headers": [
+        {
+          "q_number": 1,
+          "page_index": 1,
+          "page_number": 2,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 2,
+          "page_index": 2,
+          "page_number": 3,
+          "x0": 49.6,
+          "y0": 67.1
+        },
+        {
+          "q_number": 3,
+          "page_index": 3,
+          "page_number": 4,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 4,
+          "page_index": 5,
+          "page_number": 6,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 5,
+          "page_index": 7,
+          "page_number": 8,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 6,
+          "page_index": 9,
+          "page_number": 10,
+          "x0": 49.6,
+          "y0": 63.4
+        }
+      ],
+      "blocker_q_numbers": [
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_45_blocker_pages.png"
+    },
+    {
+      "source_pdf": "data/past-papers/9709Mathematics/paper5/9709_w25_qp_51.pdf",
+      "actual_strict_left_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "actual_max_question_number": 7,
+      "strict_left_question_headers": [
+        {
+          "q_number": 1,
+          "page_index": 2,
+          "page_number": 3,
+          "x0": 49.6,
+          "y0": 67.1
+        },
+        {
+          "q_number": 2,
+          "page_index": 3,
+          "page_number": 4,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 3,
+          "page_index": 4,
+          "page_number": 5,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 4,
+          "page_index": 5,
+          "page_number": 6,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 5,
+          "page_index": 6,
+          "page_number": 7,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 6,
+          "page_index": 7,
+          "page_number": 8,
+          "x0": 49.6,
+          "y0": 63.4
+        },
+        {
+          "q_number": 7,
+          "page_index": 9,
+          "page_number": 10,
+          "x0": 49.6,
+          "y0": 63.4
+        }
+      ],
+      "blocker_q_numbers": [
+        11
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_51_blocker_pages.png"
+    }
+  ],
+  "items": [
+    {
+      "storage_key": "9709/w25_qp_15/questions/q12.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_w25_qp_15.pdf",
+      "q_number": 12,
+      "shard_id": "p1_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        11
+      ],
+      "old_locator_matched_line": "12",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_15_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q11 only. Old locator matched printed page 12, which contains Question 8, not Question 12.",
+      "page_evidence": [
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "text_lead": [
+            "9709/15/O/N/25",
+            "© UCLES 2025",
+            "12",
+            "8",
+            "a",
+            "O",
+            "2a",
+            "x",
+            "y",
+            "The diagram shows the curve with equation y",
+            "x",
+            "6",
+            "5",
+            "=",
+            "+ . The shaded region is bounded by the curve,",
+            "the x-axis and the lines x"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_15/questions/q13.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_w25_qp_15.pdf",
+      "q_number": 13,
+      "shard_id": "p1_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        12
+      ],
+      "old_locator_matched_line": "13",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_15_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q11 only. Old locator matched printed page 13, which contains Question 9, not Question 13.",
+      "page_evidence": [
+        {
+          "page_index": 12,
+          "page_number": 13,
+          "text_lead": [
+            "9709/15/O/N/25",
+            "© UCLES 2025",
+            "13",
+            "[Turn over",
+            "9",
+            "In the expansion of (",
+            ")",
+            "p",
+            "qx 4",
+            "+",
+            ", the coefficient of x is equal to the coefficient of x 2. The constants p and q",
+            "are both positive.",
+            "(a) Find the ratio p : q. Give your answer in its simplest form.",
+            "[3]",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_15/questions/q14.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_w25_qp_15.pdf",
+      "q_number": 14,
+      "shard_id": "p1_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        13
+      ],
+      "old_locator_matched_line": "14",
+      "old_locator_score": 42,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_15_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q11 only. Old locator matched printed page 14, which starts Question 10, not Question 14.",
+      "page_evidence": [
+        {
+          "page_index": 13,
+          "page_number": 14,
+          "text_lead": [
+            "9709/15/O/N/25",
+            "© UCLES 2025",
+            "14",
+            "10 The function f is defined by",
+            "( )",
+            "f x",
+            "x",
+            "3",
+            "2",
+            "7",
+            "=",
+            "+",
+            "-",
+            "for x",
+            "2",
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_15/questions/q15.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_w25_qp_15.pdf",
+      "q_number": 15,
+      "shard_id": "p1_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        14
+      ],
+      "old_locator_matched_line": "15",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_15_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q11 only. Old locator matched printed page 15, which is continuation content for Question 10, not Question 15.",
+      "page_evidence": [
+        {
+          "page_index": 14,
+          "page_number": 15,
+          "text_lead": [
+            "9709/15/O/N/25",
+            "© UCLES 2025",
+            "15",
+            "[Turn over",
+            "(c) The function g is defined by",
+            "( )",
+            "g x",
+            "x",
+            "x",
+            "2",
+            "3",
+            "1",
+            "4",
+            "=",
+            "-",
+            "+"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_22/questions/q08.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_w25_qp_22.pdf",
+      "q_number": 8,
+      "shard_id": "p2_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        7
+      ],
+      "old_locator_matched_line": "8",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_22_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 8, which contains Question 6 content, not Question 8.",
+      "page_evidence": [
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "text_lead": [
+            "9709/22/O/N/25",
+            "© UCLES 2025",
+            "8",
+            "6",
+            "(a) Given that",
+            "x",
+            "5",
+            "e",
+            "e",
+            "d",
+            "x",
+            "x",
+            "a",
+            "a",
+            "2",
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_22/questions/q09.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_w25_qp_22.pdf",
+      "q_number": 9,
+      "shard_id": "p2_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        8
+      ],
+      "old_locator_matched_line": "9",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_22_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 9, which is Question 6 continuation content, not Question 9.",
+      "page_evidence": [
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "text_lead": [
+            "9709/22/O/N/25",
+            "© UCLES 2025",
+            "9",
+            "[Turn over",
+            "(b) Hence show by calculation that the value of a lies between 1.0 and 1.2.",
+            "[2]",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "(c) Use the iterative formula"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_22/questions/q10.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_w25_qp_22.pdf",
+      "q_number": 10,
+      "shard_id": "p2_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        9
+      ],
+      "old_locator_matched_line": "10",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_22_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 10, which starts Question 7, not Question 10.",
+      "page_evidence": [
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "text_lead": [
+            "9709/22/O/N/25",
+            "© UCLES 2025",
+            "10",
+            "7",
+            "A curve has equation",
+            "e",
+            "x y",
+            "x",
+            "5",
+            "4",
+            "7",
+            "10",
+            "0",
+            "y",
+            "2",
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_22/questions/q11.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_w25_qp_22.pdf",
+      "q_number": 11,
+      "shard_id": "p2_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        10
+      ],
+      "old_locator_matched_line": "11",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_22_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 11, which is an Additional page, not Question 11.",
+      "page_evidence": [
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "text_lead": [
+            "9709/22/O/N/25",
+            "© UCLES 2025",
+            "11",
+            "Additional page",
+            "If you use the following page to complete the answer to any question, the question number must be clearly",
+            "shown.",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_22/questions/q12.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper2/9709_w25_qp_22.pdf",
+      "q_number": 12,
+      "shard_id": "p2_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        11
+      ],
+      "old_locator_matched_line": "12",
+      "old_locator_score": 42,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_22_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 12, which is copyright/blank-page material, not Question 12.",
+      "page_evidence": [
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "text_lead": [
+            "9709/22/O/N/25",
+            "© UCLES 2025",
+            "12",
+            "Permission to reproduce items where third-party owned material protected by copyright is included has been sought and cleared where possible. Every",
+            "reasonable effort has been made by the publisher (UCLES) to trace copyright holders, but if any items requiring clearance have unwittingly been included, the",
+            "publisher will be pleased to make amends at the earliest possible opportunity.",
+            "To avoid the issue of disclosure of answer-related information to candidates, all copyright acknowledgements are reproduced online in the Cambridge",
+            "Assessment International Education Copyright Acknowledgements Booklet. This is produced for each series of examinations and is freely available to download",
+            "at www.cambridgeinternational.org after the live examination series.",
+            "Cambridge Assessment International Education is part of Cambridge Assessment. Cambridge Assessment is the brand name of the University of Cambridge",
+            "Local Examinations Syndicate (UCLES), which is a department of the University of Cambridge.",
+            "BLANK PAGE",
+            "* 0000800000012 *",
+            ",\u0001\u0001\u0001\u0001\t\u0001\u0001\u0001\u0001\u0001\u0001\u0002\u0003,",
+            "ĬÙú¾Ġ´íÈõÏĪÅĊàú¸Ā×",
+            "ĬÉĘôÖğĥđÛðĈÔĒâÁÔĐĂ"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q08.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "q_number": 8,
+      "shard_id": "p4_s25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        7
+      ],
+      "old_locator_matched_line": "8",
+      "old_locator_score": 42,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_41_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 8, which contains Question 6 content, not Question 8.",
+      "page_evidence": [
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "text_lead": [
+            "9709/41/M/J/25",
+            "© UCLES 2025",
+            "8",
+            "6",
+            "A",
+            "B",
+            "C",
+            "P",
+            "0.3 kg",
+            "Q",
+            "0.6 kg",
+            "30°",
+            "°",
+            "θ",
+            "Two particles, P and Q, of masses 0.3 kg and 0.6 kg respectively, are attached to the ends of a light",
+            "inextensible string. The string passes over a smooth pulley fixed at a point B where the inclined planes"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q09.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "q_number": 9,
+      "shard_id": "p4_s25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        8
+      ],
+      "old_locator_matched_line": "9",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_41_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 9, which is Question 6 continuation content, not Question 9.",
+      "page_evidence": [
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "text_lead": [
+            "9709/41/M/J/25",
+            "© UCLES 2025",
+            "9",
+            "[Turn over",
+            "(b) It is given instead that the plane BC is rough. The work done against the frictional force when Q",
+            "moves 2 m down the plane is 1.8 J. You should assume that P does not reach the pulley and that Q",
+            "does not reach C.",
+            "Use an energy method to find the speed of Q when it has moved 2 m down the plane.",
+            "[4]",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................",
+            "............................................................................................................................................................"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q10.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "q_number": 10,
+      "shard_id": "p4_s25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        9
+      ],
+      "old_locator_matched_line": "10",
+      "old_locator_score": 42,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_41_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 10, which starts Question 7, not Question 10.",
+      "page_evidence": [
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "text_lead": [
+            "9709/41/M/J/25",
+            "© UCLES 2025",
+            "10",
+            "7",
+            "A particle X moves along a straight track, starting from a point O at time t",
+            "0",
+            "=",
+            ". The displacement of X",
+            "from O at time t s is s m, where s",
+            "t",
+            "t",
+            "3",
+            "6",
+            "2",
+            "3",
+            "="
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q11.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "q_number": 11,
+      "shard_id": "p4_s25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        10
+      ],
+      "old_locator_matched_line": "11",
+      "old_locator_score": 42,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_41_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 11, which is Question 7 continuation content, not Question 11.",
+      "page_evidence": [
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "text_lead": [
+            "9709/41/M/J/25",
+            "© UCLES 2025",
+            "11",
+            "A second particle Y moves along another straight track, starting from a point P at time t",
+            "0",
+            "=",
+            ". The",
+            "acceleration of Y at time t s is",
+            ",",
+            "ms",
+            "a",
+            "2",
+            "–  where",
+            ".",
+            ".",
+            "."
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q12.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "q_number": 12,
+      "shard_id": "p4_s25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        11
+      ],
+      "old_locator_matched_line": "12",
+      "old_locator_score": 50,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_41_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched printed page 12, which is an Additional page, not Question 12.",
+      "page_evidence": [
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "text_lead": [
+            "9709/41/M/J/25",
+            "© UCLES 2025",
+            "12",
+            "Additional page",
+            "If you use the following page to complete the answer to any question, the question number must be clearly",
+            "shown.",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................",
+            "............................................................................................................................................................................"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q12.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "q_number": 12,
+      "shard_id": "p4_s25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        12
+      ],
+      "old_locator_matched_line": "12",
+      "old_locator_score": 44,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_s25_qp_45_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched a non-header value 12 in Question 7 continuation content, not Question 12.",
+      "page_evidence": [
+        {
+          "page_index": 12,
+          "page_number": 13,
+          "text_lead": [
+            "13",
+            "9709/45/M/J/25",
+            "© UCLES 2025",
+            "(b) It is given instead that m",
+            "12",
+            "=",
+            "and the particles are released from rest with the string taut.",
+            "Use an energy method to find the speed of the particles when each particle has moved 0.6 m. You may",
+            "assume that this occurs before A reaches the pulley or B reaches the ground.",
+            "[5]",
+            "...................................................................................................................................................",
+            "...................................................................................................................................................",
+            "...................................................................................................................................................",
+            "...................................................................................................................................................",
+            "...................................................................................................................................................",
+            "..................................................................................................................................................."
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_45/questions/q07.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_w25_qp_45.pdf",
+      "q_number": 7,
+      "shard_id": "p4_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        2
+      ],
+      "old_locator_matched_line": "7",
+      "old_locator_score": 30,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_45_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q06 only. Old locator matched a non-header digit on a Question 2 page; there is no printed Question 7 header.",
+      "page_evidence": [
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "text_lead": [
+            "3",
+            "[Turn over",
+            "9709/45/O/N/25",
+            "© UCLES 2025",
+            "2",
+            "An athlete runs along a straight horizontal road. The athlete starts from rest and accelerates at . ms",
+            "0 5",
+            "2",
+            "-",
+            "reaching a speed of",
+            "ms",
+            "V",
+            "1",
+            "- . The athlete maintains this speed of",
+            "ms",
+            "V"
+          ]
+        }
+      ]
+    },
+    {
+      "storage_key": "9709/w25_qp_51/questions/q11.png",
+      "source_pdf": "data/past-papers/9709Mathematics/paper5/9709_w25_qp_51.pdf",
+      "q_number": 11,
+      "shard_id": "p5_w25_standard_001",
+      "original_blocker_reason": "question_header_word_not_found",
+      "confirmation_verdict": "confirmed_false_positive_input_row",
+      "recommended_action": "exclude_or_rebuild_input_manifests_with_stricter_printed-question-header_locator",
+      "evidence_method": "local_pdf_rendered_page_contact_sheet_plus_pymupdf_word_position_and_page_text_review_no_external_vlm",
+      "old_locator_page_indices": [
+        5
+      ],
+      "old_locator_matched_line": "11",
+      "old_locator_score": 33,
+      "actual_strict_left_question_numbers_for_pdf": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "contact_sheet_path": "tmp/pdf-page-chain/new-papers-pre-shard/blocker-contact-sheets/9709_w25_qp_51_blocker_pages.png",
+      "local_note": "PDF has strict printed question headers q01-q07 only. Old locator matched the number 11 inside a Question 4 probability/tree diagram, not Question 11.",
+      "page_evidence": [
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "text_lead": [
+            "6",
+            "9709/51/O/N/25",
+            "© UCLES 2025",
+            "4",
+            "Bag A contains 8 red marbles and 3 blue marbles. Bag B contains 4 red marbles and 1 blue marble.",
+            "A marble is chosen at random from bag A. If the marble chosen is red, it is discarded. If the marble",
+            "chosen is blue, it is placed in bag B.",
+            "A marble is then chosen at random from bag B. If the marble chosen is red, it is discarded. If the marble",
+            "chosen is blue, it is placed in bag A.",
+            "A marble is now chosen at random from bag A.",
+            "(a) Complete the tree diagram below by entering all the remaining outcomes and probabilities.",
+            "[3]",
+            "11",
+            "8",
+            "11",
+            "3"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -417,6 +417,8 @@
 - `2026-06-02-9709-new-paper-source-promotion-and-manifest-plan.md` - source-promotion and manifest plan for the 72 new `9709` PDFs, documenting SHA-verified repo source writes, 610 local locator rows, 24 non-colliding new shard ids, and the stop boundary before external page-chain extraction.
 - `2026-06-02-9709-new-paper-pre-shard-screenshot-crop-gate.json` - machine-readable local-only pre-shard screenshot/crop gate for the 24 new input shards, covering 610 rows, 72 rendered PDFs, 593 complete crop rows, and 17 blocker rows before formal page-chain production.
 - `2026-06-02-9709-new-paper-pre-shard-screenshot-crop-gate.md` - local-only pre-shard screenshot/crop gate report for the 72 newly promoted `9709` PDFs, explicitly stopping before VLM review, authority alignment, DB backfill, search gate, release preflight, or production-ready claims.
+- `2026-06-03-9709-new-paper-pre-shard-blocker-confirmation.json` - machine-readable local-only confirmation that the 17 pre-shard crop blockers are false-positive input rows caused by page-number or non-header numeric-token locator matches.
+- `2026-06-03-9709-new-paper-pre-shard-blocker-confirmation.md` - local-only blocker confirmation report for the 17 blocked new-paper rows, documenting actual printed question headers by PDF and the required manifest-rebuild stop point.
 
 ## RAG S2
 

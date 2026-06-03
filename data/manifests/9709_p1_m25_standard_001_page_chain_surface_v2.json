@@ -1,0 +1,1267 @@
+{
+  "schema_version": "9709_new_paper_page_chain_surface_v2",
+  "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+  "subject_code": "9709",
+  "generated_on": "2026-06-03",
+  "source_manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001",
+  "shard_id": "p1_m25_standard_001",
+  "group_key": "p1_m25_standard",
+  "risk_tier": "core",
+  "item_count": 11,
+  "pdf_count": 1,
+  "pdf_paths": [
+    "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf"
+  ],
+  "paper_set": [
+    1
+  ],
+  "session_year_set": [
+    "m25"
+  ],
+  "risk_tags": [
+    "paper_1_or_3_core_classifier_covered"
+  ],
+  "source_manifest_v1_id": "9709_new_papers_2026_06_02_manifest_v1",
+  "correction_method": "pymupdf_strict_left_margin_printed_question_header_v2",
+  "correction_scope": "pre-shard input correction before formal page-chain production",
+  "source_crop_manifest_id": "9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2",
+  "scope": {
+    "shard_id": "p1_m25_standard_001",
+    "input_manifest_path": "data/manifests/9709_p1_m25_standard_001_input_v2.json",
+    "crop_manifest_path": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+    "artifact_stage": "formal shard page-chain surface from corrected v2 pre-shard crops",
+    "visual_review_status": "accepted",
+    "not_production_ready": true,
+    "not_vlm_reviewed": true,
+    "external_vlm_api_calls": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/m25_qp_12/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q01/q01_page_002.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_002.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q01/q01_page_002.png"
+      ],
+      "page_indices": [
+        1
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1
+      },
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_002.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            49.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            98,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q01.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p1.quadratics",
+        "authority_topic_path": "9709.p1.quadratics",
+        "question_text": "A curve has equation y = 5 + 3x - 2x^2 and a line has equation y = kx + 13. Find the set of values of k for which the curve and line do not meet.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains q01 header, full prompt, marks, and answer space; no diagram observed."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q02/q02_page_003.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_003.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q02/q02_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2
+      },
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_003.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q02/q02_page_003.png",
+          "crop_box_points": [
+            0.0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q02.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p1.differentiation",
+        "authority_topic_path": "9709.p1.differentiation",
+        "question_text": "The diagram shows y = 2x^2 - 5/x + 3 crossing the x-axis at P(1,0), with M a minimum point. Find the gradient at P and the coordinates of M to 3 significant figures.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [
+          "coordinate axes",
+          "curve",
+          "point P on x-axis",
+          "minimum point M"
+        ],
+        "spatial_evidence": [
+          "Diagram appears above the prompt and shows the coordinate axes, curve, point P, and minimum point M within the q02 crop."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains the full graph and both subparts."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q03/q03_page_004.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_004.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q03/q03_page_004.png"
+      ],
+      "page_indices": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 3,
+        "end_page_index": 3
+      },
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_004.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q03/q03_page_004.png",
+          "crop_box_points": [
+            0.0,
+            54.54,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            109,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q03.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p1.series",
+        "authority_topic_path": "9709.p1.series",
+        "question_text": "Find the complete expansion of (2x - 3/x)^4, then determine the coefficient of x^2 in the expansion of (x^2 + 5)(2x - 3/x)^4.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains both binomial expansion subparts; no diagram observed."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q04/q04_page_005.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_005.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q04/q04_page_005.png"
+      ],
+      "page_indices": [
+        4
+      ],
+      "page_range": {
+        "start_page_index": 4,
+        "end_page_index": 4
+      },
+      "crop_records": [
+        {
+          "page_index": 4,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_005.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q04/q04_page_005.png",
+          "crop_box_points": [
+            0.0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q04.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p1.circular_measure",
+        "authority_topic_path": "9709.p1.circular_measure",
+        "question_text": "A triangle OAB has OA = OB = 10 cm and angle AOB = 0.8 radians. C and D lie on OA and OB so arc CD has centre O and radius 6 cm. Find the perimeter and area of the shaded region.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [
+          "triangle OAB",
+          "arc CD",
+          "shaded sector-like region",
+          "length labels 4 cm and 6 cm",
+          "angle 0.8 rad"
+        ],
+        "spatial_evidence": [
+          "Diagram appears above the prompt and includes triangle OAB, arc CD, shaded region, side labels, and the 0.8 rad angle within the q04 crop."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains full circular-measure diagram and both subparts."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_006.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q05/q05_page_006.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_006.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q05/q05_page_006.png"
+      ],
+      "page_indices": [
+        5
+      ],
+      "page_range": {
+        "start_page_index": 5,
+        "end_page_index": 5
+      },
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_006.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q05/q05_page_006.png",
+          "crop_box_points": [
+            0.0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q05.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p1.series",
+        "authority_topic_path": "9709.p1.series",
+        "question_text": "An arithmetic progression has first term 5 and common difference 6. Find the sum of all terms that lie between 150 and 400.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains the full arithmetic-progression question; no diagram observed."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q06/q06_page_007.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_007.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q06/q06_page_007.png"
+      ],
+      "page_indices": [
+        6
+      ],
+      "page_range": {
+        "start_page_index": 6,
+        "end_page_index": 6
+      },
+      "crop_records": [
+        {
+          "page_index": 6,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_007.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q06/q06_page_007.png",
+          "crop_box_points": [
+            0.0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q06.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p1.coordinate_geometry",
+        "authority_topic_path": "9709.p1.coordinate_geometry",
+        "question_text": "The diagram shows a circle C of radius r in the first quadrant. The least distances from C to the x-axis and y-axis are 8 and 5 units. Find the centre in terms of r, find r when the centre is 15 units from the origin, and find the gradient of the tangent at the point furthest from the origin.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 2
+          }
+        ],
+        "diagram_elements": [
+          "coordinate axes",
+          "circle C",
+          "radius r",
+          "origin O"
+        ],
+        "spatial_evidence": [
+          "Diagram appears above the prompt and shows axes, origin O, circle C, and radius r within the q06 crop."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains full coordinate-geometry diagram and all three subparts."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_009.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_009.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_009.png"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 8
+      },
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_008.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_008.png",
+          "crop_box_points": [
+            0.0,
+            58.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            117,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 8,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_009.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q07.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p1.trigonometry",
+        "authority_topic_path": "9709.p1.trigonometry",
+        "question_text": "Show that 3 tan^2(theta) + 5 sin^2(theta) equals (8 sin^2(theta) - 5 sin^4(theta))/(1 - sin^2(theta)), then solve 3 tan^2(theta) + 5 sin^2(theta) = 9 for 0 degrees < theta < 270 degrees.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          }
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Two-page crop stack contains q07(a) on page 008 and continuation q07(b) on page 009; no diagram observed."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q08.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q08/q08_page_010.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_010.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q08/q08_page_010.png"
+      ],
+      "page_indices": [
+        9
+      ],
+      "page_range": {
+        "start_page_index": 9,
+        "end_page_index": 9
+      },
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_010.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q08/q08_page_010.png",
+          "crop_box_points": [
+            0.0,
+            46.29,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q08.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p1.series",
+        "authority_topic_path": "9709.p1.series",
+        "question_text": "A geometric progression has second term -120 and sum to infinity 160. Find the common ratio, then find the sum to infinity after the first nine terms are removed.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains both geometric-progression subparts; no diagram observed."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q09.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q09/q09_page_011.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_011.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q09/q09_page_011.png"
+      ],
+      "page_indices": [
+        10
+      ],
+      "page_range": {
+        "start_page_index": 10,
+        "end_page_index": 10
+      },
+      "crop_records": [
+        {
+          "page_index": 10,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_011.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q09/q09_page_011.png",
+          "crop_box_points": [
+            0.0,
+            57.04,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            114,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q09.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p1.integration",
+        "authority_topic_path": "9709.p1.integration",
+        "question_text": "A curve has d2y/dx2 = 6/x^4 - 5/x^3 and a stationary point at (1/2, 9). Use d2y/dx2 to classify the stationary point, then find the equation of the curve.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 7
+          }
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Single-page crop contains the second-derivative prompt and both subparts; no diagram observed."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q10.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_013.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_013.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_013.png"
+      ],
+      "page_indices": [
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 11,
+        "end_page_index": 12
+      },
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_012.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_012.png",
+          "crop_box_points": [
+            0.0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 12,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_013.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_013.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q10.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p1.integration",
+        "authority_topic_path": "9709.p1.integration",
+        "question_text": "The diagram shows y = 4(3x + 4)^(1/2) - 2x - 6 for 0 <= x <= 7. The tangent at P(7,0) meets the y-axis at Q. Region A is bounded by the curve and axes; region B is bounded by the curve, PQ and the y-axis. Find the areas of A and B.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [
+          "coordinate axes",
+          "curve",
+          "tangent segment PQ",
+          "shaded regions A and B",
+          "point P",
+          "point Q"
+        ],
+        "spatial_evidence": [
+          "Diagram appears on the first page of the q10 crop stack and shows axes, the curve, tangent segment PQ, point labels P and Q, and shaded regions A and B."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Two-page crop stack contains diagram and q10(a) on page 012 plus q10(b) continuation on page 013."
+      }
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q11.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 1,
+      "variant": 2,
+      "q_number": 11,
+      "source_pdf": "data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p1_p3",
+      "group_key": "p1_m25_standard",
+      "risk_tier": "core",
+      "risk_tags": [
+        "paper_1_or_3_core_classifier_covered"
+      ],
+      "shard_id": "p1_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_014.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_015.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_014.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_015.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_014.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_015.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_014.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_015.png"
+      ],
+      "page_indices": [
+        13,
+        14
+      ],
+      "page_range": {
+        "start_page_index": 13,
+        "end_page_index": 14
+      },
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_014.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_014.png",
+          "crop_box_points": [
+            0.0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 14,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/renders/9709_m25_qp_12/9709_m25_qp_12_page_015.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_015.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_12/questions/q11.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-03",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p1.functions",
+        "authority_topic_path": "9709.p1.functions",
+        "question_text": "Functions f and g are defined by f(x) = 4x^2 - c and g(x) = 2x + k, where c and k are positive constants and g^-1(3k + 1) = c. Show gf(x) = 8x^2 - k - 1, apply a translation, vertical stretch and reflection to get y = h(x), then use the range h(x) <= 15 to find c and k.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 3
+          }
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Two-page crop stack contains q11(a) on page 014 plus q11(b)-q11(c) continuation on page 015; no diagram observed."
+      }
+    }
+  ]
+}

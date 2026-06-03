@@ -1,0 +1,391 @@
+{
+  "schema_version": "9709_new_paper_local_visual_dispositions_v2",
+  "shard_id": "p1_m25_standard_001",
+  "generated_on": "2026-06-03",
+  "review_method": "codex_local_visual_review",
+  "external_vlm_api_calls": 0,
+  "source_surface_manifest": "data/manifests/9709_p1_m25_standard_001_page_chain_surface_v2.json",
+  "source_crop_manifest": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+  "items": [
+    {
+      "storage_key": "9709/m25_qp_12/questions/q01.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "route_hint": "ocr_lane",
+      "visual_topic_guess": "9709.p1.quadratics",
+      "authority_topic_path": "9709.p1.quadratics",
+      "question_text": "A curve has equation y = 5 + 3x - 2x^2 and a line has equation y = kx + 13. Find the set of values of k for which the curve and line do not meet.",
+      "subquestion_blocks": [
+        {
+          "label": null,
+          "marks": 4
+        }
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains q01 header, full prompt, marks, and answer space; no diagram observed."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q02.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "route_hint": "diagram_lane",
+      "visual_topic_guess": "9709.p1.differentiation",
+      "authority_topic_path": "9709.p1.differentiation",
+      "question_text": "The diagram shows y = 2x^2 - 5/x + 3 crossing the x-axis at P(1,0), with M a minimum point. Find the gradient at P and the coordinates of M to 3 significant figures.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 2
+        },
+        {
+          "label": "(b)",
+          "marks": 3
+        }
+      ],
+      "diagram_elements": [
+        "coordinate axes",
+        "curve",
+        "point P on x-axis",
+        "minimum point M"
+      ],
+      "spatial_evidence": [
+        "Diagram appears above the prompt and shows the coordinate axes, curve, point P, and minimum point M within the q02 crop."
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains the full graph and both subparts."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q03.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "route_hint": "ocr_lane",
+      "visual_topic_guess": "9709.p1.series",
+      "authority_topic_path": "9709.p1.series",
+      "question_text": "Find the complete expansion of (2x - 3/x)^4, then determine the coefficient of x^2 in the expansion of (x^2 + 5)(2x - 3/x)^4.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 4
+        },
+        {
+          "label": "(b)",
+          "marks": 2
+        }
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains both binomial expansion subparts; no diagram observed."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q04.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "route_hint": "diagram_lane",
+      "visual_topic_guess": "9709.p1.circular_measure",
+      "authority_topic_path": "9709.p1.circular_measure",
+      "question_text": "A triangle OAB has OA = OB = 10 cm and angle AOB = 0.8 radians. C and D lie on OA and OB so arc CD has centre O and radius 6 cm. Find the perimeter and area of the shaded region.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 3
+        },
+        {
+          "label": "(b)",
+          "marks": 3
+        }
+      ],
+      "diagram_elements": [
+        "triangle OAB",
+        "arc CD",
+        "shaded sector-like region",
+        "length labels 4 cm and 6 cm",
+        "angle 0.8 rad"
+      ],
+      "spatial_evidence": [
+        "Diagram appears above the prompt and includes triangle OAB, arc CD, shaded region, side labels, and the 0.8 rad angle within the q04 crop."
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains full circular-measure diagram and both subparts."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q05.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "route_hint": "ocr_lane",
+      "visual_topic_guess": "9709.p1.series",
+      "authority_topic_path": "9709.p1.series",
+      "question_text": "An arithmetic progression has first term 5 and common difference 6. Find the sum of all terms that lie between 150 and 400.",
+      "subquestion_blocks": [
+        {
+          "label": null,
+          "marks": 6
+        }
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains the full arithmetic-progression question; no diagram observed."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q06.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": true,
+      "formula_dense": false,
+      "table_heavy": false,
+      "route_hint": "diagram_lane",
+      "visual_topic_guess": "9709.p1.coordinate_geometry",
+      "authority_topic_path": "9709.p1.coordinate_geometry",
+      "question_text": "The diagram shows a circle C of radius r in the first quadrant. The least distances from C to the x-axis and y-axis are 8 and 5 units. Find the centre in terms of r, find r when the centre is 15 units from the origin, and find the gradient of the tangent at the point furthest from the origin.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 1
+        },
+        {
+          "label": "(b)",
+          "marks": 3
+        },
+        {
+          "label": "(c)",
+          "marks": 2
+        }
+      ],
+      "diagram_elements": [
+        "coordinate axes",
+        "circle C",
+        "radius r",
+        "origin O"
+      ],
+      "spatial_evidence": [
+        "Diagram appears above the prompt and shows axes, origin O, circle C, and radius r within the q06 crop."
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains full coordinate-geometry diagram and all three subparts."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q07.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "route_hint": "ocr_lane",
+      "visual_topic_guess": "9709.p1.trigonometry",
+      "authority_topic_path": "9709.p1.trigonometry",
+      "question_text": "Show that 3 tan^2(theta) + 5 sin^2(theta) equals (8 sin^2(theta) - 5 sin^4(theta))/(1 - sin^2(theta)), then solve 3 tan^2(theta) + 5 sin^2(theta) = 9 for 0 degrees < theta < 270 degrees.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 3
+        },
+        {
+          "label": "(b)",
+          "marks": 4
+        }
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Two-page crop stack contains q07(a) on page 008 and continuation q07(b) on page 009; no diagram observed."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q08.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": false,
+      "formula_dense": false,
+      "table_heavy": false,
+      "route_hint": "ocr_lane",
+      "visual_topic_guess": "9709.p1.series",
+      "authority_topic_path": "9709.p1.series",
+      "question_text": "A geometric progression has second term -120 and sum to infinity 160. Find the common ratio, then find the sum to infinity after the first nine terms are removed.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 4
+        },
+        {
+          "label": "(b)",
+          "marks": 3
+        }
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains both geometric-progression subparts; no diagram observed."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q09.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "route_hint": "ocr_lane",
+      "visual_topic_guess": "9709.p1.integration",
+      "authority_topic_path": "9709.p1.integration",
+      "question_text": "A curve has d2y/dx2 = 6/x^4 - 5/x^3 and a stationary point at (1/2, 9). Use d2y/dx2 to classify the stationary point, then find the equation of the curve.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 2
+        },
+        {
+          "label": "(b)",
+          "marks": 7
+        }
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Single-page crop contains the second-derivative prompt and both subparts; no diagram observed."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q10.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "route_hint": "diagram_lane",
+      "visual_topic_guess": "9709.p1.integration",
+      "authority_topic_path": "9709.p1.integration",
+      "question_text": "The diagram shows y = 4(3x + 4)^(1/2) - 2x - 6 for 0 <= x <= 7. The tangent at P(7,0) meets the y-axis at Q. Region A is bounded by the curve and axes; region B is bounded by the curve, PQ and the y-axis. Find the areas of A and B.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 4
+        },
+        {
+          "label": "(b)",
+          "marks": 5
+        }
+      ],
+      "diagram_elements": [
+        "coordinate axes",
+        "curve",
+        "tangent segment PQ",
+        "shaded regions A and B",
+        "point P",
+        "point Q"
+      ],
+      "spatial_evidence": [
+        "Diagram appears on the first page of the q10 crop stack and shows axes, the curve, tangent segment PQ, point labels P and Q, and shaded regions A and B."
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Two-page crop stack contains diagram and q10(a) on page 012 plus q10(b) continuation on page 013."
+    },
+    {
+      "storage_key": "9709/m25_qp_12/questions/q11.png",
+      "disposition": "accepted",
+      "reviewed_by": "codex_local_visual_review",
+      "reviewed_on": "2026-06-03",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "route_hint": "ocr_lane",
+      "visual_topic_guess": "9709.p1.functions",
+      "authority_topic_path": "9709.p1.functions",
+      "question_text": "Functions f and g are defined by f(x) = 4x^2 - c and g(x) = 2x + k, where c and k are positive constants and g^-1(3k + 1) = c. Show gf(x) = 8x^2 - k - 1, apply a translation, vertical stretch and reflection to get y = h(x), then use the range h(x) <= 15 to find c and k.",
+      "subquestion_blocks": [
+        {
+          "label": "(a)",
+          "marks": 4
+        },
+        {
+          "label": "(b)",
+          "marks": 3
+        },
+        {
+          "label": "(c)",
+          "marks": 3
+        }
+      ],
+      "visual_checks": {
+        "question_boundary_accepted": true,
+        "crop_images_legible": true,
+        "rendered_pages_match_source": true,
+        "diagram_presence_accepted": true,
+        "cross_page_continuity_accepted": true
+      },
+      "review_notes": "Two-page crop stack contains q11(a) on page 014 plus q11(b)-q11(c) continuation on page 015; no diagram observed."
+    }
+  ]
+}

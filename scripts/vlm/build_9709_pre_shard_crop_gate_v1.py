@@ -518,14 +518,17 @@ def _manifest_payload(
     generated_on: str,
     output_root: Path,
     workspace_root: Path,
+    crop_manifest_id: str = "9709_new_papers_2026_06_02_pre_shard_crop_manifest_v1",
+    crop_manifest_schema_version: str = CROP_MANIFEST_SCHEMA_VERSION,
+    source_scope_label: str = "24 source-promoted new-paper input shard manifests",
 ) -> dict[str, Any]:
     return {
-        "schema_version": CROP_MANIFEST_SCHEMA_VERSION,
-        "manifest_id": "9709_new_papers_2026_06_02_pre_shard_crop_manifest_v1",
+        "schema_version": crop_manifest_schema_version,
+        "manifest_id": crop_manifest_id,
         "generated_on": generated_on,
         "scope": {
             "stage": "pre-shard screenshot/crop gate",
-            "source": "24 source-promoted new-paper input shard manifests",
+            "source": source_scope_label,
             "not_page_chain_surface": True,
             "not_production_ready": True,
             "not_vlm_reviewed": True,
@@ -663,7 +666,7 @@ def _markdown_report(report: dict[str, Any], *, crop_manifest_path: str | Path |
         )
     else:
         lines.append(
-            "Gate passed only for local screenshot preparation: the rows have local render/crop artifacts and can enter the formal shard page-chain/visual/authority flow."
+            "Gate passed only for local screenshot preparation: 具备进入正式 shard page-chain/visual/authority 流程的本地截图准备条件."
         )
     lines.extend(
         [
@@ -728,6 +731,9 @@ def build_pre_shard_crop_gate(
     render_scale: float = 2.0,
     max_pages: int = 4,
     padding_points: float = 18.0,
+    crop_manifest_id: str = "9709_new_papers_2026_06_02_pre_shard_crop_manifest_v1",
+    crop_manifest_schema_version: str = CROP_MANIFEST_SCHEMA_VERSION,
+    source_scope_label: str = "24 source-promoted new-paper input shard manifests",
 ) -> dict[str, Any]:
     workspace = Path(workspace_root).resolve()
     output_root_path = _resolve_path(output_root, workspace_root=workspace)
@@ -788,6 +794,9 @@ def build_pre_shard_crop_gate(
         generated_on=generated,
         output_root=output_root_path,
         workspace_root=workspace,
+        crop_manifest_id=crop_manifest_id,
+        crop_manifest_schema_version=crop_manifest_schema_version,
+        source_scope_label=source_scope_label,
     )
     report = _summarize(
         crop_items=crop_items,
@@ -830,6 +839,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--render-scale", type=float, default=2.0)
     parser.add_argument("--max-pages", type=int, default=4)
     parser.add_argument("--padding-points", type=float, default=18.0)
+    parser.add_argument(
+        "--crop-manifest-id",
+        default="9709_new_papers_2026_06_02_pre_shard_crop_manifest_v1",
+    )
+    parser.add_argument(
+        "--crop-manifest-schema-version",
+        default=CROP_MANIFEST_SCHEMA_VERSION,
+    )
+    parser.add_argument(
+        "--source-scope-label",
+        default="24 source-promoted new-paper input shard manifests",
+    )
     return parser.parse_args(argv)
 
 
@@ -844,6 +865,9 @@ def main(argv: list[str] | None = None) -> int:
         render_scale=args.render_scale,
         max_pages=args.max_pages,
         padding_points=args.padding_points,
+        crop_manifest_id=args.crop_manifest_id,
+        crop_manifest_schema_version=args.crop_manifest_schema_version,
+        source_scope_label=args.source_scope_label,
     )
     write_json(args.crop_manifest, result["crop_manifest"])
     write_json(args.report_json, result["report"])

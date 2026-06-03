@@ -135,3 +135,29 @@ def test_build_pre_shard_crop_gate_renders_all_pages_and_writes_row_crops(tmp_pa
     assert len(pdf_record["rendered_page_paths"]) == 3
     for rendered_path in pdf_record["rendered_page_paths"]:
         assert (tmp_path / rendered_path).exists()
+
+
+def test_build_pre_shard_crop_gate_accepts_explicit_manifest_identity(tmp_path: Path):
+    pdf_path = _write_sample_pdf(
+        tmp_path / "data" / "past-papers" / "9709Mathematics" / "paper1" / "9709_m25_qp_12.pdf"
+    )
+    manifest_path = _write_json(
+        tmp_path / "data" / "manifests" / "9709_p1_m25_standard_001_input_v2.json",
+        _manifest_for(pdf_path),
+    )
+
+    result = build_pre_shard_crop_gate(
+        manifest_paths=[manifest_path],
+        output_root=tmp_path / "tmp" / "pdf-page-chain" / "new-papers-pre-shard-v2",
+        workspace_root=tmp_path,
+        generated_on="2026-06-03",
+        render_scale=1.0,
+        crop_manifest_id="9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2",
+        crop_manifest_schema_version="9709_new_papers_pre_shard_crop_manifest_v2",
+        source_scope_label="24 corrected v2 new-paper input shard manifests",
+    )
+
+    crop_manifest = result["crop_manifest"]
+    assert crop_manifest["schema_version"] == "9709_new_papers_pre_shard_crop_manifest_v2"
+    assert crop_manifest["manifest_id"] == "9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2"
+    assert crop_manifest["scope"]["source"] == "24 corrected v2 new-paper input shard manifests"

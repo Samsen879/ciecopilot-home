@@ -419,6 +419,8 @@
 - `2026-06-02-9709-new-paper-pre-shard-screenshot-crop-gate.md` - local-only pre-shard screenshot/crop gate report for the 72 newly promoted `9709` PDFs, explicitly stopping before VLM review, authority alignment, DB backfill, search gate, release preflight, or production-ready claims.
 - `2026-06-03-9709-new-paper-pre-shard-blocker-confirmation.json` - machine-readable local-only confirmation that the 17 pre-shard crop blockers are false-positive input rows caused by page-number or non-header numeric-token locator matches.
 - `2026-06-03-9709-new-paper-pre-shard-blocker-confirmation.md` - local-only blocker confirmation report for the 17 blocked new-paper rows, documenting actual printed question headers by PDF and the required manifest-rebuild stop point.
+- `2026-06-02-9231-9702-new-paper-source-promotion.json` - machine-readable source-promotion evidence for 90 newly promoted `9231` and `9702` question-paper PDFs, confirming SHA, byte count, pdfjs parse, and page-count checks.
+- `2026-06-02-9231-9702-new-paper-source-promotion-report.md` - source-promotion closeout for the `9231` and `9702` latest-paper gap fill, documenting 44 Further Mathematics PDFs and 46 Physics PDFs copied into `data/past-papers`.
 
 ## RAG S2
 

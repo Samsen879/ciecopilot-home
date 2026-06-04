@@ -2,6 +2,7 @@
 
 ## Project Status
 
+- `2026-06-05-paper-workspace-backend-convergence-gap-report.md` - issue #356 PRD-to-code backend convergence gap report for the Paper Workspace / Review Runtime chain, mapping PRD v4.1 paper workspace scope, topic sections, stable slots, API routes, services/repositories, review views, completion evidence, compatibility constraints, and the #355 child-issue dependency graph against `origin/main`.
 - `2026-06-05-9231-evidence-layers-wave1-gate.md` - 9231 wave1 16-shard evidence-layers gate，覆盖 441 rows / 56 source PDFs；visual review 441/441 accepted（external VLM/API explicitly authorized）、question_plain_text_v1 441/441、question_plain_text_v2 normalized_plain_text 441/441、text-only ready 335、image-context required 106、authority component-aligned 441、topic hints 344、detailed topic unresolved 97、local search/read-model/RAG consumption rows using `question_plain_text_v2.normalized_plain_text` 441/441、legacy search_text-only rows 0、blockers 0；不声明 live DB/deployed search/online RAG ingestion，`production_ready_claimed=false`。
 - `2026-06-05-9231-evidence-layers-wave1-gate.json` - machine-readable aggregate 9231 wave1 evidence-layers gate，cross-checks visual/v1/v2/authority/consumption artifacts by `storage_key` and records updated surface manifests.
 - `2026-06-05-9231-*-evidence-layers-closeout.md/json` - 16 份 per-shard evidence-layers closeout reports for the selected wave1 shards, recording normalized_plain_text, text-only/image-context split, authority component alignment, and local consumption-gate status.

@@ -1,0 +1,73 @@
+{
+  "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+  "generated_on": "2026-06-05",
+  "subject_code": "9231",
+  "shard_id": "9231_p4_s24_standard_001",
+  "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+  "local_surface_ready": true,
+  "production_ready_claimed": false,
+  "db_search_rag_consumption_claimed": false,
+  "boundary": {
+    "local_deterministic_gate": true,
+    "no_external_vlm_or_api": true,
+    "no_external_ocr_rerun": true,
+    "not_question_plain_text_v1_or_v2": true,
+    "not_db_search_rag_consumption_gate": true,
+    "not_final_production_ready": true,
+    "frozen_wm_rows_excluded": true
+  },
+  "summary": {
+    "row_count": 20,
+    "source_pdf_count": 3,
+    "crop_complete_rows": 20,
+    "locator_resolved_rows": 20,
+    "frozen_wm_rows": 0,
+    "source_pdf_missing_rows": 0,
+    "crop_file_missing_rows": 0,
+    "render_file_missing_rows": 0,
+    "visual_not_accepted_rows": 20,
+    "text_not_ready_rows": 20,
+    "authority_missing_rows": 20,
+    "positive_consumption_claims": 0,
+    "external_call_rows": 0
+  },
+  "pdf_text_layer": {
+    "inspected": true,
+    "status": "available",
+    "source_pdf_count": 3,
+    "parseable_source_pdf_count": 3,
+    "blockers": []
+  },
+  "blockers": [
+    {
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 20
+    },
+    {
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 20
+    },
+    {
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 20
+    },
+    {
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 20
+    }
+  ],
+  "artifacts": {
+    "surface_manifest": "data/manifests/9231_p4_s24_standard_001_page_chain_surface_v1.json",
+    "json": "docs/reports/2026-06-05-9231-p4-s24-standard-001-production-ready-closeout.json",
+    "markdown": "docs/reports/2026-06-05-9231-p4-s24-standard-001-production-ready-closeout.md"
+  },
+  "source_pdfs": [
+    "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_41.pdf",
+    "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_42.pdf",
+    "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_43.pdf"
+  ]
+}

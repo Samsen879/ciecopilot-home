@@ -52,12 +52,16 @@ describe('S2 advisory gate', () => {
       s1ContractGate: { all_green: true },
       s1MetricGate: { status: 'pass', gate_mode: 'required_fail_closed' },
       workflowInvariant: { status: 'pass', gate: { advisory_only: true } },
+      evalSummary: { status: 'pass', release_blockers: [] },
+      evalSummarySchemaCheck: { status: 'pass', eval_summary_present: true, schema_valid: true, semantic_valid: true },
     });
 
     expect(decision.decision).toBe('stay_advisory_only');
     expect(decision.release_ready).toBe(true);
     expect(decision.default_route_promotion_ready).toBe(false);
-    expect(decision.blocker_categories).toContain('release_policy');
+    expect(decision.release_state).toBe('safe_advisory_hold');
+    expect(decision.safe_hold_ready).toBe(true);
+    expect(decision.s2_default_route_allowed).toBe(false);
 
     const report = renderS2ReleaseDecisionReport({
       decisionPayload: decision,
@@ -70,7 +74,51 @@ describe('S2 advisory gate', () => {
     });
 
     expect(report).toContain('Decision: `stay_advisory_only`');
-    expect(report).toContain('release_policy');
+    expect(report).toContain('Safe hold ready: `true`');
+  });
+
+  it('marks safe advisory hold when S2 readiness fails but governance inputs are explicit', () => {
+    const decision = buildS2ReleaseDecision({
+      advisoryGateSummary: {
+        status: 'fail',
+        blockers: [
+          {
+            category: 's2_advisory_readiness',
+            code: 'fallback_rate_above_threshold',
+            message: 'fallback_rate must be <= 0.2, got 0.5',
+          },
+        ],
+      },
+      s1ContractGate: { all_green: true },
+      s1MetricGate: { status: 'pass', gate_mode: 'required_fail_closed' },
+      workflowInvariant: { status: 'pass', gate: { advisory_only: true } },
+      evalSummary: {
+        status: 'fail',
+        release_blockers: [
+          {
+            category: 'runtime_budget',
+            code: 's2_timeout_present',
+            message: 'S2_TIMEOUT fallback occurred 1 time(s)',
+          },
+        ],
+      },
+      evalSummarySchemaCheck: { status: 'pass', eval_summary_present: true, schema_valid: true, semantic_valid: true },
+    });
+
+    expect(decision.release_state).toBe('safe_advisory_hold');
+    expect(decision.decision).toBe('stay_advisory_only');
+    expect(decision.release_mode).toBe('advisory_only');
+    expect(decision.safe_hold_ready).toBe(true);
+    expect(decision.safe_to_merge_governance_patch).toBe(true);
+    expect(decision.advisory_candidate_ready).toBe(false);
+    expect(decision.default_route_promotion_ready).toBe(false);
+    expect(decision.s2_default_route_allowed).toBe(false);
+    expect(decision.effective_default_production_route).toBe('b_simplified_retrieval_s1_v1');
+    expect(decision.blockers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: 's2_timeout_present' }),
+      ]),
+    );
   });
 
   it('marks promotion as release-ready when all non-policy gates pass', () => {

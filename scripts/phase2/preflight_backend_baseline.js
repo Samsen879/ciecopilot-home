@@ -13,7 +13,7 @@ const MODULE_ENTRYPOINTS = {
   'user-profile': ['api/user-profile.js'],
   recommendations: ['api/recommendations/index.js'],
   rag: ['api/rag/search.js', 'api/rag/chat.js'],
-  marking: ['api/marking/evaluate-v1.js', 'api/marking/evaluate.js'],
+  marking: ['api/marking/evaluate-v1.js'],
   'error-book': ['api/error-book/index.js', 'api/error-book/[id].js'],
   evidence: ['api/evidence/context.js'],
 };

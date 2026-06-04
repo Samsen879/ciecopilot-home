@@ -1,0 +1,477 @@
+{
+  "schema_version": "9709_new_paper_shard_lane_results_v2",
+  "source_manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p6_m25_standard_001_page_chain_surface_v2",
+  "generated_on": "2026-06-04",
+  "review_method": "codex-local-visual-review",
+  "external_vlm_api_calls": 0,
+  "results": [
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_62/questions/q01.png",
+      "input_asset_hash": "c3bdff58e689fb931efc00bab42d1d23e6b1fb5474342b7264f7152ed02bffd7",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use independent normal random variables X and Y to find a probability for Y - X.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use independent normal random variables X and Y to find a probability for Y - X."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "main",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+              "q_number=1",
+              "page_indices=[2]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q01/q01_page_003.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p6.linear_combinations_of_random_variables"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q01; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_62/questions/q02.png",
+      "input_asset_hash": "c12466fbaf684ca879e9efee741fef3bd2bb806ab3ec992556b88fb58312c7aa",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use sample summary statistics to estimate a mean and an unbiased variance.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use sample summary statistics to estimate a mean and an unbiased variance."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+              "q_number=2",
+              "page_indices=[3]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q02/q02_page_004.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_62 q02 crop includes the diagram/table/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p6.sampling_and_estimation"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q02; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_62/questions/q03.png",
+      "input_asset_hash": "893d609aef34e5eb7293402190eb12f3bfdb4ace38f65f6b1a6968f001f5dd4e",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use a Poisson model, sums of independent Poisson variables, and a normal approximation for a Poisson sum.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use a Poisson model, sums of independent Poisson variables, and a normal approximation for a Poisson sum."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              },
+              {
+                "label": "(c)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+              "q_number=3",
+              "page_indices=[5, 6]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_006.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_007.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p6.the_poisson_distribution"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_62 q03; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_62/questions/q04.png",
+      "input_asset_hash": "d33a6b0b70829463a55030c77b8491639a967ad4786e2ec922b782e053f81a9c",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use probability density functions from a graph and a trigonometric density to find constants and probabilities.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use probability density functions from a graph and a trigonometric density to find constants and probabilities."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)(i)",
+                "marks": 2
+              },
+              {
+                "label": "(a)(ii)",
+                "marks": 5
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+              "q_number=4",
+              "page_indices=[7, 8]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_008.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_009.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "probability density function graph"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_62 q04 crop includes the diagram/table/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p6.continuous_random_variables"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_62 q04; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_62/questions/q05.png",
+      "input_asset_hash": "3b99537face8553c59c0d514bdd50edfc68cf15ac0de5a271a708c2464efd5da",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use a binomial hypothesis test and state the Type I error probability.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use a binomial hypothesis test and state the Type I error probability."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 1
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+              "q_number=5",
+              "page_indices=[9]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q05/q05_page_010.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p6.hypothesis_tests"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q05; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_62/questions/q06.png",
+      "input_asset_hash": "d7a1136722898253ebc398cb33f38e7dacd6bc00cbdf656a4921b19e1b2c69f2",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Assess a sampling method and calculate an approximate confidence interval for a population proportion.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Assess a sampling method and calculate an approximate confidence interval for a population proportion."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 1
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+              "q_number=6",
+              "page_indices=[11]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q06/q06_page_012.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p6.sampling_and_estimation"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q06; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    }
+  ]
+}

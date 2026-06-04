@@ -31,6 +31,31 @@ BEGIN
         qd.paper AS paper_number,
         qd.variant
       FROM %s qd
+    ),
+    question_rows AS (
+      SELECT
+        qb.*,
+        NULLIF(BTRIM(qb.provenance_summary ->> 'normalized_plain_text'), '') AS normalized_plain_text,
+        COALESCE(
+          NULLIF(BTRIM(qb.provenance_summary ->> 'question_plain_text_source'), ''),
+          CASE
+            WHEN NULLIF(BTRIM(qb.provenance_summary ->> 'normalized_plain_text'), '') IS NOT NULL
+              THEN 'question_plain_text_v2.normalized_plain_text'
+            ELSE NULL
+          END
+        ) AS question_plain_text_source,
+        NULLIF(BTRIM(qb.provenance_summary ->> 'text_consumption_status'), '') AS text_consumption_status,
+        CASE LOWER(NULLIF(BTRIM(qb.provenance_summary ->> 'requires_image_context'), ''))
+          WHEN 'true' THEN TRUE
+          WHEN 'false' THEN FALSE
+          ELSE NULL
+        END AS requires_image_context,
+        CASE LOWER(NULLIF(BTRIM(qb.provenance_summary ->> 'text_only_addressable'), ''))
+          WHEN 'true' THEN TRUE
+          WHEN 'false' THEN FALSE
+          ELSE NULL
+        END AS text_only_addressable
+      FROM public.question_bank qb
     )
     SELECT
       qb.question_id,
@@ -45,6 +70,11 @@ BEGIN
       qb.variant_tags,
       qb.storage_key,
       qb.q_number,
+      qb.normalized_plain_text,
+      qb.question_plain_text_source,
+      qb.text_consumption_status,
+      qb.requires_image_context,
+      qb.text_only_addressable,
       COALESCE(
         NULLIF(BTRIM(descriptor_rows.summary), ''),
         NULLIF(BTRIM(qb.provenance_summary ->> 'summary'), ''),
@@ -70,13 +100,23 @@ BEGIN
         (qb.paper_scope ->> 'variant')::INTEGER
       ) AS variant,
       COALESCE(
+        qb.normalized_plain_text,
         NULLIF(BTRIM(qb.provenance_summary ->> 'search_text'), ''),
         NULLIF(BTRIM(descriptor_rows.summary), ''),
         NULLIF(BTRIM(qb.provenance_summary ->> 'summary'), ''),
         NULLIF(BTRIM(qb.prompt_representation ->> 'value'), ''),
         NULLIF(BTRIM(qb.provenance_summary ->> 'title'), '')
-      ) AS search_text
-    FROM public.question_bank qb
+      ) AS search_text,
+      CASE
+        WHEN qb.normalized_plain_text IS NOT NULL THEN 'question_plain_text_v2.normalized_plain_text'
+        WHEN NULLIF(BTRIM(qb.provenance_summary ->> 'search_text'), '') IS NOT NULL THEN 'provenance_summary.search_text'
+        WHEN NULLIF(BTRIM(descriptor_rows.summary), '') IS NOT NULL THEN 'descriptor_rows.summary'
+        WHEN NULLIF(BTRIM(qb.provenance_summary ->> 'summary'), '') IS NOT NULL THEN 'provenance_summary.summary'
+        WHEN NULLIF(BTRIM(qb.prompt_representation ->> 'value'), '') IS NOT NULL THEN 'prompt_representation.value'
+        WHEN NULLIF(BTRIM(qb.provenance_summary ->> 'title'), '') IS NOT NULL THEN 'provenance_summary.title'
+        ELSE NULL
+      END AS search_text_source
+    FROM question_rows qb
     LEFT JOIN public.curriculum_nodes cn
       ON cn.node_id = qb.primary_topic_id
     LEFT JOIN descriptor_rows

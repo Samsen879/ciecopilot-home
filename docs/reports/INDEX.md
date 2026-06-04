@@ -2,6 +2,8 @@
 
 ## Project Status
 
+- `2026-06-04-9709-question-plain-text-v2-consumption-gate.md` - 9709 question_plain_text_v2 第一版本地 consumption gate 报告，确认 3530 rows 被读入、2672 text-only ready rows 与 858 image-context required rows 可区分，search/read-model/RAG 本地消费行均优先使用 `normalized_plain_text`，0 blockers；不声明 live DB/deployed search/online RAG 已消费。
+- `2026-06-04-9709-question-plain-text-v2-consumption.json` - machine-readable 9709 question_plain_text_v2 consumption artifact，逐题保存 search、read-model、RAG 三类本地消费行及 `question_plain_text_v2.normalized_plain_text` provenance。
 - `2026-06-04-9709-question-plain-text-v2-coverage.md` - 9709 全量 question plain text v2 覆盖报告，确认 3530/3530 normalized text、2672 strict text-only ready rows、858/858 image-context rows with assets、0 blockers，并量化公式候选和分小问结构化状态。
 - `2026-06-04-9709-question-plain-text-v2.json` - 9709 全量 question_plain_text_v2 JSON artifact，基于 v1 增加 normalized_plain_text、math_expressions、subquestion_blocks_v2、marks_total、answering_mode 和 text_quality_flags。
 - `2026-06-04-9709-question-plain-text-v1-coverage.md` - 9709 全量 canonical question plain text v1 覆盖报告，确认 60 个 production surface manifest、3530/3530 production rows、2759/2759 no-diagram 文本行、771/771 diagram 文本+图像资产行、0 blockers。

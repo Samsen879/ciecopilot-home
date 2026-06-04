@@ -373,7 +373,7 @@ describe('learning runtime schema contract', () => {
     );
   });
 
-  test('learning_question_search_projection is migration-owned and freezes descriptor fallback semantics', () => {
+  test('learning_question_search_projection is migration-owned and prioritizes question plain text v2', () => {
     const sql = normalizeSql(readMigration(LEARNING_QUESTION_SEARCH_MIGRATION));
 
     expect(sql).toContain('create or replace view public.learning_question_search_projection as');
@@ -391,6 +391,11 @@ describe('learning runtime schema contract', () => {
       'qb.variant_tags',
       'qb.storage_key',
       'qb.q_number',
+      'nullif(btrim(qb.provenance_summary ->> \'normalized_plain_text\'), \'\') as normalized_plain_text',
+      'as question_plain_text_source',
+      'as text_consumption_status',
+      'as requires_image_context',
+      'as text_only_addressable',
       'descriptor_rows.summary',
       'descriptor_rows.question_type',
       'descriptor_rows.answer_form',
@@ -407,8 +412,25 @@ describe('learning runtime schema contract', () => {
     expect(sql).toContain('left join descriptor_rows');
     expect(sql).toContain('descriptor_rows.storage_key = qb.storage_key');
     expect(sql).toContain('descriptor_rows.q_number = qb.q_number');
+    expect(sql.indexOf("qb.provenance_summary ->> 'normalized_plain_text'")).toBeLessThan(
+      sql.indexOf("qb.provenance_summary ->> 'search_text'"),
+    );
     expect(sql).toContain("qb.provenance_summary ->> 'summary'");
     expect(sql).toContain("qb.provenance_summary ->> 'search_text'");
     expect(sql).toContain("qb.prompt_representation ->> 'value'");
+  });
+
+  test('learning_question_registry_projection exposes question plain text v2 read-model fields', () => {
+    const sql = normalizeSql(readMigration(
+      'supabase/migrations/20260413110000_phase_a_question_classified_events.sql'
+    ));
+
+    [
+      'nullif(btrim(qb.provenance_summary ->> \'normalized_plain_text\'), \'\') as normalized_plain_text',
+      'as question_plain_text_source',
+      'as text_consumption_status',
+      'as requires_image_context',
+      'as text_only_addressable',
+    ].forEach((token) => expect(sql).toContain(token));
   });
 });

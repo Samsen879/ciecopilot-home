@@ -9,7 +9,7 @@
 
 ## Repo-Truth Conclusion
 
-Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-level locator surfaces exist, but crop/image assets, OCR/text evidence, question_plain_text_v1/v2, and normalized_plain_text consumption gates are still missing.
+Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-level locator surfaces exist; crop/image assets are partial: `145/1593` current rows have manifest-backed crop references, while OCR/text evidence, question_plain_text_v1/v2, and normalized_plain_text consumption gates are still missing.
 
 ## Raw PDF Source Coverage
 
@@ -29,8 +29,8 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 
 | metric | value |
 | --- | --- |
-| data/manifests JSON files | 342 |
-| 9231 subject manifests | 138 |
+| data/manifests JSON files | 343 |
+| 9231 subject manifests | 139 |
 | 9231 input manifests | 68 |
 | 9231 page-chain surface manifests | 68 |
 | 9231 source-locator surface manifests | 4 |
@@ -55,11 +55,11 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 
 | metric | value |
 | --- | --- |
-| scanned roots | ["public"] |
-| subject image files | 0 |
-| surface image asset rows | 0 |
-| surface crop asset rows | 0 |
-| surface rows missing crop assets | 1593 |
+| scanned roots | ["data/crops","public"] |
+| subject image files | 429 |
+| surface image asset rows | 145 |
+| surface crop asset rows | 145 |
+| surface rows missing crop assets | 1448 |
 
 ## DB Search RAG Read-Model Paths
 
@@ -87,11 +87,9 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 - missing_question_plain_text_v1_artifact: No 9231 question_plain_text_v1 artifact exists.
 - missing_question_plain_text_v2_artifact: No 9231 question_plain_text_v2 artifact exists.
 - missing_question_plain_text_v2_consumption_gate: No 9231 normalized_plain_text local consumption gate artifact exists.
-- missing_manifest_backed_crop_assets: 9231 row-level surface rows exist, but no manifest-backed crop assets are present yet.
 
 ## Next Executable Gates
 
-- Generate local deterministic page render/crop assets for each row and count missing crops.
 - Attach OCR/text evidence bundles without external VLM/API calls unless scope is explicitly expanded.
 - Only after row/evidence coverage exists, run 9231 question_plain_text_v1/v2 gates.
 - Run a 9231 normalized_plain_text local consumption gate before claiming search/read-model/RAG consumption.

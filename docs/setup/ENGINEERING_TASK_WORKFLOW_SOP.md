@@ -18,6 +18,15 @@ cd /home/samsen/code/ciecopilot-home
 npm run git:hooks:install
 ```
 
+每轮 Codex 编辑前，先跑本地卫生检查：
+
+```bash
+cd /home/samsen/code/ciecopilot-home
+npm run workflow:codex-preflight -- --json
+```
+
+解释方式见 [CODEX_PREFLIGHT_RUNBOOK.md](/home/samsen/code/ciecopilot-home/docs/setup/CODEX_PREFLIGHT_RUNBOOK.md)。
+
 日常同步 baseline，优先使用：
 
 ```bash

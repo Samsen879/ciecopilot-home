@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 
 const PROJECT_ROOT = process.cwd();
 const BASELINE_SYNC_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/baseline-sync.sh');
+const CODEX_PREFLIGHT_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/codex-preflight.sh');
 const TASK_CREATE_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/task-create.sh');
 const TASK_CLOSEOUT_SCRIPT = path.join(PROJECT_ROOT, 'scripts/workflow/task-closeout.sh');
 const HOOK_INSTALL_SCRIPT = path.join(PROJECT_ROOT, 'scripts/git-hooks/install.sh');
@@ -71,6 +72,22 @@ function copyProjectFile(relativePath, targetRoot) {
 }
 
 describe('workflow scripts', () => {
+  test('codex preflight wrapper runs against a fixture repo', () => {
+    const fixture = createRepoFixture();
+
+    try {
+      expect(fs.statSync(CODEX_PREFLIGHT_SCRIPT).mode & 0o111).not.toBe(0);
+
+      const result = runCommand('bash', [CODEX_PREFLIGHT_SCRIPT, '--json'], {
+        cwd: fixture.repoDir,
+      });
+
+      expect(result.status).toBe(0);
+    } finally {
+      fs.rmSync(fixture.tempRoot, { recursive: true, force: true });
+    }
+  });
+
   test('baseline sync dry-run prints the intended sync commands', () => {
     const fixture = createRepoFixture();
 

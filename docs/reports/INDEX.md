@@ -2,6 +2,10 @@
 
 ## Project Status
 
+- `2026-06-04-9709-question-plain-text-v2-coverage.md` - 9709 全量 question plain text v2 覆盖报告，确认 3530/3530 normalized text、2672 strict text-only ready rows、858/858 image-context rows with assets、0 blockers，并量化公式候选和分小问结构化状态。
+- `2026-06-04-9709-question-plain-text-v2.json` - 9709 全量 question_plain_text_v2 JSON artifact，基于 v1 增加 normalized_plain_text、math_expressions、subquestion_blocks_v2、marks_total、answering_mode 和 text_quality_flags。
+- `2026-06-04-9709-question-plain-text-v1-coverage.md` - 9709 全量 canonical question plain text v1 覆盖报告，确认 60 个 production surface manifest、3530/3530 production rows、2759/2759 no-diagram 文本行、771/771 diagram 文本+图像资产行、0 blockers。
+- `2026-06-04-9709-question-plain-text-v1.json` - 9709 全量 question_plain_text_v1 JSON artifact，逐题保存 canonical `plain_text`、topic/source identity、diagram/layout-dependent image assets、surface/evidence provenance 和 quality flags。
 - `2026-06-04-codebase-status.md` - 当前本地代码库状态报告，覆盖 `codex/9709-new-paper-pre-shard-crops` 的 Git 状态、代码/数据/文档规模、磁盘体量、worktree 清单、项目形态、风险与后续清理边界。
 - `2026-03-30-mainline-closeout-report.md` - first-phase closeout report covering safe archival of the divergent local branch, creation of the new mainline recovery worktree, and current recommended next steps.
 - `2026-03-30-local-branch-closeout-classification.md` - classification table for the local-only branch commits and archived WIP, showing what should be re-landed, archived only, or left retired.
@@ -766,6 +770,8 @@
 - `2026-06-04-9709-p{1-6}-{m25|s25|w24|w25}-standard-001-production-ready.md` - markdown shard-scoped production-ready closeouts for all 24 corrected-v2 new-paper shards.
 - `2026-06-04-9709-new-paper-v2-production-ready-aggregate-gate.json` - machine-readable aggregate gate proving the 24 corrected-v2 new-paper shards / 593 rows / 72 PDFs pass ready-manifest, DB coverage, search gate, release preflight, and production closeout checks.
 - `2026-06-04-9709-new-paper-v2-production-ready-closeout.md` - aggregate corrected-v2 new-paper production-ready closeout report, explicitly scoped to the v2 593-row batch and excluding the old 610-row v1 input set.
+- `2026-06-04-9709-production-ready-build-summary-and-lessons.md` - Chinese operational summary combining the 36-shard / 2937-row existing 9709 aggregate gate and the 24-shard / 593-row corrected-v2 new-paper aggregate gate, including process lessons and boundary notes.
+- `2026-06-04-9709-question-analysis-and-text-layer-status.md` - question-analysis and OCR text-layer status report for the 60-shard / 3530-row `9709` production surface, documenting 3530/3530 OCR evidence coverage and the remaining canonical `question_plain_text_v1` layer gap.
 - `2026-06-02-9231-9702-new-paper-source-promotion.json` - machine-readable source-promotion evidence for 90 newly promoted `9231` and `9702` question-paper PDFs, confirming SHA, byte count, pdfjs parse, and page-count checks.
 - `2026-06-02-9231-9702-new-paper-source-promotion-report.md` - source-promotion closeout for the `9231` and `9702` latest-paper gap fill, documenting 44 Further Mathematics PDFs and 46 Physics PDFs copied into `data/past-papers`.
 - `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-inventory.json` - machine-readable inventory for 619 Computer Science `9608`/`9618` public-mirror resource candidates across question papers, mark schemes, thresholds, reports, inserts, and pre-release materials.

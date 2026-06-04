@@ -69,6 +69,7 @@ describe('S2 augmentation eval summary', () => {
     const s1Row = evaluateS2AugmentationCase(
       item,
       buildResponse({
+        answer: 'Completely unrelated answer.',
         metrics: {
           ...buildResponse().metrics,
           route_audit: {
@@ -100,17 +101,62 @@ describe('S2 augmentation eval summary', () => {
     });
 
     expect(summary.route_counts.s2_augmentation).toBe(1);
+    expect(summary.schema_version).toBe('rag_s2_augmentation_eval_summary_v1');
     expect(summary.fallback_rate).toBe(0);
     expect(summary.s2_empty_evidence_reason_counts).toEqual({});
     expect(summary.topic_leakage_rate).toBe(0);
     expect(summary.evidence_traceability_rate).toBe(1);
     expect(summary.corpus_version).toBe('rag_corpus_unification_20260303');
     expect(summary.mode_summaries.s2_enabled.total_requests).toBe(1);
+    expect(summary.release_blockers).toEqual([]);
 
     const report = renderS2AugmentationEvalReport(summary);
     expect(report).toContain('RAG S2 Augmentation Eval Report');
     expect(report).toContain('fallback_rate');
     expect(report).toContain('S2 Empty Evidence Breakdown');
     expect(report).toContain('Top Failing Cases');
+  });
+
+  it('keeps failing S2 readiness evidence out of pass status', () => {
+    const item = buildCase();
+    const s1Row = evaluateS2AugmentationCase(item, buildResponse(), { mode: 's1_baseline' });
+    const s2Row = evaluateS2AugmentationCase(
+      item,
+      buildResponse({
+        answer: '',
+        evidence: [],
+        metrics: {
+          ...buildResponse().metrics,
+          route_audit: {
+            retrieval_route: 's2_augmentation',
+            route_stage: 'default_safe',
+            final_execution_route: 's1_default',
+            fallback_triggered: true,
+            fallback_reason: 'S2_TIMEOUT',
+          },
+        },
+      }),
+      { mode: 's2_enabled' },
+    );
+
+    const summary = summarizeS2AugmentationEval({
+      s1Rows: [s1Row],
+      s2Rows: [s2Row],
+      dataset: 'data/eval/rag_s2_augmentation_eval_v1.json',
+      manifest: { benchmark_profile: 's2_augmentation_eval_v1' },
+      runConfig: {
+        manifest: 'data/eval/rag_s2_augmentation_eval_v1_manifest.json',
+      },
+    });
+
+    expect(summary.status).toBe('fail');
+    expect(summary.fallback_reason_counts.S2_TIMEOUT).toBe(1);
+    expect(summary.release_blockers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: 's2_timeout_present' }),
+        expect.objectContaining({ code: 'fallback_rate_above_threshold' }),
+        expect.objectContaining({ code: 'target_slice_quality_non_positive' }),
+      ]),
+    );
   });
 });

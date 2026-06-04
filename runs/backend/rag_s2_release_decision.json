@@ -1,51 +1,78 @@
 {
-  "generated_at": "2026-03-28T18:25:58.730Z",
+  "generated_at": "2026-06-04T14:38:30.510Z",
   "stage": "rag_s2_release_decision",
+  "release_state": "safe_advisory_hold",
   "release_mode": "advisory_only",
   "s1_default_production_route_must_remain": "b_simplified_retrieval_s1_v1",
   "effective_default_production_route": "b_simplified_retrieval_s1_v1",
   "checks": {
     "advisory_gate_present": true,
     "advisory_gate_pass": false,
+    "advisory_gate_failure_explicit": true,
     "s1_contract_gate_present": true,
     "s1_contract_gate_pass": true,
     "s1_metric_gate_present": true,
     "s1_metric_gate_pass": true,
     "s1_metric_gate_mode_required_fail_closed": true,
     "workflow_invariant_present": true,
-    "workflow_invariant_pass": false,
-    "workflow_contract_advisory_only": true
+    "workflow_invariant_pass": true,
+    "workflow_contract_advisory_only": true,
+    "s2_advisory_workflow_non_blocking": true,
+    "eval_summary_present": true,
+    "eval_summary_schema_check_present": true,
+    "eval_summary_schema_check_pass": true,
+    "eval_summary_schema_valid": true,
+    "eval_summary_semantic_valid": true,
+    "s2_readiness_failures_explicit": true
   },
   "decision": "stay_advisory_only",
   "release_ready": false,
   "advisory_candidate_ready": false,
   "default_route_promotion_ready": false,
+  "s2_default_route_allowed": false,
+  "s2_advisory_workflow_non_blocking": true,
+  "s2_advisory_workflow_required": false,
+  "s2_advisory_workflow_non_required": true,
+  "s2_advisory_workflow_non_blocking_required_for_safe_hold": true,
+  "s2_advisory_workflow_advisory_only_contract": true,
+  "s2_eval_summary_present": true,
+  "s2_eval_status": "fail",
+  "s2_eval_summary_schema_valid": true,
+  "safe_hold_ready": true,
+  "safe_to_merge_governance_patch": true,
   "legacy_release_posture": "hold_s2_keep_s1_default",
   "blocker_categories": [
     "release_evidence",
-    "release_policy"
+    "runtime_budget",
+    "s2_advisory_readiness"
   ],
   "blockers": [
     {
       "category": "release_evidence",
-      "code": "release_eval_summary_missing",
-      "message": "release eval summary missing"
+      "code": "release_eval_summary_not_pass",
+      "message": "release eval summary status must be pass, got fail"
     },
     {
-      "category": "release_policy",
-      "code": "s2_advisory_workflow_missing",
-      "message": "the S2 advisory workflow file is missing, so the non-blocking release contract cannot be verified"
+      "category": "runtime_budget",
+      "code": "s2_timeout_present",
+      "message": "S2_TIMEOUT fallback occurred 18 time(s)"
     },
     {
-      "category": "release_policy",
-      "code": "s2_advisory_workflow_not_non_blocking",
-      "message": "the S2 advisory workflow no longer proves a non-blocking advisory-only release posture"
+      "category": "s2_advisory_readiness",
+      "code": "fallback_rate_above_threshold",
+      "message": "fallback_rate must be <= 0.2, got 0.296875"
+    },
+    {
+      "category": "s2_advisory_readiness",
+      "code": "target_slice_quality_non_positive",
+      "message": "target_slice_quality_vs_s1 must be > 0, got -0.101409"
     }
   ],
   "blocking_reasons": [
-    "release eval summary missing",
-    "the S2 advisory workflow file is missing, so the non-blocking release contract cannot be verified",
-    "the S2 advisory workflow no longer proves a non-blocking advisory-only release posture"
+    "release eval summary status must be pass, got fail",
+    "S2_TIMEOUT fallback occurred 18 time(s)",
+    "fallback_rate must be <= 0.2, got 0.296875",
+    "target_slice_quality_vs_s1 must be > 0, got -0.101409"
   ],
   "next_actions": [
     "keep S1 as default production path",
@@ -53,19 +80,26 @@
   ],
   "inputs": {
     "advisory_gate": "runs/backend/rag_s2_advisory_gate_summary.json",
+    "s2_augmentation_eval_summary": "runs/backend/rag_s2_augmentation_eval_summary.json",
+    "s2_eval_summary_schema_check": "runs/backend/rag_s2_eval_summary_schema_check.json",
     "s1_contract_gate": "runs/backend/rag_s1_contract_gate_summary.json",
     "s1_metric_gate": "runs/backend/rag_s1_metric_gate_summary.json",
     "workflow_invariant": "runs/backend/rag_s2_workflow_invariant_check.json"
   },
   "evidence": {
     "advisory_gate_status": "fail",
-    "advisory_gate_generated_at": "2026-03-28T18:25:00.063Z",
+    "advisory_gate_generated_at": "2026-06-04T14:37:03.606Z",
+    "s2_eval_summary_status": "fail",
+    "s2_eval_summary_generated_at": "2026-06-04T14:34:17.538Z",
+    "s2_eval_summary_schema_check_status": "pass",
+    "s2_eval_summary_schema_valid": true,
+    "s2_eval_summary_semantic_valid": true,
     "s1_contract_gate_all_green": true,
     "s1_contract_gate_generated_at": "2026-03-28T18:22:54.292Z",
     "s1_metric_gate_status": "pass",
     "s1_metric_gate_mode": "required_fail_closed",
     "s1_metric_gate_generated_at": "2026-03-28T18:24:04.714Z",
-    "workflow_invariant_status": "fail",
+    "workflow_invariant_status": "pass",
     "workflow_invariant_advisory_only": true
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-28T18:22:46.232Z",
+  "generated_at": "2026-06-04T14:38:21.089Z",
   "stage": "rag_s2_workflow_invariant_check",
   "run_config": {
     "script": "scripts/rag/run_s2_workflow_invariant_check.js",
@@ -7,7 +7,9 @@
       "S1 Contract Gate workflow/job names unchanged",
       "S1 Metric Gate (Required) workflow/job names unchanged",
       "S1 gate artifact paths unchanged",
-      "S2 advisory workflow exists and remains non-blocking by job naming"
+      "S2 advisory workflow exists and remains non-blocking by job naming and continue-on-error",
+      "S2 advisory workflow uploads release artifacts with if: always()",
+      "S2 advisory workflow has no required-gate naming collision"
     ]
   },
   "inputs": {
@@ -76,28 +78,68 @@
     },
     {
       "id": "s2_advisory_workflow_present",
-      "ok": false,
+      "ok": true,
       "details": {
         "path": ".github/workflows/rag-s2-advisory-gate.yml",
-        "exists": false
+        "exists": true
       }
     },
     {
       "id": "s2_advisory_job_name_is_non_required",
-      "ok": false,
+      "ok": true,
       "details": {
         "expected": "name: S2 Advisory Gate (Non-Blocking)"
       }
+    },
+    {
+      "id": "s2_advisory_job_continue_on_error_true",
+      "ok": true,
+      "details": {
+        "expected": "continue-on-error: true"
+      }
+    },
+    {
+      "id": "s2_advisory_no_required_name_collision",
+      "ok": true,
+      "details": {
+        "forbidden": "S2 workflow/job names containing (Required)"
+      }
+    },
+    {
+      "id": "s2_advisory_artifact_upload_present",
+      "ok": true,
+      "details": {
+        "expected": "actions/upload-artifact"
+      }
+    },
+    {
+      "id": "s2_advisory_artifact_upload_if_always",
+      "ok": true,
+      "details": {
+        "expected": "if: always() on the S2 artifact upload step"
+      }
+    },
+    {
+      "id": "s2_advisory_artifact_paths_complete",
+      "ok": true,
+      "details": {
+        "required_paths": [
+          "runs/backend/rag_s2_augmentation_eval_summary.json",
+          "docs/reports/rag_s2_augmentation_eval_report.md",
+          "runs/backend/rag_s2_advisory_gate_summary.json",
+          "runs/backend/rag_s2_workflow_invariant_check.json",
+          "runs/backend/rag_s2_release_decision.json",
+          "docs/reports/rag_s2_release_decision_report.md"
+        ],
+        "missing_paths": []
+      }
     }
   ],
-  "status": "fail",
-  "blocked_reasons": [
-    "s2_advisory_workflow_present",
-    "s2_advisory_job_name_is_non_required"
-  ],
+  "status": "pass",
+  "blocked_reasons": [],
   "gate": {
     "checkpoint": "S2_WORKFLOW_GOVERNANCE",
-    "self_check_passed": false,
+    "self_check_passed": true,
     "advisory_only": true
   }
 }

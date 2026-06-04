@@ -415,6 +415,10 @@
 - `2026-06-02-9709-full-production-ready-closeout.md` - final full 9709 production-ready closeout report, defining the 2937-row current-surface boundary, DB/search/release aggregate verdict, shard matrix, and non-claim over raw q01-q15 probe slots.
 - `2026-06-02-9709-new-paper-post-source-inventory.json` - machine-readable 9709 new-paper source-promotion inventory for 72 newly promoted question-paper PDFs, confirming 610 local parseable rows, 24 session-year shard inputs, and zero external VLM/API calls.
 - `2026-06-02-9709-new-paper-source-promotion-and-manifest-plan.md` - source-promotion and manifest plan for the 72 new `9709` PDFs, documenting SHA-verified repo source writes, 610 local locator rows, 24 non-colliding new shard ids, and the stop boundary before external page-chain extraction.
+- `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-inventory.json` - machine-readable inventory for 619 Computer Science `9608`/`9618` public-mirror resource candidates across question papers, mark schemes, thresholds, reports, inserts, and pre-release materials.
+- `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-downloads.json` - candidate-download evidence for the 619 Computer Science resources, recording source URLs, byte counts, SHA256 hashes, PDF signature checks, and targeted BestExamHelp fallbacks.
+- `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-promotion.json` - source-promotion evidence for 619 Computer Science PDFs copied into `data/past-papers` and `data/supplemental-past-papers`, confirming SHA and pdfjs page-count checks.
+- `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-source-report.md` - closeout report for the Computer Science `9608`/`9618` full-resource fill, including counts by syllabus generation and resource type.
 
 ## RAG S2
 

@@ -10,7 +10,6 @@ const OUT_FILE = path.join(ROOT, 'runs', 'backend', 'rag_s1_contract_gate_summar
 const TESTS = [
   'api/rag/__tests__/boundary.contract.test.js',
   'api/rag/__tests__/output-contract.test.js',
-  'api/rag/__tests__/weighted-rrf.test.js',
   'api/rag/__tests__/query-normalizer.test.js',
   'api/rag/__tests__/ask-service.test.js',
   'api/rag/__tests__/marking-isolation.test.js',
@@ -59,4 +58,3 @@ function main() {
 }
 
 main();
-

@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import { findRoute, listRoutes } from '../route-registry.js';
 
 describe('route registry retirements', () => {
@@ -16,9 +19,16 @@ describe('route registry retirements', () => {
 
   test('does not resolve retired path prefixes', () => {
     expect(findRoute('/api/community', 'POST')).toMatchObject({ route: null, params: {} });
+    expect(findRoute('/api/marking/evaluate', 'POST')).toMatchObject({ route: null, params: {} });
     expect(findRoute('/api/users', 'GET')).toMatchObject({ route: null, params: {} });
     expect(findRoute('/api/users/profile', 'GET')).toMatchObject({ route: null, params: {} });
     expect(findRoute('/api/ai/learning/path-generator', 'POST')).toMatchObject({ route: null, params: {} });
     expect(findRoute('/api/ai/analysis/knowledge-gaps', 'POST')).toMatchObject({ route: null, params: {} });
+  });
+
+  test('does not keep the retired v0 marking endpoint source file', () => {
+    const retiredPath = path.join(process.cwd(), 'api/marking/evaluate.js');
+
+    expect(fs.existsSync(retiredPath)).toBe(false);
   });
 });

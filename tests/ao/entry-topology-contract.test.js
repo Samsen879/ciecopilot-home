@@ -13,6 +13,7 @@ describe('AO phase1 entry topology contract', () => {
     const packageJson = JSON.parse(read('package.json'));
 
     expect(packageJson.scripts['git:hooks:install']).toBe('bash scripts/git-hooks/install.sh');
+    expect(packageJson.scripts['workflow:codex-preflight']).toBe('bash scripts/workflow/codex-preflight.sh');
     expect(packageJson.scripts['workflow:baseline:sync']).toBe('bash scripts/workflow/baseline-sync.sh');
     expect(packageJson.scripts['workflow:task:create']).toBe('bash scripts/workflow/task-create.sh');
     expect(packageJson.scripts['workflow:task:closeout']).toBe('bash scripts/workflow/task-closeout.sh');

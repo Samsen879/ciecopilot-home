@@ -2,7 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import readline from 'node:readline/promises';
-import { stdin as input, stdout as output, stderr as errorOutput } from 'node:process';
+import { stdin as input, stdout as output } from 'node:process';
+import {
+  buildCodexPreflightReport,
+  collectCodexPreflightObservation,
+  renderCodexPreflightText,
+  resolveStrictExitCode,
+} from './lib/codex-preflight.js';
 import {
   buildBaselineSyncPlan,
   buildTaskCloseoutPlan,
@@ -17,6 +23,7 @@ const CONFIRMATION_TEXT = 'closeout';
 
 function printUsage() {
   console.error(`Usage:
+  node scripts/workflow/cli.js codex-preflight [--json] [--strict]
   node scripts/workflow/cli.js baseline-sync [--dry-run]
   node scripts/workflow/cli.js task-create --id <id> --slug <slug> [--base <ref>] [--dry-run]
   node scripts/workflow/cli.js task-closeout (--id <id> --slug <slug> | --branch <branch>) [--dry-run]`);
@@ -81,6 +88,8 @@ function execOrPreview(args, cwd, dryRun) {
 function parseArgs(argv) {
   const parsed = {
     dryRun: false,
+    json: false,
+    strict: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -88,6 +97,12 @@ function parseArgs(argv) {
     switch (arg) {
       case '--dry-run':
         parsed.dryRun = true;
+        break;
+      case '--json':
+        parsed.json = true;
+        break;
+      case '--strict':
+        parsed.strict = true;
         break;
       case '--id':
         parsed.id = argv[index + 1];
@@ -119,6 +134,24 @@ function parseArgs(argv) {
   }
 
   return parsed;
+}
+
+async function handleCodexPreflight(options) {
+  const observation = collectCodexPreflightObservation();
+  const report = buildCodexPreflightReport(observation);
+
+  if (options.json) {
+    console.log(JSON.stringify(report, null, 2));
+  } else {
+    process.stdout.write(renderCodexPreflightText(report));
+  }
+
+  if (options.strict) {
+    process.exitCode = resolveStrictExitCode(report);
+    return;
+  }
+
+  process.exitCode = report.top_status === 'source_failure' ? 1 : 0;
 }
 
 function ensureHooksInstalled() {
@@ -312,6 +345,11 @@ async function main() {
   }
 
   try {
+    if (subcommand === 'codex-preflight') {
+      await handleCodexPreflight(options);
+      return;
+    }
+
     if (subcommand === 'baseline-sync') {
       await handleBaselineSync(options);
       return;

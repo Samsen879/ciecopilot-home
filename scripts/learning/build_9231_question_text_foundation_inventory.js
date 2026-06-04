@@ -311,14 +311,31 @@ function scanRowSurface({ rootDir, subject, manifestRoot }) {
     .map((filePath) => toRepoPath(rootDir, filePath));
   const subjectFiles = manifestFiles.filter((repoPath) => isSubjectManifestFile(path.basename(repoPath), subject));
   const pageChainFiles = subjectFiles.filter((repoPath) => path.basename(repoPath).includes('page_chain_surface'));
+  const sourceLocatorSurfaceFiles = pageChainFiles.filter((repoPath) => path.basename(repoPath).includes('source_locator'));
+  const shardSplitSurfaceFiles = pageChainFiles.filter((repoPath) => (
+    !path.basename(repoPath).includes('source_locator')
+    && /_standard_001_page_chain_surface_v\d+\.json$/.test(path.basename(repoPath))
+  ));
+  const currentSurfaceFiles = shardSplitSurfaceFiles.length > 0 ? shardSplitSurfaceFiles : pageChainFiles;
   const authoritySidecarFiles = subjectFiles.filter((repoPath) => path.basename(repoPath).includes('authority_sidecar'));
   const inputFiles = subjectFiles.filter((repoPath) => path.basename(repoPath).includes('input'));
 
   const rowItems = [];
+  const allSurfaceRows = [];
   let manifestBackedImageAssetRefs = 0;
   let surfaceImageAssetRows = 0;
   let surfaceCropAssetRows = 0;
   for (const repoPath of pageChainFiles) {
+    for (const [index, row] of readManifestRows(rootDir, repoPath).entries()) {
+      allSurfaceRows.push({
+        source_manifest: repoPath,
+        source_manifest_index: index,
+        storage_key: row?.storage_key || null,
+      });
+    }
+  }
+
+  for (const repoPath of currentSurfaceFiles) {
     for (const [index, row] of readManifestRows(rootDir, repoPath).entries()) {
       const imageRefs = [
         ...(Array.isArray(row?.image_assets) ? row.image_assets : []),
@@ -349,21 +366,35 @@ function scanRowSurface({ rootDir, subject, manifestRoot }) {
     if (seen.has(row.storage_key)) duplicates.add(row.storage_key);
     seen.add(row.storage_key);
   }
+  const allSeen = new Set();
+  const allDuplicates = new Set();
+  for (const row of allSurfaceRows) {
+    if (!row.storage_key) continue;
+    if (allSeen.has(row.storage_key)) allDuplicates.add(row.storage_key);
+    allSeen.add(row.storage_key);
+  }
 
   return {
     manifest_root: manifestRoot,
     total_manifest_json_files: manifestFiles.length,
     subject_manifest_count: subjectFiles.length,
     page_chain_surface_manifest_count: pageChainFiles.length,
+    source_locator_surface_manifest_count: sourceLocatorSurfaceFiles.length,
+    shard_split_surface_manifest_count: shardSplitSurfaceFiles.length,
+    current_surface_family: shardSplitSurfaceFiles.length > 0 ? 'shard_split' : 'all_page_chain_surfaces',
+    current_page_chain_surface_manifest_count: currentSurfaceFiles.length,
     authority_sidecar_manifest_count: authoritySidecarFiles.length,
     input_manifest_count: inputFiles.length,
     question_row_count: rowItems.length,
     duplicate_storage_keys: duplicates.size,
+    all_surface_row_count: allSurfaceRows.length,
+    all_surface_duplicate_storage_keys: allDuplicates.size,
     manifest_backed_image_asset_refs: manifestBackedImageAssetRefs,
     surface_image_asset_rows: surfaceImageAssetRows,
     surface_crop_asset_rows: surfaceCropAssetRows,
     surface_rows_missing_crop_assets: Math.max(0, rowItems.length - surfaceCropAssetRows),
     page_chain_surface_manifests: pageChainFiles,
+    current_page_chain_surface_manifests: currentSurfaceFiles,
     authority_sidecar_manifests: authoritySidecarFiles,
     input_manifests: inputFiles,
     sample_rows: rowItems.slice(0, 10),
@@ -693,6 +724,9 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
       ['9231 subject manifests', rowSurface.subject_manifest_count],
       ['9231 input manifests', rowSurface.input_manifest_count],
       ['9231 page-chain surface manifests', rowSurface.page_chain_surface_manifest_count],
+      ['9231 source-locator surface manifests', rowSurface.source_locator_surface_manifest_count],
+      ['9231 shard-split surface manifests', rowSurface.shard_split_surface_manifest_count],
+      ['9231 current surface family', rowSurface.current_surface_family],
       ['9231 authority sidecars', rowSurface.authority_sidecar_manifest_count],
       ['9231 question rows', rowSurface.question_row_count],
       ['duplicate storage keys', rowSurface.duplicate_storage_keys],

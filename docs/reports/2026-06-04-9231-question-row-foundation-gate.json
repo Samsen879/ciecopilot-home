@@ -1,0 +1,1155 @@
+{
+  "schema_version": "9231_question_row_foundation_gate_report_v1",
+  "generated_on": "2026-06-04",
+  "subject_code": "9231",
+  "gate_status": "row_foundation_ready_pending_text_image_gates",
+  "boundary": {
+    "local_deterministic_locator_gate": true,
+    "production_ready_claimed": false,
+    "canonical_question_text_claimed": false,
+    "question_plain_text_v1_claimed": false,
+    "question_plain_text_v2_claimed": false,
+    "normalized_plain_text_claimed": false,
+    "db_consumption_claimed": false,
+    "search_consumption_claimed": false,
+    "rag_consumption_claimed": false,
+    "external_vlm_or_api_used": false,
+    "external_ocr_rerun_used": false
+  },
+  "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+  "summary": {
+    "source_pdf_count": 200,
+    "source_pdf_root": "data/past-papers/9231Further-Mathematics",
+    "pdfs_parse_ok": 200,
+    "page_count_total": 3464,
+    "question_row_count": 1593,
+    "question_rows_by_paper": {
+      "p1": 532,
+      "p2": 566,
+      "p3": 264,
+      "p4": 231
+    },
+    "source_pdfs_by_paper": {
+      "p1": 62,
+      "p2": 62,
+      "p3": 38,
+      "p4": 38
+    },
+    "question_count_histogram": {
+      "5": 1,
+      "6": 35,
+      "7": 78,
+      "8": 37,
+      "9": 1,
+      "10": 3,
+      "11": 43,
+      "12": 2
+    },
+    "input_manifest_count": 4,
+    "page_chain_surface_manifest_count": 4,
+    "text_only_ready_rows": 0,
+    "image_context_required_rows": 1593,
+    "blocker_count": 0
+  },
+  "blockers": [],
+  "artifacts": {
+    "combined_manifest": {
+      "path": "data/manifests/9231_question_row_foundation_2026_06_04_manifest_v1.json"
+    },
+    "input_manifests": [
+      {
+        "path": "data/manifests/9231_p1_source_locator_001_input_v1.json",
+        "item_count": 532
+      },
+      {
+        "path": "data/manifests/9231_p2_source_locator_001_input_v1.json",
+        "item_count": 566
+      },
+      {
+        "path": "data/manifests/9231_p3_source_locator_001_input_v1.json",
+        "item_count": 264
+      },
+      {
+        "path": "data/manifests/9231_p4_source_locator_001_input_v1.json",
+        "item_count": 231
+      }
+    ],
+    "page_chain_surface_manifests": [
+      {
+        "path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
+        "item_count": 532
+      },
+      {
+        "path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
+        "item_count": 566
+      },
+      {
+        "path": "data/manifests/9231_p3_source_locator_001_page_chain_surface_v1.json",
+        "item_count": 264
+      },
+      {
+        "path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
+        "item_count": 231
+      }
+    ],
+    "reports": {
+      "json": "docs/reports/2026-06-04-9231-question-row-foundation-gate.json",
+      "markdown": "docs/reports/2026-06-04-9231-question-row-foundation-gate.md"
+    }
+  },
+  "pdf_samples": [
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "paper": "p1",
+      "session_year": "s16",
+      "variant": 1,
+      "page_count": 4,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_12.pdf",
+      "paper": "p1",
+      "session_year": "s16",
+      "variant": 2,
+      "page_count": 4,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_13.pdf",
+      "paper": "p1",
+      "session_year": "s16",
+      "variant": 3,
+      "page_count": 4,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s17_qp_11.pdf",
+      "paper": "p1",
+      "session_year": "s17",
+      "variant": 1,
+      "page_count": 28,
+      "question_count": 12,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s17_qp_12.pdf",
+      "paper": "p1",
+      "session_year": "s17",
+      "variant": 2,
+      "page_count": 28,
+      "question_count": 12,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s17_qp_13.pdf",
+      "paper": "p1",
+      "session_year": "s17",
+      "variant": 3,
+      "page_count": 24,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_11.pdf",
+      "paper": "p1",
+      "session_year": "s18",
+      "variant": 1,
+      "page_count": 28,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_12.pdf",
+      "paper": "p1",
+      "session_year": "s18",
+      "variant": 2,
+      "page_count": 28,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_13.pdf",
+      "paper": "p1",
+      "session_year": "s18",
+      "variant": 3,
+      "page_count": 28,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s19_qp_11.pdf",
+      "paper": "p1",
+      "session_year": "s19",
+      "variant": 1,
+      "page_count": 28,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s19_qp_12.pdf",
+      "paper": "p1",
+      "session_year": "s19",
+      "variant": 2,
+      "page_count": 28,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s19_qp_13.pdf",
+      "paper": "p1",
+      "session_year": "s19",
+      "variant": 3,
+      "page_count": 24,
+      "question_count": 11,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s21_qp_11.pdf",
+      "paper": "p1",
+      "session_year": "s21",
+      "variant": 1,
+      "page_count": 16,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s21_qp_12.pdf",
+      "paper": "p1",
+      "session_year": "s21",
+      "variant": 2,
+      "page_count": 16,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s21_qp_13.pdf",
+      "paper": "p1",
+      "session_year": "s21",
+      "variant": 3,
+      "page_count": 20,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s22_qp_11.pdf",
+      "paper": "p1",
+      "session_year": "s22",
+      "variant": 1,
+      "page_count": 20,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s22_qp_12.pdf",
+      "paper": "p1",
+      "session_year": "s22",
+      "variant": 2,
+      "page_count": 20,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s22_qp_13.pdf",
+      "paper": "p1",
+      "session_year": "s22",
+      "variant": 3,
+      "page_count": 20,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s23_qp_11.pdf",
+      "paper": "p1",
+      "session_year": "s23",
+      "variant": 1,
+      "page_count": 20,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s23_qp_12.pdf",
+      "paper": "p1",
+      "session_year": "s23",
+      "variant": 2,
+      "page_count": 20,
+      "question_count": 7,
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ],
+  "sample_rows": [
+    {
+      "storage_key": "9231/s16_qp_11/questions/q01.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 1,
+        "page_number": 2,
+        "text": "1",
+        "x": 49.32,
+        "y": 763.68
+      },
+      "page_indices": [
+        1
+      ],
+      "page_numbers": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1,
+        "start_page_number": 2,
+        "end_page_number": 2
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q02.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 1,
+        "page_number": 2,
+        "text": "2",
+        "x": 49.32,
+        "y": 669.12
+      },
+      "page_indices": [
+        1
+      ],
+      "page_numbers": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1,
+        "start_page_number": 2,
+        "end_page_number": 2
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q03.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 1,
+        "page_number": 2,
+        "text": "3",
+        "x": 49.32,
+        "y": 567.48
+      },
+      "page_indices": [
+        1
+      ],
+      "page_numbers": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1,
+        "start_page_number": 2,
+        "end_page_number": 2
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q04.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 1,
+        "page_number": 2,
+        "text": "4",
+        "x": 49.32,
+        "y": 515.16
+      },
+      "page_indices": [
+        1
+      ],
+      "page_numbers": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1,
+        "start_page_number": 2,
+        "end_page_number": 2
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q05.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 1,
+        "page_number": 2,
+        "text": "5",
+        "x": 49.32,
+        "y": 362.52
+      },
+      "page_indices": [
+        1
+      ],
+      "page_numbers": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1,
+        "start_page_number": 2,
+        "end_page_number": 2
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q06.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 1,
+        "page_number": 2,
+        "text": "6",
+        "x": 49.32,
+        "y": 263.52
+      },
+      "page_indices": [
+        1
+      ],
+      "page_numbers": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1,
+        "start_page_number": 2,
+        "end_page_number": 2
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q07.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 2,
+        "page_number": 3,
+        "text": "7",
+        "x": 49.32,
+        "y": 761.16
+      },
+      "page_indices": [
+        2
+      ],
+      "page_numbers": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2,
+        "start_page_number": 3,
+        "end_page_number": 3
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q08.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 8,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 2,
+        "page_number": 3,
+        "text": "8",
+        "x": 49.32,
+        "y": 666.24
+      },
+      "page_indices": [
+        2
+      ],
+      "page_numbers": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2,
+        "start_page_number": 3,
+        "end_page_number": 3
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q09.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 9,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 2,
+        "page_number": 3,
+        "text": "9",
+        "x": 49.32,
+        "y": 559.68
+      },
+      "page_indices": [
+        2
+      ],
+      "page_numbers": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2,
+        "start_page_number": 3,
+        "end_page_number": 3
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    },
+    {
+      "storage_key": "9231/s16_qp_11/questions/q10.png",
+      "subject_code": "9231",
+      "syllabus_code": "9231",
+      "year": 2016,
+      "session": "s",
+      "session_year": "s16",
+      "paper": 1,
+      "variant": 1,
+      "q_number": 10,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+      "source_pdf_page_count": 4,
+      "source_pdf_stem": "9231_s16_qp_11",
+      "paper_family": "standard",
+      "group_key": "p1",
+      "shard_id": "9231_p1_source_locator_001",
+      "source": {
+        "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "source_pdf_page_count": 4,
+        "source_layer": "repo_past_paper_pdf"
+      },
+      "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+      "locator_status": "resolved",
+      "locator": {
+        "method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+        "page_index": 2,
+        "page_number": 3,
+        "text": "10",
+        "x": 49.32,
+        "y": 417.6
+      },
+      "page_indices": [
+        2
+      ],
+      "page_numbers": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2,
+        "start_page_number": 3,
+        "end_page_number": 3
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [],
+      "crop_paths": [],
+      "review_crop_paths": [],
+      "crop_status": "not_generated",
+      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
+      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false
+    }
+  ],
+  "workflow_gaps": [
+    "package.json missing workflow:codex-preflight script; recorded as workflow gap, not content blocker"
+  ],
+  "verification_inputs": [
+    "git status --short --branch",
+    "npm run workflow:codex-preflight -- --json",
+    "data/past-papers/9231Further-Mathematics",
+    "pdfjs-dist/legacy/build/pdf.mjs local text-item coordinates",
+    "data/manifests/9231_p{1..4}_source_locator_001_input_v1.json",
+    "data/manifests/9231_p{1..4}_source_locator_001_page_chain_surface_v1.json"
+  ]
+}

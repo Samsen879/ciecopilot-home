@@ -2,6 +2,14 @@
 
 ## Project Status
 
+- `2026-06-04-9231-question-row-foundation-gate.md` - 9231 deterministic source/locator/question-row foundation gate，确认 200 QP PDFs / 3464 pages / 1593 local locator rows / blockers 0 for row foundation，text-only ready 0、image-context required 1593；不声明 production-ready、canonical question text、DB/search/RAG consumption。
+- `2026-06-04-9231-question-row-foundation-gate.json` - machine-readable 9231 row foundation gate artifact，记录 4 个 input manifests、4 个 page-chain surface manifests、paper split、question-count histogram、workflow gap 与 stop boundary。
+- `2026-06-04-9231-question-text-foundation-inventory.md` - 9231 foundation inventory current truth，确认 row surface present but still blocked for OCR/text evidence、question_plain_text_v1/v2、crop assets、normalized_plain_text consumption gate。
+- `data/manifests/9231_question_row_foundation_2026_06_04_manifest_v1.json` - combined 9231 row foundation manifest，汇总 4 个 paper-level locator/page-chain surface shards与 1593 rows。
+- `data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json` - 9231 Paper 1 local locator page-chain surface manifest，532 rows，pending crop/render/visual/text gates。
+- `data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json` - 9231 Paper 2 local locator page-chain surface manifest，566 rows，pending crop/render/visual/text gates。
+- `data/manifests/9231_p3_source_locator_001_page_chain_surface_v1.json` - 9231 Paper 3 local locator page-chain surface manifest，264 rows，pending crop/render/visual/text gates。
+- `data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json` - 9231 Paper 4 local locator page-chain surface manifest，231 rows，pending crop/render/visual/text gates。
 - `2026-06-04-stage2-low-conflict-workspace-contract.md` - Stage 2 低冲突 backend/docs slice，记录前端重构期间的避让边界、repo-truth 核查、显式 workspace first-open `POST action=ensure` contract、TDD red/green 证据和剩余 Spark 边界。
 - `2026-06-04-9709-question-plain-text-v2-consumption-gate.md` - 9709 question_plain_text_v2 第一版本地 consumption gate 报告，确认 3530 rows 被读入、2672 text-only ready rows 与 858 image-context required rows 可区分，search/read-model/RAG 本地消费行均优先使用 `normalized_plain_text`，0 blockers；不声明 live DB/deployed search/online RAG 已消费。
 - `2026-06-04-9709-question-plain-text-v2-consumption.json` - machine-readable 9709 question_plain_text_v2 consumption artifact，逐题保存 search、read-model、RAG 三类本地消费行及 `question_plain_text_v2.normalized_plain_text` provenance。

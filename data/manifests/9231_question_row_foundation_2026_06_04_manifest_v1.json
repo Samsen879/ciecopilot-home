@@ -1,0 +1,96 @@
+{
+  "schema_version": "9231_question_row_foundation_manifest_v1",
+  "manifest_id": "9231_question_row_foundation_2026_06_04_manifest_v1",
+  "generated_on": "2026-06-04",
+  "subject_code": "9231",
+  "gate_status": "row_foundation_ready_pending_text_image_gates",
+  "scope": {
+    "stage": "deterministic source locator question-row foundation",
+    "question_paper_root": "data/past-papers/9231Further-Mathematics",
+    "locator_method": "pdfjs_text_items_strict_left_margin_question_header_v1",
+    "local_pdf_text_layer_locator": true,
+    "not_production_ready": true,
+    "not_canonical_question_text_layer": true,
+    "not_normalized_plain_text_layer": true,
+    "not_db_search_rag_consumed": true,
+    "external_vlm_or_api_used": false,
+    "external_ocr_rerun_used": false
+  },
+  "summary": {
+    "source_pdf_count": 200,
+    "source_pdf_root": "data/past-papers/9231Further-Mathematics",
+    "pdfs_parse_ok": 200,
+    "page_count_total": 3464,
+    "question_row_count": 1593,
+    "question_rows_by_paper": {
+      "p1": 532,
+      "p2": 566,
+      "p3": 264,
+      "p4": 231
+    },
+    "source_pdfs_by_paper": {
+      "p1": 62,
+      "p2": 62,
+      "p3": 38,
+      "p4": 38
+    },
+    "question_count_histogram": {
+      "5": 1,
+      "6": 35,
+      "7": 78,
+      "8": 37,
+      "9": 1,
+      "10": 3,
+      "11": 43,
+      "12": 2
+    },
+    "input_manifest_count": 4,
+    "page_chain_surface_manifest_count": 4,
+    "text_only_ready_rows": 0,
+    "image_context_required_rows": 1593,
+    "blocker_count": 0
+  },
+  "shards": [
+    {
+      "shard_id": "9231_p1_source_locator_001",
+      "group_key": "p1",
+      "paper": 1,
+      "input_manifest_path": "data/manifests/9231_p1_source_locator_001_input_v1.json",
+      "page_chain_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
+      "source_pdf_count": 62,
+      "question_row_count": 532,
+      "surface_status": "locator_rows_ready_pending_crop_render_visual_review"
+    },
+    {
+      "shard_id": "9231_p2_source_locator_001",
+      "group_key": "p2",
+      "paper": 2,
+      "input_manifest_path": "data/manifests/9231_p2_source_locator_001_input_v1.json",
+      "page_chain_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
+      "source_pdf_count": 62,
+      "question_row_count": 566,
+      "surface_status": "locator_rows_ready_pending_crop_render_visual_review"
+    },
+    {
+      "shard_id": "9231_p3_source_locator_001",
+      "group_key": "p3",
+      "paper": 3,
+      "input_manifest_path": "data/manifests/9231_p3_source_locator_001_input_v1.json",
+      "page_chain_surface_manifest_path": "data/manifests/9231_p3_source_locator_001_page_chain_surface_v1.json",
+      "source_pdf_count": 38,
+      "question_row_count": 264,
+      "surface_status": "locator_rows_ready_pending_crop_render_visual_review"
+    },
+    {
+      "shard_id": "9231_p4_source_locator_001",
+      "group_key": "p4",
+      "paper": 4,
+      "input_manifest_path": "data/manifests/9231_p4_source_locator_001_input_v1.json",
+      "page_chain_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
+      "source_pdf_count": 38,
+      "question_row_count": 231,
+      "surface_status": "locator_rows_ready_pending_crop_render_visual_review"
+    }
+  ],
+  "blockers": []
+}

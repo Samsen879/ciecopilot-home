@@ -315,13 +315,29 @@ function scanRowSurface({ rootDir, subject, manifestRoot }) {
   const inputFiles = subjectFiles.filter((repoPath) => path.basename(repoPath).includes('input'));
 
   const rowItems = [];
+  let manifestBackedImageAssetRefs = 0;
+  let surfaceImageAssetRows = 0;
+  let surfaceCropAssetRows = 0;
   for (const repoPath of pageChainFiles) {
     for (const [index, row] of readManifestRows(rootDir, repoPath).entries()) {
+      const imageRefs = [
+        ...(Array.isArray(row?.image_assets) ? row.image_assets : []),
+        ...(Array.isArray(row?.rendered_pdf_page_paths) ? row.rendered_pdf_page_paths : []),
+      ].filter(Boolean);
+      const cropRefs = [
+        ...(Array.isArray(row?.review_crop_paths) ? row.review_crop_paths : []),
+        ...(Array.isArray(row?.crop_paths) ? row.crop_paths : []),
+      ].filter(Boolean);
+      manifestBackedImageAssetRefs += imageRefs.length + cropRefs.length;
+      if (imageRefs.length > 0) surfaceImageAssetRows += 1;
+      if (cropRefs.length > 0) surfaceCropAssetRows += 1;
       rowItems.push({
         source_manifest: repoPath,
         source_manifest_index: index,
         storage_key: row?.storage_key || null,
         source_pdf: row?.source_pdf || null,
+        surface_evidence_status: row?.surface_evidence_status || null,
+        crop_status: row?.crop_status || null,
       });
     }
   }
@@ -343,6 +359,10 @@ function scanRowSurface({ rootDir, subject, manifestRoot }) {
     input_manifest_count: inputFiles.length,
     question_row_count: rowItems.length,
     duplicate_storage_keys: duplicates.size,
+    manifest_backed_image_asset_refs: manifestBackedImageAssetRefs,
+    surface_image_asset_rows: surfaceImageAssetRows,
+    surface_crop_asset_rows: surfaceCropAssetRows,
+    surface_rows_missing_crop_assets: Math.max(0, rowItems.length - surfaceCropAssetRows),
     page_chain_surface_manifests: pageChainFiles,
     authority_sidecar_manifests: authoritySidecarFiles,
     input_manifests: inputFiles,
@@ -466,22 +486,14 @@ function scanImageAssets({ rootDir, subject, rowSurface }) {
       .filter((filePath) => imageExtensions.includes(path.extname(filePath).toLowerCase())));
   }
 
-  const manifestImageRefs = [];
-  for (const row of rowSurface.sample_rows || []) {
-    for (const key of ['image_assets', 'review_crop_paths', 'crop_paths']) {
-      if (Array.isArray(row[key])) {
-        manifestImageRefs.push(...row[key]);
-      }
-    }
-  }
-
   return {
     scanned_roots: existingRoots,
     tracked_or_local_subject_image_files: imageFiles.length,
     sample_image_files: imageFiles.slice(0, 10),
-    manifest_backed_image_asset_refs_in_sample: manifestImageRefs.length,
-    surface_image_asset_rows: rowSurface.question_row_count > 0 ? null : 0,
-    surface_crop_asset_rows: rowSurface.question_row_count > 0 ? null : 0,
+    manifest_backed_image_asset_refs: rowSurface.manifest_backed_image_asset_refs,
+    surface_image_asset_rows: rowSurface.surface_image_asset_rows,
+    surface_crop_asset_rows: rowSurface.surface_crop_asset_rows,
+    surface_rows_missing_crop_assets: rowSurface.surface_rows_missing_crop_assets,
   };
 }
 
@@ -550,6 +562,7 @@ function detectConsumptionPaths({ rootDir, subject, reportsRoot }) {
 
 function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAssets, consumptionPaths }) {
   const blockers = [];
+  const nextExecutableGates = [];
   const addBlocker = (check, message, evidence = {}) => {
     blockers.push({
       check,
@@ -568,11 +581,13 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
     addBlocker('missing_input_manifest', 'No 9231 input/locator manifest exists under data/manifests.', {
       manifest_root: rowSurface.manifest_root,
     });
+    nextExecutableGates.push('Build deterministic 9231 source/locator input manifests from data/past-papers/9231Further-Mathematics.');
   }
   if (rowSurface.page_chain_surface_manifest_count === 0) {
     addBlocker('missing_page_chain_surface_manifest', 'No 9231 page-chain surface manifest exists under data/manifests.', {
       manifest_root: rowSurface.manifest_root,
     });
+    nextExecutableGates.push('Build and verify 9231 page-chain surface manifests with stable storage_key rows.');
   }
   if (rowSurface.question_row_count === 0) {
     addBlocker('missing_question_row_surface', 'No 9231 row-level question surface rows can be counted.', {
@@ -601,17 +616,27 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
   if (rowSurface.question_row_count === 0 && imageAssets.tracked_or_local_subject_image_files === 0) {
     addBlocker('missing_manifest_backed_image_or_crop_assets', 'No manifest-backed 9231 image/crop asset surface exists.', {});
   }
+  if (rowSurface.question_row_count > 0 && imageAssets.surface_crop_asset_rows === 0) {
+    addBlocker('missing_manifest_backed_crop_assets', '9231 row-level surface rows exist, but no manifest-backed crop assets are present yet.', {
+      question_row_count: rowSurface.question_row_count,
+      surface_crop_asset_rows: imageAssets.surface_crop_asset_rows,
+    });
+    nextExecutableGates.push('Generate local deterministic page render/crop assets for each row and count missing crops.');
+  }
+  if (textEvidence.evidence_bundle_files === 0) {
+    nextExecutableGates.push('Attach OCR/text evidence bundles without external VLM/API calls unless scope is explicitly expanded.');
+  }
+  if (textEvidence.question_plain_text_v1_artifacts === 0 || textEvidence.question_plain_text_v2_artifacts === 0) {
+    nextExecutableGates.push('Only after row/evidence coverage exists, run 9231 question_plain_text_v1/v2 gates.');
+  }
+  if (consumptionPaths.local_consumption_gate_artifacts === 0) {
+    nextExecutableGates.push('Run a 9231 normalized_plain_text local consumption gate before claiming search/read-model/RAG consumption.');
+  }
 
   return {
     foundation_status: rowSurface.question_row_count > 0 ? 'row-surface-present-needs-text-gates' : 'blocked-by-missing-row-surface',
     blockers,
-    next_executable_gates: [
-      'Build deterministic 9231 source/locator input manifests from data/past-papers/9231Further-Mathematics.',
-      'Build and verify 9231 page-chain surface manifests with stable storage_key rows.',
-      'Generate local deterministic page render/crop assets for each row and count missing crops.',
-      'Attach OCR/text evidence bundles without external VLM/API calls unless scope is explicitly expanded.',
-      'Only after row/evidence coverage exists, run 9231 question_plain_text_v1/v2 and normalized_plain_text consumption gates.',
-    ],
+    next_executable_gates: [...new Set(nextExecutableGates)],
   };
 }
 
@@ -643,7 +668,9 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
     '',
     '## Repo-Truth Conclusion',
     '',
-    `Conclusion: \`${gap.foundation_status}\`. Raw source PDFs exist, but row-level production surface evidence must be built before 9231 can enter question_plain_text_v1/v2.`,
+    rowSurface.question_row_count > 0
+      ? `Conclusion: \`${gap.foundation_status}\`. Deterministic local row-level locator surfaces exist, but crop/image assets, OCR/text evidence, question_plain_text_v1/v2, and normalized_plain_text consumption gates are still missing.`
+      : `Conclusion: \`${gap.foundation_status}\`. Raw source PDFs exist, but row-level production surface evidence must be built before 9231 can enter question_plain_text_v1/v2.`,
     '',
     '## Raw PDF Source Coverage',
     '',
@@ -689,6 +716,7 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
       ['subject image files', image.tracked_or_local_subject_image_files],
       ['surface image asset rows', image.surface_image_asset_rows],
       ['surface crop asset rows', image.surface_crop_asset_rows],
+      ['surface rows missing crop assets', image.surface_rows_missing_crop_assets],
     ]),
     '',
     '## DB Search RAG Read-Model Paths',

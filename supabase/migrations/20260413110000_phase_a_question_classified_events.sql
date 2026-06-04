@@ -59,7 +59,27 @@ SELECT
   lqas.analysis_version,
   lqas.evidence_source_event_ref,
   lqas.analysis_provenance_kind,
-  lqas.low_confidence_posture
+  lqas.low_confidence_posture,
+  NULLIF(BTRIM(qb.provenance_summary ->> 'normalized_plain_text'), '') AS normalized_plain_text,
+  COALESCE(
+    NULLIF(BTRIM(qb.provenance_summary ->> 'question_plain_text_source'), ''),
+    CASE
+      WHEN NULLIF(BTRIM(qb.provenance_summary ->> 'normalized_plain_text'), '') IS NOT NULL
+        THEN 'question_plain_text_v2.normalized_plain_text'
+      ELSE NULL
+    END
+  ) AS question_plain_text_source,
+  NULLIF(BTRIM(qb.provenance_summary ->> 'text_consumption_status'), '') AS text_consumption_status,
+  CASE LOWER(NULLIF(BTRIM(qb.provenance_summary ->> 'requires_image_context'), ''))
+    WHEN 'true' THEN TRUE
+    WHEN 'false' THEN FALSE
+    ELSE NULL
+  END AS requires_image_context,
+  CASE LOWER(NULLIF(BTRIM(qb.provenance_summary ->> 'text_only_addressable'), ''))
+    WHEN 'true' THEN TRUE
+    WHEN 'false' THEN FALSE
+    ELSE NULL
+  END AS text_only_addressable
 FROM public.question_bank qb
 LEFT JOIN public.learning_question_families lf
   ON lf.family_id = qb.family_id

@@ -2,6 +2,9 @@
 
 ## Project Status
 
+- `2026-06-04-9231-question-shard-split-gate.md` - 9231 shard split gate，确认 1593 foundation rows 被拆成 64 个 9709-style paper/session-year locator shards，p1=20、p2=20、p3=12、p4=12，text-only ready 0、image-context required 1593、blockers 0；不声明 production-ready、canonical question text、DB/search/RAG consumption。
+- `2026-06-04-9231-question-shard-split-gate.json` - machine-readable 9231 shard split artifact，记录 64 个 input manifests、64 个 page-chain surface manifests、paper split、workflow gap 与 stop boundary。
+- `data/manifests/9231_question_shard_split_2026_06_04_manifest_v1.json` - combined 9231 shard split manifest，汇总 64 个 shard-level locator/page-chain surface manifests 和 1593 rows。
 - `2026-06-04-9231-question-row-foundation-gate.md` - 9231 deterministic source/locator/question-row foundation gate，确认 200 QP PDFs / 3464 pages / 1593 local locator rows / blockers 0 for row foundation，text-only ready 0、image-context required 1593；不声明 production-ready、canonical question text、DB/search/RAG consumption。
 - `2026-06-04-9231-question-row-foundation-gate.json` - machine-readable 9231 row foundation gate artifact，记录 4 个 input manifests、4 个 page-chain surface manifests、paper split、question-count histogram、workflow gap 与 stop boundary。
 - `2026-06-04-9231-question-text-foundation-inventory.md` - 9231 foundation inventory current truth，确认 row surface present but still blocked for OCR/text evidence、question_plain_text_v1/v2、crop assets、normalized_plain_text consumption gate。

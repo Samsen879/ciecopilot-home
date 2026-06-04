@@ -108,6 +108,42 @@ describe('9231 question text foundation inventory', () => {
     }));
   });
 
+  test('prefers shard-split row surfaces over source-locator surfaces when both exist', () => {
+    const root = fixtureRoot();
+    writePdfStub(root, 'data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_11.pdf');
+    writeJson(root, 'data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json', {
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q01.png' },
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+      ],
+    });
+    writeJson(root, 'data/manifests/9231_p1_s25_standard_001_page_chain_surface_v1.json', {
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q01.png' },
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+      ],
+    });
+    writeJson(root, 'data/manifests/9231_p1_s25_standard_001_input_v1.json', {
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q01.png' },
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+      ],
+    });
+
+    const inventory = buildQuestionTextFoundationInventory({
+      rootDir: root,
+      generatedOn: '2026-06-04',
+    });
+
+    expect(inventory.row_surface.page_chain_surface_manifest_count).toBe(2);
+    expect(inventory.row_surface.source_locator_surface_manifest_count).toBe(1);
+    expect(inventory.row_surface.shard_split_surface_manifest_count).toBe(1);
+    expect(inventory.row_surface.current_surface_family).toBe('shard_split');
+    expect(inventory.row_surface.question_row_count).toBe(2);
+    expect(inventory.row_surface.duplicate_storage_keys).toBe(0);
+    expect(inventory.row_surface.all_surface_duplicate_storage_keys).toBe(2);
+  });
+
   test('detects normalized_plain_text schema contracts while keeping live consumption claims false', () => {
     const root = fixtureRoot();
     writeFile(root, 'supabase/migrations/20260415152950_create_learning_question_search_projection.sql', [

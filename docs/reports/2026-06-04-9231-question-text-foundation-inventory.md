@@ -29,10 +29,13 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 
 | metric | value |
 | --- | --- |
-| data/manifests JSON files | 213 |
-| 9231 subject manifests | 9 |
-| 9231 input manifests | 4 |
-| 9231 page-chain surface manifests | 4 |
+| data/manifests JSON files | 342 |
+| 9231 subject manifests | 138 |
+| 9231 input manifests | 68 |
+| 9231 page-chain surface manifests | 68 |
+| 9231 source-locator surface manifests | 4 |
+| 9231 shard-split surface manifests | 64 |
+| 9231 current surface family | shard_split |
 | 9231 authority sidecars | 0 |
 | 9231 question rows | 1593 |
 | duplicate storage keys | 0 |

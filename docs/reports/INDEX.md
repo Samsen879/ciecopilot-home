@@ -2,6 +2,8 @@
 
 ## Project Status
 
+- `2026-06-04-9709-question-plain-text-v2-coverage.md` - 9709 全量 question plain text v2 覆盖报告，确认 3530/3530 normalized text、2672 strict text-only ready rows、858/858 image-context rows with assets、0 blockers，并量化公式候选和分小问结构化状态。
+- `2026-06-04-9709-question-plain-text-v2.json` - 9709 全量 question_plain_text_v2 JSON artifact，基于 v1 增加 normalized_plain_text、math_expressions、subquestion_blocks_v2、marks_total、answering_mode 和 text_quality_flags。
 - `2026-06-04-9709-question-plain-text-v1-coverage.md` - 9709 全量 canonical question plain text v1 覆盖报告，确认 60 个 production surface manifest、3530/3530 production rows、2759/2759 no-diagram 文本行、771/771 diagram 文本+图像资产行、0 blockers。
 - `2026-06-04-9709-question-plain-text-v1.json` - 9709 全量 question_plain_text_v1 JSON artifact，逐题保存 canonical `plain_text`、topic/source identity、diagram/layout-dependent image assets、surface/evidence provenance 和 quality flags。
 - `2026-06-04-codebase-status.md` - 当前本地代码库状态报告，覆盖 `codex/9709-new-paper-pre-shard-crops` 的 Git 状态、代码/数据/文档规模、磁盘体量、worktree 清单、项目形态、风险与后续清理边界。

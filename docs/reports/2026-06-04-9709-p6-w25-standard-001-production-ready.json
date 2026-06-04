@@ -1,0 +1,76 @@
+{
+  "schema_version": "9709_new_paper_v2_shard_production_ready_v1",
+  "generated_on": "2026-06-04",
+  "shard_id": "p6_w25_standard_001",
+  "status": "production-ready",
+  "scope": {
+    "subject_code": "9709",
+    "manifest_rows": 26,
+    "pdfs": 4,
+    "paper": 6,
+    "session": "w25",
+    "source_type": "standard",
+    "surface_manifest": "data/manifests/9709_p6_w25_standard_001_page_chain_surface_v2.json",
+    "ready_manifest": "docs/reports/2026-06-04-9709-p6-w25-standard-001-ready-manifest-final.json"
+  },
+  "visual": {
+    "posture": "local_operator_visual_disposition",
+    "external_vlm_review_claimed": false,
+    "surface_manifest": "data/manifests/9709_p6_w25_standard_001_page_chain_surface_v2.json"
+  },
+  "authority": {
+    "sidecar": "data/manifests/9709_p6_w25_standard_001_authority_sidecar_v2.json",
+    "curriculum_seed": "data/curriculum/9709_question_search_recovery_nodes_with_p2_p4_p5_p6_v1.json",
+    "rows": 26
+  },
+  "db_coverage": {
+    "present": 26,
+    "manifest_count": 26,
+    "joined_snapshots": 26,
+    "missing_registry": 0,
+    "prompt_missing": 0,
+    "provenance_missing": 0,
+    "search_text_missing": 0,
+    "snapshot_ref_missing": 0,
+    "snapshot_missing": 0,
+    "materialized_classifier_missing": 0
+  },
+  "search_gate": {
+    "gate_pass": true,
+    "metrics": {
+      "exact_structured_match_rate": 1,
+      "subject_leakage_rate": 0,
+      "metadata_completeness_rate": 1,
+      "null_summary_rate": 0
+    }
+  },
+  "release_preflight": {
+    "status": "pass",
+    "blockers": 0,
+    "warnings": 52
+  },
+  "checks": {
+    "ready_manifest": true,
+    "release_preflight": true,
+    "search_gate": true,
+    "db_present_equals_rows": true,
+    "db_zero_missing": true,
+    "db_coverage": true,
+    "production_ready_closeout": true
+  },
+  "boundaries": [
+    "This closes only this corrected-v2 new-paper shard.",
+    "No old 610-row v1 new-paper input is used.",
+    "The corrected-v2 visual layer is local/operator-reviewed; no external VLM review is claimed."
+  ],
+  "artifacts": [
+    "data/manifests/9709_p6_w25_standard_001_page_chain_surface_v2.json",
+    "data/manifests/9709_p6_w25_standard_001_authority_sidecar_v2.json",
+    "docs/reports/2026-06-04-9709-p6-w25-standard-001-ready-manifest-final.json",
+    "docs/reports/2026-06-04-9709-p6-w25-standard-001-release-preflight-final.json",
+    "docs/reports/2026-06-04-9709-p6-w25-standard-001-search-gate.json",
+    "docs/reports/2026-06-04-9709-p6-w25-standard-001-db-coverage.json",
+    "docs/reports/2026-06-04-9709-p6-w25-standard-001-production-ready.json",
+    "docs/reports/2026-06-04-9709-p6-w25-standard-001-production-ready.md"
+  ]
+}

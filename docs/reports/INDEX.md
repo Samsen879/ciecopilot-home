@@ -760,6 +760,12 @@
 - `2026-06-04-9709-p6-w25-standard-001-release-preflight-authority-aligned.md` - release-preflight markdown for `p6_w25_standard_001`, passing with 0 blockers before any DB/search/release execution.
 - `2026-06-04-9709-p6-w25-standard-001-release-preflight-authority-aligned.json` - machine-readable release-preflight result for `p6_w25_standard_001`, passing with 0 blockers and 52 expected warnings.
 - `2026-06-04-9709-p6-w25-standard-001-shard-artifacts-summary.json` - machine-readable accepted shard-artifact summary for `p6_w25_standard_001`, covering surface, lane, sidecar, and visual disposition counts.
+- `2026-06-04-9709-p{1-6}-{m25|s25|w24|w25}-standard-001-*-final.*` - final corrected-v2 DB/search/release authority batch artifacts for the 24 new-paper shards, generated from the v2 surface manifests and sidecars after local visual/authority artifact gates.
+- `2026-06-04-9709-p{1-6}-{m25|s25|w24|w25}-standard-001-db-coverage.json` - shard-scoped DB coverage reports for the corrected-v2 new-paper batch, checking registry, prompt/provenance/search text, active analysis snapshots, snapshot refs, and materialized classifier coverage.
+- `2026-06-04-9709-p{1-6}-{m25|s25|w24|w25}-standard-001-production-ready.json` - machine-readable shard-scoped production-ready closeouts for all 24 corrected-v2 new-paper shards.
+- `2026-06-04-9709-p{1-6}-{m25|s25|w24|w25}-standard-001-production-ready.md` - markdown shard-scoped production-ready closeouts for all 24 corrected-v2 new-paper shards.
+- `2026-06-04-9709-new-paper-v2-production-ready-aggregate-gate.json` - machine-readable aggregate gate proving the 24 corrected-v2 new-paper shards / 593 rows / 72 PDFs pass ready-manifest, DB coverage, search gate, release preflight, and production closeout checks.
+- `2026-06-04-9709-new-paper-v2-production-ready-closeout.md` - aggregate corrected-v2 new-paper production-ready closeout report, explicitly scoped to the v2 593-row batch and excluding the old 610-row v1 input set.
 - `2026-06-02-9231-9702-new-paper-source-promotion.json` - machine-readable source-promotion evidence for 90 newly promoted `9231` and `9702` question-paper PDFs, confirming SHA, byte count, pdfjs parse, and page-count checks.
 - `2026-06-02-9231-9702-new-paper-source-promotion-report.md` - source-promotion closeout for the `9231` and `9702` latest-paper gap fill, documenting 44 Further Mathematics PDFs and 46 Physics PDFs copied into `data/past-papers`.
 

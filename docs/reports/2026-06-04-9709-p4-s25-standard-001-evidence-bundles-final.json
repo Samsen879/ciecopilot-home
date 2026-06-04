@@ -1,0 +1,2780 @@
+{
+  "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+  "bundles": [
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 0,
+      "storage_key": "9709/s25_qp_41/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 1,
+        "q_number": 1,
+        "primary_topic_path": "9709.p4.newtons_laws_of_motion"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.newtons_laws_of_motion"
+      },
+      "evidence": {
+        "ocr_text": "Find the tension in a rope pulling a block up a rough inclined plane with given acceleration.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+          "q_number=1",
+          "page_indices=[1]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q01/q01_page_002.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q01; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_41/questions/q01.png",
+        "input_asset_hash": "8fc14da2665ca7e879239d5d0a1b57badc187f290fd34e49e50f1ef363a32327",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_41/questions/q01.png",
+          "input_asset_hash": "8fc14da2665ca7e879239d5d0a1b57badc187f290fd34e49e50f1ef363a32327",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 1,
+      "storage_key": "9709/s25_qp_41/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 1,
+        "q_number": 2,
+        "primary_topic_path": "9709.p4.forces_and_equilibrium"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.forces_and_equilibrium"
+      },
+      "evidence": {
+        "ocr_text": "Resolve coplanar forces and a perpendicular resultant to find force magnitudes.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+          "q_number=2",
+          "page_indices=[2]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q02/q02_page_003.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coplanar force diagram",
+          "5 N force",
+          "10 N force",
+          "unknown P N force",
+          "perpendicular resultant Q N"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_41 q02 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q02; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_41/questions/q02.png",
+        "input_asset_hash": "131a88cf4105603e7622eb128eda782d0f8c0d2037d967fb91a7815b7c40e1a5",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_41/questions/q02.png",
+          "input_asset_hash": "131a88cf4105603e7622eb128eda782d0f8c0d2037d967fb91a7815b7c40e1a5",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_41/questions/q02.png",
+        "input_asset_hash": "131a88cf4105603e7622eb128eda782d0f8c0d2037d967fb91a7815b7c40e1a5"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 2,
+      "storage_key": "9709/s25_qp_41/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 1,
+        "q_number": 3,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Use a velocity-time graph for a cyclist to find the total journey time.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+          "q_number=3",
+          "page_indices=[3]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q03/q03_page_004.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "velocity-time graph",
+          "piecewise linear motion",
+          "time axis"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_41 q03 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q03; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_41/questions/q03.png",
+        "input_asset_hash": "70c58574a14bac2745a4ca9df03b6e2d1a8ace55aa67b391ef9da3390ba4c437",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_41/questions/q03.png",
+          "input_asset_hash": "70c58574a14bac2745a4ca9df03b6e2d1a8ace55aa67b391ef9da3390ba4c437",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_41/questions/q03.png",
+        "input_asset_hash": "70c58574a14bac2745a4ca9df03b6e2d1a8ace55aa67b391ef9da3390ba4c437"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 3,
+      "storage_key": "9709/s25_qp_41/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 1,
+        "q_number": 4,
+        "primary_topic_path": "9709.p4.energy_work_and_power"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.energy_work_and_power"
+      },
+      "evidence": {
+        "ocr_text": "Use power, resistance, constant speed, and hill ascent to analyse a lorry's motion.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)(i)",
+            "marks": 1
+          },
+          {
+            "label": "(a)(ii)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+          "q_number=4",
+          "page_indices=[5]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q04/q04_page_006.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q04; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_41/questions/q04.png",
+        "input_asset_hash": "6bf17d1456df26953f7631e3ec413f82e16d84943816ea7a5a601d065562932a",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_41/questions/q04.png",
+          "input_asset_hash": "6bf17d1456df26953f7631e3ec413f82e16d84943816ea7a5a601d065562932a",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 4,
+      "storage_key": "9709/s25_qp_41/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 1,
+        "q_number": 5,
+        "primary_topic_path": "9709.p4.momentum"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.momentum"
+      },
+      "evidence": {
+        "ocr_text": "Use momentum and kinetic energy in a collision between two particles.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+          "q_number=5",
+          "page_indices=[6]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q05/q05_page_007.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q05; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_41/questions/q05.png",
+        "input_asset_hash": "207ef7f92b97616f4cef4b373b50d6a957b30c9fdd498ca30ddc376fda72e720",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_41/questions/q05.png",
+          "input_asset_hash": "207ef7f92b97616f4cef4b373b50d6a957b30c9fdd498ca30ddc376fda72e720",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 5,
+      "storage_key": "9709/s25_qp_41/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 1,
+        "q_number": 6,
+        "primary_topic_path": "9709.p4.newtons_laws_of_motion"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.newtons_laws_of_motion"
+      },
+      "evidence": {
+        "ocr_text": "Analyse two particles on inclined planes connected by a string over a pulley.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+          "q_number=6",
+          "page_indices=[7]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q06/q06_page_008.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "inclined planes",
+          "pulley at B",
+          "0.3 kg and 0.6 kg particles",
+          "angles theta and 30 degrees"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_41 q06 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q06; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_41/questions/q06.png",
+        "input_asset_hash": "27f9f14ebc5eeca6feb1192bc61821412d5a316b73fa955f4ca1c7db75e18b57",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_41/questions/q06.png",
+          "input_asset_hash": "27f9f14ebc5eeca6feb1192bc61821412d5a316b73fa955f4ca1c7db75e18b57",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_41/questions/q06.png",
+        "input_asset_hash": "27f9f14ebc5eeca6feb1192bc61821412d5a316b73fa955f4ca1c7db75e18b57"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 6,
+      "storage_key": "9709/s25_qp_41/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 1,
+        "q_number": 7,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Use a displacement function to find when a particle is instantaneously at rest and total distance travelled.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+          "q_number=7",
+          "page_indices=[9]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q07/q07_page_010.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q07; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_41/questions/q07.png",
+        "input_asset_hash": "9060972b5b16bffe33b9d8ad1fd4264294c5ee64bb127ccccddbb2e1eece99a6",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_41/questions/q07.png",
+          "input_asset_hash": "9060972b5b16bffe33b9d8ad1fd4264294c5ee64bb127ccccddbb2e1eece99a6",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 7,
+      "storage_key": "9709/s25_qp_42/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 2,
+        "q_number": 1,
+        "primary_topic_path": "9709.p4.energy_work_and_power"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.energy_work_and_power"
+      },
+      "evidence": {
+        "ocr_text": "Use constant speed, work done, and power for a crate pushed along a horizontal surface.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          },
+          {
+            "label": "(c)",
+            "marks": 1
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+          "q_number=1",
+          "page_indices=[2]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q01/q01_page_003.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q01; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_42/questions/q01.png",
+        "input_asset_hash": "447835a3e87442877ff58c6bf6694769f3f95ec257ec8c3f995a448e668b3a1c",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_42/questions/q01.png",
+          "input_asset_hash": "447835a3e87442877ff58c6bf6694769f3f95ec257ec8c3f995a448e668b3a1c",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 8,
+      "storage_key": "9709/s25_qp_42/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 2,
+        "q_number": 2,
+        "primary_topic_path": "9709.p4.momentum"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.momentum"
+      },
+      "evidence": {
+        "ocr_text": "Find kinetic energy lost when two particles collide and coalesce.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+          "q_number=2",
+          "page_indices=[3]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q02/q02_page_004.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q02; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_42/questions/q02.png",
+        "input_asset_hash": "6774228467e95c46f50d1264999a94ac472ea62977565744efdb94548a7da60b",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_42/questions/q02.png",
+          "input_asset_hash": "6774228467e95c46f50d1264999a94ac472ea62977565744efdb94548a7da60b",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 9,
+      "storage_key": "9709/s25_qp_42/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 2,
+        "q_number": 3,
+        "primary_topic_path": "9709.p4.forces_and_equilibrium"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.forces_and_equilibrium"
+      },
+      "evidence": {
+        "ocr_text": "Use equilibrium of a particle attached to an inextensible string and an applied force to find mass and tension.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+          "q_number=3",
+          "page_indices=[4]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q03/q03_page_005.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "string geometry",
+          "particle P",
+          "35 N force",
+          "ceiling distance"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_42 q03 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q03; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_42/questions/q03.png",
+        "input_asset_hash": "36913c07b155d72584710cdeb152cba2360af0864499fb3f0cb7df59c4521bb6",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_42/questions/q03.png",
+          "input_asset_hash": "36913c07b155d72584710cdeb152cba2360af0864499fb3f0cb7df59c4521bb6",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_42/questions/q03.png",
+        "input_asset_hash": "36913c07b155d72584710cdeb152cba2360af0864499fb3f0cb7df59c4521bb6"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 10,
+      "storage_key": "9709/s25_qp_42/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 2,
+        "q_number": 4,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Sketch and use a velocity-time graph for a car journey with acceleration, constant speed, and deceleration.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+          "q_number=4",
+          "page_indices=[5]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q04/q04_page_006.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "blank velocity-time axes",
+          "straight-line road motion"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_42 q04 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q04; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_42/questions/q04.png",
+        "input_asset_hash": "c5d1097cab0a9f60a9181203ab8642a8fa6ee72c28c91f11ca78aed81b1c4106",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_42/questions/q04.png",
+          "input_asset_hash": "c5d1097cab0a9f60a9181203ab8642a8fa6ee72c28c91f11ca78aed81b1c4106",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_42/questions/q04.png",
+        "input_asset_hash": "c5d1097cab0a9f60a9181203ab8642a8fa6ee72c28c91f11ca78aed81b1c4106"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 11,
+      "storage_key": "9709/s25_qp_42/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 2,
+        "q_number": 5,
+        "primary_topic_path": "9709.p4.newtons_laws_of_motion"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.newtons_laws_of_motion"
+      },
+      "evidence": {
+        "ocr_text": "Analyse connected particles on an inclined plane and horizontal plane with string tensions, friction, and a broken string continuation.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          },
+          {
+            "label": "(c)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+          "q_number=5",
+          "page_indices=[7, 8]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_008.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_009.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "inclined plane",
+          "horizontal plane",
+          "two pulleys",
+          "particles A B C",
+          "two light inextensible strings"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_42 q05 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_42 q05; page sequence and continuation are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_42/questions/q05.png",
+        "input_asset_hash": "c1509604c694c3768f5cdeec29f725a8f6fcf0af3b9123c418fc260cd65c4766",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_42/questions/q05.png",
+          "input_asset_hash": "c1509604c694c3768f5cdeec29f725a8f6fcf0af3b9123c418fc260cd65c4766",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_42/questions/q05.png",
+        "input_asset_hash": "c1509604c694c3768f5cdeec29f725a8f6fcf0af3b9123c418fc260cd65c4766"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 12,
+      "storage_key": "9709/s25_qp_42/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 2,
+        "q_number": 6,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Use a velocity function to find the maximum velocity of a particle.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+          "q_number=6",
+          "page_indices=[9]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q06/q06_page_010.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q06; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_42/questions/q06.png",
+        "input_asset_hash": "865f48c1b95f2187da51591150956cecfdb34da07bd3483fbce4ea4388c7a079",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_42/questions/q06.png",
+          "input_asset_hash": "865f48c1b95f2187da51591150956cecfdb34da07bd3483fbce4ea4388c7a079",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 13,
+      "storage_key": "9709/s25_qp_42/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 2,
+        "q_number": 7,
+        "primary_topic_path": "9709.p4.energy_work_and_power"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.energy_work_and_power"
+      },
+      "evidence": {
+        "ocr_text": "Use an energy method for a particle projected up a rough plane to find its return speed.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+          "q_number=7",
+          "page_indices=[11]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q07/q07_page_012.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q07; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_42/questions/q07.png",
+        "input_asset_hash": "9e82a92f67c7ea17e309784fc1142443deead6c240b009b135c1e18ec68e9c26",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_42/questions/q07.png",
+          "input_asset_hash": "9e82a92f67c7ea17e309784fc1142443deead6c240b009b135c1e18ec68e9c26",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 14,
+      "storage_key": "9709/s25_qp_43/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 3,
+        "q_number": 1,
+        "primary_topic_path": "9709.p4.momentum"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.momentum"
+      },
+      "evidence": {
+        "ocr_text": "Use momentum constraints in a one-dimensional collision and find the largest possible kinetic energy loss.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+          "q_number=1",
+          "page_indices=[1]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q01/q01_page_002.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q01; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_43/questions/q01.png",
+        "input_asset_hash": "b3243d77c2d156ceb34678a0b9674ab8d8e8fbdc12b92994e30ced93b22cb250",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_43/questions/q01.png",
+          "input_asset_hash": "b3243d77c2d156ceb34678a0b9674ab8d8e8fbdc12b92994e30ced93b22cb250",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 15,
+      "storage_key": "9709/s25_qp_43/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 3,
+        "q_number": 2,
+        "primary_topic_path": "9709.p4.newtons_laws_of_motion"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.newtons_laws_of_motion"
+      },
+      "evidence": {
+        "ocr_text": "Use Newton's laws for a van towing a trailer to find driving force and tension.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+          "q_number=2",
+          "page_indices=[2]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q02/q02_page_003.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q02; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_43/questions/q02.png",
+        "input_asset_hash": "09ddece8ec0f96f907f763e2681e330b8fa95aee9f973a689349b8fc9865e08e",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_43/questions/q02.png",
+          "input_asset_hash": "09ddece8ec0f96f907f763e2681e330b8fa95aee9f973a689349b8fc9865e08e",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 16,
+      "storage_key": "9709/s25_qp_43/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 3,
+        "q_number": 3,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Use a velocity-time graph with three straight-line segments to find total time and later acceleration.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+          "q_number=3",
+          "page_indices=[3]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q03/q03_page_004.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "velocity-time graph",
+          "piecewise linear model",
+          "negative velocity segment"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_43 q03 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q03; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_43/questions/q03.png",
+        "input_asset_hash": "a872b1e941d7e01c7d3d2a897b48a729ee7f4a3733cd9251410cbb5da120788a",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_43/questions/q03.png",
+          "input_asset_hash": "a872b1e941d7e01c7d3d2a897b48a729ee7f4a3733cd9251410cbb5da120788a",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_43/questions/q03.png",
+        "input_asset_hash": "a872b1e941d7e01c7d3d2a897b48a729ee7f4a3733cd9251410cbb5da120788a"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 17,
+      "storage_key": "9709/s25_qp_43/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 3,
+        "q_number": 4,
+        "primary_topic_path": "9709.p4.forces_and_equilibrium"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.forces_and_equilibrium"
+      },
+      "evidence": {
+        "ocr_text": "Use equilibrium of three suspended blocks and pulley strings to find a mass and an angle.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+          "q_number=4",
+          "page_indices=[4]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q04/q04_page_005.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "three hanging blocks",
+          "pulleys",
+          "strings OP OQ OR",
+          "angles alpha and 30 degrees"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_43 q04 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q04; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_43/questions/q04.png",
+        "input_asset_hash": "07ed551b8bae30a27c4cb0344c5aa9a26e5fa8ff0f800b64e0a86ea822f261c5",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_43/questions/q04.png",
+          "input_asset_hash": "07ed551b8bae30a27c4cb0344c5aa9a26e5fa8ff0f800b64e0a86ea822f261c5",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_43/questions/q04.png",
+        "input_asset_hash": "07ed551b8bae30a27c4cb0344c5aa9a26e5fa8ff0f800b64e0a86ea822f261c5"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 18,
+      "storage_key": "9709/s25_qp_43/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 3,
+        "q_number": 5,
+        "primary_topic_path": "9709.p4.energy_work_and_power"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.energy_work_and_power"
+      },
+      "evidence": {
+        "ocr_text": "Use power and speed-dependent resistance for a van travelling at steady speed and accelerating.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+          "q_number=5",
+          "page_indices=[5]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q05/q05_page_006.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q05; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_43/questions/q05.png",
+        "input_asset_hash": "d51bdb3f1b7c7e41eda4f320edb2b5425120eaa5f9665a52d69b05e688344132",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_43/questions/q05.png",
+          "input_asset_hash": "d51bdb3f1b7c7e41eda4f320edb2b5425120eaa5f9665a52d69b05e688344132",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 19,
+      "storage_key": "9709/s25_qp_43/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 3,
+        "q_number": 6,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Use a velocity expression and acceleration condition to find values of time and displacement.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+          "q_number=6",
+          "page_indices=[7]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q06/q06_page_008.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q06; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_43/questions/q06.png",
+        "input_asset_hash": "041b32ddef6f1592898deb1ec3eb1298c7c2b838a4207644e645a43ce682bbfe",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_43/questions/q06.png",
+          "input_asset_hash": "041b32ddef6f1592898deb1ec3eb1298c7c2b838a4207644e645a43ce682bbfe",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 20,
+      "storage_key": "9709/s25_qp_43/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 3,
+        "q_number": 7,
+        "primary_topic_path": "9709.p4.forces_and_equilibrium"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.forces_and_equilibrium"
+      },
+      "evidence": {
+        "ocr_text": "Analyse a two-particle pulley system on a rough slope for equilibrium conditions and subsequent energy motion.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 7
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+          "q_number=7",
+          "page_indices=[9, 10]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_010.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_011.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "rough slope",
+          "pulley",
+          "particles A and B",
+          "string over pulley",
+          "angle alpha"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_43 q07 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_43 q07; page sequence and continuation are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_43/questions/q07.png",
+        "input_asset_hash": "f81d8bfc1b6b8565360eaac34464d358fa7722782c27ad9f840b976439da73a8",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_43/questions/q07.png",
+          "input_asset_hash": "f81d8bfc1b6b8565360eaac34464d358fa7722782c27ad9f840b976439da73a8",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_43/questions/q07.png",
+        "input_asset_hash": "f81d8bfc1b6b8565360eaac34464d358fa7722782c27ad9f840b976439da73a8"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 21,
+      "storage_key": "9709/s25_qp_45/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 5,
+        "q_number": 1,
+        "primary_topic_path": "9709.p4.newtons_laws_of_motion"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.newtons_laws_of_motion"
+      },
+      "evidence": {
+        "ocr_text": "Find the work done by a pulling force on a box moving up a rough inclined plane with acceleration.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+          "q_number=1",
+          "page_indices=[2]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q01/q01_page_003.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q01; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_45/questions/q01.png",
+        "input_asset_hash": "59870b10b57c34e9bb27a3ce5f8c346de5aec96db88968d37efa80cb62a69ff2",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_45/questions/q01.png",
+          "input_asset_hash": "59870b10b57c34e9bb27a3ce5f8c346de5aec96db88968d37efa80cb62a69ff2",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 22,
+      "storage_key": "9709/s25_qp_45/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 5,
+        "q_number": 2,
+        "primary_topic_path": "9709.p4.momentum"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.momentum"
+      },
+      "evidence": {
+        "ocr_text": "Use momentum for a hammer and nail impact, then work against resistance to find penetration distance.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+          "q_number=2",
+          "page_indices=[3]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q02/q02_page_004.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "hammerhead and nail diagram",
+          "vertical impact",
+          "masses labelled"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_45 q02 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q02; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_45/questions/q02.png",
+        "input_asset_hash": "f3a7a668eb4d559f754397ef6e0527d6f7bfccdc91228717df97672ae088b423",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_45/questions/q02.png",
+          "input_asset_hash": "f3a7a668eb4d559f754397ef6e0527d6f7bfccdc91228717df97672ae088b423",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_45/questions/q02.png",
+        "input_asset_hash": "f3a7a668eb4d559f754397ef6e0527d6f7bfccdc91228717df97672ae088b423"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 23,
+      "storage_key": "9709/s25_qp_45/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 5,
+        "q_number": 3,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Use acceleration, constant speed, and deceleration phases for a train journey.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+          "q_number=3",
+          "page_indices=[4]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q03/q03_page_005.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q03; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_45/questions/q03.png",
+        "input_asset_hash": "da8674d212e0481faf80666dad493cbad3b9a4f6e71351655feb415a585eeed6",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_45/questions/q03.png",
+          "input_asset_hash": "da8674d212e0481faf80666dad493cbad3b9a4f6e71351655feb415a585eeed6",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 24,
+      "storage_key": "9709/s25_qp_45/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 5,
+        "q_number": 4,
+        "primary_topic_path": "9709.p4.forces_and_equilibrium"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.forces_and_equilibrium"
+      },
+      "evidence": {
+        "ocr_text": "Resolve three coplanar forces and find the magnitude and direction of their resultant.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+          "q_number=4",
+          "page_indices=[5]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q04/q04_page_006.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coplanar force diagram",
+          "17 N 51 N and 34 N forces",
+          "angle alpha",
+          "x-axis"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_45 q04 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q04; boundary, legibility, and diagram flag are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_45/questions/q04.png",
+        "input_asset_hash": "63a4c379958204948fcc3f4b9f6e63c31e93a017ad15fcbeec407ca3ffdbac58",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_45/questions/q04.png",
+          "input_asset_hash": "63a4c379958204948fcc3f4b9f6e63c31e93a017ad15fcbeec407ca3ffdbac58",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_45/questions/q04.png",
+        "input_asset_hash": "63a4c379958204948fcc3f4b9f6e63c31e93a017ad15fcbeec407ca3ffdbac58"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 25,
+      "storage_key": "9709/s25_qp_45/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 5,
+        "q_number": 5,
+        "primary_topic_path": "9709.p4.energy_work_and_power"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.energy_work_and_power"
+      },
+      "evidence": {
+        "ocr_text": "Use engine power and resistance at different speeds to find acceleration and constant speed.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+          "q_number=5",
+          "page_indices=[7, 8]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_008.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_009.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_45 q05; page sequence and continuation are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_45/questions/q05.png",
+        "input_asset_hash": "5311b0fa7a0442f9c5de18af39fc815b8fd7b7c54da9f2a28f3fccd65042b5a7",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_45/questions/q05.png",
+          "input_asset_hash": "5311b0fa7a0442f9c5de18af39fc815b8fd7b7c54da9f2a28f3fccd65042b5a7",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 26,
+      "storage_key": "9709/s25_qp_45/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 5,
+        "q_number": 6,
+        "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.kinematics_of_motion_in_a_straight_line"
+      },
+      "evidence": {
+        "ocr_text": "Use a velocity function to find times, a zero-velocity and zero-acceleration condition, and displacement.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+          "q_number=6",
+          "page_indices=[9, 10]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_010.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_011.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_45 q06; page sequence and continuation are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_45/questions/q06.png",
+        "input_asset_hash": "c40cbcf8dd8d918d073a7e73a65bdde7d2fbe2ba6b9f6c6e4aeb4e6dbeb075dc",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_45/questions/q06.png",
+          "input_asset_hash": "c40cbcf8dd8d918d073a7e73a65bdde7d2fbe2ba6b9f6c6e4aeb4e6dbeb075dc",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+      "manifest_position": 27,
+      "storage_key": "9709/s25_qp_45/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "s",
+        "paper": 4,
+        "variant": 5,
+        "q_number": 7,
+        "primary_topic_path": "9709.p4.forces_and_equilibrium"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p4.forces_and_equilibrium"
+      },
+      "evidence": {
+        "ocr_text": "Analyse connected particles on a rough slope for equilibrium values and later energy-based motion.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 7
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+          "q_number=7",
+          "page_indices=[11, 12]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_012.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_013.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "rough slope",
+          "pulley",
+          "particles A and B",
+          "string over pulley",
+          "angle alpha"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_45 q07 crop includes the diagram/axes within the reviewed question boundary."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_45 q07; page sequence and continuation are complete.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/s25_qp_45/questions/q07.png",
+        "input_asset_hash": "5e4b6d6de01d1ce1c0d6e7b5b06a2269fc31ffa3a3c8b5067bfcbb08f3abdfd3",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/s25_qp_45/questions/q07.png",
+          "input_asset_hash": "5e4b6d6de01d1ce1c0d6e7b5b06a2269fc31ffa3a3c8b5067bfcbb08f3abdfd3",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/s25_qp_45/questions/q07.png",
+        "input_asset_hash": "5e4b6d6de01d1ce1c0d6e7b5b06a2269fc31ffa3a3c8b5067bfcbb08f3abdfd3"
+      }
+    }
+  ],
+  "summary": {
+    "bundles_planned": 28,
+    "route_counts": {
+      "ocr_lane": 16,
+      "diagram_lane": 12
+    },
+    "lazy_attach_original_image": 12
+  }
+}

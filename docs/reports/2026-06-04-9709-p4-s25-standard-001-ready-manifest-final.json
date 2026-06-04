@@ -1,0 +1,3953 @@
+{
+  "schema_version": "9709_new_paper_page_chain_surface_v2",
+  "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001_page_chain_surface_v2",
+  "subject_code": "9709",
+  "generated_on": "2026-06-04",
+  "source_manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_s25_standard_001",
+  "shard_id": "p4_s25_standard_001",
+  "group_key": "p4_s25_standard",
+  "risk_tier": "medium",
+  "item_count": 28,
+  "pdf_count": 4,
+  "pdf_paths": [
+    "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+    "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+    "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+    "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf"
+  ],
+  "paper_set": [
+    4
+  ],
+  "session_year_set": [
+    "s25"
+  ],
+  "risk_tags": [
+    "paper_2_or_4_needs_mechanics_release_coverage"
+  ],
+  "source_manifest_v1_id": "9709_new_papers_2026_06_02_manifest_v1",
+  "correction_method": "pymupdf_strict_left_margin_printed_question_header_v2",
+  "correction_scope": "pre-shard input correction before formal page-chain production",
+  "source_crop_manifest_id": "9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2",
+  "scope": {
+    "shard_id": "p4_s25_standard_001",
+    "input_manifest_path": "data/manifests/9709_p4_s25_standard_001_input_v2.json",
+    "crop_manifest_path": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+    "artifact_stage": "formal shard page-chain surface from corrected v2 pre-shard crops",
+    "visual_review_status": "accepted",
+    "not_production_ready": true,
+    "not_vlm_reviewed": true,
+    "external_vlm_api_calls": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/s25_qp_41/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 1,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q01/q01_page_002.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_002.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q01/q01_page_002.png"
+      ],
+      "page_indices": [
+        1
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1
+      },
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_002.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q01/q01_page_002.png",
+          "crop_box_points": [
+            0,
+            45.394,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_41/questions/q01.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+        "authority_topic_path": "9709.p4.newtons_laws_of_motion",
+        "question_text": "Find the tension in a rope pulling a block up a rough inclined plane with given acceleration.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q01; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "b444e1d9d9db2af8cfc89518b0547d23e3eb45aea69fd9d8e5d3ebef7e7dafa2",
+      "primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q01.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.newtons_laws_of_motion; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q01.png; page_indices=[1]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 1,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q02/q02_page_003.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_003.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q02/q02_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2
+      },
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_003.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q02/q02_page_003.png",
+          "crop_box_points": [
+            0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_41/questions/q02.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+        "authority_topic_path": "9709.p4.forces_and_equilibrium",
+        "question_text": "Resolve coplanar forces and a perpendicular resultant to find force magnitudes.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [
+          "coplanar force diagram",
+          "5 N force",
+          "10 N force",
+          "unknown P N force",
+          "perpendicular resultant Q N"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_41 q02 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q02; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "a443cdefe34f18d772c47bc1c3b69f8d8fecb01196715026315362f5cd9293fa",
+      "primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q02.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.forces_and_equilibrium; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q02.png; page_indices=[2]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 1,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q03/q03_page_004.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_004.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q03/q03_page_004.png"
+      ],
+      "page_indices": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 3,
+        "end_page_index": 3
+      },
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_004.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q03/q03_page_004.png",
+          "crop_box_points": [
+            0,
+            45.199,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_41/questions/q03.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Use a velocity-time graph for a cyclist to find the total journey time.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [
+          "velocity-time graph",
+          "piecewise linear motion",
+          "time axis"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_41 q03 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q03; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "a2e793ff4dc9a26a5321609bc6a59314cdb730d71e86af00caac0404f654d294",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q03.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q03.png; page_indices=[3]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 1,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_006.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q04/q04_page_006.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_006.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q04/q04_page_006.png"
+      ],
+      "page_indices": [
+        5
+      ],
+      "page_range": {
+        "start_page_index": 5,
+        "end_page_index": 5
+      },
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_006.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q04/q04_page_006.png",
+          "crop_box_points": [
+            0,
+            45.394,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_41/questions/q04.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.energy_work_and_power",
+        "authority_topic_path": "9709.p4.energy_work_and_power",
+        "question_text": "Use power, resistance, constant speed, and hill ascent to analyse a lorry's motion.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)(i)",
+            "marks": 1
+          },
+          {
+            "label": "(a)(ii)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q04; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "6838ef1de5c7f819cd7f4faa044f604e337503837dee9a046a764314d735aab5",
+      "primary_topic_path": "9709.p4.energy_work_and_power",
+      "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q04.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.energy_work_and_power; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q04.png; page_indices=[5]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.energy_work_and_power",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 1,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q05/q05_page_007.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_007.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q05/q05_page_007.png"
+      ],
+      "page_indices": [
+        6
+      ],
+      "page_range": {
+        "start_page_index": 6,
+        "end_page_index": 6
+      },
+      "crop_records": [
+        {
+          "page_index": 6,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_007.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q05/q05_page_007.png",
+          "crop_box_points": [
+            0,
+            49.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            98,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_41/questions/q05.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.momentum",
+        "authority_topic_path": "9709.p4.momentum",
+        "question_text": "Use momentum and kinetic energy in a collision between two particles.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q05; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "82f99a6883ddfba0ec4c276b6204be6bd6af62abcd793113a83a2213e5f75e9e",
+      "primary_topic_path": "9709.p4.momentum",
+      "canonical_primary_topic_path": "9709.p4.momentum",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q05.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.momentum; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q05.png; page_indices=[6]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.momentum",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 1,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_008.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q06/q06_page_008.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_008.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q06/q06_page_008.png"
+      ],
+      "page_indices": [
+        7
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 7
+      },
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_008.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q06/q06_page_008.png",
+          "crop_box_points": [
+            0,
+            45.199,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_41/questions/q06.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+        "authority_topic_path": "9709.p4.newtons_laws_of_motion",
+        "question_text": "Analyse two particles on inclined planes connected by a string over a pulley.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [
+          "inclined planes",
+          "pulley at B",
+          "0.3 kg and 0.6 kg particles",
+          "angles theta and 30 degrees"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_41 q06 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q06; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "bdc481543427f3c04512908a1ffbc8ca3205c532d6d5230247faf9109d8f9f35",
+      "primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q06.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.newtons_laws_of_motion; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q06.png; page_indices=[7]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_41/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 1,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_41.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q07/q07_page_010.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_010.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q07/q07_page_010.png"
+      ],
+      "page_indices": [
+        9
+      ],
+      "page_range": {
+        "start_page_index": 9,
+        "end_page_index": 9
+      },
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_41/9709_s25_qp_41_page_010.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_41/q07/q07_page_010.png",
+          "crop_box_points": [
+            0,
+            46.291,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_41/questions/q07.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Use a displacement function to find when a particle is instantaneously at rest and total distance travelled.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 6
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_41 q07; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "782c9ea1a18e0ae669c90a1c7a0950f4501ce3b709ddc5bf2ea2d97e8bab9a21",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q07.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_41/questions/q07.png; page_indices=[9]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_42/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 2,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q01/q01_page_003.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_003.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q01/q01_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2
+      },
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_003.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q01/q01_page_003.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_42/questions/q01.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.energy_work_and_power",
+        "authority_topic_path": "9709.p4.energy_work_and_power",
+        "question_text": "Use constant speed, work done, and power for a crate pushed along a horizontal surface.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          },
+          {
+            "label": "(c)",
+            "marks": 1
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q01; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "559cc6a768de1a3f769d5e29338cf38804a72ca73610c548d354d93b33a827e6",
+      "primary_topic_path": "9709.p4.energy_work_and_power",
+      "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q01.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.energy_work_and_power; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q01.png; page_indices=[2]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.energy_work_and_power",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_42/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 2,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q02/q02_page_004.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_004.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q02/q02_page_004.png"
+      ],
+      "page_indices": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 3,
+        "end_page_index": 3
+      },
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_004.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_42/questions/q02.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.momentum",
+        "authority_topic_path": "9709.p4.momentum",
+        "question_text": "Find kinetic energy lost when two particles collide and coalesce.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q02; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "da58e848ecc4463eced89f3f944ed50de82b2e431f7d4c647718a2d4f40f73bc",
+      "primary_topic_path": "9709.p4.momentum",
+      "canonical_primary_topic_path": "9709.p4.momentum",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q02.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.momentum; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q02.png; page_indices=[3]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.momentum",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_42/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 2,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q03/q03_page_005.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_005.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q03/q03_page_005.png"
+      ],
+      "page_indices": [
+        4
+      ],
+      "page_range": {
+        "start_page_index": 4,
+        "end_page_index": 4
+      },
+      "crop_records": [
+        {
+          "page_index": 4,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_005.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q03/q03_page_005.png",
+          "crop_box_points": [
+            0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_42/questions/q03.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+        "authority_topic_path": "9709.p4.forces_and_equilibrium",
+        "question_text": "Use equilibrium of a particle attached to an inextensible string and an applied force to find mass and tension.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [
+          "string geometry",
+          "particle P",
+          "35 N force",
+          "ceiling distance"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_42 q03 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q03; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "58520629c6fc40c8c3b850e02a1cc7a292900ab054d29878270bd40e696d8df9",
+      "primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q03.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.forces_and_equilibrium; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q03.png; page_indices=[4]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_42/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 2,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_006.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q04/q04_page_006.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_006.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q04/q04_page_006.png"
+      ],
+      "page_indices": [
+        5
+      ],
+      "page_range": {
+        "start_page_index": 5,
+        "end_page_index": 5
+      },
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_006.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q04/q04_page_006.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_42/questions/q04.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Sketch and use a velocity-time graph for a car journey with acceleration, constant speed, and deceleration.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 6
+          }
+        ],
+        "diagram_elements": [
+          "blank velocity-time axes",
+          "straight-line road motion"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_42 q04 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q04; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "18e4f39e6ce2f863be0964dc06aa6cf67730f4273048852b5a930d4babc44a8b",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q04.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q04.png; page_indices=[5]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_42/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 2,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_009.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_009.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_009.png"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 8
+      },
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_008.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_008.png",
+          "crop_box_points": [
+            0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 8,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_009.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q05/q05_page_009.png",
+          "crop_box_points": [
+            0,
+            0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_42/questions/q05.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+        "authority_topic_path": "9709.p4.newtons_laws_of_motion",
+        "question_text": "Analyse connected particles on an inclined plane and horizontal plane with string tensions, friction, and a broken string continuation.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          },
+          {
+            "label": "(c)",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [
+          "inclined plane",
+          "horizontal plane",
+          "two pulleys",
+          "particles A B C",
+          "two light inextensible strings"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_42 q05 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_42 q05; page sequence and continuation are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "f618cdb486fd5efd0cb5b6b72eedfaa23296ba95af178f68d099bd0d535d3b9a",
+      "primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q05.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.newtons_laws_of_motion; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q05.png; page_indices=[7, 8]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_42/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 2,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q06/q06_page_010.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_010.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q06/q06_page_010.png"
+      ],
+      "page_indices": [
+        9
+      ],
+      "page_range": {
+        "start_page_index": 9,
+        "end_page_index": 9
+      },
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_010.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q06/q06_page_010.png",
+          "crop_box_points": [
+            0,
+            49.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            98,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_42/questions/q06.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Use a velocity function to find the maximum velocity of a particle.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q06; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "bbd5aeee90b04a85ed08f837c5843508f78c7b5587f98f4f4c515b72b15c61ae",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q06.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q06.png; page_indices=[9]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_42/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 2,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_42.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_012.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q07/q07_page_012.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_012.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q07/q07_page_012.png"
+      ],
+      "page_indices": [
+        11
+      ],
+      "page_range": {
+        "start_page_index": 11,
+        "end_page_index": 11
+      },
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_42/9709_s25_qp_42_page_012.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_42/q07/q07_page_012.png",
+          "crop_box_points": [
+            0,
+            49.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            98,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_42/questions/q07.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.energy_work_and_power",
+        "authority_topic_path": "9709.p4.energy_work_and_power",
+        "question_text": "Use an energy method for a particle projected up a rough plane to find its return speed.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_42 q07; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "a47e36bd049a8703039f5caa3c459e2a767fe14d0faadf9a4e2ba374aa3c7248",
+      "primary_topic_path": "9709.p4.energy_work_and_power",
+      "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q07.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.energy_work_and_power; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_42/questions/q07.png; page_indices=[11]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.energy_work_and_power",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_43/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 3,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_002.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q01/q01_page_002.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_002.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q01/q01_page_002.png"
+      ],
+      "page_indices": [
+        1
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 1
+      },
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_002.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q01/q01_page_002.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_43/questions/q01.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.momentum",
+        "authority_topic_path": "9709.p4.momentum",
+        "question_text": "Use momentum constraints in a one-dimensional collision and find the largest possible kinetic energy loss.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q01; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "5f9ab26ce69b2d4287a090fa3ce988a9510dd9d8a07c69e58a3aa6db482bd59e",
+      "primary_topic_path": "9709.p4.momentum",
+      "canonical_primary_topic_path": "9709.p4.momentum",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q01.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.momentum; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q01.png; page_indices=[1]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.momentum",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_43/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 3,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q02/q02_page_003.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_003.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q02/q02_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2
+      },
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_003.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q02/q02_page_003.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_43/questions/q02.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+        "authority_topic_path": "9709.p4.newtons_laws_of_motion",
+        "question_text": "Use Newton's laws for a van towing a trailer to find driving force and tension.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q02; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "822fbaf1bf01ad2b7ad5ef169b96bd08c8af4bbb317c37987e2b6826c4567670",
+      "primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q02.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.newtons_laws_of_motion; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q02.png; page_indices=[2]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_43/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 3,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q03/q03_page_004.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_004.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q03/q03_page_004.png"
+      ],
+      "page_indices": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 3,
+        "end_page_index": 3
+      },
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_004.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q03/q03_page_004.png",
+          "crop_box_points": [
+            0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_43/questions/q03.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Use a velocity-time graph with three straight-line segments to find total time and later acceleration.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 5
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "diagram_elements": [
+          "velocity-time graph",
+          "piecewise linear model",
+          "negative velocity segment"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_43 q03 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q03; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "beb782b16ca4fba5ce0352466d9b585b7b42bfe93d2cc79a35c82f4e8ac8a540",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q03.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q03.png; page_indices=[3]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_43/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 3,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q04/q04_page_005.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_005.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q04/q04_page_005.png"
+      ],
+      "page_indices": [
+        4
+      ],
+      "page_range": {
+        "start_page_index": 4,
+        "end_page_index": 4
+      },
+      "crop_records": [
+        {
+          "page_index": 4,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_005.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q04/q04_page_005.png",
+          "crop_box_points": [
+            0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_43/questions/q04.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+        "authority_topic_path": "9709.p4.forces_and_equilibrium",
+        "question_text": "Use equilibrium of three suspended blocks and pulley strings to find a mass and an angle.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "diagram_elements": [
+          "three hanging blocks",
+          "pulleys",
+          "strings OP OQ OR",
+          "angles alpha and 30 degrees"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_43 q04 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q04; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "443ab3779b470ba9fa27095c643335cffab9fb24c564d41eb3a6475cf4576ad4",
+      "primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q04.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.forces_and_equilibrium; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q04.png; page_indices=[4]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_43/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 3,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_006.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q05/q05_page_006.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_006.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q05/q05_page_006.png"
+      ],
+      "page_indices": [
+        5
+      ],
+      "page_range": {
+        "start_page_index": 5,
+        "end_page_index": 5
+      },
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_006.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q05/q05_page_006.png",
+          "crop_box_points": [
+            0,
+            49.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            98,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_43/questions/q05.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.energy_work_and_power",
+        "authority_topic_path": "9709.p4.energy_work_and_power",
+        "question_text": "Use power and speed-dependent resistance for a van travelling at steady speed and accelerating.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q05; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "a68734f610200131616f5767d5d6f3314a7d0beeac0a0acb774a2891e9cde9c2",
+      "primary_topic_path": "9709.p4.energy_work_and_power",
+      "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q05.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.energy_work_and_power; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q05.png; page_indices=[5]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.energy_work_and_power",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_43/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 3,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_008.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q06/q06_page_008.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_008.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q06/q06_page_008.png"
+      ],
+      "page_indices": [
+        7
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 7
+      },
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_008.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q06/q06_page_008.png",
+          "crop_box_points": [
+            0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_43/questions/q06.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Use a velocity expression and acceleration condition to find values of time and displacement.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_43 q06; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "6989ec028a8833a3e648632d4e9d5ee3b91d11b116352c9eb3e1b3099626c05f",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q06.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q06.png; page_indices=[7]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_43/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 3,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_43.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_011.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_011.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_011.png"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "page_range": {
+        "start_page_index": 9,
+        "end_page_index": 10
+      },
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_010.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_010.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 10,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_43/9709_s25_qp_43_page_011.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_43/q07/q07_page_011.png",
+          "crop_box_points": [
+            0,
+            0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_43/questions/q07.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+        "authority_topic_path": "9709.p4.forces_and_equilibrium",
+        "question_text": "Analyse a two-particle pulley system on a rough slope for equilibrium conditions and subsequent energy motion.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 7
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [
+          "rough slope",
+          "pulley",
+          "particles A and B",
+          "string over pulley",
+          "angle alpha"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_43 q07 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_43 q07; page sequence and continuation are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "5555454d5a2ad73e8eea5d2db3abaa588f4f639279e76473c58b0d8af5a57e78",
+      "primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q07.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.forces_and_equilibrium; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_43/questions/q07.png; page_indices=[9, 10]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 5,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q01/q01_page_003.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_003.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q01/q01_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2
+      },
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_003.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q01/q01_page_003.png",
+          "crop_box_points": [
+            0,
+            45.823,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            92,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_45/questions/q01.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+        "authority_topic_path": "9709.p4.newtons_laws_of_motion",
+        "question_text": "Find the work done by a pulling force on a box moving up a rough inclined plane with acceleration.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q01; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "60bb920fab3e59055e02c6768826b8c50b0a16238c5627edc8bd2d01dfda3af9",
+      "primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "canonical_primary_topic_path": "9709.p4.newtons_laws_of_motion",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q01.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.newtons_laws_of_motion; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q01.png; page_indices=[2]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.newtons_laws_of_motion",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 5,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q02/q02_page_004.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_004.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q02/q02_page_004.png"
+      ],
+      "page_indices": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 3,
+        "end_page_index": 3
+      },
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_004.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            45.265,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_45/questions/q02.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.momentum",
+        "authority_topic_path": "9709.p4.momentum",
+        "question_text": "Use momentum for a hammer and nail impact, then work against resistance to find penetration distance.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [
+          "hammerhead and nail diagram",
+          "vertical impact",
+          "masses labelled"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_45 q02 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q02; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "06bd7596669781f888a04f78f7ff78cdef4d3c1c630c7ae47a2a92d61ae753f1",
+      "primary_topic_path": "9709.p4.momentum",
+      "canonical_primary_topic_path": "9709.p4.momentum",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q02.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.momentum; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q02.png; page_indices=[3]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.momentum",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 5,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_005.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q03/q03_page_005.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_005.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q03/q03_page_005.png"
+      ],
+      "page_indices": [
+        4
+      ],
+      "page_range": {
+        "start_page_index": 4,
+        "end_page_index": 4
+      },
+      "crop_records": [
+        {
+          "page_index": 4,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_005.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q03/q03_page_005.png",
+          "crop_box_points": [
+            0,
+            45.453,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_45/questions/q03.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Use acceleration, constant speed, and deceleration phases for a train journey.",
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q03; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "d9b236f2e7a8f01531afd601c07c6b207a2432abb29aaeeba6b015c2f954cf8c",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q03.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q03.png; page_indices=[4]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 5,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_006.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q04/q04_page_006.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_006.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q04/q04_page_006.png"
+      ],
+      "page_indices": [
+        5
+      ],
+      "page_range": {
+        "start_page_index": 5,
+        "end_page_index": 5
+      },
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_006.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q04/q04_page_006.png",
+          "crop_box_points": [
+            0,
+            45.265,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_45/questions/q04.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+        "authority_topic_path": "9709.p4.forces_and_equilibrium",
+        "question_text": "Resolve three coplanar forces and find the magnitude and direction of their resultant.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 6
+          }
+        ],
+        "diagram_elements": [
+          "coplanar force diagram",
+          "17 N 51 N and 34 N forces",
+          "angle alpha",
+          "x-axis"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_45 q04 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_s25_qp_45 q04; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "bc3026b56f4a881c6530c11242e0f136aa09c38d0e5c6aa5a1c1f3f92ce1581b",
+      "primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q04.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.forces_and_equilibrium; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q04.png; page_indices=[5]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 5,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_009.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_009.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_009.png"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 8
+      },
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_008.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_008.png",
+          "crop_box_points": [
+            0,
+            45.442,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 8,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_009.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q05/q05_page_009.png",
+          "crop_box_points": [
+            0,
+            0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_45/questions/q05.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.energy_work_and_power",
+        "authority_topic_path": "9709.p4.energy_work_and_power",
+        "question_text": "Use engine power and resistance at different speeds to find acceleration and constant speed.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_45 q05; page sequence and continuation are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "f2a56aaae271876a92d7516fc16370930d98eea7bf484a651cff33a999f0cceb",
+      "primary_topic_path": "9709.p4.energy_work_and_power",
+      "canonical_primary_topic_path": "9709.p4.energy_work_and_power",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q05.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.energy_work_and_power; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q05.png; page_indices=[7, 8]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.energy_work_and_power",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 5,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_011.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_011.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_011.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_010.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_011.png"
+      ],
+      "page_indices": [
+        9,
+        10
+      ],
+      "page_range": {
+        "start_page_index": 9,
+        "end_page_index": 10
+      },
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_010.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_010.png",
+          "crop_box_points": [
+            0,
+            45.8,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            92,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 10,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_011.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q06/q06_page_011.png",
+          "crop_box_points": [
+            0,
+            0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_45/questions/q06.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "authority_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+        "question_text": "Use a velocity function to find times, a zero-velocity and zero-acceleration condition, and displacement.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_45 q06; page sequence and continuation are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "3de718c922f6d04ee3232f60d1da782e3ddf476e5224513678f1cf2d3bc07b17",
+      "primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "canonical_primary_topic_path": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q06.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.kinematics_of_motion_in_a_straight_line; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q06.png; page_indices=[9, 10]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.kinematics_of_motion_in_a_straight_line",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/s25_qp_45/questions/q07.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "s",
+      "paper": 4,
+      "variant": 5,
+      "q_number": 7,
+      "source_pdf": "data/past-papers/9709Mathematics/paper4/9709_s25_qp_45.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p2_p4",
+      "group_key": "p4_s25_standard",
+      "risk_tier": "medium",
+      "risk_tags": [
+        "paper_2_or_4_needs_mechanics_release_coverage"
+      ],
+      "shard_id": "p4_s25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_013.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_013.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_013.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_012.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_013.png"
+      ],
+      "page_indices": [
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 11,
+        "end_page_index": 12
+      },
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_012.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_012.png",
+          "crop_box_points": [
+            0,
+            45.265,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 12,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/renders/9709_s25_qp_45/9709_s25_qp_45_page_013.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_s25_standard_001/question-crops/9709_s25_qp_45/q07/q07_page_013.png",
+          "crop_box_points": [
+            0,
+            0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/s25_qp_45/questions/q07.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+        "authority_topic_path": "9709.p4.forces_and_equilibrium",
+        "question_text": "Analyse connected particles on a rough slope for equilibrium values and later energy-based motion.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 7
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [
+          "rough slope",
+          "pulley",
+          "particles A and B",
+          "string over pulley",
+          "angle alpha"
+        ],
+        "spatial_evidence": [
+          "9709_s25_qp_45 q07 crop includes the diagram/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted 2 crop pages for 9709_s25_qp_45 q07; page sequence and continuation are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec",
+      "source_manifest_digest": "00528cab56b6a06d47d080e2ceb3b7c760ee9ffa055eaa7b09865189f7f64469",
+      "primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "canonical_primary_topic_path": "9709.p4.forces_and_equilibrium",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p4-s25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q07.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p4.forces_and_equilibrium; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/s25_qp_45/questions/q07.png; page_indices=[11, 12]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p4.forces_and_equilibrium",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    }
+  ],
+  "authority_alignment_run_id": "authority-alignment-582793d7-9175-4819-8058-4604e58a85ec"
+}

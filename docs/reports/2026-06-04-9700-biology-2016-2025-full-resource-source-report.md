@@ -45,7 +45,7 @@ Directory conventions:
 - Confidential instructions: `confidential-instructions/paperN/<filename>.pdf`
 - Grade thresholds: `grade-thresholds/<filename>.pdf`
 - Examiner reports: `examiner-reports/<filename>.pdf`
-- Insert-style `ir` resources: `inserts/paperN/<filename>.pdf`
+- Insert-style `ir` resources: `ir/<filename>.pdf` for 2016-2017 Summer files and `inserts/paperN/<filename>.pdf` for 2016-2017 Winter files
 
 PDF filenames were preserved from the source naming convention.
 

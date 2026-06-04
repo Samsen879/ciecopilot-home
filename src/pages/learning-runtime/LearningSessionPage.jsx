@@ -12,15 +12,15 @@ import {
   getSession,
   importQuestion,
 } from '../../api/learningRuntimeApi.js';
-import ImportPostureBanner from '../../components/learning-runtime/ImportPostureBanner.jsx';
+import ImportPostureBanner from '../../components/learning-runtime/ImportPostureBanner.js';
 import ImportedQuestionIntake, {
   buildImportQuestionPayload,
   buildImportedQuestionSessionPayload,
   canSubmitImportedQuestionDraft,
   createImportedQuestionDraft,
   patchImportedQuestionDraft,
-} from '../../components/learning-runtime/ImportedQuestionIntake.jsx';
-import LearningSessionShell from '../../components/learning-runtime/LearningSessionShell.jsx';
+} from '../../components/learning-runtime/ImportedQuestionIntake.js';
+import LearningSessionShell from '../../components/learning-runtime/LearningSessionShell.js';
 import { buildSessionViewModel } from '../../components/learning-runtime/view-models/session-view-model.js';
 import {
   buildSessionLaunchPayload,

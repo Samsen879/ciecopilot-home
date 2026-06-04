@@ -414,18 +414,37 @@ function scanTextEvidence({ rootDir, subject, reportsRoot, inspectPdfTextLayer, 
   });
   const plainTextV2Artifacts = reportFiles.filter((repoPath) => {
     const fileName = path.basename(repoPath);
-    return fileName.includes(subject) && fileName.includes('question-plain-text-v2');
+    return fileName.includes(subject)
+      && fileName.includes('question-plain-text-v2')
+      && !fileName.includes('question-plain-text-v2-consumption');
   });
   const consumptionArtifacts = reportFiles.filter((repoPath) => {
     const fileName = path.basename(repoPath);
     return fileName.includes(subject) && fileName.includes('question-plain-text-v2-consumption');
   });
 
+  const rowCountFromArtifact = (repoPath, summaryFields) => {
+    const payload = readJsonIfExists(rootDir, repoPath);
+    for (const field of summaryFields) {
+      if (Number.isInteger(payload?.summary?.[field])) {
+        return payload.summary[field];
+      }
+    }
+    return Array.isArray(payload?.items) ? payload.items.length : 0;
+  };
+  const maxRows = (repoPaths, summaryFields) => repoPaths.reduce(
+    (max, repoPath) => Math.max(max, rowCountFromArtifact(repoPath, summaryFields)),
+    0,
+  );
+
   return {
     evidence_bundle_files: evidenceBundleFiles.length,
     question_plain_text_v1_artifacts: plainTextV1Artifacts.length,
     question_plain_text_v2_artifacts: plainTextV2Artifacts.length,
     question_plain_text_v2_consumption_artifacts: consumptionArtifacts.length,
+    question_plain_text_v1_max_rows: maxRows(plainTextV1Artifacts, ['production_rows', 'plain_text_rows']),
+    question_plain_text_v2_max_rows: maxRows(plainTextV2Artifacts, ['v2_rows', 'normalized_plain_text_rows']),
+    question_plain_text_v2_consumption_max_rows: maxRows(consumptionArtifacts, ['rows_read', 'normalized_plain_text_rows']),
     evidence_bundle_paths: evidenceBundleFiles,
     question_plain_text_v1_paths: plainTextV1Artifacts,
     question_plain_text_v2_paths: plainTextV2Artifacts,
@@ -630,7 +649,7 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
       duplicate_storage_keys: rowSurface.duplicate_storage_keys,
     });
   }
-  if (textEvidence.evidence_bundle_files === 0) {
+  if (textEvidence.evidence_bundle_files === 0 && textEvidence.question_plain_text_v1_artifacts === 0) {
     addBlocker('missing_ocr_evidence_bundle', 'No 9231 row-level evidence-bundle OCR/text artifact exists.', {
       reports_root: sourceCoverage.reports_root,
     });
@@ -644,6 +663,28 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
   if (consumptionPaths.local_consumption_gate_artifacts === 0) {
     addBlocker('missing_question_plain_text_v2_consumption_gate', 'No 9231 normalized_plain_text local consumption gate artifact exists.', {});
   }
+  if (
+    rowSurface.question_row_count > 0
+    && textEvidence.question_plain_text_v2_artifacts > 0
+    && textEvidence.question_plain_text_v2_max_rows < rowSurface.question_row_count
+  ) {
+    addBlocker('partial_question_plain_text_v2_coverage', '9231 question_plain_text_v2 exists but does not yet cover all current shard-split rows.', {
+      question_row_count: rowSurface.question_row_count,
+      question_plain_text_v2_max_rows: textEvidence.question_plain_text_v2_max_rows,
+    });
+    nextExecutableGates.push('Continue shard waves until question_plain_text_v2 covers every current 9231 shard-split row.');
+  }
+  if (
+    rowSurface.question_row_count > 0
+    && consumptionPaths.local_consumption_gate_artifacts > 0
+    && textEvidence.question_plain_text_v2_consumption_max_rows < rowSurface.question_row_count
+  ) {
+    addBlocker('partial_question_plain_text_v2_consumption_coverage', '9231 local normalized_plain_text consumption gate exists but does not yet cover all current shard-split rows.', {
+      question_row_count: rowSurface.question_row_count,
+      question_plain_text_v2_consumption_max_rows: textEvidence.question_plain_text_v2_consumption_max_rows,
+    });
+    nextExecutableGates.push('Continue shard waves until local normalized_plain_text consumption covers every current 9231 shard-split row.');
+  }
   if (rowSurface.question_row_count === 0 && imageAssets.tracked_or_local_subject_image_files === 0) {
     addBlocker('missing_manifest_backed_image_or_crop_assets', 'No manifest-backed 9231 image/crop asset surface exists.', {});
   }
@@ -654,7 +695,7 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
     });
     nextExecutableGates.push('Generate local deterministic page render/crop assets for each row and count missing crops.');
   }
-  if (textEvidence.evidence_bundle_files === 0) {
+  if (textEvidence.evidence_bundle_files === 0 && textEvidence.question_plain_text_v1_artifacts === 0) {
     nextExecutableGates.push('Attach OCR/text evidence bundles without external VLM/API calls unless scope is explicitly expanded.');
   }
   if (textEvidence.question_plain_text_v1_artifacts === 0 || textEvidence.question_plain_text_v2_artifacts === 0) {
@@ -665,7 +706,12 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
   }
 
   return {
-    foundation_status: rowSurface.question_row_count > 0 ? 'row-surface-present-needs-text-gates' : 'blocked-by-missing-row-surface',
+    foundation_status: rowSurface.question_row_count > 0
+      ? textEvidence.question_plain_text_v2_max_rows >= rowSurface.question_row_count
+        && textEvidence.question_plain_text_v2_consumption_max_rows >= rowSurface.question_row_count
+        ? 'row-surface-text-consumption-ready'
+        : 'row-surface-present-partial-text-consumption'
+      : 'blocked-by-missing-row-surface',
     blockers,
     next_executable_gates: [...new Set(nextExecutableGates)],
   };
@@ -701,6 +747,9 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
   const image = inventory.image_assets;
   const consumption = inventory.consumption_paths;
   const gap = inventory.gap_inventory;
+  const textCoveragePhrase = text.question_plain_text_v2_artifacts > 0
+    ? `question_plain_text_v2 covers \`${text.question_plain_text_v2_max_rows}/${rowSurface.question_row_count}\` current rows and local normalized_plain_text consumption covers \`${text.question_plain_text_v2_consumption_max_rows}/${rowSurface.question_row_count}\` current rows`
+    : 'question_plain_text_v1/v2 and normalized_plain_text consumption gates are still missing';
 
   const lines = [
     '# 9231 Question Text Foundation Inventory',
@@ -715,7 +764,7 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
     '## Repo-Truth Conclusion',
     '',
     rowSurface.question_row_count > 0
-      ? `Conclusion: \`${gap.foundation_status}\`. Deterministic local row-level locator surfaces exist; ${cropCoverageConclusion(rowSurface)}, while OCR/text evidence, question_plain_text_v1/v2, and normalized_plain_text consumption gates are still missing.`
+      ? `Conclusion: \`${gap.foundation_status}\`. Deterministic local row-level locator surfaces exist; ${cropCoverageConclusion(rowSurface)}; ${textCoveragePhrase}.`
       : `Conclusion: \`${gap.foundation_status}\`. Raw source PDFs exist, but row-level production surface evidence must be built before 9231 can enter question_plain_text_v1/v2.`,
     '',
     '## Raw PDF Source Coverage',
@@ -752,8 +801,11 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
     markdownTable(['metric', 'value'], [
       ['evidence bundle files', text.evidence_bundle_files],
       ['question_plain_text_v1 artifacts', text.question_plain_text_v1_artifacts],
+      ['question_plain_text_v1 max rows', text.question_plain_text_v1_max_rows],
       ['question_plain_text_v2 artifacts', text.question_plain_text_v2_artifacts],
+      ['question_plain_text_v2 max rows', text.question_plain_text_v2_max_rows],
       ['question_plain_text_v2 consumption artifacts', text.question_plain_text_v2_consumption_artifacts],
+      ['question_plain_text_v2 consumption max rows', text.question_plain_text_v2_consumption_max_rows],
       ['PDF text layer inspected', text.pdf_text_layer.inspected],
       ['PDF text layer status', text.pdf_text_layer.status],
     ]),
@@ -878,15 +930,16 @@ export function buildQuestionTextFoundationInventory({
     consumptionPaths,
   });
   const status = gapInventory.foundation_status === 'blocked-by-missing-row-surface' ? 'blocked' : 'inventory_ready';
+  const verdict = status === 'blocked'
+    ? 'foundation blocked-by-missing-row-surface'
+    : `foundation ${gapInventory.foundation_status}`;
 
   return {
     schema_version: '9231_question_text_foundation_inventory_v1',
     generated_on: generatedOn,
     subject_code: subject,
     status,
-    verdict: status === 'blocked'
-      ? 'foundation blocked-by-missing-row-surface'
-      : 'foundation row-surface-present-needs-text-gates',
+    verdict,
     boundary: {
       local_deterministic_inventory: true,
       external_vlm_or_api_used: false,

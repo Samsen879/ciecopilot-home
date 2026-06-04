@@ -1,0 +1,835 @@
+{
+  "schema_version": "9231_visual_review_wave1_shard_closeout_v1",
+  "generated_on": "2026-06-05",
+  "subject_code": "9231",
+  "shard_id": "9231_p4_s25_standard_001",
+  "status": "pass",
+  "visual_review_gate_passed": true,
+  "production_ready_claimed": false,
+  "db_search_rag_consumption_claimed": false,
+  "boundary": {
+    "external_vlm_or_api_used_for_visual_review": true,
+    "external_ocr_rerun_used": false,
+    "not_question_plain_text_v1_or_v2": true,
+    "not_authority_alignment_gate": true,
+    "not_db_search_rag_consumption_gate": true,
+    "not_final_production_ready": true
+  },
+  "summary": {
+    "rows": 24,
+    "accepted_rows": 24,
+    "rejected_rows": 0,
+    "missing_review_rows": 0,
+    "source_pdf_count": 4,
+    "blocker_count": 0
+  },
+  "artifacts": {
+    "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+    "json": "docs/reports/2026-06-05-9231-p4-s25-standard-001-visual-review-closeout.json",
+    "markdown": "docs/reports/2026-06-05-9231-p4-s25-standard-001-visual-review-closeout.md"
+  },
+  "source_pdfs": [
+    "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+    "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+    "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+    "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf"
+  ],
+  "blockers": [],
+  "rows": [
+    {
+      "storage_key": "9231/s25_qp_41/questions/q01.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 0,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-09f08dfc-cc66-92b4-b42a-a16182b91a78",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes header, question text, summary statistics, instruction, and mark allocation). Text is legible despite minor compression artifacts. No diagrams or tables are present; none are visibly required for this hypothesis test question. 'Turn over' indicates possible continuation, but only one page is provided and no content is cut off mid-sentence or mid-equation.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_41_q01_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_41/q01/q01_page_003.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_41/questions/q02.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 1,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-70fe083a-41e7-99e6-9076-c94be316968a",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_41_q02_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_41/q02/q02_page_004.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_41/questions/q03.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 2,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-3380f18f-aeaf-9ff7-9ce1-012b602e31e8",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes full question stem, both tables, parts (a) and (b), and footer). Text is legible despite minor contrast issues; all required elements (tables, instructions, labels) are present and coherent. No missing continuation content; single page stack covers entire question 3 as expected for this paper format.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_41_q03_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_41/q03/q03_page_006.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_41/questions/q04.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 3,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-01611fc2-720f-9ac7-bb97-380d10d8cb0e",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes question number, stem, summary statistics, assumption, and part (a) with mark allocation). Text is legible despite minor contrast issues. No diagrams or tables are present or required for this part. Continuation pages [8,9] are not visible in this single crop; however, the current crop ends cleanly after part (a) with ample blank space and no truncated content, suggesting coherence if continuation exists on next page.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_41_q04_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_41/q04/q04_page_008.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_41/questions/q05.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 4,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-3064b1e0-a158-961c-8311-5c2477f5f10f",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes question stem, table, and part (a) instruction). Text is legible despite minor contrast issues. No continuation pages visible in this crop; only page 10 shown. Table and diagram (none required beyond table) are present and clear.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_41_q05_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_41/q05/q05_page_010.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_41/questions/q06.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 5,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-63dc1886-edfc-9d43-8928-9c619f1e4b5d",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": null
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "['Question boundary includes full question text, part (a), part (b), and margin instructions; no obvious cropping error.', 'Text is clear and legible; mathematical notation (G_Y(t), P(Y>2), a^2) is well-rendered.', 'Only one crop provided (crop 1/1), covering the entire question as printed on page 12; no continuation pages visible in this stack, but the question appears self-contained on this page (no dangling references or incomplete statements).', 'No diagram or table is present or required for this question; thus diagram_or_table_presence_accepted is null.']",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_41_q06_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_41/q06/q06_page_012.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_42/questions/q01.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 6,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-3318e101-365c-9f01-a0a3-edaf64529225",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_42_q01_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_42/q01/q01_page_003.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_42/questions/q02.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 7,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-88b911b9-553c-9e38-85fb-50f92b50f010",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_42_q02_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_42/q02/q02_page_004.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_42/questions/q03.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 8,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-8bcd478d-ed00-9725-a29c-a36ec17df066",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "[\"Question boundary includes full question text, table, and both parts (a) and (b); margin annotations ('DO NOT WRITE IN THIS MARGIN') are present but do not obscure content.\", 'Visual legibility is high: text and tables are sharp, well-contrasted, and fully readable.', 'Single-page crop; no continuation pages needed or missing.', 'Tables are clearly rendered; no diagrams required for this question.']",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_42_q03_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_42/q03/q03_page_006.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_42/questions/q04.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 9,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-aec75a50-39e1-9cd9-b7f3-5e59752c29a8",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes question number, stem, summary statistics, assumption, and part (a) with mark allocation). Text is legible despite minor compression artifacts. No diagrams or tables are present, and none are visibly required for part (a). Continuation pages [8,9] are not shown in this crop stack, but the current crop ends cleanly after part (a) with ample blank space; no obvious continuation content is cut off within the visible frame.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_42_q04_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_42/q04/q04_page_008.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_42/questions/q05.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 10,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-27366a5b-7e6f-9a7c-a659-e86a5ae6d41f",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes question stem, table, and part (a) instruction). Text is legible despite minor compression artifacts. No diagram or table missing — the required data table is fully present. Continuation pages [10,11] are coherent as only one page is shown in this crop stack; no missing continuation content visible.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_42_q05_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_42/q05/q05_page_010.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_42/questions/q06.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 11,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-f9752ec2-3b94-96de-be5e-321376059f3b",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_42_q06_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_42/q06/q06_page_012.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_43/questions/q01.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 12,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-bde4904a-465a-98c4-af22-e69b270bb272",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question text is legible despite minor contrast issues; printed question boundary (including header, question number, and footer) is fully included. No diagrams or tables are present, and none are visibly required for the question. Single-page question; no continuation pages to assess.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_43_q01_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_43/q01/q01_page_002.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_43/questions/q02.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 13,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-5f7478aa-e1b5-9d12-b096-eef52fb7c154",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [],
+      "vlm_notes": "",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_43_q02_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_43/q02/q02_page_003.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_43/questions/q03.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 14,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-271e7d3e-bc29-9d32-9045-ddc83bc63fc6",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes header, question stem, piecewise PDF, parts (a) and (b), mark allocations, and footer). Text is legible despite minor compression artifacts. No diagrams or tables are present; none are visibly required for this question. Continuation pages [4,5] are not shown in this single-crop stack, but the current crop ends cleanly after part (b) with ample blank space and no truncated content—suggesting no missing continuation on this page.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_43_q03_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_43/q03/q03_page_004.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_43/questions/q04.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 15,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-83fccedc-2230-9404-bf85-b732775ae7b9",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question text and data table are fully legible; printed question boundary (including question number, stem, data, and instruction) is present and complete. No continuation pages visible in this crop stack (only one crop shown), so cross-page continuity not applicable. No diagrams or tables required beyond the provided reaction-time data table, which is included and clear.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_43_q04_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_43/q04/q04_page_006.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_43/questions/q05.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 16,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-72327043-d5ae-991c-8233-4c9bd448769b",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes question number, stem, table, and part (a) with answer space). Text is legible despite minor contrast issues; all required elements (table, instruction, blank lines) are present. No continuation pages visible in this crop stack, but page numbers [8,9] suggest possible continuation—however, only one crop ('crop 1/1') is provided and it contains the full question as presented on page 8, with no truncation of essential content. Diagram/table presence: a required table is fully included and legible.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_43_q05_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_43/q05/q05_page_008.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_43/questions/q06.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 17,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-16c3984c-1db8-9c1e-9194-dc81e681af38",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question 6 is fully visible with clear text and proper margins. The printed question boundary (including header, question stem, parts (a) and (b), and footer) is included. No diagrams or tables are present, and none are visibly required for this question. Continuation pages [10,11,12] are not shown in this crop stack, but the single crop contains the complete question as presented on one page; no missing continuation content is evident in this image.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_43_q06_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_43/q06/q06_page_010.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_44/questions/q01.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 18,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-41ece1a2-1661-9813-9c01-efc84928920e",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question text is fully legible; printed question boundary (including numbering, margin instructions, and footer) is present. No continuation pages visible in this crop; single-page question. Diagram or table not required for this hypothesis test question.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_44_q01_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_44/q01/q01_page_002.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_44/questions/q02.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 19,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-46268a59-5ff3-9c77-bd91-43dbb04372bf",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question boundary appears complete (includes question number, stem, table, parts (a) and (b), mark allocations, and footer). Text is legible despite minor contrast issues; all required elements (table, two parts) are present. No continuation pages needed — single-page question. Diagram/table presence: table is present and fully visible.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_44_q02_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_44/q02/q02_page_003.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_44/questions/q03.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 20,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-2fad8957-cddc-9f85-b760-8e7242d4c6d7",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question text and table are fully legible; printed question boundary (including question number, stem, table, and instruction) is present. No continuation pages visible in this crop stack (only one crop shown), so cross-page continuity not applicable. Table is present and required for the question.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_44_q03_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_44/q03/q03_page_004.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_44/questions/q04.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 21,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-08bf5d53-c2c6-955d-af91-eaa1fb49b6f0",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question 4 is fully visible with clear text and proper formatting of the piecewise PDF. The printed question boundary (including header, question number, and footer) is present. No diagrams or tables are required for this question; the piecewise function is fully legible. Continuation pages [6,7] are not shown in this single-crop stack, but the current crop contains the complete question statement and parts (a) and (b), with no indication of missing content within this page.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_44_q04_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_44/q04/q04_page_006.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_44/questions/q05.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 22,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-34f8c03d-5f41-9ba5-9c91-ea0de75aa6d7",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "vlm_notes": "Question text is legible; printed question boundary (including header, question number, and footer) is fully included. The single crop covers both parts (a) and (b) across pages 8–9 as indicated; continuation is coherent with no missing content. No diagram or table is present or required for this question.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_44_q05_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_44/q05/q05_page_008.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    },
+    {
+      "storage_key": "9231/s25_qp_44/questions/q06.png",
+      "shard_id": "9231_p4_s25_standard_001",
+      "source_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+      "source_manifest_index": 23,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf",
+      "visual_review_status": "accepted",
+      "accepted": true,
+      "reviewed_by": "qwen_vlm_external_authorized",
+      "reviewed_on": "2026-06-05",
+      "external_vlm_or_api_used": true,
+      "vlm_model": "qwen3-vl-plus",
+      "vlm_transport": "qwen_openai_client_v1",
+      "vlm_response_id": "chatcmpl-a227558a-9eac-9098-bcce-80145dc1bffa",
+      "vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "vlm_blockers": [],
+      "vlm_warnings": [
+        "question_legibility",
+        "9231_wave1_crop_boundary"
+      ],
+      "vlm_notes": "Question text and part (a) are fully legible. Printed question boundary (including question number, stem, and part (a)) is present and correctly captured. No continuation pages visible in this crop stack; only page 10 shown. No diagrams or tables required for part (a) are missing. Warnings relate to marginal annotations and crop framing but do not impair readability or completeness of the question as presented.",
+      "targeted_stack_image_path": "tmp/9231-visual-review-wave1/stacks/9231_p4_s25_standard_001/9231_s25_qp_44_q06_visual_review.png",
+      "review_crop_paths": [
+        "data/crops/9231-pilot-shards/9231_p4_s25_standard_001/question-crops/9231_s25_qp_44/q06/q06_page_010.png"
+      ],
+      "blockers": [],
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-visual-review-wave1-vlm.json"
+    }
+  ]
+}

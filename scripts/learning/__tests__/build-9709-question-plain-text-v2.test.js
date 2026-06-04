@@ -241,4 +241,31 @@ describe('9709 question plain text v2 builder', () => {
     expect(JSON.parse(fs.readFileSync(jsonOut, 'utf8')).schema_version).toBe('9709_question_plain_text_v2');
     expect(fs.readFileSync(markdownOut, 'utf8')).toContain('9709 question plain text v2 coverage');
   });
+
+  test('uses the requested subject in schema and markdown while keeping 9709 defaults intact', () => {
+    const root = fixtureRoot();
+    const inputPath = path.join(root, 'docs', 'reports', '9231-v1.json');
+    const markdownOut = path.join(root, 'docs', 'reports', '9231-v2.md');
+    writeJson(inputPath, {
+      ...buildV1Layer([baseV1Item({
+        storage_key: '9231/s16_qp_11/questions/q01.png',
+        subject_code: '9231',
+        source_pdf: 'data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf',
+      })]),
+      schema_version: '9231_question_plain_text_v1',
+      subject_code: '9231',
+    });
+
+    const layer = buildQuestionPlainTextV2Layer({
+      rootDir: root,
+      subject: '9231',
+      inputJson: 'docs/reports/9231-v1.json',
+      markdownOut: 'docs/reports/9231-v2.md',
+      generatedOn: '2026-06-05',
+      writeArtifacts: true,
+    });
+
+    expect(layer.schema_version).toBe('9231_question_plain_text_v2');
+    expect(fs.readFileSync(markdownOut, 'utf8')).toContain('9231 question plain text v2 coverage');
+  });
 });

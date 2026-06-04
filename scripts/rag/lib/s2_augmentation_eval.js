@@ -1,5 +1,13 @@
 import { evaluateCase, isSourceRefResolvable, p95, sanitizeEvidence } from './s1_2_benchmark.js';
 
+const S2_EVAL_SUMMARY_SCHEMA_VERSION = 'rag_s2_augmentation_eval_summary_v1';
+const S2_RELEASE_EVAL_THRESHOLDS = Object.freeze({
+  topic_leakage_rate_eq: 0,
+  evidence_traceability_rate_min: 0.95,
+  fallback_rate_max: 0.2,
+  target_slice_quality_vs_s1_gt: 0,
+});
+
 function toNullableString(value) {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();
@@ -248,6 +256,69 @@ function pickPrimaryCorpusVersion(corpusVersionCounts = {}) {
   return entries[0][0];
 }
 
+function pushReleaseBlocker(blockers, category, code, message) {
+  if (blockers.some((item) => item.code === code)) return;
+  blockers.push({ category, code, message });
+}
+
+function buildReleaseBlockers(summary) {
+  const blockers = [];
+  const fallbackReasonCounts = summary.fallback_reason_counts || {};
+  const timeoutCount = Number(fallbackReasonCounts.S2_TIMEOUT || 0);
+  const emptyEvidenceCount = Number(fallbackReasonCounts.S2_EMPTY_EVIDENCE || 0);
+
+  if (emptyEvidenceCount > 0) {
+    pushReleaseBlocker(
+      blockers,
+      'evidence_gap',
+      's2_empty_evidence_present',
+      `S2_EMPTY_EVIDENCE fallback occurred ${emptyEvidenceCount} time(s)`,
+    );
+  }
+  if (timeoutCount > 0) {
+    pushReleaseBlocker(
+      blockers,
+      'runtime_budget',
+      's2_timeout_present',
+      `S2_TIMEOUT fallback occurred ${timeoutCount} time(s)`,
+    );
+  }
+  if (summary.fallback_rate > S2_RELEASE_EVAL_THRESHOLDS.fallback_rate_max) {
+    pushReleaseBlocker(
+      blockers,
+      's2_advisory_readiness',
+      'fallback_rate_above_threshold',
+      `fallback_rate must be <= ${S2_RELEASE_EVAL_THRESHOLDS.fallback_rate_max}, got ${summary.fallback_rate}`,
+    );
+  }
+  if (summary.topic_leakage_rate !== S2_RELEASE_EVAL_THRESHOLDS.topic_leakage_rate_eq) {
+    pushReleaseBlocker(
+      blockers,
+      's2_advisory_readiness',
+      'topic_leakage_rate_not_zero',
+      `topic_leakage_rate must equal 0, got ${summary.topic_leakage_rate}`,
+    );
+  }
+  if (summary.evidence_traceability_rate < S2_RELEASE_EVAL_THRESHOLDS.evidence_traceability_rate_min) {
+    pushReleaseBlocker(
+      blockers,
+      's2_advisory_readiness',
+      'evidence_traceability_below_threshold',
+      `evidence_traceability_rate must be >= ${S2_RELEASE_EVAL_THRESHOLDS.evidence_traceability_rate_min}, got ${summary.evidence_traceability_rate}`,
+    );
+  }
+  if (summary.target_slice_quality_vs_s1 <= S2_RELEASE_EVAL_THRESHOLDS.target_slice_quality_vs_s1_gt) {
+    pushReleaseBlocker(
+      blockers,
+      's2_advisory_readiness',
+      'target_slice_quality_non_positive',
+      `target_slice_quality_vs_s1 must be > ${S2_RELEASE_EVAL_THRESHOLDS.target_slice_quality_vs_s1_gt}, got ${summary.target_slice_quality_vs_s1}`,
+    );
+  }
+
+  return blockers;
+}
+
 export function summarizeS2AugmentationEval({
   s1Rows,
   s2Rows,
@@ -277,6 +348,7 @@ export function summarizeS2AugmentationEval({
 
   const corpusVersionCounts = corpusCoverageSummary?.corpus_version_counts || {};
   const summary = {
+    schema_version: S2_EVAL_SUMMARY_SCHEMA_VERSION,
     generated_at: new Date().toISOString(),
     benchmark_profile: manifest?.benchmark_profile || 's2_augmentation_eval_v1',
     benchmark_tier: manifest?.benchmark_tier || 'advisory',
@@ -328,14 +400,17 @@ export function summarizeS2AugmentationEval({
       s2_enabled: s2Summary,
     },
     top_failing_cases: summarizeTopFailingCases(s1Rows, s2Rows, 20),
-    status: s2Rows.some((row) => row.execution_error)
-      ? 'warn'
-      : 'pass',
     rows: {
       s1_baseline: s1Rows,
       s2_enabled: s2Rows,
     },
   };
+  summary.release_blockers = buildReleaseBlockers(summary);
+  summary.status = summary.release_blockers.length > 0
+    ? 'fail'
+    : s2Rows.some((row) => row.execution_error)
+      ? 'warn'
+      : 'pass';
   return summary;
 }
 

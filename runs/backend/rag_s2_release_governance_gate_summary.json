@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-06-04T14:38:39.921Z",
+  "stage": "rag_s2_release_governance_gate",
+  "status": "pass",
+  "release_state": "safe_advisory_hold",
+  "safe_hold_ready": true,
+  "safe_to_merge_governance_patch": true,
+  "checks": {
+    "release_decision_present": true,
+    "release_decision_stay_advisory_only": true,
+    "release_mode_advisory_only": true,
+    "effective_default_route_s1": true,
+    "s1_default_route_required": true,
+    "default_route_promotion_not_ready": true,
+    "s2_default_route_not_allowed": true,
+    "safe_hold_ready": true,
+    "safe_to_merge_governance_patch": true,
+    "eval_schema_check_present": true,
+    "eval_schema_check_pass": true,
+    "eval_summary_present": true,
+    "eval_schema_valid": true,
+    "eval_semantic_valid": true,
+    "advisory_gate_present": true,
+    "advisory_gate_advisory_mode": true,
+    "advisory_gate_failure_explicit": true,
+    "workflow_invariant_present": true,
+    "workflow_invariant_pass": true,
+    "workflow_contract_advisory_only": true,
+    "s1_contract_gate_pass": true,
+    "s1_metric_gate_pass": true,
+    "s1_metric_gate_required_fail_closed": true
+  },
+  "warnings": [
+    {
+      "code": "s2_advisory_gate_failed_but_safe_hold_explicit",
+      "message": "S2 advisory gate failed, but blockers are explicit and production remains on S1"
+    }
+  ],
+  "warning_reasons": [
+    "s2_advisory_gate_failed_but_safe_hold_explicit"
+  ],
+  "blocker_categories": [],
+  "blockers": [],
+  "blocked_reasons": [],
+  "inputs": {
+    "release_decision": "runs/backend/rag_s2_release_decision.json",
+    "s2_eval_summary_schema_check": "runs/backend/rag_s2_eval_summary_schema_check.json",
+    "advisory_gate": "runs/backend/rag_s2_advisory_gate_summary.json",
+    "workflow_invariant": "runs/backend/rag_s2_workflow_invariant_check.json",
+    "s1_contract_gate": "runs/backend/rag_s1_contract_gate_summary.json",
+    "s1_metric_gate": "runs/backend/rag_s1_metric_gate_summary.json"
+  }
+}

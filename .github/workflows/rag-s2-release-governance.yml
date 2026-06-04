@@ -1,0 +1,77 @@
+name: RAG S2 Release Governance
+
+on:
+  pull_request:
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/**"
+      - "docs/schemas/rag_s2_augmentation_eval_summary.schema.json"
+      - "docs/reports/rag_s2*"
+      - ".github/workflows/rag-s1-*"
+      - ".github/workflows/rag-s2-*"
+      - "runs/backend/rag_s2_*"
+  push:
+    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/**"
+      - "docs/schemas/rag_s2_augmentation_eval_summary.schema.json"
+      - "docs/reports/rag_s2*"
+      - ".github/workflows/rag-s1-*"
+      - ".github/workflows/rag-s2-*"
+      - "runs/backend/rag_s2_*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-s2-release-governance:
+    name: S2 Release Governance (Required)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate checked-in S2 eval summary schema
+        run: node scripts/rag/run_s2_eval_summary_schema_check.js
+
+      - name: Run S2 advisory gate for visible readiness status
+        continue-on-error: true
+        run: node scripts/rag/run_s2_advisory_gate.js
+
+      - name: Run workflow invariant check
+        run: node scripts/rag/run_s2_workflow_invariant_check.js
+
+      - name: Build S2 release decision
+        run: node scripts/rag/run_s2_release_decision.js
+
+      - name: Run required S2 release governance gate
+        run: node scripts/rag/run_s2_release_governance_gate.js
+
+      - name: Upload S2 release governance artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-s2-release-governance-artifacts
+          path: |
+            runs/backend/rag_s2_augmentation_eval_summary.json
+            docs/reports/rag_s2_augmentation_eval_report.md
+            runs/backend/rag_s2_eval_summary_schema_check.json
+            runs/backend/rag_s2_advisory_gate_summary.json
+            runs/backend/rag_s2_workflow_invariant_check.json
+            runs/backend/rag_s2_release_decision.json
+            docs/reports/rag_s2_release_decision_report.md
+            runs/backend/rag_s2_release_governance_gate_summary.json
+          if-no-files-found: error

@@ -1,0 +1,98 @@
+name: RAG S2 Advisory Gate
+
+on:
+  pull_request:
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/**"
+      - "docs/schemas/rag_s2_augmentation_eval_summary.schema.json"
+      - "docs/reports/rag_s2*"
+      - ".github/workflows/rag-s2-advisory-gate.yml"
+      - "runs/backend/rag_s2_*"
+  push:
+    branches: [main]
+    paths:
+      - "api/rag/**"
+      - "scripts/rag/**"
+      - "data/eval/**"
+      - "docs/schemas/rag_s2_augmentation_eval_summary.schema.json"
+      - "docs/reports/rag_s2*"
+      - ".github/workflows/rag-s2-advisory-gate.yml"
+      - "runs/backend/rag_s2_*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rag-s2-advisory:
+    name: S2 Advisory Gate (Non-Blocking)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      VECTOR_EMBEDDING_API_KEY: ${{ secrets.VECTOR_EMBEDDING_API_KEY }}
+      VECTOR_EMBEDDING_BASE_URL: ${{ secrets.VECTOR_EMBEDDING_BASE_URL || 'https://dashscope.aliyuncs.com/compatible-mode/v1' }}
+      VECTOR_EMBEDDING_MODEL: ${{ secrets.VECTOR_EMBEDDING_MODEL || 'text-embedding-v4' }}
+      VECTOR_EMBEDDING_DIMENSIONS: ${{ secrets.VECTOR_EMBEDDING_DIMENSIONS }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+      CHAT_MODEL: ${{ secrets.CHAT_MODEL || 'qwen-plus' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run S2 augmentation eval when credentials are available
+        if: env.SUPABASE_URL != '' && env.SUPABASE_SERVICE_ROLE_KEY != ''
+        continue-on-error: true
+        run: |
+          node scripts/rag/run_s2_augmentation_eval.js \
+            --limit 8 \
+            --per-case-timeout-ms 20000 \
+            --round-timeout-ms 1200000 \
+            --max-retries 1
+
+      - name: Validate S2 eval summary schema
+        if: always()
+        continue-on-error: true
+        run: node scripts/rag/run_s2_eval_summary_schema_check.js
+
+      - name: Run S2 advisory gate
+        if: always()
+        continue-on-error: true
+        run: node scripts/rag/run_s2_advisory_gate.js
+
+      - name: Run S2 workflow invariant check
+        if: always()
+        continue-on-error: true
+        run: node scripts/rag/run_s2_workflow_invariant_check.js
+
+      - name: Build S2 release decision
+        if: always()
+        run: node scripts/rag/run_s2_release_decision.js
+
+      - name: Upload S2 advisory artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rag-s2-advisory-artifacts
+          path: |
+            runs/backend/rag_s2_augmentation_eval_summary.json
+            docs/reports/rag_s2_augmentation_eval_report.md
+            runs/backend/rag_s2_eval_summary_schema_check.json
+            runs/backend/rag_s2_advisory_gate_summary.json
+            runs/backend/rag_s2_workflow_invariant_check.json
+            runs/backend/rag_s2_release_decision.json
+            docs/reports/rag_s2_release_decision_report.md
+          if-no-files-found: ignore

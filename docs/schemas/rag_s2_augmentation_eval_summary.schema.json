@@ -1,0 +1,474 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rag_s2_augmentation_eval_summary.schema.json",
+  "title": "RAG S2 Augmentation Eval Summary",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "benchmark_profile",
+    "benchmark_tier",
+    "dataset",
+    "manifest",
+    "run_config",
+    "inputs",
+    "status",
+    "total_requests",
+    "route_counts",
+    "retrieval_route_counts",
+    "fallback_reason_counts",
+    "s2_empty_evidence_reason_counts",
+    "fallback_rate",
+    "topic_leakage_rate",
+    "evidence_traceability_rate",
+    "target_slice_quality_vs_s1",
+    "target_slice_case_pass_vs_s1",
+    "target_slice_quality_vs_s1_by_slice",
+    "readiness_guard_block_count",
+    "readiness_guard_block_rate",
+    "readiness_guard_reason_counts",
+    "readiness_effective_depth_source_counts",
+    "dependency_status_counts",
+    "mode_summaries",
+    "top_failing_cases",
+    "release_blockers"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "rag_s2_augmentation_eval_summary_v1"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "benchmark_profile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benchmark_tier": {
+      "enum": ["advisory", "release", "smoke"]
+    },
+    "dataset": {
+      "type": "string",
+      "minLength": 1
+    },
+    "manifest": {
+      "type": ["string", "null"]
+    },
+    "run_config": {
+      "type": "object",
+      "required": [
+        "script",
+        "selected_cases",
+        "per_case_timeout_ms",
+        "round_timeout_ms",
+        "max_retries",
+        "s2_enabled",
+        "s2_timeout_ms"
+      ],
+      "properties": {
+        "script": {
+          "const": "scripts/rag/run_s2_augmentation_eval.js"
+        },
+        "dataset": {
+          "type": "string"
+        },
+        "manifest": {
+          "type": ["string", "null"]
+        },
+        "selected_cases": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "per_case_timeout_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "round_timeout_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "s2_enabled": {
+          "const": true
+        },
+        "s2_route_rules_only": {
+          "type": "boolean"
+        },
+        "s2_llm_classifier_enabled": {
+          "type": "boolean"
+        },
+        "s2_timeout_ms": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "round_aborted": {
+          "type": "boolean"
+        },
+        "active_corpus_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "inputs": {
+      "type": "object",
+      "required": ["dataset", "manifest"],
+      "properties": {
+        "dataset": {
+          "type": "string"
+        },
+        "manifest": {
+          "type": ["string", "null"]
+        },
+        "corpus_coverage_summary": {
+          "type": ["string", "null"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "status": {
+      "enum": ["pass", "warn", "fail"]
+    },
+    "total_requests": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "route_counts": {
+      "$ref": "#/$defs/countMap"
+    },
+    "retrieval_route_counts": {
+      "$ref": "#/$defs/countMap"
+    },
+    "fallback_reason_counts": {
+      "$ref": "#/$defs/countMap"
+    },
+    "s2_empty_evidence_reason_counts": {
+      "$ref": "#/$defs/countMap"
+    },
+    "fallback_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "topic_leakage_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "evidence_traceability_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "target_slice_quality_vs_s1": {
+      "type": "number"
+    },
+    "target_slice_case_pass_vs_s1": {
+      "type": "number"
+    },
+    "target_slice_quality_vs_s1_by_slice": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "total_requests",
+          "s1_quality_score",
+          "s2_quality_score",
+          "quality_delta",
+          "s1_case_pass_rate",
+          "s2_case_pass_rate",
+          "case_pass_rate_delta",
+          "s2_fallback_rate"
+        ],
+        "properties": {
+          "total_requests": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "s1_quality_score": {
+            "type": "number"
+          },
+          "s2_quality_score": {
+            "type": "number"
+          },
+          "quality_delta": {
+            "type": "number"
+          },
+          "s1_case_pass_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "s2_case_pass_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "case_pass_rate_delta": {
+            "type": "number"
+          },
+          "s2_fallback_rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "readiness_guard_block_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "readiness_guard_block_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "readiness_guard_reason_counts": {
+      "$ref": "#/$defs/countMap"
+    },
+    "readiness_effective_depth_source_counts": {
+      "$ref": "#/$defs/countMap"
+    },
+    "dependency_status_counts": {
+      "$ref": "#/$defs/countMap"
+    },
+    "mode_summaries": {
+      "type": "object",
+      "required": ["s1_baseline", "s2_enabled"],
+      "properties": {
+        "s1_baseline": {
+          "$ref": "#/$defs/modeSummary"
+        },
+        "s2_enabled": {
+          "$ref": "#/$defs/modeSummary"
+        }
+      },
+      "additionalProperties": false
+    },
+    "top_failing_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "case_id",
+          "target_slice",
+          "s2_case_pass",
+          "s2_failure_class",
+          "s2_fallback_triggered",
+          "s2_fallback_reason",
+          "quality_delta_vs_s1"
+        ],
+        "properties": {
+          "case_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_slice": {
+            "type": "string"
+          },
+          "query_family": {
+            "type": ["string", "null"]
+          },
+          "s2_case_pass": {
+            "type": "boolean"
+          },
+          "s2_failure_class": {
+            "enum": [
+              "NONE",
+              "BOUNDARY_LEAKAGE",
+              "S2_FALLBACK",
+              "UNEXPECTED_UNCERTAIN",
+              "QUALITY_MISS"
+            ]
+          },
+          "s2_fallback_triggered": {
+            "type": "boolean"
+          },
+          "s2_fallback_reason": {
+            "type": ["string", "null"],
+            "enum": [
+              null,
+              "S2_EMPTY_EVIDENCE",
+              "S2_TIMEOUT",
+              "S2_INFRA_ERROR",
+              "S2_MODEL_UNAVAILABLE",
+              "S2_READINESS_GUARD",
+              "UNKNOWN"
+            ]
+          },
+          "s2_route_stage": {
+            "type": ["string", "null"]
+          },
+          "s2_retrieval_route": {
+            "type": ["string", "null"]
+          },
+          "s2_final_execution_route": {
+            "type": ["string", "null"]
+          },
+          "s2_answer_quality_score": {
+            "type": "number"
+          },
+          "s1_answer_quality_score": {
+            "type": "number"
+          },
+          "quality_delta_vs_s1": {
+            "type": "number"
+          },
+          "s2_uncertain_reason_code": {
+            "type": ["string", "null"]
+          },
+          "s2_error_code": {
+            "type": ["string", "null"]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "release_blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "code", "message"],
+        "properties": {
+          "category": {
+            "enum": [
+              "release_evidence",
+              "s2_advisory_readiness",
+              "runtime_budget",
+              "evidence_gap",
+              "workflow_policy",
+              "required_gates"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "rows": {
+      "type": "object",
+      "properties": {
+        "s1_baseline": {
+          "type": "array"
+        },
+        "s2_enabled": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "countMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "modeSummary": {
+      "type": "object",
+      "required": [
+        "total_requests",
+        "case_pass_rate",
+        "answer_quality_score",
+        "uncertain_rate",
+        "topic_leakage_rate",
+        "evidence_traceability_rate",
+        "latency_p95_ms",
+        "cost_avg_usd_per_req",
+        "retrieval_route_counts",
+        "final_execution_route_counts",
+        "query_mode_counts",
+        "fallback_reason_counts",
+        "dependency_status_counts",
+        "s2_routed_request_count",
+        "s2_fallback_count",
+        "fallback_rate"
+      ],
+      "properties": {
+        "total_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "case_pass_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "answer_quality_score": {
+          "type": "number"
+        },
+        "uncertain_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "topic_leakage_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_traceability_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "latency_p95_ms": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cost_avg_usd_per_req": {
+          "type": "number",
+          "minimum": 0
+        },
+        "retrieval_route_counts": {
+          "$ref": "#/$defs/countMap"
+        },
+        "final_execution_route_counts": {
+          "$ref": "#/$defs/countMap"
+        },
+        "query_mode_counts": {
+          "$ref": "#/$defs/countMap"
+        },
+        "fallback_reason_counts": {
+          "$ref": "#/$defs/countMap"
+        },
+        "dependency_status_counts": {
+          "$ref": "#/$defs/countMap"
+        },
+        "s2_routed_request_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "s2_fallback_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fallback_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "schema_version": "9231_wm_source_freeze_gate_v1",
+  "generated_on": "2026-06-05",
+  "subject_code": "9231",
+  "gate_status": "wm_source_frozen_pending_source_remediation",
+  "boundary": {
+    "filename_based_wm_detection": true,
+    "not_production_ready": true,
+    "not_canonical_question_text": true,
+    "not_question_plain_text_v1_or_v2": true,
+    "not_normalized_plain_text_consumption_gate": true,
+    "external_vlm_or_api_calls": 0,
+    "external_ocr_reruns": 0,
+    "mechanical_crop_blocker": false,
+    "visual_review_required_after_source_remediation": true,
+    "db_consumption_claimed": false,
+    "search_consumption_claimed": false,
+    "rag_consumption_claimed": false
+  },
+  "summary": {
+    "current_surface_manifest_count": 64,
+    "scanned_row_count": 1593,
+    "frozen_row_count": 150,
+    "frozen_source_pdf_count": 18,
+    "affected_shard_count": 6,
+    "clean_source_row_count": 1443,
+    "frozen_crop_status_counts": {
+      "complete": 84,
+      "not_generated": 66
+    },
+    "mechanical_crop_blocker_rows": 0,
+    "production_ready_claimed": false,
+    "db_search_rag_consumption_claimed": false
+  },
+  "affected_shards": {
+    "9231_p1_s20_standard_001": 21,
+    "9231_p1_w19_standard_001": 33,
+    "9231_p2_s20_standard_001": 24,
+    "9231_p2_w19_standard_001": 33,
+    "9231_p3_s20_standard_001": 21,
+    "9231_p4_s20_standard_001": 18
+  },
+  "affected_source_pdfs": {
+    "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf": 7,
+    "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf": 7,
+    "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf": 7,
+    "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_11.pdf": 11,
+    "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_12.pdf": 11,
+    "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_13.pdf": 11,
+    "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf": 8,
+    "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf": 8,
+    "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf": 8,
+    "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_21.pdf": 11,
+    "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_22.pdf": 11,
+    "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_23.pdf": 11,
+    "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf": 7,
+    "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf": 7,
+    "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf": 7,
+    "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf": 6,
+    "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf": 6,
+    "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf": 6
+  },
+  "artifacts": {
+    "freeze_manifest": "data/manifests/9231_wm_source_freeze_2026_06_05_manifest_v1.json",
+    "combined_shard_manifest": "data/manifests/9231_question_shard_split_2026_06_04_manifest_v1.json"
+  },
+  "next_executable_gates": [
+    "Replace WM_ source PDFs with clean source PDFs before visual/text/production lanes.",
+    "Rerun deterministic crop/surface-ref gate for remediated frozen rows.",
+    "Only then resume visual review, question_plain_text_v1/v2, and normalized_plain_text consumption gates."
+  ],
+  "freeze_manifest": {
+    "schema_version": "9231_wm_source_freeze_manifest_v1",
+    "manifest_id": "9231_wm_source_freeze_2026_06_05_manifest_v1",
+    "generated_on": "2026-06-05",
+    "subject_code": "9231",
+    "freeze_status": "frozen_pending_source_remediation",
+    "boundary": {
+      "filename_based_wm_detection": true,
+      "visual_watermark_presence_not_exhaustively_reviewed": true,
+      "mechanical_crop_blocker": false,
+      "production_ready_claimed": false,
+      "question_plain_text_v1_or_v2_claimed": false,
+      "db_search_rag_consumption_claimed": false
+    },
+    "summary": {
+      "frozen_row_count": 150,
+      "frozen_source_pdf_count": 18,
+      "affected_shard_count": 6,
+      "frozen_crop_status_counts": {
+        "complete": 84,
+        "not_generated": 66
+      }
+    },
+    "affected_source_pdfs": {
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_11.pdf": 11,
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_12.pdf": 11,
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_13.pdf": 11,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf": 8,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf": 8,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf": 8,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_21.pdf": 11,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_22.pdf": 11,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_23.pdf": 11,
+      "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf": 6,
+      "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf": 6,
+      "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf": 6
+    },
+    "affected_shards": {
+      "9231_p1_s20_standard_001": 21,
+      "9231_p1_w19_standard_001": 33,
+      "9231_p2_s20_standard_001": 24,
+      "9231_p2_w19_standard_001": 33,
+      "9231_p3_s20_standard_001": 21,
+      "9231_p4_s20_standard_001": 18
+    }
+  }
+}

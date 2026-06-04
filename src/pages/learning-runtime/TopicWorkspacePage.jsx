@@ -5,7 +5,7 @@ import {
   getWorkspace,
   updateReviewTask,
 } from '../../api/learningRuntimeApi.js';
-import WorkspaceShell from '../../components/learning-runtime/WorkspaceShell.jsx';
+import WorkspaceShell from '../../components/learning-runtime/WorkspaceShell.js';
 import { buildReviewQueueActionDrafts } from '../../components/learning-runtime/view-models/review-queue-view-model.js';
 import { buildWorkspaceViewModel } from '../../components/learning-runtime/view-models/workspace-view-model.js';
 import {

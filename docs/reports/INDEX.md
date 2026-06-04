@@ -2,6 +2,7 @@
 
 ## Project Status
 
+- `2026-06-04-stage2-low-conflict-workspace-contract.md` - Stage 2 低冲突 backend/docs slice，记录前端重构期间的避让边界、repo-truth 核查、显式 workspace first-open `POST action=ensure` contract、TDD red/green 证据和剩余 Spark 边界。
 - `2026-06-04-9709-question-plain-text-v2-consumption-gate.md` - 9709 question_plain_text_v2 第一版本地 consumption gate 报告，确认 3530 rows 被读入、2672 text-only ready rows 与 858 image-context required rows 可区分，search/read-model/RAG 本地消费行均优先使用 `normalized_plain_text`，0 blockers；不声明 live DB/deployed search/online RAG 已消费。
 - `2026-06-04-9709-question-plain-text-v2-consumption.json` - machine-readable 9709 question_plain_text_v2 consumption artifact，逐题保存 search、read-model、RAG 三类本地消费行及 `question_plain_text_v2.normalized_plain_text` provenance。
 - `2026-06-04-9709-question-plain-text-v2-coverage.md` - 9709 全量 question plain text v2 覆盖报告，确认 3530/3530 normalized text、2672 strict text-only ready rows、858/858 image-context rows with assets、0 blockers，并量化公式候选和分小问结构化状态。

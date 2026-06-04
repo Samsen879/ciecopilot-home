@@ -7,7 +7,10 @@ import {
   sendLearningHttpError,
   sendLearningJson,
 } from '../lib/http/learning-http.js';
-import { getWorkspaceView } from '../lib/workspaces/workspace-read-service.js';
+import {
+  ensureWorkspaceView,
+  getWorkspaceView,
+} from '../lib/workspaces/workspace-read-service.js';
 
 async function ensureLearningAuth(req) {
   if (req?.auth_user_id) {
@@ -29,7 +32,7 @@ async function ensureLearningAuth(req) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (!['GET', 'POST'].includes(req.method)) {
     return sendLearningError(
       res,
       req?.request_id || null,
@@ -55,10 +58,31 @@ export default async function handler(req, res) {
   }
 
   try {
-    const payload = await getWorkspaceView(getServiceClient(), {
-      userId: auth.userId,
-      topicId: req?.query?.topicId || null,
-    });
+    if (req.method === 'POST' && req?.body?.action !== 'ensure') {
+      return sendLearningError(
+        res,
+        req?.request_id || null,
+        LEARNING_ERROR_CODES.INVALID_PAYLOAD,
+        {
+          status: 400,
+          message: 'POST /api/learning/workspaces/:topicId requires action "ensure".',
+          details: { field: 'action' },
+        },
+      );
+    }
+
+    const client = getServiceClient();
+    const topicId = req?.query?.topicId || null;
+    const payload = req.method === 'POST'
+      ? await ensureWorkspaceView(client, {
+        userId: auth.userId,
+        topicId,
+        topicPath: req?.body?.topic_path || null,
+      })
+      : await getWorkspaceView(client, {
+        userId: auth.userId,
+        topicId,
+      });
 
     return sendLearningJson(res, req?.request_id || null, payload);
   } catch (error) {

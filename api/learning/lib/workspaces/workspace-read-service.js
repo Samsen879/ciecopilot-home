@@ -1,11 +1,15 @@
 import { buildArtifactRef, STABLE_SLOT_KEYS } from '../contracts/runtime-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
+import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import {
   isArtifactLifecycleEnabled,
   normalizeArtifactLifecycleArtifact,
 } from '../artifacts/artifact-service.js';
 import { listArtifactsByTopic } from '../repositories/artifact-repository.js';
-import { fetchWorkspaceProjection } from '../repositories/workspace-repository.js';
+import {
+  ensureWorkspaceExists,
+  fetchWorkspaceProjection,
+} from '../repositories/workspace-repository.js';
 import {
   deriveReviewQueueProjection,
   summarizeReviewQueueItems,
@@ -345,6 +349,67 @@ function buildWorkspaceNotFound(topicId) {
   });
 }
 
+function buildInvalidWorkspaceEnsurePayload(message, details = {}) {
+  return new LearningHttpError(LEARNING_ERROR_CODES.INVALID_PAYLOAD, message, {
+    status: 400,
+    details,
+  });
+}
+
+function buildWorkspaceTopicNotFound(topicId) {
+  return new LearningHttpError(
+    LEARNING_ERROR_CODES.ANCHOR_TARGET_NOT_FOUND,
+    'Workspace topic not found.',
+    {
+      status: 404,
+      details: { topic_id: topicId ?? null },
+    },
+  );
+}
+
+async function loadCanonicalWorkspaceTopic(client, {
+  topicId,
+  topicPath = null,
+} = {}) {
+  const normalizedTopicId = normalizeString(topicId);
+  const normalizedTopicPath = normalizeString(topicPath);
+
+  if (!normalizedTopicId) {
+    throw buildInvalidWorkspaceEnsurePayload('topicId is required.', {
+      field: 'topic_id',
+    });
+  }
+
+  const { data, error } = await client
+    .from('curriculum_nodes')
+    .select('node_id, topic_path')
+    .eq('node_id', normalizedTopicId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load workspace curriculum node: ${error.message}`);
+  }
+
+  if (!data) {
+    throw buildWorkspaceTopicNotFound(normalizedTopicId);
+  }
+
+  if (normalizedTopicPath && normalizedTopicPath !== data.topic_path) {
+    throw buildInvalidWorkspaceEnsurePayload(
+      'topic_path must match the canonical curriculum node.',
+      {
+        field: 'topic_path',
+        topic_id: normalizedTopicId,
+      },
+    );
+  }
+
+  return {
+    topicId: data.node_id,
+    topicPath: data.topic_path,
+  };
+}
+
 function readTopicFromSession(session = {}) {
   const bundle = isPlainObject(session?.active_scope_bundle)
     ? session.active_scope_bundle
@@ -645,4 +710,35 @@ export async function getWorkspaceView(
       workspaceProjection: projectedWorkspace.workspaceProjection,
     }),
   };
+}
+
+export async function ensureWorkspaceView(
+  client,
+  {
+    userId,
+    topicId,
+    topicPath = null,
+    reviewStatus = null,
+    reviewDueBefore = null,
+    residencyFlagEnabled = isArtifactLifecycleEnabled(),
+  } = {},
+) {
+  const canonicalTopic = await loadCanonicalWorkspaceTopic(client, {
+    topicId,
+    topicPath,
+  });
+
+  await ensureWorkspaceExists(client, {
+    userId,
+    topicId: canonicalTopic.topicId,
+    topicPath: canonicalTopic.topicPath,
+  });
+
+  return getWorkspaceView(client, {
+    userId,
+    topicId: canonicalTopic.topicId,
+    reviewStatus,
+    reviewDueBefore,
+    residencyFlagEnabled,
+  });
 }

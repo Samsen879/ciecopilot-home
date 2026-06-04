@@ -1032,12 +1032,14 @@ function createBoundaryLearningDb() {
 function createReq({
   method = 'GET',
   query = {},
+  body = {},
   authUserId = 'student-1',
   requestId = 'req-workspace-1',
 } = {}) {
   return {
     method,
     query,
+    body,
     auth_user_id: authUserId,
     request_id: requestId,
   };
@@ -1575,6 +1577,41 @@ describe('workspace read service', () => {
       linked_references: [{ kind: 'artifact', artifact_id: 'artifact-linked-1' }],
     });
     expect(res.body.review_queue.scope).toBe('global_queue_projection');
+  });
+
+  test('POST /api/learning/workspaces/:topicId explicitly ensures first-open workspace projection', async () => {
+    const db = createBoundaryLearningDb();
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      method: 'POST',
+      query: { topicId: 'repair-target-topic' },
+      body: {
+        action: 'ensure',
+        topic_path: '9709.integration.repair',
+      },
+    });
+    const res = createRes();
+
+    await workspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.workspace).toMatchObject({
+      workspace_id: 'workspace-1',
+      topic_id: 'repair-target-topic',
+      topic_path: '9709.integration.repair',
+      slots: {
+        common_traps: {
+          workspace_slot_id: null,
+          linked_references: [],
+        },
+        review_queue: {
+          workspace_slot_id: null,
+          linked_references: [],
+        },
+      },
+    });
+    expect(res.body.review_queue.items).toEqual([]);
   });
 
   test('second-subject workspace reads surface an explicit read-only runtime posture', async () => {

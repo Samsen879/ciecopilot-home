@@ -423,6 +423,10 @@
 - `2026-06-04-9700-biology-2016-2025-full-resource-downloads.json` - candidate-download evidence for the 955 Biology resources, recording source URLs, byte counts, SHA256 hashes, and PDF signature checks after targeted network retries.
 - `2026-06-04-9700-biology-2016-2025-full-resource-promotion.json` - source-promotion evidence for 955 Biology PDFs copied into `data/past-papers` and `data/supplemental-past-papers`, confirming SHA and pdfjs page-count checks.
 - `2026-06-04-9700-biology-2016-2025-full-resource-source-report.md` - closeout report for the Biology `9700` full-resource fill, including counts by resource type and target root.
+- `2026-06-04-9609-business-2016-2025-full-resource-inventory.json` - machine-readable inventory for 577 Business `9609` public-mirror resource candidates across examiner reports, grade thresholds, inserts, mark schemes, question papers.
+- `2026-06-04-9609-business-2016-2025-full-resource-downloads.json` - candidate-download evidence for the 577 Business resources, recording source URLs, byte counts, SHA256 hashes, PDF signature checks, and fallback usage.
+- `2026-06-04-9609-business-2016-2025-full-resource-promotion.json` - source-promotion evidence for 577 Business PDFs copied into `data/past-papers` and `data/supplemental-past-papers`, confirming SHA and pdfjs page-count checks.
+- `2026-06-04-9609-business-2016-2025-full-resource-source-report.md` - closeout report for the Business `9609` full-resource fill, including counts by resource type and target root.
 
 ## RAG S2
 

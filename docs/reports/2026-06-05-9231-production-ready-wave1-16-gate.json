@@ -1,0 +1,1615 @@
+{
+  "schema_version": "9231_production_ready_wave1_gate_v1",
+  "generated_on": "2026-06-05",
+  "subject_code": "9231",
+  "gate_status": "production_blocked",
+  "verdict": "not_production_ready",
+  "boundary": {
+    "local_deterministic_gate": true,
+    "no_external_vlm_or_api": true,
+    "no_external_ocr_rerun": true,
+    "not_question_plain_text_v1_or_v2": true,
+    "not_db_search_rag_consumption_gate": true,
+    "not_final_production_ready": true
+  },
+  "summary": {
+    "selected_shards": 16,
+    "selected_rows": 441,
+    "selected_source_pdfs": 56,
+    "local_surface_ready_shards": 16,
+    "production_ready_shards": 0,
+    "production_blocked_shards": 16,
+    "frozen_wm_rows": 0,
+    "crop_complete_rows": 441,
+    "visual_not_accepted_rows": 441,
+    "text_not_ready_rows": 441,
+    "authority_missing_rows": 441,
+    "positive_consumption_claims": 0
+  },
+  "selected_shard_ids": [
+    "9231_p1_s16_standard_001",
+    "9231_p1_s24_standard_001",
+    "9231_p1_s25_standard_001",
+    "9231_p1_w16_standard_001",
+    "9231_p1_w25_standard_001",
+    "9231_p2_s16_standard_001",
+    "9231_p2_s24_standard_001",
+    "9231_p2_s25_standard_001",
+    "9231_p2_w16_standard_001",
+    "9231_p2_w25_standard_001",
+    "9231_p3_s24_standard_001",
+    "9231_p3_s25_standard_001",
+    "9231_p3_w25_standard_001",
+    "9231_p4_s24_standard_001",
+    "9231_p4_s25_standard_001",
+    "9231_p4_w25_standard_001"
+  ],
+  "shards": [
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p1_s16_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 33,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 33,
+        "locator_resolved_rows": 33,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 33,
+        "text_not_ready_rows": 33,
+        "authority_missing_rows": 33,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 33
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p1_s16_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p1-s16-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p1-s16-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s16_qp_13.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p1_s24_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 21,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 21,
+        "locator_resolved_rows": 21,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 21,
+        "text_not_ready_rows": 21,
+        "authority_missing_rows": 21,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 21
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 21
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 21
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 21
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p1_s24_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p1-s24-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p1-s24-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_13.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p1_s25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 28,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 28,
+        "locator_resolved_rows": 28,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 28,
+        "text_not_ready_rows": 28,
+        "authority_missing_rows": 28,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 28
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p1_s25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p1-s25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p1-s25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_13.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_14.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p1_w16_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 33,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 33,
+        "locator_resolved_rows": 33,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 33,
+        "text_not_ready_rows": 33,
+        "authority_missing_rows": 33,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 33
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p1_w16_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p1-w16-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p1-w16-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_13.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p1_w25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 28,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 28,
+        "locator_resolved_rows": 28,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 28,
+        "text_not_ready_rows": 28,
+        "authority_missing_rows": 28,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 28
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p1_w25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p1-w25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p1-w25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_13.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_14.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p2_s16_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 33,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 33,
+        "locator_resolved_rows": 33,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 33,
+        "text_not_ready_rows": 33,
+        "authority_missing_rows": 33,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 33
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 33
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p2_s16_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p2-s16-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p2-s16-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_23.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p2_s24_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 24,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 24,
+        "locator_resolved_rows": 24,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 24,
+        "text_not_ready_rows": 24,
+        "authority_missing_rows": 24,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 24
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 24
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 24
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 24
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p2_s24_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p2-s24-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p2-s24-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_23.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p2_s25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 32,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 32,
+        "locator_resolved_rows": 32,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 32,
+        "text_not_ready_rows": 32,
+        "authority_missing_rows": 32,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 32
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 32
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 32
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 32
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p2_s25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p2-s25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p2-s25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s25_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s25_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s25_qp_23.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s25_qp_24.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p2_w16_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 30,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 30,
+        "locator_resolved_rows": 30,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 30,
+        "text_not_ready_rows": 30,
+        "authority_missing_rows": 30,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 30
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 30
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 30
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 30
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p2_w16_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p2-w16-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p2-w16-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_23.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p2_w25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 32,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 32,
+        "locator_resolved_rows": 32,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 32,
+        "text_not_ready_rows": 32,
+        "authority_missing_rows": 32,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 32
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 32
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 32
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 32
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p2_w25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p2-w25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p2-w25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_23.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_24.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p3_s24_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 21,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 21,
+        "locator_resolved_rows": 21,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 21,
+        "text_not_ready_rows": 21,
+        "authority_missing_rows": 21,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 21
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 21
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 21
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 21
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p3_s24_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p3-s24-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p3-s24-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_31.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_32.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_33.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p3_s25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 28,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 28,
+        "locator_resolved_rows": 28,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 28,
+        "text_not_ready_rows": 28,
+        "authority_missing_rows": 28,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 28
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p3_s25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p3-s25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p3-s25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s25_qp_31.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s25_qp_32.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s25_qp_33.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s25_qp_34.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p3_w25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 28,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 28,
+        "locator_resolved_rows": 28,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 28,
+        "text_not_ready_rows": 28,
+        "authority_missing_rows": 28,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 28
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 28
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p3_w25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p3-w25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p3-w25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_31.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_32.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_33.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_34.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p4_s24_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 20,
+        "source_pdf_count": 3,
+        "crop_complete_rows": 20,
+        "locator_resolved_rows": 20,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 20,
+        "text_not_ready_rows": 20,
+        "authority_missing_rows": 20,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 3,
+        "parseable_source_pdf_count": 3,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 20
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 20
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 20
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 20
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p4_s24_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p4-s24-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p4-s24-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_41.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_42.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_43.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p4_s25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 24,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 24,
+        "locator_resolved_rows": 24,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 24,
+        "text_not_ready_rows": 24,
+        "authority_missing_rows": 24,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 24
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 24
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 24
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 24
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p4_s25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p4-s25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p4-s25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_41.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_42.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_43.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s25_qp_44.pdf"
+      ]
+    },
+    {
+      "schema_version": "9231_production_ready_wave1_shard_closeout_v1",
+      "generated_on": "2026-06-05",
+      "subject_code": "9231",
+      "shard_id": "9231_p4_w25_standard_001",
+      "gate_status": "production_blocked_pending_visual_text_authority_consumption",
+      "local_surface_ready": true,
+      "production_ready_claimed": false,
+      "db_search_rag_consumption_claimed": false,
+      "boundary": {
+        "local_deterministic_gate": true,
+        "no_external_vlm_or_api": true,
+        "no_external_ocr_rerun": true,
+        "not_question_plain_text_v1_or_v2": true,
+        "not_db_search_rag_consumption_gate": true,
+        "not_final_production_ready": true,
+        "frozen_wm_rows_excluded": true
+      },
+      "summary": {
+        "row_count": 26,
+        "source_pdf_count": 4,
+        "crop_complete_rows": 26,
+        "locator_resolved_rows": 26,
+        "frozen_wm_rows": 0,
+        "source_pdf_missing_rows": 0,
+        "crop_file_missing_rows": 0,
+        "render_file_missing_rows": 0,
+        "visual_not_accepted_rows": 26,
+        "text_not_ready_rows": 26,
+        "authority_missing_rows": 26,
+        "positive_consumption_claims": 0,
+        "external_call_rows": 0
+      },
+      "pdf_text_layer": {
+        "inspected": true,
+        "status": "available",
+        "source_pdf_count": 4,
+        "parseable_source_pdf_count": 4,
+        "blockers": []
+      },
+      "blockers": [
+        {
+          "check": "visual_review_not_accepted",
+          "severity": "blocker",
+          "count": 26
+        },
+        {
+          "check": "question_plain_text_not_ready",
+          "severity": "blocker",
+          "count": 26
+        },
+        {
+          "check": "authority_alignment_missing",
+          "severity": "blocker",
+          "count": 26
+        },
+        {
+          "check": "db_search_rag_consumption_not_proven",
+          "severity": "blocker",
+          "count": 26
+        }
+      ],
+      "artifacts": {
+        "surface_manifest": "data/manifests/9231_p4_w25_standard_001_page_chain_surface_v1.json",
+        "json": "docs/reports/2026-06-05-9231-p4-w25-standard-001-production-ready-closeout.json",
+        "markdown": "docs/reports/2026-06-05-9231-p4-w25-standard-001-production-ready-closeout.md"
+      },
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_41.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_42.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_43.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_44.pdf"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "shard_id": "9231_p1_s16_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_s16_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_s16_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_s16_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_s24_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p1_s24_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p1_s24_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p1_s24_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p1_s25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p1_s25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p1_s25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p1_s25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p1_w16_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_w16_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_w16_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_w16_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p1_w25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p1_w25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p1_w25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p1_w25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p2_s16_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p2_s16_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p2_s16_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p2_s16_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 33
+    },
+    {
+      "shard_id": "9231_p2_s24_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p2_s24_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p2_s24_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p2_s24_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p2_s25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p2_s25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p2_s25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p2_s25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p2_w16_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 30
+    },
+    {
+      "shard_id": "9231_p2_w16_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 30
+    },
+    {
+      "shard_id": "9231_p2_w16_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 30
+    },
+    {
+      "shard_id": "9231_p2_w16_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 30
+    },
+    {
+      "shard_id": "9231_p2_w25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p2_w25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p2_w25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p2_w25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 32
+    },
+    {
+      "shard_id": "9231_p3_s24_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p3_s24_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p3_s24_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p3_s24_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 21
+    },
+    {
+      "shard_id": "9231_p3_s25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p3_s25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p3_s25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p3_s25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p3_w25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p3_w25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p3_w25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p3_w25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 28
+    },
+    {
+      "shard_id": "9231_p4_s24_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 20
+    },
+    {
+      "shard_id": "9231_p4_s24_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 20
+    },
+    {
+      "shard_id": "9231_p4_s24_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 20
+    },
+    {
+      "shard_id": "9231_p4_s24_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 20
+    },
+    {
+      "shard_id": "9231_p4_s25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p4_s25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p4_s25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p4_s25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 24
+    },
+    {
+      "shard_id": "9231_p4_w25_standard_001",
+      "check": "visual_review_not_accepted",
+      "severity": "blocker",
+      "count": 26
+    },
+    {
+      "shard_id": "9231_p4_w25_standard_001",
+      "check": "question_plain_text_not_ready",
+      "severity": "blocker",
+      "count": 26
+    },
+    {
+      "shard_id": "9231_p4_w25_standard_001",
+      "check": "authority_alignment_missing",
+      "severity": "blocker",
+      "count": 26
+    },
+    {
+      "shard_id": "9231_p4_w25_standard_001",
+      "check": "db_search_rag_consumption_not_proven",
+      "severity": "blocker",
+      "count": 26
+    }
+  ],
+  "artifacts": {
+    "manifest": "data/manifests/9231_production_ready_wave1_16_2026_06_05_manifest_v1.json",
+    "markdown": "docs/reports/2026-06-05-9231-production-ready-wave1-16-gate.md"
+  }
+}

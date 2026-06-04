@@ -169,6 +169,35 @@ describe('9231 question text foundation inventory', () => {
     expect(inventory.consumption_paths.rag_consumed_claimed).toBe(false);
   });
 
+  test('renders partial crop coverage instead of saying crop assets are missing', () => {
+    const root = fixtureRoot();
+    writePdfStub(root, 'data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_11.pdf');
+    writeFile(root, 'data/crops/9231-pilot-shards/9231_p1_s25_standard_001/question-crops/q01.png', 'png');
+    writeJson(root, 'data/manifests/9231_p1_s25_standard_001_page_chain_surface_v1.json', {
+      items: [
+        {
+          storage_key: '9231/s25_qp_11/questions/q01.png',
+          crop_paths: ['data/crops/9231-pilot-shards/9231_p1_s25_standard_001/question-crops/q01.png'],
+        },
+        {
+          storage_key: '9231/s25_qp_11/questions/q02.png',
+          crop_paths: [],
+        },
+      ],
+    });
+
+    const inventory = buildQuestionTextFoundationInventory({
+      rootDir: root,
+      generatedOn: '2026-06-04',
+    });
+    const markdown = renderQuestionTextFoundationInventoryMarkdown(inventory);
+
+    expect(inventory.row_surface.surface_crop_asset_rows).toBe(1);
+    expect(inventory.row_surface.surface_rows_missing_crop_assets).toBe(1);
+    expect(markdown).toContain('crop/image assets are partial: `1/2` current rows have manifest-backed crop references');
+    expect(markdown).not.toContain('crop/image assets, OCR/text evidence');
+  });
+
   test('renders a bounded markdown report for the blocked foundation state', () => {
     const root = fixtureRoot();
     const inventory = buildQuestionTextFoundationInventory({

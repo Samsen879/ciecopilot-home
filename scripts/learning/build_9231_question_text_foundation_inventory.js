@@ -679,6 +679,21 @@ function markdownTable(headers, rows) {
   ].join('\n');
 }
 
+function cropCoverageConclusion(rowSurface) {
+  const rowCount = Number(rowSurface.question_row_count || 0);
+  const cropRows = Number(rowSurface.surface_crop_asset_rows || 0);
+  if (rowCount <= 0) {
+    return 'crop/image assets are not yet applicable because no current row surface exists';
+  }
+  if (cropRows <= 0) {
+    return 'crop/image assets are still missing';
+  }
+  if (cropRows >= rowCount) {
+    return `crop/image assets are present for all current rows: \`${cropRows}/${rowCount}\` current rows have manifest-backed crop references`;
+  }
+  return `crop/image assets are partial: \`${cropRows}/${rowCount}\` current rows have manifest-backed crop references`;
+}
+
 export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
   const source = inventory.source_coverage;
   const rowSurface = inventory.row_surface;
@@ -700,7 +715,7 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
     '## Repo-Truth Conclusion',
     '',
     rowSurface.question_row_count > 0
-      ? `Conclusion: \`${gap.foundation_status}\`. Deterministic local row-level locator surfaces exist, but crop/image assets, OCR/text evidence, question_plain_text_v1/v2, and normalized_plain_text consumption gates are still missing.`
+      ? `Conclusion: \`${gap.foundation_status}\`. Deterministic local row-level locator surfaces exist; ${cropCoverageConclusion(rowSurface)}, while OCR/text evidence, question_plain_text_v1/v2, and normalized_plain_text consumption gates are still missing.`
       : `Conclusion: \`${gap.foundation_status}\`. Raw source PDFs exist, but row-level production surface evidence must be built before 9231 can enter question_plain_text_v1/v2.`,
     '',
     '## Raw PDF Source Coverage',

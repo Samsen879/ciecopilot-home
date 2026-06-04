@@ -2,6 +2,9 @@
 
 ## Project Status
 
+- `2026-06-05-9231-pilot-shard-crop-gate.md` - 9231 5-shard pilot crop gate，确认 `9231_p1_s25_standard_001`、`9231_p2_s25_standard_001`、`9231_p3_s25_standard_001`、`9231_p4_s25_standard_001`、`9231_p1_s16_standard_001` 共 145 rows 本地 deterministic render/crop complete，19 PDFs / 284 rendered pages / 429 PNG artifacts / blockers 0；仍需 visual review，不声明 production-ready、canonical question text、OCR/text/v1/v2 或 DB/search/RAG consumption。
+- `2026-06-05-9231-pilot-shard-crop-gate.json` - machine-readable 9231 pilot crop gate artifact，记录 5 个 representative shards、145 crop rows、surface manifest update counts、stop boundary 与 per-shard source PDFs。
+- `data/manifests/9231_pilot_shards_2026_06_05_crop_manifest_v1.json` - 9231 pilot crop manifest，逐 row 保存 local render/crop paths、crop records、mechanical validation 和 visual-review-required posture。
 - `2026-06-04-9231-question-shard-split-gate.md` - 9231 shard split gate，确认 1593 foundation rows 被拆成 64 个 9709-style paper/session-year locator shards，p1=20、p2=20、p3=12、p4=12，text-only ready 0、image-context required 1593、blockers 0；不声明 production-ready、canonical question text、DB/search/RAG consumption。
 - `2026-06-04-9231-question-shard-split-gate.json` - machine-readable 9231 shard split artifact，记录 64 个 input manifests、64 个 page-chain surface manifests、paper split、workflow gap 与 stop boundary。
 - `data/manifests/9231_question_shard_split_2026_06_04_manifest_v1.json` - combined 9231 shard split manifest，汇总 64 个 shard-level locator/page-chain surface manifests 和 1593 rows。

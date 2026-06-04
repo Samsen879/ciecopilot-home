@@ -27,7 +27,7 @@
     "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_22.pdf",
     "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_23.pdf"
   ],
-  "surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+  "surface_status": "wave2_crop_render_complete_pending_visual_review",
   "boundary": {
     "local_deterministic_shard_split": true,
     "production_ready_claimed": false,
@@ -79,17 +79,21 @@
       ],
       "page_range": {
         "start_page_index": 1,
-        "end_page_index": 1,
-        "start_page_number": 2,
-        "end_page_number": 2
+        "end_page_index": 1
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_002.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q01/q01_page_002.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q01/q01_page_002.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -97,7 +101,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -106,7 +110,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 228,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_002.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            47.612,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            95,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_21/questions/q02.png",
@@ -147,17 +177,21 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q02/q02_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q02/q02_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -165,7 +199,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -174,7 +208,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 229,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_003.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q02/q02_page_003.png",
+          "crop_box_points": [
+            0.0,
+            48.581,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            97,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_21/questions/q03.png",
@@ -208,8 +268,7 @@
         "y": 769.29
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -217,17 +276,21 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q03/q03_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q03/q03_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -235,7 +298,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -244,7 +307,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 230,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_004.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q03/q03_page_004.png",
+          "crop_box_points": [
+            0.0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_21/questions/q04.png",
@@ -278,8 +367,7 @@
         "y": 760.35
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -287,17 +375,21 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q04/q04_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q04/q04_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -305,7 +397,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -314,7 +406,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 231,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_006.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q04/q04_page_006.png",
+          "crop_box_points": [
+            0.0,
+            51.737,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            103,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_21/questions/q05.png",
@@ -348,8 +466,7 @@
         "y": 769.47
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -357,17 +474,21 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q05/q05_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q05/q05_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -375,7 +496,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -384,7 +505,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 232,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_008.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q05/q05_page_008.png",
+          "crop_box_points": [
+            0.0,
+            42.619,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            85,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_21/questions/q06.png",
@@ -418,8 +565,7 @@
         "y": 760.73
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -427,17 +573,21 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q06/q06_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q06/q06_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -445,7 +595,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -454,7 +604,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 233,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_010.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q06/q06_page_010.png",
+          "crop_box_points": [
+            0.0,
+            51.362,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            103,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_21/questions/q07.png",
@@ -488,8 +664,7 @@
         "y": 765.57
       },
       "page_indices": [
-        11,
-        12
+        11
       ],
       "page_numbers": [
         12,
@@ -497,17 +672,21 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 12,
-        "start_page_number": 12,
-        "end_page_number": 13
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q07/q07_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q07/q07_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -515,7 +694,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -524,7 +703,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 234,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_012.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q07/q07_page_012.png",
+          "crop_box_points": [
+            0.0,
+            46.519,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_21/questions/q08.png",
@@ -558,13 +763,7 @@
         "y": 769.29
       },
       "page_indices": [
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19
+        13
       ],
       "page_numbers": [
         14,
@@ -577,17 +776,21 @@
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 19,
-        "start_page_number": 14,
-        "end_page_number": 20
+        "end_page_index": 13
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_014.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q08/q08_page_014.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q08/q08_page_014.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -595,7 +798,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -604,7 +807,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 235,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_014.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_21/q08/q08_page_014.png",
+          "crop_box_points": [
+            0.0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q01.png",
@@ -645,17 +874,21 @@
       ],
       "page_range": {
         "start_page_index": 1,
-        "end_page_index": 1,
-        "start_page_number": 2,
-        "end_page_number": 2
+        "end_page_index": 1
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_002.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q01/q01_page_002.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q01/q01_page_002.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -663,7 +896,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -672,7 +905,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 236,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_002.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            47.612,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            95,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q02.png",
@@ -713,17 +972,21 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q02/q02_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q02/q02_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -731,7 +994,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -740,7 +1003,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 237,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_003.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q02/q02_page_003.png",
+          "crop_box_points": [
+            0.0,
+            48.581,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            97,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q03.png",
@@ -774,8 +1063,7 @@
         "y": 769.29
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -783,17 +1071,21 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q03/q03_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q03/q03_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -801,7 +1093,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -810,7 +1102,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 238,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_004.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q03/q03_page_004.png",
+          "crop_box_points": [
+            0.0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q04.png",
@@ -844,8 +1162,7 @@
         "y": 760.35
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -853,17 +1170,21 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q04/q04_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q04/q04_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -871,7 +1192,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -880,7 +1201,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 239,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_006.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q04/q04_page_006.png",
+          "crop_box_points": [
+            0.0,
+            51.737,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            103,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q05.png",
@@ -914,8 +1261,7 @@
         "y": 769.47
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -923,17 +1269,21 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q05/q05_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q05/q05_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -941,7 +1291,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -950,7 +1300,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 240,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_008.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q05/q05_page_008.png",
+          "crop_box_points": [
+            0.0,
+            42.619,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            85,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q06.png",
@@ -984,8 +1360,7 @@
         "y": 760.73
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -993,17 +1368,21 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q06/q06_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q06/q06_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1011,7 +1390,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1020,7 +1399,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 241,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_010.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q06/q06_page_010.png",
+          "crop_box_points": [
+            0.0,
+            51.362,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            103,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q07.png",
@@ -1054,8 +1459,7 @@
         "y": 765.57
       },
       "page_indices": [
-        11,
-        12
+        11
       ],
       "page_numbers": [
         12,
@@ -1063,17 +1467,21 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 12,
-        "start_page_number": 12,
-        "end_page_number": 13
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q07/q07_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q07/q07_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1081,7 +1489,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1090,7 +1498,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 242,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_012.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q07/q07_page_012.png",
+          "crop_box_points": [
+            0.0,
+            46.519,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_22/questions/q08.png",
@@ -1124,13 +1558,7 @@
         "y": 769.29
       },
       "page_indices": [
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19
+        13
       ],
       "page_numbers": [
         14,
@@ -1143,17 +1571,21 @@
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 19,
-        "start_page_number": 14,
-        "end_page_number": 20
+        "end_page_index": 13
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_014.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q08/q08_page_014.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q08/q08_page_014.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1161,7 +1593,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1170,7 +1602,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 243,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_014.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_22/q08/q08_page_014.png",
+          "crop_box_points": [
+            0.0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q01.png",
@@ -1211,17 +1669,21 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q01/q01_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q01/q01_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1229,7 +1691,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1238,7 +1700,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 244,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_003.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            66.898,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            134,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q02.png",
@@ -1272,8 +1760,7 @@
         "y": 759.37
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -1281,17 +1768,21 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1299,7 +1790,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1308,7 +1799,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 245,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_004.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q02/q02_page_004.png",
+          "crop_box_points": [
+            0.0,
+            55.321,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            111,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q03.png",
@@ -1342,8 +1859,7 @@
         "y": 759.37
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -1351,17 +1867,21 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1369,7 +1889,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1378,7 +1898,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 246,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_006.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q03/q03_page_006.png",
+          "crop_box_points": [
+            0.0,
+            55.321,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            111,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q04.png",
@@ -1412,8 +1958,7 @@
         "y": 759.38
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -1421,17 +1966,21 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1439,7 +1988,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1448,7 +1997,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 247,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_008.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q04/q04_page_008.png",
+          "crop_box_points": [
+            0.0,
+            55.31,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            111,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q05.png",
@@ -1482,8 +2057,7 @@
         "y": 759.38
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -1491,17 +2065,21 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1509,7 +2087,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1518,7 +2096,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 248,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_010.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q05/q05_page_010.png",
+          "crop_box_points": [
+            0.0,
+            55.31,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            111,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q06.png",
@@ -1552,8 +2156,7 @@
         "y": 748.2
       },
       "page_indices": [
-        11,
-        12
+        11
       ],
       "page_numbers": [
         12,
@@ -1561,17 +2164,21 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 12,
-        "start_page_number": 12,
-        "end_page_number": 13
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1579,7 +2186,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1588,7 +2195,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 249,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_012.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q06/q06_page_012.png",
+          "crop_box_points": [
+            0.0,
+            66.492,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            133,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q07.png",
@@ -1622,8 +2255,7 @@
         "y": 759.38
       },
       "page_indices": [
-        13,
-        14
+        13
       ],
       "page_numbers": [
         14,
@@ -1631,17 +2263,21 @@
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 14,
-        "start_page_number": 14,
-        "end_page_number": 15
+        "end_page_index": 13
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_014.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q07/q07_page_014.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q07/q07_page_014.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1649,7 +2285,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1658,7 +2294,33 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 250,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_014.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q07/q07_page_014.png",
+          "crop_box_points": [
+            0.0,
+            55.31,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            111,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     },
     {
       "storage_key": "9231/s24_qp_23/questions/q08.png",
@@ -1692,11 +2354,7 @@
         "y": 757.88
       },
       "page_indices": [
-        15,
-        16,
-        17,
-        18,
-        19
+        15
       ],
       "page_numbers": [
         16,
@@ -1707,17 +2365,21 @@
       ],
       "page_range": {
         "start_page_index": 15,
-        "end_page_index": 19,
-        "start_page_number": 16,
-        "end_page_number": 20
+        "end_page_index": 15
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_016.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q08/q08_page_016.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q08/q08_page_016.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_wave2_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "wave2_crop_render_complete_pending_visual_review",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
@@ -1725,7 +2387,7 @@
       "image_context_required": true,
       "requires_review": true,
       "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_reason": "local_crop_render_complete_pending_visual_review_not_vlm_reviewed",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
@@ -1734,7 +2396,44 @@
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 251,
-      "source_locator_shard_id": "9231_p2_source_locator_001"
+      "source_locator_shard_id": "9231_p2_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 15,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_016.png",
+          "crop_path": "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/question-crops/9231_s24_qp_23/q08/q08_page_016.png",
+          "crop_box_points": [
+            0.0,
+            56.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            114,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      }
     }
-  ]
+  ],
+  "wave2_crop_gate": {
+    "schema_version": "9231_wave2_shard_crop_gate_v1",
+    "generated_on": "2026-06-05",
+    "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+    "external_vlm_or_api_calls": 0,
+    "external_ocr_reruns": 0,
+    "not_production_ready": true,
+    "not_question_plain_text": true,
+    "not_db_search_rag_consumption": true,
+    "stage": "9231 wave2 shard render/crop gate"
+  }
 }

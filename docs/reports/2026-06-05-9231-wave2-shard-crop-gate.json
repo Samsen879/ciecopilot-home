@@ -1,0 +1,2183 @@
+{
+  "schema_version": "9231_wave2_shard_crop_gate_v1",
+  "generated_on": "2026-06-05",
+  "subject_code": "9231",
+  "gate_status": "wave2_crop_render_complete_pending_visual_review",
+  "boundary": {
+    "not_production_ready": true,
+    "not_canonical_question_text": true,
+    "not_question_plain_text_v1_or_v2": true,
+    "not_normalized_plain_text_consumption_gate": true,
+    "external_vlm_or_api_calls": 0,
+    "external_ocr_reruns": 0,
+    "db_consumption_claimed": false,
+    "search_consumption_claimed": false,
+    "read_model_consumption_claimed": false,
+    "rag_consumption_claimed": false,
+    "visual_review_required": true
+  },
+  "summary": {
+    "input_shard_manifests": 16,
+    "surface_manifests_updated": 16,
+    "surface_rows_updated": 413,
+    "surface_blocker_rows": 0,
+    "pdfs_rendered": 52,
+    "rendered_pages": 792,
+    "local_png_artifact_files": 1224,
+    "total_rows": 413,
+    "crop_rows_complete": 413,
+    "missing_crops": 0,
+    "multi_page_rows": 14,
+    "blocker_rows": 0,
+    "visual_review_required_rows": 413,
+    "text_only_ready_rows": 0,
+    "image_context_required_rows": 413,
+    "external_vlm_or_api_calls": 0,
+    "external_ocr_reruns": 0,
+    "production_ready_claimed": false,
+    "db_search_rag_consumption_claimed": false,
+    "crop_status_counts": {
+      "complete": 413
+    },
+    "wave2_shards": 16
+  },
+  "input_manifest_paths": [
+    "data/manifests/9231_p1_w25_standard_001_input_v1.json",
+    "data/manifests/9231_p2_w25_standard_001_input_v1.json",
+    "data/manifests/9231_p3_w25_standard_001_input_v1.json",
+    "data/manifests/9231_p4_w25_standard_001_input_v1.json",
+    "data/manifests/9231_p1_s24_standard_001_input_v1.json",
+    "data/manifests/9231_p2_s24_standard_001_input_v1.json",
+    "data/manifests/9231_p3_s24_standard_001_input_v1.json",
+    "data/manifests/9231_p4_s24_standard_001_input_v1.json",
+    "data/manifests/9231_p1_s20_standard_001_input_v1.json",
+    "data/manifests/9231_p2_s20_standard_001_input_v1.json",
+    "data/manifests/9231_p3_s20_standard_001_input_v1.json",
+    "data/manifests/9231_p4_s20_standard_001_input_v1.json",
+    "data/manifests/9231_p1_w16_standard_001_input_v1.json",
+    "data/manifests/9231_p2_s16_standard_001_input_v1.json",
+    "data/manifests/9231_p2_w16_standard_001_input_v1.json",
+    "data/manifests/9231_p1_s18_standard_001_input_v1.json"
+  ],
+  "per_shard": {
+    "9231_p1_s18_standard_001": {
+      "total_rows": 33,
+      "crop_rows_complete": 33,
+      "missing_crops": 0,
+      "multi_page_rows": 14,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 33,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_13.pdf"
+      ]
+    },
+    "9231_p1_s20_standard_001": {
+      "total_rows": 21,
+      "crop_rows_complete": 21,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 21,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf"
+      ]
+    },
+    "9231_p1_s24_standard_001": {
+      "total_rows": 21,
+      "crop_rows_complete": 21,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 21,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_13.pdf"
+      ]
+    },
+    "9231_p1_w16_standard_001": {
+      "total_rows": 33,
+      "crop_rows_complete": 33,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 33,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_13.pdf"
+      ]
+    },
+    "9231_p1_w25_standard_001": {
+      "total_rows": 28,
+      "crop_rows_complete": 28,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 28,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_11.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_12.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_13.pdf",
+        "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_14.pdf"
+      ]
+    },
+    "9231_p2_s16_standard_001": {
+      "total_rows": 33,
+      "crop_rows_complete": 33,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 33,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_23.pdf"
+      ]
+    },
+    "9231_p2_s20_standard_001": {
+      "total_rows": 24,
+      "crop_rows_complete": 24,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 24,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf"
+      ]
+    },
+    "9231_p2_s24_standard_001": {
+      "total_rows": 24,
+      "crop_rows_complete": 24,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 24,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_23.pdf"
+      ]
+    },
+    "9231_p2_w16_standard_001": {
+      "total_rows": 30,
+      "crop_rows_complete": 30,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 30,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_23.pdf"
+      ]
+    },
+    "9231_p2_w25_standard_001": {
+      "total_rows": 32,
+      "crop_rows_complete": 32,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 32,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_21.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_22.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_23.pdf",
+        "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_24.pdf"
+      ]
+    },
+    "9231_p3_s20_standard_001": {
+      "total_rows": 21,
+      "crop_rows_complete": 21,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 21,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf"
+      ]
+    },
+    "9231_p3_s24_standard_001": {
+      "total_rows": 21,
+      "crop_rows_complete": 21,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 21,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_31.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_32.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_33.pdf"
+      ]
+    },
+    "9231_p3_w25_standard_001": {
+      "total_rows": 28,
+      "crop_rows_complete": 28,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 28,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_31.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_32.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_33.pdf",
+        "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_34.pdf"
+      ]
+    },
+    "9231_p4_s20_standard_001": {
+      "total_rows": 18,
+      "crop_rows_complete": 18,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 18,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf"
+      ]
+    },
+    "9231_p4_s24_standard_001": {
+      "total_rows": 20,
+      "crop_rows_complete": 20,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 20,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_41.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_42.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_43.pdf"
+      ]
+    },
+    "9231_p4_w25_standard_001": {
+      "total_rows": 26,
+      "crop_rows_complete": 26,
+      "missing_crops": 0,
+      "multi_page_rows": 0,
+      "blocker_rows": 0,
+      "visual_review_required_rows": 26,
+      "source_pdfs": [
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_41.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_42.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_43.pdf",
+        "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_44.pdf"
+      ]
+    }
+  },
+  "per_shard_surface_updates": {
+    "9231_p1_w25_standard_001": {
+      "surface_manifest": "data/manifests/9231_p1_w25_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 28,
+      "crop_rows_complete": 28,
+      "blocker_rows": 0
+    },
+    "9231_p2_w25_standard_001": {
+      "surface_manifest": "data/manifests/9231_p2_w25_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 32,
+      "crop_rows_complete": 32,
+      "blocker_rows": 0
+    },
+    "9231_p3_w25_standard_001": {
+      "surface_manifest": "data/manifests/9231_p3_w25_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 28,
+      "crop_rows_complete": 28,
+      "blocker_rows": 0
+    },
+    "9231_p4_w25_standard_001": {
+      "surface_manifest": "data/manifests/9231_p4_w25_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 26,
+      "crop_rows_complete": 26,
+      "blocker_rows": 0
+    },
+    "9231_p1_s24_standard_001": {
+      "surface_manifest": "data/manifests/9231_p1_s24_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 21,
+      "crop_rows_complete": 21,
+      "blocker_rows": 0
+    },
+    "9231_p2_s24_standard_001": {
+      "surface_manifest": "data/manifests/9231_p2_s24_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 24,
+      "crop_rows_complete": 24,
+      "blocker_rows": 0
+    },
+    "9231_p3_s24_standard_001": {
+      "surface_manifest": "data/manifests/9231_p3_s24_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 21,
+      "crop_rows_complete": 21,
+      "blocker_rows": 0
+    },
+    "9231_p4_s24_standard_001": {
+      "surface_manifest": "data/manifests/9231_p4_s24_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 20,
+      "crop_rows_complete": 20,
+      "blocker_rows": 0
+    },
+    "9231_p1_s20_standard_001": {
+      "surface_manifest": "data/manifests/9231_p1_s20_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 21,
+      "crop_rows_complete": 21,
+      "blocker_rows": 0
+    },
+    "9231_p2_s20_standard_001": {
+      "surface_manifest": "data/manifests/9231_p2_s20_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 24,
+      "crop_rows_complete": 24,
+      "blocker_rows": 0
+    },
+    "9231_p3_s20_standard_001": {
+      "surface_manifest": "data/manifests/9231_p3_s20_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 21,
+      "crop_rows_complete": 21,
+      "blocker_rows": 0
+    },
+    "9231_p4_s20_standard_001": {
+      "surface_manifest": "data/manifests/9231_p4_s20_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 18,
+      "crop_rows_complete": 18,
+      "blocker_rows": 0
+    },
+    "9231_p1_w16_standard_001": {
+      "surface_manifest": "data/manifests/9231_p1_w16_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 33,
+      "crop_rows_complete": 33,
+      "blocker_rows": 0
+    },
+    "9231_p2_s16_standard_001": {
+      "surface_manifest": "data/manifests/9231_p2_s16_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 33,
+      "crop_rows_complete": 33,
+      "blocker_rows": 0
+    },
+    "9231_p2_w16_standard_001": {
+      "surface_manifest": "data/manifests/9231_p2_w16_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 30,
+      "crop_rows_complete": 30,
+      "blocker_rows": 0
+    },
+    "9231_p1_s18_standard_001": {
+      "surface_manifest": "data/manifests/9231_p1_s18_standard_001_page_chain_surface_v1.json",
+      "surface_rows_updated": 33,
+      "crop_rows_complete": 33,
+      "blocker_rows": 0
+    }
+  },
+  "blockers": [],
+  "pdfs": [
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_11.pdf",
+      "shard_id": "9231_p1_s18_standard_001",
+      "pdf_stem": "9231_s18_qp_11",
+      "page_count": 28,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_020.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_021.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_022.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_023.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_024.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_025.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_026.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_027.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_11/9231_s18_qp_11_page_028.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_12.pdf",
+      "shard_id": "9231_p1_s18_standard_001",
+      "pdf_stem": "9231_s18_qp_12",
+      "page_count": 28,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_020.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_021.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_022.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_023.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_024.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_025.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_026.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_027.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_12/9231_s18_qp_12_page_028.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s18_qp_13.pdf",
+      "shard_id": "9231_p1_s18_standard_001",
+      "pdf_stem": "9231_s18_qp_13",
+      "page_count": 28,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_020.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_021.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_022.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_023.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_024.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_025.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_026.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_027.png",
+        "data/crops/9231-wave2-shards/9231_p1_s18_standard_001/renders/9231_s18_qp_13/9231_s18_qp_13_page_028.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf",
+      "shard_id": "9231_p1_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_11",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_11/WM_9231_s20_qp_11_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf",
+      "shard_id": "9231_p1_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_12",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_12/WM_9231_s20_qp_12_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf",
+      "shard_id": "9231_p1_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_13",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s20_standard_001/renders/WM_9231_s20_qp_13/WM_9231_s20_qp_13_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_11.pdf",
+      "shard_id": "9231_p1_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_11",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_11/9231_s24_qp_11_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_12.pdf",
+      "shard_id": "9231_p1_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_12",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_12/9231_s24_qp_12_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_s24_qp_13.pdf",
+      "shard_id": "9231_p1_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_13",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_s24_standard_001/renders/9231_s24_qp_13/9231_s24_qp_13_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_11.pdf",
+      "shard_id": "9231_p1_w16_standard_001",
+      "pdf_stem": "9231_w16_qp_11",
+      "page_count": 4,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_11/9231_w16_qp_11_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_11/9231_w16_qp_11_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_11/9231_w16_qp_11_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_11/9231_w16_qp_11_page_004.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_12.pdf",
+      "shard_id": "9231_p1_w16_standard_001",
+      "pdf_stem": "9231_w16_qp_12",
+      "page_count": 4,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_12/9231_w16_qp_12_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_12/9231_w16_qp_12_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_12/9231_w16_qp_12_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_12/9231_w16_qp_12_page_004.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_w16_qp_13.pdf",
+      "shard_id": "9231_p1_w16_standard_001",
+      "pdf_stem": "9231_w16_qp_13",
+      "page_count": 4,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_13/9231_w16_qp_13_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_13/9231_w16_qp_13_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_13/9231_w16_qp_13_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_w16_standard_001/renders/9231_w16_qp_13/9231_w16_qp_13_page_004.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_11.pdf",
+      "shard_id": "9231_p1_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_11",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_11/9231_w25_qp_11_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_12.pdf",
+      "shard_id": "9231_p1_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_12",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_12/9231_w25_qp_12_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_13.pdf",
+      "shard_id": "9231_p1_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_13",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_13/9231_w25_qp_13_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/9231_w25_qp_14.pdf",
+      "shard_id": "9231_p1_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_14",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p1_w25_standard_001/renders/9231_w25_qp_14/9231_w25_qp_14_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_21.pdf",
+      "shard_id": "9231_p2_s16_standard_001",
+      "pdf_stem": "9231_s16_qp_21",
+      "page_count": 8,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_21/9231_s16_qp_21_page_008.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_22.pdf",
+      "shard_id": "9231_p2_s16_standard_001",
+      "pdf_stem": "9231_s16_qp_22",
+      "page_count": 8,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_22/9231_s16_qp_22_page_008.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_s16_qp_23.pdf",
+      "shard_id": "9231_p2_s16_standard_001",
+      "pdf_stem": "9231_s16_qp_23",
+      "page_count": 8,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s16_standard_001/renders/9231_s16_qp_23/9231_s16_qp_23_page_008.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf",
+      "shard_id": "9231_p2_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_21",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_21/WM_9231_s20_qp_21_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf",
+      "shard_id": "9231_p2_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_22",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_22/WM_9231_s20_qp_22_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf",
+      "shard_id": "9231_p2_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_23",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_s20_standard_001/renders/WM_9231_s20_qp_23/WM_9231_s20_qp_23_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_21.pdf",
+      "shard_id": "9231_p2_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_21",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_21/9231_s24_qp_21_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_22.pdf",
+      "shard_id": "9231_p2_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_22",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_22/9231_s24_qp_22_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_s24_qp_23.pdf",
+      "shard_id": "9231_p2_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_23",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p2_s24_standard_001/renders/9231_s24_qp_23/9231_s24_qp_23_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_21.pdf",
+      "shard_id": "9231_p2_w16_standard_001",
+      "pdf_stem": "9231_w16_qp_21",
+      "page_count": 8,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_21/9231_w16_qp_21_page_008.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_22.pdf",
+      "shard_id": "9231_p2_w16_standard_001",
+      "pdf_stem": "9231_w16_qp_22",
+      "page_count": 8,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_22/9231_w16_qp_22_page_008.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_w16_qp_23.pdf",
+      "shard_id": "9231_p2_w16_standard_001",
+      "pdf_stem": "9231_w16_qp_23",
+      "page_count": 8,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_w16_standard_001/renders/9231_w16_qp_23/9231_w16_qp_23_page_008.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_21.pdf",
+      "shard_id": "9231_p2_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_21",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_21/9231_w25_qp_21_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_22.pdf",
+      "shard_id": "9231_p2_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_22",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_22/9231_w25_qp_22_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_23.pdf",
+      "shard_id": "9231_p2_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_23",
+      "page_count": 20,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_016.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_017.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_018.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_019.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_23/9231_w25_qp_23_page_020.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/9231_w25_qp_24.pdf",
+      "shard_id": "9231_p2_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_24",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p2_w25_standard_001/renders/9231_w25_qp_24/9231_w25_qp_24_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf",
+      "shard_id": "9231_p3_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_31",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_31/WM_9231_s20_qp_31_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf",
+      "shard_id": "9231_p3_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_32",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_32/WM_9231_s20_qp_32_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf",
+      "shard_id": "9231_p3_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_33",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_s20_standard_001/renders/WM_9231_s20_qp_33/WM_9231_s20_qp_33_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_31.pdf",
+      "shard_id": "9231_p3_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_31",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_31/9231_s24_qp_31_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_32.pdf",
+      "shard_id": "9231_p3_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_32",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_32/9231_s24_qp_32_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/9231_s24_qp_33.pdf",
+      "shard_id": "9231_p3_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_33",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_s24_standard_001/renders/9231_s24_qp_33/9231_s24_qp_33_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_31.pdf",
+      "shard_id": "9231_p3_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_31",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_31/9231_w25_qp_31_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_32.pdf",
+      "shard_id": "9231_p3_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_32",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_32/9231_w25_qp_32_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_33.pdf",
+      "shard_id": "9231_p3_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_33",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_33/9231_w25_qp_33_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/9231_w25_qp_34.pdf",
+      "shard_id": "9231_p3_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_34",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p3_w25_standard_001/renders/9231_w25_qp_34/9231_w25_qp_34_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf",
+      "shard_id": "9231_p4_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_41",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_41/WM_9231_s20_qp_41_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf",
+      "shard_id": "9231_p4_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_42",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_42/WM_9231_s20_qp_42_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf",
+      "shard_id": "9231_p4_s20_standard_001",
+      "pdf_stem": "WM_9231_s20_qp_43",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_s20_standard_001/renders/WM_9231_s20_qp_43/WM_9231_s20_qp_43_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_41.pdf",
+      "shard_id": "9231_p4_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_41",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_41/9231_s24_qp_41_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_42.pdf",
+      "shard_id": "9231_p4_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_42",
+      "page_count": 16,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_012.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_013.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_014.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_015.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_42/9231_s24_qp_42_page_016.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_s24_qp_43.pdf",
+      "shard_id": "9231_p4_s24_standard_001",
+      "pdf_stem": "9231_s24_qp_43",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_s24_standard_001/renders/9231_s24_qp_43/9231_s24_qp_43_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_41.pdf",
+      "shard_id": "9231_p4_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_41",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_41/9231_w25_qp_41_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_42.pdf",
+      "shard_id": "9231_p4_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_42",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_42/9231_w25_qp_42_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_43.pdf",
+      "shard_id": "9231_p4_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_43",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_43/9231_w25_qp_43_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/9231_w25_qp_44.pdf",
+      "shard_id": "9231_p4_w25_standard_001",
+      "pdf_stem": "9231_w25_qp_44",
+      "page_count": 12,
+      "rendered_page_paths": [
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_001.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_002.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_003.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_004.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_005.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_006.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_007.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_008.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_009.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_010.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_011.png",
+        "data/crops/9231-wave2-shards/9231_p4_w25_standard_001/renders/9231_w25_qp_44/9231_w25_qp_44_page_012.png"
+      ],
+      "detected_question_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    }
+  ],
+  "wave2_shard_ids": [
+    "9231_p1_w25_standard_001",
+    "9231_p2_w25_standard_001",
+    "9231_p3_w25_standard_001",
+    "9231_p4_w25_standard_001",
+    "9231_p1_s24_standard_001",
+    "9231_p2_s24_standard_001",
+    "9231_p3_s24_standard_001",
+    "9231_p4_s24_standard_001",
+    "9231_p1_s20_standard_001",
+    "9231_p2_s20_standard_001",
+    "9231_p3_s20_standard_001",
+    "9231_p4_s20_standard_001",
+    "9231_p1_w16_standard_001",
+    "9231_p2_s16_standard_001",
+    "9231_p2_w16_standard_001",
+    "9231_p1_s18_standard_001"
+  ],
+  "selection_strategy": [
+    {
+      "bucket": "newest untested winter 2025",
+      "shard_ids": [
+        "9231_p1_w25_standard_001",
+        "9231_p2_w25_standard_001",
+        "9231_p3_w25_standard_001",
+        "9231_p4_w25_standard_001"
+      ]
+    },
+    {
+      "bucket": "recent summer 2024 all papers",
+      "shard_ids": [
+        "9231_p1_s24_standard_001",
+        "9231_p2_s24_standard_001",
+        "9231_p3_s24_standard_001",
+        "9231_p4_s24_standard_001"
+      ]
+    },
+    {
+      "bucket": "first p3/p4-era summer 2020 all papers",
+      "shard_ids": [
+        "9231_p1_s20_standard_001",
+        "9231_p2_s20_standard_001",
+        "9231_p3_s20_standard_001",
+        "9231_p4_s20_standard_001"
+      ]
+    },
+    {
+      "bucket": "legacy p1/p2-only era",
+      "shard_ids": [
+        "9231_p1_w16_standard_001",
+        "9231_p2_s16_standard_001",
+        "9231_p2_w16_standard_001",
+        "9231_p1_s18_standard_001"
+      ]
+    }
+  ],
+  "source_cleanliness_risks": {
+    "risk_status": "watermarked_source_paths_present_visual_review_required",
+    "watermarked_source_pdf_count": 12,
+    "watermarked_source_row_count": 84,
+    "watermarked_source_pdfs": {
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf": 8,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf": 8,
+      "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf": 8,
+      "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf": 7,
+      "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf": 6,
+      "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf": 6,
+      "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf": 6
+    },
+    "mechanical_crop_blocker": false,
+    "notes": [
+      "This is a filename/path-based local risk flag only.",
+      "It does not prove visual watermark presence or absence on every crop.",
+      "It does not change deterministic crop completion status."
+    ]
+  }
+}

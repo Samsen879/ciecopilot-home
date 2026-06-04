@@ -392,8 +392,10 @@ function markdownTable(headers, rows) {
 
 export function buildQuestionPlainTextV2ConsumptionMarkdown(result) {
   const s = result.summary;
+  const subjectMatch = /^(\d{4})_question_plain_text_v2$/.exec(String(s.source_schema_version || ''));
+  const subjectCode = subjectMatch?.[1] || result.items?.[0]?.subject_code || '9709';
   const lines = [
-    '# 9709 Question Plain Text v2 Consumption Gate',
+    `# ${subjectCode} Question Plain Text v2 Consumption Gate`,
     '',
     `- status: \`${result.status}\``,
     `- generated_on: \`${result.generated_on}\``,

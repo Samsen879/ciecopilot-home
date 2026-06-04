@@ -2,14 +2,14 @@
 
 - generated_on: `2026-06-05`
 - status: `inventory_ready`
-- verdict: `foundation row-surface-present-needs-text-gates`
+- verdict: `foundation row-surface-present-partial-text-consumption`
 - This is not a production-ready claim.
 - This does not claim canonical 9231 question text, DB consumption, deployed search consumption, or online RAG ingestion.
 - No external VLM/API or OCR rerun is performed by this inventory gate.
 
 ## Repo-Truth Conclusion
 
-Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-level locator surfaces exist; crop/image assets are partial: `558/1593` current rows have manifest-backed crop references, while OCR/text evidence, question_plain_text_v1/v2, and normalized_plain_text consumption gates are still missing.
+Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local row-level locator surfaces exist; crop/image assets are partial: `558/1593` current rows have manifest-backed crop references; question_plain_text_v2 covers `441/1593` current rows and local normalized_plain_text consumption covers `441/1593` current rows.
 
 ## Raw PDF Source Coverage
 
@@ -29,8 +29,8 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 
 | metric | value |
 | --- | --- |
-| data/manifests JSON files | 344 |
-| 9231 subject manifests | 140 |
+| data/manifests JSON files | 346 |
+| 9231 subject manifests | 142 |
 | 9231 input manifests | 68 |
 | 9231 page-chain surface manifests | 68 |
 | 9231 source-locator surface manifests | 4 |
@@ -45,18 +45,21 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 | metric | value |
 | --- | --- |
 | evidence bundle files | 0 |
-| question_plain_text_v1 artifacts | 0 |
-| question_plain_text_v2 artifacts | 0 |
-| question_plain_text_v2 consumption artifacts | 0 |
-| PDF text layer inspected | true |
-| PDF text layer status | parsed |
+| question_plain_text_v1 artifacts | 1 |
+| question_plain_text_v1 max rows | 441 |
+| question_plain_text_v2 artifacts | 1 |
+| question_plain_text_v2 max rows | 441 |
+| question_plain_text_v2 consumption artifacts | 1 |
+| question_plain_text_v2 consumption max rows | 441 |
+| PDF text layer inspected | false |
+| PDF text layer status | not_inspected |
 
 ## Image And Crop Assets
 
 | metric | value |
 | --- | --- |
-| scanned roots | ["data/crops","public"] |
-| subject image files | 1653 |
+| scanned roots | ["tmp","data/crops","public"] |
+| subject image files | 2094 |
 | surface image asset rows | 558 |
 | surface crop asset rows | 558 |
 | surface rows missing crop assets | 1035 |
@@ -67,7 +70,7 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 | --- | --- |
 | search normalized_plain_text priority schema contract | present |
 | read-model normalized_plain_text schema contract | present |
-| local 9231 consumption gate artifacts | 0 |
+| local 9231 consumption gate artifacts | 1 |
 | DB consumed claimed | false |
 | search consumed claimed | false |
 | read-model consumed claimed | false |
@@ -83,20 +86,17 @@ Conclusion: `row-surface-present-needs-text-gates`. Deterministic local row-leve
 
 ## Blockers
 
-- missing_ocr_evidence_bundle: No 9231 row-level evidence-bundle OCR/text artifact exists.
-- missing_question_plain_text_v1_artifact: No 9231 question_plain_text_v1 artifact exists.
-- missing_question_plain_text_v2_artifact: No 9231 question_plain_text_v2 artifact exists.
-- missing_question_plain_text_v2_consumption_gate: No 9231 normalized_plain_text local consumption gate artifact exists.
+- partial_question_plain_text_v2_coverage: 9231 question_plain_text_v2 exists but does not yet cover all current shard-split rows.
+- partial_question_plain_text_v2_consumption_coverage: 9231 local normalized_plain_text consumption gate exists but does not yet cover all current shard-split rows.
 
 ## Next Executable Gates
 
-- Attach OCR/text evidence bundles without external VLM/API calls unless scope is explicitly expanded.
-- Only after row/evidence coverage exists, run 9231 question_plain_text_v1/v2 gates.
-- Run a 9231 normalized_plain_text local consumption gate before claiming search/read-model/RAG consumption.
+- Continue shard waves until question_plain_text_v2 covers every current 9231 shard-split row.
+- Continue shard waves until local normalized_plain_text consumption covers every current 9231 shard-split row.
 
 ## Workflow Gaps
 
-- package.json missing workflow:codex-preflight script; recorded as workflow gap, not content blocker
+- none
 
 ## Verification Inputs
 

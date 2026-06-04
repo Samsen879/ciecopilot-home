@@ -682,7 +682,7 @@ export function buildQuestionPlainTextV2Layer({
   const summary = buildSummary(items, duplicateKeys, blockers);
   const status = blockers.length === 0 ? 'pass' : 'blocked';
   const layer = {
-    schema_version: '9709_question_plain_text_v2',
+    schema_version: `${subject}_question_plain_text_v2`,
     status,
     verdict: status === 'pass' ? 'question-plain-text-v2-ready' : 'question-plain-text-v2-blocked',
     generated_on: generatedOn,
@@ -721,6 +721,7 @@ function markdownTable(rows) {
 
 export function buildMarkdownReport(layer, { inputJson, jsonOut }) {
   const s = layer.summary;
+  const subjectLabel = layer.subject_code === '9709' ? '9709 Mathematics' : layer.subject_code;
   const versionRows = [
     ['source version', 'rows', 'normalized text', 'text-only ready', 'image context + assets', 'formula dense + math', 'formula dense no math', 'structured', 'partial', 'unstructured', 'fallback'],
     ...Object.entries(s.source_versions).sort(([left], [right]) => left.localeCompare(right)).map(([version, stats]) => [
@@ -745,7 +746,7 @@ export function buildMarkdownReport(layer, { inputJson, jsonOut }) {
     : '';
 
   return [
-    '# 9709 question plain text v2 coverage',
+    `# ${layer.subject_code} question plain text v2 coverage`,
     '',
     layer.status === 'pass'
       ? 'Verdict: pass. The v1 text layer has been normalized into v2 with text-only/image-context classification and zero gate blockers.'
@@ -753,7 +754,7 @@ export function buildMarkdownReport(layer, { inputJson, jsonOut }) {
     '',
     '## Scope',
     '',
-    '- Subject: 9709 Mathematics',
+    `- Subject: ${subjectLabel}`,
     `- Generated on: ${layer.generated_on}`,
     `- Input artifact: ${inputJson}`,
     `- JSON artifact: ${jsonOut}`,

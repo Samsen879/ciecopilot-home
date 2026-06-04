@@ -419,6 +419,10 @@
 - `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-downloads.json` - candidate-download evidence for the 619 Computer Science resources, recording source URLs, byte counts, SHA256 hashes, PDF signature checks, and targeted BestExamHelp fallbacks.
 - `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-promotion.json` - source-promotion evidence for 619 Computer Science PDFs copied into `data/past-papers` and `data/supplemental-past-papers`, confirming SHA and pdfjs page-count checks.
 - `2026-06-04-9608-9618-computer-science-2016-2025-full-resource-source-report.md` - closeout report for the Computer Science `9608`/`9618` full-resource fill, including counts by syllabus generation and resource type.
+- `2026-06-04-9700-biology-2016-2025-full-resource-inventory.json` - machine-readable inventory for 955 Biology `9700` public-mirror resource candidates across question papers, mark schemes, confidential instructions, thresholds, reports, and insert-style resources.
+- `2026-06-04-9700-biology-2016-2025-full-resource-downloads.json` - candidate-download evidence for the 955 Biology resources, recording source URLs, byte counts, SHA256 hashes, and PDF signature checks after targeted network retries.
+- `2026-06-04-9700-biology-2016-2025-full-resource-promotion.json` - source-promotion evidence for 955 Biology PDFs copied into `data/past-papers` and `data/supplemental-past-papers`, confirming SHA and pdfjs page-count checks.
+- `2026-06-04-9700-biology-2016-2025-full-resource-source-report.md` - closeout report for the Biology `9700` full-resource fill, including counts by resource type and target root.
 
 ## RAG S2
 

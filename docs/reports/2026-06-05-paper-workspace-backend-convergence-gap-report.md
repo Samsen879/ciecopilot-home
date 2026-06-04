@@ -1,9 +1,9 @@
 # Paper Workspace Backend Convergence Gap Report
 
-Issue: #356  
-Parent epic: #355  
-Baseline inspected: `origin/main @ a1758f0aaa45c5dcd25c1d254a92934e3cc434cb`  
-Branch: `task/356-paper-workspace-gap-report`  
+Issue: #356
+Parent epic: #355
+Baseline inspected: `origin/main @ a1758f0aaa45c5dcd25c1d254a92934e3cc434cb`
+Branch: `task/356-paper-workspace-gap-report`
 Scope: documentation/report only. No schema, API, service, frontend, 9231, or new 9709 content changes are proposed or implemented by this report.
 
 ## Evidence Sources
@@ -73,7 +73,7 @@ The next backend work should therefore be additive and staged:
 
 ### G1: Paper Workspace Identity Is Missing
 
-Classification: blocker  
+Classification: blocker
 Current files/tables:
 
 - `public.learning_workspaces` has `topic_id`, `topic_path`, and `UNIQUE (user_id, topic_id)` but no `paper_scope`, `paper_id`, `study_module_id`, or parent paper key (`supabase/migrations/20260320111000_create_learning_runtime_core.sql:76-86`).
@@ -91,7 +91,7 @@ Expected direction:
 
 ### G2: Topic Sections Are Not A Projection Layer Yet
 
-Classification: blocker  
+Classification: blocker
 Current files/routes/services:
 
 - `/api/learning/workspaces/:topicId` treats the path parameter as the workspace locator (`api/_runtime/route-registry.js:71-83`; `api/learning/workspaces/[topicId].js:74-85`).
@@ -105,7 +105,7 @@ Expected direction:
 
 ### G3: Existing Topic Workspace Endpoint Must Stay Compatible
 
-Classification: compatibility bridge  
+Classification: compatibility bridge
 Current files/tests:
 
 - Route registry reserves `/api/learning/workspaces/:topicId` as `learning-workspace-topic` (`api/_runtime/route-registry.js:71-83`).
@@ -122,7 +122,7 @@ Constraints:
 
 ### G4: Stable Slot Primitives Exist But Need Paper-Slot Semantics
 
-Classification: compatibility bridge  
+Classification: compatibility bridge
 Current files/tables:
 
 - Runtime constants define six slot keys and compatibility by artifact kind (`api/learning/lib/contracts/runtime-contract.js:40-65`).
@@ -142,7 +142,7 @@ Expected direction:
 
 ### G5: Review Queue Has Global Mechanics But No Paper Filter
 
-Classification: blocker  
+Classification: blocker
 Current files/tables:
 
 - `learning_review_queue_projection` is a global review-task view keyed by `user_id` and `target_topic_id`; it does not expose paper scope (`supabase/migrations/20260320112000_create_learning_runtime_read_models.sql:95-126`).
@@ -160,7 +160,7 @@ Expected direction:
 
 ### G6: Completion Evidence Is Present But Not Mode-Specific Enough
 
-Classification: compatibility bridge  
+Classification: compatibility bridge
 Current files/tables:
 
 - `learning_review_tasks.completion_evidence` exists and is returned by the read model (`supabase/migrations/20260320111000_create_learning_runtime_core.sql:150-171`; `supabase/migrations/20260320112000_create_learning_runtime_read_models.sql:95-126`).
@@ -178,7 +178,7 @@ Expected direction:
 
 ### G7: Tests Freeze The Current Topic Model
 
-Classification: compatibility bridge  
+Classification: compatibility bridge
 Current tests:
 
 - Schema contract asserts `UNIQUE (user_id, topic_id)` and current stable-slot enum (`api/learning/__tests__/schema-contract.test.js:113-118`, `:183-195`).
@@ -192,7 +192,7 @@ Expected direction:
 
 ### G8: Frontend Adapter Work Is Intentionally Later
 
-Classification: later frontend adapter  
+Classification: later frontend adapter
 Reason:
 
 - #355 and #356 explicitly exclude frontend surface work.

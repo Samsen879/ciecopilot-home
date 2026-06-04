@@ -2,6 +2,7 @@
 
 ## Project Status
 
+- `2026-06-04-codebase-status.md` - 当前本地代码库状态报告，覆盖 `codex/9709-new-paper-pre-shard-crops` 的 Git 状态、代码/数据/文档规模、磁盘体量、worktree 清单、项目形态、风险与后续清理边界。
 - `2026-03-30-mainline-closeout-report.md` - first-phase closeout report covering safe archival of the divergent local branch, creation of the new mainline recovery worktree, and current recommended next steps.
 - `2026-03-30-local-branch-closeout-classification.md` - classification table for the local-only branch commits and archived WIP, showing what should be re-landed, archived only, or left retired.
 - `2026-04-03-ao-phase6-debt-inventory.md` - first phase-6 repo-local debt inventory from `ao-state`, showing current cleanup candidates and explicit non-actions.
@@ -521,6 +522,20 @@
 - `2026-06-04-9709-p2-w24-standard-001-release-preflight-authority-aligned.md` - release-preflight markdown for `p2_w24_standard_001`, passing with 0 blockers before any DB/search/release execution.
 - `2026-06-04-9709-p2-w24-standard-001-release-preflight-authority-aligned.json` - machine-readable release-preflight result for `p2_w24_standard_001`, passing with 0 blockers and 21 expected manifest-topic warnings.
 - `2026-06-04-9709-p2-w24-standard-001-shard-artifacts-summary.json` - machine-readable accepted shard-artifact summary for `p2_w24_standard_001`, covering surface, lane, sidecar, and visual disposition counts.
+- `data/manifests/9709_p2_w25_standard_001_page_chain_surface_v2.json` - corrected-v2 new-paper shard surface manifest for `p2_w25_standard_001`, projected from local pre-shard crops with no external VLM/API calls.
+- `2026-06-04-9709-p2-w25-standard-001-shard-artifacts-summary-pending.json` - machine-readable pending shard-artifact summary for `p2_w25_standard_001` before local visual disposition.
+- `2026-06-04-9709-p2-w25-standard-001-local-visual-disposition.md` - local visual disposition report for `p2_w25_standard_001`, accepting 31/31 corrected-v2 crop rows while preserving the non-production-ready and non-VLM-reviewed boundary.
+- `2026-06-04-9709-p2-w25-standard-001-local-visual-dispositions.json` - machine-readable local visual disposition and topic-mapping input for `p2_w25_standard_001`, covering 31 rows and 37 crop images with zero external VLM/API calls.
+- `data/manifests/9709_p2_w25_standard_001_authority_sidecar_v2.json` - shard-scoped corrected-v2 authority sidecar for `p2_w25_standard_001`, mapping 31 rows to existing seeded P2 topic paths from local visual disposition evidence.
+- `2026-06-04-9709-p2-w25-standard-001-lane-results.json` - local visual lane-results artifact for `p2_w25_standard_001`, covering 31 rows with OCR-lane and diagram-lane route surfaces and zero external VLM/API calls.
+- `2026-06-04-9709-p2-w25-standard-001-authority-layer.md` - authority-layer report for `p2_w25_standard_001`, recording 31/31 ready artifact-layer rows, release-preflight pass, and the stop point before DB/search/release execution.
+- `2026-06-04-9709-p2-w25-standard-001-authority-manifest.json` - authority-freeze manifest generated for `p2_w25_standard_001` in artifacts-only mode.
+- `2026-06-04-9709-p2-w25-standard-001-aligned-manifest.json` - aligned manifest generated for `p2_w25_standard_001`, with 31/31 rows ready after sidecar authority and visual topic alignment.
+- `2026-06-04-9709-p2-w25-standard-001-ready-manifest.json` - ready manifest generated for `p2_w25_standard_001`, containing 31/31 authority-ready rows.
+- `2026-06-04-9709-p2-w25-standard-001-evidence-bundles.json` - evidence-bundle artifact generated for `p2_w25_standard_001` in artifacts-only mode.
+- `2026-06-04-9709-p2-w25-standard-001-release-preflight-authority-aligned.md` - release-preflight markdown for `p2_w25_standard_001`, passing with 0 blockers before any DB/search/release execution.
+- `2026-06-04-9709-p2-w25-standard-001-release-preflight-authority-aligned.json` - machine-readable release-preflight result for `p2_w25_standard_001`, passing with 0 blockers and 31 expected manifest-topic warnings.
+- `2026-06-04-9709-p2-w25-standard-001-shard-artifacts-summary.json` - machine-readable accepted shard-artifact summary for `p2_w25_standard_001`, covering surface, lane, sidecar, and visual disposition counts.
 - `2026-06-02-9231-9702-new-paper-source-promotion.json` - machine-readable source-promotion evidence for 90 newly promoted `9231` and `9702` question-paper PDFs, confirming SHA, byte count, pdfjs parse, and page-count checks.
 - `2026-06-02-9231-9702-new-paper-source-promotion-report.md` - source-promotion closeout for the `9231` and `9702` latest-paper gap fill, documenting 44 Further Mathematics PDFs and 46 Physics PDFs copied into `data/past-papers`.
 

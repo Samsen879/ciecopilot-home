@@ -59,7 +59,7 @@ function writeStderrLine(message) {
 
 function printUsage() {
   writeStdoutLine(
-    'Usage: node scripts/learning/run_9709_authority_ready_batch.js --manifest <path> [--authority-sidecar <path>] [--curriculum-seed <path>] [--lane-results <path>] [--authority-manifest-out <path>] [--aligned-manifest-out <path>] [--ready-manifest-out <path>] [--evidence-bundles-out <path>] [--fixture <path>] [--gate-report <path>] [--gate-json <path>] [--gate-psql-mode <direct|docker>] [--gate-psql-container <name>] [--dry-run]',
+    'Usage: node scripts/learning/run_9709_authority_ready_batch.js --manifest <path> [--authority-sidecar <path>] [--curriculum-seed <path>] [--lane-results <path>] [--authority-manifest-out <path>] [--aligned-manifest-out <path>] [--ready-manifest-out <path>] [--evidence-bundles-out <path>] [--fixture <path>] [--gate-report <path>] [--gate-json <path>] [--gate-psql-mode <direct|docker>] [--gate-psql-container <name>] [--dry-run] [--artifacts-only]',
   );
 }
 
@@ -111,6 +111,7 @@ function parseArgs(argv = process.argv.slice(2)) {
     gatePsqlMode: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.gatePsqlMode,
     gatePsqlContainer: DEFAULT_9709_AUTHORITY_READY_BATCH_PATHS.gatePsqlContainer,
     dryRun: false,
+    artifactsOnly: false,
     help: false,
   };
 
@@ -123,6 +124,10 @@ function parseArgs(argv = process.argv.slice(2)) {
     }
     if (token === '--dry-run') {
       options.dryRun = true;
+      continue;
+    }
+    if (token === '--artifacts-only') {
+      options.artifactsOnly = true;
       continue;
     }
     if (token === '--manifest') {
@@ -764,6 +769,16 @@ export async function main(argv = process.argv.slice(2), {
     bundles: artifacts.bundles,
     summary: artifacts.summary.bundle_summary,
   });
+
+  if (options.artifactsOnly) {
+    writeStdoutLine('artifacts_only: true');
+    writeStdoutLine('skipping registry, analysis, search gate, and downstream write steps');
+    return {
+      ...artifacts,
+      releasePreflight,
+      plan,
+    };
+  }
 
   if (artifacts.readyManifest.items.length > 0) {
     for (const step of plan) {

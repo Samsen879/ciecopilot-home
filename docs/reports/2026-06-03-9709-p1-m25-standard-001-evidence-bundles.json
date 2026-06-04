@@ -1,0 +1,1109 @@
+{
+  "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+  "bundles": [
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 0,
+      "storage_key": "9709/m25_qp_12/questions/q01.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 1,
+        "primary_topic_path": "9709.p1.quadratics"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.quadratics"
+      },
+      "evidence": {
+        "ocr_text": "A curve has equation y = 5 + 3x - 2x^2 and a line has equation y = kx + 13. Find the set of values of k for which the curve and line do not meet.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=1",
+          "page_indices=[1]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q01/q01_page_002.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains q01 header, full prompt, marks, and answer space; no diagram observed.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q01.png",
+        "input_asset_hash": "02a04a52537cc595712a4cd85032bebcb4eba871cb23d71380a4d81888149a84",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q01.png",
+          "input_asset_hash": "02a04a52537cc595712a4cd85032bebcb4eba871cb23d71380a4d81888149a84",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 1,
+      "storage_key": "9709/m25_qp_12/questions/q02.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 2,
+        "primary_topic_path": "9709.p1.differentiation"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.differentiation"
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows y = 2x^2 - 5/x + 3 crossing the x-axis at P(1,0), with M a minimum point. Find the gradient at P and the coordinates of M to 3 significant figures.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=2",
+          "page_indices=[2]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q02/q02_page_003.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coordinate axes",
+          "curve",
+          "point P on x-axis",
+          "minimum point M"
+        ],
+        "spatial_evidence": [
+          "Diagram appears above the prompt and shows the coordinate axes, curve, point P, and minimum point M within the q02 crop."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains the full graph and both subparts.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q02.png",
+        "input_asset_hash": "5532723b8920bf47b1126f576cbbd8a790d0575d8b346065bc793ea886b0fb87",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q02.png",
+          "input_asset_hash": "5532723b8920bf47b1126f576cbbd8a790d0575d8b346065bc793ea886b0fb87",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m25_qp_12/questions/q02.png",
+        "input_asset_hash": "5532723b8920bf47b1126f576cbbd8a790d0575d8b346065bc793ea886b0fb87"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 2,
+      "storage_key": "9709/m25_qp_12/questions/q03.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 3,
+        "primary_topic_path": "9709.p1.series"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.series"
+      },
+      "evidence": {
+        "ocr_text": "Find the complete expansion of (2x - 3/x)^4, then determine the coefficient of x^2 in the expansion of (x^2 + 5)(2x - 3/x)^4.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=3",
+          "page_indices=[3]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q03/q03_page_004.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains both binomial expansion subparts; no diagram observed.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q03.png",
+        "input_asset_hash": "2395ee1da4fb0a5de79a5e2fa211a68dae326f44dd8f2a50cebd20002c6e6607",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q03.png",
+          "input_asset_hash": "2395ee1da4fb0a5de79a5e2fa211a68dae326f44dd8f2a50cebd20002c6e6607",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 3,
+      "storage_key": "9709/m25_qp_12/questions/q04.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 4,
+        "primary_topic_path": "9709.p1.circular_measure"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.circular_measure"
+      },
+      "evidence": {
+        "ocr_text": "A triangle OAB has OA = OB = 10 cm and angle AOB = 0.8 radians. C and D lie on OA and OB so arc CD has centre O and radius 6 cm. Find the perimeter and area of the shaded region.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=4",
+          "page_indices=[4]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q04/q04_page_005.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "triangle OAB",
+          "arc CD",
+          "shaded sector-like region",
+          "length labels 4 cm and 6 cm",
+          "angle 0.8 rad"
+        ],
+        "spatial_evidence": [
+          "Diagram appears above the prompt and includes triangle OAB, arc CD, shaded region, side labels, and the 0.8 rad angle within the q04 crop."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains full circular-measure diagram and both subparts.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q04.png",
+        "input_asset_hash": "8658e80b258e13678914754df0c396393c78fe3b43851d397b03b3b3ae36e889",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q04.png",
+          "input_asset_hash": "8658e80b258e13678914754df0c396393c78fe3b43851d397b03b3b3ae36e889",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m25_qp_12/questions/q04.png",
+        "input_asset_hash": "8658e80b258e13678914754df0c396393c78fe3b43851d397b03b3b3ae36e889"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 4,
+      "storage_key": "9709/m25_qp_12/questions/q05.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 5,
+        "primary_topic_path": "9709.p1.series"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.series"
+      },
+      "evidence": {
+        "ocr_text": "An arithmetic progression has first term 5 and common difference 6. Find the sum of all terms that lie between 150 and 400.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": null,
+            "marks": 6
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=5",
+          "page_indices=[5]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q05/q05_page_006.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains the full arithmetic-progression question; no diagram observed.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q05.png",
+        "input_asset_hash": "3a3ce0d64a9ad8b09dbabe54d7c416259af8dbf3f13e510c939d99247e909290",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q05.png",
+          "input_asset_hash": "3a3ce0d64a9ad8b09dbabe54d7c416259af8dbf3f13e510c939d99247e909290",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 5,
+      "storage_key": "9709/m25_qp_12/questions/q06.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 6,
+        "primary_topic_path": "9709.p1.coordinate_geometry"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.coordinate_geometry"
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows a circle C of radius r in the first quadrant. The least distances from C to the x-axis and y-axis are 8 and 5 units. Find the centre in terms of r, find r when the centre is 15 units from the origin, and find the gradient of the tangent at the point furthest from the origin.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 2
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=6",
+          "page_indices=[6]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q06/q06_page_007.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coordinate axes",
+          "circle C",
+          "radius r",
+          "origin O"
+        ],
+        "spatial_evidence": [
+          "Diagram appears above the prompt and shows axes, origin O, circle C, and radius r within the q06 crop."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains full coordinate-geometry diagram and all three subparts.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q06.png",
+        "input_asset_hash": "8855b2f137b15d8505b56a6679470e1a12426910ed62342fc8804a785a7e3707",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q06.png",
+          "input_asset_hash": "8855b2f137b15d8505b56a6679470e1a12426910ed62342fc8804a785a7e3707",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m25_qp_12/questions/q06.png",
+        "input_asset_hash": "8855b2f137b15d8505b56a6679470e1a12426910ed62342fc8804a785a7e3707"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 6,
+      "storage_key": "9709/m25_qp_12/questions/q07.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 7,
+        "primary_topic_path": "9709.p1.trigonometry"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.trigonometry"
+      },
+      "evidence": {
+        "ocr_text": "Show that 3 tan^2(theta) + 5 sin^2(theta) equals (8 sin^2(theta) - 5 sin^4(theta))/(1 - sin^2(theta)), then solve 3 tan^2(theta) + 5 sin^2(theta) = 9 for 0 degrees < theta < 270 degrees.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=7",
+          "page_indices=[7, 8]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_008.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q07/q07_page_009.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Two-page crop stack contains q07(a) on page 008 and continuation q07(b) on page 009; no diagram observed.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q07.png",
+        "input_asset_hash": "2e4fad824679ce084b4c18a02f312f132197a5bbec9761c693ac83d2e73425cb",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q07.png",
+          "input_asset_hash": "2e4fad824679ce084b4c18a02f312f132197a5bbec9761c693ac83d2e73425cb",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 7,
+      "storage_key": "9709/m25_qp_12/questions/q08.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 8,
+        "primary_topic_path": "9709.p1.series"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.series"
+      },
+      "evidence": {
+        "ocr_text": "A geometric progression has second term -120 and sum to infinity 160. Find the common ratio, then find the sum to infinity after the first nine terms are removed.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=8",
+          "page_indices=[9]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q08/q08_page_010.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": false,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains both geometric-progression subparts; no diagram observed.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q08.png",
+        "input_asset_hash": "c64258968f26398ab7925c9f31521b54c31210bad0e05af85559bc4367dad303",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "text_dominant"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q08.png",
+          "input_asset_hash": "c64258968f26398ab7925c9f31521b54c31210bad0e05af85559bc4367dad303",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 8,
+      "storage_key": "9709/m25_qp_12/questions/q09.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 9,
+        "primary_topic_path": "9709.p1.integration"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.integration"
+      },
+      "evidence": {
+        "ocr_text": "A curve has d2y/dx2 = 6/x^4 - 5/x^3 and a stationary point at (1/2, 9). Use d2y/dx2 to classify the stationary point, then find the equation of the curve.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 7
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=9",
+          "page_indices=[10]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q09/q09_page_011.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Single-page crop contains the second-derivative prompt and both subparts; no diagram observed.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q09.png",
+        "input_asset_hash": "66973750d66e9d657781c4140afd52b4dd76a0fe37a889cc020413f25c23ab18",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q09.png",
+          "input_asset_hash": "66973750d66e9d657781c4140afd52b4dd76a0fe37a889cc020413f25c23ab18",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 9,
+      "storage_key": "9709/m25_qp_12/questions/q10.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 10,
+        "primary_topic_path": "9709.p1.integration"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.integration"
+      },
+      "evidence": {
+        "ocr_text": "The diagram shows y = 4(3x + 4)^(1/2) - 2x - 6 for 0 <= x <= 7. The tangent at P(7,0) meets the y-axis at Q. Region A is bounded by the curve and axes; region B is bounded by the curve, PQ and the y-axis. Find the areas of A and B.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 5
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=10",
+          "page_indices=[11, 12]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_012.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q10/q10_page_013.png']"
+        ],
+        "diagram_present": true,
+        "diagram_elements": [
+          "coordinate axes",
+          "curve",
+          "tangent segment PQ",
+          "shaded regions A and B",
+          "point P",
+          "point Q"
+        ],
+        "spatial_evidence": [
+          "Diagram appears on the first page of the q10 crop stack and shows axes, the curve, tangent segment PQ, point labels P and Q, and shaded regions A and B."
+        ]
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "diagram_lane",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Two-page crop stack contains diagram and q10(a) on page 012 plus q10(b) continuation on page 013.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "diagram_lane",
+        "model": "qwen3-vl-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q10.png",
+        "input_asset_hash": "1bf37d7224c149f5bacde2e740115f7d7d6e155eb91b8a85d526ca57d5ece7a0",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "diagram_present"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "diagram_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q10.png",
+          "input_asset_hash": "1bf37d7224c149f5bacde2e740115f7d7d6e155eb91b8a85d526ca57d5ece7a0",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": true,
+      "lazy_attach_reasons": [
+        "route_requires_original_image"
+      ],
+      "original_image_asset": {
+        "input_asset_id": "9709/m25_qp_12/questions/q10.png",
+        "input_asset_hash": "1bf37d7224c149f5bacde2e740115f7d7d6e155eb91b8a85d526ca57d5ece7a0"
+      }
+    },
+    {
+      "schema_version": "question_evidence_bundle_v1",
+      "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p1_m25_standard_001_page_chain_surface_v2",
+      "manifest_position": 10,
+      "storage_key": "9709/m25_qp_12/questions/q11.png",
+      "question_identity": {
+        "subject_code": "9709",
+        "year": 2025,
+        "session": "m",
+        "paper": 1,
+        "variant": 2,
+        "q_number": 11,
+        "primary_topic_path": "9709.p1.functions"
+      },
+      "analysis_hints": {
+        "runtime_context_id": null,
+        "question_type_hint_id": null,
+        "topic_path_hint": "9709.p1.functions"
+      },
+      "evidence": {
+        "ocr_text": "Functions f and g are defined by f(x) = 4x^2 - c and g(x) = 2x + k, where c and k are positive constants and g^-1(3k + 1) = c. Show gf(x) = 8x^2 - k - 1, apply a translation, vertical stretch and reflection to get y = h(x), then use the range h(x) <= 15 to find c and k.",
+        "formula_latex_list": [],
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 4
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 3
+          }
+        ],
+        "layout_hints": [
+          "source_pdf=data/past-papers/9709Mathematics/paper1/9709_m25_qp_12.pdf",
+          "q_number=11",
+          "page_indices=[13, 14]",
+          "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_014.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p1_m25_standard_001/question-crops/9709_m25_qp_12/q11/q11_page_015.png']"
+        ],
+        "diagram_present": false,
+        "diagram_elements": [],
+        "spatial_evidence": []
+      },
+      "surface_posture": {
+        "descriptor_required": true,
+        "route_hint": "ocr_lane",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "surface_evidence_status": "local_visual_review_accepted",
+        "gate_critical": false,
+        "requires_review": false
+      },
+      "review_posture": {
+        "requires_review": false,
+        "gate_critical": false,
+        "review_reasons": [],
+        "ambiguity_flags": [],
+        "review_summary": "Two-page crop stack contains q11(a) on page 014 plus q11(b)-q11(c) continuation on page 015; no diagram observed.",
+        "review_confidence": 1
+      },
+      "route": {
+        "route": "ocr_lane",
+        "model": "qwen3.6-plus",
+        "region": "dashscope-cn",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "api_key_scope": "DASHSCOPE_API_KEY",
+        "prompt_template_version": "v1",
+        "response_schema_version": "v1",
+        "input_asset_id": "9709/m25_qp_12/questions/q11.png",
+        "input_asset_hash": "cc40bf8e564ff72f852339e47483b6984d4ef0b2e1147b4b16086f5e24cda09f",
+        "confidence": 1,
+        "failure_reason": null,
+        "decision_reasons": [
+          "formula_dense"
+        ]
+      },
+      "model_provenance": [
+        {
+          "route": "ocr_lane",
+          "model": "codex-local-visual-review",
+          "region": "local",
+          "base_url": null,
+          "api_key_scope": null,
+          "prompt_template_version": "local_visual_review_v2",
+          "response_schema_version": "9709_new_paper_local_visual_review_v2",
+          "input_asset_id": "9709/m25_qp_12/questions/q11.png",
+          "input_asset_hash": "cc40bf8e564ff72f852339e47483b6984d4ef0b2e1147b4b16086f5e24cda09f",
+          "confidence": 1,
+          "failure_reason": null
+        }
+      ],
+      "lazy_attach_original_image": false,
+      "lazy_attach_reasons": [],
+      "original_image_asset": null
+    }
+  ],
+  "summary": {
+    "bundles_planned": 11,
+    "route_counts": {
+      "ocr_lane": 7,
+      "diagram_lane": 4
+    },
+    "lazy_attach_original_image": 4
+  }
+}

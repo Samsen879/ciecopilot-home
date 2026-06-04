@@ -1,0 +1,895 @@
+{
+  "schema_version": "9709_new_paper_page_chain_surface_v2",
+  "manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p6_m25_standard_001_page_chain_surface_v2",
+  "subject_code": "9709",
+  "generated_on": "2026-06-04",
+  "source_manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p6_m25_standard_001",
+  "shard_id": "p6_m25_standard_001",
+  "group_key": "p6_m25_standard",
+  "risk_tier": "high",
+  "item_count": 6,
+  "pdf_count": 1,
+  "pdf_paths": [
+    "data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf"
+  ],
+  "paper_set": [
+    6
+  ],
+  "session_year_set": [
+    "m25"
+  ],
+  "risk_tags": [
+    "paper_5_or_6_outside_current_release_scope"
+  ],
+  "source_manifest_v1_id": "9709_new_papers_2026_06_02_manifest_v1",
+  "correction_method": "pymupdf_strict_left_margin_printed_question_header_v2",
+  "correction_scope": "pre-shard input correction before formal page-chain production",
+  "source_crop_manifest_id": "9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2",
+  "scope": {
+    "shard_id": "p6_m25_standard_001",
+    "input_manifest_path": "data/manifests/9709_p6_m25_standard_001_input_v2.json",
+    "crop_manifest_path": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+    "artifact_stage": "formal shard page-chain surface from corrected v2 pre-shard crops",
+    "visual_review_status": "accepted",
+    "not_production_ready": true,
+    "not_vlm_reviewed": true,
+    "external_vlm_api_calls": 0
+  },
+  "items": [
+    {
+      "storage_key": "9709/m25_qp_62/questions/q01.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 6,
+      "variant": 2,
+      "q_number": 1,
+      "source_pdf": "data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p5_p6",
+      "group_key": "p6_m25_standard",
+      "risk_tier": "high",
+      "risk_tags": [
+        "paper_5_or_6_outside_current_release_scope"
+      ],
+      "shard_id": "p6_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_003.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q01/q01_page_003.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_003.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q01/q01_page_003.png"
+      ],
+      "page_indices": [
+        2
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 2
+      },
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_003.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q01/q01_page_003.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_62/questions/q01.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p6.linear_combinations_of_random_variables",
+        "authority_topic_path": "9709.p6.linear_combinations_of_random_variables",
+        "question_text": "Use independent normal random variables X and Y to find a probability for Y - X.",
+        "subquestion_blocks": [
+          {
+            "label": "main",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q01; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-ad74e919-bffa-4752-ae8c-af53702b7633",
+      "source_manifest_digest": "05f7f1684e5890ae76dcec5d83d3490465dccfc1d4d6e86d8851331f7a5dd663",
+      "primary_topic_path": "9709.p6.linear_combinations_of_random_variables",
+      "canonical_primary_topic_path": "9709.p6.linear_combinations_of_random_variables",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p6-m25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q01.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p6.linear_combinations_of_random_variables; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q01.png; page_indices=[2]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p6.linear_combinations_of_random_variables",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/m25_qp_62/questions/q02.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 6,
+      "variant": 2,
+      "q_number": 2,
+      "source_pdf": "data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p5_p6",
+      "group_key": "p6_m25_standard",
+      "risk_tier": "high",
+      "risk_tags": [
+        "paper_5_or_6_outside_current_release_scope"
+      ],
+      "shard_id": "p6_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": true,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_004.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q02/q02_page_004.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_004.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q02/q02_page_004.png"
+      ],
+      "page_indices": [
+        3
+      ],
+      "page_range": {
+        "start_page_index": 3,
+        "end_page_index": 3
+      },
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_004.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_62/questions/q02.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": true,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p6.sampling_and_estimation",
+        "authority_topic_path": "9709.p6.sampling_and_estimation",
+        "question_text": "Use sample summary statistics to estimate a mean and an unbiased variance.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [
+          "9709_m25_qp_62 q02 crop includes the diagram/table/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q02; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-ad74e919-bffa-4752-ae8c-af53702b7633",
+      "source_manifest_digest": "d412bbcf8c762df92c12f6adb5781cb8d2e1791eb67f113df4837a65482bea3b",
+      "primary_topic_path": "9709.p6.sampling_and_estimation",
+      "canonical_primary_topic_path": "9709.p6.sampling_and_estimation",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p6-m25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q02.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p6.sampling_and_estimation; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q02.png; page_indices=[3]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p6.sampling_and_estimation",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/m25_qp_62/questions/q03.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 6,
+      "variant": 2,
+      "q_number": 3,
+      "source_pdf": "data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p5_p6",
+      "group_key": "p6_m25_standard",
+      "risk_tier": "high",
+      "risk_tags": [
+        "paper_5_or_6_outside_current_release_scope"
+      ],
+      "shard_id": "p6_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_006.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_007.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_006.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_007.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_006.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_007.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_006.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_007.png"
+      ],
+      "page_indices": [
+        5,
+        6
+      ],
+      "page_range": {
+        "start_page_index": 5,
+        "end_page_index": 6
+      },
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_006.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 6,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_007.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q03/q03_page_007.png",
+          "crop_box_points": [
+            0,
+            0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_62/questions/q03.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p6.the_poisson_distribution",
+        "authority_topic_path": "9709.p6.the_poisson_distribution",
+        "question_text": "Use a Poisson model, sums of independent Poisson variables, and a normal approximation for a Poisson sum.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 2
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          },
+          {
+            "label": "(c)",
+            "marks": 5
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_62 q03; page sequence and continuation are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-ad74e919-bffa-4752-ae8c-af53702b7633",
+      "source_manifest_digest": "359b65ded140e2c067dadf42212e4ed1fdfe66c69b9390a787f2b7efd7a8fabf",
+      "primary_topic_path": "9709.p6.the_poisson_distribution",
+      "canonical_primary_topic_path": "9709.p6.the_poisson_distribution",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p6-m25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q03.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p6.the_poisson_distribution; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q03.png; page_indices=[5, 6]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p6.the_poisson_distribution",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/m25_qp_62/questions/q04.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 6,
+      "variant": 2,
+      "q_number": 4,
+      "source_pdf": "data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p5_p6",
+      "group_key": "p6_m25_standard",
+      "risk_tier": "high",
+      "risk_tags": [
+        "paper_5_or_6_outside_current_release_scope"
+      ],
+      "shard_id": "p6_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "diagram_lane",
+      "diagram_present": true,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_009.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_009.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_009.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_008.png",
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_009.png"
+      ],
+      "page_indices": [
+        7,
+        8
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 8
+      },
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_008.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            45.203,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            90,
+            1191,
+            1684
+          ]
+        },
+        {
+          "page_index": 8,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_009.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q04/q04_page_009.png",
+          "crop_box_points": [
+            0,
+            0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_62/questions/q04.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": true,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "diagram_lane",
+        "visual_topic_guess": "9709.p6.continuous_random_variables",
+        "authority_topic_path": "9709.p6.continuous_random_variables",
+        "question_text": "Use probability density functions from a graph and a trigonometric density to find constants and probabilities.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)(i)",
+            "marks": 2
+          },
+          {
+            "label": "(a)(ii)",
+            "marks": 5
+          },
+          {
+            "label": "(b)",
+            "marks": 4
+          }
+        ],
+        "diagram_elements": [
+          "probability density function graph"
+        ],
+        "spatial_evidence": [
+          "9709_m25_qp_62 q04 crop includes the diagram/table/axes within the reviewed question boundary."
+        ],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_62 q04; page sequence and continuation are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-ad74e919-bffa-4752-ae8c-af53702b7633",
+      "source_manifest_digest": "fc11c2fd7c2eb9dcd6806703f63e635b227ee07a15a0b18689b2a9e512594c84",
+      "primary_topic_path": "9709.p6.continuous_random_variables",
+      "canonical_primary_topic_path": "9709.p6.continuous_random_variables",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p6-m25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q04.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p6.continuous_random_variables; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q04.png; page_indices=[7, 8]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p6.continuous_random_variables",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/m25_qp_62/questions/q05.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 6,
+      "variant": 2,
+      "q_number": 5,
+      "source_pdf": "data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p5_p6",
+      "group_key": "p6_m25_standard",
+      "risk_tier": "high",
+      "risk_tags": [
+        "paper_5_or_6_outside_current_release_scope"
+      ],
+      "shard_id": "p6_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_010.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q05/q05_page_010.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_010.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q05/q05_page_010.png"
+      ],
+      "page_indices": [
+        9
+      ],
+      "page_range": {
+        "start_page_index": 9,
+        "end_page_index": 9
+      },
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_010.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_62/questions/q05.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p6.hypothesis_tests",
+        "authority_topic_path": "9709.p6.hypothesis_tests",
+        "question_text": "Use a binomial hypothesis test and state the Type I error probability.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 3
+          },
+          {
+            "label": "(b)",
+            "marks": 1
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q05; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-ad74e919-bffa-4752-ae8c-af53702b7633",
+      "source_manifest_digest": "a64d942bdbbab4bcaae30bc9654ec567b61bf8d4d07590620f19c094710e22af",
+      "primary_topic_path": "9709.p6.hypothesis_tests",
+      "canonical_primary_topic_path": "9709.p6.hypothesis_tests",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p6-m25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q05.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p6.hypothesis_tests; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q05.png; page_indices=[9]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p6.hypothesis_tests",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    },
+    {
+      "storage_key": "9709/m25_qp_62/questions/q06.png",
+      "syllabus_code": "9709",
+      "year": 2025,
+      "session": "m",
+      "paper": 6,
+      "variant": 2,
+      "q_number": 6,
+      "source_pdf": "data/past-papers/9709Mathematics/paper6/9709_m25_qp_62.pdf",
+      "source_pdf_watermarked": false,
+      "paper_family": "p5_p6",
+      "group_key": "p6_m25_standard",
+      "risk_tier": "high",
+      "risk_tags": [
+        "paper_5_or_6_outside_current_release_scope"
+      ],
+      "shard_id": "p6_m25_standard_001",
+      "source": "9709_new_papers_2026_06_02_inventory_v1",
+      "surface_evidence_status": "local_visual_review_accepted",
+      "requires_review": false,
+      "route_hint": "ocr_lane",
+      "diagram_present": false,
+      "formula_dense": true,
+      "table_heavy": false,
+      "gate_critical": false,
+      "descriptor_required": true,
+      "visual_review_status": "accepted",
+      "visual_review_method": "codex_local_visual_review",
+      "external_vlm_api_calls": 0,
+      "page_chain_surface_status": "projected_from_corrected_v2_pre_shard_crops",
+      "source_rendered_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_012.png"
+      ],
+      "review_crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q06/q06_page_012.png"
+      ],
+      "rendered_pdf_page_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_012.png"
+      ],
+      "crop_paths": [
+        "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q06/q06_page_012.png"
+      ],
+      "page_indices": [
+        11
+      ],
+      "page_range": {
+        "start_page_index": 11,
+        "end_page_index": 11
+      },
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/renders/9709_m25_qp_62/9709_m25_qp_62_page_012.png",
+          "crop_path": "tmp/pdf-page-chain/new-papers-pre-shard-v2/p6_m25_standard_001/question-crops/9709_m25_qp_62/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "crop_status": "complete",
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "visual_disposition": {
+        "storage_key": "9709/m25_qp_62/questions/q06.png",
+        "disposition": "accepted",
+        "reviewed_by": "codex_local_visual_review",
+        "reviewed_on": "2026-06-04",
+        "diagram_present": false,
+        "formula_dense": true,
+        "table_heavy": false,
+        "route_hint": "ocr_lane",
+        "visual_topic_guess": "9709.p6.sampling_and_estimation",
+        "authority_topic_path": "9709.p6.sampling_and_estimation",
+        "question_text": "Assess a sampling method and calculate an approximate confidence interval for a population proportion.",
+        "subquestion_blocks": [
+          {
+            "label": "(a)",
+            "marks": 1
+          },
+          {
+            "label": "(b)",
+            "marks": 3
+          }
+        ],
+        "diagram_elements": [],
+        "spatial_evidence": [],
+        "visual_checks": {
+          "question_boundary_accepted": true,
+          "crop_images_legible": true,
+          "rendered_pages_match_source": true,
+          "diagram_presence_accepted": true,
+          "cross_page_continuity_accepted": true
+        },
+        "review_notes": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_62 q06; boundary, legibility, and diagram flag are complete."
+      },
+      "authority_alignment_run_id": "authority-alignment-ad74e919-bffa-4752-ae8c-af53702b7633",
+      "source_manifest_digest": "c4b7c439d10db1c20b3832313c3060c2f72032e35fce4fb08e3b2a3cbe425d4b",
+      "primary_topic_path": "9709.p6.sampling_and_estimation",
+      "canonical_primary_topic_path": "9709.p6.sampling_and_estimation",
+      "curriculum_version_tag": "2025-2027_v1",
+      "authority_truth_status": "frozen",
+      "taxonomy_resolution_status": "resolved",
+      "manual_action_required": false,
+      "provisional_alignment_verdict": "ready",
+      "topic_authority_sources": [
+        "operator_visual_review",
+        "repo_corrected_v2_pre_shard_crop_manifest"
+      ],
+      "topic_authority_refs": [
+        {
+          "kind": "operator_visual_review",
+          "locator": "docs/reports/2026-06-04-9709-p6-m25-standard-001-local-visual-dispositions.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q06.png; local visual review accepted crop boundary, surface flags, and topic mapping to 9709.p6.sampling_and_estimation; external_vlm_api_calls=0."
+        },
+        {
+          "kind": "repo_corrected_v2_pre_shard_crop_manifest",
+          "locator": "data/manifests/9709_new_papers_2026_06_03_pre_shard_crop_manifest_v2.json",
+          "note": "storage_key=9709/m25_qp_62/questions/q06.png; page_indices=[11]; crop_status=complete from corrected v2 pre-shard crop manifest."
+        }
+      ],
+      "cross_paper_dependency_note": null,
+      "visual_topic_guess": "9709.p6.sampling_and_estimation",
+      "alignment_status": "aligned",
+      "alignment_review_required": false,
+      "overall_alignment_verdict": "ready"
+    }
+  ],
+  "authority_alignment_run_id": "authority-alignment-ad74e919-bffa-4752-ae8c-af53702b7633"
+}

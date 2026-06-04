@@ -1,0 +1,850 @@
+{
+  "schema_version": "9709_new_paper_shard_lane_results_v2",
+  "source_manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p3_m25_standard_001_page_chain_surface_v2",
+  "generated_on": "2026-06-04",
+  "review_method": "codex-local-visual-review",
+  "external_vlm_api_calls": 0,
+  "results": [
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q01.png",
+      "input_asset_hash": "eff6c84be01c9d9f9d471b05550c8b0040326efd0a01432fc817043e1c95009c",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Solve a logarithmic and exponential equation numerically to a specified accuracy.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Solve a logarithmic and exponential equation numerically to a specified accuracy."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=1",
+              "page_indices=[2]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q01/q01_page_003.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.logarithmic_and_exponential_functions"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_32 q01; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q02.png",
+      "input_asset_hash": "5ebb94647988a3cbe62c6b8f1a6d3bd972d4a0988edde05ec4eb6b3fe537dfae",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use implicit differentiation on a logarithmic curve to find the gradient at a specified point.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use implicit differentiation on a logarithmic curve to find the gradient at a specified point."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=2",
+              "page_indices=[3]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q02/q02_page_004.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.differentiation"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_32 q02; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q03.png",
+      "input_asset_hash": "011ff34d71dae45dd313e0e4fced452c1f0921de96515e9a6db6d026c09cfbf8",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use an Argand diagram region to state inequalities in z and find the greatest modulus in the region.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use an Argand diagram region to state inequalities in z and find the greatest modulus in the region."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=3",
+              "page_indices=[5]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q03/q03_page_006.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "Argand diagram",
+              "circle boundary",
+              "horizontal line boundary",
+              "shaded region"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_32 q03 crop includes the diagram/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.complex_numbers"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_32 q03; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q04.png",
+      "input_asset_hash": "b62716f8d79cfb9955e49d0d5dc3f8fdf0161ab8d4d9c9d745a39f6aae410cde",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Transform a tangent-cotangent equation into a quadratic in tan x and solve it.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Transform a tangent-cotangent equation into a quadratic in tan x and solve it."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 6
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=4",
+              "page_indices=[6]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q04/q04_page_007.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.trigonometry"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_32 q04; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q05.png",
+      "input_asset_hash": "2e0519f3089f8f133d3bdda0382495496b5d9a8e4f94d6bfdb8ec2225d3b32ca",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Find exact Cartesian-form square roots of a complex number by forming a quartic equation.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Find exact Cartesian-form square roots of a complex number by forming a quartic equation."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=5",
+              "page_indices=[7]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q05/q05_page_008.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.complex_numbers"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_32 q05; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q06.png",
+      "input_asset_hash": "9c143b51a92d9d57f01a6fb9c1db42fc6147d630e7a4fe63ac99add26b919cad",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Solve a differential equation with an initial condition and express x in terms of the angle variable.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Solve a differential equation with an initial condition and express x in terms of the angle variable."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 7
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=6",
+              "page_indices=[8]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q06/q06_page_009.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.differential_equations"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_32 q06; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q07.png",
+      "input_asset_hash": "505712309c1b50989872507ad88e41d31badc2f5ef1e2fdc8d619f870ebe837c",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "For a trigonometric curve maximum, derive a fixed-point equation, bracket the solution, and apply iteration.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "For a trigonometric curve maximum, derive a fixed-point equation, bracket the solution, and apply iteration."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 3
+              },
+              {
+                "label": "(b)",
+                "marks": 2
+              },
+              {
+                "label": "(c)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=7",
+              "page_indices=[9, 10]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q07/q07_page_010.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q07/q07_page_011.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "coordinate axes",
+              "trigonometric curve",
+              "maximum point M",
+              "vertical guide at x=p"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_32 q07 crop includes the diagram/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.numerical_solution_of_equations"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_32 q07; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q08.png",
+      "input_asset_hash": "24160bb4e95294518b02d071361042c6736b80d770eed0a870cdd0009e3da34b",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use vector equations of two lines to show they are skew and find the obtuse angle between directions.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use vector equations of two lines to show they are skew and find the obtuse angle between directions."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 5
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=8",
+              "page_indices=[11, 12]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q08/q08_page_012.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q08/q08_page_013.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.vectors"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_32 q08; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q09.png",
+      "input_asset_hash": "781527fb082ffc5b819d719a6035b6fac2e5e6ac8bbf88276feeb55d4218fd18",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use polynomial factor and derivative-remainder conditions to find constants and factorise completely.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use polynomial factor and derivative-remainder conditions to find constants and factorise completely."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 5
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=9",
+              "page_indices=[13, 14]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q09/q09_page_014.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q09/q09_page_015.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.algebra"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_32 q09; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q10.png",
+      "input_asset_hash": "cd3dfca95556e96c4c2ba83ea6e7ca3ce99551f2cd9bf117877eead3d91786d4",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Express a rational function in partial fractions and use it to evaluate an exact definite integral.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Express a rational function in partial fractions and use it to evaluate an exact definite integral."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 5
+              },
+              {
+                "label": "(b)",
+                "marks": 6
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=10",
+              "page_indices=[15, 16]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q10/q10_page_016.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q10/q10_page_017.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.integration"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_32 q10; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_32/questions/q11.png",
+      "input_asset_hash": "964e9ed07fd77261645442ef34639a014198e2ef3228527f9576044e9c0b4e44",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Find an exact trigonometric definite integral.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Find an exact trigonometric definite integral."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 6
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper3/9709_m25_qp_32.pdf",
+              "q_number=11",
+              "page_indices=[17]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p3_m25_standard_001/question-crops/9709_m25_qp_32/q11/q11_page_018.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p3.integration"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_32 q11; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    }
+  ]
+}

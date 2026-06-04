@@ -1,0 +1,575 @@
+{
+  "schema_version": "9709_new_paper_shard_lane_results_v2",
+  "source_manifest_id": "9709_new_papers_2026_06_03_manifest_v2_p4_m25_standard_001_page_chain_surface_v2",
+  "generated_on": "2026-06-04",
+  "review_method": "codex-local-visual-review",
+  "external_vlm_api_calls": 0,
+  "results": [
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_42/questions/q01.png",
+      "input_asset_hash": "6015527457196f5be5df6cf247149d38e24acb82881633cc769a9fc885f61913",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Resolve three coplanar forces in equilibrium to find an angle and an unknown force magnitude.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Resolve three coplanar forces in equilibrium to find an angle and an unknown force magnitude."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": null,
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper4/9709_m25_qp_42.pdf",
+              "q_number=1",
+              "page_indices=[2]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q01/q01_page_003.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "force diagram",
+              "perpendicular 40 N and 30 N forces",
+              "unknown force X N",
+              "angle theta"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_42 q01 crop includes the diagram/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p4.forces_and_equilibrium"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_42 q01; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_42/questions/q02.png",
+      "input_asset_hash": "68e761a2c21037a58df9a1b46a359b75486d09643f69c835d8a07d186f2c6df0",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use constant-acceleration motion phases to find the maximum speed and total travel time.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use constant-acceleration motion phases to find the maximum speed and total travel time."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 3
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper4/9709_m25_qp_42.pdf",
+              "q_number=2",
+              "page_indices=[3]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q02/q02_page_004.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p4.kinematics_of_motion_in_a_straight_line"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_42 q02; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_42/questions/q03.png",
+      "input_asset_hash": "15e0b84ba30f7b289088f2111974f08d4aa26612a8ed28bac381c436c4d3566f",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use power, resistance, ascent work, and constant speed to find aircraft speed and average engine power.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use power, resistance, ascent work, and constant speed to find aircraft speed and average engine power."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper4/9709_m25_qp_42.pdf",
+              "q_number=3",
+              "page_indices=[4]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q03/q03_page_005.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p4.energy_work_and_power"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_42 q03; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_42/questions/q04.png",
+      "input_asset_hash": "96dda76ac8c9bc4a7889e4949c8bce86e6b8ce86c536c8049c4d257db3c09725",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Analyse two particles connected by a light inextensible string over a pulley to find tension and acceleration.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Analyse two particles connected by a light inextensible string over a pulley to find tension and acceleration."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 4
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper4/9709_m25_qp_42.pdf",
+              "q_number=4",
+              "page_indices=[5]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q04/q04_page_006.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "pulley diagram",
+              "two hanging particles",
+              "0.3 kg and 0.1 kg masses",
+              "height x m"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_42 q04 crop includes the diagram/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p4.newtons_laws_of_motion"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted the single-page crop for 9709_m25_qp_42 q04; boundary, legibility, and diagram flag are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_42/questions/q05.png",
+      "input_asset_hash": "83254bda86adc2a38f6445b60a5e2ca40182db40304c73a597d9eba7fac45bb6",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use successive one-dimensional collisions between particles to find speeds and a collision time.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use successive one-dimensional collisions between particles to find speeds and a collision time."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 2
+              },
+              {
+                "label": "(b)",
+                "marks": 1
+              },
+              {
+                "label": "(c)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper4/9709_m25_qp_42.pdf",
+              "q_number=5",
+              "page_indices=[7, 8]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q05/q05_page_008.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q05/q05_page_009.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "three particles on a straight line",
+              "P Q R masses",
+              "3 m separations"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_42 q05 crop includes the diagram/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p4.momentum"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_42 q05; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "diagram_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_42/questions/q06.png",
+      "input_asset_hash": "0125d7f17c4103414c9b1062b6a0ce616ce6c7dca964a99cfa378c4b9ccb6f8d",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Model a block on a rough inclined plane under a force to find motion time and limiting friction cases.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Model a block on a rough inclined plane under a force to find motion time and limiting friction cases."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 6
+              },
+              {
+                "label": "(b)",
+                "marks": 4
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper4/9709_m25_qp_42.pdf",
+              "q_number=6",
+              "page_indices=[9, 10]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q06/q06_page_010.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q06/q06_page_011.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": true
+          },
+          {
+            "field": "diagram_elements",
+            "value": [
+              "inclined plane",
+              "12 kg block",
+              "applied force X N",
+              "angle alpha"
+            ]
+          },
+          {
+            "field": "spatial_evidence",
+            "value": [
+              "9709_m25_qp_42 q06 crop includes the diagram/axes within the reviewed question boundary."
+            ]
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p4.newtons_laws_of_motion"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_42 q06; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "route": "ocr_lane",
+      "model": "codex-local-visual-review",
+      "prompt_template_version": "local_visual_review_v2",
+      "region": "local",
+      "base_url": null,
+      "api_key_scope": null,
+      "input_asset_id": "9709/m25_qp_42/questions/q07.png",
+      "input_asset_hash": "75659e84e9a0b576625394e06cd2e5e6130cd4ebc62f91ab0074b70f715744b8",
+      "response_schema_version": "9709_new_paper_local_visual_review_v2",
+      "confidence": 1.0,
+      "failure_reason": null,
+      "output": {
+        "summary": "Use variable velocity in a straight line to derive constants and integrate for distance over a time interval.",
+        "evidence": [
+          {
+            "field": "ocr_text",
+            "value": "Use variable velocity in a straight line to derive constants and integrate for distance over a time interval."
+          },
+          {
+            "field": "formula_latex_list",
+            "value": []
+          },
+          {
+            "field": "subquestion_blocks",
+            "value": [
+              {
+                "label": "(a)",
+                "marks": 6
+              },
+              {
+                "label": "(b)",
+                "marks": 5
+              }
+            ]
+          },
+          {
+            "field": "layout_hints",
+            "value": [
+              "source_pdf=data/past-papers/9709Mathematics/paper4/9709_m25_qp_42.pdf",
+              "q_number=7",
+              "page_indices=[11, 12]",
+              "review_crop_paths=['tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q07/q07_page_012.png', 'tmp/pdf-page-chain/new-papers-pre-shard-v2/p4_m25_standard_001/question-crops/9709_m25_qp_42/q07/q07_page_013.png']"
+            ]
+          },
+          {
+            "field": "diagram_present",
+            "value": false
+          },
+          {
+            "field": "diagram_elements",
+            "value": []
+          },
+          {
+            "field": "spatial_evidence",
+            "value": []
+          },
+          {
+            "field": "visual_topic_guess",
+            "value": "9709.p4.kinematics_of_motion_in_a_straight_line"
+          },
+          {
+            "field": "visual_topic_guess_status",
+            "value": "accepted_by_operator_review"
+          },
+          {
+            "field": "local_visual_review_method",
+            "value": "codex_local_visual_review"
+          },
+          {
+            "field": "review_summary",
+            "value": "Local contact-sheet review accepted 2 crop pages for 9709_m25_qp_42 q07; page sequence and continuation are complete."
+          }
+        ],
+        "warnings": []
+      }
+    }
+  ]
+}

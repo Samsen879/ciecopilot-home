@@ -620,6 +620,20 @@
 - `2026-06-04-9709-p4-s25-standard-001-release-preflight-authority-aligned.md` - release-preflight markdown for `p4_s25_standard_001`, passing with 0 blockers before any DB/search/release execution.
 - `2026-06-04-9709-p4-s25-standard-001-release-preflight-authority-aligned.json` - machine-readable release-preflight result for `p4_s25_standard_001`, passing with 0 blockers and 28 expected manifest-topic warnings.
 - `2026-06-04-9709-p4-s25-standard-001-shard-artifacts-summary.json` - machine-readable accepted shard-artifact summary for `p4_s25_standard_001`, covering surface, lane, sidecar, and visual disposition counts.
+- `data/manifests/9709_p4_w24_standard_001_page_chain_surface_v2.json` - corrected-v2 new-paper shard surface manifest for `p4_w24_standard_001`, projected from local pre-shard crops with no external VLM/API calls.
+- `2026-06-04-9709-p4-w24-standard-001-shard-artifacts-summary-pending.json` - machine-readable pending shard-artifact summary for `p4_w24_standard_001` before local visual disposition.
+- `2026-06-04-9709-p4-w24-standard-001-local-visual-disposition.md` - local visual disposition report for `p4_w24_standard_001`, accepting 22/22 corrected-v2 crop rows while preserving the non-production-ready and non-VLM-reviewed boundary.
+- `2026-06-04-9709-p4-w24-standard-001-local-visual-dispositions.json` - machine-readable local visual disposition and topic-mapping input for `p4_w24_standard_001`, covering 22 rows and 28 crop images with zero external VLM/API calls.
+- `data/manifests/9709_p4_w24_standard_001_authority_sidecar_v2.json` - shard-scoped corrected-v2 authority sidecar for `p4_w24_standard_001`, mapping 22 rows to existing seeded P4 topic paths from local visual disposition evidence.
+- `2026-06-04-9709-p4-w24-standard-001-lane-results.json` - local visual lane-results artifact for `p4_w24_standard_001`, covering 22 rows with OCR-lane and diagram-lane route surfaces and zero external VLM/API calls.
+- `2026-06-04-9709-p4-w24-standard-001-authority-layer.md` - authority-layer report for `p4_w24_standard_001`, recording 22/22 ready artifact-layer rows, release-preflight pass, and the stop point before DB/search/release execution.
+- `2026-06-04-9709-p4-w24-standard-001-authority-manifest.json` - authority-freeze manifest generated for `p4_w24_standard_001` in artifacts-only mode.
+- `2026-06-04-9709-p4-w24-standard-001-aligned-manifest.json` - aligned manifest generated for `p4_w24_standard_001`, with 22/22 rows ready after sidecar authority and visual topic alignment.
+- `2026-06-04-9709-p4-w24-standard-001-ready-manifest.json` - ready manifest generated for `p4_w24_standard_001`, containing 22/22 authority-ready rows.
+- `2026-06-04-9709-p4-w24-standard-001-evidence-bundles.json` - evidence-bundle artifact generated for `p4_w24_standard_001` in artifacts-only mode.
+- `2026-06-04-9709-p4-w24-standard-001-release-preflight-authority-aligned.md` - release-preflight markdown for `p4_w24_standard_001`, passing with 0 blockers before any DB/search/release execution.
+- `2026-06-04-9709-p4-w24-standard-001-release-preflight-authority-aligned.json` - machine-readable release-preflight result for `p4_w24_standard_001`, passing with 0 blockers and 22 expected manifest-topic warnings.
+- `2026-06-04-9709-p4-w24-standard-001-shard-artifacts-summary.json` - machine-readable accepted shard-artifact summary for `p4_w24_standard_001`, covering surface, lane, sidecar, and visual disposition counts.
 - `2026-06-02-9231-9702-new-paper-source-promotion.json` - machine-readable source-promotion evidence for 90 newly promoted `9231` and `9702` question-paper PDFs, confirming SHA, byte count, pdfjs parse, and page-count checks.
 - `2026-06-02-9231-9702-new-paper-source-promotion-report.md` - source-promotion closeout for the `9231` and `9702` latest-paper gap fill, documenting 44 Further Mathematics PDFs and 46 Physics PDFs copied into `data/past-papers`.
 

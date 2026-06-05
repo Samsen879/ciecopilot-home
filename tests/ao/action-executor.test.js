@@ -198,6 +198,49 @@ describe('ao action executor', () => {
         blocking_precondition_codes: ['runtime_preflight_clean'],
       },
     });
+
+    const autoMergeModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: {
+        task_id: 'issue-90',
+        status: 'active',
+      },
+      prNumber: 101,
+      derivedTrigger: 'approved_and_green',
+      lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'auto_merge_ready_pr',
+        action_class: 'merge_pr',
+        summary: 'Merge the release-ready AO-managed PR.',
+        commands: [
+          'gh pr view 101 --json number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url',
+          'gh pr merge 101 --squash --delete-branch',
+        ],
+        rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
+      },
+    });
+
+    expect(autoMergeModel).toMatchObject({
+      action_kind: 'auto_merge_ready_pr',
+      action_class: 'merge_pr',
+      risk_class: 'class_a',
+      phase4_assist: {
+        executable: true,
+        reason: 'class_a_allowlist',
+      },
+      execution_contract: {
+        automation_boundary: 'class_a_only',
+        executable: true,
+        reason: 'class_a_allowlist',
+        blocking_precondition_codes: [],
+      },
+    });
   });
 
   it('executes only class A actions and writes explicit execution audit entries', async () => {
@@ -311,6 +354,297 @@ describe('ao action executor', () => {
         actor: 'assist_controller',
       }),
     ]));
+  });
+
+  it('auto-merges ready PRs after fresh GitHub validation', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+    seedActiveTask(repository);
+
+    const actionModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      prNumber: 101,
+      derivedTrigger: 'approved_and_green',
+      lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'auto_merge_ready_pr',
+        action_class: 'merge_pr',
+        summary: 'Merge the release-ready AO-managed PR.',
+        commands: [
+          'gh pr view 101 --json number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url',
+          'gh pr merge 101 --squash --delete-branch',
+        ],
+        rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
+      },
+    });
+
+    repository.upsertAction(createActionRecord({
+      action_id: 'action-merge',
+      task_id: 'issue-90',
+      action_kind: 'auto_merge_ready_pr',
+      status: 'proposed',
+      requested_by: 'shadow_controller',
+      reason: 'Merge the release-ready AO-managed PR.',
+      created_at: '2026-03-29T07:11:00.000Z',
+      updated_at: '2026-03-29T07:11:00.000Z',
+      payload: {
+        action_model: actionModel,
+        release_decision: {
+          disposition: 'auto_merge_ready_pr',
+          expected_head_sha: 'head-1',
+        },
+        policy_decision_id: 'policy-1',
+        policy: {
+          decision: 'allow',
+          policy_version: 'ao.policy.v1',
+        },
+      },
+    }));
+
+    const calls = [];
+    const commandRunner = async ({ command, args }) => {
+      calls.push([command, ...args]);
+      if (args[0] === 'pr' && args[1] === 'view') {
+        return {
+          status: 0,
+          stdout: JSON.stringify({
+            number: 101,
+            state: 'OPEN',
+            headRefOid: 'head-1',
+            reviewDecision: 'APPROVED',
+            mergeStateStatus: 'CLEAN',
+            isDraft: false,
+            statusCheckRollup: [{ status: 'COMPLETED', conclusion: 'SUCCESS' }],
+            url: 'https://github.com/example/repo/pull/101',
+          }),
+          stderr: '',
+        };
+      }
+      return { status: 0, stdout: '', stderr: '' };
+    };
+
+    const result = await executeAssistActions({
+      repository,
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      actionIds: ['action-merge'],
+      now: '2026-03-29T07:12:00.000Z',
+      commandRunner,
+    });
+
+    expect(result).toEqual({
+      executedActionIds: ['action-merge'],
+      blockedActionIds: [],
+    });
+    expect(calls).toEqual([
+      ['gh', 'pr', 'view', '101', '--json', 'number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url'],
+      ['gh', 'pr', 'merge', '101', '--squash', '--delete-branch'],
+    ]);
+    expect(repository.getSnapshot().state.actions).toEqual([
+      expect.objectContaining({
+        action_id: 'action-merge',
+        status: 'executed',
+        payload: expect.objectContaining({
+          execution: expect.objectContaining({
+            outcome: 'executed',
+            reason: 'auto_merge_completed',
+          }),
+        }),
+      }),
+    ]);
+  });
+
+  it('blocks auto-merge when the fresh PR head no longer matches the approved head', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+    seedActiveTask(repository);
+
+    const actionModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      prNumber: 101,
+      derivedTrigger: 'approved_and_green',
+      lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'auto_merge_ready_pr',
+        action_class: 'merge_pr',
+        summary: 'Merge the release-ready AO-managed PR.',
+        commands: ['gh pr merge 101 --squash --delete-branch'],
+        rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
+      },
+    });
+
+    repository.upsertAction(createActionRecord({
+      action_id: 'action-merge',
+      task_id: 'issue-90',
+      action_kind: 'auto_merge_ready_pr',
+      status: 'proposed',
+      requested_by: 'shadow_controller',
+      reason: 'Merge the release-ready AO-managed PR.',
+      created_at: '2026-03-29T07:11:00.000Z',
+      updated_at: '2026-03-29T07:11:00.000Z',
+      payload: {
+        action_model: actionModel,
+        release_decision: {
+          disposition: 'auto_merge_ready_pr',
+          expected_head_sha: 'head-1',
+        },
+        policy_decision_id: 'policy-1',
+        policy: {
+          decision: 'allow',
+          policy_version: 'ao.policy.v1',
+        },
+      },
+    }));
+
+    const calls = [];
+    const commandRunner = async ({ command, args }) => {
+      calls.push([command, ...args]);
+      return {
+        status: 0,
+        stdout: JSON.stringify({
+          number: 101,
+          state: 'OPEN',
+          headRefOid: 'head-2',
+          reviewDecision: 'APPROVED',
+          mergeStateStatus: 'CLEAN',
+          isDraft: false,
+          statusCheckRollup: [{ status: 'COMPLETED', conclusion: 'SUCCESS' }],
+          url: 'https://github.com/example/repo/pull/101',
+        }),
+        stderr: '',
+      };
+    };
+
+    const result = await executeAssistActions({
+      repository,
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      actionIds: ['action-merge'],
+      now: '2026-03-29T07:12:00.000Z',
+      commandRunner,
+    });
+
+    expect(result).toEqual({
+      executedActionIds: [],
+      blockedActionIds: ['action-merge'],
+    });
+    expect(calls).toEqual([
+      ['gh', 'pr', 'view', '101', '--json', 'number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url'],
+    ]);
+    expect(repository.getSnapshot().state.actions).toEqual([
+      expect.objectContaining({
+        action_id: 'action-merge',
+        status: 'blocked',
+        payload: expect.objectContaining({
+          execution: expect.objectContaining({
+            outcome: 'blocked',
+            reason: 'auto_merge_head_mismatch',
+          }),
+        }),
+      }),
+    ]);
+  });
+
+  it('blocks auto-merge when the approved head sha is missing from the release decision', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+    seedActiveTask(repository);
+
+    const actionModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      prNumber: 101,
+      derivedTrigger: 'approved_and_green',
+      lifecycleTopStatus: 'continue',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'auto_merge_ready_pr',
+        action_class: 'merge_pr',
+        summary: 'Merge the release-ready AO-managed PR.',
+        commands: ['gh pr merge 101 --squash --delete-branch'],
+        rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
+      },
+    });
+
+    repository.upsertAction(createActionRecord({
+      action_id: 'action-merge',
+      task_id: 'issue-90',
+      action_kind: 'auto_merge_ready_pr',
+      status: 'proposed',
+      requested_by: 'shadow_controller',
+      reason: 'Merge the release-ready AO-managed PR.',
+      created_at: '2026-03-29T07:11:00.000Z',
+      updated_at: '2026-03-29T07:11:00.000Z',
+      payload: {
+        action_model: actionModel,
+        release_decision: {
+          disposition: 'auto_merge_ready_pr',
+        },
+        policy_decision_id: 'policy-1',
+        policy: {
+          decision: 'allow',
+          policy_version: 'ao.policy.v1',
+        },
+      },
+    }));
+
+    const commandRunner = async () => {
+      throw new Error('auto-merge should block before invoking gh when expected_head_sha is missing');
+    };
+
+    const result = await executeAssistActions({
+      repository,
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      actionIds: ['action-merge'],
+      now: '2026-03-29T07:12:00.000Z',
+      commandRunner,
+    });
+
+    expect(result).toEqual({
+      executedActionIds: [],
+      blockedActionIds: ['action-merge'],
+    });
+    expect(repository.getSnapshot().state.actions).toEqual([
+      expect.objectContaining({
+        action_id: 'action-merge',
+        status: 'blocked',
+        payload: expect.objectContaining({
+          execution: expect.objectContaining({
+            outcome: 'blocked',
+            reason: 'auto_merge_expected_head_missing',
+          }),
+        }),
+      }),
+    ]);
   });
 
   it('blocks assist execution when durable policy attribution is missing', async () => {

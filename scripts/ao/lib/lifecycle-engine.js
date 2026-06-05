@@ -109,7 +109,10 @@ function resolveReviewGateReleaseDecision({
     return originalReleaseDecision;
   }
 
-  if (reviewRequired && normalizedReleaseDecision.disposition === 'notify_human_ready') {
+  if (
+    reviewRequired
+    && ['notify_human_ready', 'auto_merge_ready_pr'].includes(normalizedReleaseDecision.disposition)
+  ) {
     return {
       disposition: 'await_review',
       basis: ['review_missing'],
@@ -380,6 +383,7 @@ function buildReleaseDecision({
   reconciliationReport,
   doctorControlStatus,
   sourceHealth,
+  currentHeadSha = null,
 }) {
   if (scope?.mode === 'project') {
     return {
@@ -439,8 +443,9 @@ function buildReleaseDecision({
     && ['approved_and_green', 'manual'].includes(scope?.trigger)
   ) {
     return {
-      disposition: 'notify_human_ready',
-      basis: ['ready_for_human_notification'],
+      disposition: 'auto_merge_ready_pr',
+      basis: ['ready_for_auto_merge'],
+      expected_head_sha: currentHeadSha,
       authoritative: true,
     };
   }
@@ -688,6 +693,21 @@ function buildLifecycleFindings({
     }));
   }
 
+  if (releaseDecision.disposition === 'auto_merge_ready_pr') {
+    findings.push(createLifecycleFinding({
+      code: 'release_ready_auto_merge',
+      severity: 'info',
+      origin: 'lifecycle',
+      source_area: 'control',
+      subject_type: 'release_control',
+      subject_id: scope?.pr_number ?? null,
+      summary: 'PR appears ready for AO-managed automatic merge.',
+      details: releaseDecision.basis,
+      evidence_refs: [],
+      action_ids: ['auto_merge_ready_pr'],
+    }));
+  }
+
   if (releaseDecision.disposition === 'human_gate') {
     findings.push(createLifecycleFinding({
       code: 'release_control_human_gate',
@@ -743,6 +763,15 @@ function buildActionTemplates(scope) {
         `ao review-check ${projectId} --dry-run`,
       ],
       rationale: 'Human approval remains required even when the PR appears ready.',
+    },
+    auto_merge_ready_pr: {
+      action_class: 'merge_pr',
+      summary: 'Merge the release-ready AO-managed PR.',
+      commands: [
+        `gh pr view ${prNumber} --json number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url`,
+        `gh pr merge ${prNumber} --squash --delete-branch`,
+      ],
+      rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
     },
     hold_ci: {
       action_class: 'hold',
@@ -897,6 +926,7 @@ export function buildLifecycleReport({
     reconciliationReport,
     doctorControlStatus,
     sourceHealth,
+    currentHeadSha,
   });
   const findings = [
     ...preserveReconciliationFindings(reconciliationReport),

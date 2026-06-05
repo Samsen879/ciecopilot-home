@@ -18,13 +18,14 @@ describe('AO phase4 assist execution contract', () => {
     expect(controlPlaneOps).toContain('Current allowlist:');
     expect(controlPlaneOps).toContain('`continue_worker`');
     expect(controlPlaneOps).toContain('`notify_human_ready`');
+    expect(controlPlaneOps).toContain('`auto_merge_ready_pr`');
     expect(controlPlaneOps).toContain('`ao-controller --json`: `task_results[*].assist_actions[*]`');
     expect(controlPlaneOps).toContain('`ao-state --json`: `actions.recent[*]`');
     expect(controlPlaneOps).toContain('`model_executable`');
     expect(controlPlaneOps).toContain('`execution_reason`');
     expect(controlPlaneOps).toContain('`idempotency_mode`');
     expect(controlPlaneOps).toContain('`rollback_mode`');
-    expect(controlPlaneOps).toContain('assist does not auto-merge');
+    expect(controlPlaneOps).toContain('assist auto-merges release-ready AO-managed PRs by default');
 
     expect(controllerRunbook).toContain('## Read Assist Execution Verdict');
     expect(controllerRunbook).toContain('`task_results[*]` now also carries `assist_actions[*]`');
@@ -32,6 +33,6 @@ describe('AO phase4 assist execution contract', () => {
 
     expect(lifecycleRunbook).toContain('Phase-4 assist note:');
     expect(lifecycleRunbook).toContain('assist execution only auto-runs the phase-4 Class A allowlist');
-    expect(lifecycleRunbook).toContain('`notify_human_ready` remains notification-only; it is not auto-merge');
+    expect(lifecycleRunbook).toContain('`auto_merge_ready_pr` is the default release-ready action');
   });
 });

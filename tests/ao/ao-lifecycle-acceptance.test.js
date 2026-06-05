@@ -342,7 +342,7 @@ describe('ao lifecycle acceptance', () => {
         contract_status: 'authoritative_pr_chain',
         next_actions: expect.arrayContaining([
           expect.objectContaining({
-            id: 'notify_human_ready',
+            id: 'auto_merge_ready_pr',
             stage: 'lifecycle',
           }),
         ]),
@@ -354,7 +354,7 @@ describe('ao lifecycle acceptance', () => {
         authoritative: true,
       },
       release_decision: {
-        disposition: 'notify_human_ready',
+        disposition: 'auto_merge_ready_pr',
         authoritative: true,
       },
     });

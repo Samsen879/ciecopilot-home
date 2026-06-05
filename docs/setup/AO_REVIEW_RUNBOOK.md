@@ -27,7 +27,7 @@ First-release constraints:
 - reviewer is read-only by convention in v1
 - reviewer may inspect repo state, `ao-state`, and GitHub read-only state
 - reviewer may not edit files, push, merge, or replace implementation ownership
-- `notify_human_ready` remains notification-only and still never implies auto-merge
+- `auto_merge_ready_pr` remains blocked until review passes for the exact target SHA
 
 ## Review Commands
 
@@ -113,7 +113,7 @@ Read these fields first:
 
 Interpretation:
 
-- `review_pending` means AO must not advance to `notify_human_ready`
+- `review_pending` means AO must not advance to `auto_merge_ready_pr`
 - `review_changes_required` means implementation may continue, but the prior review result does not clear release progression
 - `review_escalated` means hold for human judgment
 - `review_passed` only clears the exact `target_head_sha` that was reviewed
@@ -148,7 +148,7 @@ Read these machine surfaces when the operator asks why AO can or cannot advance:
 
 Typical answers:
 
-- “Why can’t AO mark this human-ready?”  
+- “Why can’t AO auto-merge this PR?”
   Read `release_decision.disposition`, `release_decision.basis`, and `reviews.inspections[*].posture`.
 
 - “Why is this frozen?”  

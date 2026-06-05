@@ -7,6 +7,7 @@ jest.unstable_mockModule('../../lib/supabase/client.js', () => ({
 }));
 
 const {
+  getPaperWorkspaceView,
   getWorkspaceView,
   listReviewTasks,
 } = await import('../lib/workspaces/workspace-read-service.js');
@@ -54,6 +55,53 @@ function createLearningDb(overrides = {}) {
           { kind: 'review_task', review_task_id: 'review-queued-1' },
         ],
         updated_at: '2026-03-22T08:05:00.000Z',
+      },
+    ],
+  };
+  const workspaceProjections = overrides.workspaceProjections ?? [workspaceProjection];
+  const paperWorkspaceProjection = overrides.paperWorkspaceProjection ?? {
+    paper_workspace_id: 'paper-workspace-1',
+    user_id: 'student-1',
+    subject_code: '9709',
+    paper_scope: '9709:paper:p1',
+    workspace_kind: 'paper_main',
+    visible_organization_summary: {
+      label: 'Pure Mathematics 1',
+    },
+    linked_topic_summary: {
+      total_topic_sections: 2,
+    },
+    stable_slots: {},
+    pinned_artifact_summaries: [],
+    linked_reference_refs: [],
+    review_queue_projection_shape: {
+      scope: 'paper_workspace_review_projection',
+      topic_filter_ready: true,
+    },
+    created_at: '2026-06-05T08:00:00.000Z',
+    updated_at: '2026-06-05T08:05:00.000Z',
+    topic_sections: [
+      {
+        paper_workspace_topic_section_id: 'section-topic-1',
+        topic_id: 'topic-1',
+        topic_workspace_id: 'workspace-1',
+        topic_path: '9709/trigonometry/equations',
+        section_state: {
+          order: 1,
+        },
+        created_at: '2026-06-05T08:01:00.000Z',
+        updated_at: '2026-06-05T08:03:00.000Z',
+      },
+      {
+        paper_workspace_topic_section_id: 'section-topic-2',
+        topic_id: 'topic-2',
+        topic_workspace_id: 'workspace-2',
+        topic_path: '9709/trigonometry/identities',
+        section_state: {
+          order: 2,
+        },
+        created_at: '2026-06-05T08:02:00.000Z',
+        updated_at: '2026-06-05T08:04:00.000Z',
       },
     ],
   };
@@ -425,18 +473,34 @@ function createLearningDb(overrides = {}) {
         return { data: rows[0] ?? null, error: null };
       }
 
+      if (this.table === 'learning_paper_workspace_projection') {
+        const paperScope = this.filters.find((filter) => filter.column === 'paper_scope')?.value ?? null;
+        const userId = this.filters.find((filter) => filter.column === 'user_id')?.value ?? null;
+
+        return {
+          data:
+            paperScope === paperWorkspaceProjection.paper_scope
+            && userId === paperWorkspaceProjection.user_id
+              ? paperWorkspaceProjection
+              : null,
+          error: null,
+        };
+      }
+
       if (this.table !== 'learning_workspace_projection') {
         throw new Error(`Unexpected maybeSingle table: ${this.table}`);
       }
 
       const topicId = this.filters.find((filter) => filter.column === 'topic_id')?.value ?? null;
       const userId = this.filters.find((filter) => filter.column === 'user_id')?.value ?? null;
+      const matchingWorkspaceProjection = workspaceProjections.find((projection) =>
+        topicId === projection.topic_id && userId === projection.user_id);
 
-      if (topicId !== workspaceProjection.topic_id || userId !== workspaceProjection.user_id) {
+      if (!matchingWorkspaceProjection) {
         return { data: null, error: null };
       }
 
-      return { data: workspaceProjection, error: null };
+      return { data: matchingWorkspaceProjection, error: null };
     }
 
     then(resolve, reject) {
@@ -1074,6 +1138,390 @@ beforeEach(() => {
 });
 
 describe('workspace read service', () => {
+  test('paper workspace projection returns empty stable slots when it has no topic sections', async () => {
+    const db = createLearningDb({
+      paperWorkspaceProjection: {
+        paper_workspace_id: 'paper-workspace-empty',
+        user_id: 'student-1',
+        subject_code: '9709',
+        paper_scope: '9709:paper:p1',
+        workspace_kind: 'paper_main',
+        visible_organization_summary: {},
+        linked_topic_summary: {},
+        stable_slots: {},
+        pinned_artifact_summaries: [],
+        linked_reference_refs: [],
+        review_queue_projection_shape: {
+          scope: 'paper_workspace_review_projection',
+          topic_filter_ready: true,
+        },
+        created_at: '2026-06-05T08:00:00.000Z',
+        updated_at: '2026-06-05T08:00:00.000Z',
+        topic_sections: [],
+      },
+      artifactRows: [],
+      reviewTaskRows: [],
+      sessionRows: [],
+    });
+
+    const payload = await getPaperWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      residencyFlagEnabled: true,
+    });
+
+    expect(payload.paper_workspace).toMatchObject({
+      paper_workspace_id: 'paper-workspace-empty',
+      user_id: 'student-1',
+      subject_code: '9709',
+      paper_scope: '9709:paper:p1',
+      workspace_kind: 'paper_main',
+      created_at: '2026-06-05T08:00:00.000Z',
+      updated_at: '2026-06-05T08:00:00.000Z',
+    });
+    expect(Object.keys(payload.paper_workspace.stable_slots)).toEqual([
+      'overview_map',
+      'core_method_derivation',
+      'canonical_worked_example',
+      'common_traps',
+      'my_notes',
+      'review_queue',
+    ]);
+    expect(payload.paper_workspace.stable_slots.overview_map).toEqual({
+      slot_key: 'overview_map',
+      topic_sections: [],
+      artifact_summaries: [],
+      linked_references: [],
+      updated_at: null,
+    });
+    expect(payload.paper_workspace.pinned_artifacts).toEqual([]);
+    expect(payload.paper_workspace.linked_references).toEqual([]);
+    expect(payload.topic_sections).toEqual([]);
+    expect(payload.review_queue).toMatchObject({
+      scope: 'paper_workspace_review_projection',
+      paper_scope: '9709:paper:p1',
+      topic_ids: [],
+      items: [],
+      summary: {
+        total: 0,
+      },
+    });
+  });
+
+  test('paper workspace groups topic-owned pinned artifacts by stable slot and topic section', async () => {
+    const db = createLearningDb({
+      workspaceProjections: [
+        {
+          workspace_id: 'workspace-1',
+          user_id: 'student-1',
+          topic_id: 'topic-1',
+          topic_path: '9709/trigonometry/equations',
+          slot_state: {
+            common_traps: 'active',
+            review_queue: 'active',
+          },
+          linked_reference_summary: {
+            total_linked_references: 1,
+          },
+          updated_at: '2026-06-05T08:10:00.000Z',
+          slots: [
+            {
+              workspace_slot_id: 'slot-topic-1-common-traps',
+              slot_key: 'common_traps',
+              primary_artifact_ref: {
+                kind: 'artifact',
+                artifact_id: 'artifact-primary',
+              },
+              linked_reference_refs: [],
+              updated_at: '2026-06-05T08:10:00.000Z',
+            },
+          ],
+        },
+        {
+          workspace_id: 'workspace-2',
+          user_id: 'student-1',
+          topic_id: 'topic-2',
+          topic_path: '9709/trigonometry/identities',
+          slot_state: {
+            overview_map: 'active',
+            review_queue: 'active',
+          },
+          linked_reference_summary: {
+            total_linked_references: 0,
+          },
+          updated_at: '2026-06-05T08:20:00.000Z',
+          slots: [
+            {
+              workspace_slot_id: 'slot-topic-2-overview',
+              slot_key: 'overview_map',
+              primary_artifact_ref: {
+                kind: 'artifact',
+                artifact_id: 'artifact-identity',
+              },
+              linked_reference_refs: [],
+              updated_at: '2026-06-05T08:20:00.000Z',
+            },
+          ],
+        },
+      ],
+      artifactRows: [
+        {
+          artifact_id: 'artifact-primary',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          updated_at: '2026-06-05T08:10:00.000Z',
+        },
+        {
+          artifact_id: 'artifact-identity',
+          artifact_kind: 'summary_card',
+          canonical_home_topic_id: 'topic-2',
+          slot_key: 'overview_map',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'released',
+          updated_at: '2026-06-05T08:20:00.000Z',
+        },
+      ],
+      artifactContentVersionRows: [
+        {
+          artifact_content_version_id: 'artifact-content-primary',
+          artifact_id: 'artifact-primary',
+          version_number: 1,
+          is_current: true,
+          title: 'Interval trap',
+          summary: 'Check interval restrictions before rejecting a root.',
+          body_markdown: 'Check the interval.',
+          content_format: 'markdown',
+        },
+        {
+          artifact_content_version_id: 'artifact-content-identity',
+          artifact_id: 'artifact-identity',
+          version_number: 1,
+          is_current: true,
+          title: 'Identity map',
+          summary: 'A topic map for identities.',
+          body_markdown: 'Map identities before solving.',
+          content_format: 'markdown',
+        },
+      ],
+      sessionRows: [],
+    });
+
+    const payload = await getPaperWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      residencyFlagEnabled: true,
+    });
+
+    expect(payload.topic_sections.map((section) => section.topic_id)).toEqual(['topic-1', 'topic-2']);
+    expect(payload.topic_sections[0]).toMatchObject({
+      topic_id: 'topic-1',
+      topic_path: '9709/trigonometry/equations',
+      canonical_ownership: {
+        owner_kind: 'topic',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+      },
+      artifact_summaries_by_slot: {
+        common_traps: [
+          expect.objectContaining({
+            artifact_id: 'artifact-primary',
+            canonical_home_topic_id: 'topic-1',
+            topic_section_id: 'section-topic-1',
+            slot_key: 'common_traps',
+            title: 'Interval trap',
+          }),
+        ],
+      },
+    });
+    expect(payload.paper_workspace.stable_slots.common_traps.artifact_summaries).toEqual([
+      expect.objectContaining({
+        artifact_id: 'artifact-primary',
+        canonical_home_topic_id: 'topic-1',
+        topic_section_id: 'section-topic-1',
+      }),
+    ]);
+    expect(payload.paper_workspace.stable_slots.overview_map.artifact_summaries).toEqual([
+      expect.objectContaining({
+        artifact_id: 'artifact-identity',
+        canonical_home_topic_id: 'topic-2',
+        topic_section_id: 'section-topic-2',
+      }),
+    ]);
+    expect(payload.paper_workspace.pinned_artifacts).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ artifact_id: 'artifact-primary' }),
+        expect.objectContaining({ artifact_id: 'artifact-identity' }),
+      ]),
+    );
+    expect(payload.review_queue).toMatchObject({
+      scope: 'paper_workspace_review_projection',
+      paper_scope: '9709:paper:p1',
+      topic_ids: ['topic-1', 'topic-2'],
+    });
+    expect(payload.review_queue.items.map((item) => item.review_task_id)).toEqual([
+      'review-queued-1',
+      'review-other-topic',
+    ]);
+    expect(payload.review_queue.topic_sections).toEqual([
+      expect.objectContaining({
+        topic_id: 'topic-1',
+        items: [expect.objectContaining({ review_task_id: 'review-queued-1' })],
+      }),
+      expect.objectContaining({
+        topic_id: 'topic-2',
+        items: [expect.objectContaining({ review_task_id: 'review-other-topic' })],
+      }),
+    ]);
+  });
+
+  test('paper workspace keeps secondary references linked without duplicating authoritative artifacts or review tasks', async () => {
+    const db = createLearningDb({
+      workspaceProjections: [
+        {
+          workspace_id: 'workspace-1',
+          user_id: 'student-1',
+          topic_id: 'topic-1',
+          topic_path: '9709/trigonometry/equations',
+          slot_state: {
+            common_traps: 'active',
+            review_queue: 'active',
+          },
+          linked_reference_summary: {
+            total_linked_references: 4,
+          },
+          updated_at: '2026-06-05T08:10:00.000Z',
+          slots: [
+            {
+              workspace_slot_id: 'slot-topic-1-common-traps',
+              slot_key: 'common_traps',
+              primary_artifact_ref: {
+                kind: 'artifact',
+                artifact_id: 'artifact-primary',
+              },
+              linked_reference_refs: [
+                { kind: 'artifact', artifact_id: 'artifact-primary' },
+                { kind: 'artifact', artifact_id: 'artifact-cross-topic' },
+                { kind: 'artifact', artifact_id: 'artifact-cross-topic' },
+              ],
+              updated_at: '2026-06-05T08:10:00.000Z',
+            },
+            {
+              workspace_slot_id: 'slot-topic-1-review',
+              slot_key: 'review_queue',
+              primary_artifact_ref: null,
+              linked_reference_refs: [
+                { kind: 'review_task', review_task_id: 'review-queued-1' },
+                { kind: 'review_task', review_task_id: 'review-queued-1' },
+              ],
+              updated_at: '2026-06-05T08:11:00.000Z',
+            },
+          ],
+        },
+        {
+          workspace_id: 'workspace-2',
+          user_id: 'student-1',
+          topic_id: 'topic-2',
+          topic_path: '9709/trigonometry/identities',
+          slot_state: {
+            common_traps: 'active',
+          },
+          linked_reference_summary: {
+            total_linked_references: 0,
+          },
+          updated_at: '2026-06-05T08:20:00.000Z',
+          slots: [
+            {
+              workspace_slot_id: 'slot-topic-2-common-traps',
+              slot_key: 'common_traps',
+              primary_artifact_ref: {
+                kind: 'artifact',
+                artifact_id: 'artifact-cross-topic',
+              },
+              linked_reference_refs: [],
+              updated_at: '2026-06-05T08:20:00.000Z',
+            },
+          ],
+        },
+      ],
+      artifactRows: [
+        {
+          artifact_id: 'artifact-primary',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          updated_at: '2026-06-05T08:10:00.000Z',
+        },
+        {
+          artifact_id: 'artifact-cross-topic',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-2',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          updated_at: '2026-06-05T08:20:00.000Z',
+        },
+      ],
+      reviewTaskRows: [
+        {
+          review_task_id: 'review-queued-1',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_family_title: 'Trigonometric manipulation / equations',
+          target_question_type_id: '9709.trigonometry.equations',
+          target_question_type_title: 'Trigonometric equations',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'question-1',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+          trigger_type: 'immediate_repair',
+          mode: 'trap_fix',
+          due_at: '2026-03-23T00:00:00.000Z',
+          priority: 'high',
+          estimated_minutes: 15,
+          success_criteria: {},
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:10:00.000Z',
+          updated_at: '2026-03-22T08:10:00.000Z',
+        },
+      ],
+      sessionRows: [],
+    });
+
+    const payload = await getPaperWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      residencyFlagEnabled: true,
+    });
+
+    expect(payload.paper_workspace.pinned_artifacts
+      .filter((artifact) => artifact.artifact_id === 'artifact-cross-topic')).toHaveLength(1);
+    expect(payload.paper_workspace.stable_slots.common_traps.linked_references
+      .filter((ref) => ref.kind === 'artifact' && ref.artifact_id === 'artifact-cross-topic'))
+      .toHaveLength(1);
+    expect(payload.review_queue.items
+      .filter((item) => item.review_task_id === 'review-queued-1')).toHaveLength(1);
+    expect(payload.paper_workspace.stable_slots.review_queue.linked_references
+      .filter((ref) => ref.kind === 'review_task' && ref.review_task_id === 'review-queued-1'))
+      .toHaveLength(1);
+  });
+
   test('workspace returns stable slots plus linked references from secondary topics', async () => {
     const db = createLearningDb();
 

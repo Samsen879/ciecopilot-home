@@ -8,6 +8,7 @@ import {
 import { listArtifactsByTopic } from '../repositories/artifact-repository.js';
 import {
   ensureWorkspaceExists,
+  fetchPaperWorkspaceProjection,
   fetchWorkspaceProjection,
 } from '../repositories/workspace-repository.js';
 import {
@@ -81,6 +82,10 @@ function createEmptySlot() {
     linked_references: [],
     updated_at: null,
   };
+}
+
+function buildStableSlotMap(fillValue) {
+  return Object.fromEntries(STABLE_SLOT_KEYS.map((slotKey) => [slotKey, fillValue(slotKey)]));
 }
 
 function normalizeLinkedReferences(linkedReferences, primaryArtifactRef) {
@@ -349,6 +354,13 @@ function buildWorkspaceNotFound(topicId) {
   });
 }
 
+function buildPaperWorkspaceNotFound(paperScope) {
+  return new LearningHttpError('workspace_not_found', 'Paper workspace not found.', {
+    status: 404,
+    details: { paper_scope: paperScope ?? null },
+  });
+}
+
 function buildInvalidWorkspaceEnsurePayload(message, details = {}) {
   return new LearningHttpError(LEARNING_ERROR_CODES.INVALID_PAYLOAD, message, {
     status: 400,
@@ -561,6 +573,279 @@ function buildWorkspaceRuntimePosture(workspaceProjection = null) {
   return buildSubjectRuntimePostureOrNull(subjectCode);
 }
 
+function createEmptyPaperSlot(slotKey) {
+  return {
+    slot_key: slotKey,
+    topic_sections: [],
+    artifact_summaries: [],
+    linked_references: [],
+    updated_at: null,
+  };
+}
+
+function buildEmptyPaperStableSlots() {
+  return Object.fromEntries(STABLE_SLOT_KEYS.map((slotKey) => [slotKey, createEmptyPaperSlot(slotKey)]));
+}
+
+function compareTopicSections(left = {}, right = {}) {
+  const pathCompare = String(left.topic_path ?? '').localeCompare(String(right.topic_path ?? ''));
+  if (pathCompare !== 0) {
+    return pathCompare;
+  }
+
+  return String(left.topic_id ?? '').localeCompare(String(right.topic_id ?? ''));
+}
+
+function compareArtifactSummaries(left = {}, right = {}) {
+  const leftSlotIndex = STABLE_SLOT_KEYS.indexOf(left.slot_key);
+  const rightSlotIndex = STABLE_SLOT_KEYS.indexOf(right.slot_key);
+  if (leftSlotIndex !== rightSlotIndex) {
+    return leftSlotIndex - rightSlotIndex;
+  }
+
+  const topicCompare = String(left.topic_path ?? '').localeCompare(String(right.topic_path ?? ''));
+  if (topicCompare !== 0) {
+    return topicCompare;
+  }
+
+  const leftUpdatedAt = parseTimestamp(left.updated_at)?.getTime() ?? 0;
+  const rightUpdatedAt = parseTimestamp(right.updated_at)?.getTime() ?? 0;
+  if (leftUpdatedAt !== rightUpdatedAt) {
+    return rightUpdatedAt - leftUpdatedAt;
+  }
+
+  return String(left.artifact_id ?? '').localeCompare(String(right.artifact_id ?? ''));
+}
+
+function dedupeBy(items = [], getKey) {
+  const seen = new Set();
+
+  return (Array.isArray(items) ? items : []).filter((item) => {
+    const key = getKey(item);
+    if (!key || seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
+function dedupeTypedReferences(refs = []) {
+  return dedupeBy(refs, getTypedRefKey)
+    .sort((left, right) => String(getTypedRefKey(left)).localeCompare(String(getTypedRefKey(right))));
+}
+
+function dedupeArtifactSummaries(summaries = []) {
+  return dedupeBy(summaries, (summary) => normalizeString(summary?.artifact_id))
+    .sort(compareArtifactSummaries);
+}
+
+function dedupeReviewQueueItems(items = []) {
+  return dedupeBy(items, (item) => normalizeString(item?.review_task_id));
+}
+
+function maxTimestamp(values = []) {
+  return (Array.isArray(values) ? values : [])
+    .map((value) => normalizeString(value))
+    .filter(Boolean)
+    .sort()
+    .at(-1) ?? null;
+}
+
+function buildFallbackTopicWorkspaceProjection(section = {}, userId = null) {
+  return {
+    workspace_id: section.topic_workspace_id ?? null,
+    user_id: userId,
+    topic_id: section.topic_id ?? null,
+    topic_path: section.topic_path ?? null,
+    slot_state: {},
+    linked_reference_summary: {},
+    updated_at: section.updated_at ?? null,
+    slots: buildStableSlotMap(() => null),
+    linked_references: buildStableSlotMap(() => []),
+  };
+}
+
+function isPinnedArtifactSummaryCandidate(artifact = {}) {
+  return isActiveArtifact(artifact) && artifact.placement_status === 'pinned';
+}
+
+function buildArtifactSummary(artifact = {}, section = {}) {
+  return {
+    artifact_id: artifact.artifact_id ?? null,
+    artifact_kind: artifact.artifact_kind ?? null,
+    canonical_home_topic_id: artifact.canonical_home_topic_id ?? section.topic_id ?? null,
+    topic_section_id: section.paper_workspace_topic_section_id ?? null,
+    topic_id: section.topic_id ?? null,
+    topic_path: section.topic_path ?? null,
+    slot_key: artifact.slot_key ?? null,
+    placement_status: artifact.placement_status ?? null,
+    trust_status: artifact.trust_status ?? null,
+    lifecycle_status: artifact.lifecycle_status ?? null,
+    artifact_state: artifact.artifact_state ?? null,
+    target_question_type_id: artifact.target_question_type_id ?? null,
+    title: normalizeString(artifact.title),
+    summary: normalizeString(artifact.summary),
+    updated_at: artifact.updated_at ?? null,
+  };
+}
+
+function buildArtifactSummariesBySlot(artifactSummaries = []) {
+  const grouped = Object.fromEntries(STABLE_SLOT_KEYS.map((slotKey) => [slotKey, []]));
+
+  for (const summary of artifactSummaries) {
+    if (!ARTIFACT_SLOT_KEYS.has(summary.slot_key)) {
+      continue;
+    }
+
+    grouped[summary.slot_key].push(summary);
+  }
+
+  return Object.fromEntries(
+    Object.entries(grouped).map(([slotKey, summaries]) => [
+      slotKey,
+      dedupeArtifactSummaries(summaries),
+    ]),
+  );
+}
+
+function collectStableSlotLinkedReferences(stableSlots = {}) {
+  return dedupeTypedReferences(
+    STABLE_SLOT_KEYS.flatMap((slotKey) => stableSlots?.[slotKey]?.linked_references ?? []),
+  );
+}
+
+function buildPaperReviewQueueProjection({
+  paperScope,
+  reviewQueue,
+  topicSections,
+} = {}) {
+  const sortedSections = [...(Array.isArray(topicSections) ? topicSections : [])].sort(compareTopicSections);
+  const topicIds = sortedSections
+    .map((section) => normalizeString(section.topic_id))
+    .filter(Boolean);
+  const topicIdSet = new Set(topicIds);
+  const paperItems = dedupeReviewQueueItems(
+    (Array.isArray(reviewQueue?.items) ? reviewQueue.items : [])
+      .filter((item) => topicIdSet.has(item?.target_topic_id)),
+  );
+
+  return {
+    scope: 'paper_workspace_review_projection',
+    paper_scope: normalizeString(paperScope),
+    topic_ids: topicIds,
+    status: normalizeString(reviewQueue?.status),
+    due_before: normalizeString(reviewQueue?.due_before),
+    policy: reviewQueue?.policy ?? null,
+    items: paperItems,
+    summary: summarizeReviewQueueItems(paperItems),
+    topic_sections: sortedSections.map((section) => {
+      const sectionItems = paperItems.filter((item) => item.target_topic_id === section.topic_id);
+      return {
+        topic_id: section.topic_id ?? null,
+        topic_path: section.topic_path ?? null,
+        items: sectionItems,
+        summary: summarizeReviewQueueItems(sectionItems),
+      };
+    }),
+  };
+}
+
+function buildPaperTopicSectionProjection({
+  section,
+  workspaceProjection,
+  topicArtifacts,
+  reviewQueueItems,
+} = {}) {
+  const normalizedArtifacts = normalizeTopicArtifacts(topicArtifacts);
+  const pinnedArtifactSummaries = dedupeArtifactSummaries(
+    normalizedArtifacts
+      .filter(isPinnedArtifactSummaryCandidate)
+      .map((artifact) => buildArtifactSummary(artifact, section)),
+  );
+  const artifactSummariesBySlot = buildArtifactSummariesBySlot(pinnedArtifactSummaries);
+  const stableSlots = buildStableSlots(workspaceProjection, {
+    reviewQueueItems,
+  });
+
+  return {
+    paper_workspace_topic_section_id: section.paper_workspace_topic_section_id ?? null,
+    topic_id: section.topic_id ?? null,
+    topic_workspace_id: section.topic_workspace_id ?? null,
+    topic_path: section.topic_path ?? null,
+    section_state: isPlainObject(section.section_state) ? section.section_state : {},
+    created_at: section.created_at ?? null,
+    updated_at: section.updated_at ?? null,
+    canonical_ownership: {
+      owner_kind: 'topic',
+      topic_id: section.topic_id ?? null,
+      topic_path: section.topic_path ?? null,
+    },
+    workspace: {
+      workspace_id: workspaceProjection?.workspace_id ?? section.topic_workspace_id ?? null,
+      slot_state: workspaceProjection?.slot_state ?? {},
+      linked_reference_summary: workspaceProjection?.linked_reference_summary ?? {},
+      updated_at: workspaceProjection?.updated_at ?? null,
+    },
+    stable_slots: stableSlots,
+    artifact_summaries_by_slot: artifactSummariesBySlot,
+    pinned_artifacts: pinnedArtifactSummaries,
+    linked_references: collectStableSlotLinkedReferences(stableSlots),
+    review_queue: {
+      scope: 'paper_topic_section_review_projection',
+      topic_id: section.topic_id ?? null,
+      topic_path: section.topic_path ?? null,
+      items: reviewQueueItems,
+      summary: summarizeReviewQueueItems(reviewQueueItems),
+    },
+  };
+}
+
+function buildPaperStableSlots(topicSectionViews = []) {
+  const paperSlots = buildEmptyPaperStableSlots();
+
+  for (const section of topicSectionViews) {
+    for (const slotKey of STABLE_SLOT_KEYS) {
+      const sectionSlot = section.stable_slots?.[slotKey] ?? createEmptySlot();
+      const slotArtifactSummaries = section.artifact_summaries_by_slot?.[slotKey] ?? [];
+      const paperSlot = paperSlots[slotKey];
+
+      paperSlot.topic_sections.push({
+        paper_workspace_topic_section_id: section.paper_workspace_topic_section_id,
+        topic_id: section.topic_id,
+        topic_path: section.topic_path,
+        workspace_slot_id: sectionSlot.workspace_slot_id ?? null,
+        primary_artifact_ref: sectionSlot.primary_artifact_ref ?? null,
+        slot_state: section.workspace?.slot_state?.[slotKey] ?? null,
+        updated_at: sectionSlot.updated_at ?? null,
+      });
+      paperSlot.artifact_summaries.push(...slotArtifactSummaries);
+      paperSlot.linked_references.push(...(sectionSlot.linked_references ?? []));
+      paperSlot.updated_at = maxTimestamp([
+        paperSlot.updated_at,
+        sectionSlot.updated_at,
+        ...slotArtifactSummaries.map((summary) => summary.updated_at),
+      ]);
+    }
+  }
+
+  return Object.fromEntries(
+    STABLE_SLOT_KEYS.map((slotKey) => {
+      const slot = paperSlots[slotKey];
+      return [
+        slotKey,
+        {
+          ...slot,
+          topic_sections: slot.topic_sections.sort(compareTopicSections),
+          artifact_summaries: dedupeArtifactSummaries(slot.artifact_summaries),
+          linked_references: dedupeTypedReferences(slot.linked_references),
+        },
+      ];
+    }),
+  );
+}
+
 function filterReviewQueueItems(items, {
   topicId = null,
   status = null,
@@ -631,6 +916,101 @@ export async function listReviewTasks(
     policy: derivedProjection.policy,
     items: filteredItems,
     summary: summarizeReviewQueueItems(filteredItems),
+  };
+}
+
+export async function getPaperWorkspaceView(
+  client,
+  {
+    userId,
+    paperScope,
+    reviewStatus = null,
+    reviewDueBefore = null,
+    residencyFlagEnabled = isArtifactLifecycleEnabled(),
+  } = {},
+) {
+  const paperProjection = await fetchPaperWorkspaceProjection(client, {
+    userId,
+    paperScope,
+  });
+
+  if (!paperProjection) {
+    throw buildPaperWorkspaceNotFound(paperScope);
+  }
+
+  const topicSections = [...(paperProjection.topic_sections ?? [])].sort(compareTopicSections);
+  const [reviewQueue, topicSectionInputs] = await Promise.all([
+    listReviewTasks(client, {
+      userId,
+      status: reviewStatus,
+      dueBefore: reviewDueBefore,
+    }),
+    Promise.all(
+      topicSections.map(async (section) => {
+        const [workspaceProjection, topicArtifacts] = await Promise.all([
+          fetchWorkspaceProjection(client, {
+            userId,
+            topicId: section.topic_id,
+          }),
+          residencyFlagEnabled
+            ? listArtifactsByTopic(client, { topicId: section.topic_id })
+            : Promise.resolve([]),
+        ]);
+
+        const projectedWorkspace = residencyFlagEnabled && workspaceProjection
+          ? projectWorkspaceResidency(workspaceProjection, topicArtifacts).workspaceProjection
+          : workspaceProjection ?? buildFallbackTopicWorkspaceProjection(section, userId);
+
+        return {
+          section,
+          workspaceProjection: projectedWorkspace,
+          topicArtifacts,
+        };
+      }),
+    ),
+  ]);
+
+  const paperReviewQueue = buildPaperReviewQueueProjection({
+    paperScope,
+    reviewQueue,
+    topicSections,
+  });
+  const reviewItemsByTopicId = new Map(
+    paperReviewQueue.topic_sections.map((section) => [section.topic_id, section.items]),
+  );
+  const topicSectionViews = topicSectionInputs
+    .map((input) => buildPaperTopicSectionProjection({
+      ...input,
+      reviewQueueItems: reviewItemsByTopicId.get(input.section.topic_id) ?? [],
+    }))
+    .sort(compareTopicSections);
+  const stableSlots = buildPaperStableSlots(topicSectionViews);
+  const pinnedArtifacts = dedupeArtifactSummaries(
+    topicSectionViews.flatMap((section) => section.pinned_artifacts),
+  );
+  const linkedReferences = dedupeTypedReferences(
+    STABLE_SLOT_KEYS.flatMap((slotKey) => stableSlots[slotKey].linked_references),
+  );
+
+  // Paper Workspace owns the visible organization layer only; authoritative
+  // artifact and ReviewTask homes remain the canonical topic sections.
+  return {
+    paper_workspace: {
+      paper_workspace_id: paperProjection.paper_workspace_id,
+      user_id: paperProjection.user_id,
+      subject_code: paperProjection.subject_code,
+      paper_scope: paperProjection.paper_scope,
+      workspace_kind: paperProjection.workspace_kind,
+      visible_organization_summary: paperProjection.visible_organization_summary ?? {},
+      linked_topic_summary: paperProjection.linked_topic_summary ?? {},
+      created_at: paperProjection.created_at ?? null,
+      updated_at: paperProjection.updated_at ?? null,
+      stable_slots: stableSlots,
+      pinned_artifacts: pinnedArtifacts,
+      linked_references: linkedReferences,
+    },
+    topic_sections: topicSectionViews,
+    review_queue: paperReviewQueue,
   };
 }
 

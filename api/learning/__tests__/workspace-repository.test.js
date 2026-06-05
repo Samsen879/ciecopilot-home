@@ -1,4 +1,5 @@
 import {
+  ensurePaperWorkspaceExists,
   ensureWorkspaceExists,
   fetchPaperWorkspaceProjection,
   fetchWorkspaceProjection,
@@ -10,6 +11,7 @@ function createWorkspaceDb() {
   let insertError = null;
   let workspaceAfterInsertError = null;
   let existingWorkspace = null;
+  let existingPaperWorkspace = null;
   const paperWorkspaceProjection = {
     paper_workspace_id: 'paper-workspace-1',
     user_id: 'user-1',
@@ -70,6 +72,17 @@ function createWorkspaceDb() {
             async single() {
               inserts.push({ table, payload });
 
+              if (table === 'learning_paper_workspaces') {
+                const row = {
+                  paper_workspace_id: 'paper-workspace-created-1',
+                  created_at: '2026-06-05T08:00:00.000Z',
+                  updated_at: '2026-06-05T08:00:00.000Z',
+                  ...payload,
+                };
+                existingPaperWorkspace = row;
+                return { data: row, error: null };
+              }
+
               if (table !== 'learning_workspaces') {
                 throw new Error(`Unexpected insert table: ${table}`);
               }
@@ -106,6 +119,13 @@ function createWorkspaceDb() {
               if (table === 'learning_workspaces') {
                 return {
                   data: existingWorkspace,
+                  error: null,
+                };
+              }
+
+              if (table === 'learning_paper_workspaces') {
+                return {
+                  data: existingPaperWorkspace,
                   error: null,
                 };
               }
@@ -263,6 +283,46 @@ describe('workspace-repository', () => {
       workspace_id: 'workspace-raced-1',
       user_id: 'user-1',
       topic_id: 'topic-1',
+    });
+  });
+
+  test('ensurePaperWorkspaceExists creates a paper workspace row without touching topic workspaces', async () => {
+    const db = createWorkspaceDb();
+
+    const paperWorkspace = await ensurePaperWorkspaceExists(db, {
+      userId: 'user-1',
+      subjectCode: '9709',
+      paperScope: '9709:paper:p6',
+    });
+
+    expect(db.selects).toEqual([
+      {
+        table: 'learning_paper_workspaces',
+        selection: '*',
+        filters: [
+          { column: 'user_id', value: 'user-1' },
+          { column: 'paper_scope', value: '9709:paper:p6' },
+        ],
+      },
+    ]);
+    expect(db.inserts).toEqual([
+      {
+        table: 'learning_paper_workspaces',
+        payload: {
+          user_id: 'user-1',
+          subject_code: '9709',
+          paper_scope: '9709:paper:p6',
+          workspace_kind: 'paper_main',
+          visible_organization_summary: {},
+          linked_topic_summary: {},
+        },
+      },
+    ]);
+    expect(paperWorkspace).toMatchObject({
+      paper_workspace_id: 'paper-workspace-created-1',
+      user_id: 'user-1',
+      subject_code: '9709',
+      paper_scope: '9709:paper:p6',
     });
   });
 

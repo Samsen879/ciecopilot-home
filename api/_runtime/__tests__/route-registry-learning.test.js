@@ -53,6 +53,32 @@ describe('learning route registry', () => {
       params: { topicId: 'topic-1' },
     });
 
+    expect(findRoute('/api/learning/workspaces/topic-1', 'POST')).toMatchObject({
+      route: expect.objectContaining({
+        module: 'learning-workspace-topic',
+        importPath: '../learning/workspaces/[topicId].js',
+      }),
+      allowed: true,
+      params: { topicId: 'topic-1' },
+    });
+
+    expect(findRoute('/api/learning/workspaces/papers/9709%3Apaper%3Ap1', 'GET')).toMatchObject({
+      route: expect.objectContaining({
+        module: 'learning-workspace-paper',
+        importPath: '../learning/workspaces/papers/[paperScope].js',
+      }),
+      allowed: true,
+      params: { paperScope: '9709:paper:p1' },
+    });
+
+    expect(findRoute('/api/learning/workspaces/papers/9709%3Apaper%3Ap1', 'POST')).toMatchObject({
+      route: expect.objectContaining({
+        module: 'learning-workspace-paper',
+      }),
+      allowed: true,
+      params: { paperScope: '9709:paper:p1' },
+    });
+
     expect(findRoute('/api/learning/review-tasks', 'GET')).toMatchObject({
       route: expect.objectContaining({
         module: 'learning-review-tasks',
@@ -91,6 +117,7 @@ describe('learning route registry', () => {
       'learning-sessions',
       'learning-questions-import',
       'learning-questions',
+      'learning-workspace-paper',
       'learning-workspace-topic',
       'learning-review-task-id',
       'learning-review-tasks',
@@ -107,6 +134,10 @@ describe('learning route registry', () => {
     expect(sessionAsk.route?.module).toBe('learning-sessions-ask');
     expect(sessionAsk.allowed).toBe(false);
 
+    const paperWorkspace = findRoute('/api/learning/workspaces/papers/9709%3Apaper%3Ap1', 'DELETE');
+    expect(paperWorkspace.route?.module).toBe('learning-workspace-paper');
+    expect(paperWorkspace.allowed).toBe(false);
+
     const reviewTaskPatch = findRoute('/api/learning/review-tasks/review-task-1', 'GET');
     expect(reviewTaskPatch.route?.module).toBe('learning-review-task-id');
     expect(reviewTaskPatch.allowed).toBe(false);
@@ -122,6 +153,14 @@ describe('learning route registry', () => {
 
   test('does not let the learning questions search route match deeper subtree paths', () => {
     expect(findRoute('/api/learning/questions/foo', 'GET')).toEqual({
+      route: null,
+      allowed: false,
+      params: {},
+    });
+  });
+
+  test('requires paper workspace scope to stay inside one encoded path segment', () => {
+    expect(findRoute('/api/learning/workspaces/papers/9709/paper/p1', 'GET')).toEqual({
       route: null,
       allowed: false,
       params: {},

@@ -1,17 +1,20 @@
-import { requireAuth } from '../../lib/security/auth-guard.js';
-import { getServiceClient } from '../../lib/supabase/client.js';
-import { LEARNING_ERROR_CODES } from '../lib/contracts/error-contract.js';
+import { requireAuth } from '../../../lib/security/auth-guard.js';
+import { getServiceClient } from '../../../lib/supabase/client.js';
+import { LEARNING_ERROR_CODES } from '../../lib/contracts/error-contract.js';
 import {
   LearningHttpError,
   sendLearningError,
   sendLearningHttpError,
   sendLearningJson,
-} from '../lib/http/learning-http.js';
+} from '../../lib/http/learning-http.js';
 import {
-  ensureWorkspaceView,
-  getWorkspaceView,
-} from '../lib/workspaces/workspace-read-service.js';
-import { buildTopicWorkspaceCompatibility } from '../lib/workspaces/paper-workspace-contract.js';
+  ensurePaperWorkspaceView,
+  getPaperWorkspaceView,
+} from '../../lib/workspaces/workspace-read-service.js';
+import {
+  buildPaperWorkspaceCompatibilityEnvelope,
+  normalizePaperScope,
+} from '../../lib/workspaces/paper-workspace-contract.js';
 
 async function ensureLearningAuth(req) {
   if (req?.auth_user_id) {
@@ -30,6 +33,10 @@ async function ensureLearningAuth(req) {
     ok: true,
     userId: auth.user?.id || req?.auth_user_id || null,
   };
+}
+
+function normalizeSummaryObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 }
 
 export default async function handler(req, res) {
@@ -66,29 +73,31 @@ export default async function handler(req, res) {
         LEARNING_ERROR_CODES.INVALID_PAYLOAD,
         {
           status: 400,
-          message: 'POST /api/learning/workspaces/:topicId requires action "ensure".',
+          message: 'POST /api/learning/workspaces/papers/:paperScope requires action "ensure".',
           details: { field: 'action' },
         },
       );
     }
 
     const client = getServiceClient();
-    const topicId = req?.query?.topicId || null;
+    const paperScope = normalizePaperScope(req?.query?.paperScope);
     const payload = req.method === 'POST'
-      ? await ensureWorkspaceView(client, {
+      ? await ensurePaperWorkspaceView(client, {
         userId: auth.userId,
-        topicId,
-        topicPath: req?.body?.topic_path || null,
+        paperScope,
+        visibleOrganizationSummary: normalizeSummaryObject(req?.body?.visible_organization_summary),
+        linkedTopicSummary: normalizeSummaryObject(req?.body?.linked_topic_summary),
       })
-      : await getWorkspaceView(client, {
+      : await getPaperWorkspaceView(client, {
         userId: auth.userId,
-        topicId,
+        paperScope,
       });
 
-    return sendLearningJson(res, req?.request_id || null, {
-      ...payload,
-      compatibility: buildTopicWorkspaceCompatibility(payload),
-    });
+    return sendLearningJson(
+      res,
+      req?.request_id || null,
+      buildPaperWorkspaceCompatibilityEnvelope(payload),
+    );
   } catch (error) {
     if (error instanceof LearningHttpError) {
       return sendLearningHttpError(res, req?.request_id || null, error);

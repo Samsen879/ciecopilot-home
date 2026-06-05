@@ -376,6 +376,31 @@ describe('learning runtime schema contract', () => {
     ].forEach((token) => expect(paperWorkspaceSql).toContain(token));
   });
 
+  test('paper workspace topic-section bridge rejects mismatched topic workspace pointers while allowing compatible links', () => {
+    const sql = normalizeSql(readRequiredMigration(PAPER_WORKSPACE_CONTRACT_MIGRATION));
+
+    if (!sql) {
+      return;
+    }
+
+    [
+      'create or replace function public.enforce_learning_paper_workspace_topic_section_workspace_match()',
+      'if new.topic_workspace_id is null then return new; end if',
+      'from public.learning_paper_workspaces',
+      'where paper_workspace_id = new.paper_workspace_id',
+      'from public.learning_workspaces',
+      'where workspace_id = new.topic_workspace_id',
+      'if linked_workspace_user_id <> paper_workspace_user_id then',
+      "constraint = 'chk_learning_paper_workspace_topic_sections_topic_workspace_user'",
+      'if linked_workspace_topic_id <> new.topic_id then',
+      "constraint = 'chk_learning_paper_workspace_topic_sections_topic_workspace_topic'",
+      'return new; end; $$',
+      'before insert or update of paper_workspace_id, topic_id, topic_workspace_id',
+      'on public.learning_paper_workspace_topic_sections',
+      'execute function public.enforce_learning_paper_workspace_topic_section_workspace_match()'
+    ].forEach((token) => expect(sql).toContain(token));
+  });
+
   test('paper workspace migration is non-destructive for existing topic workspace data', () => {
     const sql = normalizeSql(readRequiredMigration(PAPER_WORKSPACE_CONTRACT_MIGRATION));
 

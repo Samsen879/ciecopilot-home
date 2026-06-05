@@ -53,6 +53,73 @@ CREATE INDEX IF NOT EXISTS idx_learning_paper_workspace_topic_sections_topic_wor
   ON public.learning_paper_workspace_topic_sections (topic_workspace_id)
   WHERE topic_workspace_id IS NOT NULL;
 
+CREATE OR REPLACE FUNCTION public.enforce_learning_paper_workspace_topic_section_workspace_match()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  paper_workspace_user_id UUID;
+  linked_workspace_user_id UUID;
+  linked_workspace_topic_id UUID;
+BEGIN
+  IF NEW.topic_workspace_id IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT user_id
+  INTO paper_workspace_user_id
+  FROM public.learning_paper_workspaces
+  WHERE paper_workspace_id = NEW.paper_workspace_id;
+
+  IF paper_workspace_user_id IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT user_id, topic_id
+  INTO linked_workspace_user_id, linked_workspace_topic_id
+  FROM public.learning_workspaces
+  WHERE workspace_id = NEW.topic_workspace_id;
+
+  IF linked_workspace_user_id IS NULL THEN
+    RETURN NEW;
+  END IF;
+
+  IF linked_workspace_user_id <> paper_workspace_user_id THEN
+    RAISE EXCEPTION
+      'topic_workspace_id must belong to the same user as the parent paper workspace'
+      USING
+        ERRCODE = '23514',
+        CONSTRAINT = 'chk_learning_paper_workspace_topic_sections_topic_workspace_user';
+  END IF;
+
+  IF linked_workspace_topic_id <> NEW.topic_id THEN
+    RAISE EXCEPTION
+      'topic_workspace_id must belong to the same topic as the paper workspace topic section'
+      USING
+        ERRCODE = '23514',
+        CONSTRAINT = 'chk_learning_paper_workspace_topic_sections_topic_workspace_topic';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_trigger
+    WHERE tgname = 'trg_learning_paper_workspace_topic_sections_workspace_match'
+      AND tgrelid = 'public.learning_paper_workspace_topic_sections'::regclass
+  ) THEN
+    CREATE TRIGGER trg_learning_paper_workspace_topic_sections_workspace_match
+      BEFORE INSERT OR UPDATE OF paper_workspace_id, topic_id, topic_workspace_id
+      ON public.learning_paper_workspace_topic_sections
+      FOR EACH ROW
+      EXECUTE FUNCTION public.enforce_learning_paper_workspace_topic_section_workspace_match();
+  END IF;
+END $$;
+
 CREATE OR REPLACE VIEW public.learning_paper_workspace_projection AS
 SELECT
   pw.paper_workspace_id,

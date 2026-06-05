@@ -19,6 +19,7 @@ import {
   normalizePaperScope,
 } from './paper-workspace-contract.js';
 import {
+  compareReviewTaskProjectionItems,
   deriveReviewQueueProjection,
   summarizeReviewQueueItems,
 } from '../review/review-scheduler-policy.js';
@@ -79,6 +80,142 @@ function getTypedRefKey(ref) {
   }
 
   return `${ref.kind}:${idEntry[1]}`;
+}
+
+function getCanonicalQueueIdentity(item = {}) {
+  const targetTopicId = normalizeString(item?.target_topic_id);
+  if (!targetTopicId) {
+    return null;
+  }
+
+  return {
+    target_topic_id: targetTopicId,
+    target_family_id: normalizeString(item?.target_family_id),
+    target_question_type_id: normalizeString(item?.target_question_type_id),
+  };
+}
+
+function getCanonicalQueueIdentityKey(item = {}) {
+  const identity = getCanonicalQueueIdentity(item);
+  return identity ? JSON.stringify(identity) : null;
+}
+
+function dedupeStrings(values = []) {
+  const seen = new Set();
+
+  return (Array.isArray(values) ? values : []).flatMap((value) => {
+    const normalized = normalizeString(value);
+    if (!normalized || seen.has(normalized)) {
+      return [];
+    }
+
+    seen.add(normalized);
+    return [normalized];
+  });
+}
+
+function dedupeReviewTaskRefs(refs = []) {
+  return dedupeBy(refs, (ref) => normalizeString(ref?.review_task_id));
+}
+
+function collectReviewTaskSourceQuestionIds(item = {}) {
+  const explanation = isPlainObject(item?.explanation) ? item.explanation : {};
+  const attemptHistory = isPlainObject(explanation.attempt_history)
+    ? explanation.attempt_history
+    : {};
+  const evidence = isPlainObject(explanation.evidence) ? explanation.evidence : {};
+
+  return [
+    ...(Array.isArray(attemptHistory.source_question_ids) ? attemptHistory.source_question_ids : []),
+    evidence.source_question_id,
+    item.source_question_id,
+  ];
+}
+
+function collectReviewTaskSourceAttemptRefs(item = {}) {
+  const explanation = isPlainObject(item?.explanation) ? item.explanation : {};
+  const attemptHistory = isPlainObject(explanation.attempt_history)
+    ? explanation.attempt_history
+    : {};
+  const evidence = isPlainObject(explanation.evidence) ? explanation.evidence : {};
+
+  return [
+    ...(Array.isArray(attemptHistory.source_attempt_refs) ? attemptHistory.source_attempt_refs : []),
+    attemptHistory.latest_source_attempt_ref,
+    evidence.source_attempt_ref,
+    item.source_attempt_ref,
+  ];
+}
+
+function buildProjectionAttribution(item = {}, foldedItems = []) {
+  const canonicalQueueIdentity = getCanonicalQueueIdentity(item);
+
+  return {
+    canonical_queue_identity: canonicalQueueIdentity,
+    source_question_ids: dedupeStrings(
+      foldedItems.flatMap((foldedItem) => collectReviewTaskSourceQuestionIds(foldedItem)),
+    ),
+    source_attempt_refs: dedupeTypedReferences(
+      foldedItems.flatMap((foldedItem) => collectReviewTaskSourceAttemptRefs(foldedItem)),
+    ),
+    folded_review_task_refs: dedupeReviewTaskRefs(
+      foldedItems.map((foldedItem) => ({
+        kind: 'review_task',
+        review_task_id: foldedItem.review_task_id ?? null,
+      })),
+    ),
+  };
+}
+
+function withProjectionAttribution(item = {}, foldedItems = [item]) {
+  return {
+    ...item,
+    projection_attribution: buildProjectionAttribution(item, foldedItems),
+  };
+}
+
+function foldReviewQueueItemsByCanonicalIdentity(items = []) {
+  const groupsByKey = new Map();
+  const slots = [];
+
+  for (const item of Array.isArray(items) ? items : []) {
+    const key = ACTIVE_REVIEW_TASK_STATUSES.has(item?.status)
+      ? getCanonicalQueueIdentityKey(item)
+      : null;
+
+    if (!key) {
+      slots.push({
+        item,
+        foldedItems: [item],
+      });
+      continue;
+    }
+
+    let group = groupsByKey.get(key);
+    if (!group) {
+      group = {
+        items: [],
+        slot: {
+          item: null,
+          foldedItems: [],
+        },
+      };
+      groupsByKey.set(key, group);
+      slots.push(group.slot);
+    }
+
+    group.items.push(item);
+  }
+
+  for (const group of groupsByKey.values()) {
+    const winner = [...group.items].sort(compareReviewTaskProjectionItems)[0] ?? null;
+    group.slot.item = winner;
+    group.slot.foldedItems = group.items;
+  }
+
+  return slots
+    .flatMap((slot) => (slot.item ? [withProjectionAttribution(slot.item, slot.foldedItems)] : []))
+    .sort(compareReviewTaskProjectionItems);
 }
 
 function createEmptySlot() {
@@ -738,6 +875,7 @@ function buildPaperReviewQueueProjection({
   paperScope,
   reviewQueue,
   topicSections,
+  reviewQuestionTypeId = null,
 } = {}) {
   const sortedSections = [...(Array.isArray(topicSections) ? topicSections : [])].sort(compareTopicSections);
   const topicIds = sortedSections
@@ -753,6 +891,7 @@ function buildPaperReviewQueueProjection({
     scope: 'paper_workspace_review_projection',
     paper_scope: normalizeString(paperScope),
     topic_ids: topicIds,
+    question_type_id: normalizeString(reviewQuestionTypeId),
     status: normalizeString(reviewQueue?.status),
     due_before: normalizeString(reviewQueue?.due_before),
     policy: reviewQueue?.policy ?? null,
@@ -775,6 +914,7 @@ function buildPaperTopicSectionProjection({
   workspaceProjection,
   topicArtifacts,
   reviewQueueItems,
+  reviewQuestionTypeId = null,
 } = {}) {
   const normalizedArtifacts = normalizeTopicArtifacts(topicArtifacts);
   const pinnedArtifactSummaries = dedupeArtifactSummaries(
@@ -814,6 +954,7 @@ function buildPaperTopicSectionProjection({
       scope: 'paper_topic_section_review_projection',
       topic_id: section.topic_id ?? null,
       topic_path: section.topic_path ?? null,
+      question_type_id: normalizeString(reviewQuestionTypeId),
       items: reviewQueueItems,
       summary: summarizeReviewQueueItems(reviewQueueItems),
     },
@@ -894,15 +1035,21 @@ function buildPaperStableSlots(topicSectionViews = []) {
 
 function filterReviewQueueItems(items, {
   topicId = null,
+  questionTypeId = null,
   status = null,
   dueBefore = null,
 } = {}) {
   const normalizedTopicId = normalizeString(topicId);
+  const normalizedQuestionTypeId = normalizeString(questionTypeId);
   const normalizedStatus = normalizeString(status);
   const normalizedDueBefore = normalizeString(dueBefore);
 
   return (Array.isArray(items) ? items : []).filter((item) => {
     if (normalizedTopicId && item?.target_topic_id !== normalizedTopicId) {
+      return false;
+    }
+
+    if (normalizedQuestionTypeId && item?.target_question_type_id !== normalizedQuestionTypeId) {
       return false;
     }
 
@@ -926,6 +1073,7 @@ export async function listReviewTasks(
   {
     userId,
     topicId = null,
+    questionTypeId = null,
     status = null,
     dueBefore = null,
   } = {},
@@ -950,18 +1098,21 @@ export async function listReviewTasks(
   const derivedProjection = deriveReviewQueueProjection(Array.isArray(data) ? data : []);
   const filteredItems = filterReviewQueueItems(derivedProjection.items, {
     topicId,
+    questionTypeId,
     status,
     dueBefore,
   });
+  const projectedItems = foldReviewQueueItemsByCanonicalIdentity(filteredItems);
 
   return {
     scope: 'global_queue_projection',
     topic_id: normalizeString(topicId),
+    question_type_id: normalizeString(questionTypeId),
     status: normalizeString(status),
     due_before: normalizeString(dueBefore),
     policy: derivedProjection.policy,
-    items: filteredItems,
-    summary: summarizeReviewQueueItems(filteredItems),
+    items: projectedItems,
+    summary: summarizeReviewQueueItems(projectedItems),
   };
 }
 
@@ -972,6 +1123,7 @@ export async function getPaperWorkspaceView(
     paperScope,
     reviewStatus = null,
     reviewDueBefore = null,
+    reviewQuestionTypeId = null,
     residencyFlagEnabled = isArtifactLifecycleEnabled(),
   } = {},
 ) {
@@ -990,6 +1142,7 @@ export async function getPaperWorkspaceView(
       userId,
       status: reviewStatus,
       dueBefore: reviewDueBefore,
+      questionTypeId: reviewQuestionTypeId,
     }),
     Promise.all(
       topicSections.map(async (section) => {
@@ -1020,6 +1173,7 @@ export async function getPaperWorkspaceView(
     paperScope,
     reviewQueue,
     topicSections,
+    reviewQuestionTypeId,
   });
   const reviewItemsByTopicId = new Map(
     paperReviewQueue.topic_sections.map((section) => [section.topic_id, section.items]),
@@ -1028,6 +1182,7 @@ export async function getPaperWorkspaceView(
     .map((input) => buildPaperTopicSectionProjection({
       ...input,
       reviewQueueItems: reviewItemsByTopicId.get(input.section.topic_id) ?? [],
+      reviewQuestionTypeId,
     }))
     .sort(compareTopicSections);
   const stableSlots = buildPaperStableSlots(topicSectionViews);
@@ -1067,6 +1222,7 @@ export async function ensurePaperWorkspaceView(
     paperScope,
     reviewStatus = null,
     reviewDueBefore = null,
+    reviewQuestionTypeId = null,
     residencyFlagEnabled = isArtifactLifecycleEnabled(),
     visibleOrganizationSummary = {},
     linkedTopicSummary = {},
@@ -1087,6 +1243,7 @@ export async function ensurePaperWorkspaceView(
     paperScope: normalizedPaperScope,
     reviewStatus,
     reviewDueBefore,
+    reviewQuestionTypeId,
     residencyFlagEnabled,
   });
 }
@@ -1100,6 +1257,7 @@ export async function getTopicSectionWorkspaceView(
     topicPath = null,
     reviewStatus = null,
     reviewDueBefore = null,
+    reviewQuestionTypeId = null,
     residencyFlagEnabled = isArtifactLifecycleEnabled(),
   } = {},
 ) {
@@ -1109,6 +1267,7 @@ export async function getTopicSectionWorkspaceView(
     paperScope: normalizedPaperScope,
     reviewStatus,
     reviewDueBefore,
+    reviewQuestionTypeId,
     residencyFlagEnabled,
   });
   const topicSection = findTopicSectionView(paperView.topic_sections, {
@@ -1150,6 +1309,7 @@ export async function getWorkspaceView(
   {
     userId,
     topicId,
+    reviewQuestionTypeId = null,
     reviewStatus = null,
     reviewDueBefore = null,
     residencyFlagEnabled = isArtifactLifecycleEnabled(),
@@ -1172,6 +1332,7 @@ export async function getWorkspaceView(
     listReviewTasks(client, {
       userId,
       topicId,
+      questionTypeId: reviewQuestionTypeId,
       status: reviewStatus,
       dueBefore: reviewDueBefore,
     }),
@@ -1179,6 +1340,7 @@ export async function getWorkspaceView(
       ? listReviewTasks(client, {
         userId,
         topicId,
+        questionTypeId: reviewQuestionTypeId,
       })
       : Promise.resolve(null),
     getLatestWorkspaceSession(client, {
@@ -1231,6 +1393,7 @@ export async function ensureWorkspaceView(
     topicPath = null,
     reviewStatus = null,
     reviewDueBefore = null,
+    reviewQuestionTypeId = null,
     residencyFlagEnabled = isArtifactLifecycleEnabled(),
   } = {},
 ) {
@@ -1248,6 +1411,7 @@ export async function ensureWorkspaceView(
   return getWorkspaceView(client, {
     userId,
     topicId: canonicalTopic.topicId,
+    reviewQuestionTypeId,
     reviewStatus,
     reviewDueBefore,
     residencyFlagEnabled,

@@ -82,6 +82,32 @@ export function buildPaperWorkspaceCompatibilityEnvelope(payload = {}) {
   };
 }
 
+export function buildPaperTopicSectionCompatibilityEnvelope(payload = {}) {
+  const paperWorkspace = payload.paper_workspace ?? {};
+  const topicSection = payload.topic_section ?? {};
+  const workspace = payload.workspace ?? {};
+
+  return {
+    paper_scope: paperWorkspace.paper_scope ?? payload.compatibility?.paper_scope ?? null,
+    workspace_id: workspace.workspace_id ?? topicSection.topic_workspace_id ?? null,
+    paper_workspace: paperWorkspace,
+    topic_section: topicSection,
+    workspace,
+    stable_slots: workspace.slots ?? {},
+    review_queue: payload.review_queue ?? null,
+    compatibility: payload.compatibility ?? {
+      surface: 'paper_topic_section_workspace',
+      paper_workspace_route: PAPER_WORKSPACE_ROUTE,
+      canonical_owner_kind: 'topic',
+      topic_sections_are_projections: true,
+      legacy_topic_fallback: {
+        route: LEGACY_TOPIC_WORKSPACE_ROUTE,
+        status: 'preserved',
+      },
+    },
+  };
+}
+
 export function buildTopicWorkspaceCompatibility(payload = {}) {
   return {
     surface: 'legacy_topic_workspace',

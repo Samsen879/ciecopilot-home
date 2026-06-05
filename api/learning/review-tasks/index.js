@@ -58,6 +58,7 @@ export default async function handler(req, res) {
     const payload = await listReviewTasks(getServiceClient(), {
       userId: auth.userId,
       topicId: req?.query?.topic_id || null,
+      questionTypeId: req?.query?.question_type_id || null,
       status: req?.query?.status || null,
       dueBefore: req?.query?.due_before || null,
     });

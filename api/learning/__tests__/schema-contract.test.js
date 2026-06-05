@@ -9,6 +9,8 @@ const DRAFT_9709_P3_CLASSIFIER_REGISTRY_MIGRATION =
   'supabase/migrations/20260505120000_seed_9709_p3_classifier_registry_draft.sql';
 const PAPER_WORKSPACE_CONTRACT_MIGRATION =
   'supabase/migrations/20260605120000_add_paper_workspace_persistence_contract.sql';
+const PAPER_WORKSPACE_READ_MODEL_MIGRATION =
+  'supabase/migrations/20260605130000_add_paper_workspace_read_model_projection.sql';
 
 const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
@@ -418,6 +420,37 @@ describe('learning runtime schema contract', () => {
     ].forEach((pattern) => expect(sql).not.toMatch(pattern));
 
     expect(sql).toContain('from public.learning_workspace_projection');
+  });
+
+  test('paper workspace read-model projection exposes paper-visible slots without changing topic ownership', () => {
+    const sql = normalizeSql(readRequiredMigration(PAPER_WORKSPACE_READ_MODEL_MIGRATION));
+
+    if (!sql) {
+      return;
+    }
+
+    [
+      'create or replace view public.learning_paper_workspace_projection as',
+      'from public.learning_paper_workspaces',
+      'public.learning_topic_workspace_compatibility_projection',
+      'public.learning_artifacts',
+      'public.learning_review_queue_projection',
+      'topic_sections',
+      'stable_slots',
+      'pinned_artifact_summaries',
+      'linked_reference_refs',
+      'review_queue_projection_shape',
+      'canonical_ownership',
+      'paper workspace owns visible organization',
+      'canonical topic ownership remains on artifacts and review tasks',
+    ].forEach((token) => expect(sql).toContain(token));
+
+    [
+      /drop\s+table/,
+      /drop\s+column/,
+      /truncate\s+(table\s+)?public\.learning_workspaces/,
+      /delete\s+from\s+public\.learning_workspaces/,
+    ].forEach((pattern) => expect(sql).not.toMatch(pattern));
   });
 
   test('9709 p1 classifier registry draft seed covers non-released topic families', () => {

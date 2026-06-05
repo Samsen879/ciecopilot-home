@@ -11,6 +11,23 @@ function buildStableSlotMap(fillValue) {
   return Object.fromEntries(STABLE_SLOT_KEYS.map((slotKey) => [slotKey, fillValue(slotKey)]));
 }
 
+function normalizeObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+
+function normalizeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function comparePaperTopicSections(left = {}, right = {}) {
+  const pathCompare = String(left.topic_path ?? '').localeCompare(String(right.topic_path ?? ''));
+  if (pathCompare !== 0) {
+    return pathCompare;
+  }
+
+  return String(left.topic_id ?? '').localeCompare(String(right.topic_id ?? ''));
+}
+
 function separateWorkspaceSlots(slotRows) {
   const slots = buildStableSlotMap(() => null);
   const linked_references = buildStableSlotMap(() => []);
@@ -32,6 +49,21 @@ function separateWorkspaceSlots(slotRows) {
   }
 
   return { slots, linked_references };
+}
+
+function normalizePaperTopicSections(topicSections) {
+  return normalizeArray(topicSections)
+    .map((section) => ({
+      ...section,
+      paper_workspace_topic_section_id: section?.paper_workspace_topic_section_id ?? null,
+      topic_id: section?.topic_id ?? null,
+      topic_workspace_id: section?.topic_workspace_id ?? null,
+      topic_path: section?.topic_path ?? null,
+      section_state: normalizeObject(section?.section_state),
+      created_at: section?.created_at ?? null,
+      updated_at: section?.updated_at ?? null,
+    }))
+    .sort(comparePaperTopicSections);
 }
 
 async function getWorkspaceByTopic(client, { userId, topicId } = {}) {
@@ -128,5 +160,42 @@ export async function fetchWorkspaceProjection(client, { userId, topicId } = {})
     updated_at: data.updated_at ?? null,
     slots,
     linked_references,
+  };
+}
+
+export async function fetchPaperWorkspaceProjection(client, {
+  userId,
+  paperScope,
+} = {}) {
+  const { data, error } = await client
+    .from('learning_paper_workspace_projection')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('paper_scope', paperScope)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load paper workspace projection: ${error.message}`);
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  return {
+    paper_workspace_id: data.paper_workspace_id,
+    user_id: data.user_id,
+    subject_code: data.subject_code,
+    paper_scope: data.paper_scope,
+    workspace_kind: data.workspace_kind ?? 'paper_main',
+    visible_organization_summary: normalizeObject(data.visible_organization_summary),
+    linked_topic_summary: normalizeObject(data.linked_topic_summary),
+    created_at: data.created_at ?? null,
+    updated_at: data.updated_at ?? null,
+    topic_sections: normalizePaperTopicSections(data.topic_sections),
+    stable_slots: normalizeObject(data.stable_slots),
+    pinned_artifact_summaries: normalizeArray(data.pinned_artifact_summaries),
+    linked_reference_refs: normalizeArray(data.linked_reference_refs),
+    review_queue_projection_shape: normalizeObject(data.review_queue_projection_shape),
   };
 }

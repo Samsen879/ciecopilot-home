@@ -2,7 +2,7 @@
 
 - generated_on: `2026-06-05`
 - gate_status: `candidate_inventory_ready`
-- verdict: `next_wave_candidates_available`
+- verdict: `no_next_wave_candidates_available`
 - production_ready_claimed: `false`
 - This is a candidate inventory only: not question_plain_text_v1/v2, not a visual review gate, and not a DB/search/RAG consumption gate.
 - External VLM/API calls: 0. External OCR reruns: 0.
@@ -25,38 +25,23 @@
 | scanned rows | 1593 |
 | crop-ready rows | 1002 |
 | crop/render incomplete rows | 591 |
-| already covered rows | 441 |
+| already covered rows | 918 |
 | WM/frozen rows | 150 |
 | duplicate storage-key rows | 0 |
-| candidate rows | 477 |
-| candidate shards | 16 |
-| recommended shards | 16 |
-| candidate source PDFs | 48 |
+| candidate rows | 0 |
+| candidate shards | 0 |
+| recommended shards | 0 |
+| candidate source PDFs | 0 |
 | source PDF parse inspected | true |
-| candidate source PDFs pdfjs parse OK | 48 |
-| candidate rows with source PDF parse OK | 477 |
+| candidate source PDFs pdfjs parse OK | 0 |
+| candidate rows with source PDF parse OK | 0 |
 | blockers | 0 |
 
 ## Recommended Shards
 
 | shard | candidate rows | total rows | completion | source PDFs |
 | --- | ---: | ---: | ---: | ---: |
-| `9231_p1_s17_standard_001` | 35 | 35 | 1 | 3 |
-| `9231_p1_s18_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p1_s19_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p1_w17_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p1_w18_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p2_s17_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p2_s18_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p2_s19_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p2_w17_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p2_w18_standard_001` | 33 | 33 | 1 | 3 |
-| `9231_p2_w20_standard_001` | 25 | 25 | 1 | 3 |
-| `9231_p2_s21_standard_001` | 24 | 24 | 1 | 3 |
-| `9231_p2_s22_standard_001` | 24 | 24 | 1 | 3 |
-| `9231_p2_s23_standard_001` | 24 | 24 | 1 | 3 |
-| `9231_p2_w21_standard_001` | 24 | 24 | 1 | 3 |
-| `9231_p2_w22_standard_001` | 24 | 24 | 1 | 3 |
+| none | 0 | 0 | 0 | 0 |
 
 ## Blockers
 

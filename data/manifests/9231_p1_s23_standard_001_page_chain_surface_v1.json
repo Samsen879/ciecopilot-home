@@ -27,7 +27,7 @@
     "data/past-papers/9231Further-Mathematics/paper1/9231_s23_qp_12.pdf",
     "data/past-papers/9231Further-Mathematics/paper1/9231_s23_qp_13.pdf"
   ],
-  "surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+  "surface_status": "wave2_crop_render_complete_pending_visual_review",
   "boundary": {
     "local_deterministic_shard_split": true,
     "production_ready_claimed": false,
@@ -79,34 +79,92 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q01/q01_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q01/q01_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "30\n1LetA=eo.\n11\n(a)Prove by mathematical induction that, for all positive integersn,\nn\nn2#30\n2A=eo.[5]\nn\n3-12....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nn\n(b)Find, in terms ofn, the inverse ofA.[2]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/11/M/J/23[Turn over",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 197,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_003.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q01/q01_page_003.png",
+          "crop_box_points": [
+            0,
+            53.769,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            108,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_11_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-8e8ad405-1196-99b4-9a08-12071c926955",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.series_and_induction",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_11/questions/q02.png",
@@ -140,8 +198,7 @@
         "y": 765.57
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -149,34 +206,92 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "32\n2The cubic equationx+4x+6x+1=0has rootsa,b,c.\n222\n(a)Find the value ofa+b+c.[2]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Use standard results from the list of formulae (MF19) to show that\nn\n2222\n`(a+r)+(b+r)+(c+r)j=n n(+an+b),\n/\nr=1\nwhereaandbare constants to be determined.[6]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/11/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 198,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_004.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            46.519,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_11_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-73b78081-56c3-98c3-b8f2-fe572c1cc29a",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_11/questions/q03.png",
@@ -210,8 +325,7 @@
         "y": 758.1
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -219,34 +333,92 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1\n3(a)Use the method of differences to find/in terms ofnandk, wherekis a\n(kr+1) (kr-k+1)\nr=1\npositive constant.[4]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/11/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 199,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_006.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            53.987,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            108,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_11_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-e17a7d36-b452-9cb2-a559-fe98fc3bc536",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_11/questions/q04.png",
@@ -280,8 +452,7 @@
         "y": 758.32
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -289,34 +460,92 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "ab\n4The matrixMis given byM=eo, wherea,b,care real constants andb!0.\n2\nca\n(a)Show thatMdoes not represent a rotation about the origin.[2]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the equations of the invariant lines, through the origin, of the transformation in thex-yplane\nrepresented byM.[5]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/11/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 200,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_008.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            53.769,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            108,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_11_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-75f90c9b-8a93-9ccf-8bd3-94860b6701e7",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_11/questions/q05.png",
@@ -350,8 +579,7 @@
         "y": 762.35
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -359,34 +587,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "21\n5The curveChas polar equationr=, for0GiGr.\n2\ni+1\n(a)SketchCand state the polar coordinates of the point ofCfurthest from the pole.[3]............................................................................................................................................................\n(b)Find the area of the region enclosed byC, the initial line, and the half-linei=r.[4]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/11/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 201,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_010.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            49.737,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            99,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_11_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-25b052ff-4334-98dd-81dd-a99a620a951d",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_11/questions/q06.png",
@@ -420,10 +706,7 @@
         "y": 759.54
       },
       "page_indices": [
-        11,
-        12,
-        13,
-        14
+        11
       ],
       "page_numbers": [
         12,
@@ -433,34 +716,92 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 14,
-        "start_page_number": 12,
-        "end_page_number": 15
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "x+2x-15\n6The curveChas equationy=.\nx-2\n(a)Find the equations of the asymptotes ofC.[3]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Show thatChas no stationary points.[3]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/11/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 202,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_012.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            52.55,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            105,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_11_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-d7f87378-ff20-9dfd-bdcf-1209fea5ca69",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_11/questions/q07.png",
@@ -494,11 +835,7 @@
         "y": 767.88
       },
       "page_indices": [
-        15,
-        16,
-        17,
-        18,
-        19
+        15
       ],
       "page_numbers": [
         16,
@@ -509,34 +846,92 @@
       ],
       "page_range": {
         "start_page_index": 15,
-        "end_page_index": 19,
-        "start_page_number": 16,
-        "end_page_number": 20
+        "end_page_index": 15
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_016.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q07/q07_page_016.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q07/q07_page_016.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "7The planePhas equationr= -4j-3k+m(i-j+k)+n(i+j-k).\n1\n(a)Obtain an equation ofPin the formpx+qy+rz=d.[4]\n1................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)The planePhas equationr.(-5i+3j+5k)=4.\n2\nFind a vector equation of the line of intersection ofPandP.[4]\n12................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/11/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 203,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 15,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_11/9231_s23_qp_11_page_016.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_11/q07/q07_page_016.png",
+          "crop_box_points": [
+            0,
+            44.206,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            88,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_11_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-adeb6310-5ce0-9582-9bba-4cd569c1195e",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.vectors",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_12/questions/q01.png",
@@ -577,34 +972,89 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q01/q01_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q01/q01_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "30\n1LetA=eo.\n11\n(a)Prove by mathematical induction that, for all positive integersn,\nn\nn2#30\n2A=eo.[5]\nn\n3-12....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nn\n(b)Find, in terms ofn, the inverse ofA.[2]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/12/M/J/23[Turn over",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 204,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_003.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q01/q01_page_003.png",
+          "crop_box_points": [
+            0,
+            53.769,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            108,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_12_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-da9ce2b9-d1f9-93bb-8226-d3b9f765484a",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.series_and_induction",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_12/questions/q02.png",
@@ -638,8 +1088,7 @@
         "y": 765.57
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -647,34 +1096,92 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "32\n2The cubic equationx+4x+6x+1=0has rootsa,b,c.\n222\n(a)Find the value ofa+b+c.[2]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Use standard results from the list of formulae (MF19) to show that\nn\n2222\n`(a+r)+(b+r)+(c+r)j=n n(+an+b),\n/\nr=1\nwhereaandbare constants to be determined.[6]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/12/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 205,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_004.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            46.519,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_12_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-70a95f3e-f7b7-9e1a-ac4b-4897fd6ea4df",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_12/questions/q03.png",
@@ -708,8 +1215,7 @@
         "y": 758.1
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -717,34 +1223,92 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1\n3(a)Use the method of differences to find/in terms ofnandk, wherekis a\n(kr+1) (kr-k+1)\nr=1\npositive constant.[4]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/12/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 206,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_006.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            53.987,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            108,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_12_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-43138b3f-5deb-90b1-b879-80ce6ffb4401",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_12/questions/q04.png",
@@ -778,8 +1342,7 @@
         "y": 758.32
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -787,34 +1350,92 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "ab\n4The matrixMis given byM=eo, wherea,b,care real constants andb!0.\n2\nca\n(a)Show thatMdoes not represent a rotation about the origin.[2]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the equations of the invariant lines, through the origin, of the transformation in thex-yplane\nrepresented byM.[5]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/12/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 207,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_008.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            53.769,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            108,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_12_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-3d5e6c63-7480-90be-b3da-9d14167b6afb",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_12/questions/q05.png",
@@ -848,8 +1469,7 @@
         "y": 762.35
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -857,34 +1477,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "21\n5The curveChas polar equationr=, for0GiGr.\n2\ni+1\n(a)SketchCand state the polar coordinates of the point ofCfurthest from the pole.[3]............................................................................................................................................................\n(b)Find the area of the region enclosed byC, the initial line, and the half-linei=r.[4]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/12/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 208,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_010.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            49.737,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            99,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_12_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-226aa69a-4e2b-9d8f-b0bc-1b47f2861224",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_12/questions/q06.png",
@@ -918,10 +1596,7 @@
         "y": 759.54
       },
       "page_indices": [
-        11,
-        12,
-        13,
-        14
+        11
       ],
       "page_numbers": [
         12,
@@ -931,34 +1606,92 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 14,
-        "start_page_number": 12,
-        "end_page_number": 15
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "x+2x-15\n6The curveChas equationy=.\nx-2\n(a)Find the equations of the asymptotes ofC.[3]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Show thatChas no stationary points.[3]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/12/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 209,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_012.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            52.55,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            105,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_12_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-abe48eb2-d6a5-9a71-a159-5dfdcf45fef3",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_12/questions/q07.png",
@@ -992,11 +1725,7 @@
         "y": 767.88
       },
       "page_indices": [
-        15,
-        16,
-        17,
-        18,
-        19
+        15
       ],
       "page_numbers": [
         16,
@@ -1007,34 +1736,92 @@
       ],
       "page_range": {
         "start_page_index": 15,
-        "end_page_index": 19,
-        "start_page_number": 16,
-        "end_page_number": 20
+        "end_page_index": 15
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_016.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q07/q07_page_016.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q07/q07_page_016.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "7The planePhas equationr= -4j-3k+m(i-j+k)+n(i+j-k).\n1\n(a)Obtain an equation ofPin the formpx+qy+rz=d.[4]\n1................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)The planePhas equationr.(-5i+3j+5k)=4.\n2\nFind a vector equation of the line of intersection ofPandP.[4]\n12................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/12/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 210,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 15,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_12/9231_s23_qp_12_page_016.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_12/q07/q07_page_016.png",
+          "crop_box_points": [
+            0,
+            44.206,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            88,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_12_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-b74100ec-59f3-9743-849d-18d411a30236",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.vectors",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_13/questions/q01.png",
@@ -1075,34 +1862,91 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q01/q01_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q01/q01_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "3nn\n1Prove by mathematical induction that, for all positive integersn,5+32-33is divisible by 31.[6]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/13/M/J/23[Turn over",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 211,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_003.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q01/q01_page_003.png",
+          "crop_box_points": [
+            0,
+            46.519,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_13_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-5a008862-88a2-9422-89dd-02d4383429f9",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility: text is legible but faint; contrast could be improved"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.series_and_induction",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_13/questions/q02.png",
@@ -1136,8 +1980,7 @@
         "y": 769.29
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -1145,34 +1988,92 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2(a)Use standard results from the list of formulae (MF19) to show that\nn\n232\n/(6r+6r-5)=an+bn+cn,\nr=1\nwherea,bandcare integers to be determined.[2]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nn2\n6r+6r-5\n(b)Use the method of differences to find/in terms ofn.[4]\n2\nr+r\nr=1................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/13/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 212,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_004.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_13_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-d493ce4d-38e9-985f-8d57-c8724ee23c2c",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_13/questions/q03.png",
@@ -1206,8 +2107,7 @@
         "y": 765.57
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -1215,34 +2115,89 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "42\n3The equationx-x+2x+5=0has rootsa b c d,,,.\n22222222\n(a)Find a quartic equation whose roots area,b,c,dand state the value ofa+b+c+d.\n[4]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/13/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 213,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_006.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            46.519,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_13_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-6621fea3-018a-937d-8d49-bff3d98baf01",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_13/questions/q04.png",
@@ -1276,8 +2231,7 @@
         "y": 758.32
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -1285,34 +2239,92 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "cos2i-sin2i1k\n4The matrixMis given byM=eoeo, where01i1randkis a non-zero constant.\nsin2icos2i01\nThe matrixMrepresents a sequence of two geometrical transformations, one of which is a shear.\n(a)Describe fully the other transformation and state the order in which the transformations are\napplied.[3]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n-1\n(b)WriteMas the product of two matrices, neither of which isI.[2]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(c)Find, in terms ofk, the value oftanifor whichM-Iis singular.[5]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/13/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 214,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_008.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            53.769,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            108,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_13_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-8b7f7ae0-694f-9979-91a5-44fa5cc7cf8e",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.matrices",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_13/questions/q05.png",
@@ -1346,8 +2358,7 @@
         "y": 769.29
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -1355,34 +2366,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5(a)Show that the curve with Cartesian equation\n22\nx-y=a,\n2\nwhereais a positive constant, has polar equationr=asec2i.[3]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n21\nThe curveChas polar equationr=asec2i, whereais a positive constant, for0Gi1r.\n4\n(b)SketchCand state the minimum distance ofCfrom the pole.[3]............................................................................................................................................................\n©UCLES 20239231/13/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 215,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_010.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_13_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-5698c440-633c-9005-9972-5a5a9a271af2",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_13/questions/q06.png",
@@ -1416,8 +2485,7 @@
         "y": 769.28
       },
       "page_indices": [
-        11,
-        12
+        11
       ],
       "page_numbers": [
         12,
@@ -1425,34 +2493,92 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 12,
-        "start_page_number": 12,
-        "end_page_number": 13
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "6The pointsA,B,Chave position vectors\ni+j,- +i2j+4k,-2i+j+3k,\nrespectively, relative to the originO.\n(a)Find the equation of the planeABC, giving your answer in the formax+by+cz=d.[5]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the perpendicular distance fromOto the planeABC.[2]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/13/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 216,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_012.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_13_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-f11a4d3f-43c9-9508-a32a-48ad2dbcfe20",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/s23_qp_13/questions/q07.png",
@@ -1486,9 +2612,7 @@
         "y": 759.54
       },
       "page_indices": [
-        13,
-        14,
-        15
+        13
       ],
       "page_numbers": [
         14,
@@ -1497,34 +2621,122 @@
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 15,
-        "start_page_number": 14,
-        "end_page_number": 16
+        "end_page_index": 13
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_014.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q07/q07_page_014.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q07/q07_page_014.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "x+2x+1\n7The curveChas equationy=.\nx-3\n(a)Find the equations of the asymptotes ofC.[3]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the coordinates of the turning points onC.[3]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20239231/13/M/J/23",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 217,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/renders/9231_s23_qp_13/9231_s23_qp_13_page_014.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_s23_standard_001/question-crops/9231_s23_qp_13/q07/q07_page_014.png",
+          "crop_box_points": [
+            0,
+            52.55,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            105,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_s23_standard_001/9231_s23_qp_13_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-9d3103d2-cdb9-9c2c-9c31-8fdb2bfefc6e",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     }
-  ]
+  ],
+  "wave2_crop_gate": {
+    "schema_version": "9231_wave2_shard_crop_gate_v1",
+    "generated_on": "2026-06-05",
+    "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+    "external_vlm_or_api_calls": 0,
+    "external_ocr_reruns": 0,
+    "not_production_ready": true,
+    "not_question_plain_text": true,
+    "not_db_search_rag_consumption": true,
+    "stage": "9231 wave2 shard render/crop gate"
+  },
+  "visual_review_wave1_gate": {
+    "schema_version": "9231_visual_review_wave1_surface_gate_v1",
+    "generated_on": "2026-06-05",
+    "status": "pass",
+    "source_vlm_review_json": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+    "external_vlm_or_api_used_for_visual_review": true,
+    "production_ready_claimed": false,
+    "db_search_rag_consumption_claimed": false
+  },
+  "evidence_layers_wave1_gate": {
+    "schema_version": "9231_evidence_layers_wave1_surface_gate_v1",
+    "generated_on": "2026-06-05",
+    "status": "pass",
+    "gate_json": "docs/reports/2026-06-05-9231-wave2-batch2-evidence-layers-gate.json",
+    "production_ready_claimed": false,
+    "live_db_consumption_claimed": false,
+    "deployed_search_consumption_claimed": false,
+    "online_rag_ingestion_claimed": false
+  }
 }

@@ -27,7 +27,7 @@
     "data/past-papers/9231Further-Mathematics/paper1/9231_w24_qp_12.pdf",
     "data/past-papers/9231Further-Mathematics/paper1/9231_w24_qp_13.pdf"
   ],
-  "surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+  "surface_status": "wave2_crop_render_complete_pending_visual_review",
   "boundary": {
     "local_deterministic_shard_split": true,
     "production_ready_claimed": false,
@@ -72,8 +72,7 @@
         "y": 769.29
       },
       "page_indices": [
-        1,
-        2
+        1
       ],
       "page_numbers": [
         2,
@@ -81,34 +80,92 @@
       ],
       "page_range": {
         "start_page_index": 1,
-        "end_page_index": 2,
-        "start_page_number": 2,
-        "end_page_number": 3
+        "end_page_index": 1
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_002.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q01/q01_page_002.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q01/q01_page_002.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1The matrix M represents the sequence of two transformations in the x-y plane given by a stretch parallel\nto the x-axis, scale factor k (k!0), followed by a shear, x-axis fixed, with (0, 1) mapped to (k, 1).\nkk\n(a)Show thatM=eo.[4]\n01............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................\n(b)The transformation represented by M has a line of invariant points.\nFind, in terms of k, the equation of this line.[3]........................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÍĊ®Ġ´íÈõÏĪÅĊßû¸þx\n© UCLES 2024ĬĢĜñÍĬćěêòÿĝë/Ü^2éĂ9231/11/O/N/24\nĥåĕĕμμåĕĕÅÅÅąÕąμõÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 483,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_002.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q01/q01_page_002.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_11_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-f5129936-47ef-979e-8c9b-1a607d911160",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.matrices",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_11/questions/q02.png",
@@ -142,8 +199,7 @@
         "y": 769.29
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -151,34 +207,92 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2Prove by mathematical induction that, for all positive integers n,\nn-n\nd-12\n`tanxj=P()x`1+xj,\nnn\ndx\nwhereP()xis a polynomial of degree n-1.[6]\nn....................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÍĊ®Ġ´íÈõÏĪÅĊÝû¸Āx\n© UCLES 2024ĬĢěóÕĨùĞìĊùãÍãÞâáĂ9231/11/O/N/24\nĥĕμÕμÕÅÕĥĕĥÅÅμÅõõÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 484,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_004.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_11_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-66e20c4d-b079-9ed4-b02f-f28b2bd1b8a4",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_11/questions/q03.png",
@@ -212,8 +326,7 @@
         "y": 765.59
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -221,34 +334,92 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "43\n3The quartic equation x+2x-1=0has rootsa b c d,,,.\n44444444\n(a)Find a quartic equation whose roots area,b,c,dand state the value ofa+b+c+d.\n[5]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊàùμþx\n© UCLES 2024ĬĢěôÒĬčĘÕûõďĩãěĊáĂ9231/11/O/N/24\nĥÅĥĕõĕåĕμąĕÅąÕąõμÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 485,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_006.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            49.103,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            98,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_11_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-fa6a12e2-a20b-9765-976e-fe94c173220e",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_11/questions/q04.png",
@@ -282,8 +453,7 @@
         "y": 758.12
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -291,34 +461,91 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5k\n4(a)Use the method of differences to find/in terms of n and k, where k is a\n(5r+k) (5r+5+k)\nr=1\npositive constant.[4]........................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊÞùμĀx\n© UCLES 2024ĬĢĜòÚĨģġxăăÑď/ĝĚéĂ9231/11/O/N/24\nĥõÅÕõõÅÕÅÕμÅÅμÅμμÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 486,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_008.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            56.571,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            113,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_11_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-602fdf75-e080-90f4-b57d-1d96927cc328",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility: faint dotted lines may reduce contrast but do not impair readability"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_11/questions/q05.png",
@@ -352,8 +579,7 @@
         "y": 769.3
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -361,34 +587,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5(a)Show that the curve with Cartesian equation\n2\n22\n`x+yj=6xy\n2\nhas polar equationr=3sin2i.[2]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n21\nThe curve C has polar equationr=3sin2i, for0GiGr.\n2\nDO NOT WRITE IN THIS MARGIN\n(b)Sketch C and state the maximum distance of a point on C from the pole.[3]\nDO NOT WRITE IN THIS MARGIN\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊßù·þx\n© UCLES 2024ĬĢęòÓĦī/ÙČČûóõĉâÑĂ9231/11/O/N/24\nĥååĕõõĥÕĥĥμąÅĕÅμąÕ",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 487,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_010.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_11_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-8932030b-c995-97a9-a076-45c26cd5cb26",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_11/questions/q06.png",
@@ -422,8 +706,7 @@
         "y": 759.56
       },
       "page_indices": [
-        11,
-        12
+        11
       ],
       "page_numbers": [
         12,
@@ -431,34 +714,92 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 12,
-        "start_page_number": 12,
-        "end_page_number": 13
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "4x+x+1\n6The curve C has equation y=.\n2\n2x-7x+3\n(a)Find the equations of the asymptotes of C.[2]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the coordinates of any stationary points on C.[4]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊÝù·Āx\n© UCLES 2024ĬĢĚôÛĪĕĂÛôîμąáï^2ÙĂ9231/11/O/N/24\nĥĕąÕõĕąĕĕμĕąąõąõąÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 488,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_012.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            55.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            110,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_11_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-1a8fb8c0-2333-9455-a711-3db04340f2eb",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_11/questions/q07.png",
@@ -492,9 +833,7 @@
         "y": 767.9
       },
       "page_indices": [
-        13,
-        14,
-        15
+        13
       ],
       "page_numbers": [
         14,
@@ -503,34 +842,92 @@
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 15,
-        "start_page_number": 14,
-        "end_page_number": 16
+        "end_page_index": 13
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_014.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q07/q07_page_014.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q07/q07_page_014.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "7The lines land lhave equationsr=i+3j-2k+m(2i+j+k)andr=i-2j+9k+n(i-4j+2k)\n12\nrespectively. The planePcontains land is parallel to l.\n112\n(a)Find the equation ofP, giving your answer in the form ax+by+cz=d.[4]\n1............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nThe planePcontains land the point with coordinates (,2-1 7,).\n22\n(b)Find the acute angle betweenPandP.[4]\n12............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÍĊ®Ġ´íÈõÏĪÅĊÞü¶Ăx\n© UCLES 2024ĬĢĚñÒĢĦĊÐĄĈÏíĄßĂáĂ9231/11/O/N/24\nĥμõÕõĕåÕĥÕÅÅÅÕÅõÅÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 489,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_11/9231_w24_qp_11_page_014.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_11/q07/q07_page_014.png",
+          "crop_box_points": [
+            0,
+            46.79,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_11_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-ed964070-c537-9b2d-aa7b-1d273a73cf6c",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_12/questions/q01.png",
@@ -571,34 +968,92 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q01/q01_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q01/q01_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1The sequence u, u, u, … is such that u=4and u=3u-2for nH1.\n1231n+1n\nn\nProve by induction that u=3+1for all positive integers n.[5]\nn........................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬxĊ®Ġ´íÈõÏĪÅĊÞû¸þx\n© UCLES 2024ĬêÖôÜĞěďéćā¶ÍČÏñĦĂ9231/12/O/N/24[Turn over\nĥμõĕõõåμĕĕμąąõåμĕÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 490,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_003.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q01/q01_page_003.png",
+          "crop_box_points": [
+            0,
+            46.321,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_12_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-a34a820d-39f9-9ced-ac9b-6107c747267b",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.series_and_induction",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_12/questions/q02.png",
@@ -632,8 +1087,7 @@
         "y": 767.9
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -641,34 +1095,89 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2The line lhas equationr=i+3j-k+m(i-j-4k).\n1\nThe planePcontains land is parallel to the vector2i+5j-4k.\n1\n(a)Find the equation ofP, giving your answer in the form ax+by+cz=d.[4]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÕĊ®Ġ´íÈõÏĪÅĊàù¸Āx\n© UCLES 2024ĬêÖñÜĨĩĚÎĉĊïèíġĎĂ9231/12/O/N/24\nĥąåĕμõåĕõμÅąÅõąμąÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 491,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_004.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            46.79,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_12_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-30a82996-8e93-9b3d-a62c-7bc15a670d40",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_12/questions/q03.png",
@@ -702,8 +1211,7 @@
         "y": 769.3
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -711,34 +1219,89 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "3It is given that\na+b+c+d=2,\n2222\na+b+c+d=3,\n3333\na+b+c+d=4.\nDO NOT WRITE IN THIS MARGIN\n(a)Find the value ofab+ac+ad+bc+bd+cd.[2]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................\n222222222222\n(b)Find the value ofa b+a c+a d+b a+b c+b d+c a+c b+c d+d a+d b+d c. [3]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÙĊ®Ġ´íÈõÏĪÅĊÝûμþx\n© UCLES 2024ĬêÖòÏĬýĤãüĆāËèÌÉĎĂ9231/12/O/N/24\nĥÕõÕõμÅÕååμąąĕÅμÅÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 492,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_006.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_12_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-558cc916-df0a-9ef4-a3e6-2474fb9ff8b0",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_12/questions/q04.png",
@@ -772,8 +1335,7 @@
         "y": 769.3
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -781,34 +1343,89 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "4The matrices A, B and C are given by\n1230-2\n-2-11\nA=f213p, B= -f13pand C= eo.\n113\n32500\n3-7DO NOT WRITE IN THIS MARGIN\n(a)Show that CAB= eo.[3]\n-93............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the equations of the invariant lines, through the origin, of the transformation in the x-y plane\nrepresented by CAB.[5]........................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÙĊ®Ġ´íÈõÏĪÅĊßûμĀx\n© UCLES 2024ĬêÕôxĨóĕáĄô¿ô®ÙĖĂ9231/12/O/N/24\nĥĥÕĕõÕåĕÕõĕąÅõąõÅÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 493,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_008.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_12_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-b5fe69a0-e9a6-9a11-ac23-170abefc7953",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.matrices",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_12/questions/q05.png",
@@ -842,8 +1459,7 @@
         "y": 763.12
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -851,34 +1467,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "n\nf()rf(r+1)\n5It is given thatS=/u, where u=x-xand x20.\nnrr\nr=1\n(a)Find Sin terms of n, x and the function f.[2]\nn........................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................\n(b)Given thatf()r=lnr, find the set of values of x for which the infinite series\nu+u+u+…\n123\nis convergent and give the sum to infinity when this exists.[3]........................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÙĊ®Ġ´íÈõÏĪÅĊÞû·þx\n© UCLES 2024ĬêØôÎĦûăßċûĥÑòÚġĞĂ9231/12/O/N/24\nĥμμÕõÕąĕõÅĕÅÅÕąõõÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 494,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_010.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            51.571,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            103,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_12_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-8a5575d6-7152-96a0-9405-1dcb189da762",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.series_and_induction",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_12/questions/q06.png",
@@ -912,8 +1586,7 @@
         "y": 759.56
       },
       "page_indices": [
-        11,
-        12
+        11
       ],
       "page_numbers": [
         12,
@@ -921,34 +1594,92 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 12,
-        "start_page_number": 12,
-        "end_page_number": 13
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "x+3\n6The curve C has equation y=.\n2\nx+1\n(a)Show that C has no vertical asymptotes and state the equation of the horizontal asymptote.[2]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Show that11yG3for all real values of x.[4]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................\n(c)Find the coordinates of any stationary points on C.[2]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÙĊ®Ġ´íÈõÏĪÅĊàû·Āx\n© UCLES 2024ĬêxòÖĪąöÝóýëçæàñĦĂ9231/12/O/N/24\nĥąĕĕõμĥÕąĕμÅąμÅμõÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 495,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_012.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            55.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            110,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_12_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-32c411a6-3952-938e-9630-f9d1c4073fa5",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_12/questions/q07.png",
@@ -982,13 +1713,7 @@
         "y": 765.27
       },
       "page_indices": [
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19
+        13
       ],
       "page_numbers": [
         14,
@@ -1001,34 +1726,89 @@
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 19,
-        "start_page_number": 14,
-        "end_page_number": 20
+        "end_page_index": 13
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_014.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q07/q07_page_014.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q07/q07_page_014.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "13\n7The curve Chas polar equationr=a(cosi+sini)for-rGiGr, where a is a positive constant.\n144\n(a)Find a Cartesian equation for Cand show that it represents a circle, stating its radius and the\n1\nCartesian coordinates of its centre.[4]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Sketch Cand state the greatest distance of a point on Cfrom the pole.[3]\n11\nDO NOT WRITE IN THIS MARGIN\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................\nĬÕĊ®Ġ´íÈõÏĪÅĊßú¶Ăx\n© UCLES 2024ĬêxóÏĢöîêă/ÁÏćðÁĎĂ9231/12/O/N/24\nĥåĥĕõμÅĕõõĥąÅĕąμμÕ",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 496,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_12/9231_w24_qp_12_page_014.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_12/q07/q07_page_014.png",
+          "crop_box_points": [
+            0,
+            49.415,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            99,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_12_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-0d0c5615-ecc1-9936-b5f6-c686b78d5288",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_13/questions/q01.png",
@@ -1062,8 +1842,7 @@
         "y": 769.29
       },
       "page_indices": [
-        1,
-        2
+        1
       ],
       "page_numbers": [
         2,
@@ -1071,34 +1850,92 @@
       ],
       "page_range": {
         "start_page_index": 1,
-        "end_page_index": 2,
-        "start_page_number": 2,
-        "end_page_number": 3
+        "end_page_index": 1
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_002.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q01/q01_page_002.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q01/q01_page_002.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1The matrix M represents the sequence of two transformations in the x-y plane given by a stretch parallel\nto the x-axis, scale factor k (k!0), followed by a shear, x-axis fixed, with (0, 1) mapped to (k, 1).\nkk\n(a)Show thatM=eo.[4]\n01............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................\n(b)The transformation represented by M has a line of invariant points.\nFind, in terms of k, the equation of this line.[3]........................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÍĊ®Ġ´íÈõÏĪÅĊßü·þx\n© UCLES 2024ĬáĆüÙĞħĂÖČĂčēćĐ^1ĩĂ9231/13/O/N/24\nĥĥĕĕμμÅõĕÕĕąÅõåÕĕÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 497,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_002.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q01/q01_page_002.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_13_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-fbe4f20f-e24f-9646-b826-db2a1fdc8305",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.matrices",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_13/questions/q02.png",
@@ -1132,8 +1969,7 @@
         "y": 769.29
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -1141,34 +1977,92 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2Prove by mathematical induction that, for all positive integers n,\nn-n\nd-12\n`tanxj=P()x`1+xj,\nnn\ndx\nwhereP()xis a polynomial of degree n-1.[6]\nn....................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÍĊ®Ġ´íÈõÏĪÅĊÝü·Āx\n© UCLES 2024ĬáąúÑĢę/ØôøÓĥÓĪéġĂ9231/13/O/N/24\nĥÕμÕμÕåμĥąμąąĕĥĕĕÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 498,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_004.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            45.4,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_13_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-9695abff-da1c-9ecf-82b8-7d35d4fde772",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_13/questions/q03.png",
@@ -1202,8 +2096,7 @@
         "y": 765.59
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -1211,34 +2104,92 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "43\n3The quartic equation x+2x-1=0has rootsa b c d,,,.\n44444444\n(a)Find a quartic equation whose roots area,b,c,dand state the value ofa+b+c+d.\n[5]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊàú¶þx\n© UCLES 2024ĬáąùÖĞíýéāüğÑÓÏāġĂ9231/13/O/N/24\nĥąĥĕõĕÅõμĕÅąÅõåĕÕÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 499,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_006.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            49.103,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            98,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_13_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-7ac08822-6923-95cc-9185-dc17dbc01351",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_13/questions/q04.png",
@@ -1272,8 +2223,7 @@
         "y": 758.12
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -1281,34 +2231,92 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5k\n4(a)Use the method of differences to find/in terms of n and k, where k is a\n(5r+k) (5r+5+k)\nr=1\npositive constant.[4]........................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊÞú¶Āx\n© UCLES 2024ĬáĆûÎĢăüëùþáçćéđĩĂ9231/13/O/N/24\nĥμÅÕõõåμÅÅĥąąĕĥÕÕÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 500,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_008.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            56.571,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            113,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_13_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-da23f07f-68f6-9b72-8fef-f6037325b372",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_13/questions/q05.png",
@@ -1342,8 +2350,7 @@
         "y": 769.3
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -1351,34 +2358,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5(a)Show that the curve with Cartesian equation\n2\n22\n`x+yj=6xy\n2\nhas polar equationr=3sin2i.[2]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n21\nThe curve C has polar equationr=3sin2i, for0GiGr.\n2\nDO NOT WRITE IN THIS MARGIN\n(b)Sketch C and state the maximum distance of a point on C from the pole.[3]\nDO NOT WRITE IN THIS MARGIN\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊßú¸þx\n© UCLES 2024ĬáćûxĤċĞåòąċËą½éđĂ9231/13/O/N/24\nĥĥåĕõõąμĥõĥÅąμĥÕĥÕ",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 501,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_010.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            45.389,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            91,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_13_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-7d1d95d3-1c67-9389-b097-9ea7eb7f8a34",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_13/questions/q06.png",
@@ -1412,8 +2477,7 @@
         "y": 759.56
       },
       "page_indices": [
-        11,
-        12
+        11
       ],
       "page_numbers": [
         12,
@@ -1421,34 +2485,92 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 12,
-        "start_page_number": 12,
-        "end_page_number": 13
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "4x+x+1\n6The curve C has equation y=.\n2\n2x-7x+3\n(a)Find the equations of the asymptotes of C.[2]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the coordinates of any stationary points on C.[4]............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÑĊ®Ġ´íÈõÏĪÅĊÝú¸Āx\n© UCLES 2024ĬáĈùÏĠõěçĊóÅÑ»^1ęĂ9231/13/O/N/24\nĥÕąÕõĕĥõĕåÅÅÅÕåĕĥÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 502,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_012.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            55.134,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            110,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_13_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-61174f0e-88ae-9c89-a765-df81da636463",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1.calculus",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w24_qp_13/questions/q07.png",
@@ -1482,9 +2604,7 @@
         "y": 767.9
       },
       "page_indices": [
-        13,
-        14,
-        15
+        13
       ],
       "page_numbers": [
         14,
@@ -1493,34 +2613,122 @@
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 15,
-        "start_page_number": 14,
-        "end_page_number": 16
+        "end_page_index": 13
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_014.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q07/q07_page_014.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q07/q07_page_014.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "7The lines land lhave equationsr=i+3j-2k+m(2i+j+k)andr=i-2j+9k+n(i-4j+2k)\n12\nrespectively. The planePcontains land is parallel to l.\n112\n(a)Find the equation ofP, giving your answer in the form ax+by+cz=d.[4]\n1............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................DO NOT WRITE IN THIS MARGIN....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nThe planePcontains land the point with coordinates (,2-1 7,).\n22\n(b)Find the acute angle betweenPandP.[4]\n12............................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nDO NOT WRITE IN THIS MARGIN........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nĬÍĊ®Ġ´íÈõÏĪÅĊÞûμĂx\n© UCLES 2024ĬáĈüÖĨĆēäúĉßÅôīĉġĂ9231/13/O/N/24\nĥõõÕõĕÅμĥÅĕąąõĥĕåÕ",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 503,
-      "source_locator_shard_id": "9231_p1_source_locator_001"
+      "source_locator_shard_id": "9231_p1_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 13,
+          "rendered_pdf_page_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/renders/9231_w24_qp_13/9231_w24_qp_13_page_014.png",
+          "crop_path": "data/crops/9231-wave2-batch2/9231_p1_w24_standard_001/question-crops/9231_w24_qp_13/q07/q07_page_014.png",
+          "crop_box_points": [
+            0,
+            46.79,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave2-batch2-stacks/9231_p1_w24_standard_001/9231_w24_qp_13_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-d87bd718-1410-95c9-b433-0a48b577b9d7",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p1",
+      "canonical_syllabus_detailed_topic_claimed": false
     }
-  ]
+  ],
+  "wave2_crop_gate": {
+    "schema_version": "9231_wave2_shard_crop_gate_v1",
+    "generated_on": "2026-06-05",
+    "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+    "external_vlm_or_api_calls": 0,
+    "external_ocr_reruns": 0,
+    "not_production_ready": true,
+    "not_question_plain_text": true,
+    "not_db_search_rag_consumption": true,
+    "stage": "9231 wave2 shard render/crop gate"
+  },
+  "visual_review_wave1_gate": {
+    "schema_version": "9231_visual_review_wave1_surface_gate_v1",
+    "generated_on": "2026-06-05",
+    "status": "pass",
+    "source_vlm_review_json": "docs/reports/2026-06-05-9231-wave2-batch2-visual-review-vlm.json",
+    "external_vlm_or_api_used_for_visual_review": true,
+    "production_ready_claimed": false,
+    "db_search_rag_consumption_claimed": false
+  },
+  "evidence_layers_wave1_gate": {
+    "schema_version": "9231_evidence_layers_wave1_surface_gate_v1",
+    "generated_on": "2026-06-05",
+    "status": "pass",
+    "gate_json": "docs/reports/2026-06-05-9231-wave2-batch2-evidence-layers-gate.json",
+    "production_ready_claimed": false,
+    "live_db_consumption_claimed": false,
+    "deployed_search_consumption_claimed": false,
+    "online_rag_ingestion_claimed": false
+  }
 }

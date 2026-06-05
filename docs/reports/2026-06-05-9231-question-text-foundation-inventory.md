@@ -9,7 +9,7 @@
 
 ## Repo-Truth Conclusion
 
-Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local row-level locator surfaces exist; crop/image assets are partial: `1170/1593` current rows have manifest-backed crop references; question_plain_text_v2 covers `1086/1593` unique current rows and local normalized_plain_text consumption covers `1086/1593` unique current rows.
+Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local row-level locator surfaces exist; crop/image assets are partial: `1336/1593` current rows have manifest-backed crop references; question_plain_text_v2 covers `1086/1593` unique current rows and local normalized_plain_text consumption covers `1086/1593` unique current rows.
 
 ## Raw PDF Source Coverage
 
@@ -29,8 +29,8 @@ Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local 
 
 | metric | value |
 | --- | --- |
-| data/manifests JSON files | 351 |
-| 9231 subject manifests | 147 |
+| data/manifests JSON files | 352 |
+| 9231 subject manifests | 148 |
 | 9231 input manifests | 68 |
 | 9231 page-chain surface manifests | 68 |
 | 9231 source-locator surface manifests | 4 |
@@ -62,10 +62,10 @@ Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local 
 | metric | value |
 | --- | --- |
 | scanned roots | ["outputs","tmp","data/crops","public"] |
-| subject image files | 5693 |
-| surface image asset rows | 1170 |
-| surface crop asset rows | 1170 |
-| surface rows missing crop assets | 423 |
+| subject image files | 6243 |
+| surface image asset rows | 1336 |
+| surface crop asset rows | 1336 |
+| surface rows missing crop assets | 257 |
 
 ## DB Search RAG Read-Model Paths
 

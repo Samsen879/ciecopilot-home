@@ -15,6 +15,12 @@ const { applyLearningEffects } = await import('../lib/mastery/mastery-orchestrat
 const { patchLearningReviewTask } = await import('../lib/review/review-task-service.js');
 const { patchLearningArtifact } = await import('../lib/artifacts/artifact-service.js');
 const { default: workspaceHandler } = await import('../workspaces/[topicId].js');
+let paperWorkspaceHandler = null;
+try {
+  ({ default: paperWorkspaceHandler } = await import('../workspaces/papers/[paperScope].js'));
+} catch {
+  paperWorkspaceHandler = null;
+}
 const { default: reviewTasksHandler } = await import('../review-tasks/index.js');
 
 function createLearningDb(overrides = {}) {
@@ -59,7 +65,9 @@ function createLearningDb(overrides = {}) {
     ],
   };
   const workspaceProjections = overrides.workspaceProjections ?? [workspaceProjection];
-  const paperWorkspaceProjection = overrides.paperWorkspaceProjection ?? {
+  let paperWorkspaceProjection = Object.hasOwn(overrides, 'paperWorkspaceProjection')
+    ? overrides.paperWorkspaceProjection
+    : {
     paper_workspace_id: 'paper-workspace-1',
     user_id: 'student-1',
     subject_code: '9709',
@@ -407,10 +415,18 @@ function createLearningDb(overrides = {}) {
       this.filters = [];
       this.orders = [];
       this.selection = null;
+      this.operation = 'select';
+      this.payload = null;
     }
 
     select(selection) {
       this.selection = selection;
+      return this;
+    }
+
+    insert(payload) {
+      this.operation = 'insert';
+      this.payload = payload;
       return this;
     }
 
@@ -437,6 +453,8 @@ function createLearningDb(overrides = {}) {
     async maybeSingle() {
       queries.push({
         table: this.table,
+        operation: this.operation,
+        payload: this.payload,
         selection: this.selection,
         filters: [...this.filters],
         orders: [...this.orders],
@@ -479,9 +497,37 @@ function createLearningDb(overrides = {}) {
 
         return {
           data:
+            paperWorkspaceProjection
+            &&
             paperScope === paperWorkspaceProjection.paper_scope
             && userId === paperWorkspaceProjection.user_id
               ? paperWorkspaceProjection
+              : null,
+          error: null,
+        };
+      }
+
+      if (this.table === 'learning_paper_workspaces') {
+        const paperScope = this.filters.find((filter) => filter.column === 'paper_scope')?.value ?? null;
+        const userId = this.filters.find((filter) => filter.column === 'user_id')?.value ?? null;
+
+        return {
+          data:
+            paperWorkspaceProjection
+            &&
+            paperScope === paperWorkspaceProjection.paper_scope
+            && userId === paperWorkspaceProjection.user_id
+              ? {
+                paper_workspace_id: paperWorkspaceProjection.paper_workspace_id,
+                user_id: paperWorkspaceProjection.user_id,
+                subject_code: paperWorkspaceProjection.subject_code,
+                paper_scope: paperWorkspaceProjection.paper_scope,
+                workspace_kind: paperWorkspaceProjection.workspace_kind,
+                visible_organization_summary: paperWorkspaceProjection.visible_organization_summary,
+                linked_topic_summary: paperWorkspaceProjection.linked_topic_summary,
+                created_at: paperWorkspaceProjection.created_at,
+                updated_at: paperWorkspaceProjection.updated_at,
+              }
               : null,
           error: null,
         };
@@ -503,9 +549,51 @@ function createLearningDb(overrides = {}) {
       return { data: matchingWorkspaceProjection, error: null };
     }
 
+    async single() {
+      queries.push({
+        table: this.table,
+        operation: this.operation,
+        payload: this.payload,
+        selection: this.selection,
+        filters: [...this.filters],
+        orders: [...this.orders],
+        single: true,
+      });
+
+      if (this.table !== 'learning_paper_workspaces' || this.operation !== 'insert') {
+        throw new Error(`Unexpected single table: ${this.table}`);
+      }
+
+      const row = {
+        paper_workspace_id: 'paper-workspace-created-1',
+        workspace_kind: 'paper_main',
+        visible_organization_summary: {},
+        linked_topic_summary: {},
+        created_at: '2026-06-05T08:00:00.000Z',
+        updated_at: '2026-06-05T08:00:00.000Z',
+        ...this.payload,
+      };
+
+      paperWorkspaceProjection = {
+        ...row,
+        stable_slots: {},
+        pinned_artifact_summaries: [],
+        linked_reference_refs: [],
+        review_queue_projection_shape: {
+          scope: 'paper_workspace_review_projection',
+          topic_filter_ready: true,
+        },
+        topic_sections: [],
+      };
+
+      return { data: row, error: null };
+    }
+
     then(resolve, reject) {
       queries.push({
         table: this.table,
+        operation: this.operation,
+        payload: this.payload,
         selection: this.selection,
         filters: [...this.filters],
         orders: [...this.orders],
@@ -2025,6 +2113,12 @@ describe('workspace read service', () => {
       linked_references: [{ kind: 'artifact', artifact_id: 'artifact-linked-1' }],
     });
     expect(res.body.review_queue.scope).toBe('global_queue_projection');
+    expect(res.body.compatibility).toMatchObject({
+      surface: 'legacy_topic_workspace',
+      canonical_owner_kind: 'topic',
+      paper_workspace_route: '/api/learning/workspaces/papers/:paperScope',
+      legacy_topic_fallback: true,
+    });
   });
 
   test('POST /api/learning/workspaces/:topicId explicitly ensures first-open workspace projection', async () => {
@@ -2060,6 +2154,144 @@ describe('workspace read service', () => {
       },
     });
     expect(res.body.review_queue.items).toEqual([]);
+  });
+
+  test('GET /api/learning/workspaces/papers/:paperScope returns paper compatibility envelope', async () => {
+    expect(paperWorkspaceHandler).toEqual(expect.any(Function));
+    const db = createLearningDb();
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      query: { paperScope: '9709%3Apaper%3Ap1' },
+    });
+    const res = createRes();
+
+    await paperWorkspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({
+      paper_scope: '9709:paper:p1',
+      workspace_id: 'paper-workspace-1',
+      compatibility: {
+        surface: 'paper_workspace',
+        canonical_owner_kind: 'topic',
+        legacy_topic_fallback: {
+          route: '/api/learning/workspaces/:topicId',
+          status: 'preserved',
+        },
+      },
+    });
+    expect(res.body.topic_sections.map((section) => section.topic_id)).toEqual(['topic-1', 'topic-2']);
+    expect(res.body.stable_slots.common_traps).toMatchObject({
+      slot_key: 'common_traps',
+      topic_sections: expect.any(Array),
+    });
+    expect(res.body.paper_workspace.paper_scope).toBe('9709:paper:p1');
+  });
+
+  test('POST /api/learning/workspaces/papers/:paperScope ensures first-open paper workspace', async () => {
+    expect(paperWorkspaceHandler).toEqual(expect.any(Function));
+    const db = createLearningDb({
+      paperWorkspaceProjection: null,
+      workspaceProjections: [],
+      artifactRows: [],
+      reviewTaskRows: [],
+      sessionRows: [],
+    });
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      method: 'POST',
+      query: { paperScope: '9709%3Apaper%3Ap6' },
+      body: { action: 'ensure' },
+    });
+    const res = createRes();
+
+    await paperWorkspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({
+      paper_scope: '9709:paper:p6',
+      workspace_id: 'paper-workspace-created-1',
+      topic_sections: [],
+      compatibility: {
+        surface: 'paper_workspace',
+      },
+    });
+    expect(res.body.stable_slots.overview_map).toEqual({
+      slot_key: 'overview_map',
+      topic_sections: [],
+      artifact_summaries: [],
+      linked_references: [],
+      updated_at: null,
+    });
+    expect(db.queries).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          table: 'learning_paper_workspaces',
+          operation: 'insert',
+          payload: expect.objectContaining({
+            subject_code: '9709',
+            paper_scope: '9709:paper:p6',
+          }),
+        }),
+      ]),
+    );
+  });
+
+  test('GET /api/learning/workspaces/papers/:paperScope rejects invalid encoded paper scope', async () => {
+    expect(paperWorkspaceHandler).toEqual(expect.any(Function));
+    const db = createLearningDb();
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      query: { paperScope: '9709%2Fpaper%2Fp1' },
+    });
+    const res = createRes();
+
+    await paperWorkspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toMatchObject({
+      code: 'invalid_payload',
+      details: {
+        field: 'paper_scope',
+      },
+    });
+  });
+
+  test('GET /api/learning/workspaces/papers/:paperScope requires auth', async () => {
+    expect(paperWorkspaceHandler).toEqual(expect.any(Function));
+    const db = createLearningDb();
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      query: { paperScope: '9709%3Apaper%3Ap1' },
+      authUserId: null,
+    });
+    const res = createRes();
+
+    await paperWorkspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.error.code).toBe('auth_required');
+  });
+
+  test('DELETE /api/learning/workspaces/papers/:paperScope rejects unsupported methods', async () => {
+    expect(paperWorkspaceHandler).toEqual(expect.any(Function));
+    const db = createLearningDb();
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      method: 'DELETE',
+      query: { paperScope: '9709%3Apaper%3Ap1' },
+    });
+    const res = createRes();
+
+    await paperWorkspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(405);
+    expect(res.body.error.code).toBe('invalid_payload');
   });
 
   test('second-subject workspace reads surface an explicit read-only runtime posture', async () => {

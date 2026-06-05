@@ -7,10 +7,15 @@ import {
 } from '../artifacts/artifact-service.js';
 import { listArtifactsByTopic } from '../repositories/artifact-repository.js';
 import {
+  ensurePaperWorkspaceExists,
   ensureWorkspaceExists,
   fetchPaperWorkspaceProjection,
   fetchWorkspaceProjection,
 } from '../repositories/workspace-repository.js';
+import {
+  getSubjectCodeForPaperScope,
+  normalizePaperScope,
+} from './paper-workspace-contract.js';
 import {
   deriveReviewQueueProjection,
   summarizeReviewQueueItems,
@@ -1012,6 +1017,37 @@ export async function getPaperWorkspaceView(
     topic_sections: topicSectionViews,
     review_queue: paperReviewQueue,
   };
+}
+
+export async function ensurePaperWorkspaceView(
+  client,
+  {
+    userId,
+    paperScope,
+    reviewStatus = null,
+    reviewDueBefore = null,
+    residencyFlagEnabled = isArtifactLifecycleEnabled(),
+    visibleOrganizationSummary = {},
+    linkedTopicSummary = {},
+  } = {},
+) {
+  const normalizedPaperScope = normalizePaperScope(paperScope);
+
+  await ensurePaperWorkspaceExists(client, {
+    userId,
+    subjectCode: getSubjectCodeForPaperScope(normalizedPaperScope),
+    paperScope: normalizedPaperScope,
+    visibleOrganizationSummary,
+    linkedTopicSummary,
+  });
+
+  return getPaperWorkspaceView(client, {
+    userId,
+    paperScope: normalizedPaperScope,
+    reviewStatus,
+    reviewDueBefore,
+    residencyFlagEnabled,
+  });
 }
 
 export async function getWorkspaceView(

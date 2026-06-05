@@ -69,6 +69,28 @@ const ROUTES = [
     methods: ['GET', 'OPTIONS'],
   },
   {
+    module: 'learning-workspace-paper',
+    pathPrefix: '/api/learning/workspaces/papers/:paperScope',
+    pattern: /^\/api\/learning\/workspaces\/papers\/[^/]+$/,
+    paramExtractor: (path) => {
+      const segments = path.split('/');
+      const encodedPaperScope = segments[5] || null;
+      if (!encodedPaperScope) {
+        return { paperScope: null };
+      }
+
+      try {
+        return { paperScope: decodeURIComponent(encodedPaperScope) };
+      } catch {
+        return { paperScope: encodedPaperScope };
+      }
+    },
+    importPath: '../learning/workspaces/papers/[paperScope].js',
+    auth: 'jwt_required',
+    authMode: 'authenticated',
+    methods: ['GET', 'POST', 'OPTIONS'],
+  },
+  {
     module: 'learning-workspace-topic',
     pathPrefix: '/api/learning/workspaces/:topicId',
     pattern: /^\/api\/learning\/workspaces\/[^/]+$/,
@@ -79,7 +101,7 @@ const ROUTES = [
     importPath: '../learning/workspaces/[topicId].js',
     auth: 'jwt_required',
     authMode: 'authenticated',
-    methods: ['GET', 'OPTIONS'],
+    methods: ['GET', 'POST', 'OPTIONS'],
   },
   {
     module: 'learning-review-task-id',

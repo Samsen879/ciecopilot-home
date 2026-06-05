@@ -81,7 +81,22 @@ async function getWorkspaceByTopic(client, { userId, topicId } = {}) {
   return data || null;
 }
 
-function isWorkspaceUniqueConflict(error) {
+async function getPaperWorkspaceByScope(client, { userId, paperScope } = {}) {
+  const { data, error } = await client
+    .from('learning_paper_workspaces')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('paper_scope', paperScope)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load paper workspace: ${error.message}`);
+  }
+
+  return data || null;
+}
+
+function isUniqueConflict(error) {
   return error?.code === '23505'
     || String(error?.message || '').includes('duplicate key value');
 }
@@ -113,7 +128,7 @@ export async function ensureWorkspaceExists(client, {
     .single();
 
   if (error || !data) {
-    if (isWorkspaceUniqueConflict(error)) {
+    if (isUniqueConflict(error)) {
       const racedWorkspace = await getWorkspaceByTopic(client, {
         userId,
         topicId,
@@ -126,6 +141,55 @@ export async function ensureWorkspaceExists(client, {
 
     throw new Error(
       `Failed to create learning workspace: ${error?.message || 'no data returned'}`,
+    );
+  }
+
+  return data;
+}
+
+export async function ensurePaperWorkspaceExists(client, {
+  userId,
+  subjectCode,
+  paperScope,
+  visibleOrganizationSummary = {},
+  linkedTopicSummary = {},
+} = {}) {
+  const existing = await getPaperWorkspaceByScope(client, {
+    userId,
+    paperScope,
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  const { data, error } = await client
+    .from('learning_paper_workspaces')
+    .insert({
+      user_id: userId,
+      subject_code: subjectCode,
+      paper_scope: paperScope,
+      workspace_kind: 'paper_main',
+      visible_organization_summary: visibleOrganizationSummary,
+      linked_topic_summary: linkedTopicSummary,
+    })
+    .select('*')
+    .single();
+
+  if (error || !data) {
+    if (isUniqueConflict(error)) {
+      const racedWorkspace = await getPaperWorkspaceByScope(client, {
+        userId,
+        paperScope,
+      });
+
+      if (racedWorkspace) {
+        return racedWorkspace;
+      }
+    }
+
+    throw new Error(
+      `Failed to create paper workspace: ${error?.message || 'no data returned'}`,
     );
   }
 

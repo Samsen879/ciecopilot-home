@@ -27,7 +27,7 @@
     "data/past-papers/9231Further-Mathematics/paper4/9231_w22_qp_42.pdf",
     "data/past-papers/9231Further-Mathematics/paper4/9231_w22_qp_43.pdf"
   ],
-  "surface_status": "locator_rows_ready_pending_crop_render_visual_review",
+  "surface_status": "locator_rows_ready_pending_visual_review",
   "boundary": {
     "local_deterministic_shard_split": true,
     "production_ready_claimed": false,
@@ -72,8 +72,7 @@
         "y": 769.28
       },
       "page_indices": [
-        1,
-        2
+        1
       ],
       "page_numbers": [
         2,
@@ -81,34 +80,92 @@
       ],
       "page_range": {
         "start_page_index": 1,
-        "end_page_index": 2,
-        "start_page_number": 2,
-        "end_page_number": 3
+        "end_page_index": 1
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_002.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q01/q01_page_002.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q01/q01_page_002.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1Jasmine is researching the heights of pine trees in forests in two regionsAandB. She chooses a random\nsample of 50 pine trees in regionAand records their heights,xm. She also chooses a random sample of\n60 pine trees in regionBand records their heights,ym. Her results are summarised as follows.\n22\n/x=1625/x=53200/y=1854/y=57900\nFind a 95% confidence interval for the difference between the population mean heights of pine trees in\nregionsAandB.[7]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/41/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 152,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_002.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q01/q01_page_002.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_41_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-2e50c1ef-91fe-9cfe-a74d-7ba670365fbf",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_41/questions/q02.png",
@@ -142,8 +199,7 @@
         "y": 769.29
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -151,34 +207,92 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2An organisation runs courses to train students to become engineers. These students are taught in groups\nof 8. The director of the organisation claims that on average 60% of the students in a group achieve a\npass. A random sample of 150 groups of 8 students is chosen. The following table shows the observed\nfrequencies together with some of the expected frequencies using the appropriate binomial distribution.\nNumber of\npasses per012345678\ngroup\nObserved\n00824453626101\nfrequency\nExpected\np1.1806.19318.57934.836qr13.4372.519\nfrequency\n(a)Find the values ofp,qandrgiving your answers correct to 3 decimal places.[2]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Carry out a goodness of fit test, at the 10% significance level, to test whether there is evidence to\nreject the director’s claim.[6]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/41/O/N/22",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 153,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_004.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_41_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-1b39e996-ab7b-913a-ae0e-98602856f631",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.probability_distributions",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_41/questions/q03.png",
@@ -212,8 +326,7 @@
         "y": 769.29
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -221,34 +334,92 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "3A large college is holding a piano competition. Each student has played a particular piece of music and\ntwo judges have each awarded a mark out of 80. The marks awarded to a random sample of 14 students\nare shown in the following table.\nStudentABCDEFGHIJKLMN\nJudge 17954637469525057554263555648\nJudge 27562607376413151455549506536\n(a)One of the students claims that on average Judge 1 is awarding higher marks than Judge 2. Carry\nout a Wilcoxon matched-pairs signed-rank test at the 5% significance level to test whether the data\nsupports the student’s claim.[7]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/41/O/N/22",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 154,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_006.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_41_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-bad8477f-1a0f-9ad9-a4cc-b33ff5db146a",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_41/questions/q04.png",
@@ -282,8 +453,7 @@
         "y": 765.35
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -291,34 +461,92 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2\n4Jason has three biased coins. For each coin the probability of obtaining a head when it is thrown is.\n3\nJason throws all three coins. The number of heads obtained is denoted byX.\n(a)Find the probability generating functionG()tofX.[3]\nX................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nJason also has two unbiased coins. He throws all five coins. The number of heads obtained from the\n1112\ntwo unbiased coins is denoted byY. It is given thatG()t=+t+t. The random variableZis the\nY424\ntotal number of heads obtained when Jason throws all five coins.\n(b)Find the probability generating function ofZ, expressing your answer as a polynomial.[3]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/41/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 155,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_008.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            46.737,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_41_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-55044d82-b7ac-9565-88f2-431edf23a960",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_41/questions/q05.png",
@@ -352,8 +580,7 @@
         "y": 769.28
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -361,34 +588,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5The continuous random variableXhas cumulative distribution function F given by\n0x10,\n12\nF()x=*1-(12-x)0GxG12,\n144\n1x212.\n(a)Find the upper quartile ofX.[2]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n2\n(b)FindVar(X).[5]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/41/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 156,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_010.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_41_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-2979d737-7fc4-90b4-8ad2-4918b180d1b5",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_41/questions/q06.png",
@@ -422,11 +707,7 @@
         "y": 769.28
       },
       "page_indices": [
-        11,
-        12,
-        13,
-        14,
-        15
+        11
       ],
       "page_numbers": [
         12,
@@ -437,34 +718,92 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 15,
-        "start_page_number": 12,
-        "end_page_number": 16
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "6A company manufactures copper pipes. The pipes are produced by two different machines,AandB.\nAn inspector claims that the mean diameter of the pipes produced by machineAis greater than the\nmean diameter of the pipes produced by machineB. He takes a random sample of 12 pipes produced by\nmachineAand measures their diameters,xcm. His results are summarised as follows.\n2\n/x=6 24./x=3 26.\nHe also takes a random sample of 10 pipes produced by machineBand measures their diameters in cm.\nHis results are as follows.\n0.480.530.470.540.540.550.460.550.500.48\nThe diameters of the pipes produced by each machine are assumed to be normally distributed with\nequal population variances.\nTest at the 2.5% significance level whether the data supports the inspector’s claim.[9]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/41/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 157,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_41/9231_w22_qp_41_page_012.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_41/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_41_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-495d482a-7c0b-9cd1-991e-ffbff0f67112",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility: minor spacing between lines may affect readability but text remains clear",
+        "9231_wave1_crop_boundary: crop appears to include full question body but bottom margin is tight; no content cut off observed"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_42/questions/q01.png",
@@ -505,34 +844,92 @@
       ],
       "page_range": {
         "start_page_index": 1,
-        "end_page_index": 1,
-        "start_page_number": 2,
-        "end_page_number": 2
+        "end_page_index": 1
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_002.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q01/q01_page_002.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q01/q01_page_002.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1A basketball club has a large number of players. The heights,xm, of a random sample of 10 of these\nplayers are measured. A 90% confidence interval for the population mean height,nm, of players in\nthis club is calculated. It is assumed that heights are normally distributed. The confidence interval is\n1 78.GnG2 02..\n2\nFind the values of/xand/xfor this sample.[6]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES20229231/42/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 158,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_002.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q01/q01_page_002.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_42_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-35eb384d-694b-9d0e-9ce1-8d92e446b033",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility",
+        "9231_wave1_crop_boundary"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_42/questions/q02.png",
@@ -573,34 +970,92 @@
       ],
       "page_range": {
         "start_page_index": 2,
-        "end_page_index": 2,
-        "start_page_number": 3,
-        "end_page_number": 3
+        "end_page_index": 2
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_003.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q02/q02_page_003.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q02/q02_page_003.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2In the colleges in three regions of a particular country, students are given individual targets to achieve.\nTheir performance is measured against their individual target and graded as ‘above target’, ‘on target’\nor ‘below target’. For a random sample of students from each of the three regions, the observed\nfrequencies are summarised in the following table.\nRegion\nABCTotal\nAbove target624144147\nPerformanceOn target1029495291\nBelow target564561162\nTotal220180200600\nTest, at the 10% significance level, whether performance is independent of region.[7]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES20229231/42/O/N/22[Turn over",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 159,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_003.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q02/q02_page_003.png",
+          "crop_box_points": [
+            0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_42_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-6d68475d-4e57-97a7-974d-d811788bcaa9",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_42/questions/q03.png",
@@ -634,8 +1089,7 @@
         "y": 769.28
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -643,34 +1097,92 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q03/q03_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q03/q03_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "3A scientist is investigating the masses of birds of a certain species in countryXand countryY. She\ntakes a random sample of 50 birds of this species from countryXand a random sample of 80 birds\nof this species from countryY. She records their masses in kg,xandy, respectively. Her results are\nsummarised as follows.\n22\n/x=75 5./x=115 2./y=116 8./y=172 6.\nThe population mean masses of these birds in countriesXandYarenkgandnkgrespectively.\nxy\nTest, at the 5% significance level, the null hypothesisn=nagainst the alternative hypothesis\nxy\nn2n. State your conclusion in the context of the question.[8]\nxy........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES20229231/42/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 160,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_004.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q03/q03_page_004.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_42_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-5994e3f5-40a8-9025-8e4e-d2afe6c359cb",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_42/questions/q04.png",
@@ -704,8 +1216,7 @@
         "y": 769.28
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -713,34 +1224,92 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q04/q04_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q04/q04_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "4The continuous random variableXhas probability density function f given by\nk0Gx11,\nf()x=*kx1GxG2,\n0otherwise,\nwherekis a constant.\n2\n(a)Show thatk=.[1]\n5....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Find the interquartile range ofX.[5]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES20229231/42/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 161,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_006.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q04/q04_page_006.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_42_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-66b3b314-172a-9522-8c7c-d167c64db584",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.probability_distributions",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_42/questions/q05.png",
@@ -774,8 +1343,7 @@
         "y": 769.28
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -783,34 +1351,92 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q05/q05_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q05/q05_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5A 6‑sided dice,A, with faces numbered 1, 2, 3, 4, 5, 6 is biased so that the probability of throwing a 6 is\n1. The random variableXis the number of 6s obtained when diceAis thrown twice.\n4\n(a)Find the probability generating function ofX.[2]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nA second dice,B, with faces numbered 1, 2, 3, 4, 5, 6 is unbiased. The random variableYis the number\nof 6s obtained when diceBis thrown twice.\nThe random variableZis the total number of 6s obtained when both dice are thrown twice.\n(b)Find the probability generating function ofZ, expressing your answer as a polynomial.[3]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES20229231/42/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 162,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_008.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q05/q05_page_008.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_42_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-858c9777-61ec-9762-869e-466b46c5e290",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_42/questions/q06.png",
@@ -844,9 +1470,7 @@
         "y": 769.28
       },
       "page_indices": [
-        9,
-        10,
-        11
+        9
       ],
       "page_numbers": [
         10,
@@ -855,34 +1479,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 11,
-        "start_page_number": 10,
-        "end_page_number": 12
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q06/q06_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q06/q06_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "6The manager of a technology companyAclaims that his employees earn more per year than the\nemployees at technology companyB. The amounts earned per year, in hundreds of dollars, by a random\nsample of 12 employees from companyAand an independent random sample of 12 employees from\ncompanyBare shown below.\nCompanyA461482374512415452502427398545612359\nCompanyB454506491384361443401472414342355437\n(a)Carry out a Wilcoxon rank‑sum test at the 5% significance level to test whether the manager’s\nclaim is supported by the data.[9]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES20229231/42/O/N/22",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 163,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_42/9231_w22_qp_42_page_010.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_42/q06/q06_page_010.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_42_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-d17d9479-9e07-9d21-9d58-19c2e91f7ddd",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_43/questions/q01.png",
@@ -916,8 +1598,7 @@
         "y": 769.28
       },
       "page_indices": [
-        1,
-        2
+        1
       ],
       "page_numbers": [
         2,
@@ -925,34 +1606,92 @@
       ],
       "page_range": {
         "start_page_index": 1,
-        "end_page_index": 2,
-        "start_page_number": 2,
-        "end_page_number": 3
+        "end_page_index": 1
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_002.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q01/q01_page_002.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q01/q01_page_002.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "1Jasmine is researching the heights of pine trees in forests in two regionsAandB. She chooses a random\nsample of 50 pine trees in regionAand records their heights,xm. She also chooses a random sample of\n60 pine trees in regionBand records their heights,ym. Her results are summarised as follows.\n22\n/x=1625/x=53200/y=1854/y=57900\nFind a 95% confidence interval for the difference between the population mean heights of pine trees in\nregionsAandB.[7]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/43/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 164,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_002.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q01/q01_page_002.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_43_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-dd54499b-d378-9ec1-9d02-3f9666c83188",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_43/questions/q02.png",
@@ -986,8 +1725,7 @@
         "y": 769.29
       },
       "page_indices": [
-        3,
-        4
+        3
       ],
       "page_numbers": [
         4,
@@ -995,34 +1733,89 @@
       ],
       "page_range": {
         "start_page_index": 3,
-        "end_page_index": 4,
-        "start_page_number": 4,
-        "end_page_number": 5
+        "end_page_index": 3
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_004.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q02/q02_page_004.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q02/q02_page_004.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2An organisation runs courses to train students to become engineers. These students are taught in groups\nof 8. The director of the organisation claims that on average 60% of the students in a group achieve a\npass. A random sample of 150 groups of 8 students is chosen. The following table shows the observed\nfrequencies together with some of the expected frequencies using the appropriate binomial distribution.\nNumber of\npasses per012345678\ngroup\nObserved\n00824453626101\nfrequency\nExpected\np1.1806.19318.57934.836qr13.4372.519\nfrequency\n(a)Find the values ofp,qandrgiving your answers correct to 3 decimal places.[2]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n(b)Carry out a goodness of fit test, at the 10% significance level, to test whether there is evidence to\nreject the director’s claim.[6]............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/43/O/N/22",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 165,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 3,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_004.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q02/q02_page_004.png",
+          "crop_box_points": [
+            0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_43_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-6b0bea79-d699-99be-a2f3-ee72d5dc6c48",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.probability_distributions",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_43/questions/q03.png",
@@ -1056,8 +1849,7 @@
         "y": 769.29
       },
       "page_indices": [
-        5,
-        6
+        5
       ],
       "page_numbers": [
         6,
@@ -1065,34 +1857,89 @@
       ],
       "page_range": {
         "start_page_index": 5,
-        "end_page_index": 6,
-        "start_page_number": 6,
-        "end_page_number": 7
+        "end_page_index": 5
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q03/q03_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q03/q03_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "3A large college is holding a piano competition. Each student has played a particular piece of music and\ntwo judges have each awarded a mark out of 80. The marks awarded to a random sample of 14 students\nare shown in the following table.\nStudentABCDEFGHIJKLMN\nJudge 17954637469525057554263555648\nJudge 27562607376413151455549506536\n(a)One of the students claims that on average Judge 1 is awarding higher marks than Judge 2. Carry\nout a Wilcoxon matched-pairs signed-rank test at the 5% significance level to test whether the data\nsupports the student’s claim.[7]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/43/O/N/22",
+      "text_consumption_status": "image_context_required",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 166,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 5,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_006.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q03/q03_page_006.png",
+          "crop_box_points": [
+            0,
+            42.805,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_43_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-980c0bc7-df02-94e9-b738-8864800d44cf",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "image_context_required",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_43/questions/q04.png",
@@ -1126,8 +1973,7 @@
         "y": 765.35
       },
       "page_indices": [
-        7,
-        8
+        7
       ],
       "page_numbers": [
         8,
@@ -1135,34 +1981,92 @@
       ],
       "page_range": {
         "start_page_index": 7,
-        "end_page_index": 8,
-        "start_page_number": 8,
-        "end_page_number": 9
+        "end_page_index": 7
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_008.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q04/q04_page_008.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q04/q04_page_008.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "2\n4Jason has three biased coins. For each coin the probability of obtaining a head when it is thrown is.\n3\nJason throws all three coins. The number of heads obtained is denoted byX.\n(a)Find the probability generating functionG()tofX.[3]\nX................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nJason also has two unbiased coins. He throws all five coins. The number of heads obtained from the\n1112\ntwo unbiased coins is denoted byY. It is given thatG()t=+t+t. The random variableZis the\nY424\ntotal number of heads obtained when Jason throws all five coins.\n(b)Find the probability generating function ofZ, expressing your answer as a polynomial.[3]........................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/43/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 167,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_008.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q04/q04_page_008.png",
+          "crop_box_points": [
+            0,
+            46.737,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            93,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_43_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-58846215-b8eb-999d-898f-f4bc6b17ebb9",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.polynomials_roots",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_43/questions/q05.png",
@@ -1196,8 +2100,7 @@
         "y": 769.28
       },
       "page_indices": [
-        9,
-        10
+        9
       ],
       "page_numbers": [
         10,
@@ -1205,34 +2108,92 @@
       ],
       "page_range": {
         "start_page_index": 9,
-        "end_page_index": 10,
-        "start_page_number": 10,
-        "end_page_number": 11
+        "end_page_index": 9
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_010.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q05/q05_page_010.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q05/q05_page_010.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "5The continuous random variableXhas cumulative distribution function F given by\n0x10,\n12\nF()x=*1-(12-x)0GxG12,\n144\n1x212.\n(a)Find the upper quartile ofX.[2]....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n2\n(b)FindVar(X).[5]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/43/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 168,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_010.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q05/q05_page_010.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_43_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-c88b848d-8bed-9638-818c-428cd5523283",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4",
+      "canonical_syllabus_detailed_topic_claimed": false
     },
     {
       "storage_key": "9231/w22_qp_43/questions/q06.png",
@@ -1266,11 +2227,7 @@
         "y": 769.28
       },
       "page_indices": [
-        11,
-        12,
-        13,
-        14,
-        15
+        11
       ],
       "page_numbers": [
         12,
@@ -1281,34 +2238,122 @@
       ],
       "page_range": {
         "start_page_index": 11,
-        "end_page_index": 15,
-        "start_page_number": 12,
-        "end_page_number": 16
+        "end_page_index": 11
       },
       "route_hint": "pdf_page_chain_locator",
-      "rendered_pdf_page_paths": [],
-      "crop_paths": [],
-      "review_crop_paths": [],
-      "crop_status": "not_generated",
-      "surface_evidence_status": "locator_resolved_pending_crop_render_and_visual_review",
-      "page_chain_surface_status": "locator_rows_ready_pending_crop_render_visual_review",
-      "text_evidence_status": "not_extracted",
-      "normalized_plain_text": null,
-      "text_consumption_status": "not_ready_missing_question_plain_text",
-      "text_only_ready": false,
-      "image_context_required": true,
+      "rendered_pdf_page_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q06/q06_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q06/q06_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "external_vlm_visual_review_accepted",
+      "page_chain_surface_status": "crop_render_complete_external_vlm_visual_review_accepted",
+      "text_evidence_status": "question_plain_text_v2_ready",
+      "normalized_plain_text": "6A company manufactures copper pipes. The pipes are produced by two different machines,AandB.\nAn inspector claims that the mean diameter of the pipes produced by machineAis greater than the\nmean diameter of the pipes produced by machineB. He takes a random sample of 12 pipes produced by\nmachineAand measures their diameters,xcm. His results are summarised as follows.\n2\n/x=6 24./x=3 26.\nHe also takes a random sample of 10 pipes produced by machineBand measures their diameters in cm.\nHis results are as follows.\n0.480.530.470.540.540.550.460.550.500.48\nThe diameters of the pipes produced by each machine are assumed to be normally distributed with\nequal population variances.\nTest at the 2.5% significance level whether the data supports the inspector’s claim.[9]................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\n©UCLES 20229231/43/O/N/22",
+      "text_consumption_status": "text_only_ready",
+      "text_only_ready": true,
+      "image_context_required": false,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "not_rendered_or_cropped_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 169,
-      "source_locator_shard_id": "9231_p4_source_locator_001"
+      "source_locator_shard_id": "9231_p4_source_locator_001",
+      "crop_records": [
+        {
+          "page_index": 11,
+          "rendered_pdf_page_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/renders/9231_w22_qp_43/9231_w22_qp_43_page_012.png",
+          "crop_path": "data/crops/9231-crop-repair-wave4/9231_p4_w22_standard_001/question-crops/9231_w22_qp_43/q06/q06_page_012.png",
+          "crop_box_points": [
+            0,
+            42.816,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            86,
+            1191,
+            1684
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_dimensions_reasonable": true,
+        "referenced_rendered_pages_exist": true
+      },
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-05",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wave4-visual-review-stacks/9231_p4_w22_standard_001/9231_w22_qp_43_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-d24662d8-eee4-9c28-a96d-2676940c63ee",
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ],
+      "question_plain_text_v1_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v1.json",
+      "question_plain_text_v2_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+      "question_plain_text_v2_consumption_artifact": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+      "local_consumption_gate_status": "text_only_ready",
+      "search_read_model_rag_local_consumption_gate_passed": true,
+      "authority_alignment_artifact": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+      "authority_alignment_status": "component_aligned_topic_hint_recorded",
+      "primary_topic_path": "9231.p4.statistical_inference",
+      "canonical_syllabus_detailed_topic_claimed": false
     }
-  ]
+  ],
+  "wave4_crop_gate": {
+    "schema_version": "9231_wave4_crop_repair_gate_v1",
+    "generated_on": "2026-06-05",
+    "local_extraction_crop_method": "pymupdf_text_words_question_band_v1",
+    "external_vlm_or_api_calls": 0,
+    "external_ocr_reruns": 0,
+    "not_production_ready": true,
+    "not_question_plain_text": true,
+    "not_db_search_rag_consumption": true,
+    "stage": "9231 wave4 crop repair render/crop gate"
+  },
+  "visual_review_wave1_gate": {
+    "schema_version": "9231_visual_review_wave1_surface_gate_v1",
+    "generated_on": "2026-06-05",
+    "status": "pass",
+    "source_vlm_review_json": "docs/reports/2026-06-05-9231-wave4-visual-review-vlm.json",
+    "external_vlm_or_api_used_for_visual_review": true,
+    "production_ready_claimed": false,
+    "db_search_rag_consumption_claimed": false
+  },
+  "evidence_layers_wave1_gate": {
+    "schema_version": "9231_evidence_layers_wave1_surface_gate_v1",
+    "generated_on": "2026-06-05",
+    "status": "pass",
+    "gate_json": "docs/reports/2026-06-05-9231-wave4-evidence-layers-gate.json",
+    "production_ready_claimed": false,
+    "live_db_consumption_claimed": false,
+    "deployed_search_consumption_claimed": false,
+    "online_rag_ingestion_claimed": false
+  }
 }

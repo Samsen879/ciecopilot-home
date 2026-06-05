@@ -7,6 +7,8 @@ const DRAFT_9709_P1_CLASSIFIER_REGISTRY_MIGRATION =
   'supabase/migrations/20260504160000_seed_9709_p1_classifier_registry_draft.sql';
 const DRAFT_9709_P3_CLASSIFIER_REGISTRY_MIGRATION =
   'supabase/migrations/20260505120000_seed_9709_p3_classifier_registry_draft.sql';
+const PAPER_WORKSPACE_CONTRACT_MIGRATION =
+  'supabase/migrations/20260605120000_add_paper_workspace_persistence_contract.sql';
 
 const LEARNING_RUNTIME_MIGRATIONS = [
   'supabase/migrations/20260320110000_expand_question_bank_for_learning_runtime.sql',
@@ -23,6 +25,15 @@ const LEARNING_RUNTIME_MIGRATIONS = [
 
 function readMigration(relPath) {
   return fs.readFileSync(path.join(process.cwd(), relPath), 'utf8').toLowerCase();
+}
+
+function readRequiredMigration(relPath) {
+  const migrationPath = path.join(process.cwd(), relPath);
+  const migrationExists = fs.existsSync(migrationPath);
+
+  expect(migrationExists).toBe(true);
+
+  return migrationExists ? readMigration(relPath) : '';
 }
 
 function readLearningRuntimeMigrations() {
@@ -297,6 +308,91 @@ describe('learning runtime schema contract', () => {
 
     expect(sql).toContain('on conflict (family_id) do nothing');
     expect(sql).toContain('on conflict (question_type_id) do nothing');
+  });
+
+  test('paper workspace migration defines additive paper-scoped identity and topic-section bridge', () => {
+    const sql = readRequiredMigration(PAPER_WORKSPACE_CONTRACT_MIGRATION);
+
+    if (!sql) {
+      return;
+    }
+
+    expect(sql).toContain('create table if not exists public.learning_paper_workspaces');
+    expect(sql).toContain('create table if not exists public.learning_paper_workspace_topic_sections');
+    expect(sql).toContain('create or replace view public.learning_paper_workspace_projection as');
+    expect(sql).toContain('create or replace view public.learning_topic_workspace_compatibility_projection as');
+
+    const paperWorkspaceSql = normalizeSql(
+      extractTableBlock(sql, 'public.learning_paper_workspaces')
+    );
+    [
+      'paper_workspace_id uuid primary key default gen_random_uuid()',
+      'user_id uuid not null references auth.users(id) on delete cascade',
+      'subject_code text not null',
+      'paper_scope text not null',
+      'workspace_kind text not null default \'paper_main\'',
+      'visible_organization_summary jsonb not null default \'{}\'::jsonb',
+      'linked_topic_summary jsonb not null default \'{}\'::jsonb',
+      'unique (user_id, paper_scope)'
+    ].forEach((token) => expect(paperWorkspaceSql).toContain(token));
+
+    const topicSectionsSql = normalizeSql(
+      extractTableBlock(sql, 'public.learning_paper_workspace_topic_sections')
+    );
+    [
+      'paper_workspace_id uuid not null references public.learning_paper_workspaces(paper_workspace_id) on delete cascade',
+      'topic_id uuid not null references public.curriculum_nodes(node_id) on delete restrict',
+      'topic_workspace_id uuid references public.learning_workspaces(workspace_id) on delete set null',
+      'topic_path text not null',
+      'section_state jsonb not null default \'{}\'::jsonb',
+      'unique (paper_workspace_id, topic_id)',
+      'unique (paper_workspace_id, topic_path)'
+    ].forEach((token) => expect(topicSectionsSql).toContain(token));
+
+    [
+      'comment on table public.learning_paper_workspaces',
+      'canonical topic ownership remains on topic-owned artifacts, review tasks, question types, and mastery rows',
+      'comment on table public.learning_paper_workspace_topic_sections',
+      'does not duplicate artifacts, review tasks, queues, or mastery state',
+      'comment on view public.learning_topic_workspace_compatibility_projection'
+    ].forEach((token) => expect(sql).toContain(token));
+  });
+
+  test('paper workspace migration rejects invalid or subject-mismatched paper scopes', () => {
+    const sql = readRequiredMigration(PAPER_WORKSPACE_CONTRACT_MIGRATION);
+
+    if (!sql) {
+      return;
+    }
+
+    const paperWorkspaceSql = normalizeSql(
+      extractTableBlock(sql, 'public.learning_paper_workspaces')
+    );
+
+    [
+      "constraint chk_learning_paper_workspaces_subject_code check (subject_code ~ '^[0-9]{4}$')",
+      "constraint chk_learning_paper_workspaces_paper_scope_format check (paper_scope ~ '^[0-9]{4}:paper:p[0-9][a-z0-9_-]*$')",
+      "constraint chk_learning_paper_workspaces_subject_scope_match check (split_part(paper_scope, ':', 1) = subject_code)"
+    ].forEach((token) => expect(paperWorkspaceSql).toContain(token));
+  });
+
+  test('paper workspace migration is non-destructive for existing topic workspace data', () => {
+    const sql = normalizeSql(readRequiredMigration(PAPER_WORKSPACE_CONTRACT_MIGRATION));
+
+    if (!sql) {
+      return;
+    }
+
+    [
+      /drop\s+table/,
+      /drop\s+column/,
+      /drop\s+constraint/,
+      /truncate\s+(table\s+)?public\.learning_workspaces/,
+      /delete\s+from\s+public\.learning_workspaces/,
+      /alter\s+table\s+(if\s+exists\s+)?public\.learning_workspaces\s+drop/
+    ].forEach((pattern) => expect(sql).not.toMatch(pattern));
+
+    expect(sql).toContain('from public.learning_workspace_projection');
   });
 
   test('9709 p1 classifier registry draft seed covers non-released topic families', () => {

@@ -2,7 +2,7 @@
 
 - generated_on: `2026-06-05`
 - gate_status: `candidate_inventory_ready`
-- verdict: `next_wave_candidates_available`
+- verdict: `no_next_wave_candidates_available`
 - production_ready_claimed: `false`
 - This is a candidate inventory only: not question_plain_text_v1/v2, not a visual review gate, and not a DB/search/RAG consumption gate.
 - External VLM/API calls: 0. External OCR reruns: 0.
@@ -25,30 +25,23 @@
 | scanned rows | 1593 |
 | crop-ready rows | 1336 |
 | crop/render incomplete rows | 257 |
-| already covered rows | 1086 |
+| already covered rows | 1252 |
 | WM/frozen rows | 150 |
 | duplicate storage-key rows | 0 |
-| candidate rows | 166 |
-| candidate shards | 8 |
-| recommended shards | 8 |
-| candidate source PDFs | 24 |
+| candidate rows | 0 |
+| candidate shards | 0 |
+| recommended shards | 0 |
+| candidate source PDFs | 0 |
 | source PDF parse inspected | true |
-| candidate source PDFs pdfjs parse OK | 24 |
-| candidate rows with source PDF parse OK | 166 |
+| candidate source PDFs pdfjs parse OK | 0 |
+| candidate rows with source PDF parse OK | 0 |
 | blockers | 0 |
 
 ## Recommended Shards
 
 | shard | candidate rows | total rows | completion | source PDFs |
 | --- | ---: | ---: | ---: | ---: |
-| `9231_p3_s21_standard_001` | 21 | 21 | 1 | 3 |
-| `9231_p3_s22_standard_001` | 21 | 21 | 1 | 3 |
-| `9231_p3_s23_standard_001` | 21 | 21 | 1 | 3 |
-| `9231_p3_w20_standard_001` | 21 | 21 | 1 | 3 |
-| `9231_p3_w21_standard_001` | 21 | 21 | 1 | 3 |
-| `9231_p3_w22_standard_001` | 21 | 21 | 1 | 3 |
-| `9231_p3_w24_standard_001` | 21 | 21 | 1 | 3 |
-| `9231_p3_w23_standard_001` | 19 | 19 | 1 | 3 |
+| none | 0 | 0 | 0 | 0 |
 
 ## Blockers
 

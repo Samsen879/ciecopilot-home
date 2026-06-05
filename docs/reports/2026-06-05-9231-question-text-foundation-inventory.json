@@ -132,8 +132,8 @@
   },
   "row_surface": {
     "manifest_root": "data/manifests",
-    "total_manifest_json_files": 349,
-    "subject_manifest_count": 145,
+    "total_manifest_json_files": 351,
+    "subject_manifest_count": 147,
     "page_chain_surface_manifest_count": 68,
     "source_locator_surface_manifest_count": 4,
     "shard_split_surface_manifest_count": 64,
@@ -145,10 +145,10 @@
     "duplicate_storage_keys": 0,
     "all_surface_row_count": 3186,
     "all_surface_duplicate_storage_keys": 1593,
-    "manifest_backed_image_asset_refs": 3375,
-    "surface_image_asset_rows": 1002,
-    "surface_crop_asset_rows": 1002,
-    "surface_rows_missing_crop_assets": 591,
+    "manifest_backed_image_asset_refs": 3879,
+    "surface_image_asset_rows": 1170,
+    "surface_crop_asset_rows": 1170,
+    "surface_rows_missing_crop_assets": 423,
     "page_chain_surface_manifests": [
       "data/manifests/9231_p1_s16_standard_001_page_chain_surface_v1.json",
       "data/manifests/9231_p1_s17_standard_001_page_chain_surface_v1.json",
@@ -441,23 +441,25 @@
   },
   "text_evidence": {
     "evidence_bundle_files": 0,
-    "question_plain_text_v1_artifacts": 2,
-    "question_plain_text_v2_artifacts": 2,
-    "question_plain_text_v2_consumption_artifacts": 2,
+    "question_plain_text_v1_artifacts": 3,
+    "question_plain_text_v2_artifacts": 3,
+    "question_plain_text_v2_consumption_artifacts": 3,
     "question_plain_text_v1_max_rows": 477,
     "question_plain_text_v2_max_rows": 477,
     "question_plain_text_v2_consumption_max_rows": 477,
-    "question_plain_text_v1_aggregate_unique_rows": 918,
-    "question_plain_text_v2_aggregate_unique_rows": 918,
-    "question_plain_text_v2_consumption_aggregate_unique_rows": 918,
+    "question_plain_text_v1_aggregate_unique_rows": 1086,
+    "question_plain_text_v2_aggregate_unique_rows": 1086,
+    "question_plain_text_v2_consumption_aggregate_unique_rows": 1086,
     "evidence_bundle_paths": [],
     "question_plain_text_v1_paths": [
       "docs/reports/2026-06-05-9231-next-wave-question-plain-text-v1.json",
-      "docs/reports/2026-06-05-9231-question-plain-text-v1.json"
+      "docs/reports/2026-06-05-9231-question-plain-text-v1.json",
+      "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v1.json"
     ],
     "question_plain_text_v2_paths": [
       "docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2.json",
-      "docs/reports/2026-06-05-9231-question-plain-text-v2.json"
+      "docs/reports/2026-06-05-9231-question-plain-text-v2.json",
+      "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json"
     ],
     "pdf_text_layer": {
       "inspected": false,
@@ -468,26 +470,28 @@
   },
   "image_assets": {
     "scanned_roots": [
+      "outputs",
+      "tmp",
       "data/crops",
       "public"
     ],
-    "tracked_or_local_subject_image_files": 3662,
+    "tracked_or_local_subject_image_files": 5693,
     "sample_image_files": [
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q01/q01_page_003.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q02/q02_page_004.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q03/q03_page_005.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q04/q04_page_006.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q04/q04_page_007.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q05/q05_page_008.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q06/q06_page_010.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q06/q06_page_011.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q07/q07_page_012.png",
-      "data/crops/9231-next-wave-prep-15/9231_p1_s17_standard_001/question-crops/9231_s17_qp_11/q08/q08_page_014.png"
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/contact_sheet.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q01.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q02.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q03.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q04.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q05.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q06.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q07.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q08.png",
+      "outputs/screenshots/restored-targeted/9231_s16_qp_11/q09.png"
     ],
-    "manifest_backed_image_asset_refs": 3375,
-    "surface_image_asset_rows": 1002,
-    "surface_crop_asset_rows": 1002,
-    "surface_rows_missing_crop_assets": 591
+    "manifest_backed_image_asset_refs": 3879,
+    "surface_image_asset_rows": 1170,
+    "surface_crop_asset_rows": 1170,
+    "surface_rows_missing_crop_assets": 423
   },
   "rag_seed_or_eval_artifacts": {
     "eval_sample_files": 2,
@@ -508,10 +512,11 @@
     "search_normalized_plain_text_priority_contract": "present",
     "read_model_normalized_plain_text_contract": "present",
     "rag_normalized_plain_text_local_contract": "present_for_question_plain_text_v2_artifacts",
-    "local_consumption_gate_artifacts": 2,
+    "local_consumption_gate_artifacts": 3,
     "local_consumption_gate_paths": [
       "docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2-consumption.json",
-      "docs/reports/2026-06-05-9231-question-plain-text-v2-consumption.json"
+      "docs/reports/2026-06-05-9231-question-plain-text-v2-consumption.json",
+      "docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json"
     ],
     "db_consumed_claimed": false,
     "search_consumed_claimed": false,
@@ -529,7 +534,7 @@
         "evidence": {
           "question_row_count": 1593,
           "question_plain_text_v2_max_rows": 477,
-          "question_plain_text_v2_aggregate_unique_rows": 918
+          "question_plain_text_v2_aggregate_unique_rows": 1086
         }
       },
       {
@@ -539,7 +544,7 @@
         "evidence": {
           "question_row_count": 1593,
           "question_plain_text_v2_consumption_max_rows": 477,
-          "question_plain_text_v2_consumption_aggregate_unique_rows": 918
+          "question_plain_text_v2_consumption_aggregate_unique_rows": 1086
         }
       }
     ],

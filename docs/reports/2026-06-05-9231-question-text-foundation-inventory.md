@@ -9,7 +9,7 @@
 
 ## Repo-Truth Conclusion
 
-Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local row-level locator surfaces exist; crop/image assets are partial: `1002/1593` current rows have manifest-backed crop references; question_plain_text_v2 covers `918/1593` unique current rows and local normalized_plain_text consumption covers `918/1593` unique current rows.
+Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local row-level locator surfaces exist; crop/image assets are partial: `1170/1593` current rows have manifest-backed crop references; question_plain_text_v2 covers `1086/1593` unique current rows and local normalized_plain_text consumption covers `1086/1593` unique current rows.
 
 ## Raw PDF Source Coverage
 
@@ -29,8 +29,8 @@ Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local 
 
 | metric | value |
 | --- | --- |
-| data/manifests JSON files | 349 |
-| 9231 subject manifests | 145 |
+| data/manifests JSON files | 351 |
+| 9231 subject manifests | 147 |
 | 9231 input manifests | 68 |
 | 9231 page-chain surface manifests | 68 |
 | 9231 source-locator surface manifests | 4 |
@@ -45,15 +45,15 @@ Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local 
 | metric | value |
 | --- | --- |
 | evidence bundle files | 0 |
-| question_plain_text_v1 artifacts | 2 |
+| question_plain_text_v1 artifacts | 3 |
 | question_plain_text_v1 max rows | 477 |
-| question_plain_text_v1 aggregate unique rows | 918 |
-| question_plain_text_v2 artifacts | 2 |
+| question_plain_text_v1 aggregate unique rows | 1086 |
+| question_plain_text_v2 artifacts | 3 |
 | question_plain_text_v2 max rows | 477 |
-| question_plain_text_v2 aggregate unique rows | 918 |
-| question_plain_text_v2 consumption artifacts | 2 |
+| question_plain_text_v2 aggregate unique rows | 1086 |
+| question_plain_text_v2 consumption artifacts | 3 |
 | question_plain_text_v2 consumption max rows | 477 |
-| question_plain_text_v2 consumption aggregate unique rows | 918 |
+| question_plain_text_v2 consumption aggregate unique rows | 1086 |
 | PDF text layer inspected | false |
 | PDF text layer status | not_inspected |
 
@@ -61,11 +61,11 @@ Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local 
 
 | metric | value |
 | --- | --- |
-| scanned roots | ["data/crops","public"] |
-| subject image files | 3662 |
-| surface image asset rows | 1002 |
-| surface crop asset rows | 1002 |
-| surface rows missing crop assets | 591 |
+| scanned roots | ["outputs","tmp","data/crops","public"] |
+| subject image files | 5693 |
+| surface image asset rows | 1170 |
+| surface crop asset rows | 1170 |
+| surface rows missing crop assets | 423 |
 
 ## DB Search RAG Read-Model Paths
 
@@ -73,7 +73,7 @@ Conclusion: `row-surface-present-partial-text-consumption`. Deterministic local 
 | --- | --- |
 | search normalized_plain_text priority schema contract | present |
 | read-model normalized_plain_text schema contract | present |
-| local 9231 consumption gate artifacts | 2 |
+| local 9231 consumption gate artifacts | 3 |
 | DB consumed claimed | false |
 | search consumed claimed | false |
 | read-model consumed claimed | false |

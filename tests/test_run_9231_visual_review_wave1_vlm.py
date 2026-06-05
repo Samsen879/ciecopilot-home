@@ -5,6 +5,7 @@ from pathlib import Path
 
 from PIL import Image
 
+import scripts.vlm.run_9231_visual_review_wave1_vlm as visual_review_module
 from scripts.vlm.run_9231_visual_review_wave1_vlm import (
     build_visual_review_request,
     build_wave1_review_items_from_surface,
@@ -148,3 +149,133 @@ def test_run_visual_review_items_writes_vlm_provenance_and_disposition(tmp_path)
     assert Path(item["targeted_stack_image_path"]).exists()
     persisted = json.loads((tmp_path / "docs/reports/visual.json").read_text(encoding="utf-8"))
     assert persisted["items"][0]["vlm_checked"]["visual_legibility_accepted"] is True
+
+
+def test_run_visual_review_items_appends_to_existing_resume_payload(tmp_path):
+    crop_path = tmp_path / "data/crops/9231-pilot-shards/9231_p1_s25_standard_001/q02.png"
+    _write_png(crop_path)
+    existing_item = {
+        "storage_key": "9231/s25_qp_11/questions/q01.png",
+        "source_pdf_path": "data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_11.pdf",
+        "shard_id": "9231_p1_s25_standard_001",
+        "q_number": 1,
+        "status": "accepted",
+        "visual_review_status": "accepted",
+        "vlm_checked": {
+            "question_boundary_accepted": True,
+            "visual_legibility_accepted": True,
+            "cross_page_continuity_accepted": None,
+            "diagram_or_table_presence_accepted": None,
+        },
+    }
+    review_item = {
+        "storage_key": "9231/s25_qp_11/questions/q02.png",
+        "source_pdf_path": "data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_11.pdf",
+        "shard_id": "9231_p1_s25_standard_001",
+        "q_number": 2,
+        "page_numbers": [3],
+        "review_crop_paths": [str(crop_path)],
+        "review_reasons": ["9231_wave1_crop_boundary", "question_legibility"],
+    }
+
+    def fake_client(_request):
+        return {
+            "id": "chatcmpl-test-2",
+            "model": "qwen-test",
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "accepted": True,
+                                "blockers": [],
+                                "warnings": [],
+                                "notes": "The crop is legible.",
+                                "checked": {
+                                    "question_boundary_accepted": True,
+                                    "visual_legibility_accepted": True,
+                                    "cross_page_continuity_accepted": None,
+                                    "diagram_or_table_presence_accepted": None,
+                                },
+                            },
+                        ),
+                    },
+                },
+            ],
+        }
+
+    payload = run_visual_review_items(
+        review_items=[review_item],
+        output_root=tmp_path / "tmp/9231-visual/stacks",
+        json_out=tmp_path / "docs/reports/visual.json",
+        model="qwen-test",
+        generated_on="2026-06-05",
+        client=fake_client,
+        initial_items=[existing_item],
+    )
+
+    assert payload["summary"] == {"items": 2, "accepted": 2, "rejected": 0}
+    assert [item["storage_key"] for item in payload["items"]] == [
+        "9231/s25_qp_11/questions/q01.png",
+        "9231/s25_qp_11/questions/q02.png",
+    ]
+    persisted = json.loads((tmp_path / "docs/reports/visual.json").read_text(encoding="utf-8"))
+    assert persisted["summary"] == {"items": 2, "accepted": 2, "rejected": 0}
+
+
+def test_run_visual_review_items_retries_transient_client_error(tmp_path, monkeypatch):
+    crop_path = tmp_path / "data/crops/9231-pilot-shards/9231_p1_s25_standard_001/q03.png"
+    _write_png(crop_path)
+    review_item = {
+        "storage_key": "9231/s25_qp_11/questions/q03.png",
+        "source_pdf_path": "data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_11.pdf",
+        "shard_id": "9231_p1_s25_standard_001",
+        "q_number": 3,
+        "page_numbers": [4],
+        "review_crop_paths": [str(crop_path)],
+        "review_reasons": ["9231_wave1_crop_boundary", "question_legibility"],
+    }
+    calls = []
+    monkeypatch.setattr(visual_review_module.time, "sleep", lambda _seconds: None)
+
+    def flaky_client(_request):
+        calls.append("call")
+        if len(calls) == 1:
+            raise RuntimeError("transient transport error")
+        return {
+            "id": "chatcmpl-test-3",
+            "model": "qwen-test",
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "accepted": True,
+                                "blockers": [],
+                                "warnings": [],
+                                "notes": "The crop is legible.",
+                                "checked": {
+                                    "question_boundary_accepted": True,
+                                    "visual_legibility_accepted": True,
+                                    "cross_page_continuity_accepted": None,
+                                    "diagram_or_table_presence_accepted": None,
+                                },
+                            },
+                        ),
+                    },
+                },
+            ],
+        }
+
+    payload = run_visual_review_items(
+        review_items=[review_item],
+        output_root=tmp_path / "tmp/9231-visual/stacks",
+        json_out=tmp_path / "docs/reports/visual.json",
+        model="qwen-test",
+        generated_on="2026-06-05",
+        client=flaky_client,
+        max_attempts=2,
+    )
+
+    assert len(calls) == 2
+    assert payload["summary"] == {"items": 1, "accepted": 1, "rejected": 0}

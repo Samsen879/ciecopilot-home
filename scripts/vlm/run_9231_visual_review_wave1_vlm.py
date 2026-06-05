@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import re
 import sys
+import time
 from typing import Any, Iterable
 
 from PIL import Image, ImageDraw
@@ -31,6 +32,14 @@ def _write_json(path: str | Path, payload: dict[str, Any]) -> None:
     resolved = Path(path)
     resolved.parent.mkdir(parents=True, exist_ok=True)
     resolved.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _load_existing_items(path: str | Path) -> list[dict[str, Any]]:
+    resolved = Path(path)
+    if not resolved.exists():
+        return []
+    payload = _load_json(resolved)
+    return [item for item in _as_list(payload.get("items")) if isinstance(item, dict)]
 
 
 def _as_list(value: Any) -> list[Any]:
@@ -238,8 +247,10 @@ def run_visual_review_items(
     include_individual_crop_images: bool = False,
     root_dir: str | Path = ".",
     client=call_qwen_openai_v1,
+    initial_items: Iterable[dict[str, Any]] | None = None,
+    max_attempts: int = 3,
 ) -> dict[str, Any]:
-    items: list[dict[str, Any]] = []
+    items: list[dict[str, Any]] = list(initial_items or [])
     queue = list(review_items)
     for index, review_item in enumerate(queue, start=1):
         stack_path = build_targeted_stack_image(
@@ -253,7 +264,26 @@ def run_visual_review_items(
             model=model,
             include_individual_crop_images=include_individual_crop_images,
         )
-        response = client(request)
+        response = None
+        last_error: Exception | None = None
+        for attempt in range(1, max(1, max_attempts) + 1):
+            try:
+                response = client(request)
+                break
+            except Exception as error:  # noqa: BLE001 - preserve external client error detail.
+                last_error = error
+                if attempt >= max(1, max_attempts):
+                    raise
+                print(
+                    "9231_visual_review_retry:",
+                    f"attempt={attempt + 1}/{max_attempts}",
+                    f"storage_key={review_item.get('storage_key')}",
+                    f"error={error}",
+                    flush=True,
+                )
+                time.sleep(min(30, 5 * attempt))
+        if response is None:
+            raise RuntimeError(f"visual review request failed without response: {last_error}")
         parsed = _parse_vlm_content(response)
         accepted = bool(parsed.get("accepted"))
         item = {
@@ -320,6 +350,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--generated-on", default=DEFAULT_GENERATED_ON)
     parser.add_argument("--storage-key", action="append", default=[])
     parser.add_argument("--include-individual-crops", action="store_true")
+    parser.add_argument("--resume-existing", action="store_true")
+    parser.add_argument("--max-attempts", type=int, default=3)
+    parser.add_argument("--client-timeout", type=int, default=90)
     return parser.parse_args(argv)
 
 
@@ -335,6 +368,20 @@ def main(argv: list[str] | None = None) -> int:
         missing = sorted(wanted - found)
         if missing:
             raise ValueError(f"storage_key not found in selected review items: {missing}")
+    existing_items = _load_existing_items(args.targeted_review_json) if args.resume_existing else []
+    if existing_items:
+        completed_storage_keys = {
+            str(item.get("storage_key"))
+            for item in existing_items
+            if item.get("storage_key") and item.get("status") in {"accepted", "rejected"}
+        }
+        review_items = [
+            item
+            for item in review_items
+            if str(item.get("storage_key")) not in completed_storage_keys
+        ]
+        print(f"resume_existing_results: {len(existing_items)}", flush=True)
+        print(f"resume_remaining_items: {len(review_items)}", flush=True)
     payload = run_visual_review_items(
         review_items=review_items,
         output_root=args.stack_output_root,
@@ -343,6 +390,9 @@ def main(argv: list[str] | None = None) -> int:
         generated_on=args.generated_on,
         include_individual_crop_images=args.include_individual_crops,
         root_dir=root_dir,
+        initial_items=existing_items,
+        max_attempts=args.max_attempts,
+        client=lambda request: call_qwen_openai_v1(request, timeout=args.client_timeout),
     )
     print(json.dumps(payload["summary"], ensure_ascii=False, indent=2))
     return 0 if payload["summary"].get("rejected") == 0 else 1

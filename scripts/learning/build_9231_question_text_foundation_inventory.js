@@ -436,6 +436,31 @@ function scanTextEvidence({ rootDir, subject, reportsRoot, inspectPdfTextLayer, 
     (max, repoPath) => Math.max(max, rowCountFromArtifact(repoPath, summaryFields)),
     0,
   );
+  const storageKeysFromArtifact = (repoPath) => {
+    const payload = readJsonIfExists(rootDir, repoPath);
+    const rows = Array.isArray(payload?.items)
+      ? payload.items
+      : Array.isArray(payload?.rows)
+        ? payload.rows
+        : [];
+    return rows
+      .map((row) => row?.storage_key)
+      .filter((storageKey) => typeof storageKey === 'string' && storageKey.trim())
+      .map((storageKey) => storageKey.trim());
+  };
+  const aggregateUniqueRows = (repoPaths) => {
+    const storageKeys = new Set();
+    for (const repoPath of repoPaths) {
+      for (const storageKey of storageKeysFromArtifact(repoPath)) {
+        storageKeys.add(storageKey);
+      }
+    }
+    return storageKeys.size;
+  };
+
+  const plainTextV1AggregateUniqueRows = aggregateUniqueRows(plainTextV1Artifacts);
+  const plainTextV2AggregateUniqueRows = aggregateUniqueRows(plainTextV2Artifacts);
+  const consumptionAggregateUniqueRows = aggregateUniqueRows(consumptionArtifacts);
 
   return {
     evidence_bundle_files: evidenceBundleFiles.length,
@@ -445,6 +470,9 @@ function scanTextEvidence({ rootDir, subject, reportsRoot, inspectPdfTextLayer, 
     question_plain_text_v1_max_rows: maxRows(plainTextV1Artifacts, ['production_rows', 'plain_text_rows']),
     question_plain_text_v2_max_rows: maxRows(plainTextV2Artifacts, ['v2_rows', 'normalized_plain_text_rows']),
     question_plain_text_v2_consumption_max_rows: maxRows(consumptionArtifacts, ['rows_read', 'normalized_plain_text_rows']),
+    question_plain_text_v1_aggregate_unique_rows: plainTextV1AggregateUniqueRows,
+    question_plain_text_v2_aggregate_unique_rows: plainTextV2AggregateUniqueRows,
+    question_plain_text_v2_consumption_aggregate_unique_rows: consumptionAggregateUniqueRows,
     evidence_bundle_paths: evidenceBundleFiles,
     question_plain_text_v1_paths: plainTextV1Artifacts,
     question_plain_text_v2_paths: plainTextV2Artifacts,
@@ -666,22 +694,24 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
   if (
     rowSurface.question_row_count > 0
     && textEvidence.question_plain_text_v2_artifacts > 0
-    && textEvidence.question_plain_text_v2_max_rows < rowSurface.question_row_count
+    && questionPlainTextV2CoverageRows(textEvidence) < rowSurface.question_row_count
   ) {
     addBlocker('partial_question_plain_text_v2_coverage', '9231 question_plain_text_v2 exists but does not yet cover all current shard-split rows.', {
       question_row_count: rowSurface.question_row_count,
       question_plain_text_v2_max_rows: textEvidence.question_plain_text_v2_max_rows,
+      question_plain_text_v2_aggregate_unique_rows: textEvidence.question_plain_text_v2_aggregate_unique_rows,
     });
     nextExecutableGates.push('Continue shard waves until question_plain_text_v2 covers every current 9231 shard-split row.');
   }
   if (
     rowSurface.question_row_count > 0
     && consumptionPaths.local_consumption_gate_artifacts > 0
-    && textEvidence.question_plain_text_v2_consumption_max_rows < rowSurface.question_row_count
+    && questionPlainTextV2ConsumptionCoverageRows(textEvidence) < rowSurface.question_row_count
   ) {
     addBlocker('partial_question_plain_text_v2_consumption_coverage', '9231 local normalized_plain_text consumption gate exists but does not yet cover all current shard-split rows.', {
       question_row_count: rowSurface.question_row_count,
       question_plain_text_v2_consumption_max_rows: textEvidence.question_plain_text_v2_consumption_max_rows,
+      question_plain_text_v2_consumption_aggregate_unique_rows: textEvidence.question_plain_text_v2_consumption_aggregate_unique_rows,
     });
     nextExecutableGates.push('Continue shard waves until local normalized_plain_text consumption covers every current 9231 shard-split row.');
   }
@@ -707,14 +737,28 @@ function buildGapInventory({ sourceCoverage, rowSurface, textEvidence, imageAsse
 
   return {
     foundation_status: rowSurface.question_row_count > 0
-      ? textEvidence.question_plain_text_v2_max_rows >= rowSurface.question_row_count
-        && textEvidence.question_plain_text_v2_consumption_max_rows >= rowSurface.question_row_count
+      ? questionPlainTextV2CoverageRows(textEvidence) >= rowSurface.question_row_count
+        && questionPlainTextV2ConsumptionCoverageRows(textEvidence) >= rowSurface.question_row_count
         ? 'row-surface-text-consumption-ready'
         : 'row-surface-present-partial-text-consumption'
       : 'blocked-by-missing-row-surface',
     blockers,
     next_executable_gates: [...new Set(nextExecutableGates)],
   };
+}
+
+function questionPlainTextV2CoverageRows(textEvidence) {
+  return Math.max(
+    Number(textEvidence.question_plain_text_v2_aggregate_unique_rows || 0),
+    Number(textEvidence.question_plain_text_v2_max_rows || 0),
+  );
+}
+
+function questionPlainTextV2ConsumptionCoverageRows(textEvidence) {
+  return Math.max(
+    Number(textEvidence.question_plain_text_v2_consumption_aggregate_unique_rows || 0),
+    Number(textEvidence.question_plain_text_v2_consumption_max_rows || 0),
+  );
 }
 
 function markdownTable(headers, rows) {
@@ -747,8 +791,10 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
   const image = inventory.image_assets;
   const consumption = inventory.consumption_paths;
   const gap = inventory.gap_inventory;
+  const textV2CoverageRows = questionPlainTextV2CoverageRows(text);
+  const consumptionCoverageRows = questionPlainTextV2ConsumptionCoverageRows(text);
   const textCoveragePhrase = text.question_plain_text_v2_artifacts > 0
-    ? `question_plain_text_v2 covers \`${text.question_plain_text_v2_max_rows}/${rowSurface.question_row_count}\` current rows and local normalized_plain_text consumption covers \`${text.question_plain_text_v2_consumption_max_rows}/${rowSurface.question_row_count}\` current rows`
+    ? `question_plain_text_v2 covers \`${textV2CoverageRows}/${rowSurface.question_row_count}\` unique current rows and local normalized_plain_text consumption covers \`${consumptionCoverageRows}/${rowSurface.question_row_count}\` unique current rows`
     : 'question_plain_text_v1/v2 and normalized_plain_text consumption gates are still missing';
 
   const lines = [
@@ -802,10 +848,13 @@ export function renderQuestionTextFoundationInventoryMarkdown(inventory) {
       ['evidence bundle files', text.evidence_bundle_files],
       ['question_plain_text_v1 artifacts', text.question_plain_text_v1_artifacts],
       ['question_plain_text_v1 max rows', text.question_plain_text_v1_max_rows],
+      ['question_plain_text_v1 aggregate unique rows', text.question_plain_text_v1_aggregate_unique_rows],
       ['question_plain_text_v2 artifacts', text.question_plain_text_v2_artifacts],
       ['question_plain_text_v2 max rows', text.question_plain_text_v2_max_rows],
+      ['question_plain_text_v2 aggregate unique rows', text.question_plain_text_v2_aggregate_unique_rows],
       ['question_plain_text_v2 consumption artifacts', text.question_plain_text_v2_consumption_artifacts],
       ['question_plain_text_v2 consumption max rows', text.question_plain_text_v2_consumption_max_rows],
+      ['question_plain_text_v2 consumption aggregate unique rows', text.question_plain_text_v2_consumption_aggregate_unique_rows],
       ['PDF text layer inspected', text.pdf_text_layer.inspected],
       ['PDF text layer status', text.pdf_text_layer.status],
     ]),

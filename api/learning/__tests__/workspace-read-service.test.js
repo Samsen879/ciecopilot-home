@@ -1611,6 +1611,224 @@ describe('workspace read service', () => {
       .toHaveLength(1);
   });
 
+  test('paper review projection folds active mixed-scope rows by canonical target and keeps source attribution', async () => {
+    const db = createLearningDb({
+      reviewTaskRows: [
+        {
+          review_task_id: 'review-weaker-source',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_family_title: 'Trigonometric manipulation / equations',
+          target_question_type_id: '9709.trigonometry.equations',
+          target_question_type_title: 'Trigonometric equations',
+          target_misconception_tags: ['domain:interval'],
+          related_artifact_refs: [],
+          source_question_id: 'source-question-algebra',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-algebra' },
+          trigger_type: 'immediate_repair',
+          mode: 'trap_fix',
+          due_at: '2026-03-23T00:00:00.000Z',
+          priority: 'high',
+          estimated_minutes: 15,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'immediate_repair',
+              freshness_bucket: 'fresh',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:10:00.000Z',
+          updated_at: '2026-03-22T08:10:00.000Z',
+        },
+        {
+          review_task_id: 'review-stronger-source',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_family_title: 'Trigonometric manipulation / equations',
+          target_question_type_id: '9709.trigonometry.equations',
+          target_question_type_title: 'Trigonometric equations',
+          target_misconception_tags: ['domain:interval'],
+          related_artifact_refs: [],
+          source_question_id: 'source-question-geometry',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-geometry' },
+          trigger_type: 'regression_recovery',
+          mode: 'redo_variant',
+          due_at: '2026-03-23T01:00:00.000Z',
+          priority: 'urgent',
+          estimated_minutes: 20,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'regression_recovery',
+              freshness_bucket: 'stale',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:11:00.000Z',
+          updated_at: '2026-03-22T08:11:00.000Z',
+        },
+        {
+          review_task_id: 'review-topic-2',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-2',
+          target_topic_path: '9709/trigonometry/identities',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_family_title: 'Trigonometric manipulation / equations',
+          target_question_type_id: '9709.trigonometry.identities',
+          target_question_type_title: 'Trigonometric identities',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'source-question-identities',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-identities' },
+          trigger_type: 'short_delay',
+          mode: 'redo_variant',
+          due_at: '2026-03-24T00:00:00.000Z',
+          priority: 'normal',
+          estimated_minutes: 10,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'short_delay',
+              freshness_bucket: 'cooling',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:12:00.000Z',
+          updated_at: '2026-03-22T08:12:00.000Z',
+        },
+      ],
+      artifactRows: [],
+      sessionRows: [],
+    });
+
+    const payload = await getPaperWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      residencyFlagEnabled: false,
+    });
+
+    expect(payload.review_queue.items.map((item) => item.review_task_id)).toEqual([
+      'review-stronger-source',
+      'review-topic-2',
+    ]);
+    expect(payload.review_queue.items[0]).toMatchObject({
+      review_task_id: 'review-stronger-source',
+      projection_attribution: {
+        canonical_queue_identity: {
+          target_topic_id: 'topic-1',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_question_type_id: '9709.trigonometry.equations',
+        },
+        source_question_ids: ['source-question-algebra', 'source-question-geometry'],
+        source_attempt_refs: [
+          { kind: 'attempt', attempt_id: 'attempt-algebra' },
+          { kind: 'attempt', attempt_id: 'attempt-geometry' },
+        ],
+        folded_review_task_refs: [
+          { kind: 'review_task', review_task_id: 'review-weaker-source' },
+          { kind: 'review_task', review_task_id: 'review-stronger-source' },
+        ],
+      },
+    });
+    expect(payload.review_queue.topic_sections[0].items.map((item) => item.review_task_id))
+      .toEqual(['review-stronger-source']);
+    expect(payload.paper_workspace.stable_slots.review_queue.linked_references).toEqual([
+      { kind: 'review_task', review_task_id: 'review-stronger-source' },
+      { kind: 'review_task', review_task_id: 'review-topic-2' },
+    ]);
+  });
+
+  test('topic-section review projection can filter by question type inside a paper workspace', async () => {
+    const db = createLearningDb({
+      reviewTaskRows: [
+        {
+          review_task_id: 'review-equations',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_question_type_id: '9709.trigonometry.equations',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'question-equations',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-equations' },
+          trigger_type: 'immediate_repair',
+          mode: 'trap_fix',
+          due_at: '2026-03-23T00:00:00.000Z',
+          priority: 'high',
+          estimated_minutes: 15,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'immediate_repair',
+              freshness_bucket: 'fresh',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:10:00.000Z',
+          updated_at: '2026-03-22T08:10:00.000Z',
+        },
+        {
+          review_task_id: 'review-graphs',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_question_type_id: '9709.trigonometry.graphs',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'question-graphs',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-graphs' },
+          trigger_type: 'short_delay',
+          mode: 'redo_variant',
+          due_at: '2026-03-24T00:00:00.000Z',
+          priority: 'normal',
+          estimated_minutes: 10,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'short_delay',
+              freshness_bucket: 'cooling',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:15:00.000Z',
+          updated_at: '2026-03-22T08:15:00.000Z',
+        },
+      ],
+      artifactRows: [],
+      sessionRows: [],
+    });
+
+    const payload = await getTopicSectionWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      topicId: 'topic-1',
+      reviewQuestionTypeId: '9709.trigonometry.equations',
+      residencyFlagEnabled: false,
+    });
+
+    expect(payload.review_queue).toMatchObject({
+      scope: 'paper_topic_section_review_projection',
+      topic_id: 'topic-1',
+      question_type_id: '9709.trigonometry.equations',
+    });
+    expect(payload.review_queue.items.map((item) => item.review_task_id)).toEqual(['review-equations']);
+    expect(payload.workspace.slots.review_queue.linked_references).toEqual([
+      { kind: 'review_task', review_task_id: 'review-equations' },
+    ]);
+  });
+
   test('topic-section workspace view focuses one section inside a paper workspace without creating a topic workspace', async () => {
     const db = createLearningDb();
 
@@ -2142,6 +2360,90 @@ describe('workspace read service', () => {
     });
   });
 
+  test('GET /api/learning/review-tasks filters the global projection by topic and question type', async () => {
+    const db = createLearningDb({
+      reviewTaskRows: [
+        {
+          review_task_id: 'review-equations',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_question_type_id: '9709.trigonometry.equations',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'question-equations',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-equations' },
+          trigger_type: 'immediate_repair',
+          mode: 'trap_fix',
+          due_at: '2026-03-23T00:00:00.000Z',
+          priority: 'high',
+          estimated_minutes: 15,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'immediate_repair',
+              freshness_bucket: 'fresh',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:10:00.000Z',
+          updated_at: '2026-03-22T08:10:00.000Z',
+        },
+        {
+          review_task_id: 'review-graphs',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_question_type_id: '9709.trigonometry.graphs',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'question-graphs',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-graphs' },
+          trigger_type: 'short_delay',
+          mode: 'redo_variant',
+          due_at: '2026-03-24T00:00:00.000Z',
+          priority: 'normal',
+          estimated_minutes: 10,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'short_delay',
+              freshness_bucket: 'cooling',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:15:00.000Z',
+          updated_at: '2026-03-22T08:15:00.000Z',
+        },
+      ],
+      artifactRows: [],
+      sessionRows: [],
+    });
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      query: {
+        topic_id: 'topic-1',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    });
+    const res = createRes();
+
+    await reviewTasksHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({
+      scope: 'global_queue_projection',
+      topic_id: 'topic-1',
+      question_type_id: '9709.trigonometry.equations',
+    });
+    expect(res.body.items.map((item) => item.review_task_id)).toEqual(['review-equations']);
+  });
+
   test('workspace review_queue slot stays tied to active tasks even when queue payload is filtered', async () => {
     const db = createLearningDb();
 
@@ -2248,6 +2550,100 @@ describe('workspace read service', () => {
       topic_sections: expect.any(Array),
     });
     expect(res.body.paper_workspace.paper_scope).toBe('9709:paper:p1');
+  });
+
+  test('GET /api/learning/workspaces/papers/:paperScope can return a topic-section review subview', async () => {
+    expect(paperWorkspaceHandler).toEqual(expect.any(Function));
+    const db = createLearningDb({
+      reviewTaskRows: [
+        {
+          review_task_id: 'review-equations',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_question_type_id: '9709.trigonometry.equations',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'question-equations',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-equations' },
+          trigger_type: 'immediate_repair',
+          mode: 'trap_fix',
+          due_at: '2026-03-23T00:00:00.000Z',
+          priority: 'high',
+          estimated_minutes: 15,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'immediate_repair',
+              freshness_bucket: 'fresh',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:10:00.000Z',
+          updated_at: '2026-03-22T08:10:00.000Z',
+        },
+        {
+          review_task_id: 'review-graphs',
+          user_id: 'student-1',
+          target_kind: 'question_type',
+          target_topic_id: 'topic-1',
+          target_topic_path: '9709/trigonometry/equations',
+          target_family_id: '9709.trigonometry_manipulation_equations',
+          target_question_type_id: '9709.trigonometry.graphs',
+          target_misconception_tags: [],
+          related_artifact_refs: [],
+          source_question_id: 'question-graphs',
+          source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-graphs' },
+          trigger_type: 'short_delay',
+          mode: 'redo_variant',
+          due_at: '2026-03-24T00:00:00.000Z',
+          priority: 'normal',
+          estimated_minutes: 10,
+          success_criteria: {
+            scheduler_policy: {
+              route: 'short_delay',
+              freshness_bucket: 'cooling',
+            },
+          },
+          completion_evidence: {},
+          status: 'open',
+          created_at: '2026-03-22T08:15:00.000Z',
+          updated_at: '2026-03-22T08:15:00.000Z',
+        },
+      ],
+      artifactRows: [],
+      sessionRows: [],
+    });
+    mockGetServiceClient.mockReturnValue(db);
+
+    const req = createReq({
+      query: {
+        paperScope: '9709%3Apaper%3Ap1',
+        topic_id: 'topic-1',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    });
+    const res = createRes();
+
+    await paperWorkspaceHandler(req, res);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({
+      paper_scope: '9709:paper:p1',
+      topic_section: {
+        topic_id: 'topic-1',
+      },
+      review_queue: {
+        scope: 'paper_topic_section_review_projection',
+        question_type_id: '9709.trigonometry.equations',
+      },
+      compatibility: {
+        surface: 'paper_topic_section_workspace',
+      },
+    });
+    expect(res.body.review_queue.items.map((item) => item.review_task_id)).toEqual(['review-equations']);
   });
 
   test('POST /api/learning/workspaces/papers/:paperScope ensures first-open paper workspace', async () => {

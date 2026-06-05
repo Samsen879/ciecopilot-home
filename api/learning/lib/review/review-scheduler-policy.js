@@ -316,6 +316,10 @@ function compareTaskRank(left, right) {
   return String(left?.created_at ?? '').localeCompare(String(right?.created_at ?? ''));
 }
 
+export function compareReviewTaskProjectionItems(left, right) {
+  return compareTaskRank(left, right);
+}
+
 function buildStoredPolicy(policy = {}, fallbackReasonCode = null) {
   const normalizedPolicy = normalizeObject(policy);
   return {

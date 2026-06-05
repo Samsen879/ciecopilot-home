@@ -10,8 +10,10 @@ import {
 import {
   ensurePaperWorkspaceView,
   getPaperWorkspaceView,
+  getTopicSectionWorkspaceView,
 } from '../../lib/workspaces/workspace-read-service.js';
 import {
+  buildPaperTopicSectionCompatibilityEnvelope,
   buildPaperWorkspaceCompatibilityEnvelope,
   normalizePaperScope,
 } from '../../lib/workspaces/paper-workspace-contract.js';
@@ -37,6 +39,10 @@ async function ensureLearningAuth(req) {
 
 function normalizeSummaryObject(value) {
   return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+
+function readQueryValue(value) {
+  return Array.isArray(value) ? value[0] ?? null : value ?? null;
 }
 
 export default async function handler(req, res) {
@@ -81,16 +87,42 @@ export default async function handler(req, res) {
 
     const client = getServiceClient();
     const paperScope = normalizePaperScope(req?.query?.paperScope);
+    const reviewOptions = {
+      reviewStatus: readQueryValue(req?.query?.review_status) || readQueryValue(req?.query?.status),
+      reviewDueBefore:
+        readQueryValue(req?.query?.review_due_before) || readQueryValue(req?.query?.due_before),
+      reviewQuestionTypeId: readQueryValue(req?.query?.question_type_id),
+    };
+    const topicId = readQueryValue(req?.query?.topic_id);
+    const topicPath = readQueryValue(req?.query?.topic_path);
+    if (req.method === 'GET' && (topicId || topicPath)) {
+      const topicPayload = await getTopicSectionWorkspaceView(client, {
+        userId: auth.userId,
+        paperScope,
+        topicId,
+        topicPath,
+        ...reviewOptions,
+      });
+
+      return sendLearningJson(
+        res,
+        req?.request_id || null,
+        buildPaperTopicSectionCompatibilityEnvelope(topicPayload),
+      );
+    }
+
     const payload = req.method === 'POST'
       ? await ensurePaperWorkspaceView(client, {
         userId: auth.userId,
         paperScope,
         visibleOrganizationSummary: normalizeSummaryObject(req?.body?.visible_organization_summary),
         linkedTopicSummary: normalizeSummaryObject(req?.body?.linked_topic_summary),
+        ...reviewOptions,
       })
       : await getPaperWorkspaceView(client, {
         userId: auth.userId,
         paperScope,
+        ...reviewOptions,
       });
 
     return sendLearningJson(

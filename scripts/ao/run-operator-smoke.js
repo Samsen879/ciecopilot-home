@@ -87,7 +87,9 @@ const SCENARIOS = {
         expectStdoutContains: [
           'top_status: continue',
           'routing: continue_current_worker owner=cie-93 authoritative=true',
-          'release: notify_human_ready authoritative=true',
+          'release: auto_merge_ready_pr authoritative=true',
+          'release_ready_auto_merge',
+          'gh pr merge 93 --squash --delete-branch',
         ],
       },
     ],

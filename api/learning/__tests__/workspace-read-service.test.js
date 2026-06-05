@@ -8,6 +8,7 @@ jest.unstable_mockModule('../../lib/supabase/client.js', () => ({
 
 const {
   getPaperWorkspaceView,
+  getTopicSectionWorkspaceView,
   getWorkspaceView,
   listReviewTasks,
 } = await import('../lib/workspaces/workspace-read-service.js');
@@ -1608,6 +1609,66 @@ describe('workspace read service', () => {
     expect(payload.paper_workspace.stable_slots.review_queue.linked_references
       .filter((ref) => ref.kind === 'review_task' && ref.review_task_id === 'review-queued-1'))
       .toHaveLength(1);
+  });
+
+  test('topic-section workspace view focuses one section inside a paper workspace without creating a topic workspace', async () => {
+    const db = createLearningDb();
+
+    const payload = await getTopicSectionWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      topicId: 'topic-1',
+      residencyFlagEnabled: true,
+    });
+
+    expect(payload.paper_workspace).toMatchObject({
+      paper_workspace_id: 'paper-workspace-1',
+      paper_scope: '9709:paper:p1',
+      workspace_kind: 'paper_main',
+    });
+    expect(Object.keys(payload.paper_workspace.stable_slots)).toEqual([
+      'overview_map',
+      'core_method_derivation',
+      'canonical_worked_example',
+      'common_traps',
+      'my_notes',
+      'review_queue',
+    ]);
+    expect(payload.topic_section).toMatchObject({
+      paper_workspace_topic_section_id: 'section-topic-1',
+      topic_id: 'topic-1',
+      topic_workspace_id: 'workspace-1',
+      topic_path: '9709/trigonometry/equations',
+      canonical_ownership: {
+        owner_kind: 'topic',
+        topic_id: 'topic-1',
+      },
+    });
+    expect(payload.workspace).toMatchObject({
+      workspace_id: 'workspace-1',
+      user_id: 'student-1',
+      topic_id: 'topic-1',
+      topic_path: '9709/trigonometry/equations',
+    });
+    expect(payload.workspace.slots.common_traps.linked_references).toEqual([
+      { kind: 'artifact', artifact_id: 'artifact-linked-1' },
+    ]);
+    expect(payload.review_queue).toMatchObject({
+      scope: 'paper_topic_section_review_projection',
+      topic_id: 'topic-1',
+      topic_path: '9709/trigonometry/equations',
+    });
+    expect(payload.review_queue.items.map((item) => item.review_task_id)).toEqual(['review-queued-1']);
+    expect(payload.compatibility).toMatchObject({
+      surface: 'paper_topic_section_workspace',
+      canonical_owner_kind: 'topic',
+      topic_sections_are_projections: true,
+      legacy_topic_fallback: {
+        route: '/api/learning/workspaces/:topicId',
+        status: 'preserved',
+      },
+    });
+    expect(db.queries.filter((query) => query.operation === 'insert')).toEqual([]);
   });
 
   test('workspace returns stable slots plus linked references from secondary topics', async () => {

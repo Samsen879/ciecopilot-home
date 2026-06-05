@@ -81,7 +81,7 @@ async function getWorkspaceByTopic(client, { userId, topicId } = {}) {
   return data || null;
 }
 
-async function getPaperWorkspaceByScope(client, { userId, paperScope } = {}) {
+export async function loadPaperWorkspaceByScope(client, { userId, paperScope } = {}) {
   const { data, error } = await client
     .from('learning_paper_workspaces')
     .select('*')
@@ -154,7 +154,7 @@ export async function ensurePaperWorkspaceExists(client, {
   visibleOrganizationSummary = {},
   linkedTopicSummary = {},
 } = {}) {
-  const existing = await getPaperWorkspaceByScope(client, {
+  const existing = await loadPaperWorkspaceByScope(client, {
     userId,
     paperScope,
   });
@@ -178,7 +178,7 @@ export async function ensurePaperWorkspaceExists(client, {
 
   if (error || !data) {
     if (isUniqueConflict(error)) {
-      const racedWorkspace = await getPaperWorkspaceByScope(client, {
+      const racedWorkspace = await loadPaperWorkspaceByScope(client, {
         userId,
         paperScope,
       });

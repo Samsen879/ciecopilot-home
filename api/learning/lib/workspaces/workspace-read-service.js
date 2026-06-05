@@ -13,6 +13,8 @@ import {
   fetchWorkspaceProjection,
 } from '../repositories/workspace-repository.js';
 import {
+  LEGACY_TOPIC_WORKSPACE_ROUTE,
+  PAPER_WORKSPACE_ROUTE,
   getSubjectCodeForPaperScope,
   normalizePaperScope,
 } from './paper-workspace-contract.js';
@@ -363,6 +365,17 @@ function buildPaperWorkspaceNotFound(paperScope) {
   return new LearningHttpError('workspace_not_found', 'Paper workspace not found.', {
     status: 404,
     details: { paper_scope: paperScope ?? null },
+  });
+}
+
+function buildPaperTopicSectionNotFound({ paperScope, topicId = null, topicPath = null } = {}) {
+  return new LearningHttpError('workspace_not_found', 'Paper workspace topic section not found.', {
+    status: 404,
+    details: {
+      paper_scope: paperScope ?? null,
+      topic_id: topicId ?? null,
+      topic_path: topicPath ?? null,
+    },
   });
 }
 
@@ -807,6 +820,34 @@ function buildPaperTopicSectionProjection({
   };
 }
 
+function findTopicSectionView(topicSections = [], { topicId = null, topicPath = null } = {}) {
+  const normalizedTopicId = normalizeString(topicId);
+  const normalizedTopicPath = normalizeString(topicPath);
+
+  if (!normalizedTopicId && !normalizedTopicPath) {
+    throw buildInvalidWorkspaceEnsurePayload('topicId or topicPath is required.', {
+      field: 'topic_section',
+    });
+  }
+
+  return (Array.isArray(topicSections) ? topicSections : []).find((section) =>
+    (!normalizedTopicId || section.topic_id === normalizedTopicId)
+    && (!normalizedTopicPath || section.topic_path === normalizedTopicPath)) ?? null;
+}
+
+function buildTopicSectionWorkspaceSummary(section = {}, { userId = null } = {}) {
+  return {
+    workspace_id: section.workspace?.workspace_id ?? section.topic_workspace_id ?? null,
+    user_id: userId,
+    topic_id: section.topic_id ?? null,
+    topic_path: section.topic_path ?? null,
+    slot_state: section.workspace?.slot_state ?? {},
+    linked_reference_summary: section.workspace?.linked_reference_summary ?? {},
+    updated_at: section.workspace?.updated_at ?? section.updated_at ?? null,
+    slots: section.stable_slots ?? buildStableSlotMap(() => createEmptySlot()),
+  };
+}
+
 function buildPaperStableSlots(topicSectionViews = []) {
   const paperSlots = buildEmptyPaperStableSlots();
 
@@ -1048,6 +1089,60 @@ export async function ensurePaperWorkspaceView(
     reviewDueBefore,
     residencyFlagEnabled,
   });
+}
+
+export async function getTopicSectionWorkspaceView(
+  client,
+  {
+    userId,
+    paperScope,
+    topicId = null,
+    topicPath = null,
+    reviewStatus = null,
+    reviewDueBefore = null,
+    residencyFlagEnabled = isArtifactLifecycleEnabled(),
+  } = {},
+) {
+  const normalizedPaperScope = normalizePaperScope(paperScope);
+  const paperView = await getPaperWorkspaceView(client, {
+    userId,
+    paperScope: normalizedPaperScope,
+    reviewStatus,
+    reviewDueBefore,
+    residencyFlagEnabled,
+  });
+  const topicSection = findTopicSectionView(paperView.topic_sections, {
+    topicId,
+    topicPath,
+  });
+
+  if (!topicSection) {
+    throw buildPaperTopicSectionNotFound({
+      paperScope: normalizedPaperScope,
+      topicId,
+      topicPath,
+    });
+  }
+
+  return {
+    paper_workspace: paperView.paper_workspace,
+    topic_section: topicSection,
+    workspace: buildTopicSectionWorkspaceSummary(topicSection, {
+      userId,
+    }),
+    review_queue: topicSection.review_queue,
+    compatibility: {
+      surface: 'paper_topic_section_workspace',
+      paper_workspace_route: PAPER_WORKSPACE_ROUTE,
+      legacy_topic_fallback: {
+        route: LEGACY_TOPIC_WORKSPACE_ROUTE,
+        status: 'preserved',
+      },
+      canonical_owner_kind: 'topic',
+      topic_sections_are_projections: true,
+      paper_scope: normalizedPaperScope,
+    },
+  };
 }
 
 export async function getWorkspaceView(

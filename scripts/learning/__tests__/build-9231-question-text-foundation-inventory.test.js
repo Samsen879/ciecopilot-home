@@ -169,6 +169,63 @@ describe('9231 question text foundation inventory', () => {
     expect(inventory.consumption_paths.rag_consumed_claimed).toBe(false);
   });
 
+  test('aggregates unique text and consumption coverage across multiple shard-wave artifacts', () => {
+    const root = fixtureRoot();
+    writeJson(root, 'data/manifests/9231_p1_s25_standard_001_page_chain_surface_v1.json', {
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q01.png' },
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+        { storage_key: '9231/s25_qp_12/questions/q01.png' },
+        { storage_key: '9231/s25_qp_12/questions/q02.png' },
+      ],
+    });
+    writeJson(root, 'docs/reports/2026-06-05-9231-question-plain-text-v2.json', {
+      summary: { v2_rows: 2, normalized_plain_text_rows: 2 },
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q01.png' },
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+      ],
+    });
+    writeJson(root, 'docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2.json', {
+      summary: { v2_rows: 2, normalized_plain_text_rows: 2 },
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+        { storage_key: '9231/s25_qp_12/questions/q01.png' },
+      ],
+    });
+    writeJson(root, 'docs/reports/2026-06-05-9231-question-plain-text-v2-consumption.json', {
+      summary: { rows_read: 2, normalized_plain_text_rows: 2 },
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q01.png' },
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+      ],
+    });
+    writeJson(root, 'docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2-consumption.json', {
+      summary: { rows_read: 2, normalized_plain_text_rows: 2 },
+      items: [
+        { storage_key: '9231/s25_qp_11/questions/q02.png' },
+        { storage_key: '9231/s25_qp_12/questions/q01.png' },
+      ],
+    });
+
+    const inventory = buildQuestionTextFoundationInventory({
+      rootDir: root,
+      generatedOn: '2026-06-05',
+    });
+    const markdown = renderQuestionTextFoundationInventoryMarkdown(inventory);
+
+    expect(inventory.text_evidence.question_plain_text_v2_max_rows).toBe(2);
+    expect(inventory.text_evidence.question_plain_text_v2_aggregate_unique_rows).toBe(3);
+    expect(inventory.text_evidence.question_plain_text_v2_consumption_aggregate_unique_rows).toBe(3);
+    expect(inventory.gap_inventory.blockers).toContainEqual(expect.objectContaining({
+      check: 'partial_question_plain_text_v2_coverage',
+      evidence: expect.objectContaining({
+        question_plain_text_v2_aggregate_unique_rows: 3,
+      }),
+    }));
+    expect(markdown).toContain('question_plain_text_v2 covers `3/4` unique current rows');
+  });
+
   test('renders partial crop coverage instead of saying crop assets are missing', () => {
     const root = fixtureRoot();
     writePdfStub(root, 'data/past-papers/9231Further-Mathematics/paper1/9231_s25_qp_11.pdf');

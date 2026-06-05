@@ -3,6 +3,7 @@ import {
   ensureWorkspaceExists,
   fetchPaperWorkspaceProjection,
   fetchWorkspaceProjection,
+  loadPaperWorkspaceByScope,
 } from '../lib/repositories/workspace-repository.js';
 
 function createWorkspaceDb() {
@@ -57,6 +58,9 @@ function createWorkspaceDb() {
     selects,
     setExistingWorkspace(workspace) {
       existingWorkspace = workspace;
+    },
+    setExistingPaperWorkspace(workspace) {
+      existingPaperWorkspace = workspace;
     },
     setInsertError(error, nextWorkspace = null) {
       insertError = error;
@@ -198,6 +202,43 @@ function createWorkspaceDb() {
 }
 
 describe('workspace-repository', () => {
+  test('loadPaperWorkspaceByScope loads an existing paper workspace without touching topic workspace rows', async () => {
+    const db = createWorkspaceDb();
+    db.setExistingPaperWorkspace({
+      paper_workspace_id: 'paper-workspace-existing-1',
+      user_id: 'user-1',
+      subject_code: '9709',
+      paper_scope: '9709:paper:p1',
+      workspace_kind: 'paper_main',
+      visible_organization_summary: {},
+      linked_topic_summary: {},
+      created_at: '2026-06-05T08:00:00.000Z',
+      updated_at: '2026-06-05T08:05:00.000Z',
+    });
+
+    const workspace = await loadPaperWorkspaceByScope(db, {
+      userId: 'user-1',
+      paperScope: '9709:paper:p1',
+    });
+
+    expect(db.selects).toEqual([
+      {
+        table: 'learning_paper_workspaces',
+        selection: '*',
+        filters: [
+          { column: 'user_id', value: 'user-1' },
+          { column: 'paper_scope', value: '9709:paper:p1' },
+        ],
+      },
+    ]);
+    expect(db.inserts).toEqual([]);
+    expect(workspace).toMatchObject({
+      paper_workspace_id: 'paper-workspace-existing-1',
+      user_id: 'user-1',
+      paper_scope: '9709:paper:p1',
+    });
+  });
+
   test('ensureWorkspaceExists creates a canonical workspace row when one does not exist yet', async () => {
     const db = createWorkspaceDb();
 

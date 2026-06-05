@@ -23,9 +23,9 @@
 | --- | ---: |
 | surface manifests scanned | 64 |
 | scanned rows | 1593 |
-| crop-ready rows | 1002 |
-| crop/render incomplete rows | 591 |
-| already covered rows | 918 |
+| crop-ready rows | 1170 |
+| crop/render incomplete rows | 423 |
+| already covered rows | 1086 |
 | WM/frozen rows | 150 |
 | duplicate storage-key rows | 0 |
 | candidate rows | 0 |

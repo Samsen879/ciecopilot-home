@@ -46,6 +46,8 @@ test('learning error registry exposes the frozen stage codes', () => {
     WORKSPACE_NOT_FOUND: 'workspace_not_found',
     ARTIFACT_NOT_FOUND: 'artifact_not_found',
     ARTIFACT_STATE_CONFLICT: 'artifact_state_conflict',
+    REVIEW_TASK_NOT_FOUND: 'review_task_not_found',
+    REVIEW_TASK_STATE_CONFLICT: 'review_task_state_conflict',
     IDEMPOTENCY_CONFLICT: 'idempotency_conflict',
   });
 });
@@ -58,5 +60,7 @@ test('learning error status defaults match the frozen API contract', () => {
   expect(getLearningErrorStatus(LEARNING_ERROR_CODES.WORKSPACE_NOT_FOUND)).toBe(404);
   expect(getLearningErrorStatus(LEARNING_ERROR_CODES.ARTIFACT_NOT_FOUND)).toBe(404);
   expect(getLearningErrorStatus(LEARNING_ERROR_CODES.ARTIFACT_STATE_CONFLICT)).toBe(409);
+  expect(getLearningErrorStatus(LEARNING_ERROR_CODES.REVIEW_TASK_NOT_FOUND)).toBe(404);
+  expect(getLearningErrorStatus(LEARNING_ERROR_CODES.REVIEW_TASK_STATE_CONFLICT)).toBe(409);
   expect(getLearningErrorStatus(LEARNING_ERROR_CODES.IDEMPOTENCY_CONFLICT)).toBe(409);
 });

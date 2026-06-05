@@ -1,8 +1,11 @@
 import { LEARNING_ERROR_CODES } from '../contracts/error-contract.js';
 import { LearningHttpError } from '../http/learning-http.js';
+import {
+  REVIEW_TASK_COMPLETION_OUTCOMES,
+  hasReviewTaskCompletionEvidenceSignal,
+} from './review-task-completion-evidence.js';
 
 const REVIEW_TASK_WRITE_INTENTS = new Set(['complete', 'reschedule', 'snooze', 'reopen']);
-const REVIEW_TASK_COMPLETION_OUTCOMES = new Set(['completed', 'partial']);
 
 function normalizeString(value) {
   if (value === null || value === undefined) {
@@ -73,17 +76,6 @@ function normalizeOptionalTypedRef(value, field) {
   return value;
 }
 
-function hasCompletionEvidenceSignal(evidence) {
-  return Boolean(
-    normalizeString(evidence.summary)
-    || normalizeString(evidence.note)
-    || hasTypedRef(evidence.artifact_ref)
-    || hasTypedRef(evidence.attempt_ref)
-    || hasTypedRef(evidence.mark_run_ref)
-    || (Array.isArray(evidence.evidence_refs) && evidence.evidence_refs.length > 0)
-  );
-}
-
 function normalizeCompletionEvidence(value) {
   if (!isPlainObject(value)) {
     throw buildInvalidPayload('completion_evidence must be an object.', {
@@ -133,9 +125,9 @@ function normalizeCompletionEvidence(value) {
     normalized.evidence_refs = evidenceRefs;
   }
 
-  if (!hasCompletionEvidenceSignal(normalized)) {
+  if (!hasReviewTaskCompletionEvidenceSignal(normalized)) {
     throw buildInvalidPayload(
-      'completion_evidence must include summary, note, or typed reference evidence.',
+      'completion_evidence must include behavioral evidence for the requested outcome.',
       { field: 'completion_evidence' },
     );
   }
@@ -164,7 +156,7 @@ export function validateReviewTaskWritePayload(body = {}) {
 
   if (body.intent === 'complete') {
     if (!REVIEW_TASK_COMPLETION_OUTCOMES.has(body.completion_outcome)) {
-      throw buildInvalidPayload('completion_outcome must be completed or partial.', {
+      throw buildInvalidPayload('completion_outcome must be completed, partial, skipped, or expired.', {
         field: 'completion_outcome',
       });
     }

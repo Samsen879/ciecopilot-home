@@ -10,6 +10,7 @@ export const MEASUREMENT_TRIGGER_KINDS = [...LIFECYCLE_TRIGGERS];
 export const MEASUREMENT_ACTION_CLASSES = [
   'continue_worker',
   'notify_human',
+  'merge_pr',
   'hold',
   'human_gate',
   'restore_worker',
@@ -119,6 +120,9 @@ export function resolveMeasurementActionClass({
   }
   if (normalizedActionKind === 'notify_human_ready' || normalizedActionClass === 'notify_human') {
     return 'notify_human';
+  }
+  if (normalizedActionKind === 'auto_merge_ready_pr' || normalizedActionClass === 'merge_pr') {
+    return 'merge_pr';
   }
   if (
     ['hold_ci', 'hold_review', 'hold_mergeability', 'hold_local_control'].includes(normalizedActionKind)

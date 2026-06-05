@@ -8,7 +8,7 @@ The control plane is still operator-started and operator-visible:
 
 - no hidden background bootstrap
 - no webhook-first orchestration
-- no auto-merge
+- auto-merge is default-on only after AO release gates pass
 - no host-project business logic
 
 ## Tool Roles
@@ -47,11 +47,12 @@ Current execution rule:
 - every auto-execution still requires durable policy `allow`
 - every auto-execution still requires runtime preflight status `clean`
 - replay remains idempotent through `action_status_gate`: once an action record is no longer `proposed`, assist does not execute it again
-- assist does not auto-merge
+- assist auto-merges release-ready AO-managed PRs by default through `auto_merge_ready_pr`
 
 Current class boundary:
 
 - `class_a`: low-risk repo-local control actions that may auto-execute after policy and preflight gates pass
+- `class_a` also includes `auto_merge_ready_pr`, which mutates GitHub only after fresh PR state confirms approval, CI, mergeability, non-draft state, and expected head SHA
 - `class_b`: advisory or hold posture only; never auto-executes in phase 4
 - `class_c`: ownership-transfer or similarly high-risk actions; never auto-executes in phase 4
 
@@ -59,12 +60,13 @@ Current allowlist:
 
 - `continue_worker`
 - `notify_human_ready`
+- `auto_merge_ready_pr`
 
 Still blocked:
 
 - `restore_worker`
 - `handoff_worker`
-- any merge action
+- any merge action other than `auto_merge_ready_pr`
 
 Rollback posture:
 
@@ -93,7 +95,7 @@ Interpretation:
 - `model_executable=true` means the phase-4 allowlist and preconditions permit execution in principle
 - `policy_decision=deny|downgrade` still blocks actual execution even when the model is executable
 - `execution_reason` is the operator-facing answer to “why did this run or why was it blocked?”
-- explicit review freeze can still replace a release-facing `notify_human_ready` proposal with `hold_review`; in that case the action is blocked by review posture, not by policy downgrade
+- explicit review freeze can still replace a release-facing `auto_merge_ready_pr` proposal with `hold_review`; in that case the action is blocked by review posture, not by policy downgrade
 
 ## Independent Reviewer Gate Contract
 
@@ -104,7 +106,7 @@ First-release rule:
 - review starts only when the implementation worker explicitly emits `ready_for_review`
 - AO records that request through `ao-review`
 - controller and lifecycle fail closed only when that durable review state exists and has not passed for the current target SHA
-- there is still no auto-merge
+- auto-merge remains blocked until the review gate passes for the current target SHA
 - reviewer read-only is convention-enforced in v1, not OS- or git-sandbox enforced
 
 Current review posture vocabulary:
@@ -140,7 +142,7 @@ Read these review fields first:
 
 Interpretation:
 
-- if `reviews.inspections[*].posture = review_pending`, the implementation slice is frozen and `notify_human_ready` must not advance
+- if `reviews.inspections[*].posture = review_pending`, the implementation slice is frozen and `auto_merge_ready_pr` must not advance
 - if `reviews.inspections[*].posture = review_changes_required`, the next safe step is more implementation work, not human-ready notification
 - if `reviews.inspections[*].posture = review_escalated`, stop for explicit human judgment
 - if `reviews.inspections[*].posture = review_passed`, the release-facing path may continue for that exact target SHA

@@ -1308,6 +1308,7 @@ async function executeControllerPass({
           task,
           actionIds: proposalResult.actionIds,
           now: timestamp,
+          commandRunner: services.commandRunner,
           abortSignal,
         }), {
           stopSignal,

@@ -171,7 +171,7 @@ function resolvePrLifecycleBinding(pr = {}) {
   ) {
     return {
       lifecycleTrigger: 'approved_and_green',
-      controllerActionHint: 'notify_human_ready',
+      controllerActionHint: 'auto_merge_ready_pr',
     };
   }
 

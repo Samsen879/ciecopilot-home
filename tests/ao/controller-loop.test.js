@@ -829,7 +829,8 @@ describe('ao controller loop', () => {
         owner_session: 'cie-92',
       },
       release_decision: {
-        disposition: 'notify_human_ready',
+        disposition: 'auto_merge_ready_pr',
+        expected_head_sha: 'abc123',
       },
       actions: [
         {
@@ -838,6 +839,16 @@ describe('ao controller loop', () => {
           summary: 'Continue the current worker owner.',
           commands: ['ao status -p ciecopilot-home --json'],
           rationale: 'Ownership continuity is clear enough to continue the current worker.',
+        },
+        {
+          id: 'auto_merge_ready_pr',
+          action_class: 'merge_pr',
+          summary: 'Merge the release-ready AO-managed PR.',
+          commands: [
+            'gh pr view 92 --json number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url',
+            'gh pr merge 92 --squash --delete-branch',
+          ],
+          rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
         },
         {
           id: 'restore_worker',
@@ -861,6 +872,28 @@ describe('ao controller loop', () => {
           rationale: 'This should be blocked by policy because terraform is not an allowlisted tool.',
         },
       ],
+    };
+
+    const commandCalls = [];
+    const commandRunner = async ({ command, args }) => {
+      commandCalls.push([command, ...args]);
+      if (args[0] === 'pr' && args[1] === 'view') {
+        return {
+          status: 0,
+          stdout: JSON.stringify({
+            number: 92,
+            state: 'OPEN',
+            headRefOid: 'abc123',
+            reviewDecision: 'APPROVED',
+            mergeStateStatus: 'CLEAN',
+            isDraft: false,
+            statusCheckRollup: [{ status: 'COMPLETED', conclusion: 'SUCCESS' }],
+            url: 'https://example.test/pr/92',
+          }),
+          stderr: '',
+        };
+      }
+      return { status: 0, stdout: '', stderr: '' };
     };
 
     const result = await runControllerLoop({
@@ -903,19 +936,20 @@ describe('ao controller loop', () => {
         }),
         resolveLifecycleReport: async () => lifecycleReport,
         ensureRuntimePreflights: () => repository.getSnapshot().state.runtime_preflights,
+        commandRunner,
       },
     });
 
     expect(result).toMatchObject({
       mode: 'assist',
-      proposed_action_count: 4,
-      executed_action_count: 1,
+      proposed_action_count: 5,
+      executed_action_count: 2,
       blocked_action_count: 2,
       policy_blocked_action_count: 1,
       task_results: [
         expect.objectContaining({
-          proposed_action_count: 4,
-          executed_action_count: 1,
+          proposed_action_count: 5,
+          executed_action_count: 2,
           blocked_action_count: 2,
           policy_blocked_action_count: 1,
           continuity: expect.objectContaining({
@@ -934,6 +968,18 @@ describe('ao controller loop', () => {
               model_executable: true,
               model_reason: 'class_a_allowlist',
               execution_reason: 'class_a_assist_execution',
+              runtime_preflight_status: 'clean',
+              idempotency_mode: 'action_status_gate',
+              rollback_mode: 'audit_only',
+            }),
+            expect.objectContaining({
+              action_kind: 'auto_merge_ready_pr',
+              status: 'executed',
+              risk_class: 'class_a',
+              policy_decision: 'allow',
+              model_executable: true,
+              model_reason: 'class_a_allowlist',
+              execution_reason: 'auto_merge_completed',
               runtime_preflight_status: 'clean',
               idempotency_mode: 'action_status_gate',
               rollback_mode: 'audit_only',
@@ -972,6 +1018,10 @@ describe('ao controller loop', () => {
         }),
       ],
     });
+    expect(commandCalls).toEqual([
+      ['gh', 'pr', 'view', '92', '--json', 'number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url'],
+      ['gh', 'pr', 'merge', '92', '--squash', '--delete-branch'],
+    ]);
 
     expect(repository.getSnapshot().state.actions).toEqual(expect.arrayContaining([
       expect.objectContaining({
@@ -980,6 +1030,15 @@ describe('ao controller loop', () => {
         payload: expect.objectContaining({
           action_model: expect.objectContaining({
             risk_class: 'class_a',
+          }),
+        }),
+      }),
+      expect.objectContaining({
+        action_kind: 'auto_merge_ready_pr',
+        status: 'executed',
+        payload: expect.objectContaining({
+          execution: expect.objectContaining({
+            reason: 'auto_merge_completed',
           }),
         }),
       }),
@@ -1035,7 +1094,7 @@ describe('ao controller loop', () => {
     ]);
   });
 
-  it('blocks notify_human_ready in assist mode when independent review has not passed for the current head sha', async () => {
+  it('blocks auto_merge_ready_pr in assist mode when independent review has not passed for the current head sha', async () => {
     const repository = createStateRepository({
       repoRoot: createTempRepo(),
       projectId: PROJECT_ID,
@@ -1075,7 +1134,8 @@ describe('ao controller loop', () => {
         owner_session: 'cie-92',
       },
       release_decision: {
-        disposition: 'notify_human_ready',
+        disposition: 'auto_merge_ready_pr',
+        expected_head_sha: 'abc123',
       },
       actions: [
         {
@@ -1086,11 +1146,11 @@ describe('ao controller loop', () => {
           rationale: 'Ownership continuity is clear enough to continue the current worker.',
         },
         {
-          id: 'notify_human_ready',
-          action_class: 'notify_human',
-          summary: 'Notify the human that the PR appears ready.',
-          commands: ['gh pr view 92 --json mergeable,reviewDecision,isDraft,url'],
-          rationale: 'Human approval remains required even when the PR appears ready.',
+          id: 'auto_merge_ready_pr',
+          action_class: 'merge_pr',
+          summary: 'Merge the release-ready AO-managed PR.',
+          commands: ['gh pr merge 92 --squash --delete-branch'],
+          rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
         },
       ],
     };

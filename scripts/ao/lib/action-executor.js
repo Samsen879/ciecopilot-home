@@ -1,3 +1,5 @@
+import { spawnSync } from 'node:child_process';
+
 import { createActionRecord } from './state-contracts.js';
 import { buildAssistExecutionAttemptMetric } from './run-metrics.js';
 
@@ -6,6 +8,7 @@ export const ASSIST_ACTION_MODEL_FORMAT = 'ao_control_plane_action_model';
 export const ACTION_RISK_CLASSES = ['class_a', 'class_b', 'class_c'];
 export const ASSIST_AUTOMATION_BOUNDARY = 'class_a_only';
 export const ASSIST_IDEMPOTENCY_MODE = 'action_status_gate';
+export const AUTO_MERGE_PR_JSON_FIELDS = 'number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url';
 
 function resolveNow(now) {
   if (typeof now === 'function') return resolveNow(now());
@@ -78,6 +81,15 @@ const ACTION_POLICIES = {
     ],
   },
   notify_human_ready: {
+    riskClass: 'class_a',
+    phase4AssistExecutable: true,
+    nonExecutableReason: 'class_a_allowlist',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
+  auto_merge_ready_pr: {
     riskClass: 'class_a',
     phase4AssistExecutable: true,
     nonExecutableReason: 'class_a_allowlist',
@@ -363,6 +375,7 @@ function buildBlockedActionRecord(record, model, timestamp, {
   reason,
   matchedOverrideIds = [],
   structural = false,
+  details = null,
 } = {}) {
   return createActionRecord({
     ...record,
@@ -379,12 +392,16 @@ function buildBlockedActionRecord(record, model, timestamp, {
         matched_override_ids: matchedOverrideIds,
         idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
         rollback_mode: model?.execution_contract?.rollback_mode ?? null,
+        details: cloneJsonValue(details),
       },
     },
   });
 }
 
-function buildExecutedActionRecord(record, model, timestamp) {
+function buildExecutedActionRecord(record, model, timestamp, {
+  reason = 'class_a_assist_execution',
+  details = null,
+} = {}) {
   return createActionRecord({
     ...record,
     status: 'executed',
@@ -394,11 +411,12 @@ function buildExecutedActionRecord(record, model, timestamp) {
       action_model: cloneJsonValue(model),
       execution: {
         outcome: 'executed',
-        reason: 'class_a_assist_execution',
+        reason,
         executed_at: timestamp,
         executor: 'assist_controller',
         idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
         rollback_mode: model?.execution_contract?.rollback_mode ?? null,
+        details: cloneJsonValue(details),
       },
     },
   });
@@ -442,6 +460,248 @@ function normalizeExecutionReason(record, model) {
   return model?.execution_contract?.reason
     ?? model?.phase4_assist?.reason
     ?? null;
+}
+
+function defaultCommandRunner({ command, args = [] } = {}) {
+  const result = spawnSync(command, args, {
+    encoding: 'utf8',
+  });
+  return {
+    status: result.status ?? (result.error ? 1 : 0),
+    stdout: result.stdout ?? '',
+    stderr: result.stderr ?? result.error?.message ?? '',
+  };
+}
+
+function normalizeUpperString(value) {
+  return String(value ?? '').trim().toUpperCase();
+}
+
+function normalizeFreshCiStatus(statusCheckRollup) {
+  const entries = Array.isArray(statusCheckRollup) ? statusCheckRollup.filter(Boolean) : [];
+  if (!entries.length) return 'unknown';
+
+  let sawPassing = false;
+  let sawPending = false;
+
+  for (const entry of entries) {
+    const status = normalizeUpperString(entry.status);
+    const conclusion = normalizeUpperString(entry.conclusion);
+
+    if (['QUEUED', 'IN_PROGRESS', 'PENDING', 'EXPECTED', 'REQUESTED', 'WAITING'].includes(status)) {
+      sawPending = true;
+      continue;
+    }
+
+    if (status === 'COMPLETED') {
+      if (['FAILURE', 'FAILED', 'ERROR', 'TIMED_OUT', 'CANCELLED', 'ACTION_REQUIRED', 'STALE', 'STARTUP_FAILURE'].includes(conclusion)) {
+        return 'failing';
+      }
+      if (['SUCCESS', 'NEUTRAL', 'SKIPPED'].includes(conclusion)) {
+        sawPassing = true;
+        continue;
+      }
+      sawPending = true;
+    }
+  }
+
+  if (sawPending) return 'pending';
+  if (sawPassing) return 'passing';
+  return 'unknown';
+}
+
+function parseJsonCommandOutput(result, label) {
+  try {
+    return {
+      ok: true,
+      value: JSON.parse(result.stdout || 'null'),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      reason: `${label}_invalid_json`,
+      details: {
+        message: error.message,
+      },
+    };
+  }
+}
+
+function validateFreshAutoMergePr({ freshPr, expectedHeadSha, prNumber } = {}) {
+  const state = normalizeUpperString(freshPr?.state);
+  const reviewDecision = normalizeUpperString(freshPr?.reviewDecision);
+  const mergeStateStatus = normalizeUpperString(freshPr?.mergeStateStatus);
+  const freshHeadSha = freshPr?.headRefOid == null ? null : String(freshPr.headRefOid);
+  const ciStatus = normalizeFreshCiStatus(freshPr?.statusCheckRollup);
+
+  if (state === 'MERGED') {
+    return {
+      ok: true,
+      alreadyMerged: true,
+      reason: 'auto_merge_already_merged',
+      details: { pr_number: prNumber },
+    };
+  }
+
+  if (state !== 'OPEN') {
+    return {
+      ok: false,
+      reason: 'auto_merge_pr_not_open',
+      details: { state },
+    };
+  }
+
+  if (freshPr?.isDraft === true) {
+    return {
+      ok: false,
+      reason: 'auto_merge_draft_pr',
+      details: { is_draft: true },
+    };
+  }
+
+  if (expectedHeadSha && freshHeadSha && freshHeadSha !== expectedHeadSha) {
+    return {
+      ok: false,
+      reason: 'auto_merge_head_mismatch',
+      details: {
+        expected_head_sha: expectedHeadSha,
+        fresh_head_sha: freshHeadSha,
+      },
+    };
+  }
+
+  if (reviewDecision !== 'APPROVED') {
+    return {
+      ok: false,
+      reason: 'auto_merge_review_not_approved',
+      details: { review_decision: reviewDecision },
+    };
+  }
+
+  if (ciStatus !== 'passing') {
+    return {
+      ok: false,
+      reason: 'auto_merge_ci_not_passing',
+      details: { ci_status: ciStatus },
+    };
+  }
+
+  if (!['CLEAN', 'HAS_HOOKS', 'UNSTABLE'].includes(mergeStateStatus)) {
+    return {
+      ok: false,
+      reason: 'auto_merge_not_mergeable',
+      details: { merge_state_status: mergeStateStatus },
+    };
+  }
+
+  return {
+    ok: true,
+    alreadyMerged: false,
+    reason: 'auto_merge_ready',
+    details: {
+      pr_number: prNumber,
+      head_sha: freshHeadSha,
+      merge_state_status: mergeStateStatus,
+    },
+  };
+}
+
+async function runCommand(commandRunner, command, args) {
+  return commandRunner({ command, args });
+}
+
+async function prepareAutoMergeExecution({
+  record,
+  model,
+  commandRunner,
+} = {}) {
+  const prNumber = toNullablePositiveInteger(model?.pr_number);
+  if (!prNumber) {
+    return {
+      ok: false,
+      reason: 'auto_merge_pr_scope_required',
+      details: {},
+    };
+  }
+
+  const expectedHeadSha = record?.payload?.release_decision?.expected_head_sha == null
+    ? null
+    : String(record.payload.release_decision.expected_head_sha);
+  if (!expectedHeadSha) {
+    return {
+      ok: false,
+      reason: 'auto_merge_expected_head_missing',
+      details: {},
+    };
+  }
+
+  const viewResult = await runCommand(commandRunner, 'gh', [
+    'pr',
+    'view',
+    String(prNumber),
+    '--json',
+    AUTO_MERGE_PR_JSON_FIELDS,
+  ]);
+  if (viewResult.status !== 0) {
+    return {
+      ok: false,
+      reason: 'auto_merge_pr_view_failed',
+      details: {
+        status: viewResult.status,
+        stderr: viewResult.stderr ?? '',
+      },
+    };
+  }
+
+  const parsed = parseJsonCommandOutput(viewResult, 'auto_merge_pr_view');
+  if (!parsed.ok) return parsed;
+
+  const validation = validateFreshAutoMergePr({
+    freshPr: parsed.value,
+    expectedHeadSha,
+    prNumber,
+  });
+  if (!validation.ok || validation.alreadyMerged) {
+    return validation;
+  }
+
+  const mergeResult = await runCommand(commandRunner, 'gh', [
+    'pr',
+    'merge',
+    String(prNumber),
+    '--squash',
+    '--delete-branch',
+  ]);
+  if (mergeResult.status !== 0) {
+    const stderr = String(mergeResult.stderr ?? '');
+    if (/already\s+merged/i.test(stderr)) {
+      return {
+        ok: true,
+        alreadyMerged: true,
+        reason: 'auto_merge_already_merged',
+        details: {
+          pr_number: prNumber,
+          stderr,
+        },
+      };
+    }
+
+    return {
+      ok: false,
+      reason: 'auto_merge_command_failed',
+      details: {
+        status: mergeResult.status,
+        stderr,
+      },
+    };
+  }
+
+  return {
+    ok: true,
+    alreadyMerged: false,
+    reason: 'auto_merge_completed',
+    details: validation.details,
+  };
 }
 
 export function summarizeAssistActionRecord(record) {
@@ -488,6 +748,7 @@ export async function executeAssistActions({
   task,
   actionIds = [],
   now = new Date().toISOString(),
+  commandRunner = defaultCommandRunner,
 } = {}) {
   const timestamp = resolveNow(now);
   const uniqueActionIds = [...new Set((actionIds ?? []).map((value) => String(value)))];
@@ -621,7 +882,62 @@ export async function executeAssistActions({
       continue;
     }
 
-    const executedRecord = buildExecutedActionRecord(record, model, timestamp);
+    let executionReason = 'class_a_assist_execution';
+    let executionDetails = null;
+
+    if (record.action_kind === 'auto_merge_ready_pr') {
+      const autoMergeResult = await prepareAutoMergeExecution({
+        record,
+        model,
+        commandRunner,
+      });
+      if (!autoMergeResult.ok) {
+        const blockedRecord = buildBlockedActionRecord(record, model, timestamp, {
+          reason: autoMergeResult.reason,
+          matchedOverrideIds: [],
+          structural: true,
+          details: autoMergeResult.details ?? null,
+        });
+        repository.upsertAction(blockedRecord);
+        repository.appendAuditEntry({
+          entityKind: 'action',
+          entityId: record.action_id,
+          operation: 'execution_blocked',
+          actor: 'assist_controller',
+          summary: `Blocked assist execution for ${record.action_id}.`,
+          details: {
+            action_id: record.action_id,
+            action_kind: record.action_kind,
+            reason: autoMergeResult.reason,
+            risk_class: model.risk_class,
+            runtime_preflight: cloneJsonValue(model.runtime_preflight ?? null),
+            auto_merge: cloneJsonValue(autoMergeResult.details ?? null),
+            idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
+            rollback_mode: model?.execution_contract?.rollback_mode ?? null,
+          },
+          recordedAt: timestamp,
+        });
+        persistExecutionAttemptMetric(repository, {
+          controllerId,
+          task,
+          record,
+          model,
+          status: 'blocked',
+          reason: autoMergeResult.reason,
+          timestamp,
+        });
+        blockedActionIds.push(record.action_id);
+        continue;
+      }
+
+      executionReason = autoMergeResult.reason;
+      executionDetails = autoMergeResult.details ?? null;
+    }
+
+    const executedRecord = buildExecutedActionRecord(record, model, timestamp, {
+      reason: executionReason,
+      details: executionDetails,
+    });
     repository.upsertAction(executedRecord);
     repository.appendAuditEntry({
       entityKind: 'action',
@@ -638,6 +954,8 @@ export async function executeAssistActions({
         pr_number: model.pr_number ?? null,
         runtime_preflight: cloneJsonValue(model.runtime_preflight ?? null),
         policy_decision_id: record?.payload?.policy_decision_id ?? null,
+        execution_reason: executionReason,
+        execution_details: cloneJsonValue(executionDetails),
         idempotency_mode: model?.execution_contract?.idempotency_mode ?? null,
         rollback_mode: model?.execution_contract?.rollback_mode ?? null,
       },
@@ -649,7 +967,7 @@ export async function executeAssistActions({
       record,
       model,
       status: 'executed',
-      reason: 'class_a_assist_execution',
+      reason: executionReason,
       timestamp,
     });
     executedActionIds.push(record.action_id);

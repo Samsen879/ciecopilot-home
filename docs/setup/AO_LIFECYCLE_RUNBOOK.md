@@ -9,7 +9,7 @@ Lifecycle is decide-only:
 - it does not recreate AO sessions
 - it does not mutate git state
 - it does not reassign ownership automatically
-- it does not merge PRs
+- it does not merge PRs directly; assist may execute the explicit `auto_merge_ready_pr` action after gates pass
 - it does not act as a repair plane
 
 Lifecycle exists to answer the next control question after phase-1 reconciliation and phase-2 doctor:
@@ -19,13 +19,14 @@ Lifecycle exists to answer the next control question after phase-1 reconciliatio
 - hand off to a successor
 - hold
 - human gate
-- notify the human that a PR appears ready
+- merge a release-ready PR through the explicit assist action
+- notify the human that a PR appears ready when auto-merge is not the selected path
 
 Independent reviewer gate note:
 
 - first release enables only explicit `ready_for_review` requests through `ao-review`
 - once a durable review request exists, lifecycle must fail closed for release-facing advancement until that review passes for the current target SHA
-- `notify_human_ready` remains notification-only and still never implies auto-merge
+- `notify_human_ready` remains notification-only; `auto_merge_ready_pr` is the default release-ready action
 
 ## When To Run Lifecycle
 
@@ -89,7 +90,7 @@ cd /home/samsen/code/ciecopilot-home
 npm run ao:lifecycle:strict:pr -- <number> --trigger approved_and_green
 ```
 
-Strict mode is still decide-only. It does not create repair or merge authority.
+Strict mode is still decide-only. It does not execute repair or merge actions.
 
 Wrapper note:
 
@@ -134,7 +135,7 @@ Use lifecycle for:
 
 - worker routing decisions
 - restore-vs-successor decisions
-- release-facing hold vs human-ready notification decisions
+- release-facing hold vs auto-merge decisions
 - trigger-specific control reasoning
 
 Lifecycle consumes reconciliation and doctor. It must not replace them.
@@ -218,13 +219,14 @@ This answers:
 - wait for CI
 - wait for review
 - wait for mergeability
-- notify the human that the PR appears ready
+- auto-merge the PR after fresh GitHub validation
+- notify the human that the PR appears ready when auto-merge is not selected
 - human gate
 
 Important:
 
 - `notify_human_ready` is not auto-merge
-- human approval remains required
+- `auto_merge_ready_pr` is default-on for AO-managed PRs when release gates pass
 - GitHub remains canonical for mergeability, review, and CI truth
 
 ## Suggested Workflow
@@ -298,13 +300,14 @@ Phase-4 assist note:
 
 - lifecycle may propose Class A, B, or C actions
 - assist execution only auto-runs the phase-4 Class A allowlist after durable policy `allow` and clean runtime preflight
-- `notify_human_ready` remains notification-only; it is not auto-merge
+- `auto_merge_ready_pr` is the default release-ready action
+- `notify_human_ready` remains notification-only
 
 Independent reviewer gate note:
 
 - lifecycle now reads repo-local review state when it exists
 - `release_decision.disposition = await_review` is authoritative when review is pending, missing for the requested release path, or stale for the current target SHA
-- `release_decision.disposition = no_release_action` with basis `review_changes_required` means implementation should continue instead of advancing to human-ready notification
+- `release_decision.disposition = no_release_action` with basis `review_changes_required` means implementation should continue instead of advancing to auto-merge
 - `release_decision.disposition = human_gate` with basis `review_escalated` means reviewer authority ran out and a human must decide next
 
 ## Strict Exit Codes
@@ -332,7 +335,7 @@ Phase 3 does not:
 - spawn workers automatically
 - restore sessions automatically
 - mutate AO runtime automatically
-- merge PRs automatically
+- merge PRs directly from lifecycle without assist execution
 - replace GitHub truth
 - provide durable lifecycle state storage
 - implement a full repo-local control daemon

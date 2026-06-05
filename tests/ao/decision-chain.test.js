@@ -102,8 +102,8 @@ describe('decision chain report', () => {
           authoritative: true,
         },
         release_decision: {
-          disposition: 'notify_human_ready',
-          basis: ['ready_for_human_notification'],
+          disposition: 'auto_merge_ready_pr',
+          basis: ['ready_for_auto_merge'],
           authoritative: true,
         },
         findings: [
@@ -116,11 +116,14 @@ describe('decision chain report', () => {
         ],
         actions: [
           {
-            id: 'notify_human_ready',
-            action_class: 'notify_human',
-            summary: 'Notify the human that the PR appears ready.',
-            commands: ['gh pr view 44 --json mergeable,reviewDecision,isDraft,url'],
-            rationale: 'Human approval remains required.',
+            id: 'auto_merge_ready_pr',
+            action_class: 'merge_pr',
+            summary: 'Merge the release-ready AO-managed PR.',
+            commands: [
+              'gh pr view 44 --json number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url',
+              'gh pr merge 44 --squash --delete-branch',
+            ],
+            rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
           },
         ],
       },
@@ -152,12 +155,13 @@ describe('decision chain report', () => {
         }),
         expect.objectContaining({
           stage: 'lifecycle',
-          id: 'notify_human_ready',
+          id: 'auto_merge_ready_pr',
         }),
       ],
       next_commands: [
         'git status --short',
-        'gh pr view 44 --json mergeable,reviewDecision,isDraft,url',
+        'gh pr view 44 --json number,state,headRefOid,reviewDecision,mergeStateStatus,isDraft,statusCheckRollup,url',
+        'gh pr merge 44 --squash --delete-branch',
       ],
     });
   });

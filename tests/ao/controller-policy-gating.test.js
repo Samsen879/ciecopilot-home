@@ -383,15 +383,16 @@ describe('ao controller policy gating', () => {
             action: 'continue_current_worker',
           },
           release_decision: {
-            disposition: 'notify_human_ready',
+            disposition: 'auto_merge_ready_pr',
+            expected_head_sha: 'abc107',
           },
           actions: [
             {
-              id: 'notify_human_ready',
-              action_class: 'notify_human',
-              summary: 'Notify the human that the PR appears ready.',
-              commands: ['gh pr view 107 --json mergeable,reviewDecision,isDraft,url'],
-              rationale: 'Human approval remains required even when the PR appears ready.',
+              id: 'auto_merge_ready_pr',
+              action_class: 'merge_pr',
+              summary: 'Merge the release-ready AO-managed PR.',
+              commands: ['gh pr merge 107 --squash --delete-branch'],
+              rationale: 'Release gates are clear and AO auto-merge is enabled by default.',
             },
           ],
         }),

@@ -435,7 +435,7 @@ describe('lifecycle engine', () => {
     expect(report.routing_decision.action).toBe('hold_for_human');
   });
 
-  it('notifies the human when approved-and-green is truly ready', () => {
+  it('auto-merges when approved-and-green is truly ready', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({
         projectId: 'ciecopilot-home',
@@ -444,17 +444,19 @@ describe('lifecycle engine', () => {
       }),
       reconciliationReport: buildReconciliationReport(),
       doctorReport: buildDoctorReport(),
+      currentHeadSha: 'abc123',
     });
 
     expect(report.top_status).toBe('continue');
     expect(report.release_decision).toMatchObject({
-      disposition: 'notify_human_ready',
+      disposition: 'auto_merge_ready_pr',
+      expected_head_sha: 'abc123',
       authoritative: true,
     });
     expect(report.actions).toEqual(expect.arrayContaining([
       expect.objectContaining({
-        id: 'notify_human_ready',
-        action_class: 'notify_human',
+        id: 'auto_merge_ready_pr',
+        action_class: 'merge_pr',
       }),
     ]));
   });

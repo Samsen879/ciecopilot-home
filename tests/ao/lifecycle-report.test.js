@@ -73,8 +73,8 @@ describe('lifecycle report', () => {
       findings: [],
       actions: [],
       release_decision: {
-        disposition: 'notify_human_ready',
-        basis: ['ready_for_human_notification'],
+        disposition: 'auto_merge_ready_pr',
+        basis: ['ready_for_auto_merge'],
         authoritative: true,
       },
     }));

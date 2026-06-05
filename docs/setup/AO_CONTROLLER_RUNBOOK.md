@@ -144,10 +144,10 @@ Read these fields together:
 
 Interpretation:
 
-- `release_decision.disposition = await_review` with basis such as `review_pending`, `review_missing`, or `review_target_mismatch` means the controller must not advance to `notify_human_ready`
+- `release_decision.disposition = await_review` with basis such as `review_pending`, `review_missing`, or `review_target_mismatch` means the controller must not advance to `auto_merge_ready_pr`
 - `release_decision.disposition = no_release_action` with basis `review_changes_required` means the slice has been sent back to implementation
 - `release_decision.disposition = human_gate` with basis `review_escalated` means reviewer authority ended and a human must decide next
-- when the review gate is active, expect `decision_chain.next_actions` to show `hold_review` or `human_gate`, not `notify_human_ready`
+- when the review gate is active, expect `decision_chain.next_actions` to show `hold_review` or `human_gate`, not `auto_merge_ready_pr`
 - first release is explicit only: the gate activates from durable review state created by `ao-review request`; the controller does not auto-spawn reviewers
 
 ## Read Assist Execution Verdict
@@ -172,7 +172,7 @@ Interpretation:
 - `idempotency_mode=action_status_gate` means assist will not re-execute an action after it has left `proposed`
 - `rollback_mode=audit_only` means the action is intentionally limited to low-risk control-plane side effects, not auto-reversal
 - if `policy_decision` is `deny` or `downgrade`, the action remains blocked even if `model_executable=true`
-- if a review freeze is active, assist should surface `hold_review` as an advisory blocked action instead of auto-running `continue_worker` or `notify_human_ready`
+- if a review freeze is active, assist should surface `hold_review` as an advisory blocked action instead of auto-running `continue_worker` or `auto_merge_ready_pr`
 
 ## Stop The Controller
 

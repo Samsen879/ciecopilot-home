@@ -1,5 +1,8 @@
 import {
   REQUIRED_9231_PRODUCTION_DB_ZERO_FIELDS,
+  build9231ProductionBatchConfig,
+  build9231ProductionReadyAggregate,
+  build9231ReadyRows,
   build9231Wave4ProductionReadyAggregate,
   build9231Wave4ReadyRows,
 } from '../run_9231_wave4_production_ready_gate.js';
@@ -113,6 +116,147 @@ function baseGateRows({ rows = 1 } = {}) {
 }
 
 describe('9231 wave4 production-ready gate', () => {
+  test('configures the wave3 plus wave2 batch2 production-ready batch without wave4 hardcoding', () => {
+    const batchConfig = build9231ProductionBatchConfig('wave3_wave2_batch2', {
+      generatedOn: '2026-06-06',
+    });
+    const wave3Text = 'Find an expression for v in terms of t.';
+    const wave2Text = 'Prove by mathematical induction that the expression is divisible by 15.';
+    const readyRows = build9231ReadyRows({
+      batchConfig,
+      v2Artifacts: [
+        {
+          artifact_path: 'docs/reports/2026-06-05-9231-wave3-question-plain-text-v2.json',
+          items: [
+            baseV2Row({
+              storage_key: '9231/s21_qp_31/questions/q01.png',
+              source_pdf: 'data/past-papers/9231Further-Mathematics/paper3/9231_s21_qp_31.pdf',
+              source_surface_manifest: 'data/manifests/9231_p3_s21_standard_001_page_chain_surface_v1.json',
+              paper: 3,
+              normalized_plain_text: wave3Text,
+            }),
+          ],
+        },
+        {
+          artifact_path: 'docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json',
+          items: [
+            baseV2Row({
+              storage_key: '9231/s21_qp_11/questions/q01.png',
+              source_pdf: 'data/past-papers/9231Further-Mathematics/paper1/9231_s21_qp_11.pdf',
+              source_surface_manifest: 'data/manifests/9231_p1_s21_standard_001_page_chain_surface_v1.json',
+              paper: 1,
+              normalized_plain_text: wave2Text,
+            }),
+          ],
+        },
+      ],
+      authorityArtifacts: [
+        {
+          items: [
+            baseAuthorityRow({
+              storage_key: '9231/s21_qp_31/questions/q01.png',
+              primary_topic_path: '9231.p3',
+            }),
+          ],
+        },
+        {
+          items: [
+            baseAuthorityRow({
+              storage_key: '9231/s21_qp_11/questions/q01.png',
+              primary_topic_path: '9231.p1',
+            }),
+          ],
+        },
+      ],
+      consumptionArtifacts: [
+        {
+          items: [
+            baseConsumptionRow({
+              storage_key: '9231/s21_qp_31/questions/q01.png',
+              normalized_plain_text: wave3Text,
+              search: {
+                search_text: wave3Text,
+                search_text_source: 'question_plain_text_v2.normalized_plain_text',
+              },
+              read_model: {
+                prompt_representation: {
+                  type: 'text',
+                  value: wave3Text,
+                },
+              },
+              rag: {
+                content: wave3Text,
+                content_source: 'question_plain_text_v2.normalized_plain_text',
+              },
+            }),
+          ],
+        },
+        {
+          items: [
+            baseConsumptionRow({
+              storage_key: '9231/s21_qp_11/questions/q01.png',
+              normalized_plain_text: wave2Text,
+              search: {
+                search_text: wave2Text,
+                search_text_source: 'question_plain_text_v2.normalized_plain_text',
+              },
+              read_model: {
+                prompt_representation: {
+                  type: 'text',
+                  value: wave2Text,
+                },
+              },
+              rag: {
+                content: wave2Text,
+                content_source: 'question_plain_text_v2.normalized_plain_text',
+              },
+            }),
+          ],
+        },
+      ],
+    });
+    const aggregate = build9231ProductionReadyAggregate({
+      batchConfig: {
+        ...batchConfig,
+        expectedRows: readyRows.length,
+      },
+      generatedOn: '2026-06-06',
+      readyRows,
+      readyManifestPath: batchConfig.readyManifest,
+      ...baseGateRows({ rows: readyRows.length }),
+    });
+
+    expect(batchConfig).toMatchObject({
+      batchId: 'wave3_wave2_batch2',
+      expectedRows: 334,
+      productionWave: '9231_wave3_wave2_batch2',
+      readyManifest: 'data/manifests/9231_wave3_wave2_batch2_production_surface_2026_06_06_manifest_v1.json',
+    });
+    expect(batchConfig.v2Artifacts).toEqual([
+      'docs/reports/2026-06-05-9231-wave3-question-plain-text-v2.json',
+      'docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json',
+    ]);
+    expect(readyRows.map((row) => row.shard_id)).toEqual([
+      '9231_p1_s21_standard_001',
+      '9231_p3_s21_standard_001',
+    ]);
+    expect(new Set(readyRows.map((row) => row.production_wave))).toEqual(new Set(['9231_wave3_wave2_batch2']));
+    expect(readyRows.map((row) => row.question_plain_text_artifact)).toEqual([
+      'docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json',
+      'docs/reports/2026-06-05-9231-wave3-question-plain-text-v2.json',
+    ]);
+    expect(aggregate).toMatchObject({
+      status: 'pass',
+      production_ready_claimed: true,
+      scope: {
+        wave: 'wave3_wave2_batch2',
+        rows: 2,
+        shards: 2,
+      },
+    });
+    expect(aggregate.boundaries[0]).toContain('wave3 + wave2 batch2');
+  });
+
   test('builds ready rows only when v2, authority, and local consumption agree on normalized_plain_text', () => {
     const rows = build9231Wave4ReadyRows({
       v2Artifact: {

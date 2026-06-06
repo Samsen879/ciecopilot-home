@@ -282,6 +282,31 @@ describe('9231 wave4 production-ready gate', () => {
     ]);
   });
 
+  test('configures the wave1 production-ready batch', () => {
+    const batchConfig = build9231ProductionBatchConfig('wave1', {
+      generatedOn: '2026-06-06',
+    });
+
+    expect(batchConfig).toMatchObject({
+      batchId: 'wave1',
+      expectedRows: 441,
+      productionWave: '9231_wave1',
+      readyManifest: 'data/manifests/9231_wave1_production_surface_2026_06_06_manifest_v1.json',
+    });
+    expect(batchConfig.v2Artifacts).toEqual([
+      'docs/reports/2026-06-05-9231-question-plain-text-v2.json',
+    ]);
+    expect(batchConfig.authorityArtifacts).toEqual([
+      'docs/reports/2026-06-05-9231-authority-alignment-wave1.json',
+    ]);
+    expect(batchConfig.consumptionArtifacts).toEqual([
+      'docs/reports/2026-06-05-9231-question-plain-text-v2-consumption.json',
+    ]);
+    expect(batchConfig.evidenceGateArtifacts).toEqual([
+      'docs/reports/2026-06-05-9231-evidence-layers-wave1-gate.json',
+    ]);
+  });
+
   test('builds ready rows only when v2, authority, and local consumption agree on normalized_plain_text', () => {
     const rows = build9231Wave4ReadyRows({
       v2Artifact: {

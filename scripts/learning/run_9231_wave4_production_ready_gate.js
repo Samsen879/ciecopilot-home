@@ -97,6 +97,28 @@ const PRODUCTION_BATCHES = Object.freeze({
       'docs/reports/2026-06-05-9231-next-wave-evidence-layers-gate.json',
     ]),
   }),
+  wave1: Object.freeze({
+    batchId: 'wave1',
+    reportSlug: 'wave1',
+    manifestSlug: 'wave1',
+    logPrefix: '9231_wave1',
+    label: 'wave1',
+    productionWave: '9231_wave1',
+    expectedRows: 441,
+    scopeDescription: '16 shards / 441 rows from wave1',
+    v2Artifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-question-plain-text-v2.json',
+    ]),
+    authorityArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-authority-alignment-wave1.json',
+    ]),
+    consumptionArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-question-plain-text-v2-consumption.json',
+    ]),
+    evidenceGateArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-evidence-layers-wave1-gate.json',
+    ]),
+  }),
 });
 
 export const REQUIRED_9231_PRODUCTION_DB_ZERO_FIELDS = Object.freeze([
@@ -123,7 +145,7 @@ function writeStderrLine(message) {
 function printUsage() {
   writeStdoutLine([
     'Usage: node scripts/learning/run_9231_wave4_production_ready_gate.js',
-    '  [--batch-id <wave4|wave3_wave2_batch2|next_wave_16>]',
+    '  [--batch-id <wave4|wave3_wave2_batch2|next_wave_16|wave1>]',
     '  [--generated-on <YYYY-MM-DD>]',
     '  [--apply-db]',
     '  [--update-index]',

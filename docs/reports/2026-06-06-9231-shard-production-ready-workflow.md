@@ -255,6 +255,7 @@ The current reusable production gate supports these batch ids:
 - `wave4`: 10 shards / 191 rows
 - `wave3_wave2_batch2`: 16 shards / 334 rows
 - `next_wave_16`: 16 shards / 477 rows
+- `wave1`: 16 shards / 441 rows
 
 Add future batch ids by extending `PRODUCTION_BATCHES` in `scripts/learning/run_9231_wave4_production_ready_gate.js` with:
 

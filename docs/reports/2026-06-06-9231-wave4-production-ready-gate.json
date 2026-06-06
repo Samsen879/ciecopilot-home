@@ -1,0 +1,234 @@
+{
+  "schema_version": "9231_wave4_production_ready_gate_v1",
+  "generated_on": "2026-06-06",
+  "status": "pass",
+  "verdict": "production-ready",
+  "production_ready_claimed": true,
+  "scope": {
+    "subject_code": "9231",
+    "wave": "wave4",
+    "shards": 10,
+    "rows": 191,
+    "source_pdfs": 30,
+    "ready_manifest": "data/manifests/9231_wave4_production_surface_2026_06_06_manifest_v1.json"
+  },
+  "summary": {
+    "selected_rows": 191,
+    "text_only_ready_rows": 125,
+    "image_context_required_rows": 66,
+    "gate_counts": {
+      "db_coverage": 1,
+      "production_search": 1,
+      "production_read_model": 1,
+      "production_rag": 1
+    },
+    "blockers": 0
+  },
+  "gates": {
+    "db_coverage": {
+      "generated_on": "2026-06-06",
+      "artifact": "docs/reports/2026-06-06-9231-wave4-db-coverage-gate.json",
+      "database_surface": "docker:supabase_db_ciecopilot-home",
+      "schema_version": "9231_wave4_db_coverage_gate_v1",
+      "status": "pass",
+      "metrics": {
+        "present": 191,
+        "manifest_count": 191,
+        "joined_snapshots": 191,
+        "missing_registry": 0,
+        "prompt_missing": 0,
+        "provenance_missing": 0,
+        "normalized_plain_text_missing": 0,
+        "search_text_missing": 0,
+        "search_text_source_not_normalized": 0,
+        "snapshot_ref_missing": 0,
+        "snapshot_missing": 0,
+        "materialized_classifier_missing": 0,
+        "rag_chunk_missing": 0
+      }
+    },
+    "production_search": {
+      "generated_on": "2026-06-06",
+      "artifact": "docs/reports/2026-06-06-9231-wave4-production-search-gate.json",
+      "database_surface": "docker:supabase_db_ciecopilot-home",
+      "schema_version": "9231_wave4_production_search_gate_v1",
+      "status": "pass",
+      "metrics": {
+        "rows": 191,
+        "search_rows_using_normalized_plain_text": 191,
+        "search_text_matches_normalized_plain_text": 191,
+        "projection_normalized_plain_text_matches": 191
+      }
+    },
+    "production_read_model": {
+      "generated_on": "2026-06-06",
+      "artifact": "docs/reports/2026-06-06-9231-wave4-production-read-model-gate.json",
+      "database_surface": "docker:supabase_db_ciecopilot-home",
+      "schema_version": "9231_wave4_production_read_model_gate_v1",
+      "status": "pass",
+      "metrics": {
+        "rows": 191,
+        "read_model_rows_using_normalized_plain_text": 191,
+        "registry_normalized_plain_text_matches": 191,
+        "prompt_representation_matches_normalized_plain_text": 191,
+        "provenance_normalized_plain_text_matches": 191
+      }
+    },
+    "production_rag": {
+      "generated_on": "2026-06-06",
+      "artifact": "docs/reports/2026-06-06-9231-wave4-production-rag-consumption-gate.json",
+      "database_surface": "docker:supabase_db_ciecopilot-home",
+      "schema_version": "9231_wave4_production_rag_consumption_gate_v1",
+      "status": "pass",
+      "metrics": {
+        "rows": 191,
+        "rag_rows_using_normalized_plain_text": 191,
+        "rag_content_matches_normalized_plain_text": 191,
+        "rag_chunks_present": 191,
+        "rag_chunks_with_fts": 191,
+        "corpus_version": "rag_step3_9231_question_aware_v1"
+      }
+    }
+  },
+  "blockers": [],
+  "shards": [
+    {
+      "shard_id": "9231_p2_w23_standard_001",
+      "paper": 2,
+      "session": "w23",
+      "source_type": "standard",
+      "rows": 24,
+      "text_only_ready_rows": 23,
+      "image_context_required_rows": 1,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p2_w24_standard_001",
+      "paper": 2,
+      "session": "w24",
+      "source_type": "standard",
+      "rows": 24,
+      "text_only_ready_rows": 21,
+      "image_context_required_rows": 3,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_s21_standard_001",
+      "paper": 4,
+      "session": "s21",
+      "source_type": "standard",
+      "rows": 18,
+      "text_only_ready_rows": 12,
+      "image_context_required_rows": 6,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_s22_standard_001",
+      "paper": 4,
+      "session": "s22",
+      "source_type": "standard",
+      "rows": 18,
+      "text_only_ready_rows": 11,
+      "image_context_required_rows": 7,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_s23_standard_001",
+      "paper": 4,
+      "session": "s23",
+      "source_type": "standard",
+      "rows": 18,
+      "text_only_ready_rows": 12,
+      "image_context_required_rows": 6,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_w20_standard_001",
+      "paper": 4,
+      "session": "w20",
+      "source_type": "standard",
+      "rows": 18,
+      "text_only_ready_rows": 11,
+      "image_context_required_rows": 7,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_w21_standard_001",
+      "paper": 4,
+      "session": "w21",
+      "source_type": "standard",
+      "rows": 18,
+      "text_only_ready_rows": 9,
+      "image_context_required_rows": 9,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_w22_standard_001",
+      "paper": 4,
+      "session": "w22",
+      "source_type": "standard",
+      "rows": 18,
+      "text_only_ready_rows": 12,
+      "image_context_required_rows": 6,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_w23_standard_001",
+      "paper": 4,
+      "session": "w23",
+      "source_type": "standard",
+      "rows": 17,
+      "text_only_ready_rows": 6,
+      "image_context_required_rows": 11,
+      "production_ready_claimed": true
+    },
+    {
+      "shard_id": "9231_p4_w24_standard_001",
+      "paper": 4,
+      "session": "w24",
+      "source_type": "standard",
+      "rows": 18,
+      "text_only_ready_rows": 8,
+      "image_context_required_rows": 10,
+      "production_ready_claimed": true
+    }
+  ],
+  "required_gate_contract": {
+    "ready_surface_rows": 191,
+    "db_coverage": {
+      "present_equals_manifest_count_equals_joined_snapshots_equals_rows": true,
+      "required_zero_fields": [
+        "missing_registry",
+        "prompt_missing",
+        "provenance_missing",
+        "normalized_plain_text_missing",
+        "search_text_missing",
+        "search_text_source_not_normalized",
+        "snapshot_ref_missing",
+        "snapshot_missing",
+        "materialized_classifier_missing",
+        "rag_chunk_missing"
+      ]
+    },
+    "production_search": "learning_question_search_projection.search_text_source is question_plain_text_v2.normalized_plain_text and search_text equals normalized_plain_text for every row",
+    "production_read_model": "learning_question_registry_projection exposes normalized_plain_text and question_bank.prompt_representation.value equals normalized_plain_text for every row",
+    "production_rag": "public.chunks contains one question_plain_text_v2 row per question with content equal to normalized_plain_text and source_ref.content_source normalized"
+  },
+  "artifacts": {
+    "v2": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json",
+    "authority": "docs/reports/2026-06-05-9231-wave4-authority-alignment.json",
+    "consumption": "docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json",
+    "evidence_gate": "docs/reports/2026-06-05-9231-wave4-evidence-layers-gate.json",
+    "ready_manifest": "data/manifests/9231_wave4_production_surface_2026_06_06_manifest_v1.json",
+    "db_coverage_gate": "docs/reports/2026-06-06-9231-wave4-db-coverage-gate.json",
+    "production_search_gate": "docs/reports/2026-06-06-9231-wave4-production-search-gate.json",
+    "production_read_model_gate": "docs/reports/2026-06-06-9231-wave4-production-read-model-gate.json",
+    "production_rag_consumption_gate": "docs/reports/2026-06-06-9231-wave4-production-rag-consumption-gate.json"
+  },
+  "boundaries": [
+    "Scope is only the 10 wave4 shards / 191 rows requested by the operator.",
+    "This does not claim all-9231 production readiness.",
+    "The classifier surface is a question-text-foundation row-surface classifier and remains non_released_fallback; no detailed 9231 syllabus scoring taxonomy is claimed.",
+    "RAG production proof covers deterministic question_plain_text_v2 corpus rows in public.chunks; it does not claim external embedding generation or semantic retrieval-quality evaluation."
+  ]
+}

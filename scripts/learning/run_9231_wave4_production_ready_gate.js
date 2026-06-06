@@ -14,20 +14,67 @@ const QUESTION_TYPE_ID = '9231.question_text_foundation.row_surface';
 const QUESTION_FAMILY_ID = '9231.question_text_foundation';
 const CURRICULUM_VERSION_TAG = '2025-2027_v1';
 const RAG_CORPUS_VERSION = 'rag_step3_9231_question_aware_v1';
-const PRODUCTION_WAVE = '9231_wave4';
 
 const DEFAULTS = Object.freeze({
+  batchId: 'wave4',
   generatedOn: '2026-06-06',
   reportsDir: 'docs/reports',
-  readyManifest: 'data/manifests/9231_wave4_production_surface_2026_06_06_manifest_v1.json',
-  v2Artifact: 'docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json',
-  authorityArtifact: 'docs/reports/2026-06-05-9231-wave4-authority-alignment.json',
-  consumptionArtifact: 'docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json',
-  evidenceGateArtifact: 'docs/reports/2026-06-05-9231-wave4-evidence-layers-gate.json',
+  readyManifest: null,
   psqlMode: 'docker',
   psqlContainer: 'supabase_db_ciecopilot-home',
   applyDb: false,
   updateIndex: false,
+});
+
+const PRODUCTION_BATCHES = Object.freeze({
+  wave4: Object.freeze({
+    batchId: 'wave4',
+    reportSlug: 'wave4',
+    manifestSlug: 'wave4',
+    logPrefix: '9231_wave4',
+    label: 'wave4',
+    productionWave: '9231_wave4',
+    expectedRows: 191,
+    scopeDescription: '10 wave4 shards / 191 rows',
+    v2Artifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json',
+    ]),
+    authorityArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave4-authority-alignment.json',
+    ]),
+    consumptionArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json',
+    ]),
+    evidenceGateArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave4-evidence-layers-gate.json',
+    ]),
+  }),
+  wave3_wave2_batch2: Object.freeze({
+    batchId: 'wave3_wave2_batch2',
+    reportSlug: 'wave3-wave2-batch2',
+    manifestSlug: 'wave3_wave2_batch2',
+    logPrefix: '9231_wave3_wave2_batch2',
+    label: 'wave3 + wave2 batch2',
+    productionWave: '9231_wave3_wave2_batch2',
+    expectedRows: 334,
+    scopeDescription: '16 shards / 334 rows from wave3 plus wave2 batch2',
+    v2Artifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave3-question-plain-text-v2.json',
+      'docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2.json',
+    ]),
+    authorityArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave3-authority-alignment.json',
+      'docs/reports/2026-06-05-9231-wave2-batch2-authority-alignment.json',
+    ]),
+    consumptionArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave3-question-plain-text-v2-consumption.json',
+      'docs/reports/2026-06-05-9231-wave2-batch2-question-plain-text-v2-consumption.json',
+    ]),
+    evidenceGateArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-wave3-evidence-layers-gate.json',
+      'docs/reports/2026-06-05-9231-wave2-batch2-evidence-layers-gate.json',
+    ]),
+  }),
 });
 
 export const REQUIRED_9231_PRODUCTION_DB_ZERO_FIELDS = Object.freeze([
@@ -54,6 +101,7 @@ function writeStderrLine(message) {
 function printUsage() {
   writeStdoutLine([
     'Usage: node scripts/learning/run_9231_wave4_production_ready_gate.js',
+    '  [--batch-id <wave4|wave3_wave2_batch2>]',
     '  [--generated-on <YYYY-MM-DD>]',
     '  [--apply-db]',
     '  [--update-index]',
@@ -92,9 +140,13 @@ export function parseArgs(argv = process.argv.slice(2)) {
       options.help = true;
       continue;
     }
+    if (token === '--batch-id') {
+      options.batchId = requiredValue(argv, index, token);
+      index += 1;
+      continue;
+    }
     if (token === '--generated-on') {
       options.generatedOn = requiredValue(argv, index, token);
-      options.readyManifest = `data/manifests/9231_wave4_production_surface_${options.generatedOn.replaceAll('-', '_')}_manifest_v1.json`;
       index += 1;
       continue;
     }
@@ -123,6 +175,22 @@ export function parseArgs(argv = process.argv.slice(2)) {
   return options;
 }
 
+export function build9231ProductionBatchConfig(batchId = DEFAULTS.batchId, overrides = {}) {
+  const base = PRODUCTION_BATCHES[batchId];
+  if (!base) {
+    throw new Error(`Unsupported 9231 production batch id: ${batchId}`);
+  }
+  const generatedOn = overrides.generatedOn ?? DEFAULTS.generatedOn;
+  const readyManifest = overrides.readyManifest
+    ?? `data/manifests/9231_${base.manifestSlug}_production_surface_${generatedOn.replaceAll('-', '_')}_manifest_v1.json`;
+  return {
+    ...base,
+    generatedOn,
+    readyManifest,
+    reportsDir: overrides.reportsDir ?? DEFAULTS.reportsDir,
+  };
+}
+
 function resolveRepoPath(repoPath) {
   return path.resolve(ROOT, repoPath);
 }
@@ -133,6 +201,13 @@ function relativeRepoPath(filePath) {
 
 function readJson(repoPath) {
   return JSON.parse(fs.readFileSync(resolveRepoPath(repoPath), 'utf8'));
+}
+
+function readJsonWithArtifactPath(repoPath) {
+  return {
+    ...readJson(repoPath),
+    artifact_path: repoPath,
+  };
 }
 
 function ensureParentDir(repoPath) {
@@ -220,6 +295,24 @@ function indexItemsByStorageKey(items = []) {
   return map;
 }
 
+function normalizeArtifactList(artifacts, fallbackPaths = []) {
+  const artifactList = Array.isArray(artifacts) ? artifacts : artifacts ? [artifacts] : [];
+  return artifactList.map((artifact, index) => ({
+    ...artifact,
+    artifact_path: normalizeString(artifact?.artifact_path) || fallbackPaths[index] || null,
+  }));
+}
+
+function artifactItems(artifacts, fallbackPaths = []) {
+  return normalizeArtifactList(artifacts, fallbackPaths).flatMap((artifact) => {
+    const items = Array.isArray(artifact?.items) ? artifact.items : [];
+    return items.map((item) => ({
+      ...item,
+      __artifact_path: artifact.artifact_path,
+    }));
+  });
+}
+
 function componentPathForPaper(paper) {
   return `9231.p${paper}`;
 }
@@ -281,14 +374,15 @@ function buildTopicNodes(readyRows = []) {
     });
 }
 
-export function build9231Wave4ReadyRows({
-  v2Artifact,
-  authorityArtifact,
-  consumptionArtifact,
+export function build9231ReadyRows({
+  batchConfig = build9231ProductionBatchConfig(),
+  v2Artifacts,
+  authorityArtifacts,
+  consumptionArtifacts,
 } = {}) {
-  const v2Items = Array.isArray(v2Artifact?.items) ? v2Artifact.items : [];
-  const authorityByStorageKey = indexItemsByStorageKey(authorityArtifact?.items ?? []);
-  const consumptionByStorageKey = indexItemsByStorageKey(consumptionArtifact?.items ?? []);
+  const v2Items = artifactItems(v2Artifacts, batchConfig.v2Artifacts);
+  const authorityByStorageKey = indexItemsByStorageKey(artifactItems(authorityArtifacts, batchConfig.authorityArtifacts));
+  const consumptionByStorageKey = indexItemsByStorageKey(artifactItems(consumptionArtifacts, batchConfig.consumptionArtifacts));
   const readyRows = [];
 
   for (const v2 of v2Items) {
@@ -324,9 +418,7 @@ export function build9231Wave4ReadyRows({
       shard_id: shardId,
       normalized_plain_text: normalizedPlainText,
       question_plain_text_source: NORMALIZED_TEXT_SOURCE,
-      question_plain_text_artifact: normalizeString(v2.source_v1_text_layer)
-        ? 'docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json'
-        : 'docs/reports/2026-06-05-9231-wave4-question-plain-text-v2.json',
+      question_plain_text_artifact: normalizeString(v2.__artifact_path),
       source_v1_text_layer: normalizeNullableString(v2.source_v1_text_layer),
       text_source: normalizeNullableString(v2.text_source),
       text_consumption_status: normalizeString(v2.text_consumption_status)
@@ -345,6 +437,9 @@ export function build9231Wave4ReadyRows({
       canonical_syllabus_detailed_topic_claimed: Boolean(authority.canonical_syllabus_detailed_topic_claimed),
       component_authority: authority.component_authority ?? null,
       topic_authority: authority.topic_authority ?? null,
+      authority_artifact: normalizeNullableString(authority.__artifact_path),
+      consumption_artifact: normalizeNullableString(consumption.__artifact_path),
+      evidence_gate_artifacts: normalizeArray(batchConfig.evidenceGateArtifacts),
       local_consumption_status: normalizeString(consumption.text_consumption_status)
         || normalizeString(v2.text_consumption_status),
       local_search_text_source: normalizeNullableString(consumption?.search?.search_text_source),
@@ -358,7 +453,7 @@ export function build9231Wave4ReadyRows({
       search_consumption_claimed: true,
       read_model_consumption_claimed: true,
       rag_consumption_claimed: true,
-      production_wave: PRODUCTION_WAVE,
+      production_wave: batchConfig.productionWave,
     });
   }
 
@@ -367,6 +462,20 @@ export function build9231Wave4ReadyRows({
     || left.storage_key.localeCompare(right.storage_key)
     || left.q_number - right.q_number
   ));
+}
+
+export function build9231Wave4ReadyRows({
+  v2Artifact,
+  authorityArtifact,
+  consumptionArtifact,
+} = {}) {
+  const batchConfig = build9231ProductionBatchConfig('wave4');
+  return build9231ReadyRows({
+    batchConfig,
+    v2Artifacts: normalizeArtifactList(v2Artifact, batchConfig.v2Artifacts),
+    authorityArtifacts: normalizeArtifactList(authorityArtifact, batchConfig.authorityArtifacts),
+    consumptionArtifacts: normalizeArtifactList(consumptionArtifact, batchConfig.consumptionArtifacts),
+  });
 }
 
 function countBy(rows, keyFn) {
@@ -402,16 +511,17 @@ function summarizeReadyRows(rows = []) {
   };
 }
 
-function buildReadyManifest({ generatedOn, readyRows, artifacts }) {
+function buildReadyManifest({ generatedOn, readyRows, artifacts, batchConfig }) {
   const summary = summarizeReadyRows(readyRows);
+  const ready = readyRows.length === batchConfig.expectedRows;
   return {
-    schema_version: '9231_wave4_production_surface_manifest_v1',
+    schema_version: `9231_${batchConfig.manifestSlug}_production_surface_manifest_v1`,
     generated_on: generatedOn,
-    manifest_id: `9231_wave4_production_surface_${generatedOn.replaceAll('-', '_')}_manifest_v1`,
+    manifest_id: `9231_${batchConfig.manifestSlug}_production_surface_${generatedOn.replaceAll('-', '_')}_manifest_v1`,
     subject_code: '9231',
-    wave: 'wave4',
-    status: readyRows.length === 191 ? 'ready' : 'blocked',
-    production_ready_claimed: readyRows.length === 191,
+    wave: batchConfig.batchId,
+    status: ready ? 'ready' : 'blocked',
+    production_ready_claimed: ready,
     summary,
     source_artifacts: artifacts,
     rows: readyRows,
@@ -440,7 +550,8 @@ function collectBlocker(blockers, check, { expectedRows, actualRows, details = {
   });
 }
 
-export function build9231Wave4ProductionReadyAggregate({
+export function build9231ProductionReadyAggregate({
+  batchConfig = build9231ProductionBatchConfig(),
   generatedOn,
   readyRows,
   expectedRows = null,
@@ -452,7 +563,7 @@ export function build9231Wave4ProductionReadyAggregate({
   artifacts = {},
 } = {}) {
   const rows = readyRows.length;
-  const requiredRows = Number.isInteger(expectedRows) ? expectedRows : rows;
+  const requiredRows = Number.isInteger(expectedRows) ? expectedRows : batchConfig.expectedRows;
   const byShard = groupRowsByShard(readyRows);
   const blockers = [];
   const gateCounts = {
@@ -478,7 +589,7 @@ export function build9231Wave4ProductionReadyAggregate({
   };
 
   if (rows !== requiredRows) {
-    collectBlocker(blockers, 'wave4_ready_row_count', {
+    collectBlocker(blockers, `${batchConfig.batchId}_ready_row_count`, {
       expectedRows: requiredRows,
       actualRows: rows,
     });
@@ -514,14 +625,14 @@ export function build9231Wave4ProductionReadyAggregate({
 
   const status = blockers.length === 0 ? 'pass' : 'blocked';
   return {
-    schema_version: '9231_wave4_production_ready_gate_v1',
+    schema_version: `9231_${batchConfig.manifestSlug}_production_ready_gate_v1`,
     generated_on: generatedOn,
     status,
     verdict: status === 'pass' ? 'production-ready' : 'blocked',
     production_ready_claimed: status === 'pass',
     scope: {
       subject_code: '9231',
-      wave: 'wave4',
+      wave: batchConfig.batchId,
       shards: byShard.size,
       rows,
       source_pdfs: new Set(readyRows.map((row) => row.source_pdf).filter(Boolean)).size,
@@ -566,12 +677,20 @@ export function build9231Wave4ProductionReadyAggregate({
     },
     artifacts,
     boundaries: [
-      'Scope is only the 10 wave4 shards / 191 rows requested by the operator.',
+      `Scope is only the ${batchConfig.label} ${batchConfig.scopeDescription} requested by the operator.`,
       'This does not claim all-9231 production readiness.',
       'The classifier surface is a question-text-foundation row-surface classifier and remains non_released_fallback; no detailed 9231 syllabus scoring taxonomy is claimed.',
       'RAG production proof covers deterministic question_plain_text_v2 corpus rows in public.chunks; it does not claim external embedding generation or semantic retrieval-quality evaluation.',
     ],
   };
+}
+
+export function build9231Wave4ProductionReadyAggregate(args = {}) {
+  return build9231ProductionReadyAggregate({
+    batchConfig: build9231ProductionBatchConfig('wave4'),
+    expectedRows: args.expectedRows ?? args.readyRows?.length,
+    ...args,
+  });
 }
 
 function buildViewRefreshSql() {
@@ -785,6 +904,9 @@ function readyRowsRecordset(base64Json) {
     'canonical_syllabus_detailed_topic_claimed boolean',
     'component_authority jsonb',
     'topic_authority jsonb',
+    'authority_artifact text',
+    'consumption_artifact text',
+    'evidence_gate_artifacts jsonb',
     'local_consumption_status text',
     'local_search_text_source text',
     'local_read_model_prompt_source text',
@@ -799,7 +921,7 @@ function readyRowsRecordset(base64Json) {
   ].join(', '));
 }
 
-function buildProductionPromotionSql({ readyRows, generatedOn }) {
+function buildProductionPromotionSql({ readyRows, generatedOn, batchConfig, paths }) {
   const rows = readyRows.map((row) => ({
     ...row,
     content_hash: sha1(row.normalized_plain_text),
@@ -837,7 +959,7 @@ SELECT
   '${CURRICULUM_VERSION_TAG}',
   NULL,
   input.sort_order::smallint,
-  jsonb_build_object('source', '9231_wave4_production_ready_gate_v1', 'generated_on', '${generatedOn}')
+        jsonb_build_object('source', '${batchConfig.productionWave}_production_ready_gate_v1', 'generated_on', '${generatedOn}')
 FROM input
 ON CONFLICT (topic_path) DO UPDATE SET
   title = EXCLUDED.title,
@@ -951,7 +1073,7 @@ SELECT
   '${QUESTION_FAMILY_ID}',
   '${QUESTION_TYPE_ID}',
   '[]'::jsonb,
-  jsonb_build_array('subject:9231', 'paper:p' || topic.paper::text, 'wave:wave4', 'question_text_foundation'),
+    jsonb_build_array('subject:9231', 'paper:p' || topic.paper::text, 'wave:${batchConfig.batchId}', 'question_text_foundation'),
   'non_released_fallback',
   jsonb_build_object('type', 'text', 'value', topic.normalized_plain_text),
   jsonb_build_object(
@@ -961,7 +1083,7 @@ SELECT
     'source_pdf', topic.source_pdf,
     'source_surface_manifest', topic.source_surface_manifest,
     'shard_id', topic.shard_id,
-    'production_wave', '${PRODUCTION_WAVE}',
+    'production_wave', '${batchConfig.productionWave}',
     'production_ready_claimed', true,
     'normalized_plain_text', topic.normalized_plain_text,
     'question_plain_text_source', '${NORMALIZED_TEXT_SOURCE}',
@@ -983,8 +1105,9 @@ SELECT
     'canonical_syllabus_detailed_topic_claimed', topic.canonical_syllabus_detailed_topic_claimed,
     'component_authority', topic.component_authority,
     'topic_authority', topic.topic_authority,
-    'authority_artifact', 'docs/reports/2026-06-05-9231-wave4-authority-alignment.json',
-    'consumption_artifact', 'docs/reports/2026-06-05-9231-wave4-question-plain-text-v2-consumption.json',
+    'authority_artifact', topic.authority_artifact,
+    'consumption_artifact', topic.consumption_artifact,
+    'evidence_gate_artifacts', topic.evidence_gate_artifacts,
     'search_text', topic.normalized_plain_text,
     'search_text_source', '${NORMALIZED_TEXT_SOURCE}',
     'db_consumption_claimed', true,
@@ -992,7 +1115,7 @@ SELECT
     'read_model_consumption_claimed', true,
     'rag_consumption_claimed', true,
     'rag_corpus_version', '${RAG_CORPUS_VERSION}',
-    'production_gate_artifact', 'docs/reports/${generatedOn}-9231-wave4-production-ready-gate.json'
+    'production_gate_artifact', '${paths.aggregateJson}'
   )
 FROM topic
 ON CONFLICT (storage_key, q_number) DO UPDATE SET
@@ -1076,24 +1199,24 @@ WITH input AS (
     target.primary_question_type_id,
     target.secondary_question_type_ids,
     target.variant_tags,
-    '9231_wave4_production_ready_gate',
+    '${batchConfig.productionWave}_production_ready_gate',
     0.75,
     'medium',
     '[]'::jsonb,
     '[]'::jsonb,
     jsonb_build_object(
       'summary', '9231 question text foundation row; detailed scoring taxonomy not claimed.',
-      'source', '9231_wave4_production_ready_gate_v1'
+      'source', '${batchConfig.productionWave}_production_ready_gate_v1'
     ),
     jsonb_build_object('difficulty_band', 'unknown', 'source', 'not_claimed'),
     jsonb_build_object(
-      'production_wave', '${PRODUCTION_WAVE}',
+      'production_wave', '${batchConfig.productionWave}',
       'source_surface_manifest', target.source_surface_manifest,
       'question_plain_text_artifact', target.question_plain_text_artifact,
       'primary_topic_path', target.primary_topic_path,
       'canonical_syllabus_detailed_topic_claimed', false
     ),
-    '9231_wave4.production_surface.v1',
+    '${batchConfig.productionWave}.production_surface.v1',
     'real',
     jsonb_build_object(
       'reason', 'foundation_row_surface_classifier',
@@ -1114,7 +1237,7 @@ WHERE qb.question_id = inserted.question_id;
 DELETE FROM public.chunks
 WHERE source_type = 'question_plain_text_v2'
   AND corpus_version = '${RAG_CORPUS_VERSION}'
-  AND source_ref ->> 'production_wave' = '${PRODUCTION_WAVE}';
+  AND source_ref ->> 'production_wave' = '${batchConfig.productionWave}';
 
 WITH input AS (
   SELECT * FROM ${readyRowsRecordset(rowsBase64)}
@@ -1159,7 +1282,7 @@ SELECT
     'content_source', '${NORMALIZED_TEXT_SOURCE}',
     'source_artifact', registry.question_plain_text_artifact,
     'source_surface_manifest', registry.source_surface_manifest,
-    'production_wave', '${PRODUCTION_WAVE}',
+    'production_wave', '${batchConfig.productionWave}',
     'text_consumption_status', registry.text_consumption_status,
     'text_only_addressable', registry.text_only_addressable,
     'requires_image_context', registry.requires_image_context,
@@ -1215,7 +1338,7 @@ function runPsqlJson(sql, options) {
   return JSON.parse(stdout.split('\n').at(-1));
 }
 
-function buildDbCoverageSql(readyRows) {
+function buildDbCoverageSql(readyRows, batchConfig) {
   const rowsBase64 = toBase64Json(readyRows.map((row) => ({
     storage_key: row.storage_key,
     q_number: row.q_number,
@@ -1253,7 +1376,7 @@ WITH manifest AS (
   FROM public.chunks
   WHERE source_type = 'question_plain_text_v2'
     AND corpus_version = '${RAG_CORPUS_VERSION}'
-    AND source_ref ->> 'production_wave' = '${PRODUCTION_WAVE}'
+    AND source_ref ->> 'production_wave' = '${batchConfig.productionWave}'
 ), metric_source AS (
   SELECT
     registry.*,
@@ -1271,7 +1394,7 @@ WITH manifest AS (
    AND rag_chunks.q_number = registry.q_number
 )
 SELECT json_build_object(
-  'schema_version', '9231_wave4_db_coverage_gate_v1',
+  'schema_version', '9231_${batchConfig.manifestSlug}_db_coverage_gate_v1',
   'status', CASE WHEN (
     COUNT(question_id) = COUNT(*)
     AND COUNT(classification_snapshot_id) = COUNT(*)
@@ -1307,7 +1430,7 @@ FROM metric_source;
 `;
 }
 
-function buildSearchGateSql(readyRows) {
+function buildSearchGateSql(readyRows, batchConfig) {
   const rowsBase64 = toBase64Json(readyRows.map((row) => ({
     storage_key: row.storage_key,
     q_number: row.q_number,
@@ -1331,7 +1454,7 @@ WITH manifest AS (
    AND p.source_kind = 'paper_question'
 )
 SELECT json_build_object(
-  'schema_version', '9231_wave4_production_search_gate_v1',
+  'schema_version', '9231_${batchConfig.manifestSlug}_production_search_gate_v1',
   'status', CASE WHEN (
     COUNT(*) FILTER (WHERE search_text_source = '${NORMALIZED_TEXT_SOURCE}') = COUNT(*)
     AND COUNT(*) FILTER (WHERE search_text = normalized_plain_text) = COUNT(*)
@@ -1348,7 +1471,7 @@ FROM projection;
 `;
 }
 
-function buildReadModelGateSql(readyRows) {
+function buildReadModelGateSql(readyRows, batchConfig) {
   const rowsBase64 = toBase64Json(readyRows.map((row) => ({
     storage_key: row.storage_key,
     q_number: row.q_number,
@@ -1373,7 +1496,7 @@ WITH manifest AS (
    AND r.source_kind = 'paper_question'
 )
 SELECT json_build_object(
-  'schema_version', '9231_wave4_production_read_model_gate_v1',
+  'schema_version', '9231_${batchConfig.manifestSlug}_production_read_model_gate_v1',
   'status', CASE WHEN (
     COUNT(*) FILTER (WHERE question_plain_text_source = '${NORMALIZED_TEXT_SOURCE}') = COUNT(*)
     AND COUNT(*) FILTER (WHERE registry_normalized_plain_text = normalized_plain_text) = COUNT(*)
@@ -1392,7 +1515,7 @@ FROM registry;
 `;
 }
 
-function buildRagGateSql(readyRows) {
+function buildRagGateSql(readyRows, batchConfig) {
   const rowsBase64 = toBase64Json(readyRows.map((row) => ({
     storage_key: row.storage_key,
     q_number: row.q_number,
@@ -1420,10 +1543,10 @@ WITH manifest AS (
    AND (c.source_ref ->> 'q_number')::int = manifest.q_number
    AND c.source_type = 'question_plain_text_v2'
    AND c.corpus_version = '${RAG_CORPUS_VERSION}'
-   AND c.source_ref ->> 'production_wave' = '${PRODUCTION_WAVE}'
+   AND c.source_ref ->> 'production_wave' = '${batchConfig.productionWave}'
 )
 SELECT json_build_object(
-  'schema_version', '9231_wave4_production_rag_consumption_gate_v1',
+  'schema_version', '9231_${batchConfig.manifestSlug}_production_rag_consumption_gate_v1',
   'status', CASE WHEN (
     COUNT(id) = COUNT(*)
     AND COUNT(*) FILTER (WHERE content_source = '${NORMALIZED_TEXT_SOURCE}') = COUNT(*)
@@ -1452,24 +1575,24 @@ function attachGateMetadata(gate, { generatedOn, artifactPath, databaseSurface }
   };
 }
 
-function runProductionGates({ readyRows, generatedOn, options, paths }) {
+function runProductionGates({ readyRows, generatedOn, options, paths, batchConfig }) {
   const databaseSurface = options.psqlMode === 'docker' ? `docker:${options.psqlContainer}` : 'direct';
-  const dbCoverage = attachGateMetadata(runPsqlJson(buildDbCoverageSql(readyRows), options), {
+  const dbCoverage = attachGateMetadata(runPsqlJson(buildDbCoverageSql(readyRows, batchConfig), options), {
     generatedOn,
     artifactPath: paths.dbCoverage,
     databaseSurface,
   });
-  const searchGate = attachGateMetadata(runPsqlJson(buildSearchGateSql(readyRows), options), {
+  const searchGate = attachGateMetadata(runPsqlJson(buildSearchGateSql(readyRows, batchConfig), options), {
     generatedOn,
     artifactPath: paths.searchGate,
     databaseSurface,
   });
-  const readModelGate = attachGateMetadata(runPsqlJson(buildReadModelGateSql(readyRows), options), {
+  const readModelGate = attachGateMetadata(runPsqlJson(buildReadModelGateSql(readyRows, batchConfig), options), {
     generatedOn,
     artifactPath: paths.readModelGate,
     databaseSurface,
   });
-  const ragGate = attachGateMetadata(runPsqlJson(buildRagGateSql(readyRows), options), {
+  const ragGate = attachGateMetadata(runPsqlJson(buildRagGateSql(readyRows, batchConfig), options), {
     generatedOn,
     artifactPath: paths.ragGate,
     databaseSurface,
@@ -1477,10 +1600,10 @@ function runProductionGates({ readyRows, generatedOn, options, paths }) {
   return { dbCoverage, searchGate, readModelGate, ragGate };
 }
 
-function defaultGateBlocked(schemaVersion, rows, reason) {
+function defaultGateBlocked(schemaVersion, rows, reason, generatedOn = DEFAULTS.generatedOn) {
   return {
     schema_version: schemaVersion,
-    generated_on: DEFAULTS.generatedOn,
+    generated_on: generatedOn,
     status: 'blocked',
     metrics: {
       rows,
@@ -1489,8 +1612,8 @@ function defaultGateBlocked(schemaVersion, rows, reason) {
   };
 }
 
-function finalArtifactPaths({ generatedOn, reportsDir }) {
-  const prefix = `${reportsDir}/${generatedOn}-9231-wave4`;
+function finalArtifactPaths({ generatedOn, reportsDir, batchConfig }) {
+  const prefix = `${reportsDir}/${generatedOn}-9231-${batchConfig.reportSlug}`;
   return {
     dbCoverage: `${prefix}-db-coverage-gate.json`,
     searchGate: `${prefix}-production-search-gate.json`,
@@ -1501,14 +1624,15 @@ function finalArtifactPaths({ generatedOn, reportsDir }) {
   };
 }
 
-function buildShardProductionReport({ generatedOn, shardId, rows, aggregate, paths }) {
+function buildShardProductionReport({ generatedOn, shardId, rows, aggregate, paths, batchConfig }) {
   const parsed = parseShardId(shardId);
   const status = aggregate.status === 'pass' ? 'production-ready' : 'blocked';
   return {
-    schema_version: '9231_wave4_shard_production_ready_closeout_v1',
+    schema_version: `9231_${batchConfig.manifestSlug}_shard_production_ready_closeout_v1`,
     generated_on: generatedOn,
     subject_code: '9231',
-    wave: 'wave4',
+    wave: batchConfig.batchId,
+    wave_label: batchConfig.label,
     shard_id: shardId,
     status,
     production_ready_claimed: aggregate.production_ready_claimed,
@@ -1553,7 +1677,7 @@ function buildShardProductionReport({ generatedOn, shardId, rows, aggregate, pat
 
 function renderShardMarkdown(report) {
   return [
-    `# 9231 ${report.shard_id} wave4 production-ready closeout`,
+    `# 9231 ${report.shard_id} ${report.wave_label} production-ready closeout`,
     '',
     `日期: ${report.generated_on}`,
     '',
@@ -1583,24 +1707,24 @@ function renderShardMarkdown(report) {
     '',
     '## Boundary',
     '',
-    '- This closeout covers only this wave4 shard.',
+    `- This closeout covers only this ${report.wave_label} shard.`,
     '- The classifier is a non-released question-text-foundation row-surface classifier; detailed 9231 scoring taxonomy is not claimed.',
     '- RAG proof covers deterministic `public.chunks` row consumption of `normalized_plain_text`; external embedding generation is not claimed.',
     '',
   ].join('\n');
 }
 
-function renderAggregateMarkdown(aggregate, paths) {
+function renderAggregateMarkdown(aggregate, paths, batchConfig) {
   return [
-    '# 9231 wave4 production-ready closeout',
+    `# 9231 ${batchConfig.label} production-ready closeout`,
     '',
     `日期: ${aggregate.generated_on}`,
     '',
     '## Verdict',
     '',
     aggregate.status === 'pass'
-      ? '9231 wave4 10-shard batch is production-ready for the requested row-level question text foundation surface.'
-      : '9231 wave4 10-shard batch is not production-ready; production gate blockers remain.',
+      ? `9231 ${batchConfig.label} batch is production-ready for the requested row-level question text foundation surface.`
+      : `9231 ${batchConfig.label} batch is not production-ready; production gate blockers remain.`,
     '',
     `- aggregate gate status: \`${aggregate.status}\``,
     `- production_ready_claimed: \`${aggregate.production_ready_claimed}\``,
@@ -1648,7 +1772,7 @@ function renderAggregateMarkdown(aggregate, paths) {
   ].join('\n');
 }
 
-function writeShardCloseouts({ generatedOn, reportsDir, readyRows, aggregate, paths }) {
+function writeShardCloseouts({ generatedOn, reportsDir, readyRows, aggregate, paths, batchConfig }) {
   const byShard = groupRowsByShard(readyRows);
   const artifacts = [];
   for (const [shardId, shardRows] of byShard.entries()) {
@@ -1661,6 +1785,7 @@ function writeShardCloseouts({ generatedOn, reportsDir, readyRows, aggregate, pa
       rows: shardRows,
       aggregate,
       paths,
+      batchConfig,
     });
     writeJson(jsonPath, report);
     writeText(markdownPath, renderShardMarkdown(report));
@@ -1669,7 +1794,7 @@ function writeShardCloseouts({ generatedOn, reportsDir, readyRows, aggregate, pa
   return artifacts;
 }
 
-function updateReportsIndex({ generatedOn, indexPath, readyManifestPath, paths }) {
+function updateReportsIndex({ generatedOn, indexPath, readyManifestPath, paths, batchConfig, aggregate }) {
   const resolved = resolveRepoPath(indexPath);
   const current = fs.readFileSync(resolved, 'utf8');
   const marker = '## Project Status\n\n';
@@ -1677,12 +1802,12 @@ function updateReportsIndex({ generatedOn, indexPath, readyManifestPath, paths }
     throw new Error(`Cannot update ${indexPath}: missing Project Status marker.`);
   }
   const entry = [
-    `- \`${generatedOn}-9231-wave4-production-ready-closeout.md\` and \`${generatedOn}-9231-wave4-production-ready-gate.json\` - 9231 wave4 production-ready closeout for the requested 10 shards / 191 rows: DB/question_bank registry coverage 191/191, production search/read-model/RAG gates all consume \`question_plain_text_v2.normalized_plain_text\`, text-only ready 125, image-context required 66, blockers 0, and \`production_ready_claimed=true\`.`,
-    `- \`${readyManifestPath}\` - machine-readable 9231 wave4 production surface manifest linking source/crop/v2/authority/local-consumption evidence to production DB/search/read-model/RAG rows.`,
+    `- \`${generatedOn}-9231-${batchConfig.reportSlug}-production-ready-closeout.md\` and \`${generatedOn}-9231-${batchConfig.reportSlug}-production-ready-gate.json\` - 9231 ${batchConfig.label} production-ready closeout for the requested ${aggregate.scope.shards} shards / ${aggregate.scope.rows} rows: DB/question_bank registry coverage ${aggregate.scope.rows}/${aggregate.scope.rows}, production search/read-model/RAG gates all consume \`question_plain_text_v2.normalized_plain_text\`, text-only ready ${aggregate.summary.text_only_ready_rows}, image-context required ${aggregate.summary.image_context_required_rows}, blockers ${aggregate.summary.blockers}, and \`production_ready_claimed=${aggregate.production_ready_claimed}\`.`,
+    `- \`${readyManifestPath}\` - machine-readable 9231 ${batchConfig.label} production surface manifest linking source/crop/v2/authority/local-consumption evidence to production DB/search/read-model/RAG rows.`,
     `- \`${paths.dbCoverage}\`, \`${paths.searchGate}\`, \`${paths.readModelGate}\`, and \`${paths.ragGate}\` - machine production gates for DB coverage, search priority, read-model priority, and RAG chunk consumption.`,
     '',
   ].join('\n');
-  if (current.includes(`${generatedOn}-9231-wave4-production-ready-closeout.md`)) {
+  if (current.includes(`${generatedOn}-9231-${batchConfig.reportSlug}-production-ready-closeout.md`)) {
     return;
   }
   fs.writeFileSync(resolved, current.replace(marker, `${marker}${entry}`), 'utf8');
@@ -1694,46 +1819,60 @@ export async function main(argv = process.argv.slice(2)) {
     printUsage();
     return 0;
   }
+  const batchConfig = build9231ProductionBatchConfig(options.batchId, {
+    generatedOn: options.generatedOn,
+    reportsDir: options.reportsDir,
+    readyManifest: options.readyManifest ?? undefined,
+  });
 
   const artifacts = {
-    v2: options.v2Artifact,
-    authority: options.authorityArtifact,
-    consumption: options.consumptionArtifact,
-    evidence_gate: options.evidenceGateArtifact,
+    v2: batchConfig.v2Artifacts,
+    authority: batchConfig.authorityArtifacts,
+    consumption: batchConfig.consumptionArtifacts,
+    evidence_gate: batchConfig.evidenceGateArtifacts,
   };
-  const readyRows = build9231Wave4ReadyRows({
-    v2Artifact: readJson(options.v2Artifact),
-    authorityArtifact: readJson(options.authorityArtifact),
-    consumptionArtifact: readJson(options.consumptionArtifact),
+  const readyRows = build9231ReadyRows({
+    batchConfig,
+    v2Artifacts: batchConfig.v2Artifacts.map(readJsonWithArtifactPath),
+    authorityArtifacts: batchConfig.authorityArtifacts.map(readJsonWithArtifactPath),
+    consumptionArtifacts: batchConfig.consumptionArtifacts.map(readJsonWithArtifactPath),
   });
   const readyManifest = buildReadyManifest({
     generatedOn: options.generatedOn,
     readyRows,
     artifacts,
+    batchConfig,
   });
-  writeJson(options.readyManifest, readyManifest);
+  writeJson(batchConfig.readyManifest, readyManifest);
 
   const paths = finalArtifactPaths({
     generatedOn: options.generatedOn,
     reportsDir: options.reportsDir,
+    batchConfig,
   });
   let gates;
   if (options.applyDb) {
-    writeStdoutLine('9231_wave4_production_db_promote=start');
-    runPsqlText(buildProductionPromotionSql({ readyRows, generatedOn: options.generatedOn }), options);
-    writeStdoutLine('9231_wave4_production_db_promote=done');
+    writeStdoutLine(`${batchConfig.logPrefix}_production_db_promote=start`);
+    runPsqlText(buildProductionPromotionSql({
+      readyRows,
+      generatedOn: options.generatedOn,
+      batchConfig,
+      paths,
+    }), options);
+    writeStdoutLine(`${batchConfig.logPrefix}_production_db_promote=done`);
     gates = runProductionGates({
       readyRows,
       generatedOn: options.generatedOn,
       options,
       paths,
+      batchConfig,
     });
   } else {
     gates = {
-      dbCoverage: defaultGateBlocked('9231_wave4_db_coverage_gate_v1', readyRows.length, 'apply_db_not_requested'),
-      searchGate: defaultGateBlocked('9231_wave4_production_search_gate_v1', readyRows.length, 'apply_db_not_requested'),
-      readModelGate: defaultGateBlocked('9231_wave4_production_read_model_gate_v1', readyRows.length, 'apply_db_not_requested'),
-      ragGate: defaultGateBlocked('9231_wave4_production_rag_consumption_gate_v1', readyRows.length, 'apply_db_not_requested'),
+      dbCoverage: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_db_coverage_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
+      searchGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_search_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
+      readModelGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_read_model_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
+      ragGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_rag_consumption_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
     };
   }
 
@@ -1742,18 +1881,18 @@ export async function main(argv = process.argv.slice(2)) {
   writeJson(paths.readModelGate, gates.readModelGate);
   writeJson(paths.ragGate, gates.ragGate);
 
-  const aggregate = build9231Wave4ProductionReadyAggregate({
+  const aggregate = build9231ProductionReadyAggregate({
+    batchConfig,
     generatedOn: options.generatedOn,
     readyRows,
-    expectedRows: 191,
-    readyManifestPath: options.readyManifest,
+    readyManifestPath: batchConfig.readyManifest,
     dbCoverage: gates.dbCoverage,
     searchGate: gates.searchGate,
     readModelGate: gates.readModelGate,
     ragGate: gates.ragGate,
     artifacts: {
       ...artifacts,
-      ready_manifest: options.readyManifest,
+      ready_manifest: batchConfig.readyManifest,
       db_coverage_gate: paths.dbCoverage,
       production_search_gate: paths.searchGate,
       production_read_model_gate: paths.readModelGate,
@@ -1761,30 +1900,33 @@ export async function main(argv = process.argv.slice(2)) {
     },
   });
   writeJson(paths.aggregateJson, aggregate);
-  writeText(paths.aggregateMarkdown, renderAggregateMarkdown(aggregate, paths));
+  writeText(paths.aggregateMarkdown, renderAggregateMarkdown(aggregate, paths, batchConfig));
   const shardArtifacts = writeShardCloseouts({
     generatedOn: options.generatedOn,
     reportsDir: options.reportsDir,
     readyRows,
     aggregate,
     paths,
+    batchConfig,
   });
 
   if (options.updateIndex) {
     updateReportsIndex({
       generatedOn: options.generatedOn,
       indexPath: 'docs/reports/INDEX.md',
-      readyManifestPath: options.readyManifest,
+      readyManifestPath: batchConfig.readyManifest,
       paths,
+      batchConfig,
+      aggregate,
     });
   }
 
-  writeStdoutLine(`9231_wave4_production_ready_status=${aggregate.status}`);
-  writeStdoutLine(`9231_wave4_production_ready_claimed=${aggregate.production_ready_claimed}`);
-  writeStdoutLine(`9231_wave4_production_rows=${aggregate.scope.rows}`);
-  writeStdoutLine(`9231_wave4_production_shards=${aggregate.scope.shards}`);
-  writeStdoutLine(`9231_wave4_production_blockers=${aggregate.summary.blockers}`);
-  writeStdoutLine(`9231_wave4_shard_closeout_artifacts=${shardArtifacts.length}`);
+  writeStdoutLine(`${batchConfig.logPrefix}_production_ready_status=${aggregate.status}`);
+  writeStdoutLine(`${batchConfig.logPrefix}_production_ready_claimed=${aggregate.production_ready_claimed}`);
+  writeStdoutLine(`${batchConfig.logPrefix}_production_rows=${aggregate.scope.rows}`);
+  writeStdoutLine(`${batchConfig.logPrefix}_production_shards=${aggregate.scope.shards}`);
+  writeStdoutLine(`${batchConfig.logPrefix}_production_blockers=${aggregate.summary.blockers}`);
+  writeStdoutLine(`${batchConfig.logPrefix}_shard_closeout_artifacts=${shardArtifacts.length}`);
 
   return aggregate.status === 'pass' ? 0 : 1;
 }

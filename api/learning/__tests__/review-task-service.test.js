@@ -38,6 +38,49 @@ function buildStoredReviewTask(overrides = {}) {
   };
 }
 
+const REVIEW_MODE_COMPLETION_EVIDENCE_FIXTURES = [
+  {
+    mode: 'quick_recall',
+    evidence: {
+      recall_response: 'The identity follows from dividing sin^2 x + cos^2 x = 1 by cos^2 x.',
+    },
+  },
+  {
+    mode: 'reconstruct_derivation',
+    evidence: {
+      derivation_steps: [
+        'Start from sin^2 x + cos^2 x = 1.',
+        'Divide every term by cos^2 x.',
+        'Substitute tan^2 x and sec^2 x.',
+      ],
+    },
+  },
+  {
+    mode: 'redo_variant',
+    evidence: {
+      attempt_ref: { kind: 'attempt', attempt_id: 'attempt-redo-variant' },
+    },
+  },
+  {
+    mode: 'timed_check',
+    evidence: {
+      timed_check: {
+        duration_seconds: 420,
+        completed_at: '2026-03-24T09:58:00.000Z',
+      },
+    },
+  },
+  {
+    mode: 'trap_fix',
+    evidence: {
+      fixed_misconception_tags: ['domain:interval'],
+      corrected_steps: [
+        'Checked the reference interval before listing solutions in the requested domain.',
+      ],
+    },
+  },
+];
+
 describe('learning orchestration', () => {
   test('part-local released scoring emits local signals instead of whole-question positive mastery', async () => {
     const reviewTaskService = createSpyService('generateTasksFromOutcome', async () => []);
@@ -914,6 +957,98 @@ describe('review task service generation', () => {
 });
 
 describe('review task service write semantics', () => {
+  test.each(REVIEW_MODE_COMPLETION_EVIDENCE_FIXTURES)(
+    'complete intent accepts PRD completion evidence for $mode mode',
+    async ({ mode, evidence }) => {
+      let storedTask = buildStoredReviewTask({
+        mode,
+      });
+      const reviewTaskRepository = {
+        async getReviewTaskById() {
+          return storedTask;
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          storedTask = {
+            ...storedTask,
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+          return storedTask;
+        },
+        async getReviewTaskProjectionById() {
+          return storedTask;
+        },
+      };
+      const service = createReviewTaskService({
+        reviewTaskRepository,
+        now: () => new Date('2026-03-24T10:00:00.000Z'),
+      });
+
+      const result = await service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent: 'complete',
+        completionOutcome: 'completed',
+        completionEvidence: evidence,
+      });
+
+      expect(result.review_task).toMatchObject({
+        review_task_id: 'review-task-1',
+        mode,
+        status: 'completed',
+        completion_evidence: {
+          ...evidence,
+          outcome: 'completed',
+          evidence_contract: {
+            mode,
+            outcome: 'completed',
+            validation: 'mode_specific',
+          },
+          recorded_at: '2026-03-24T10:00:00.000Z',
+        },
+      });
+    },
+  );
+
+  test('complete intent rejects summary-only evidence for completed quick_recall tasks', async () => {
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return buildStoredReviewTask({
+            mode: 'quick_recall',
+          });
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          return {
+            ...buildStoredReviewTask({
+              mode: 'quick_recall',
+            }),
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+        },
+      },
+    });
+
+    await expect(
+      service.patchReviewTask({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent: 'complete',
+        completionOutcome: 'completed',
+        completionEvidence: {
+          summary: 'Done.',
+        },
+      }),
+    ).rejects.toMatchObject({
+      code: 'invalid_payload',
+      status: 400,
+      details: {
+        field: 'completion_evidence.quick_recall',
+      },
+    });
+  });
+
   test('complete intent records completion evidence and a governed completion outcome', async () => {
     let storedTask = buildStoredReviewTask();
     const reviewTaskRepository = {
@@ -988,6 +1123,107 @@ describe('review task service write semantics', () => {
       code: 'invalid_payload',
       status: 400,
       details: { field: 'completion_evidence' },
+    });
+  });
+
+  test('partial outcome preserves partial status for started-but-incomplete review evidence', async () => {
+    let storedTask = buildStoredReviewTask({
+      mode: 'reconstruct_derivation',
+    });
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return storedTask;
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          storedTask = {
+            ...storedTask,
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+          return storedTask;
+        },
+        async getReviewTaskProjectionById() {
+          return storedTask;
+        },
+      },
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent: 'complete',
+      completionOutcome: 'partial',
+      completionEvidence: {
+        partial_reason: 'started_but_interrupted',
+        note: 'Reviewed the old explanation but did not reconstruct the full derivation.',
+      },
+    });
+
+    expect(result.review_task).toMatchObject({
+      review_task_id: 'review-task-1',
+      status: 'partial',
+      completion_evidence: {
+        partial_reason: 'started_but_interrupted',
+        note: 'Reviewed the old explanation but did not reconstruct the full derivation.',
+        outcome: 'partial',
+        evidence_contract: {
+          mode: 'reconstruct_derivation',
+          outcome: 'partial',
+          validation: 'partial_evidence',
+        },
+      },
+    });
+  });
+
+  test.each([
+    ['skipped', { skip_reason: 'student chose to defer this review family.' }],
+    ['expired', { expired_reason: 'review window elapsed before the learner acted.' }],
+  ])('complete intent records %s outcomes without promoting completion', async (completionOutcome, completionEvidence) => {
+    let storedTask = buildStoredReviewTask({
+      mode: 'redo_variant',
+    });
+    const service = createReviewTaskService({
+      reviewTaskRepository: {
+        async getReviewTaskById() {
+          return storedTask;
+        },
+        async updateReviewTask(reviewTaskId, patch) {
+          storedTask = {
+            ...storedTask,
+            review_task_id: reviewTaskId,
+            ...patch,
+          };
+          return storedTask;
+        },
+        async getReviewTaskProjectionById() {
+          return storedTask;
+        },
+      },
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const result = await service.patchReviewTask({
+      userId: 'student-1',
+      reviewTaskId: 'review-task-1',
+      intent: 'complete',
+      completionOutcome,
+      completionEvidence,
+    });
+
+    expect(result.review_task).toMatchObject({
+      review_task_id: 'review-task-1',
+      status: completionOutcome,
+      completion_evidence: {
+        ...completionEvidence,
+        outcome: completionOutcome,
+        evidence_contract: {
+          mode: 'redo_variant',
+          outcome: completionOutcome,
+          validation: `${completionOutcome}_evidence`,
+        },
+      },
     });
   });
 

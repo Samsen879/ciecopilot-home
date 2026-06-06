@@ -110,6 +110,48 @@ describe('review task api', () => {
     expect(res.body.error.code).toBe('invalid_payload');
   });
 
+  test.each([
+    ['skipped', { skip_reason: 'student skipped this review task.' }],
+    ['expired', { expired_reason: 'review window elapsed.' }],
+  ])('PATCH /api/learning/review-tasks/:id accepts explicit %s outcomes', async (completionOutcome, completionEvidence) => {
+    mockPatchLearningReviewTask.mockResolvedValueOnce({
+      review_task: {
+        review_task_id: 'review-task-1',
+        status: completionOutcome,
+        completion_evidence: {
+          ...completionEvidence,
+          outcome: completionOutcome,
+        },
+      },
+    });
+
+    const req = createReq({
+      body: {
+        intent: 'complete',
+        completion_outcome: completionOutcome,
+        completion_evidence: completionEvidence,
+      },
+    });
+    const res = createRes();
+
+    await handler(req, res);
+
+    expect(mockPatchLearningReviewTask).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'student-1',
+        reviewTaskId: 'review-task-1',
+        intent: 'complete',
+        completionOutcome,
+        completionEvidence,
+      }),
+    );
+    expect(res.statusCode).toBe(200);
+    expect(res.body.review_task).toMatchObject({
+      review_task_id: 'review-task-1',
+      status: completionOutcome,
+    });
+  });
+
   test('PATCH /api/learning/review-tasks/:id preserves stable conflict codes', async () => {
     const error = new Error('review_task_state_conflict');
     error.code = 'review_task_state_conflict';

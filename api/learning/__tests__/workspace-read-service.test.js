@@ -2444,6 +2444,205 @@ describe('workspace read service', () => {
     expect(res.body.items.map((item) => item.review_task_id)).toEqual(['review-equations']);
   });
 
+  test('paper and topic review projections preserve global cap and canonical dedupe policy', async () => {
+    const reviewRows = [
+      {
+        review_task_id: 'review-weaker-duplicate',
+        user_id: 'student-1',
+        target_kind: 'question_type',
+        target_topic_id: 'topic-1',
+        target_topic_path: '9709/trigonometry/equations',
+        target_family_id: '9709.trigonometry_manipulation_equations',
+        target_question_type_id: '9709.trigonometry.equations',
+        target_misconception_tags: ['domain:interval'],
+        related_artifact_refs: [],
+        source_question_id: 'question-weaker-duplicate',
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-weaker-duplicate' },
+        trigger_type: 'immediate_repair',
+        mode: 'trap_fix',
+        due_at: '2026-03-22T07:00:00.000Z',
+        priority: 'high',
+        estimated_minutes: 15,
+        success_criteria: {
+          scheduler_policy: {
+            route: 'immediate_repair',
+            freshness_bucket: 'fresh',
+          },
+        },
+        completion_evidence: {},
+        status: 'open',
+        created_at: '2026-03-22T08:00:00.000Z',
+        updated_at: '2026-03-22T08:00:00.000Z',
+      },
+      {
+        review_task_id: 'review-stronger-duplicate',
+        user_id: 'student-1',
+        target_kind: 'question_type',
+        target_topic_id: 'topic-1',
+        target_topic_path: '9709/trigonometry/equations',
+        target_family_id: '9709.trigonometry_manipulation_equations',
+        target_question_type_id: '9709.trigonometry.equations',
+        target_misconception_tags: ['domain:interval'],
+        related_artifact_refs: [],
+        source_question_id: 'question-stronger-duplicate',
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-stronger-duplicate' },
+        trigger_type: 'regression_recovery',
+        mode: 'redo_variant',
+        due_at: '2026-03-22T07:05:00.000Z',
+        priority: 'urgent',
+        estimated_minutes: 20,
+        success_criteria: {
+          scheduler_policy: {
+            route: 'regression_recovery',
+            freshness_bucket: 'stale',
+          },
+        },
+        completion_evidence: {},
+        status: 'open',
+        created_at: '2026-03-22T08:01:00.000Z',
+        updated_at: '2026-03-22T08:01:00.000Z',
+      },
+      {
+        review_task_id: 'review-topic-2-immediate',
+        user_id: 'student-1',
+        target_kind: 'question_type',
+        target_topic_id: 'topic-2',
+        target_topic_path: '9709/trigonometry/identities',
+        target_family_id: '9709.trigonometry_manipulation_equations',
+        target_question_type_id: '9709.trigonometry.identities',
+        target_misconception_tags: [],
+        related_artifact_refs: [],
+        source_question_id: 'question-topic-2-immediate',
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-topic-2-immediate' },
+        trigger_type: 'immediate_repair',
+        mode: 'trap_fix',
+        due_at: '2026-03-22T07:10:00.000Z',
+        priority: 'high',
+        estimated_minutes: 15,
+        success_criteria: {
+          scheduler_policy: {
+            route: 'immediate_repair',
+            freshness_bucket: 'fresh',
+          },
+        },
+        completion_evidence: {},
+        status: 'open',
+        created_at: '2026-03-22T08:02:00.000Z',
+        updated_at: '2026-03-22T08:02:00.000Z',
+      },
+      {
+        review_task_id: 'review-topic-1-due',
+        user_id: 'student-1',
+        target_kind: 'question_type',
+        target_topic_id: 'topic-1',
+        target_topic_path: '9709/trigonometry/equations',
+        target_family_id: '9709.trigonometry_manipulation_equations',
+        target_question_type_id: '9709.trigonometry.graphs',
+        target_misconception_tags: [],
+        related_artifact_refs: [],
+        source_question_id: 'question-topic-1-due',
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-topic-1-due' },
+        trigger_type: 'short_delay',
+        mode: 'redo_variant',
+        due_at: '2026-03-22T07:15:00.000Z',
+        priority: 'normal',
+        estimated_minutes: 10,
+        success_criteria: {
+          scheduler_policy: {
+            route: 'short_delay',
+            freshness_bucket: 'cooling',
+          },
+        },
+        completion_evidence: {},
+        status: 'open',
+        created_at: '2026-03-22T08:03:00.000Z',
+        updated_at: '2026-03-22T08:03:00.000Z',
+      },
+      {
+        review_task_id: 'review-topic-2-cap-blocked',
+        user_id: 'student-1',
+        target_kind: 'question_type',
+        target_topic_id: 'topic-2',
+        target_topic_path: '9709/trigonometry/identities',
+        target_family_id: '9709.trigonometry_manipulation_equations',
+        target_question_type_id: '9709.trigonometry.revision',
+        target_misconception_tags: [],
+        related_artifact_refs: [],
+        source_question_id: 'question-topic-2-cap-blocked',
+        source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-topic-2-cap-blocked' },
+        trigger_type: 'spaced_review',
+        mode: 'quick_recall',
+        due_at: '2026-03-23T07:00:00.000Z',
+        priority: 'normal',
+        estimated_minutes: 8,
+        success_criteria: {
+          scheduler_policy: {
+            route: 'spaced_review',
+            freshness_bucket: 'current',
+          },
+        },
+        completion_evidence: {},
+        status: 'open',
+        created_at: '2026-03-22T08:04:00.000Z',
+        updated_at: '2026-03-22T08:04:00.000Z',
+      },
+    ];
+    const db = createLearningDb({
+      reviewTaskRows: reviewRows,
+      artifactRows: [],
+      sessionRows: [],
+    });
+
+    const paperPayload = await getPaperWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      residencyFlagEnabled: false,
+    });
+    const topicPayload = await getTopicSectionWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      topicId: 'topic-2',
+      residencyFlagEnabled: false,
+    });
+
+    const dedupedPaperItem = paperPayload.review_queue.items.find(
+      (item) => item.review_task_id === 'review-stronger-duplicate',
+    );
+    const capBlockedPaperItem = paperPayload.review_queue.items.find(
+      (item) => item.review_task_id === 'review-topic-2-cap-blocked',
+    );
+
+    expect(paperPayload.review_queue.scope).toBe('paper_workspace_review_projection');
+    expect(paperPayload.review_queue.policy).toEqual(expect.objectContaining({
+      daily_recommendation_cap: 3,
+      max_high_priority_open_per_type: 1,
+    }));
+    expect(paperPayload.review_queue.items
+      .filter((item) => item.target_question_type_id === '9709.trigonometry.equations'))
+      .toHaveLength(1);
+    expect(dedupedPaperItem).toMatchObject({
+      projection_attribution: {
+        folded_review_task_refs: expect.arrayContaining([
+          { kind: 'review_task', review_task_id: 'review-weaker-duplicate' },
+          { kind: 'review_task', review_task_id: 'review-stronger-duplicate' },
+        ]),
+      },
+    });
+    expect(capBlockedPaperItem).toMatchObject({
+      scheduler_state: expect.objectContaining({
+        value: 'blocked',
+        reason_code: 'daily_recommendation_cap',
+      }),
+    });
+    expect(topicPayload.review_queue.items.find(
+      (item) => item.review_task_id === 'review-topic-2-cap-blocked',
+    )).toMatchObject({
+      scheduler_state: expect.objectContaining({
+        reason_code: 'daily_recommendation_cap',
+      }),
+    });
+  });
+
   test('workspace review_queue slot stays tied to active tasks even when queue payload is filtered', async () => {
     const db = createLearningDb();
 
@@ -3108,6 +3307,10 @@ describe('workspace read service', () => {
       completionOutcome: 'completed',
       completionEvidence: {
         summary: 'Solved a fresh repair variant.',
+        fixed_misconception_tags: ['domain:interval'],
+        corrected_steps: [
+          'Checked the domain interval before accepting the final solution set.',
+        ],
         artifact_ref: {
           kind: 'artifact',
           artifact_id: outcome.artifact_candidates[0].artifact_id,

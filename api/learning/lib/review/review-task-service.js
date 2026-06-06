@@ -11,16 +11,19 @@ import {
   getSubjectAdapter,
   resolveSubjectCodeFromRuntimeInput,
 } from '../subjects/subject-adapter-registry.js';
+import {
+  REVIEW_TASK_COMPLETION_OUTCOMES,
+  validateReviewTaskCompletionEvidence,
+} from '../validators/review-task-completion-evidence.js';
 
 const REVIEW_TASK_ERROR_CODES = Object.freeze({
-  NOT_FOUND: 'review_task_not_found',
-  STATE_CONFLICT: 'review_task_state_conflict',
+  NOT_FOUND: LEARNING_ERROR_CODES.REVIEW_TASK_NOT_FOUND,
+  STATE_CONFLICT: LEARNING_ERROR_CODES.REVIEW_TASK_STATE_CONFLICT,
 });
 
 const REVIEW_TASK_INTENTS = new Set(['complete', 'reschedule', 'snooze', 'reopen']);
-const REVIEW_TASK_COMPLETION_OUTCOMES = new Set(['completed', 'partial']);
 const ACTIVE_REVIEW_TASK_STATUSES = new Set(['open', 'partial']);
-const REOPENABLE_REVIEW_TASK_STATUSES = new Set(['completed', 'partial']);
+const REOPENABLE_REVIEW_TASK_STATUSES = new Set(['completed', 'partial', 'skipped', 'expired']);
 
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
@@ -37,35 +40,6 @@ function normalizeString(value) {
 
 function isPlainObject(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
-
-function hasTypedRef(value) {
-  if (!isPlainObject(value) || !normalizeString(value.kind)) {
-    return false;
-  }
-
-  return Object.entries(value).some(([key, refValue]) =>
-    key !== 'kind' && normalizeString(refValue));
-}
-
-function hasCompletionEvidenceSignal(evidence) {
-  if (!isPlainObject(evidence)) {
-    return false;
-  }
-
-  if (normalizeString(evidence.summary) || normalizeString(evidence.note)) {
-    return true;
-  }
-
-  if (hasTypedRef(evidence.artifact_ref) || hasTypedRef(evidence.attempt_ref) || hasTypedRef(evidence.mark_run_ref)) {
-    return true;
-  }
-
-  if (Array.isArray(evidence.evidence_refs) && evidence.evidence_refs.some(hasTypedRef)) {
-    return true;
-  }
-
-  return false;
 }
 
 function clone(value) {
@@ -125,22 +99,10 @@ function normalizeIsoTimestamp(value, field) {
   return parsed.toISOString();
 }
 
-function normalizeCompletionEvidence(input = {}) {
-  if (!isPlainObject(input) || !hasCompletionEvidenceSignal(input)) {
-    throw buildInvalidPayload(
-      'completion_evidence must include summary, note, or typed reference evidence.',
-      { field: 'completion_evidence' },
-    );
-  }
-
-  return clone(input);
-}
-
 function validatePatchInput({
   reviewTaskId,
   intent,
   completionOutcome,
-  completionEvidence,
   dueAt,
 } = {}) {
   if (!normalizeString(reviewTaskId)) {
@@ -154,13 +116,9 @@ function validatePatchInput({
   }
 
   if (intent === 'complete' && !REVIEW_TASK_COMPLETION_OUTCOMES.has(completionOutcome)) {
-    throw buildInvalidPayload('completion_outcome must be completed or partial.', {
+    throw buildInvalidPayload('completion_outcome must be completed, partial, skipped, or expired.', {
       field: 'completion_outcome',
     });
-  }
-
-  if (intent === 'complete') {
-    normalizeCompletionEvidence(completionEvidence);
   }
 
   if ((intent === 'reschedule' || intent === 'snooze') && !normalizeString(dueAt)) {
@@ -170,10 +128,22 @@ function validatePatchInput({
   }
 }
 
-function buildCompletionEvidence(input, completionOutcome, timestamp) {
-  return {
-    ...normalizeCompletionEvidence(input),
+function buildCompletionEvidence(reviewTask, input, completionOutcome, timestamp) {
+  const validation = validateReviewTaskCompletionEvidence({
+    mode: reviewTask?.mode ?? null,
     outcome: completionOutcome,
+    evidence: input,
+  });
+  if (!validation.ok) {
+    throw buildInvalidPayload(validation.message, {
+      field: validation.field,
+    });
+  }
+
+  return {
+    ...clone(input),
+    outcome: completionOutcome,
+    evidence_contract: validation.contract,
     recorded_at: timestamp,
   };
 }
@@ -266,6 +236,7 @@ function buildCompletionPatch(reviewTask, completionOutcome, completionEvidence,
   return {
     status: completionOutcome,
     completion_evidence: buildCompletionEvidence(
+      reviewTask,
       completionEvidence,
       completionOutcome,
       timestamp,

@@ -1,0 +1,1548 @@
+{
+  "schema_version": "9231_wm_source_remediation_manifest_v1",
+  "manifest_id": "9231_wm_source_remediation_2026_06_06_manifest_v1",
+  "generated_on": "2026-06-06",
+  "subject_code": "9231",
+  "source_freeze_manifest": "data/manifests/9231_wm_source_freeze_2026_06_05_manifest_v1.json",
+  "source_remediation_status": "unfrozen_by_machine_source_remediation_gate",
+  "summary": {
+    "target_source_pdf_count": 18,
+    "expected_target_source_pdf_count": 18,
+    "verified_or_replaced_count": 18,
+    "replaced_count": 18,
+    "current_bytes_already_clean_count": 0,
+    "red_pixel_gate_pass_count": 18,
+    "provenance_pass_count": 18,
+    "page_count_match_count": 18,
+    "pdf_signature_pass_count": 18,
+    "total_before_red_pixels": 1175796,
+    "total_after_red_pixels": 0,
+    "affected_frozen_rows": 150,
+    "affected_shard_count": 6,
+    "freeze_posture_lifted_by_machine_gate": true,
+    "production_ready_claimed": false,
+    "db_search_rag_consumption_claimed": false
+  },
+  "affected_shards": {
+    "9231_p1_s20_standard_001": 21,
+    "9231_p1_w19_standard_001": 33,
+    "9231_p2_s20_standard_001": 24,
+    "9231_p2_w19_standard_001": 33,
+    "9231_p3_s20_standard_001": 21,
+    "9231_p4_s20_standard_001": 18
+  },
+  "records": [
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf",
+      "frozen_row_count": 7,
+      "affected_shards": [
+        "9231_p1_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/11/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf",
+        "bytes": 2814168,
+        "sha256": "a5a4427fba520cb317c09c5fed9cbc470cb93d5ae23bcfa6731eb7198673edc7",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "AS&A Level Cambridge International Further Mathematics 9231/11 Paper 1 May/June 2020",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (PQ) 197982 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/11 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours You ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_11.qualifiedquest.pdf",
+        "bytes": 1113333,
+        "sha256": "713509fac5492b3b50609be541779d1efad518486edd541b5cfb169ecc3b01e6",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "AS&A Level Cambridge International Further Mathematics 9231/11 Paper 1 May/June 2020",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (PQ) 197982 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/11 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours You ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_11.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_11.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_11.pdf",
+        "bytes": 1113333,
+        "sha256": "713509fac5492b3b50609be541779d1efad518486edd541b5cfb169ecc3b01e6",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "AS&A Level Cambridge International Further Mathematics 9231/11 Paper 1 May/June 2020",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (PQ) 197982 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/11 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours You ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf",
+      "frozen_row_count": 7,
+      "affected_shards": [
+        "9231_p1_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/12/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf",
+        "bytes": 2814715,
+        "sha256": "2576abbe7dc9898a26ace19f4e10ae95a4bd24cdf57093a8e6afbb9ba2a9381c",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "AS&A Level Cambridge International Further Mathematics 9231/12 Paper 1 May/June 2020",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK) 187468/2 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/12 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours Yo",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_12.qualifiedquest.pdf",
+        "bytes": 1113885,
+        "sha256": "81da173c5f6ed6e754760acaf8c0bfcfbed089b505ccc1c397fae3ac1e897743",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "AS&A Level Cambridge International Further Mathematics 9231/12 Paper 1 May/June 2020",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK) 187468/2 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/12 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours Yo",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_12.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_12.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_12.pdf",
+        "bytes": 1113885,
+        "sha256": "81da173c5f6ed6e754760acaf8c0bfcfbed089b505ccc1c397fae3ac1e897743",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "AS&A Level Cambridge International Further Mathematics 9231/12 Paper 1 May/June 2020",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK) 187468/2 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/12 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours Yo",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf",
+      "frozen_row_count": 7,
+      "affected_shards": [
+        "9231_p1_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/13/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf",
+        "bytes": 2823001,
+        "sha256": "223b225e85fba1287c27e985a5e3a496954d486fca17f6fb2495e9a989f8dbfc",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/13; Further Mathematics; Paper 1 Further Pure Mathematics 1; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK) 187467/2 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/13 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours Yo",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_13.qualifiedquest.pdf",
+        "bytes": 1122403,
+        "sha256": "c01f89b737a652072749f67e6668d1bcf6dd14950488e6ac329db4df0fb98a10",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/13; Further Mathematics; Paper 1 Further Pure Mathematics 1; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK) 187467/2 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/13 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours Yo",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_13.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_13.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_s20_qp_13.pdf",
+        "bytes": 1122403,
+        "sha256": "c01f89b737a652072749f67e6668d1bcf6dd14950488e6ac329db4df0fb98a10",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/13; Further Mathematics; Paper 1 Further Pure Mathematics 1; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK) 187467/2 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/13 Paper 1 Further Pure Mathematics 1 May/June 2020 2 hours Yo",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_11.pdf",
+      "frozen_row_count": 11,
+      "affected_shards": [
+        "9231_p1_w19_standard_001"
+      ],
+      "expected_identity_text": "9231/11/O/N/19",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_11.pdf",
+        "bytes": 2716590,
+        "sha256": "59d8c2cb32955733527849b3a399d03814b7f243a3fa93cb08b552ac37dda2de",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_11_Nov19.dvi",
+        "first_page_text_sample": "*5418419037* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/11 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 87096,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 24,
+          "total_pages_rendered": 24
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_11.qualifiedquest.pdf",
+        "bytes": 136570,
+        "sha256": "5c32d73abb9e0d7175b4e360669e53cd29fa8445fb3f25ee018da277e7ff453a",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_11_Nov19.dvi",
+        "first_page_text_sample": "*5418419037* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/11 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_11.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2019/9231_w19_qp_11.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_11.pdf",
+        "bytes": 136570,
+        "sha256": "5c32d73abb9e0d7175b4e360669e53cd29fa8445fb3f25ee018da277e7ff453a",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_11_Nov19.dvi",
+        "first_page_text_sample": "*5418419037* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/11 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_12.pdf",
+      "frozen_row_count": 11,
+      "affected_shards": [
+        "9231_p1_w19_standard_001"
+      ],
+      "expected_identity_text": "9231/12/O/N/19",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_12.pdf",
+        "bytes": 2716485,
+        "sha256": "5d49522b9b75a7642cf4b183e09e739bf67e6db7ca479897d8590a69f5caaaf2",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_12_Nov19.dvi",
+        "first_page_text_sample": "*6832869660* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/12 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 87096,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 24,
+          "total_pages_rendered": 24
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_12.qualifiedquest.pdf",
+        "bytes": 136465,
+        "sha256": "b5a81deb1e88bf884a01cd0ee6032b55b2801dedf87b8765e6aa4079f1aab9ec",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_12_Nov19.dvi",
+        "first_page_text_sample": "*6832869660* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/12 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_12.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2019/9231_w19_qp_12.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_12.pdf",
+        "bytes": 136465,
+        "sha256": "b5a81deb1e88bf884a01cd0ee6032b55b2801dedf87b8765e6aa4079f1aab9ec",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_12_Nov19.dvi",
+        "first_page_text_sample": "*6832869660* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/12 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_13.pdf",
+      "frozen_row_count": 11,
+      "affected_shards": [
+        "9231_p1_w19_standard_001"
+      ],
+      "expected_identity_text": "9231/13/O/N/19",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_13.pdf",
+        "bytes": 2716301,
+        "sha256": "7e44184c30a77641c139c6140e8b5b9b85696ec4e23f393edd579b274bc38ffb",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_13_Nov19.dvi",
+        "first_page_text_sample": "*3933338454* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/13 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 87096,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 24,
+          "total_pages_rendered": 24
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_13.qualifiedquest.pdf",
+        "bytes": 136281,
+        "sha256": "f4ff612d8824486afb7e3f0d26ebcc9819e3baab14dfbca3d394325d234e0183",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_13_Nov19.dvi",
+        "first_page_text_sample": "*3933338454* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/13 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_13.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2019/9231_w19_qp_13.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_13.pdf",
+        "bytes": 136281,
+        "sha256": "f4ff612d8824486afb7e3f0d26ebcc9819e3baab14dfbca3d394325d234e0183",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_13_Nov19.dvi",
+        "first_page_text_sample": "*3933338454* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/13 Paper 1 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf",
+      "frozen_row_count": 8,
+      "affected_shards": [
+        "9231_p2_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/21/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf",
+        "bytes": 2841325,
+        "sha256": "cca34797fb99c34f596d1cbf486fc04061c890d423a9b15edaf2d62969cb45c2",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/22; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (JP) 197983 © UCLES 2020 [Turn over * 1 9 8 3 2 4 1 2 2 2 * FURTHER MATHEMATICS 9231/21 Paper 2 Further Pure Mathematics 2 Ma",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_21.qualifiedquest.pdf",
+        "bytes": 1141025,
+        "sha256": "0102c387ffeed2d3a66cad83e1d65d730591b947418f062999231a52ab609cb6",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/22; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (JP) 197983 © UCLES 2020 [Turn over * 1 9 8 3 2 4 1 2 2 2 * FURTHER MATHEMATICS 9231/21 Paper 2 Further Pure Mathematics 2 Ma",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_21.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_21.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_21.pdf",
+        "bytes": 1141025,
+        "sha256": "0102c387ffeed2d3a66cad83e1d65d730591b947418f062999231a52ab609cb6",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/22; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (JP) 197983 © UCLES 2020 [Turn over * 1 9 8 3 2 4 1 2 2 2 * FURTHER MATHEMATICS 9231/21 Paper 2 Further Pure Mathematics 2 Ma",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf",
+      "frozen_row_count": 8,
+      "affected_shards": [
+        "9231_p2_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/22/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf",
+        "bytes": 2841765,
+        "sha256": "d61a8cf228bc00f57a93332ff7afaf0f75cceff57af77c20f80d882cd50bd091",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/22; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK/CB) 187464/1 © UCLES 2020 [Turn over * 9 5 8 8 7 6 8 0 5 3 * FURTHER MATHEMATICS 9231/22 Paper 2 Further Pure Mathematics",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_22.qualifiedquest.pdf",
+        "bytes": 1141465,
+        "sha256": "cd6a885e53e9c26746112aacf86e79ee0ecabed6f190127d40fffdf679bbe1a9",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/22; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK/CB) 187464/1 © UCLES 2020 [Turn over * 9 5 8 8 7 6 8 0 5 3 * FURTHER MATHEMATICS 9231/22 Paper 2 Further Pure Mathematics",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_22.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_22.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_22.pdf",
+        "bytes": 1141465,
+        "sha256": "cd6a885e53e9c26746112aacf86e79ee0ecabed6f190127d40fffdf679bbe1a9",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/22; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK/CB) 187464/1 © UCLES 2020 [Turn over * 9 5 8 8 7 6 8 0 5 3 * FURTHER MATHEMATICS 9231/22 Paper 2 Further Pure Mathematics",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf",
+      "frozen_row_count": 8,
+      "affected_shards": [
+        "9231_p2_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/23/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf",
+        "bytes": 2858099,
+        "sha256": "15fcb88b2b5ca94b7728f840eb122d0971121cedc9668b60002f97c94d3eabef",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/23; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK/CB) 187469/1 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/23 Paper 2 Further Pure Mathematics 2 May/June 2020 2 hours",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_23.qualifiedquest.pdf",
+        "bytes": 1157638,
+        "sha256": "f51875d1712ccfe10c11dece6434df495034f132af8a2f7d4f79155a1a143642",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/23; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK/CB) 187469/1 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/23 Paper 2 Further Pure Mathematics 2 May/June 2020 2 hours",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_23.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_23.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_s20_qp_23.pdf",
+        "bytes": 1157638,
+        "sha256": "f51875d1712ccfe10c11dece6434df495034f132af8a2f7d4f79155a1a143642",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "CAIE; 9231/23; Further Mathematics; Paper 2 Further Pure Mathematics 2; AS & A",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 16 pages. Blank pages are indicated. DC (LK/CB) 187469/1 © UCLES 2020 [Turn over FURTHER MATHEMATICS 9231/23 Paper 2 Further Pure Mathematics 2 May/June 2020 2 hours",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_21.pdf",
+      "frozen_row_count": 11,
+      "affected_shards": [
+        "9231_p2_w19_standard_001"
+      ],
+      "expected_identity_text": "9231/21/O/N/19",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_21.pdf",
+        "bytes": 2728619,
+        "sha256": "bdc8298ff085cfbadb0b76935faba73ce1cd4825b0e83748400bcaaf156777d4",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_21_Nov19.dvi",
+        "first_page_text_sample": "*5777159437* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/21 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 87096,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 24,
+          "total_pages_rendered": 24
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_21.qualifiedquest.pdf",
+        "bytes": 148555,
+        "sha256": "85cbe7d528e44d295c242eef3f4842dcc087b5150399c2bac972750dbda1859d",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_21_Nov19.dvi",
+        "first_page_text_sample": "*5777159437* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/21 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_21.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2019/9231_w19_qp_21.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_21.pdf",
+        "bytes": 148555,
+        "sha256": "85cbe7d528e44d295c242eef3f4842dcc087b5150399c2bac972750dbda1859d",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_21_Nov19.dvi",
+        "first_page_text_sample": "*5777159437* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/21 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_22.pdf",
+      "frozen_row_count": 11,
+      "affected_shards": [
+        "9231_p2_w19_standard_001"
+      ],
+      "expected_identity_text": "9231/22/O/N/19",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_22.pdf",
+        "bytes": 2728870,
+        "sha256": "c833854a5d9aa7d950d94ed3d2e5c39041b075c2699ce336e4f2e8b613ccb825",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_22_Nov19.dvi",
+        "first_page_text_sample": "*8174629702* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/22 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 87096,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 24,
+          "total_pages_rendered": 24
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_22.qualifiedquest.pdf",
+        "bytes": 148806,
+        "sha256": "57211f025bbf247431c450dd87aed239dbf9e78e42f93a8688e6d791d32c8005",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_22_Nov19.dvi",
+        "first_page_text_sample": "*8174629702* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/22 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_22.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2019/9231_w19_qp_22.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_22.pdf",
+        "bytes": 148806,
+        "sha256": "57211f025bbf247431c450dd87aed239dbf9e78e42f93a8688e6d791d32c8005",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_22_Nov19.dvi",
+        "first_page_text_sample": "*8174629702* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/22 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_23.pdf",
+      "frozen_row_count": 11,
+      "affected_shards": [
+        "9231_p2_w19_standard_001"
+      ],
+      "expected_identity_text": "9231/23/O/N/19",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_23.pdf",
+        "bytes": 2728501,
+        "sha256": "06c2d222de25d580be25831042b8a549f422a6a511f70aba0daf471519d4b985",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_23_Nov19.dvi",
+        "first_page_text_sample": "*4551344185* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/23 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 87096,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 24,
+          "total_pages_rendered": 24
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_23.qualifiedquest.pdf",
+        "bytes": 148437,
+        "sha256": "e17a4e87b6dd86aa63299605894f213d248f8b7c3eed8a48b2ac520b38ea97a8",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_23_Nov19.dvi",
+        "first_page_text_sample": "*4551344185* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/23 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_w19_qp_23.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2019/9231_w19_qp_23.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper2/WM_9231_w19_qp_23.pdf",
+        "bytes": 148437,
+        "sha256": "e17a4e87b6dd86aa63299605894f213d248f8b7c3eed8a48b2ac520b38ea97a8",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 24,
+        "title": "9231_23_Nov19.dvi",
+        "first_page_text_sample": "*4551344185* Cambridge Assessment International Education Cambridge International Advanced Level CANDIDATE NAME CENTRE NUMBER CANDIDATE NUMBER FURTHER MATHEMATICS 9231/23 Paper 2 October/November 2019 3 hours Candidates ",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 24
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf",
+      "frozen_row_count": 7,
+      "affected_shards": [
+        "9231_p3_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/31/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf",
+        "bytes": 2828097,
+        "sha256": "b5e2df0effb714d81202d7f7e0eff431c41c6ed64028d69c9a1d12828c2913d9",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 32, June 2020, 187882",
+        "first_page_text_sample": "Cambridge International AS & A Level * 6 9 9 5 7 8 0 4 3 7 * DC (JP) 197984 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/31 Paper 3 Further Mechanics May/June 20",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_31.qualifiedquest.pdf",
+        "bytes": 1126604,
+        "sha256": "eb9b43beac9dd6538bcdae21cc5e1d4d089b910acf4bd5b39f973738722a38e3",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 32, June 2020, 187882",
+        "first_page_text_sample": "Cambridge International AS & A Level * 6 9 9 5 7 8 0 4 3 7 * DC (JP) 197984 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/31 Paper 3 Further Mechanics May/June 20",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_31.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_31.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_31.pdf",
+        "bytes": 1126604,
+        "sha256": "eb9b43beac9dd6538bcdae21cc5e1d4d089b910acf4bd5b39f973738722a38e3",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 32, June 2020, 187882",
+        "first_page_text_sample": "Cambridge International AS & A Level * 6 9 9 5 7 8 0 4 3 7 * DC (JP) 197984 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/31 Paper 3 Further Mechanics May/June 20",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf",
+      "frozen_row_count": 7,
+      "affected_shards": [
+        "9231_p3_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/32/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf",
+        "bytes": 2827793,
+        "sha256": "a6f02b8df4af5f4a037e32ef6331fddbe3cac7620351767797eb2805ba86824e",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 32, June 2020, 187882",
+        "first_page_text_sample": "Cambridge International AS & A Level * 4 0 7 3 6 5 0 1 4 1 * DC (PQ/FC) 187882/3 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/32 Paper 3 Further Mechanics May/Ju",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_32.qualifiedquest.pdf",
+        "bytes": 1126300,
+        "sha256": "93ca49b3571a45175efc31d31d2c2859038331ef2940af4dddedf53232a579e7",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 32, June 2020, 187882",
+        "first_page_text_sample": "Cambridge International AS & A Level * 4 0 7 3 6 5 0 1 4 1 * DC (PQ/FC) 187882/3 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/32 Paper 3 Further Mechanics May/Ju",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_32.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_32.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_32.pdf",
+        "bytes": 1126300,
+        "sha256": "93ca49b3571a45175efc31d31d2c2859038331ef2940af4dddedf53232a579e7",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 32, June 2020, 187882",
+        "first_page_text_sample": "Cambridge International AS & A Level * 4 0 7 3 6 5 0 1 4 1 * DC (PQ/FC) 187882/3 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/32 Paper 3 Further Mechanics May/Ju",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf",
+      "frozen_row_count": 7,
+      "affected_shards": [
+        "9231_p3_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/33/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf",
+        "bytes": 2894153,
+        "sha256": "18de6b917be187c1d55b4c28098f103af9864cf836521c859545cdd166090ee5",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 33, June 2020, 187881",
+        "first_page_text_sample": "Cambridge International AS & A Level * 8 6 2 3 4 0 1 3 1 4 * DC (PQ/FC) 187881/2 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/33 Paper 3 Further Mechanics May/Ju",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 58064,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 16,
+          "total_pages_rendered": 16
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_33.qualifiedquest.pdf",
+        "bytes": 1192667,
+        "sha256": "7be113a656dbc4fd8b7377e0191931f3b7849be521c582612f7bee6b680af207",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 33, June 2020, 187881",
+        "first_page_text_sample": "Cambridge International AS & A Level * 8 6 2 3 4 0 1 3 1 4 * DC (PQ/FC) 187881/2 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/33 Paper 3 Further Mechanics May/Ju",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_33.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_33.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper3/WM_9231_s20_qp_33.pdf",
+        "bytes": 1192667,
+        "sha256": "7be113a656dbc4fd8b7377e0191931f3b7849be521c582612f7bee6b680af207",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 16,
+        "title": "9231, 33, June 2020, 187881",
+        "first_page_text_sample": "Cambridge International AS & A Level * 8 6 2 3 4 0 1 3 1 4 * DC (PQ/FC) 187881/2 © UCLES 2020 [Turn over This document has 16 pages. Blank pages are indicated. FURTHER MATHEMATICS 9231/33 Paper 3 Further Mechanics May/Ju",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 16
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf",
+      "frozen_row_count": 6,
+      "affected_shards": [
+        "9231_p4_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/41/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf",
+        "bytes": 2331978,
+        "sha256": "bc79afa3251c4c7040cc737df74768f233f669761229ff7d24b37f3255090a09",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/42; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 198480 © UCLES 2020 [Turn over * 5 8 5 0 0 5 4 7 6 2 * FURTHER MATHEMATICS 9231/41 Paper 4 Further Probability & Statist",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 43548,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 12,
+          "total_pages_rendered": 12
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_41.qualifiedquest.pdf",
+        "bytes": 1060356,
+        "sha256": "e36f99c4db088a559fe0b34513059c4d70ee10160020164be63a2ebfd826dd5a",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/42; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 198480 © UCLES 2020 [Turn over * 5 8 5 0 0 5 4 7 6 2 * FURTHER MATHEMATICS 9231/41 Paper 4 Further Probability & Statist",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 12
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_41.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_41.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_41.pdf",
+        "bytes": 1060356,
+        "sha256": "e36f99c4db088a559fe0b34513059c4d70ee10160020164be63a2ebfd826dd5a",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/42; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 198480 © UCLES 2020 [Turn over * 5 8 5 0 0 5 4 7 6 2 * FURTHER MATHEMATICS 9231/41 Paper 4 Further Probability & Statist",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 12
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf",
+      "frozen_row_count": 6,
+      "affected_shards": [
+        "9231_p4_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/42/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf",
+        "bytes": 2332076,
+        "sha256": "67bd245ece4aabfaea420b027e4c30c4e419f30a06b3dc0c26cc2893ffe41b32",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/42; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 187883/2 © UCLES 2020 [Turn over * 3 3 2 7 9 5 4 3 0 9 * FURTHER MATHEMATICS 9231/42 Paper 4 Further Probability & Stati",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 43548,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 12,
+          "total_pages_rendered": 12
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_42.qualifiedquest.pdf",
+        "bytes": 1060454,
+        "sha256": "3fc21d2b9815900aea12ed9faedd6fee312aadb802e4f797b32ec732f02c59b4",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/42; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 187883/2 © UCLES 2020 [Turn over * 3 3 2 7 9 5 4 3 0 9 * FURTHER MATHEMATICS 9231/42 Paper 4 Further Probability & Stati",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 12
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_42.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_42.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_42.pdf",
+        "bytes": 1060454,
+        "sha256": "3fc21d2b9815900aea12ed9faedd6fee312aadb802e4f797b32ec732f02c59b4",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/42; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 187883/2 © UCLES 2020 [Turn over * 3 3 2 7 9 5 4 3 0 9 * FURTHER MATHEMATICS 9231/42 Paper 4 Further Probability & Stati",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 12
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    },
+    {
+      "source_pdf": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf",
+      "frozen_row_count": 6,
+      "affected_shards": [
+        "9231_p4_s20_standard_001"
+      ],
+      "expected_identity_text": "9231/43/M/J/20",
+      "before": {
+        "file": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf",
+        "bytes": 2341148,
+        "sha256": "004ad08de56b1a3388659f11d5308d0ecd7aa2834208bd51a026d2f2f5db8208",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/43; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 187884/2 © UCLES 2020 [Turn over * 2 8 3 3 4 0 8 2 3 3 * FURTHER MATHEMATICS 9231/43 Paper 4 Further Probability & Stati",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 43548,
+          "max_red_pixels": 3629,
+          "positive_red_pages": 12,
+          "total_pages_rendered": 12
+        }
+      },
+      "candidate": {
+        "file": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_43.qualifiedquest.pdf",
+        "bytes": 1069672,
+        "sha256": "4b6954bafc72acaa7914b4442ecb8dd452fd4b9fc3f24db8cb45c4fe929ef650",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/43; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 187884/2 © UCLES 2020 [Turn over * 2 8 3 3 4 0 8 2 3 3 * FURTHER MATHEMATICS 9231/43 Paper 4 Further Probability & Stati",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 12
+        },
+        "local_path": "tmp/9231_source_candidates/2026-06-06/9231_s20_qp_43.qualifiedquest.pdf",
+        "provenance": "QualifiedQuest public past-paper mirror",
+        "source_url": "https://qualifiedquest.com/papers/a-level/mathematics-further-9231/2020/9231_s20_qp_43.pdf",
+        "identity_pass": true,
+        "red_clean": true,
+        "page_count_matches_before": true,
+        "disposition": "selected_clean_replacement"
+      },
+      "replacement": {
+        "replace_requested": true,
+        "replacement_needed": true,
+        "action": "replaced_bytes_in_place"
+      },
+      "after": {
+        "file": "data/past-papers/9231Further-Mathematics/paper4/WM_9231_s20_qp_43.pdf",
+        "bytes": 1069672,
+        "sha256": "4b6954bafc72acaa7914b4442ecb8dd452fd4b9fc3f24db8cb45c4fe929ef650",
+        "pdf_signature_status": {
+          "starts_with_pdf_signature": true,
+          "eof_marker_present": true
+        },
+        "page_count": 12,
+        "title": "CAIE; 9231/43; Further Mathematics; Paper 4 Further Probability & Statistics",
+        "first_page_text_sample": "Cambridge International AS & A Level This document has 12 pages. Blank pages are indicated. DC (LK) 187884/2 © UCLES 2020 [Turn over * 2 8 3 3 4 0 8 2 3 3 * FURTHER MATHEMATICS 9231/43 Paper 4 Further Probability & Stati",
+        "red_pixel_summary": {
+          "scale": 1.5,
+          "red_pixel_rule": "r > 150 && g < 110 && b < 110",
+          "sum_red_pixels": 0,
+          "max_red_pixels": 0,
+          "positive_red_pages": 0,
+          "total_pages_rendered": 12
+        }
+      },
+      "after_identity_pass": true,
+      "after_red_clean": true,
+      "after_page_count_matches_before": true,
+      "after_sha_matches_candidate": true
+    }
+  ]
+}

@@ -257,6 +257,31 @@ describe('9231 wave4 production-ready gate', () => {
     expect(aggregate.boundaries[0]).toContain('wave3 + wave2 batch2');
   });
 
+  test('configures the next_wave_16 production-ready batch', () => {
+    const batchConfig = build9231ProductionBatchConfig('next_wave_16', {
+      generatedOn: '2026-06-06',
+    });
+
+    expect(batchConfig).toMatchObject({
+      batchId: 'next_wave_16',
+      expectedRows: 477,
+      productionWave: '9231_next_wave_16',
+      readyManifest: 'data/manifests/9231_next_wave_16_production_surface_2026_06_06_manifest_v1.json',
+    });
+    expect(batchConfig.v2Artifacts).toEqual([
+      'docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2.json',
+    ]);
+    expect(batchConfig.authorityArtifacts).toEqual([
+      'docs/reports/2026-06-05-9231-next-wave-authority-alignment.json',
+    ]);
+    expect(batchConfig.consumptionArtifacts).toEqual([
+      'docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2-consumption.json',
+    ]);
+    expect(batchConfig.evidenceGateArtifacts).toEqual([
+      'docs/reports/2026-06-05-9231-next-wave-evidence-layers-gate.json',
+    ]);
+  });
+
   test('builds ready rows only when v2, authority, and local consumption agree on normalized_plain_text', () => {
     const rows = build9231Wave4ReadyRows({
       v2Artifact: {
@@ -283,6 +308,44 @@ describe('9231 wave4 production-ready gate', () => {
       question_plain_text_source: 'question_plain_text_v2.normalized_plain_text',
       primary_topic_path: '9231.p2',
     });
+  });
+
+  test('removes NUL characters from normalized_plain_text before production DB promotion', () => {
+    const textWithNul = 'Find x when y\u0000 is positive.';
+    const expectedText = 'Find x when y is positive.';
+    const rows = build9231Wave4ReadyRows({
+      v2Artifact: {
+        items: [baseV2Row({
+          normalized_plain_text: textWithNul,
+        })],
+      },
+      authorityArtifact: {
+        items: [baseAuthorityRow()],
+      },
+      consumptionArtifact: {
+        items: [baseConsumptionRow({
+          normalized_plain_text: textWithNul,
+          search: {
+            search_text: textWithNul,
+            search_text_source: 'question_plain_text_v2.normalized_plain_text',
+          },
+          read_model: {
+            prompt_representation: {
+              type: 'text',
+              value: textWithNul,
+            },
+          },
+          rag: {
+            content: textWithNul,
+            content_source: 'question_plain_text_v2.normalized_plain_text',
+          },
+        })],
+      },
+    });
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0].normalized_plain_text).toBe(expectedText);
+    expect(rows[0].normalized_plain_text).not.toContain('\u0000');
   });
 
   test('passes only when DB, search, read-model, and RAG gates cover every row', () => {

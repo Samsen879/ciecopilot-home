@@ -75,6 +75,28 @@ const PRODUCTION_BATCHES = Object.freeze({
       'docs/reports/2026-06-05-9231-wave2-batch2-evidence-layers-gate.json',
     ]),
   }),
+  next_wave_16: Object.freeze({
+    batchId: 'next_wave_16',
+    reportSlug: 'next-wave-16',
+    manifestSlug: 'next_wave_16',
+    logPrefix: '9231_next_wave_16',
+    label: 'next wave 16',
+    productionWave: '9231_next_wave_16',
+    expectedRows: 477,
+    scopeDescription: '16 shards / 477 rows from next_wave_16',
+    v2Artifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2.json',
+    ]),
+    authorityArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-next-wave-authority-alignment.json',
+    ]),
+    consumptionArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-next-wave-question-plain-text-v2-consumption.json',
+    ]),
+    evidenceGateArtifacts: Object.freeze([
+      'docs/reports/2026-06-05-9231-next-wave-evidence-layers-gate.json',
+    ]),
+  }),
 });
 
 export const REQUIRED_9231_PRODUCTION_DB_ZERO_FIELDS = Object.freeze([
@@ -101,7 +123,7 @@ function writeStderrLine(message) {
 function printUsage() {
   writeStdoutLine([
     'Usage: node scripts/learning/run_9231_wave4_production_ready_gate.js',
-    '  [--batch-id <wave4|wave3_wave2_batch2>]',
+    '  [--batch-id <wave4|wave3_wave2_batch2|next_wave_16>]',
     '  [--generated-on <YYYY-MM-DD>]',
     '  [--apply-db]',
     '  [--update-index]',
@@ -225,7 +247,7 @@ function writeText(repoPath, text) {
 }
 
 function normalizeString(value) {
-  return typeof value === 'string' ? value.trim() : '';
+  return typeof value === 'string' ? value.replaceAll('\u0000', '').trim() : '';
 }
 
 function normalizeNullableString(value) {

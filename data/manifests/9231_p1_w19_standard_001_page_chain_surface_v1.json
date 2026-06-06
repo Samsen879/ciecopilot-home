@@ -92,21 +92,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q01/q01_page_002.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 366,
@@ -118,7 +118,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -127,10 +127,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_002.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q01/q01_page_002.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -150,7 +150,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-ed533bcb-fc9d-9ed6-91d3-11372a332a14",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 137,
+        "total_tokens": 2366
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q02.png",
@@ -204,21 +228,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q02/q02_page_003.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 367,
@@ -230,7 +254,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -239,10 +263,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_003.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q02/q02_page_003.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -262,7 +286,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-0e74b90e-347a-9145-b613-b99f9d8a75c1",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 70,
+        "total_tokens": 2299
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q03.png",
@@ -316,21 +361,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q03/q03_page_004.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 368,
@@ -342,7 +387,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -351,10 +396,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_004.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q03/q03_page_004.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -374,7 +419,30 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-623e17a1-dec5-9d52-b6e8-2fb962b84b20",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 130,
+        "total_tokens": 2359
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q04.png",
@@ -428,21 +496,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q04/q04_page_005.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 369,
@@ -454,7 +522,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -463,10 +531,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_005.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q04/q04_page_005.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -486,7 +554,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-177dc0f4-62e6-93b8-a99b-65b476f3da2a",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 140,
+        "total_tokens": 2369
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q05.png",
@@ -541,21 +633,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q05/q05_page_006.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 370,
@@ -567,7 +659,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -576,10 +668,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_006.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q05/q05_page_006.png",
           "crop_box_points": [
-            0.0,
+            0,
             58.026,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -599,7 +691,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-d3c92a83-ff8f-95f4-827e-771b71d4cb96",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2194,
+        "completion_tokens": 176,
+        "total_tokens": 2370
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q06.png",
@@ -658,21 +774,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q06/q06_page_009.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 371,
@@ -684,7 +800,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -693,10 +809,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_008.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q06/q06_page_008.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -710,10 +826,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_009.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q06/q06_page_009.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -733,7 +849,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-3a5b9147-6c2e-96df-ad0c-49d9420a0539",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2776,
+        "completion_tokens": 140,
+        "total_tokens": 2916
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q07.png",
@@ -792,21 +932,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q07/q07_page_011.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 372,
@@ -818,7 +958,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -827,10 +967,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_010.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q07/q07_page_010.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -844,10 +984,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_011.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q07/q07_page_011.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -867,7 +1007,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-ad0c8787-edd6-9c36-8fac-eda91c62ec24",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2778,
+        "completion_tokens": 183,
+        "total_tokens": 2961
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q08.png",
@@ -922,21 +1086,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q08/q08_page_012.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 373,
@@ -948,7 +1112,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -957,10 +1121,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_012.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q08/q08_page_012.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -980,7 +1144,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q08_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-2dd1deae-2886-9371-b24f-1a625e4f4730",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2234,
+        "completion_tokens": 165,
+        "total_tokens": 2399
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q09.png",
@@ -1039,21 +1227,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q09/q09_page_015.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 374,
@@ -1065,7 +1253,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1074,10 +1262,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_014.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q09/q09_page_014.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1091,10 +1279,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_015.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q09/q09_page_015.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1114,7 +1302,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q09_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-905255f5-d2ac-9141-8b1f-4c909f2a54b0",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2778,
+        "completion_tokens": 155,
+        "total_tokens": 2933
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q10.png",
@@ -1169,21 +1378,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q10/q10_page_016.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 375,
@@ -1195,7 +1404,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1204,10 +1413,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_016.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q10/q10_page_016.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1227,7 +1436,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q10_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-e52199bf-9693-9bd2-8931-7ceb56f7b9f3",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2235,
+        "completion_tokens": 142,
+        "total_tokens": 2377
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_11/questions/q11.png",
@@ -1287,21 +1520,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q11/q11_page_018.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 376,
@@ -1313,7 +1546,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1322,10 +1555,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_11/WM_9231_w19_qp_11_page_018.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_11/q11/q11_page_018.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1345,7 +1578,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_11_q11_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-c206a3f9-d090-988d-b955-75842f9dbeb6",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2255,
+        "completion_tokens": 215,
+        "total_tokens": 2470
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q01.png",
@@ -1399,21 +1656,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q01/q01_page_002.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 377,
@@ -1425,7 +1682,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1434,10 +1691,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_002.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q01/q01_page_002.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1457,7 +1714,30 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-105c3991-1ced-99ae-bf67-a8b94f174b38",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 138,
+        "total_tokens": 2367
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility: text is faint but legible; consider contrast enhancement for accessibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q02.png",
@@ -1511,21 +1791,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q02/q02_page_003.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 378,
@@ -1537,7 +1817,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1546,10 +1826,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_003.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q02/q02_page_003.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1569,7 +1849,30 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-6b6d6fc8-172a-9fb0-b940-0dc708820017",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 154,
+        "total_tokens": 2383
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility: formula uses small font size but remains legible; consider potential OCR ambiguity in superscripts (e.g., 'n-1' and 'n')"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q03.png",
@@ -1623,21 +1926,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q03/q03_page_004.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 379,
@@ -1649,7 +1952,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1658,10 +1961,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_004.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q03/q03_page_004.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1681,7 +1984,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-72ccee39-e569-9ddf-8975-e164fd3f694e",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 70,
+        "total_tokens": 2299
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q04.png",
@@ -1735,21 +2059,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q04/q04_page_005.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 380,
@@ -1761,7 +2085,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1770,10 +2094,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_005.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q04/q04_page_005.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1793,7 +2117,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-0f5684ee-f9df-9992-846f-9092ef8d373c",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 70,
+        "total_tokens": 2299
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q05.png",
@@ -1848,21 +2193,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q05/q05_page_006.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 381,
@@ -1874,7 +2219,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -1883,10 +2228,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_006.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q05/q05_page_006.png",
           "crop_box_points": [
-            0.0,
+            0,
             58.026,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -1906,7 +2251,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-11796a13-e4a8-9e9b-8f29-ba16f5906ba4",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2194,
+        "completion_tokens": 70,
+        "total_tokens": 2264
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q06.png",
@@ -1965,21 +2331,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q06/q06_page_009.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 382,
@@ -1991,7 +2357,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2000,10 +2366,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_008.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q06/q06_page_008.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2017,10 +2383,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_009.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q06/q06_page_009.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2040,7 +2406,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-deb2f87c-c6c2-9f45-bab5-0d60fddd3ed1",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2776,
+        "completion_tokens": 190,
+        "total_tokens": 2966
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": null
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q07.png",
@@ -2099,21 +2486,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q07/q07_page_011.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 383,
@@ -2125,7 +2512,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2134,10 +2521,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_010.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q07/q07_page_010.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2151,10 +2538,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_011.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q07/q07_page_011.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2174,7 +2561,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-76a7f063-8af7-93ad-85d6-912c8b06966f",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2778,
+        "completion_tokens": 139,
+        "total_tokens": 2917
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q08.png",
@@ -2229,21 +2640,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q08/q08_page_012.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 384,
@@ -2255,7 +2666,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2264,10 +2675,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_012.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q08/q08_page_012.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2287,7 +2698,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q08_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-10c67c88-bdf9-971f-bd74-60857cffcc31",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2234,
+        "completion_tokens": 185,
+        "total_tokens": 2419
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q09.png",
@@ -2346,21 +2781,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q09/q09_page_015.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 385,
@@ -2372,7 +2807,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2381,10 +2816,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_014.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q09/q09_page_014.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2398,10 +2833,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_015.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q09/q09_page_015.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2421,7 +2856,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q09_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-9d26c99b-1812-9fe6-b4c8-5ed379437a28",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2778,
+        "completion_tokens": 187,
+        "total_tokens": 2965
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q10.png",
@@ -2476,21 +2935,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q10/q10_page_016.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 386,
@@ -2502,7 +2961,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2511,10 +2970,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_016.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q10/q10_page_016.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2534,7 +2993,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q10_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-e43c9faf-a089-9659-bb42-d4c926ca416d",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2235,
+        "completion_tokens": 167,
+        "total_tokens": 2402
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_12/questions/q11.png",
@@ -2594,21 +3077,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q11/q11_page_018.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 387,
@@ -2620,7 +3103,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2629,10 +3112,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_12/WM_9231_w19_qp_12_page_018.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_12/q11/q11_page_018.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2652,7 +3135,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_12_q11_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-1b98c43b-30bf-98e7-9386-e1fb92082ee7",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2255,
+        "completion_tokens": 184,
+        "total_tokens": 2439
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q01.png",
@@ -2706,21 +3213,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q01/q01_page_002.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 388,
@@ -2732,7 +3239,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2741,10 +3248,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_002.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q01/q01_page_002.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2764,7 +3271,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q01_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-0d52f756-bffc-96df-ae88-31cd0f3a2eb1",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 130,
+        "total_tokens": 2359
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q02.png",
@@ -2818,21 +3349,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q02/q02_page_003.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 389,
@@ -2844,7 +3375,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2853,10 +3384,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_003.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q02/q02_page_003.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2876,7 +3407,30 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q02_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-bcc48a77-83a8-9ed3-bef7-986478caa194",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 135,
+        "total_tokens": 2364
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "question_legibility: formula is legible but small; ensure sufficient resolution for OCR"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q03.png",
@@ -2930,21 +3484,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q03/q03_page_004.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 390,
@@ -2956,7 +3510,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -2965,10 +3519,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_004.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q03/q03_page_004.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -2988,7 +3542,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q03_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-22205a03-66b8-92ef-9dac-63a95788f4eb",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 70,
+        "total_tokens": 2299
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q04.png",
@@ -3042,21 +3617,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q04/q04_page_005.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 391,
@@ -3068,7 +3643,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3077,10 +3652,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_005.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q04/q04_page_005.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3100,7 +3675,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q04_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-7d5479fd-13fa-9af1-b072-54cdaab26980",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2229,
+        "completion_tokens": 170,
+        "total_tokens": 2399
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q05.png",
@@ -3155,21 +3754,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q05/q05_page_006.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 392,
@@ -3181,7 +3780,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3190,10 +3789,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_006.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q05/q05_page_006.png",
           "crop_box_points": [
-            0.0,
+            0,
             58.026,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3213,7 +3812,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q05_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-4b81978d-d201-97c7-938b-b3df04a0e86b",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2194,
+        "completion_tokens": 70,
+        "total_tokens": 2264
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q06.png",
@@ -3272,21 +3892,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q06/q06_page_009.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 393,
@@ -3298,7 +3918,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3307,10 +3927,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_008.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q06/q06_page_008.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3324,10 +3944,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_009.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q06/q06_page_009.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3347,7 +3967,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q06_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-d081a5fd-0c95-9725-ad05-40d3476691f1",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2776,
+        "completion_tokens": 151,
+        "total_tokens": 2927
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q07.png",
@@ -3406,21 +4050,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q07/q07_page_011.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 394,
@@ -3432,7 +4076,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3441,10 +4085,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_010.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q07/q07_page_010.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3458,10 +4102,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_011.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q07/q07_page_011.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3481,7 +4125,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q07_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-f6c19794-1f79-98b4-8937-0d77c75587cb",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2778,
+        "completion_tokens": 167,
+        "total_tokens": 2945
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q08.png",
@@ -3536,21 +4204,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q08/q08_page_012.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 395,
@@ -3562,7 +4230,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3571,10 +4239,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_012.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q08/q08_page_012.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3594,7 +4262,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q08_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-4fdf31b4-802b-9773-82a8-3eab096188ad",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2234,
+        "completion_tokens": 174,
+        "total_tokens": 2408
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q09.png",
@@ -3653,21 +4345,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q09/q09_page_015.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 396,
@@ -3679,7 +4371,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3688,10 +4380,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_014.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q09/q09_page_014.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3705,10 +4397,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_015.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q09/q09_page_015.png",
           "crop_box_points": [
-            0.0,
-            0.0,
-            595.0,
-            842.0
+            0,
+            0,
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3728,7 +4420,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q09_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-efb05518-3e39-9f01-a347-ad6f07d4d4f8",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2778,
+        "completion_tokens": 134,
+        "total_tokens": 2912
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q10.png",
@@ -3783,21 +4499,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q10/q10_page_016.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 397,
@@ -3809,7 +4525,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3818,10 +4534,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_016.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q10/q10_page_016.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3841,7 +4557,31 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q10_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-54b7766b-c812-92b6-b24f-3697ef804343",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2235,
+        "completion_tokens": 158,
+        "total_tokens": 2393
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": true,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": [
+        "9231_wave1_crop_boundary",
+        "question_legibility"
+      ]
     },
     {
       "storage_key": "9231/w19_qp_13/questions/q11.png",
@@ -3901,21 +4641,21 @@
         "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q11/q11_page_018.png"
       ],
       "crop_status": "complete",
-      "surface_evidence_status": "local_wm_final_crop_render_complete_pending_visual_review",
-      "page_chain_surface_status": "wm_final_crop_render_complete_pending_visual_review",
+      "surface_evidence_status": "external_vlm_wm_final_visual_review_accepted",
+      "page_chain_surface_status": "wm_final_crop_render_external_vlm_visual_review_accepted",
       "text_evidence_status": "not_extracted",
       "normalized_plain_text": null,
       "text_consumption_status": "not_ready_missing_question_plain_text",
       "text_only_ready": false,
       "image_context_required": true,
       "requires_review": true,
-      "visual_review_required": true,
-      "visual_review_reason": "local_wm_final_crop_render_complete_pending_visual_review_not_vlm_reviewed",
+      "visual_review_required": false,
+      "visual_review_reason": "external_vlm_wm_final_visual_review_accepted",
       "production_ready_claimed": false,
       "db_consumption_claimed": false,
       "search_consumption_claimed": false,
       "rag_consumption_claimed": false,
-      "external_vlm_or_api_used": false,
+      "external_vlm_or_api_used": true,
       "external_ocr_rerun_used": false,
       "source_locator_surface_manifest_path": "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
       "source_locator_surface_manifest_index": 398,
@@ -3927,7 +4667,7 @@
       "source_freeze_mechanical_crop_blocker": false,
       "eligible_for_clean_source_wave": true,
       "eligible_for_visual_review_closeout": true,
-      "eligible_for_question_plain_text_v1": false,
+      "eligible_for_question_plain_text_v1": true,
       "eligible_for_question_plain_text_v2": false,
       "eligible_for_normalized_plain_text_consumption_gate": false,
       "crop_records": [
@@ -3936,10 +4676,10 @@
           "rendered_pdf_page_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/renders/WM_9231_w19_qp_13/WM_9231_w19_qp_13_page_018.png",
           "crop_path": "data/crops/9231-wm-final/9231_p1_w19_standard_001/question-crops/WM_9231_w19_qp_13/q11/q11_page_018.png",
           "crop_box_points": [
-            0.0,
+            0,
             47.826,
-            595.0,
-            842.0
+            595,
+            842
           ],
           "crop_box_pixels": [
             0,
@@ -3959,7 +4699,28 @@
       "wm_final_crop_phase": "w19_generated_after_source_remediation",
       "source_remediation_status": "source_bytes_clean_red_pixel_gate_pass",
       "source_remediation_generated_on": "2026-06-06",
-      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json"
+      "source_remediation_report": "docs/reports/2026-06-06-9231-wm-source-remediation-gate.json",
+      "visual_review_status": "accepted",
+      "visual_review_method": "qwen_vlm_external_authorized",
+      "visual_review_evidence_path": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+      "visual_reviewed_on": "2026-06-07",
+      "visual_reviewed_by": "qwen_vlm_external_authorized",
+      "visual_review_stack_image_path": "data/crops/9231-wm-final-visual-review-stacks/9231_p1_w19_standard_001/WM_9231_w19_qp_13_q11_visual_review.png",
+      "visual_review_vlm_model": "qwen3-vl-plus",
+      "visual_review_vlm_transport": "qwen_openai_client_v1",
+      "visual_review_vlm_response_id": "chatcmpl-701f86e8-fc9a-9960-819c-b4b1627f0af6",
+      "visual_review_vlm_usage": {
+        "prompt_tokens": 2255,
+        "completion_tokens": 164,
+        "total_tokens": 2419
+      },
+      "visual_review_vlm_checked": {
+        "question_boundary_accepted": true,
+        "visual_legibility_accepted": true,
+        "cross_page_continuity_accepted": null,
+        "diagram_or_table_presence_accepted": true
+      },
+      "visual_review_vlm_warnings": []
     }
   ],
   "source_freeze_gate": {
@@ -3991,5 +4752,18 @@
     "not_production_ready": true,
     "not_question_plain_text": true,
     "not_db_search_rag_consumption": true
+  },
+  "visual_review_wm_final_gate": {
+    "schema_version": "9231_wm_final_visual_review_surface_gate_v1",
+    "generated_on": "2026-06-07",
+    "status": "pass",
+    "source_vlm_review_json": "docs/reports/2026-06-07-9231-wm-final-visual-review-vlm.json",
+    "gate_json": "docs/reports/2026-06-07-9231-wm-final-visual-review-gate.json",
+    "accepted_rows": 33,
+    "rejected_rows": 0,
+    "missing_review_rows": 0,
+    "external_vlm_or_api_used_for_visual_review": true,
+    "production_ready_claimed": false,
+    "db_search_rag_consumption_claimed": false
   }
 }

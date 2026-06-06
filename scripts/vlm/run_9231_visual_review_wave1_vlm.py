@@ -206,17 +206,51 @@ def _normalize_checked(value: Any, *, accepted: bool) -> dict[str, bool | None]:
     }
 
 
+def _normalize_usage(value: Any) -> dict[str, int]:
+    if not isinstance(value, dict):
+        return {}
+    usage: dict[str, int] = {}
+    for key, raw in value.items():
+        if isinstance(raw, bool):
+            continue
+        if isinstance(raw, int):
+            usage[str(key)] = raw
+            continue
+        if isinstance(raw, float) and raw.is_integer():
+            usage[str(key)] = int(raw)
+    return usage
+
+
+def _usage_totals(items: list[dict[str, Any]]) -> dict[str, int]:
+    totals: dict[str, int] = {}
+    for item in items:
+        for key, value in _normalize_usage(item.get("vlm_usage")).items():
+            totals[key] = totals.get(key, 0) + value
+    return dict(sorted(totals.items()))
+
+
 def _build_payload(
     *,
     generated_on: str,
     model: str,
     items: list[dict[str, Any]],
+    schema_version: str = SCHEMA_VERSION,
+    scope: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     accepted = sum(1 for item in items if item.get("status") == "accepted")
     rejected = sum(1 for item in items if item.get("status") == "rejected")
     by_shard = Counter(str(item.get("shard_id") or "unknown") for item in items)
-    return {
-        "schema_version": SCHEMA_VERSION,
+    summary: dict[str, Any] = {
+        "items": len(items),
+        "accepted": accepted,
+        "rejected": rejected,
+    }
+    usage_totals = _usage_totals(items)
+    if usage_totals:
+        summary["vlm_usage"] = usage_totals
+
+    payload = {
+        "schema_version": schema_version,
         "generated_on": generated_on,
         "subject_code": "9231",
         "reviewed_by": "qwen_vlm_external_authorized",
@@ -227,14 +261,13 @@ def _build_payload(
             "external_costs_authorized_by_user": True,
             "external_data_transfer_authorized_by_user": True,
         },
-        "summary": {
-            "items": len(items),
-            "accepted": accepted,
-            "rejected": rejected,
-        },
+        "summary": summary,
         "shard_counts": dict(sorted(by_shard.items())),
         "items": items,
     }
+    if scope:
+        payload["scope"] = scope
+    return payload
 
 
 def run_visual_review_items(
@@ -249,6 +282,8 @@ def run_visual_review_items(
     client=call_qwen_openai_v1,
     initial_items: Iterable[dict[str, Any]] | None = None,
     max_attempts: int = 3,
+    schema_version: str = SCHEMA_VERSION,
+    scope: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     items: list[dict[str, Any]] = list(initial_items or [])
     queue = list(review_items)
@@ -297,6 +332,7 @@ def run_visual_review_items(
             "vlm_model": model,
             "vlm_transport": "qwen_openai_client_v1",
             "vlm_response_id": response.get("id"),
+            "vlm_usage": _normalize_usage(response.get("usage")),
             "vlm_checked": _normalize_checked(parsed.get("checked"), accepted=accepted),
             "vlm_blockers": _as_list(parsed.get("blockers")),
             "vlm_warnings": _as_list(parsed.get("warnings")),
@@ -305,7 +341,13 @@ def run_visual_review_items(
         items.append(item)
         _write_json(
             json_out,
-            _build_payload(generated_on=generated_on, model=model, items=items),
+            _build_payload(
+                generated_on=generated_on,
+                model=model,
+                items=items,
+                schema_version=schema_version,
+                scope=scope,
+            ),
         )
         print(
             "9231_visual_review_progress:",
@@ -314,7 +356,13 @@ def run_visual_review_items(
             f"storage_key={item.get('storage_key')}",
             flush=True,
         )
-    payload = _build_payload(generated_on=generated_on, model=model, items=items)
+    payload = _build_payload(
+        generated_on=generated_on,
+        model=model,
+        items=items,
+        schema_version=schema_version,
+        scope=scope,
+    )
     _write_json(json_out, payload)
     return payload
 
@@ -353,6 +401,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--resume-existing", action="store_true")
     parser.add_argument("--max-attempts", type=int, default=3)
     parser.add_argument("--client-timeout", type=int, default=90)
+    parser.add_argument("--schema-version", default=SCHEMA_VERSION)
+    parser.add_argument("--scope-stage")
     return parser.parse_args(argv)
 
 
@@ -392,6 +442,8 @@ def main(argv: list[str] | None = None) -> int:
         root_dir=root_dir,
         initial_items=existing_items,
         max_attempts=args.max_attempts,
+        schema_version=args.schema_version,
+        scope={"stage": args.scope_stage} if args.scope_stage else None,
         client=lambda request: call_qwen_openai_v1(request, timeout=args.client_timeout),
     )
     print(json.dumps(payload["summary"], ensure_ascii=False, indent=2))

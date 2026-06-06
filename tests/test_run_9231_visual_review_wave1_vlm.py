@@ -108,6 +108,11 @@ def test_run_visual_review_items_writes_vlm_provenance_and_disposition(tmp_path)
         return {
             "id": "chatcmpl-test",
             "model": "qwen-test",
+            "usage": {
+                "prompt_tokens": 101,
+                "completion_tokens": 17,
+                "total_tokens": 118,
+            },
             "choices": [
                 {
                     "message": {
@@ -140,12 +145,31 @@ def test_run_visual_review_items_writes_vlm_provenance_and_disposition(tmp_path)
     )
 
     assert len(calls) == 1
-    assert payload["summary"] == {"items": 1, "accepted": 1, "rejected": 0}
+    assert payload["summary"] == {
+        "items": 1,
+        "accepted": 1,
+        "rejected": 0,
+        "vlm_usage": {
+            "prompt_tokens": 101,
+            "completion_tokens": 17,
+            "total_tokens": 118,
+        },
+    }
     item = payload["items"][0]
     assert item["status"] == "accepted"
     assert item["reviewed_by"] == "qwen_vlm_external_authorized"
     assert item["external_vlm_or_api_used"] is True
     assert item["vlm_response_id"] == "chatcmpl-test"
+    assert item["vlm_usage"] == {
+        "prompt_tokens": 101,
+        "completion_tokens": 17,
+        "total_tokens": 118,
+    }
+    assert payload["summary"]["vlm_usage"] == {
+        "prompt_tokens": 101,
+        "completion_tokens": 17,
+        "total_tokens": 118,
+    }
     assert Path(item["targeted_stack_image_path"]).exists()
     persisted = json.loads((tmp_path / "docs/reports/visual.json").read_text(encoding="utf-8"))
     assert persisted["items"][0]["vlm_checked"]["visual_legibility_accepted"] is True
@@ -221,6 +245,60 @@ def test_run_visual_review_items_appends_to_existing_resume_payload(tmp_path):
     ]
     persisted = json.loads((tmp_path / "docs/reports/visual.json").read_text(encoding="utf-8"))
     assert persisted["summary"] == {"items": 2, "accepted": 2, "rejected": 0}
+
+
+def test_run_visual_review_items_accepts_scope_schema_override(tmp_path):
+    crop_path = tmp_path / "data/crops/9231-wm-final/q01.png"
+    _write_png(crop_path)
+
+    def fake_client(_request):
+        return {
+            "id": "chatcmpl-test",
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "accepted": True,
+                                "blockers": [],
+                                "warnings": [],
+                                "notes": "",
+                                "checked": {
+                                    "question_boundary_accepted": True,
+                                    "visual_legibility_accepted": True,
+                                    "cross_page_continuity_accepted": None,
+                                    "diagram_or_table_presence_accepted": True,
+                                },
+                            }
+                        ),
+                    },
+                },
+            ],
+        }
+
+    payload = run_visual_review_items(
+        review_items=[
+            {
+                "storage_key": "9231/w19_qp_11/questions/q01.png",
+                "source_pdf_path": "data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_11.pdf",
+                "shard_id": "9231_p1_w19_standard_001",
+                "q_number": 1,
+                "page_numbers": [2],
+                "review_crop_paths": [str(crop_path)],
+                "review_reasons": ["9231_wm_final_crop_boundary_after_source_remediation"],
+            }
+        ],
+        output_root=tmp_path / "tmp/9231-wm-final/stacks",
+        json_out=tmp_path / "docs/reports/visual.json",
+        model="qwen-test",
+        generated_on="2026-06-07",
+        schema_version="9231_wm_final_visual_review_vlm_v1",
+        scope={"stage": "9231 WM-final visual review"},
+        client=fake_client,
+    )
+
+    assert payload["schema_version"] == "9231_wm_final_visual_review_vlm_v1"
+    assert payload["scope"] == {"stage": "9231 WM-final visual review"}
 
 
 def test_run_visual_review_items_retries_transient_client_error(tmp_path, monkeypatch):

@@ -248,6 +248,37 @@ For GitHub:
 - Wait for required checks to pass.
 - If PR becomes behind or dirty, rebase on `origin/main`, force-push with lease, rerun verification, then merge.
 
+## Phase 11: Full All-9231 Aggregate Closeout
+
+Run the full aggregate gate only after every batch production-ready PR has merged to `origin/main`.
+
+Current command pattern:
+
+```bash
+node scripts/learning/run_9231_full_production_ready_aggregate_gate.js --generated-on <YYYY-MM-DD> --update-index
+```
+
+The full aggregate gate is readback-only. It does not promote rows. It re-reads:
+
+- `data/manifests/9231_question_shard_split_2026_06_04_manifest_v1.json`
+- all 64 shard page-chain surface manifests referenced by the shard split manifest
+- all five 9231 production surface manifests
+- live local DB/search/read-model/RAG state for the 1593 production rows
+
+The full aggregate may claim all-9231 `production_ready_claimed=true` only when these checks all pass:
+
+- full production-ready row coverage: `1593/1593`
+- shard coverage: `64/64`
+- source QP coverage: `200/200`
+- DB/question_bank registry coverage: `1593/1593`
+- production search coverage: `1593/1593`, source `question_plain_text_v2.normalized_plain_text`
+- production read-model coverage: `1593/1593`, source `question_plain_text_v2.normalized_plain_text`
+- production RAG chunk coverage: `1593/1593`, source `question_plain_text_v2.normalized_plain_text`
+- duplicate `storage_key`/`q_number` rows: `0`
+- remaining blockers: `0`
+
+The full aggregate closeout must state that this is row-level question-text production readiness, not a claim of perfect semantic retrieval quality or detailed syllabus-topic canonicalization.
+
 ## Current Batch Ids
 
 The current reusable production gate supports these batch ids:
@@ -256,6 +287,7 @@ The current reusable production gate supports these batch ids:
 - `wave3_wave2_batch2`: 16 shards / 334 rows
 - `next_wave_16`: 16 shards / 477 rows
 - `wave1`: 16 shards / 441 rows
+- `wm_final_150`: 6 shards / 150 rows
 
 Add future batch ids by extending `PRODUCTION_BATCHES` in `scripts/learning/run_9231_wave4_production_ready_gate.js` with:
 

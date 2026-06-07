@@ -1,0 +1,479 @@
+{
+  "schema_version": "9231_full_production_ready_aggregate_gate_v1",
+  "generated_on": "2026-06-07",
+  "status": "pass",
+  "verdict": "production-ready",
+  "production_ready_claimed": true,
+  "scope": {
+    "subject_code": "9231",
+    "expected_rows": 1593,
+    "rows": 1593,
+    "expected_shards": 64,
+    "shards": 64,
+    "expected_source_pdfs": 200,
+    "source_pdfs": 200,
+    "production_batches": 5,
+    "shard_split_manifest": "data/manifests/9231_question_shard_split_2026_06_04_manifest_v1.json"
+  },
+  "acceptance": {
+    "full_production_ready_row_coverage": {
+      "covered": 1593,
+      "expected": 1593,
+      "pass": true,
+      "ratio": "1593/1593"
+    },
+    "shard_coverage": {
+      "covered": 64,
+      "expected": 64,
+      "pass": true,
+      "ratio": "64/64"
+    },
+    "source_qp_coverage": {
+      "covered": 200,
+      "expected": 200,
+      "pass": true,
+      "ratio": "200/200"
+    },
+    "db_question_bank_registry_coverage": {
+      "covered": 1593,
+      "expected": 1593,
+      "pass": true,
+      "ratio": "1593/1593"
+    },
+    "production_search_coverage": {
+      "covered": 1593,
+      "expected": 1593,
+      "pass": true,
+      "ratio": "1593/1593",
+      "source": "question_plain_text_v2.normalized_plain_text"
+    },
+    "production_read_model_coverage": {
+      "covered": 1593,
+      "expected": 1593,
+      "pass": true,
+      "ratio": "1593/1593",
+      "source": "question_plain_text_v2.normalized_plain_text"
+    },
+    "production_rag_chunk_coverage": {
+      "covered": 1593,
+      "expected": 1593,
+      "pass": true,
+      "ratio": "1593/1593",
+      "source": "question_plain_text_v2.normalized_plain_text"
+    },
+    "duplicate_storage_key_q_number_rows": 0,
+    "remaining_blockers": 0
+  },
+  "summary": {
+    "rows_by_paper": {
+      "p1": 532,
+      "p2": 566,
+      "p3": 264,
+      "p4": 231
+    },
+    "rows_by_shard": {
+      "9231_p1_s16_standard_001": 33,
+      "9231_p1_s24_standard_001": 21,
+      "9231_p1_s25_standard_001": 28,
+      "9231_p1_w16_standard_001": 33,
+      "9231_p1_w25_standard_001": 28,
+      "9231_p2_s16_standard_001": 33,
+      "9231_p2_s24_standard_001": 24,
+      "9231_p2_s25_standard_001": 32,
+      "9231_p2_w16_standard_001": 30,
+      "9231_p2_w25_standard_001": 32,
+      "9231_p3_s24_standard_001": 21,
+      "9231_p3_s25_standard_001": 28,
+      "9231_p3_w25_standard_001": 28,
+      "9231_p4_s24_standard_001": 20,
+      "9231_p4_s25_standard_001": 24,
+      "9231_p4_w25_standard_001": 26,
+      "9231_p1_s21_standard_001": 21,
+      "9231_p1_s22_standard_001": 21,
+      "9231_p1_s23_standard_001": 21,
+      "9231_p1_w20_standard_001": 21,
+      "9231_p1_w21_standard_001": 21,
+      "9231_p1_w22_standard_001": 21,
+      "9231_p1_w23_standard_001": 21,
+      "9231_p1_w24_standard_001": 21,
+      "9231_p3_s21_standard_001": 21,
+      "9231_p3_s22_standard_001": 21,
+      "9231_p3_s23_standard_001": 21,
+      "9231_p3_w20_standard_001": 21,
+      "9231_p3_w21_standard_001": 21,
+      "9231_p3_w22_standard_001": 21,
+      "9231_p3_w23_standard_001": 19,
+      "9231_p3_w24_standard_001": 21,
+      "9231_p2_w23_standard_001": 24,
+      "9231_p2_w24_standard_001": 24,
+      "9231_p4_s21_standard_001": 18,
+      "9231_p4_s22_standard_001": 18,
+      "9231_p4_s23_standard_001": 18,
+      "9231_p4_w20_standard_001": 18,
+      "9231_p4_w21_standard_001": 18,
+      "9231_p4_w22_standard_001": 18,
+      "9231_p4_w23_standard_001": 17,
+      "9231_p4_w24_standard_001": 18,
+      "9231_p1_s17_standard_001": 35,
+      "9231_p1_s18_standard_001": 33,
+      "9231_p1_s19_standard_001": 33,
+      "9231_p1_w17_standard_001": 33,
+      "9231_p1_w18_standard_001": 33,
+      "9231_p2_s17_standard_001": 33,
+      "9231_p2_s18_standard_001": 33,
+      "9231_p2_s19_standard_001": 33,
+      "9231_p2_s21_standard_001": 24,
+      "9231_p2_s22_standard_001": 24,
+      "9231_p2_s23_standard_001": 24,
+      "9231_p2_w17_standard_001": 33,
+      "9231_p2_w18_standard_001": 33,
+      "9231_p2_w20_standard_001": 25,
+      "9231_p2_w21_standard_001": 24,
+      "9231_p2_w22_standard_001": 24,
+      "9231_p1_s20_standard_001": 21,
+      "9231_p1_w19_standard_001": 33,
+      "9231_p2_s20_standard_001": 24,
+      "9231_p2_w19_standard_001": 33,
+      "9231_p3_s20_standard_001": 21,
+      "9231_p4_s20_standard_001": 18
+    },
+    "rows_by_production_wave": {
+      "9231_wave1": 441,
+      "9231_wave3_wave2_batch2": 334,
+      "9231_wave4": 191,
+      "9231_next_wave_16": 477,
+      "9231_wm_final_150": 150
+    },
+    "text_only_ready_rows": 1211,
+    "image_context_required_rows": 382,
+    "duplicate_storage_key_q_number_rows": 0,
+    "db_question_bank_registry_coverage": 1593,
+    "production_search_coverage": 1593,
+    "production_read_model_coverage": 1593,
+    "production_rag_chunk_coverage": 1593,
+    "blockers": 0
+  },
+  "production_consumption_source": {
+    "expected_source": "question_plain_text_v2.normalized_plain_text",
+    "manifest_question_plain_text_rows": 1593,
+    "manifest_search_rows": 1593,
+    "manifest_read_model_rows": 1593,
+    "manifest_rag_rows": 1593,
+    "db_search_rows": 1593,
+    "db_read_model_rows": 1593,
+    "db_rag_rows": 1593
+  },
+  "db_readback": {
+    "generated_on": "2026-06-07",
+    "artifact": "docs/reports/2026-06-07-9231-full-production-ready-gate.json",
+    "database_surface": "docker:supabase_db_ciecopilot-home",
+    "schema_version": "9231_full_production_ready_db_readback_v1",
+    "status": "pass",
+    "metrics": {
+      "manifest_count": 1593,
+      "question_bank_registry_rows": 1593,
+      "present": 1593,
+      "joined_snapshots": 1593,
+      "db_question_bank_registry_coverage": 1593,
+      "missing_registry": 0,
+      "prompt_missing": 0,
+      "provenance_missing": 0,
+      "normalized_plain_text_missing": 0,
+      "search_text_missing": 0,
+      "search_text_source_not_normalized": 0,
+      "snapshot_ref_missing": 0,
+      "snapshot_missing": 0,
+      "materialized_classifier_missing": 0,
+      "duplicate_storage_key_q_number_rows": 0,
+      "search_rows_using_normalized_plain_text": 1593,
+      "search_text_matches_normalized_plain_text": 1593,
+      "read_model_rows_using_normalized_plain_text": 1593,
+      "read_model_normalized_plain_text_matches": 1593,
+      "prompt_representation_matches_normalized_plain_text": 1593,
+      "provenance_normalized_plain_text_matches": 1593,
+      "rag_chunks_present": 1593,
+      "rag_rows_using_normalized_plain_text": 1593,
+      "rag_content_matches_normalized_plain_text": 1593,
+      "rag_chunks_with_fts": 1593,
+      "rag_duplicate_chunk_rows": 0,
+      "rag_chunk_missing": 0,
+      "corpus_version": "rag_step3_9231_question_aware_v1"
+    }
+  },
+  "shard_split": {
+    "manifest_id": "9231_question_shard_split_2026_06_04_manifest_v1",
+    "summary": {
+      "source_surface_manifest_count": 4,
+      "source_surface_manifest_paths": [
+        "data/manifests/9231_p1_source_locator_001_page_chain_surface_v1.json",
+        "data/manifests/9231_p2_source_locator_001_page_chain_surface_v1.json",
+        "data/manifests/9231_p3_source_locator_001_page_chain_surface_v1.json",
+        "data/manifests/9231_p4_source_locator_001_page_chain_surface_v1.json"
+      ],
+      "source_row_count": 1593,
+      "shard_count": 64,
+      "input_manifest_count": 64,
+      "page_chain_surface_manifest_count": 64,
+      "source_pdf_count": 200,
+      "question_row_count": 1593,
+      "shards_by_paper": {
+        "p1": 20,
+        "p2": 20,
+        "p3": 12,
+        "p4": 12
+      },
+      "question_rows_by_paper": {
+        "p1": 532,
+        "p2": 566,
+        "p3": 264,
+        "p4": 231
+      },
+      "source_pdfs_by_paper": {
+        "p1": 62,
+        "p2": 62,
+        "p3": 38,
+        "p4": 38
+      },
+      "question_rows_by_session_year": {
+        "s16": 66,
+        "s17": 68,
+        "s18": 66,
+        "s19": 66,
+        "s20": 84,
+        "s21": 84,
+        "s22": 84,
+        "s23": 84,
+        "s24": 86,
+        "s25": 112,
+        "w16": 63,
+        "w17": 66,
+        "w18": 66,
+        "w19": 66,
+        "w20": 85,
+        "w21": 84,
+        "w22": 84,
+        "w23": 81,
+        "w24": 84,
+        "w25": 114
+      },
+      "text_only_ready_rows": 0,
+      "image_context_required_rows": 1593,
+      "blocker_count": 0
+    },
+    "surface_manifest_count": 64,
+    "surface_rows_re_read": 1593,
+    "surface_source_pdfs_re_read": 200
+  },
+  "production_manifests": [
+    {
+      "artifact_path": "data/manifests/9231_wave1_production_surface_2026_06_06_manifest_v1.json",
+      "manifest_id": "9231_wave1_production_surface_2026_06_06_manifest_v1",
+      "wave": "wave1",
+      "status": "ready",
+      "production_ready_claimed": true,
+      "rows": 441,
+      "shards": 16,
+      "source_pdfs": 56,
+      "summary": {
+        "rows": 441,
+        "shards": 16,
+        "source_pdfs": 56,
+        "text_only_ready_rows": 335,
+        "image_context_required_rows": 106,
+        "rows_by_shard": {
+          "9231_p1_s16_standard_001": 33,
+          "9231_p1_s24_standard_001": 21,
+          "9231_p1_s25_standard_001": 28,
+          "9231_p1_w16_standard_001": 33,
+          "9231_p1_w25_standard_001": 28,
+          "9231_p2_s16_standard_001": 33,
+          "9231_p2_s24_standard_001": 24,
+          "9231_p2_s25_standard_001": 32,
+          "9231_p2_w16_standard_001": 30,
+          "9231_p2_w25_standard_001": 32,
+          "9231_p3_s24_standard_001": 21,
+          "9231_p3_s25_standard_001": 28,
+          "9231_p3_w25_standard_001": 28,
+          "9231_p4_s24_standard_001": 20,
+          "9231_p4_s25_standard_001": 24,
+          "9231_p4_w25_standard_001": 26
+        },
+        "rows_by_paper": {
+          "p1": 143,
+          "p2": 151,
+          "p3": 77,
+          "p4": 70
+        }
+      }
+    },
+    {
+      "artifact_path": "data/manifests/9231_wave3_wave2_batch2_production_surface_2026_06_06_manifest_v1.json",
+      "manifest_id": "9231_wave3_wave2_batch2_production_surface_2026_06_06_manifest_v1",
+      "wave": "wave3_wave2_batch2",
+      "status": "ready",
+      "production_ready_claimed": true,
+      "rows": 334,
+      "shards": 16,
+      "source_pdfs": 48,
+      "summary": {
+        "rows": 334,
+        "shards": 16,
+        "source_pdfs": 48,
+        "text_only_ready_rows": 262,
+        "image_context_required_rows": 72,
+        "rows_by_shard": {
+          "9231_p1_s21_standard_001": 21,
+          "9231_p1_s22_standard_001": 21,
+          "9231_p1_s23_standard_001": 21,
+          "9231_p1_w20_standard_001": 21,
+          "9231_p1_w21_standard_001": 21,
+          "9231_p1_w22_standard_001": 21,
+          "9231_p1_w23_standard_001": 21,
+          "9231_p1_w24_standard_001": 21,
+          "9231_p3_s21_standard_001": 21,
+          "9231_p3_s22_standard_001": 21,
+          "9231_p3_s23_standard_001": 21,
+          "9231_p3_w20_standard_001": 21,
+          "9231_p3_w21_standard_001": 21,
+          "9231_p3_w22_standard_001": 21,
+          "9231_p3_w23_standard_001": 19,
+          "9231_p3_w24_standard_001": 21
+        },
+        "rows_by_paper": {
+          "p1": 168,
+          "p3": 166
+        }
+      }
+    },
+    {
+      "artifact_path": "data/manifests/9231_wave4_production_surface_2026_06_06_manifest_v1.json",
+      "manifest_id": "9231_wave4_production_surface_2026_06_06_manifest_v1",
+      "wave": "wave4",
+      "status": "ready",
+      "production_ready_claimed": true,
+      "rows": 191,
+      "shards": 10,
+      "source_pdfs": 30,
+      "summary": {
+        "rows": 191,
+        "shards": 10,
+        "source_pdfs": 30,
+        "text_only_ready_rows": 125,
+        "image_context_required_rows": 66,
+        "rows_by_shard": {
+          "9231_p2_w23_standard_001": 24,
+          "9231_p2_w24_standard_001": 24,
+          "9231_p4_s21_standard_001": 18,
+          "9231_p4_s22_standard_001": 18,
+          "9231_p4_s23_standard_001": 18,
+          "9231_p4_w20_standard_001": 18,
+          "9231_p4_w21_standard_001": 18,
+          "9231_p4_w22_standard_001": 18,
+          "9231_p4_w23_standard_001": 17,
+          "9231_p4_w24_standard_001": 18
+        },
+        "rows_by_paper": {
+          "p2": 48,
+          "p4": 143
+        }
+      }
+    },
+    {
+      "artifact_path": "data/manifests/9231_next_wave_16_production_surface_2026_06_06_manifest_v1.json",
+      "manifest_id": "9231_next_wave_16_production_surface_2026_06_06_manifest_v1",
+      "wave": "next_wave_16",
+      "status": "ready",
+      "production_ready_claimed": true,
+      "rows": 477,
+      "shards": 16,
+      "source_pdfs": 48,
+      "summary": {
+        "rows": 477,
+        "shards": 16,
+        "source_pdfs": 48,
+        "text_only_ready_rows": 379,
+        "image_context_required_rows": 98,
+        "rows_by_shard": {
+          "9231_p1_s17_standard_001": 35,
+          "9231_p1_s18_standard_001": 33,
+          "9231_p1_s19_standard_001": 33,
+          "9231_p1_w17_standard_001": 33,
+          "9231_p1_w18_standard_001": 33,
+          "9231_p2_s17_standard_001": 33,
+          "9231_p2_s18_standard_001": 33,
+          "9231_p2_s19_standard_001": 33,
+          "9231_p2_s21_standard_001": 24,
+          "9231_p2_s22_standard_001": 24,
+          "9231_p2_s23_standard_001": 24,
+          "9231_p2_w17_standard_001": 33,
+          "9231_p2_w18_standard_001": 33,
+          "9231_p2_w20_standard_001": 25,
+          "9231_p2_w21_standard_001": 24,
+          "9231_p2_w22_standard_001": 24
+        },
+        "rows_by_paper": {
+          "p1": 167,
+          "p2": 310
+        }
+      }
+    },
+    {
+      "artifact_path": "data/manifests/9231_wm_final_150_production_surface_2026_06_07_manifest_v1.json",
+      "manifest_id": "9231_wm_final_150_production_surface_2026_06_07_manifest_v1",
+      "wave": "wm_final_150",
+      "status": "ready",
+      "production_ready_claimed": true,
+      "rows": 150,
+      "shards": 6,
+      "source_pdfs": 18,
+      "summary": {
+        "rows": 150,
+        "shards": 6,
+        "source_pdfs": 18,
+        "text_only_ready_rows": 110,
+        "image_context_required_rows": 40,
+        "rows_by_shard": {
+          "9231_p1_s20_standard_001": 21,
+          "9231_p1_w19_standard_001": 33,
+          "9231_p2_s20_standard_001": 24,
+          "9231_p2_w19_standard_001": 33,
+          "9231_p3_s20_standard_001": 21,
+          "9231_p4_s20_standard_001": 18
+        },
+        "rows_by_paper": {
+          "p1": 54,
+          "p2": 57,
+          "p3": 21,
+          "p4": 18
+        }
+      }
+    }
+  ],
+  "blockers": [],
+  "artifacts": {
+    "shard_split_manifest": "data/manifests/9231_question_shard_split_2026_06_04_manifest_v1.json",
+    "full_aggregate_gate": "docs/reports/2026-06-07-9231-full-production-ready-gate.json",
+    "full_aggregate_closeout": "docs/reports/2026-06-07-9231-full-production-ready-closeout.md",
+    "production_surface_manifests": [
+      "data/manifests/9231_wave1_production_surface_2026_06_06_manifest_v1.json",
+      "data/manifests/9231_wave3_wave2_batch2_production_surface_2026_06_06_manifest_v1.json",
+      "data/manifests/9231_wave4_production_surface_2026_06_06_manifest_v1.json",
+      "data/manifests/9231_next_wave_16_production_surface_2026_06_06_manifest_v1.json",
+      "data/manifests/9231_wm_final_150_production_surface_2026_06_07_manifest_v1.json"
+    ]
+  },
+  "source_artifact_policy": {
+    "row_surface_truth": [
+      "data/manifests/9231_question_shard_split_2026_06_04_manifest_v1.json",
+      "64 data/manifests/9231_*_page_chain_surface_v1.json shard surfaces",
+      "five 9231 production surface manifests listed in production_surface_manifests"
+    ],
+    "old_eval_or_benchmark_artifacts_used_as_row_surface_proof": false
+  },
+  "boundaries": [
+    "This is row-level question-text production readiness, not a claim of perfect semantic retrieval quality or detailed syllabus-topic canonicalization.",
+    "The classifier remains a non-released question-text-foundation row-surface classifier; authoritative scoring taxonomy is not claimed.",
+    "RAG proof covers deterministic question_plain_text_v2 rows in public.chunks and source attribution, not semantic retrieval-quality evaluation.",
+    "Parent issue #389 should be updated or closed only after this PR merges and the orchestrator verifies final aggregate truth."
+  ]
+}

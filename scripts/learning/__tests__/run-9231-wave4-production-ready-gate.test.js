@@ -307,6 +307,29 @@ describe('9231 wave4 production-ready gate', () => {
     ]);
   });
 
+  test('configures the WM-final 150 production-ready batch with the final evidence artifacts', () => {
+    const batchConfig = build9231ProductionBatchConfig('wm_final_150');
+
+    expect(batchConfig).toMatchObject({
+      batchId: 'wm_final_150',
+      expectedRows: 150,
+      productionWave: '9231_wm_final_150',
+      readyManifest: 'data/manifests/9231_wm_final_150_production_surface_2026_06_07_manifest_v1.json',
+    });
+    expect(batchConfig.v2Artifacts).toEqual([
+      'docs/reports/2026-06-07-9231-wm-final-question-plain-text-v2.json',
+    ]);
+    expect(batchConfig.authorityArtifacts).toEqual([
+      'docs/reports/2026-06-07-9231-wm-final-authority-alignment.json',
+    ]);
+    expect(batchConfig.consumptionArtifacts).toEqual([
+      'docs/reports/2026-06-07-9231-wm-final-question-plain-text-v2-consumption.json',
+    ]);
+    expect(batchConfig.evidenceGateArtifacts).toEqual([
+      'docs/reports/2026-06-07-9231-wm-final-evidence-layers-gate.json',
+    ]);
+  });
+
   test('builds ready rows only when v2, authority, and local consumption agree on normalized_plain_text', () => {
     const rows = build9231Wave4ReadyRows({
       v2Artifact: {

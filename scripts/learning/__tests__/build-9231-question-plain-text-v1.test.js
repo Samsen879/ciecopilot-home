@@ -211,6 +211,61 @@ describe('9231 question plain text v1 builder', () => {
     });
   });
 
+  test('builds v1 rows directly from explicit surface manifests for WM-final scope', async () => {
+    const root = fixtureRoot();
+    const row = baseSurfaceItem({
+      storage_key: '9231/w19_qp_11/questions/q01.png',
+      q_number: 1,
+      shard_id: '9231_p1_w19_standard_001',
+      source_pdf: 'data/past-papers/9231Further-Mathematics/paper1/WM_9231_w19_qp_11.pdf',
+      surface_evidence_status: 'external_vlm_wm_final_visual_review_accepted',
+    });
+    writeJson(root, 'data/manifests/9231_p1_w19_standard_001_page_chain_surface_v1.json', {
+      schema_version: '9231_question_shard_split_page_chain_surface_v1',
+      subject_code: '9231',
+      shard_id: '9231_p1_w19_standard_001',
+      items: [row],
+    });
+
+    const layer = await build9231QuestionPlainTextV1Layer({
+      rootDir: root,
+      generatedOn: '2026-06-07',
+      sourceVersion: '9231_wm_final_surface_v1',
+      surfaceManifestPaths: [
+        'data/manifests/9231_p1_w19_standard_001_page_chain_surface_v1.json',
+      ],
+      pdfTextBySourcePdf: {
+        [row.source_pdf]: {
+          status: 'available',
+          pages: {
+            1: [
+              textItem('1', 49, 760),
+              textItem('Solve x + 2 = 5.', 72, 760),
+            ],
+          },
+        },
+      },
+    });
+
+    expect(layer.status).toBe('pass');
+    expect(layer.source_contract.surface_manifest_paths).toEqual([
+      'data/manifests/9231_p1_w19_standard_001_page_chain_surface_v1.json',
+    ]);
+    expect(layer.summary).toMatchObject({
+      selected_surface_manifests: 1,
+      production_rows: 1,
+      plain_text_rows: 1,
+      blockers: 0,
+    });
+    expect(layer.items[0]).toMatchObject({
+      storage_key: row.storage_key,
+      source_version: '9231_wm_final_surface_v1',
+      source_surface_manifest: 'data/manifests/9231_p1_w19_standard_001_page_chain_surface_v1.json',
+      source_surface_manifest_index: 0,
+      plain_text: '1Solve x + 2 = 5.',
+    });
+  });
+
   test('blocks rows that have text but no accepted visual review', async () => {
     const root = fixtureRoot();
     const row = baseSurfaceItem({

@@ -10,7 +10,9 @@ const ROOT = path.resolve(path.dirname(__filename), '../..');
 const DEFAULTS = Object.freeze({
   subject: '9231',
   generatedOn: '2026-06-05',
+  sourceVersion: '9231_wave1_surface_v1',
   selectionManifest: 'data/manifests/9231_production_ready_wave1_16_2026_06_05_manifest_v1.json',
+  surfaceManifestPaths: [],
   visualGateJson: 'docs/reports/2026-06-05-9231-visual-review-wave1-gate.json',
   jsonOut: 'docs/reports/2026-06-05-9231-question-plain-text-v1.json',
   markdownOut: 'docs/reports/2026-06-05-9231-question-plain-text-v1-coverage.md',
@@ -64,7 +66,9 @@ function printUsage() {
   writeStdoutLine([
     'Usage: node scripts/learning/build_9231_question_plain_text_v1.js',
     '  [--generated-on <YYYY-MM-DD>]',
+    '  [--source-version <id>]',
     '  [--selection-manifest <path>]',
+    '  [--surface-manifest <path>] (repeatable; overrides --selection-manifest)',
     '  [--visual-gate-json <path>]',
     '  [--json-out <path>]',
     '  [--markdown-out <path>]',
@@ -88,8 +92,21 @@ export function parseArgs(argv = process.argv.slice(2)) {
       index += 1;
       continue;
     }
+    if (token === '--source-version') {
+      options.sourceVersion = requiredValue(argv, index, token);
+      index += 1;
+      continue;
+    }
     if (token === '--selection-manifest') {
       options.selectionManifest = requiredValue(argv, index, token);
+      index += 1;
+      continue;
+    }
+    if (token === '--surface-manifest') {
+      options.surfaceManifestPaths = [
+        ...(options.surfaceManifestPaths || []),
+        requiredValue(argv, index, token),
+      ];
       index += 1;
       continue;
     }
@@ -349,7 +366,29 @@ export function extractQuestionTextFromPdfText({
   };
 }
 
-function collectSurfaceRows({ rootDir, selectionManifest }) {
+function collectSurfaceRows({ rootDir, selectionManifest, surfaceManifestPaths = [] }) {
+  if (surfaceManifestPaths.length > 0) {
+    const rows = [];
+    const surfacePaths = unique(surfaceManifestPaths);
+    for (const sourceManifest of surfacePaths) {
+      const surface = readJson(rootDir, sourceManifest);
+      const items = Array.isArray(surface.items) ? surface.items : [];
+      items.forEach((surfaceItem, index) => {
+        rows.push({
+          ...surfaceItem,
+          source_surface_manifest: sourceManifest,
+          source_surface_manifest_index: index,
+          source_surface_manifest_schema_version: surface.schema_version || null,
+        });
+      });
+    }
+    return {
+      selection: null,
+      rows,
+      surface_paths: surfacePaths,
+    };
+  }
+
   const selection = readJson(rootDir, selectionManifest);
   const surfaceByPath = new Map();
   const rows = [];
@@ -475,7 +514,14 @@ function buildQualityFlags({ textExtraction, visualAccepted, hasDiagram, tableHe
   return flags;
 }
 
-function buildPlainTextItem({ row, nextRow, pdfText, generatedOn, visualGateJson }) {
+function buildPlainTextItem({
+  row,
+  nextRow,
+  pdfText,
+  generatedOn,
+  visualGateJson,
+  sourceVersion = DEFAULTS.sourceVersion,
+}) {
   const textExtraction = extractQuestionTextFromPdfText({
     row,
     nextRow,
@@ -504,7 +550,7 @@ function buildPlainTextItem({ row, nextRow, pdfText, generatedOn, visualGateJson
     variant: row.variant ?? null,
     q_number: row.q_number ?? null,
     source_pdf: row.source_pdf ?? null,
-    source_version: '9231_wave1_surface_v1',
+    source_version: sourceVersion,
     source_surface_manifest: row.source_surface_manifest,
     source_surface_manifest_index: row.source_surface_manifest_index,
     source_visual_gate_json: visualGateJson,
@@ -629,10 +675,12 @@ export async function build9231QuestionPlainTextV1Layer({
   subject = DEFAULTS.subject,
   generatedOn = DEFAULTS.generatedOn,
   selectionManifest = DEFAULTS.selectionManifest,
+  surfaceManifestPaths = DEFAULTS.surfaceManifestPaths,
   visualGateJson = DEFAULTS.visualGateJson,
+  sourceVersion = DEFAULTS.sourceVersion,
   pdfTextBySourcePdf = null,
 } = {}) {
-  const surface = collectSurfaceRows({ rootDir, selectionManifest });
+  const surface = collectSurfaceRows({ rootDir, selectionManifest, surfaceManifestPaths });
   const sourcePdfs = unique(surface.rows.map((row) => row.source_pdf));
   const pdfText = await extractPdfTextBySource({
     rootDir,
@@ -646,6 +694,7 @@ export async function build9231QuestionPlainTextV1Layer({
     pdfText: pdfText[toPosix(row.source_pdf)] || null,
     generatedOn,
     visualGateJson,
+    sourceVersion,
   }));
   const duplicates = duplicateStorageKeys(items);
   const blockers = buildBlockers({ items, duplicateKeys: duplicates });
@@ -658,7 +707,8 @@ export async function build9231QuestionPlainTextV1Layer({
     generated_on: generatedOn,
     subject_code: subject,
     source_contract: {
-      selection_manifest: selectionManifest,
+      selection_manifest: surfaceManifestPaths.length > 0 ? null : selectionManifest,
+      surface_manifest_paths: surface.surface_paths,
       visual_gate_json: visualGateJson,
       text_priority: ['pdfjs_page_chain_text_layer'],
       extraction_method: 'pdfjs_page_chain_locator_window_v1',

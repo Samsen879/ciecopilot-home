@@ -14,10 +14,11 @@ const QUESTION_TYPE_ID = '9231.question_text_foundation.row_surface';
 const QUESTION_FAMILY_ID = '9231.question_text_foundation';
 const CURRICULUM_VERSION_TAG = '2025-2027_v1';
 const RAG_CORPUS_VERSION = 'rag_step3_9231_question_aware_v1';
+const FALLBACK_GENERATED_ON = '2026-06-06';
 
 const DEFAULTS = Object.freeze({
   batchId: 'wave4',
-  generatedOn: '2026-06-06',
+  generatedOn: null,
   reportsDir: 'docs/reports',
   readyManifest: null,
   psqlMode: 'docker',
@@ -119,6 +120,29 @@ const PRODUCTION_BATCHES = Object.freeze({
       'docs/reports/2026-06-05-9231-evidence-layers-wave1-gate.json',
     ]),
   }),
+  wm_final_150: Object.freeze({
+    batchId: 'wm_final_150',
+    reportSlug: 'wm-final-150',
+    manifestSlug: 'wm_final_150',
+    logPrefix: '9231_wm_final_150',
+    label: 'WM-final 150',
+    productionWave: '9231_wm_final_150',
+    expectedRows: 150,
+    generatedOn: '2026-06-07',
+    scopeDescription: '6 final WM shards / 150 rows',
+    v2Artifacts: Object.freeze([
+      'docs/reports/2026-06-07-9231-wm-final-question-plain-text-v2.json',
+    ]),
+    authorityArtifacts: Object.freeze([
+      'docs/reports/2026-06-07-9231-wm-final-authority-alignment.json',
+    ]),
+    consumptionArtifacts: Object.freeze([
+      'docs/reports/2026-06-07-9231-wm-final-question-plain-text-v2-consumption.json',
+    ]),
+    evidenceGateArtifacts: Object.freeze([
+      'docs/reports/2026-06-07-9231-wm-final-evidence-layers-gate.json',
+    ]),
+  }),
 });
 
 export const REQUIRED_9231_PRODUCTION_DB_ZERO_FIELDS = Object.freeze([
@@ -145,7 +169,7 @@ function writeStderrLine(message) {
 function printUsage() {
   writeStdoutLine([
     'Usage: node scripts/learning/run_9231_wave4_production_ready_gate.js',
-    '  [--batch-id <wave4|wave3_wave2_batch2|next_wave_16|wave1>]',
+    '  [--batch-id <wave4|wave3_wave2_batch2|next_wave_16|wave1|wm_final_150>]',
     '  [--generated-on <YYYY-MM-DD>]',
     '  [--apply-db]',
     '  [--update-index]',
@@ -224,7 +248,7 @@ export function build9231ProductionBatchConfig(batchId = DEFAULTS.batchId, overr
   if (!base) {
     throw new Error(`Unsupported 9231 production batch id: ${batchId}`);
   }
-  const generatedOn = overrides.generatedOn ?? DEFAULTS.generatedOn;
+  const generatedOn = overrides.generatedOn ?? base.generatedOn ?? FALLBACK_GENERATED_ON;
   const readyManifest = overrides.readyManifest
     ?? `data/manifests/9231_${base.manifestSlug}_production_surface_${generatedOn.replaceAll('-', '_')}_manifest_v1.json`;
   return {
@@ -1644,7 +1668,7 @@ function runProductionGates({ readyRows, generatedOn, options, paths, batchConfi
   return { dbCoverage, searchGate, readModelGate, ragGate };
 }
 
-function defaultGateBlocked(schemaVersion, rows, reason, generatedOn = DEFAULTS.generatedOn) {
+function defaultGateBlocked(schemaVersion, rows, reason, generatedOn = FALLBACK_GENERATED_ON) {
   return {
     schema_version: schemaVersion,
     generated_on: generatedOn,
@@ -1864,10 +1888,11 @@ export async function main(argv = process.argv.slice(2)) {
     return 0;
   }
   const batchConfig = build9231ProductionBatchConfig(options.batchId, {
-    generatedOn: options.generatedOn,
+    generatedOn: options.generatedOn ?? undefined,
     reportsDir: options.reportsDir,
     readyManifest: options.readyManifest ?? undefined,
   });
+  const generatedOn = batchConfig.generatedOn;
 
   const artifacts = {
     v2: batchConfig.v2Artifacts,
@@ -1882,7 +1907,7 @@ export async function main(argv = process.argv.slice(2)) {
     consumptionArtifacts: batchConfig.consumptionArtifacts.map(readJsonWithArtifactPath),
   });
   const readyManifest = buildReadyManifest({
-    generatedOn: options.generatedOn,
+    generatedOn,
     readyRows,
     artifacts,
     batchConfig,
@@ -1890,7 +1915,7 @@ export async function main(argv = process.argv.slice(2)) {
   writeJson(batchConfig.readyManifest, readyManifest);
 
   const paths = finalArtifactPaths({
-    generatedOn: options.generatedOn,
+    generatedOn,
     reportsDir: options.reportsDir,
     batchConfig,
   });
@@ -1899,24 +1924,24 @@ export async function main(argv = process.argv.slice(2)) {
     writeStdoutLine(`${batchConfig.logPrefix}_production_db_promote=start`);
     runPsqlText(buildProductionPromotionSql({
       readyRows,
-      generatedOn: options.generatedOn,
+      generatedOn,
       batchConfig,
       paths,
     }), options);
     writeStdoutLine(`${batchConfig.logPrefix}_production_db_promote=done`);
     gates = runProductionGates({
       readyRows,
-      generatedOn: options.generatedOn,
+      generatedOn,
       options,
       paths,
       batchConfig,
     });
   } else {
     gates = {
-      dbCoverage: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_db_coverage_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
-      searchGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_search_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
-      readModelGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_read_model_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
-      ragGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_rag_consumption_gate_v1`, readyRows.length, 'apply_db_not_requested', options.generatedOn),
+      dbCoverage: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_db_coverage_gate_v1`, readyRows.length, 'apply_db_not_requested', generatedOn),
+      searchGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_search_gate_v1`, readyRows.length, 'apply_db_not_requested', generatedOn),
+      readModelGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_read_model_gate_v1`, readyRows.length, 'apply_db_not_requested', generatedOn),
+      ragGate: defaultGateBlocked(`9231_${batchConfig.manifestSlug}_production_rag_consumption_gate_v1`, readyRows.length, 'apply_db_not_requested', generatedOn),
     };
   }
 
@@ -1927,7 +1952,7 @@ export async function main(argv = process.argv.slice(2)) {
 
   const aggregate = build9231ProductionReadyAggregate({
     batchConfig,
-    generatedOn: options.generatedOn,
+    generatedOn,
     readyRows,
     readyManifestPath: batchConfig.readyManifest,
     dbCoverage: gates.dbCoverage,
@@ -1946,7 +1971,7 @@ export async function main(argv = process.argv.slice(2)) {
   writeJson(paths.aggregateJson, aggregate);
   writeText(paths.aggregateMarkdown, renderAggregateMarkdown(aggregate, paths, batchConfig));
   const shardArtifacts = writeShardCloseouts({
-    generatedOn: options.generatedOn,
+    generatedOn,
     reportsDir: options.reportsDir,
     readyRows,
     aggregate,
@@ -1956,7 +1981,7 @@ export async function main(argv = process.argv.slice(2)) {
 
   if (options.updateIndex) {
     updateReportsIndex({
-      generatedOn: options.generatedOn,
+      generatedOn,
       indexPath: 'docs/reports/INDEX.md',
       readyManifestPath: batchConfig.readyManifest,
       paths,

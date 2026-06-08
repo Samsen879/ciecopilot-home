@@ -21,12 +21,13 @@ Lifecycle exists to answer the next control question after phase-1 reconciliatio
 - human gate
 - merge a release-ready PR through the explicit assist action
 - notify the human that a PR appears ready when auto-merge is not the selected path
+- notify the human that AO is blocked when a release-facing task chain reaches a human gate
 
 Independent reviewer gate note:
 
 - first release enables only explicit `ready_for_review` requests through `ao-review`
 - once a durable review request exists, lifecycle must fail closed for release-facing advancement until that review passes for the current target SHA
-- `notify_human_ready` remains notification-only; `auto_merge_ready_pr` is the default release-ready action
+- `notify_human_ready` and `notify_human_blocked` remain notification-only; `auto_merge_ready_pr` is the default release-ready action
 
 ## When To Run Lifecycle
 
@@ -221,11 +222,13 @@ This answers:
 - wait for mergeability
 - auto-merge the PR after fresh GitHub validation
 - notify the human that the PR appears ready when auto-merge is not selected
+- notify the human that AO is blocked when release-facing judgment needs human input
 - human gate
 
 Important:
 
 - `notify_human_ready` is not auto-merge
+- `notify_human_blocked` is audit-only in PR1: it records a GitHub issue comment command with an `ao:blocked-notification` marker, but does not call external chat systems
 - `auto_merge_ready_pr` is default-on for AO-managed PRs when release gates pass
 - GitHub remains canonical for mergeability, review, and CI truth
 
@@ -301,7 +304,8 @@ Phase-4 assist note:
 - lifecycle may propose Class A, B, or C actions
 - assist execution only auto-runs the phase-4 Class A allowlist after durable policy `allow` and clean runtime preflight
 - `auto_merge_ready_pr` is the default release-ready action
-- `notify_human_ready` remains notification-only
+- `notify_human_ready` and `notify_human_blocked` remain notification-only
+- `notify_human_blocked` uses the existing action idempotency gate plus a GitHub comment marker shaped like `<!-- ao:blocked-notification key=<project>:pr-<number> -->`
 
 Independent reviewer gate note:
 

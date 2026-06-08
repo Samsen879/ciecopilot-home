@@ -719,7 +719,7 @@ function buildLifecycleFindings({
       summary: 'Release-facing judgment still requires a human.',
       details: releaseDecision.basis,
       evidence_refs: [],
-      action_ids: ['human_gate'],
+      action_ids: ['human_gate', 'notify_human_blocked'],
     }));
   }
 
@@ -729,6 +729,9 @@ function buildLifecycleFindings({
 function buildActionTemplates(scope) {
   const projectId = scope?.project_id ?? 'ciecopilot-home';
   const prNumber = scope?.pr_number;
+  const blockedNotificationMarker = Number.isInteger(prNumber)
+    ? `<!-- ao:blocked-notification key=${projectId}:pr-${prNumber} -->`
+    : `<!-- ao:blocked-notification key=${projectId}:project -->`;
   const reconcileCommand = Number.isInteger(prNumber)
     ? `node scripts/ao-reconcile.js --pr ${prNumber} --json --strict`
     : `node scripts/ao-reconcile.js --project ${projectId} --json`;
@@ -763,6 +766,17 @@ function buildActionTemplates(scope) {
         `ao review-check ${projectId} --dry-run`,
       ],
       rationale: 'Human approval remains required even when the PR appears ready.',
+    },
+    notify_human_blocked: {
+      action_class: 'notify_human',
+      summary: 'Notify the human that AO is blocked.',
+      commands: Number.isInteger(prNumber)
+        ? [
+            `gh issue comment ${prNumber} --body "${blockedNotificationMarker} AO blocked and needs human input. Inspect ao-state action details and rerun lifecycle before resuming."`,
+            `gh issue edit ${prNumber} --add-label ao:blocked,needs-human`,
+          ]
+        : [reconcileCommand, doctorCommand],
+      rationale: 'AO cannot safely continue this task chain without explicit human input.',
     },
     auto_merge_ready_pr: {
       action_class: 'merge_pr',

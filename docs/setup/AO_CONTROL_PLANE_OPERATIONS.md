@@ -53,6 +53,7 @@ Current class boundary:
 
 - `class_a`: low-risk repo-local control actions that may auto-execute after policy and preflight gates pass
 - `class_a` also includes `auto_merge_ready_pr`, which mutates GitHub only after fresh PR state confirms approval, CI, mergeability, non-draft state, and expected head SHA
+- `class_a` includes `notify_human_blocked`, which is audit-only in PR1 and records the GitHub issue comment command plus dedupe marker without invoking external chat transports
 - `class_b`: advisory or hold posture only; never auto-executes in phase 4
 - `class_c`: ownership-transfer or similarly high-risk actions; never auto-executes in phase 4
 
@@ -60,6 +61,7 @@ Current allowlist:
 
 - `continue_worker`
 - `notify_human_ready`
+- `notify_human_blocked`
 - `auto_merge_ready_pr`
 
 Still blocked:

@@ -118,7 +118,11 @@ export function resolveMeasurementActionClass({
   if (normalizedActionKind === 'continue_worker' || normalizedActionClass === 'continue_worker') {
     return 'continue_worker';
   }
-  if (normalizedActionKind === 'notify_human_ready' || normalizedActionClass === 'notify_human') {
+  if (
+    normalizedActionKind === 'notify_human_ready'
+    || normalizedActionKind === 'notify_human_blocked'
+    || normalizedActionClass === 'notify_human'
+  ) {
     return 'notify_human';
   }
   if (normalizedActionKind === 'auto_merge_ready_pr' || normalizedActionClass === 'merge_pr') {

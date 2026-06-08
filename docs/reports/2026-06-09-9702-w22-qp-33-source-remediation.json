@@ -1,0 +1,230 @@
+{
+  "schema_version": "source_remediation_report_v1",
+  "generated_on": "2026-06-09",
+  "generated_at_utc": "2026-06-08T16:20:09Z",
+  "issue": {
+    "number": 414,
+    "url": "https://github.com/Samsen879/ciecopilot-home/issues/414",
+    "parent_issue": 402,
+    "blocks_issue": 403
+  },
+  "scope": {
+    "target_path": "data/past-papers/9702Physics/paper3/9702_w22_qp_33.pdf",
+    "action": "replaced_pdf_bytes_in_place",
+    "tracked_path_preserved": true,
+    "source_remediation_only": true,
+    "production_ready_claimed": false,
+    "not_run": [
+      "9702 row-surface manifests",
+      "9702 page-chain manifests",
+      "crop assets",
+      "VLM/OCR output",
+      "DB writes",
+      "search writes",
+      "read-model writes",
+      "RAG writes",
+      "production-ready gate"
+    ],
+    "data_manifests_9702_json_count_after": 0
+  },
+  "startup_checks": {
+    "branch": "feat/issue-414",
+    "origin_main_head": "f0407b453d43ca703331a327316e0b73454f6ce2",
+    "worktree_clean_before_replacement": true,
+    "git_status_short_branch_initial": "## feat/issue-414...origin/main",
+    "preflight": {
+      "command": "npm run workflow:codex-preflight -- --json",
+      "exit_code": 0,
+      "top_status": "warning",
+      "warning": "branch is not protected but also not task/ or codex/-scoped",
+      "upstream_sync": "healthy; ahead 0, behind 0",
+      "worktree_cleanliness": "healthy"
+    },
+    "baseline_sync": {
+      "command": "npm run workflow:baseline:sync",
+      "exit_code": 1,
+      "status": "failed_before_implementation",
+      "reason": "repo workflow attempted git pull --ff-only in /home/samsen/code/ciecopilot-home, whose current branch codex/chatgpt-image-cdp-runbook has no tracking information",
+      "equivalent_current_worktree_check": "git fetch origin main --prune and merge-base check confirmed feat/issue-414 at origin/main f0407b453d43ca703331a327316e0b73454f6ce2"
+    },
+    "live_issues_reread": [
+      402,
+      403,
+      414
+    ]
+  },
+  "before": {
+    "sha256": "b355db349aee26da28ffd42766a229237479793307860a1d88636ffb829111bf",
+    "bytes": 27348,
+    "header": "%PDF-1.3",
+    "pdf_signature_present": true,
+    "eof_marker_in_tail": false,
+    "pdfjs_parse_success": false,
+    "pdfjs_error": "Invalid PDF structure.",
+    "pymupdf_open_success": true,
+    "pymupdf_metadata_format": "PDF 1.3",
+    "pymupdf_page_count": 0,
+    "pymupdf_load_page_1_success": false,
+    "pymupdf_load_page_1_error": "ValueError('page not in document')"
+  },
+  "replacement_source": {
+    "source_type": "public_mirror_candidate",
+    "official_or_user_supplied_source_found_locally": false,
+    "local_duplicate_found": false,
+    "retrieved_at_utc": "2026-06-08T16:16:13Z",
+    "primary_candidate": {
+      "name": "QualifiedQuest",
+      "url": "https://qualifiedquest.com/papers/a-level/physics-9702/2022/9702_w22_qp_33.pdf",
+      "download_command": "curl -fL --retry 2 --connect-timeout 20 --max-time 120 'https://qualifiedquest.com/papers/a-level/physics-9702/2022/9702_w22_qp_33.pdf' -o /tmp/cie-414-9702-remediation/qualifiedquest-9702_w22_qp_33.pdf"
+    },
+    "corroborating_candidate": {
+      "name": "XtraPapers",
+      "url": "https://xtrapapers.co/papers/caie/as-and-a-level/physics-9702/2022-oct-nov/9702_w22_qp_33.pdf/download",
+      "index_url": "https://xtrapapers.co/papers/caie/as-and-a-level/physics-9702/2022-oct-nov",
+      "download_command": "curl -fL --retry 2 --connect-timeout 20 --max-time 120 'https://xtrapapers.co/papers/caie/as-and-a-level/physics-9702/2022-oct-nov/9702_w22_qp_33.pdf/download' -o /tmp/cie-414-9702-remediation/xtrapapers-9702_w22_qp_33.pdf"
+    },
+    "candidate_hash_cross_check": {
+      "qualifiedquest_sha256": "c7d5eab6d1f64f9a6e87c295218bc4275cf240699bce54d8c771b0327402b254",
+      "xtrapapers_sha256": "c7d5eab6d1f64f9a6e87c295218bc4275cf240699bce54d8c771b0327402b254",
+      "sha256_match": true,
+      "bytes_each": 1096476
+    }
+  },
+  "after": {
+    "sha256": "c7d5eab6d1f64f9a6e87c295218bc4275cf240699bce54d8c771b0327402b254",
+    "bytes": 1096476,
+    "header": "%PDF-1.3",
+    "pdf_signature_present": true,
+    "eof_marker_in_tail": true,
+    "pdfjs_parse_success": true,
+    "page_count": 16,
+    "expected_page_count": 16,
+    "first_page_identity_excerpt": "PHYSICS 9702/33 Paper 3 Advanced Practical Skills 1 October/November 2022",
+    "footer_identity_sample": "9702/33/O/N/22",
+    "identity": {
+      "first_page_has_9702": true,
+      "first_page_has_component_33": true,
+      "first_page_has_oct_nov_2022": true,
+      "document_has_9702_33_o_n_22": true
+    },
+    "render_sanity": {
+      "renderer": "pdfjs-dist + @napi-rs/canvas",
+      "scale": 0.75,
+      "pages_rendered": 16,
+      "blank_pages_by_threshold": 0,
+      "min_non_white_pixels": 629,
+      "max_non_white_pixels": 121073,
+      "non_white_pixels_by_page": [
+        24994,
+        11410,
+        2171,
+        5874,
+        121073,
+        7885,
+        775,
+        12515,
+        8807,
+        11800,
+        5507,
+        6779,
+        2895,
+        11161,
+        629,
+        9216
+      ]
+    },
+    "pymupdf_open_success": true,
+    "pymupdf_metadata_format": "PDF 1.3",
+    "pymupdf_page_count": 16,
+    "pymupdf_load_page_1_success": true,
+    "pymupdf_first_page_rect": [
+      0.0,
+      0.0,
+      595.2760009765625,
+      841.8900146484375
+    ]
+  },
+  "focused_403_blocker_check": {
+    "original_403_temporary_blocker_count_before_remediation": 3,
+    "focused_file_blockers_after_remediation": 0,
+    "focused_file_blockers": [],
+    "full_403_source_inventory_rerun_required_after_merge": true,
+    "phase_2_must_not_start_from_this_pr": true
+  },
+  "verification_commands": [
+    {
+      "command": "git fetch origin main --prune",
+      "exit_code": 0,
+      "summary": "fetched origin/main"
+    },
+    {
+      "command": "git status --short --branch --untracked-files=all",
+      "exit_code": 0,
+      "summary": "initial output: ## feat/issue-414...origin/main"
+    },
+    {
+      "command": "npm run workflow:baseline:sync",
+      "exit_code": 1,
+      "summary": "failed because preserved root checkout branch has no upstream tracking"
+    },
+    {
+      "command": "npm run workflow:codex-preflight -- --json",
+      "exit_code": 0,
+      "summary": "top_status warning for AO branch naming; worktree clean and upstream synchronized"
+    },
+    {
+      "command": "gh issue view 402/403/414 --repo Samsen879/ciecopilot-home --json number,title,state,body,url,labels,comments",
+      "exit_code": 0,
+      "summary": "live parent/blocker/remediation scope reread"
+    },
+    {
+      "command": "node --input-type=module <<'JS' ... pdfjs/canvas focused blocker reconfirmation on tracked path",
+      "exit_code": 1,
+      "summary": "old tracked file failed with missing EOF marker and pdfjs Invalid PDF structure"
+    },
+    {
+      "command": "/home/samsen/code/ciecopilot-home/.venv/bin/python - <<'PY' ... PyMuPDF blocker reconfirmation",
+      "exit_code": 0,
+      "summary": "old tracked file opened as PDF 1.3 with page_count 0; load page 1 failed"
+    },
+    {
+      "command": "curl -fL --retry 2 --connect-timeout 20 --max-time 120 <candidate-url> -o /tmp/cie-414-9702-remediation/<candidate>.pdf",
+      "exit_code": 0,
+      "summary": "QualifiedQuest and XtraPapers downloads had identical SHA256 and byte size"
+    },
+    {
+      "command": "node --input-type=module <<'JS' ... pdfjs/canvas candidate validation for both downloaded candidates",
+      "exit_code": 0,
+      "summary": "both candidates parsed, rendered 16 pages, and passed identity checks"
+    },
+    {
+      "command": "cp /tmp/cie-414-9702-remediation/qualifiedquest-9702_w22_qp_33.pdf data/past-papers/9702Physics/paper3/9702_w22_qp_33.pdf",
+      "exit_code": 0,
+      "summary": "replaced tracked bytes in place at the exact path"
+    },
+    {
+      "command": "node --input-type=module <<'JS' ... pdfjs/canvas focused validation on final tracked replacement",
+      "exit_code": 0,
+      "summary": "replacement parsed, rendered 16 pages, identity passed, focused file blockers 0"
+    },
+    {
+      "command": "/home/samsen/code/ciecopilot-home/.venv/bin/python - <<'PY' ... PyMuPDF final replacement validation",
+      "exit_code": 0,
+      "summary": "replacement opened as PDF 1.3 with page_count 16; page 1 loaded"
+    },
+    {
+      "command": "find data/manifests -maxdepth 1 -name '9702*.json' -print | sort | wc -l",
+      "exit_code": 0,
+      "summary": "0"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "summary": "no whitespace errors"
+    }
+  ],
+  "claim_boundary": {
+    "maximum_claim": "The tracked corrupted source PDF bytes were replaced in place with a locally parse/render/identity-verified copy, clearing the focused #403 blocker for this file.",
+    "not_claimed": "No #403 full source inventory, #404 Phase 2 work, downstream row-surface/page-chain/crop/VLM/OCR/DB/search/read-model/RAG work, or production readiness was run or claimed."
+  }
+}

@@ -784,6 +784,115 @@ describe('ao action executor', () => {
     ]);
   });
 
+  it('records secondary blocked notification transport results when configured', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+    seedActiveTask(repository);
+
+    const actionModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      prNumber: 101,
+      derivedTrigger: 'agent_needs_input',
+      lifecycleTopStatus: 'human_gate',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'notify_human_blocked',
+        action_class: 'notify_human',
+        summary: 'Notify the human that AO is blocked.',
+        commands: [
+          'gh issue comment 101 --body "<!-- ao:blocked-notification key=ciecopilot-home:pr-101 --> AO blocked and needs human input."',
+        ],
+        rationale: 'AO cannot safely continue this task chain without human input.',
+      },
+    });
+
+    repository.upsertAction(createActionRecord({
+      action_id: 'action-blocked-notify',
+      task_id: 'issue-90',
+      action_kind: 'notify_human_blocked',
+      status: 'proposed',
+      requested_by: 'assist_controller',
+      reason: 'Notify the human that AO is blocked.',
+      created_at: '2026-03-29T07:11:00.000Z',
+      updated_at: '2026-03-29T07:11:00.000Z',
+      payload: {
+        action_model: actionModel,
+        policy_decision_id: 'policy-1',
+        policy: {
+          decision: 'allow',
+          policy_version: 'ao.policy.v1',
+        },
+      },
+    }));
+
+    const transportCalls = [];
+    const blockedNotificationTransport = {
+      async sendBlockedNotification(payload) {
+        transportCalls.push(payload);
+        return {
+          status: 'sent',
+          transport: 'webhook',
+          webhook_kind: 'wecom',
+          attempts: 1,
+          http_status: 200,
+        };
+      },
+    };
+
+    const result = await executeAssistActions({
+      repository,
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      actionIds: ['action-blocked-notify'],
+      now: '2026-03-29T07:12:00.000Z',
+      blockedNotificationTransport,
+    });
+
+    expect(result).toEqual({
+      executedActionIds: ['action-blocked-notify'],
+      blockedActionIds: [],
+    });
+    expect(transportCalls).toEqual([
+      expect.objectContaining({
+        projectId: PROJECT_ID,
+        prNumber: 101,
+        actionId: 'action-blocked-notify',
+        dedupeMarker: '<!-- ao:blocked-notification key=ciecopilot-home:pr-101 -->',
+        timestamp: '2026-03-29T07:12:00.000Z',
+      }),
+    ]);
+    expect(repository.getSnapshot().state.actions).toEqual([
+      expect.objectContaining({
+        action_id: 'action-blocked-notify',
+        status: 'executed',
+        payload: expect.objectContaining({
+          execution: expect.objectContaining({
+            outcome: 'executed',
+            reason: 'blocked_notification_recorded',
+            details: expect.objectContaining({
+              secondary_transport: {
+                status: 'sent',
+                transport: 'webhook',
+                webhook_kind: 'wecom',
+                attempts: 1,
+                http_status: 200,
+              },
+            }),
+          }),
+        }),
+      }),
+    ]);
+  });
+
   it('blocks assist execution when durable policy attribution is missing', async () => {
     const repository = createStateRepository({
       repoRoot: createTempRepo(),

@@ -99,6 +99,15 @@ Interpretation:
 - `execution_reason` is the operator-facing answer to “why did this run or why was it blocked?”
 - explicit review freeze can still replace a release-facing `auto_merge_ready_pr` proposal with `hold_review`; in that case the action is blocked by review posture, not by policy downgrade
 
+Blocked notification webhook:
+
+- GitHub issue comments and AO action state remain the source of truth for `notify_human_blocked`
+- external webhook delivery is secondary and disabled by default
+- enable it with `AO_BLOCKED_NOTIFICATION_WEBHOOK_ENABLED=1`
+- provide the secret URL only through `AO_BLOCKED_NOTIFICATION_WEBHOOK_URL`
+- optionally set `AO_BLOCKED_NOTIFICATION_WEBHOOK_KIND=wecom` for Enterprise WeChat compatible markdown
+- execution details record only sanitized delivery status, attempt count, kind, and HTTP status; webhook URLs and response bodies are not persisted
+
 ## Independent Reviewer Gate Contract
 
 Independent review is now a durable control-plane surface.

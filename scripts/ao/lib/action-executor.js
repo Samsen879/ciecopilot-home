@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 
+import { createBlockedNotificationWebhookTransport } from './blocked-notification-transport.js';
 import { createActionRecord } from './state-contracts.js';
 import { buildAssistExecutionAttemptMetric } from './run-metrics.js';
 
@@ -763,6 +764,7 @@ export async function executeAssistActions({
   actionIds = [],
   now = new Date().toISOString(),
   commandRunner = defaultCommandRunner,
+  blockedNotificationTransport = createBlockedNotificationWebhookTransport(),
 } = {}) {
   const timestamp = resolveNow(now);
   const uniqueActionIds = [...new Set((actionIds ?? []).map((value) => String(value)))];
@@ -900,11 +902,23 @@ export async function executeAssistActions({
     let executionDetails = null;
 
     if (record.action_kind === 'notify_human_blocked') {
+      const dedupeMarker = extractBlockedNotificationMarker(model.commands);
       executionReason = 'blocked_notification_recorded';
       executionDetails = {
         channel: 'github_issue_comment',
-        dedupe_marker: extractBlockedNotificationMarker(model.commands),
+        dedupe_marker: dedupeMarker,
       };
+      if (typeof blockedNotificationTransport?.sendBlockedNotification === 'function') {
+        const secondaryTransport = await blockedNotificationTransport.sendBlockedNotification({
+          projectId: repository.getSnapshot().state.project_id ?? null,
+          prNumber: model.pr_number ?? null,
+          actionId: record.action_id,
+          summary: record.reason ?? model.summary ?? null,
+          dedupeMarker,
+          timestamp,
+        });
+        executionDetails.secondary_transport = cloneJsonValue(secondaryTransport);
+      }
     }
 
     if (record.action_kind === 'auto_merge_ready_pr') {

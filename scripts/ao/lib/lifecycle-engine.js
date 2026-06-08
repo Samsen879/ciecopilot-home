@@ -614,7 +614,7 @@ function buildLifecycleFindings({
       summary: 'Doctor diagnosis blocks lifecycle control from continuing.',
       details: ['Local continuity diagnosis must be resolved before control can proceed.'],
       evidence_refs: [],
-      action_ids: ['hold_local_control'],
+      action_ids: ['hold_local_control', 'notify_human_blocked'],
     }));
   }
 

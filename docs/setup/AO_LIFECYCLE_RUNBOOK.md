@@ -229,6 +229,7 @@ Important:
 
 - `notify_human_ready` is not auto-merge
 - `notify_human_blocked` is audit-only in PR1: it records a GitHub issue comment command with an `ao:blocked-notification` marker, but does not call external chat systems
+- PR2 also emits `notify_human_blocked` for PR-scoped `doctor_blocks_control`, because local control blockers require human inspection before autonomous work can resume
 - `auto_merge_ready_pr` is default-on for AO-managed PRs when release gates pass
 - GitHub remains canonical for mergeability, review, and CI truth
 

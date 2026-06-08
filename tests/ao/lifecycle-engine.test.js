@@ -453,6 +453,18 @@ describe('lifecycle engine', () => {
     expect(report.top_status).toBe('hold');
     expect(report.routing_decision.action).toBe('hold_for_human');
     expect(report.findings.map((finding) => finding.code)).toContain('doctor_blocks_control');
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'doctor_blocks_control',
+        action_ids: expect.arrayContaining(['notify_human_blocked']),
+      }),
+    ]));
+    expect(report.actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'notify_human_blocked',
+        action_class: 'notify_human',
+      }),
+    ]));
   });
 
   it('human-gates when doctor remains ambiguous in PR mode', () => {

@@ -89,6 +89,15 @@ const ACTION_POLICIES = {
       buildPrScopePrecondition(prNumber),
     ],
   },
+  notify_human_blocked: {
+    riskClass: 'class_a',
+    phase4AssistExecutable: true,
+    nonExecutableReason: 'class_a_allowlist',
+    buildPreconditions: ({ task, prNumber }) => [
+      buildTaskActivePrecondition(task),
+      buildPrScopePrecondition(prNumber),
+    ],
+  },
   auto_merge_ready_pr: {
     riskClass: 'class_a',
     phase4AssistExecutable: true,
@@ -460,6 +469,11 @@ function normalizeExecutionReason(record, model) {
   return model?.execution_contract?.reason
     ?? model?.phase4_assist?.reason
     ?? null;
+}
+
+function extractBlockedNotificationMarker(commands = []) {
+  const commandText = toStringArray(commands).join('\n');
+  return commandText.match(/<!--\s*ao:blocked-notification\s+key=[^>]+-->/)?.[0] ?? null;
 }
 
 function defaultCommandRunner({ command, args = [] } = {}) {
@@ -884,6 +898,14 @@ export async function executeAssistActions({
 
     let executionReason = 'class_a_assist_execution';
     let executionDetails = null;
+
+    if (record.action_kind === 'notify_human_blocked') {
+      executionReason = 'blocked_notification_recorded';
+      executionDetails = {
+        channel: 'github_issue_comment',
+        dedupe_marker: extractBlockedNotificationMarker(model.commands),
+      };
+    }
 
     if (record.action_kind === 'auto_merge_ready_pr') {
       const autoMergeResult = await prepareAutoMergeExecution({

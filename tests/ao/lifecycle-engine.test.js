@@ -324,6 +324,55 @@ describe('lifecycle engine', () => {
     expect(report.findings.map((finding) => finding.code)).toContain('ownership_control_ambiguous');
   });
 
+  it('adds a blocked human notification action for task-chain release gates', () => {
+    const report = buildLifecycleReport({
+      scope: createLifecyclePrScope({
+        projectId: 'ciecopilot-home',
+        prNumber: 44,
+        trigger: 'agent_needs_input',
+      }),
+      reconciliationReport: buildReconciliationReport({
+        pr_assessments: [{
+          pr_number: 44,
+          branch_name: 'feat/issue-44',
+          ownership: {
+            status: 'clear',
+            owner_session: 'cie-44',
+            candidate_sessions: ['cie-44'],
+          },
+          release_readiness: {
+            status: 'ambiguous',
+            basis: ['task_chain_blocked', 'required_source_inventory_missing'],
+          },
+        }],
+      }),
+      doctorReport: buildDoctorReport(),
+    });
+
+    expect(report.top_status).toBe('human_gate');
+    expect(report.release_decision).toMatchObject({
+      disposition: 'human_gate',
+      basis: ['task_chain_blocked', 'required_source_inventory_missing'],
+      authoritative: false,
+    });
+    expect(report.findings).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        code: 'release_control_human_gate',
+        action_ids: expect.arrayContaining(['notify_human_blocked']),
+      }),
+    ]));
+    expect(report.actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        id: 'notify_human_blocked',
+        action_class: 'notify_human',
+        commands: expect.arrayContaining([
+          expect.stringContaining('gh issue comment 44'),
+          expect.stringContaining('ao:blocked-notification key=ciecopilot-home:pr-44'),
+        ]),
+      }),
+    ]));
+  });
+
   it('waits on mergeability when typed gates show mergeability remains ambiguous', () => {
     const report = buildLifecycleReport({
       scope: createLifecyclePrScope({

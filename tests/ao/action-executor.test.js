@@ -241,6 +241,48 @@ describe('ao action executor', () => {
         blocking_precondition_codes: [],
       },
     });
+
+    const blockedNotificationModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: {
+        task_id: 'issue-90',
+        status: 'active',
+      },
+      prNumber: 101,
+      derivedTrigger: 'agent_needs_input',
+      lifecycleTopStatus: 'human_gate',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'notify_human_blocked',
+        action_class: 'notify_human',
+        summary: 'Notify the human that AO is blocked.',
+        commands: [
+          'gh issue comment 101 --body "<!-- ao:blocked-notification key=ciecopilot-home:pr-101 --> AO blocked and needs human input."',
+        ],
+        rationale: 'AO cannot safely continue this task chain without human input.',
+      },
+    });
+
+    expect(blockedNotificationModel).toMatchObject({
+      action_kind: 'notify_human_blocked',
+      action_class: 'notify_human',
+      risk_class: 'class_a',
+      phase4_assist: {
+        executable: true,
+        reason: 'class_a_allowlist',
+      },
+      execution_contract: {
+        automation_boundary: 'class_a_only',
+        executable: true,
+        reason: 'class_a_allowlist',
+        blocking_precondition_codes: [],
+      },
+    });
   });
 
   it('executes only class A actions and writes explicit execution audit entries', async () => {
@@ -643,6 +685,101 @@ describe('ao action executor', () => {
             reason: 'auto_merge_expected_head_missing',
           }),
         }),
+      }),
+    ]);
+  });
+
+  it('records blocked human notifications without invoking network commands', async () => {
+    const repository = createStateRepository({
+      repoRoot: createTempRepo(),
+      projectId: PROJECT_ID,
+      auditIdGenerator: createIdGenerator('audit'),
+    });
+    seedActiveTask(repository);
+
+    const actionModel = buildAssistActionModel({
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      prNumber: 101,
+      derivedTrigger: 'agent_needs_input',
+      lifecycleTopStatus: 'human_gate',
+      runtimeRef: 'runtime.github_local',
+      runtimePreflight: {
+        runtime_ref: 'runtime.github_local',
+        status: 'clean',
+        replay_key: 'runtime_preflight:clean',
+      },
+      action: {
+        id: 'notify_human_blocked',
+        action_class: 'notify_human',
+        summary: 'Notify the human that AO is blocked.',
+        commands: [
+          'gh issue comment 101 --body "<!-- ao:blocked-notification key=ciecopilot-home:pr-101 --> AO blocked and needs human input."',
+        ],
+        rationale: 'AO cannot safely continue this task chain without human input.',
+      },
+    });
+
+    repository.upsertAction(createActionRecord({
+      action_id: 'action-blocked-notify',
+      task_id: 'issue-90',
+      action_kind: 'notify_human_blocked',
+      status: 'proposed',
+      requested_by: 'assist_controller',
+      reason: 'Notify the human that AO is blocked.',
+      created_at: '2026-03-29T07:11:00.000Z',
+      updated_at: '2026-03-29T07:11:00.000Z',
+      payload: {
+        action_model: actionModel,
+        policy_decision_id: 'policy-1',
+        policy: {
+          decision: 'allow',
+          policy_version: 'ao.policy.v1',
+        },
+      },
+    }));
+
+    const commandRunner = async () => {
+      throw new Error('notify_human_blocked must be audit-only in PR1');
+    };
+
+    const result = await executeAssistActions({
+      repository,
+      controllerId: 'default',
+      task: repository.getSnapshot().state.managed_tasks[0],
+      actionIds: ['action-blocked-notify'],
+      now: '2026-03-29T07:12:00.000Z',
+      commandRunner,
+    });
+
+    expect(result).toEqual({
+      executedActionIds: ['action-blocked-notify'],
+      blockedActionIds: [],
+    });
+    expect(repository.getSnapshot().state.actions).toEqual([
+      expect.objectContaining({
+        action_id: 'action-blocked-notify',
+        status: 'executed',
+        payload: expect.objectContaining({
+          execution: expect.objectContaining({
+            outcome: 'executed',
+            reason: 'blocked_notification_recorded',
+            details: {
+              channel: 'github_issue_comment',
+              dedupe_marker: '<!-- ao:blocked-notification key=ciecopilot-home:pr-101 -->',
+            },
+          }),
+        }),
+      }),
+    ]);
+    expect(repository.getSnapshot().state.execution_attempt_metrics).toEqual([
+      expect.objectContaining({
+        attempt_kind: 'assist_action',
+        action_id: 'action-blocked-notify',
+        action_kind: 'notify_human_blocked',
+        action_class: 'notify_human',
+        status: 'executed',
+        failure_class: 'none',
       }),
     ]);
   });

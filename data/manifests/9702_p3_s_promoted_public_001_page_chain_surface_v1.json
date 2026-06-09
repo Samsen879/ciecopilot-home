@@ -1,0 +1,3090 @@
+{
+  "schema_version": "9702_full_page_chain_surface_v1",
+  "manifest_id": "9702_p3_s_promoted_public_001_page_chain_surface_v1",
+  "generated_on": "2026-06-09",
+  "subject_code": "9702",
+  "stage": "9702_full_row_surface_crop_render_only",
+  "surface_status": "full_crop_render_complete_pending_visual_review",
+  "production_ready_claimed": false,
+  "item_count": 14,
+  "source_pdf_count": 7,
+  "source_pdf_paths": [
+    "data/past-papers/9702Physics/paper3/9702_s25_qp_31.pdf",
+    "data/past-papers/9702Physics/paper3/9702_s25_qp_32.pdf",
+    "data/past-papers/9702Physics/paper3/9702_s25_qp_33.pdf",
+    "data/past-papers/9702Physics/paper3/9702_s25_qp_34.pdf",
+    "data/past-papers/9702Physics/paper3/9702_s25_qp_35.pdf",
+    "data/past-papers/9702Physics/paper3/9702_s25_qp_37.pdf",
+    "data/past-papers/9702Physics/paper3/9702_s25_qp_38.pdf"
+  ],
+  "boundary": {
+    "row_surface_crop_readiness_only": true,
+    "visual_acceptance_claimed": false,
+    "canonical_question_text_claimed": false,
+    "normalized_plain_text_claimed": false,
+    "authority_alignment_claimed": false,
+    "db_consumption_claimed": false,
+    "search_consumption_claimed": false,
+    "rag_consumption_claimed": false,
+    "production_ready_claimed": false,
+    "external_vlm_or_api_calls": 0,
+    "db_search_read_model_rag_writes": 0
+  },
+  "shard_strategy": {
+    "shard_id": "9702_p3_s_promoted_public_001",
+    "paper": 3,
+    "session_code": "s",
+    "source_class": "promoted_public"
+  },
+  "unpromoted_locator_summary": {
+    "missing": 0,
+    "ambiguous": 0,
+    "rejected_false_positive_candidates": 51
+  },
+  "items": [
+    {
+      "storage_key": "9702/s25_qp_31/questions/q01.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "31",
+      "variant": 1,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_31.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_31",
+      "q_number": 1,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 1,
+        "page_index": 1,
+        "page_number": 2,
+        "text": "1",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "1 In this experiment, you will investigate the oscillation of masses on springs.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "page_numbers": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 5,
+        "start_page_number": 2,
+        "end_page_number": 6
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_002.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_003.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_004.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_005.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "3367eb4879f914dd93fd6a6c9045dea98769d314620c309cc464dcfe8267dedf",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "page_number": 2,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_002.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_003.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 3,
+          "page_number": 4,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_004.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_004.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 4,
+          "page_number": 5,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_005.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_005.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_006.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q01/q01_page_006.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_31/questions/q02.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "31",
+      "variant": 1,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_31.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_31",
+      "q_number": 2,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 2,
+        "page_index": 6,
+        "page_number": 7,
+        "text": "2",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "2 In this experiment, you will investigate the behaviour of paper on water.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "page_numbers": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 6,
+        "end_page_index": 11,
+        "start_page_number": 7,
+        "end_page_number": 12
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_007.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_008.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_009.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_010.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_011.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "3367eb4879f914dd93fd6a6c9045dea98769d314620c309cc464dcfe8267dedf",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 6,
+          "page_number": 7,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_007.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_007.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_008.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_008.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_009.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_010.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_010.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_011.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_011.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_31/9702_s25_qp_31_page_012.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_31/q02/q02_page_012.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_32/questions/q01.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "32",
+      "variant": 2,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_32.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_32",
+      "q_number": 1,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 1,
+        "page_index": 1,
+        "page_number": 2,
+        "text": "1",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "1 In this experiment, you will investigate a light-dependent resistor (LDR).",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "page_numbers": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 5,
+        "start_page_number": 2,
+        "end_page_number": 6
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_002.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_003.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_004.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_005.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "cb0477843b6b11234a34e936c8c16dbc5471b33ea16342017b1c1178d1b6e042",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "page_number": 2,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_002.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_003.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 3,
+          "page_number": 4,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_004.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_004.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 4,
+          "page_number": 5,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_005.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_005.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_006.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q01/q01_page_006.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_32/questions/q02.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "32",
+      "variant": 2,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_32.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_32",
+      "q_number": 2,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 2,
+        "page_index": 6,
+        "page_number": 7,
+        "text": "2",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "2 In this experiment, you will investigate the elastic properties of rubber cord.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "page_numbers": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 6,
+        "end_page_index": 11,
+        "start_page_number": 7,
+        "end_page_number": 12
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_007.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_008.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_009.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_010.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_011.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "cb0477843b6b11234a34e936c8c16dbc5471b33ea16342017b1c1178d1b6e042",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 6,
+          "page_number": 7,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_007.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_007.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_008.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_008.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_009.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_010.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_010.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_011.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_011.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_32/9702_s25_qp_32_page_012.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_32/q02/q02_page_012.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_33/questions/q01.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "33",
+      "variant": 3,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_33.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_33",
+      "q_number": 1,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 1,
+        "page_index": 1,
+        "page_number": 2,
+        "text": "1",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "1 In this experiment, you will investigate an electrical circuit.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "page_numbers": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 5,
+        "start_page_number": 2,
+        "end_page_number": 6
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_002.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_003.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_004.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_005.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "62b53efcef3d5bbb79886f6fb3a36ff292336c54f9d83a802f952cdda830efc9",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "page_number": 2,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_002.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_003.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 3,
+          "page_number": 4,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_004.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_004.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 4,
+          "page_number": 5,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_005.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_005.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_006.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q01/q01_page_006.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_33/questions/q02.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "33",
+      "variant": 3,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_33.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_33",
+      "q_number": 2,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 2,
+        "page_index": 6,
+        "page_number": 7,
+        "text": "2",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "2 In this experiment, you will investigate the oscillations of a chain of paper clips.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "page_numbers": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 6,
+        "end_page_index": 11,
+        "start_page_number": 7,
+        "end_page_number": 12
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_007.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_008.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_009.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_010.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_011.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "62b53efcef3d5bbb79886f6fb3a36ff292336c54f9d83a802f952cdda830efc9",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 6,
+          "page_number": 7,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_007.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_007.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_008.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_008.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_009.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_010.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_010.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_011.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_011.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_33/9702_s25_qp_33_page_012.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_33/q02/q02_page_012.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_34/questions/q01.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "34",
+      "variant": 4,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_34.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_34",
+      "q_number": 1,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 1,
+        "page_index": 1,
+        "page_number": 2,
+        "text": "1",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "1 In this experiment, you will investigate the properties of a pendulum.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "page_numbers": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 6,
+        "start_page_number": 2,
+        "end_page_number": 7
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_002.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_003.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_004.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_005.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_006.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_007.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_006.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_007.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_006.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_007.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "696b2f8bff6aa855b291707da09c23b566d237f3c75bf20dc7d185b8845171f7",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "page_number": 2,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_002.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_003.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 3,
+          "page_number": 4,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_004.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_004.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 4,
+          "page_number": 5,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_005.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_005.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_006.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_006.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 6,
+          "page_number": 7,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_007.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q01/q01_page_007.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_34/questions/q02.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "34",
+      "variant": 4,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_34.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_34",
+      "q_number": 2,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 2,
+        "page_index": 7,
+        "page_number": 8,
+        "text": "2",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "2 In this experiment, you will investigate the motion of steel balls falling through water in a tube.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "page_numbers": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 11,
+        "start_page_number": 8,
+        "end_page_number": 12
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_008.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_009.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_010.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_011.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "696b2f8bff6aa855b291707da09c23b566d237f3c75bf20dc7d185b8845171f7",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_008.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_008.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_009.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_010.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_010.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_011.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_011.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_34/9702_s25_qp_34_page_012.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_34/q02/q02_page_012.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_35/questions/q01.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "35",
+      "variant": 5,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_35.pdf",
+      "source_pdf_page_count": 16,
+      "source_pdf_stem": "9702_s25_qp_35",
+      "q_number": 1,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 1,
+        "page_index": 2,
+        "page_number": 3,
+        "text": "1",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "1 In this experiment, you will investigate the oscillations of a magnet.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "page_numbers": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "page_range": {
+        "start_page_index": 2,
+        "end_page_index": 8,
+        "start_page_number": 3,
+        "end_page_number": 9
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_003.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_004.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_005.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_006.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_007.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_008.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_009.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_006.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_009.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_006.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_009.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "52a347a1de98e596770e14ec6890e97f70b0d79c6a642448e8821de440a16a4f",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 16,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_003.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 3,
+          "page_number": 4,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_004.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_004.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 4,
+          "page_number": 5,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_005.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_005.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_006.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_006.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 6,
+          "page_number": 7,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_007.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_007.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_008.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_008.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_009.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q01/q01_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_35/questions/q02.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "35",
+      "variant": 5,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_35.pdf",
+      "source_pdf_page_count": 16,
+      "source_pdf_stem": "9702_s25_qp_35",
+      "q_number": 2,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 2,
+        "page_index": 9,
+        "page_number": 10,
+        "text": "2",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "2 In this experiment, you will investigate the behaviour of suspended cardboard sheets.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "page_numbers": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "page_range": {
+        "start_page_index": 9,
+        "end_page_index": 15,
+        "start_page_number": 10,
+        "end_page_number": 16
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_010.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_011.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_012.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_013.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_014.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_015.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_016.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_012.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_013.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_014.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_015.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_016.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_012.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_013.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_014.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_015.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_016.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "52a347a1de98e596770e14ec6890e97f70b0d79c6a642448e8821de440a16a4f",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 16,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_010.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_010.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_011.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_011.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_012.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_012.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 12,
+          "page_number": 13,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_013.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_013.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 13,
+          "page_number": 14,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_014.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_014.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 14,
+          "page_number": 15,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_015.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_015.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 15,
+          "page_number": 16,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_35/9702_s25_qp_35_page_016.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_35/q02/q02_page_016.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_37/questions/q01.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "37",
+      "variant": 7,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_37.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_37",
+      "q_number": 1,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 1,
+        "page_index": 1,
+        "page_number": 2,
+        "text": "1",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "1 In this experiment, you will investigate an electrical circuit.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "page_numbers": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 5,
+        "start_page_number": 2,
+        "end_page_number": 6
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_002.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_003.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_004.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_005.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_006.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_006.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_006.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "e36fe7c2d4611209d6e4788db24730f29413151d8908c93e17f5012421fa0582",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "page_number": 2,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_002.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_003.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 3,
+          "page_number": 4,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_004.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_004.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 4,
+          "page_number": 5,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_005.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_005.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_006.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q01/q01_page_006.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_37/questions/q02.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "37",
+      "variant": 7,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_37.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_37",
+      "q_number": 2,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 2,
+        "page_index": 6,
+        "page_number": 7,
+        "text": "2",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "2 In this experiment, you will investigate the oscillations of a chain of paper clips.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "page_numbers": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 6,
+        "end_page_index": 11,
+        "start_page_number": 7,
+        "end_page_number": 12
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_007.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_008.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_009.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_010.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_011.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_007.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "e36fe7c2d4611209d6e4788db24730f29413151d8908c93e17f5012421fa0582",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 6,
+          "page_number": 7,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_007.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_007.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_008.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_008.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_009.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_010.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_010.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_011.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_011.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_37/9702_s25_qp_37_page_012.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_37/q02/q02_page_012.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_38/questions/q01.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "38",
+      "variant": 8,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_38.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_38",
+      "q_number": 1,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 1,
+        "page_index": 1,
+        "page_number": 2,
+        "text": "1",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "1 In this experiment, you will investigate the properties of a pendulum.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "page_numbers": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "page_range": {
+        "start_page_index": 1,
+        "end_page_index": 6,
+        "start_page_number": 2,
+        "end_page_number": 7
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_002.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_003.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_004.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_005.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_006.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_007.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_006.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_007.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_002.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_003.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_004.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_005.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_006.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_007.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "99bd272ffed2c5bf24cd6e13a712cdb11792fbe46f53fe4fb1c3a30536da0ed1",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 1,
+          "page_number": 2,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_002.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_002.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 2,
+          "page_number": 3,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_003.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_003.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 3,
+          "page_number": 4,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_004.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_004.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 4,
+          "page_number": 5,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_005.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_005.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 5,
+          "page_number": 6,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_006.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_006.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 6,
+          "page_number": 7,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_007.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q01/q01_page_007.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    },
+    {
+      "storage_key": "9702/s25_qp_38/questions/q02.png",
+      "subject_code": "9702",
+      "syllabus_code": "9702",
+      "paper": 3,
+      "session": "s",
+      "session_year": "s25",
+      "year": 2025,
+      "component": "38",
+      "variant": 8,
+      "source_pdf": "data/past-papers/9702Physics/paper3/9702_s25_qp_38.pdf",
+      "source_pdf_page_count": 12,
+      "source_pdf_stem": "9702_s25_qp_38",
+      "q_number": 2,
+      "source_locator_surface_manifest_path": "data/manifests/9702_p3_s_promoted_public_001_page_chain_surface_v1.json",
+      "source_locator_surface_manifest_reason": "Phase 1 source-pass PDF; Phase 3 deterministic left-margin locator scaled to 9702_p3_s_promoted_public_001",
+      "locator_method": "fitz_text_words_left_margin_9702_full_scaleout_v1",
+      "locator_status": "resolved",
+      "locator_confidence": 0.91,
+      "locator": {
+        "q_number": 2,
+        "page_index": 7,
+        "page_number": 8,
+        "text": "2",
+        "x": 49.649,
+        "y": 89.827,
+        "line_text": "2 In this experiment, you will investigate the motion of steel balls falling through water in a tube.",
+        "score": 26,
+        "reason": "strict_left_margin_question_header",
+        "method": "fitz_text_words_left_margin_9702_full_scaleout_v1"
+      },
+      "page_indices": [
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "page_numbers": [
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "page_range": {
+        "start_page_index": 7,
+        "end_page_index": 11,
+        "start_page_number": 8,
+        "end_page_number": 12
+      },
+      "route_hint": "pdf_page_chain_locator",
+      "rendered_pdf_page_paths": [
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_008.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_009.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_010.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_011.png",
+        "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_012.png"
+      ],
+      "crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_012.png"
+      ],
+      "review_crop_paths": [
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_008.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_009.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_010.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_011.png",
+        "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_012.png"
+      ],
+      "crop_status": "complete",
+      "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
+      "page_chain_surface_status": "full_crop_render_complete_pending_visual_review",
+      "text_evidence_status": "not_extracted",
+      "normalized_plain_text": null,
+      "text_consumption_status": "not_ready_missing_question_plain_text",
+      "text_only_ready": false,
+      "image_context_required": true,
+      "requires_review": true,
+      "visual_review_required": true,
+      "visual_review_reason": "local_full_crop_render_complete_not_vlm_reviewed",
+      "production_ready_claimed": false,
+      "db_consumption_claimed": false,
+      "search_consumption_claimed": false,
+      "rag_consumption_claimed": false,
+      "external_vlm_or_api_used": false,
+      "external_ocr_rerun_used": false,
+      "source_inventory_record": {
+        "inventory_report": "docs/reports/2026-06-09-9702-source-truth-inventory.json",
+        "status": "pass",
+        "sha256": "99bd272ffed2c5bf24cd6e13a712cdb11792fbe46f53fe4fb1c3a30536da0ed1",
+        "source_posture_classification": "public_mirror_candidate_promoted_2026_06_02",
+        "parser_page_count": 12,
+        "render_sanity_status": "pass"
+      },
+      "full_scaleout_stage": "row_surface_crop_render_only",
+      "crop_records": [
+        {
+          "page_index": 7,
+          "page_number": 8,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_008.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_008.png",
+          "crop_box_points": [
+            0.0,
+            69.827,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            94,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 8,
+          "page_number": 9,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_009.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_009.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 9,
+          "page_number": 10,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_010.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_010.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 10,
+          "page_number": 11,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_011.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_011.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        },
+        {
+          "page_index": 11,
+          "page_number": 12,
+          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_s25_qp_38/9702_s25_qp_38_page_012.png",
+          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_s25_qp_38/q02/q02_page_012.png",
+          "crop_box_points": [
+            0.0,
+            0.0,
+            595.276,
+            841.89
+          ],
+          "crop_box_pixels": [
+            0,
+            0,
+            804,
+            1137
+          ]
+        }
+      ],
+      "local_extraction_crop_method": "pymupdf_rendered_page_question_band_9702_full_scaleout_v1",
+      "mechanical_validation": {
+        "crop_files_exist": true,
+        "crop_images_non_empty": true,
+        "crop_images_nonblank": true,
+        "referenced_rendered_pages_exist": true,
+        "referenced_rendered_pages_nonblank": true,
+        "validation_issues": []
+      }
+    }
+  ]
+}

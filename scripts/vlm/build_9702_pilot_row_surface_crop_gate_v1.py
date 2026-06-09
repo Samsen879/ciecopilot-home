@@ -24,6 +24,7 @@ DEFAULT_GENERATED_ON = "2026-06-09"
 DEFAULT_SLUG = "structural_risk"
 MIN_CROP_WIDTH = 120
 MIN_CROP_HEIGHT = 80
+QUESTION_HEADER_LEFT_MARGIN_MAX_X = 62.0
 
 
 @dataclass(frozen=True)
@@ -136,7 +137,7 @@ def score_question_header_candidate(
         if any(token.rstrip(".)") == expected for token in tokens[1:]):
             return {"accepted": False, "score": 0, "reason": "numeric_token_not_first"}
         return {"accepted": False, "score": 0, "reason": "not_target_question"}
-    if first_token_x > 75 or first_token_y <= 35:
+    if first_token_x > QUESTION_HEADER_LEFT_MARGIN_MAX_X or first_token_y <= 35:
         return {"accepted": False, "score": 0, "reason": "outside_header_margin"}
 
     tail = tokens[2:] if question_word else tokens[1:]
@@ -146,10 +147,47 @@ def score_question_header_candidate(
     if re.match(r"^\d+(?:\.\d+)?\b", tail_text):
         return {"accepted": False, "score": 0, "reason": "numeric_measurement_tail"}
 
-    score = 32 if not tail else 26
+    score = 18 if not tail else 26
     if question_word:
         score = 34
     return {"accepted": True, "score": score, "reason": "strict_left_margin_question_header"}
+
+
+def resolve_question_header_duplicate(existing: dict[str, Any], candidate: dict[str, Any]) -> dict[str, Any]:
+    existing_score = int(existing.get("score") or 0)
+    candidate_score = int(candidate.get("score") or 0)
+    if candidate_score > existing_score:
+        return {
+            "action": "replace",
+            "accepted": candidate,
+            "rejected": {
+                **existing,
+                "reason": "lower_scoring_duplicate_question_header_candidate",
+                "accepted_candidate": candidate,
+            },
+        }
+    if candidate_score < existing_score:
+        return {
+            "action": "keep",
+            "accepted": existing,
+            "rejected": {
+                **candidate,
+                "reason": "lower_scoring_duplicate_question_header_candidate",
+                "accepted_candidate": existing,
+            },
+        }
+    return {
+        "action": "ambiguous",
+        "accepted": existing,
+        "ambiguous": {"q_number": candidate.get("q_number"), "candidate": candidate, "accepted": existing},
+    }
+
+
+def parse_question_number_token(token: str) -> int | None:
+    stripped = str(token or "").rstrip(".)")
+    if not re.match(r"^[0-9]+$", stripped):
+        return None
+    return int(stripped)
 
 
 def build_surface_row(
@@ -271,10 +309,9 @@ def detect_question_headers(
             for line in line_records_for_page(page):
                 tokens = line["text"].split()
                 for token_index, token in enumerate(tokens):
-                    stripped = token.rstrip(".)")
-                    if not stripped.isdigit():
+                    q_number = parse_question_number_token(token)
+                    if q_number is None:
                         continue
-                    q_number = int(stripped)
                     if q_number not in expected:
                         continue
                     word_index = min(token_index, len(line["words"]) - 1)
@@ -289,7 +326,7 @@ def detect_question_headers(
                         "q_number": q_number,
                         "page_index": page_index,
                         "page_number": page_index + 1,
-                        "text": stripped,
+                        "text": str(q_number),
                         "x": round(float(token_word["x0"]), 3),
                         "y": round(float(token_word["y0"]), 3),
                         "line_text": line["text"],
@@ -300,7 +337,15 @@ def detect_question_headers(
                         rejected.append(record)
                         continue
                     if q_number in accepted:
-                        ambiguous.append({"q_number": q_number, "candidate": record, "accepted": accepted[q_number]})
+                        decision = resolve_question_header_duplicate(accepted[q_number], record)
+                        if decision["action"] == "replace":
+                            accepted[q_number] = decision["accepted"]
+                            rejected.append(decision["rejected"])
+                            continue
+                        if decision["action"] == "keep":
+                            rejected.append(decision["rejected"])
+                            continue
+                        ambiguous.append(decision["ambiguous"])
                         continue
                     accepted[q_number] = record
         return accepted, rejected, ambiguous, page_count

@@ -43,6 +43,12 @@ class Test9702PilotRowSurfaceCropGate(unittest.TestCase):
         self.assertFalse(accepted["accepted"])
         self.assertEqual(accepted["reason"], "numeric_token_not_first")
 
+    def test_question_number_token_parser_rejects_unicode_digit_like_noise(self):
+        module = load_module()
+
+        self.assertEqual(module.parse_question_number_token("12.)"), 12)
+        self.assertIsNone(module.parse_question_number_token("9²"))
+
     def test_question_header_filter_accepts_sentence_after_number(self):
         module = load_module()
 
@@ -54,6 +60,49 @@ class Test9702PilotRowSurfaceCropGate(unittest.TestCase):
         )
 
         self.assertTrue(accepted["accepted"])
+
+    def test_question_header_filter_rejects_indented_continuation_measurement(self):
+        module = load_module()
+
+        accepted = module.score_question_header_candidate(
+            q_number=20,
+            line_text="20 m s-1 to 25 m s-1 in a time of 5.4 s.",
+            first_token_x=70.86,
+            first_token_y=285.24,
+        )
+
+        self.assertFalse(accepted["accepted"])
+        self.assertEqual(accepted["reason"], "outside_header_margin")
+
+    def test_duplicate_header_resolution_prefers_question_text_over_lone_figure_number(self):
+        module = load_module()
+
+        figure_number = {
+            "q_number": 8,
+            "line_text": "8",
+            "score": module.score_question_header_candidate(
+                q_number=8,
+                line_text="8",
+                first_token_x=70.565,
+                first_token_y=286.04,
+            )["score"],
+        }
+        question_header = {
+            "q_number": 8,
+            "line_text": "8 A horseshoe magnet is placed on a top pan balance.",
+            "score": module.score_question_header_candidate(
+                q_number=8,
+                line_text="8 A horseshoe magnet is placed on a top pan balance.",
+                first_token_x=49.606,
+                first_token_y=60.131,
+            )["score"],
+        }
+
+        decision = module.resolve_question_header_duplicate(figure_number, question_header)
+
+        self.assertEqual(decision["action"], "replace")
+        self.assertIs(decision["accepted"], question_header)
+        self.assertEqual(decision["rejected"]["reason"], "lower_scoring_duplicate_question_header_candidate")
 
     def test_stable_identity_contains_required_fields(self):
         module = load_module()

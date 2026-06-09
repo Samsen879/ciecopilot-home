@@ -1,0 +1,80 @@
+{
+  "schema_version": "9702_w17_qp21_q07_boundary_remediation_v1",
+  "generated_on": "2026-06-09",
+  "subject_code": "9702",
+  "issue": 420,
+  "parent_issue": 402,
+  "blocks_issue": 407,
+  "production_ready_claimed": false,
+  "claim_boundary": {
+    "row_surface_crop_boundary_remediation_only": true,
+    "visual_acceptance_claimed": false,
+    "normalized_text_generated": false,
+    "authority_alignment_generated": false,
+    "db_search_read_model_rag_writes": 0,
+    "all_9702_production_ready_claimed": false
+  },
+  "blocked_phase5_evidence_preserved": {
+    "storage_key": "9702/w17_qp_21/questions/q07.png",
+    "source_pdf": "data/past-papers/9702Physics/paper2/9702_w17_qp_21.pdf",
+    "q_number": 7,
+    "previous_page_numbers": [14, 15, 16],
+    "vlm_response_id": "chatcmpl-249bcabb-e6c4-940b-895a-9c28622a2573",
+    "vlm_reason": "Third image shows Q8, not part of Q7; wrong boundary.",
+    "operator_visual_check": "Pages 14-15 contain Q7; page 16 starts Q8.",
+    "phase5_preserved_stash": "stash@{0}: wip-407-visual-review-blocked-9702-w17-qp21-q07-rejected"
+  },
+  "remediation": {
+    "row_identity_stable": true,
+    "storage_key": "9702/w17_qp_21/questions/q07.png",
+    "source_pdf": "data/past-papers/9702Physics/paper2/9702_w17_qp_21.pdf",
+    "q_number": 7,
+    "corrected_page_numbers": [14, 15],
+    "excluded_page_numbers": [16],
+    "corrected_crop_paths": [
+      "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_014.png",
+      "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_015.png"
+    ],
+    "removed_stale_q8_crop_path": "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_016.png",
+    "corrected_rendered_page_paths": [
+      "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_014.png",
+      "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_015.png"
+    ],
+    "manifest_row_metadata": "boundary_remediation"
+  },
+  "phase4_gate_after_remediation": {
+    "command": "/home/samsen/code/ciecopilot-home/.venv/bin/python scripts/vlm/build_9702_full_row_surface_crop_gate_v1.py",
+    "row_gate_status": "passed",
+    "crop_gate_status": "passed",
+    "accepted_rows": 4137,
+    "duplicate_storage_key_q_number_rows": 0,
+    "row_identity_multiple_manifest_count": 0,
+    "manifest_membership_duplicate_count": 0,
+    "missing_crop_files": 0,
+    "missing_rendered_pages": 0,
+    "crop_rows_complete": 4137,
+    "boundary_remediation_count": 1,
+    "blocker_count": 0,
+    "production_ready_claimed": false
+  },
+  "count_impact": {
+    "accepted_rows_before": 4137,
+    "accepted_rows_after": 4137,
+    "crop_image_paths_before": 6686,
+    "crop_image_paths_after": 6685,
+    "rendered_page_paths_referenced_by_rows_before": 5058,
+    "rendered_page_paths_referenced_by_rows_after": 5057,
+    "boundary_remediation_count_before": 0,
+    "boundary_remediation_count_after": 1
+  },
+  "corrected_artifacts": [
+    "data/manifests/9702_p2_w_historical_001_page_chain_surface_v1.json",
+    "data/manifests/9702_full_row_surface_2026_06_09_manifest_v1.json",
+    "data/manifests/9702_full_crop_manifest_2026_06_09_v1.json",
+    "docs/reports/2026-06-09-9702-full-row-surface-gate.json",
+    "docs/reports/2026-06-09-9702-full-row-surface-gate.md",
+    "docs/reports/2026-06-09-9702-full-crop-render-gate.json",
+    "docs/reports/2026-06-09-9702-full-crop-render-gate.md"
+  ],
+  "phase5_resume_note": "#407 remains blocked until the Phase 5 visual review gate is rerun against these corrected artifacts and passes."
+}

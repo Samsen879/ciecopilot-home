@@ -838,35 +838,30 @@
       },
       "page_indices": [
         13,
-        14,
-        15
+        14
       ],
       "page_numbers": [
         14,
-        15,
-        16
+        15
       ],
       "page_range": {
         "start_page_index": 13,
-        "end_page_index": 15,
+        "end_page_index": 14,
         "start_page_number": 14,
-        "end_page_number": 16
+        "end_page_number": 15
       },
       "route_hint": "pdf_page_chain_locator",
       "rendered_pdf_page_paths": [
         "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_014.png",
-        "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_015.png",
-        "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_016.png"
+        "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_015.png"
       ],
       "crop_paths": [
         "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_014.png",
-        "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_015.png",
-        "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_016.png"
+        "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_015.png"
       ],
       "review_crop_paths": [
         "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_014.png",
-        "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_015.png",
-        "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_016.png"
+        "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_015.png"
       ],
       "crop_status": "complete",
       "surface_evidence_status": "local_full_crop_render_complete_pending_visual_review",
@@ -894,6 +889,29 @@
         "render_sanity_status": "pass"
       },
       "full_scaleout_stage": "row_surface_crop_render_only",
+      "boundary_remediation": {
+        "issue": "#420",
+        "discovered_by": "#407 Phase 5 visual review",
+        "phase5_source_artifact_in_preserved_stash": "docs/reports/2026-06-09-9702-visual-review-vlm.json",
+        "phase5_preserved_stash": "stash@{0}: wip-407-visual-review-blocked-9702-w17-qp21-q07-rejected",
+        "vlm_response_id": "chatcmpl-249bcabb-e6c4-940b-895a-9c28622a2573",
+        "vlm_reason": "Third image shows Q8, not part of Q7; wrong boundary.",
+        "previous_page_numbers": [
+          14,
+          15,
+          16
+        ],
+        "corrected_page_numbers": [
+          14,
+          15
+        ],
+        "excluded_page_numbers": [
+          16
+        ],
+        "corrected_end_page_index": 14,
+        "reason": "Page 16 starts printed Q8, so q07 visual evidence must stop at page 15.",
+        "production_ready_claimed": false
+      },
       "crop_records": [
         {
           "page_index": 13,
@@ -918,24 +936,6 @@
           "page_number": 15,
           "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_015.png",
           "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_015.png",
-          "crop_box_points": [
-            0.0,
-            0.0,
-            595.276,
-            841.89
-          ],
-          "crop_box_pixels": [
-            0,
-            0,
-            804,
-            1137
-          ]
-        },
-        {
-          "page_index": 15,
-          "page_number": 16,
-          "rendered_pdf_page_path": "data/crops/9702-full-scaleout/renders/9702_w17_qp_21/9702_w17_qp_21_page_016.png",
-          "crop_path": "data/crops/9702-full-scaleout/question-crops/9702_w17_qp_21/q07/q07_page_016.png",
           "crop_box_points": [
             0.0,
             0.0,

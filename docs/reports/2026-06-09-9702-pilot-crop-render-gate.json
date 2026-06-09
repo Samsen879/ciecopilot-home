@@ -1,0 +1,34 @@
+{
+  "schema_version": "9702_pilot_crop_render_gate_v1",
+  "generated_on": "2026-06-09",
+  "subject_code": "9702",
+  "pilot_slug": "structural_risk",
+  "gate_status": "passed",
+  "production_ready_claimed": false,
+  "external_vlm_or_api_used": false,
+  "external_ocr_rerun_used": false,
+  "db_consumption_claimed": false,
+  "search_consumption_claimed": false,
+  "rag_consumption_claimed": false,
+  "artifacts": {
+    "page_chain_surface_manifest": "data/manifests/9702_pilot_structural_risk_page_chain_surface_v1.json",
+    "crop_manifest": "data/manifests/9702_pilot_crop_manifest_2026_06_09_v1.json"
+  },
+  "counts": {
+    "crop_rows_total": 63,
+    "crop_rows_complete": 63,
+    "missing_crop_files": 0,
+    "missing_rendered_pages": 0,
+    "multi_page_rows": 20,
+    "rendered_pages": 81,
+    "duplicate_row_identities": 0
+  },
+  "blockers": [],
+  "stop_boundary": {
+    "production_ready_claimed": false,
+    "full_scaleout_authorized": false,
+    "visual_acceptance_claimed": false,
+    "text_normalization_claimed": false,
+    "db_search_read_model_rag_writes": 0
+  }
+}

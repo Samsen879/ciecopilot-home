@@ -16,6 +16,7 @@
 - unpromoted_missing_candidate_count: `73`
 - unpromoted_ambiguous_candidate_count: `0`
 - rejected_false_positive_candidate_count: `13829`
+- boundary_remediation_count: `1`
 - blocker_count: `0`
 
 ## Artifacts

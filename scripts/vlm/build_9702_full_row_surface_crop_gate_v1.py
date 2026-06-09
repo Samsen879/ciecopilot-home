@@ -50,6 +50,25 @@ CROP_METHOD = "pymupdf_rendered_page_question_band_9702_full_scaleout_v1"
 MIN_CROP_WIDTH = 120
 MIN_CROP_HEIGHT = 80
 NONBLANK_LUMA_THRESHOLD = 250
+BOUNDARY_REMEDIATIONS: dict[tuple[str, int], dict[str, Any]] = {
+    (
+        "data/past-papers/9702Physics/paper2/9702_w17_qp_21.pdf",
+        7,
+    ): {
+        "issue": "#420",
+        "discovered_by": "#407 Phase 5 visual review",
+        "phase5_source_artifact_in_preserved_stash": "docs/reports/2026-06-09-9702-visual-review-vlm.json",
+        "phase5_preserved_stash": "stash@{0}: wip-407-visual-review-blocked-9702-w17-qp21-q07-rejected",
+        "vlm_response_id": "chatcmpl-249bcabb-e6c4-940b-895a-9c28622a2573",
+        "vlm_reason": "Third image shows Q8, not part of Q7; wrong boundary.",
+        "previous_page_numbers": [14, 15, 16],
+        "corrected_page_numbers": [14, 15],
+        "excluded_page_numbers": [16],
+        "corrected_end_page_index": 14,
+        "reason": "Page 16 starts printed Q8, so q07 visual evidence must stop at page 15.",
+        "production_ready_claimed": False,
+    }
+}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -132,6 +151,36 @@ def find_duplicate_row_identities(rows: list[dict[str, Any]]) -> list[dict[str, 
     ]
 
 
+def boundary_remediation_for_row(source_pdf: str, q_number: int) -> dict[str, Any] | None:
+    remediation = BOUNDARY_REMEDIATIONS.get((source_pdf, q_number))
+    return deepcopy(remediation) if remediation else None
+
+
+def page_indices_for_full_row(
+    *,
+    source_pdf: str,
+    headers: dict[int, dict[str, Any]],
+    q_number: int,
+    page_count: int,
+    max_pages: int,
+) -> list[int]:
+    page_indices = page_indices_for_headers(headers, q_number, page_count, max_pages)
+    remediation = boundary_remediation_for_row(source_pdf, q_number)
+    if not remediation:
+        return page_indices
+
+    current_page_index = int(headers[q_number]["page_index"])
+    corrected_end_page_index = int(remediation["corrected_end_page_index"])
+    corrected = [
+        page_index
+        for page_index in page_indices
+        if current_page_index <= page_index <= corrected_end_page_index
+    ]
+    if not corrected:
+        raise RuntimeError(f"empty_boundary_remediation:{source_pdf}:q{q_number:02d}")
+    return corrected
+
+
 def image_is_nonblank(path: Path) -> bool:
     with Image.open(path) as image:
         if image.width <= 0 or image.height <= 0:
@@ -172,6 +221,7 @@ def full_surface_row(
     source_manifest_path: str,
     selection_reason: str,
     source_inventory_record: dict[str, Any],
+    boundary_remediation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     row = build_surface_row(
         meta=meta,
@@ -206,6 +256,8 @@ def full_surface_row(
         }
     )
     row["locator"] = {**row["locator"], "method": LOCATOR_METHOD}
+    if boundary_remediation:
+        row["boundary_remediation"] = boundary_remediation
     return row
 
 
@@ -427,6 +479,7 @@ def build_gate(
     rendered_page_count = 0
     rendered_page_paths: set[str] = set()
     crop_paths: set[str] = set()
+    boundary_remediation_count = 0
 
     for shard in shards:
         shard_rows: list[dict[str, Any]] = []
@@ -466,7 +519,13 @@ def build_gate(
             for q_number in detected_q_numbers:
                 if q_number in ambiguous_q_numbers:
                     continue
-                page_indices = page_indices_for_headers(headers, q_number, page_count, max_pages_per_row)
+                page_indices = page_indices_for_full_row(
+                    source_pdf=source_pdf,
+                    headers=headers,
+                    q_number=q_number,
+                    page_count=page_count,
+                    max_pages=max_pages_per_row,
+                )
                 row = full_surface_row(
                     meta=meta,
                     q_number=q_number,
@@ -479,6 +538,7 @@ def build_gate(
                         f"{shard['shard_id']}"
                     ),
                     source_inventory_record=source_record,
+                    boundary_remediation=boundary_remediation_for_row(source_pdf, q_number),
                 )
                 crop_records, crop_issues = build_crop_records(
                     source_pdf_path=source_pdf_path,
@@ -497,6 +557,8 @@ def build_gate(
                     crop_records=crop_records,
                     crop_issues=sorted(set(full_issues)),
                 )
+                if updated_row.get("boundary_remediation"):
+                    boundary_remediation_count += 1
                 shard_rows.append(updated_row)
                 rendered_page_paths.update(updated_row["rendered_pdf_page_paths"])
                 crop_paths.update(updated_row["crop_paths"])
@@ -702,6 +764,7 @@ def build_gate(
         "unpromoted_missing_candidate_count": len(all_missing),
         "unpromoted_ambiguous_candidate_count": len(all_ambiguous),
         "rejected_false_positive_candidate_count": len(all_rejected),
+        "boundary_remediation_count": boundary_remediation_count,
         "blocker_count": blocker_count,
     }
     crop_counts = {
@@ -714,6 +777,7 @@ def build_gate(
         "rendered_pages_generated": rendered_page_count,
         "multi_page_rows": sum(1 for row in all_crop_items if len(row.get("page_indices") or []) > 1),
         "duplicate_storage_key_q_number_rows": len(duplicate_row_identities),
+        "boundary_remediation_count": boundary_remediation_count,
         "blocker_count": blocker_count,
     }
 
@@ -855,6 +919,7 @@ def render_row_gate_markdown(report: dict[str, Any]) -> str:
         f"- unpromoted_missing_candidate_count: `{counts['unpromoted_missing_candidate_count']}`",
         f"- unpromoted_ambiguous_candidate_count: `{counts['unpromoted_ambiguous_candidate_count']}`",
         f"- rejected_false_positive_candidate_count: `{counts['rejected_false_positive_candidate_count']}`",
+        f"- boundary_remediation_count: `{counts['boundary_remediation_count']}`",
         f"- blocker_count: `{counts['blocker_count']}`",
         "",
         "## Artifacts",
@@ -893,6 +958,7 @@ def render_crop_gate_markdown(report: dict[str, Any]) -> str:
         f"- rendered_page_paths_referenced_by_rows: `{counts['rendered_page_paths_referenced_by_rows']}`",
         f"- rendered_pages_generated: `{counts['rendered_pages_generated']}`",
         f"- multi_page_rows: `{counts['multi_page_rows']}`",
+        f"- boundary_remediation_count: `{counts['boundary_remediation_count']}`",
         f"- blocker_count: `{counts['blocker_count']}`",
         "",
         "## Boundary",

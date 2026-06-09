@@ -13,10 +13,11 @@
 - crop_rows_complete: `4137`
 - missing_crop_files: `0`
 - missing_rendered_pages: `0`
-- crop_image_paths: `6686`
-- rendered_page_paths_referenced_by_rows: `5058`
+- crop_image_paths: `6685`
+- rendered_page_paths_referenced_by_rows: `5057`
 - rendered_pages_generated: `5859`
 - multi_page_rows: `1316`
+- boundary_remediation_count: `1`
 - blocker_count: `0`
 
 ## Boundary

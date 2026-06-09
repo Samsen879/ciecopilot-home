@@ -97,6 +97,28 @@ class Test9702FullRowSurfaceCropGate(unittest.TestCase):
             finally:
                 nonblank_path.unlink(missing_ok=True)
 
+    def test_w17_qp21_q07_boundary_remediation_excludes_q8_page(self):
+        module = load_module()
+        source_pdf = "data/past-papers/9702Physics/paper2/9702_w17_qp_21.pdf"
+
+        headers, _rejected, _ambiguous, page_count = module.detect_question_headers(
+            ROOT / source_pdf,
+            expected_q_numbers=module.expected_q_numbers_for_paper(2),
+        )
+
+        self.assertIn(7, headers)
+        self.assertNotIn(8, headers)
+        self.assertEqual(
+            module.page_indices_for_full_row(
+                source_pdf=source_pdf,
+                headers=headers,
+                q_number=7,
+                page_count=page_count,
+                max_pages=4,
+            ),
+            [13, 14],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

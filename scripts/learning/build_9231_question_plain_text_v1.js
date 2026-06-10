@@ -66,6 +66,7 @@ function printUsage() {
   writeStdoutLine([
     'Usage: node scripts/learning/build_9231_question_plain_text_v1.js',
     '  [--generated-on <YYYY-MM-DD>]',
+    '  [--subject <subject-code>]',
     '  [--source-version <id>]',
     '  [--selection-manifest <path>]',
     '  [--surface-manifest <path>] (repeatable; overrides --selection-manifest)',
@@ -89,6 +90,11 @@ export function parseArgs(argv = process.argv.slice(2)) {
     }
     if (token === '--generated-on') {
       options.generatedOn = requiredValue(argv, index, token);
+      index += 1;
+      continue;
+    }
+    if (token === '--subject') {
+      options.subject = requiredValue(argv, index, token);
       index += 1;
       continue;
     }
@@ -210,6 +216,7 @@ function textItemRecord(item) {
     str: String(item?.str || ''),
     x: Math.round(itemX(item) * 100) / 100,
     y: Math.round(itemY(item) * 100) / 100,
+    width: Number.isFinite(item?.width) ? item.width : 0,
   };
 }
 
@@ -222,22 +229,33 @@ function ignoreTextItem(item) {
   if (item.y <= 30) {
     return true;
   }
-  return /^UCLES\b/i.test(text)
+  return /^©?\s*UCLES\b/i.test(text)
     || /^©? Cambridge International/i.test(text)
-    || /^\[Turn over\]$/i.test(text)
+    || /^\[?Turn over\]?$/i.test(text)
+    || /^\d{4}\/\d{2}\/[A-Z]\/[A-Z]\/\d{2}$/i.test(text)
     || /^BLANK PAGE$/i.test(text)
     || /^Permission to reproduce/i.test(text);
 }
 
 function joinLineFragments(items) {
-  const raw = items
-    .sort((left, right) => left.x - right.x)
-    .map((item) => item.str)
-    .join('');
+  const sortedItems = items.sort((left, right) => left.x - right.x);
+  let raw = '';
+  let previous = null;
+  for (const item of sortedItems) {
+    if (previous) {
+      const previousRight = previous.x + (Number.isFinite(previous.width) ? previous.width : 0);
+      const gap = item.x - previousRight;
+      if (gap > 1 && !raw.endsWith(' ')) {
+        raw += ' ';
+      }
+    }
+    raw += item.str;
+    previous = item;
+  }
   return normalizeLineText(raw);
 }
 
-export function buildTextLinesForPage(items, { yTolerance = 3 } = {}) {
+export function buildTextLinesForPage(items, { yTolerance = 6 } = {}) {
   const lines = [];
   for (const item of items.map(textItemRecord).filter((entry) => !ignoreTextItem(entry))
     .sort((left, right) => right.y - left.y || left.x - right.x)) {
@@ -275,6 +293,36 @@ function locatorYFromItem(item) {
   return Number.isFinite(item?.locator?.y) ? item.locator.y : null;
 }
 
+function locatorMethod(item) {
+  return normalizeString(item?.locator_method || item?.locator?.method);
+}
+
+function locatorUsesTopOrigin(item) {
+  const explicitOrigin = normalizeString(item?.locator_coordinate_origin || item?.locator?.coordinate_origin);
+  if (explicitOrigin) {
+    return /^(top|top_left|top-left|pymupdf)$/i.test(explicitOrigin);
+  }
+  return /(fitz|pymupdf)/i.test(locatorMethod(item));
+}
+
+function pageHeightForIndex(pdfText, pageIndex) {
+  const heights = pdfText?.page_heights || pdfText?.pageHeights || {};
+  const value = heights[String(pageIndex)];
+  return Number.isFinite(value) ? value : null;
+}
+
+function locatorYForPdfText(item, pdfText, pageIndex) {
+  const rawY = locatorYFromItem(item);
+  if (!Number.isFinite(rawY)) {
+    return null;
+  }
+  const pageHeight = pageHeightForIndex(pdfText, pageIndex);
+  if (locatorUsesTopOrigin(item) && Number.isFinite(pageHeight)) {
+    return pageHeight - rawY;
+  }
+  return rawY;
+}
+
 function pageRangeForItem(item) {
   const start = Number.isInteger(item?.page_range?.start_page_index)
     ? item.page_range.start_page_index
@@ -296,8 +344,11 @@ function compareRowsInPdf(left, right) {
   if (leftPage !== rightPage) {
     return leftPage - rightPage;
   }
-  return locatorYFromItem(right) - locatorYFromItem(left)
-    || Number(left.q_number || 0) - Number(right.q_number || 0);
+  const leftY = locatorYFromItem(left);
+  const rightY = locatorYFromItem(right);
+  const topOrigin = locatorUsesTopOrigin(left) && locatorUsesTopOrigin(right);
+  const yComparison = topOrigin ? leftY - rightY : rightY - leftY;
+  return yComparison || Number(left.q_number || 0) - Number(right.q_number || 0);
 }
 
 function buildNextRowByStorageKey(rows) {
@@ -329,9 +380,9 @@ export function extractQuestionTextFromPdfText({
   const range = pageRangeForItem(row);
   const startPageIndex = range.start_page_index;
   const endPageIndex = range.end_page_index;
-  const startY = locatorYFromItem(row);
+  const startY = locatorYForPdfText(row, pdfText, startPageIndex);
   const nextPageIndex = nextRow ? pageIndexFromItem(nextRow) : null;
-  const nextY = nextRow ? locatorYFromItem(nextRow) : null;
+  const nextY = nextRow ? locatorYForPdfText(nextRow, pdfText, nextPageIndex) : null;
   const pages = pdfText?.pages || {};
   const lines = [];
 
@@ -393,7 +444,7 @@ function collectSurfaceRows({ rootDir, selectionManifest, surfaceManifestPaths =
   const surfaceByPath = new Map();
   const rows = [];
   for (const selectionItem of selection.items || []) {
-    const sourceManifest = selectionItem.source_manifest;
+    const sourceManifest = selectionItem.source_manifest || selectionItem.source_locator_surface_manifest_path;
     if (!sourceManifest) {
       continue;
     }
@@ -401,12 +452,15 @@ function collectSurfaceRows({ rootDir, selectionManifest, surfaceManifestPaths =
       surfaceByPath.set(sourceManifest, readJson(rootDir, sourceManifest));
     }
     const surface = surfaceByPath.get(sourceManifest);
-    const surfaceItem = surface.items?.[selectionItem.source_manifest_index] || null;
+    const sourceManifestIndex = Number.isInteger(selectionItem.source_manifest_index)
+      ? selectionItem.source_manifest_index
+      : (surface.items || []).findIndex((item) => item?.storage_key === selectionItem.storage_key);
+    const surfaceItem = sourceManifestIndex >= 0 ? surface.items?.[sourceManifestIndex] || null : null;
     rows.push({
       ...(surfaceItem || {}),
       ...selectionItem,
       source_surface_manifest: sourceManifest,
-      source_surface_manifest_index: selectionItem.source_manifest_index,
+      source_surface_manifest_index: sourceManifestIndex >= 0 ? sourceManifestIndex : null,
       source_surface_manifest_schema_version: surface.schema_version || null,
     });
   }
@@ -443,11 +497,14 @@ async function extractPdfText(rootDir, sourcePdf, pdfjsModule) {
     isEvalSupported: false,
   }).promise;
   const pages = {};
+  const pageHeights = {};
   try {
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
       const page = await pdf.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 1 });
       const textContent = await page.getTextContent();
       pages[String(pageNumber - 1)] = (textContent.items || []).map(textItemRecord);
+      pageHeights[String(pageNumber - 1)] = viewport.height;
     }
   } finally {
     await pdf.destroy();
@@ -456,6 +513,7 @@ async function extractPdfText(rootDir, sourcePdf, pdfjsModule) {
     source_pdf: toPosix(sourcePdf),
     status: 'available',
     page_count: pdf.numPages,
+    page_heights: pageHeights,
     pages,
   };
 }
@@ -520,6 +578,7 @@ function buildPlainTextItem({
   pdfText,
   generatedOn,
   visualGateJson,
+  subject = DEFAULTS.subject,
   sourceVersion = DEFAULTS.sourceVersion,
 }) {
   const textExtraction = extractQuestionTextFromPdfText({
@@ -543,7 +602,7 @@ function buildPlainTextItem({
   return {
     schema_version: 'question_plain_text_v1',
     storage_key: row.storage_key,
-    subject_code: row.subject_code || row.syllabus_code || DEFAULTS.subject,
+    subject_code: row.subject_code || row.syllabus_code || subject,
     year: row.year ?? null,
     session: row.session ?? null,
     paper: row.paper ?? null,
@@ -694,6 +753,7 @@ export async function build9231QuestionPlainTextV1Layer({
     pdfText: pdfText[toPosix(row.source_pdf)] || null,
     generatedOn,
     visualGateJson,
+    subject,
     sourceVersion,
   }));
   const duplicates = duplicateStorageKeys(items);
@@ -701,7 +761,7 @@ export async function build9231QuestionPlainTextV1Layer({
   const summary = buildSummary({ surface, pdfTextBySourcePdf: pdfText, items, blockers });
   const status = blockers.length === 0 ? 'pass' : 'blocked';
   return {
-    schema_version: '9231_question_plain_text_v1',
+    schema_version: `${subject}_question_plain_text_v1`,
     status,
     verdict: status === 'pass' ? 'question-plain-text-ready' : 'question-plain-text-blocked',
     generated_on: generatedOn,
@@ -727,6 +787,11 @@ function markdownTable(rows) {
 
 export function buildMarkdownReport(layer, { jsonOut }) {
   const s = layer.summary;
+  const subjectLabel = layer.subject_code === '9231'
+    ? '9231 Further Mathematics'
+    : layer.subject_code === '9702'
+      ? '9702 Physics'
+      : layer.subject_code;
   const blockerLines = layer.blockers.length === 0
     ? '- none'
     : layer.blockers.slice(0, 25).map((blocker) => `- ${blocker.check}: ${blocker.storage_key}`).join('\n');
@@ -735,15 +800,15 @@ export function buildMarkdownReport(layer, { jsonOut }) {
     : '';
 
   return [
-    '# 9231 question plain text v1 coverage',
+    `# ${layer.subject_code} question plain text v1 coverage`,
     '',
     layer.status === 'pass'
-      ? 'Verdict: pass. Selected 9231 wave1 rows have deterministic PDF text-layer plain text with visual-review provenance.'
+      ? `Verdict: pass. Selected ${layer.subject_code} rows have deterministic PDF text-layer plain text with visual-review provenance.`
       : `Verdict: blocked. ${layer.blockers.length} blocker(s) must be fixed before this text layer is complete.`,
     '',
     '## Scope',
     '',
-    '- Subject: 9231 Further Mathematics',
+    `- Subject: ${subjectLabel}`,
     `- Generated on: ${layer.generated_on}`,
     `- JSON artifact: ${jsonOut}`,
     '- Boundary: local deterministic PDF text-layer extraction only; no external OCR rerun, no DB write, no RAG/search mutation.',

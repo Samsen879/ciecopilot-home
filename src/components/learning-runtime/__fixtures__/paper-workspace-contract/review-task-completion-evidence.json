@@ -1,0 +1,177 @@
+{
+  "contract": {
+    "route": "/api/learning/review-tasks/:id",
+    "method": "PATCH",
+    "intent": "complete",
+    "completion_outcome": "completed",
+    "note": "Mode is read from the stored ReviewTask. The request sends explicit lifecycle intent plus mode-specific completion_evidence."
+  },
+  "completed_outcome_payloads": [
+    {
+      "review_task_id": "review-quick-recall",
+      "mode": "quick_recall",
+      "request": {
+        "intent": "complete",
+        "completion_outcome": "completed",
+        "completion_evidence": {
+          "recall_response": "The identity follows from dividing sin^2 x + cos^2 x = 1 by cos^2 x.",
+          "observed_at": "2026-03-24T09:56:00.000Z"
+        }
+      },
+      "completed_review_task": {
+        "review_task_id": "review-quick-recall",
+        "mode": "quick_recall",
+        "status": "completed",
+        "completion_evidence": {
+          "recall_response": "The identity follows from dividing sin^2 x + cos^2 x = 1 by cos^2 x.",
+          "observed_at": "2026-03-24T09:56:00.000Z",
+          "outcome": "completed",
+          "evidence_contract": {
+            "mode": "quick_recall",
+            "outcome": "completed",
+            "validation": "mode_specific"
+          },
+          "recorded_at": "2026-03-24T10:00:00.000Z"
+        }
+      }
+    },
+    {
+      "review_task_id": "review-reconstruct-derivation",
+      "mode": "reconstruct_derivation",
+      "request": {
+        "intent": "complete",
+        "completion_outcome": "completed",
+        "completion_evidence": {
+          "derivation_steps": [
+            "Start from sin^2 x + cos^2 x = 1.",
+            "Divide every term by cos^2 x.",
+            "Substitute tan^2 x and sec^2 x."
+          ],
+          "observed_at": "2026-03-24T09:57:00.000Z"
+        }
+      },
+      "completed_review_task": {
+        "review_task_id": "review-reconstruct-derivation",
+        "mode": "reconstruct_derivation",
+        "status": "completed",
+        "completion_evidence": {
+          "derivation_steps": [
+            "Start from sin^2 x + cos^2 x = 1.",
+            "Divide every term by cos^2 x.",
+            "Substitute tan^2 x and sec^2 x."
+          ],
+          "observed_at": "2026-03-24T09:57:00.000Z",
+          "outcome": "completed",
+          "evidence_contract": {
+            "mode": "reconstruct_derivation",
+            "outcome": "completed",
+            "validation": "mode_specific"
+          },
+          "recorded_at": "2026-03-24T10:00:00.000Z"
+        }
+      }
+    },
+    {
+      "review_task_id": "review-redo-variant",
+      "mode": "redo_variant",
+      "request": {
+        "intent": "complete",
+        "completion_outcome": "completed",
+        "completion_evidence": {
+          "attempt_ref": {
+            "kind": "attempt",
+            "attempt_id": "attempt-redo-variant"
+          },
+          "summary": "Solved a fresh interval variant cleanly."
+        }
+      },
+      "completed_review_task": {
+        "review_task_id": "review-redo-variant",
+        "mode": "redo_variant",
+        "status": "completed",
+        "completion_evidence": {
+          "attempt_ref": {
+            "kind": "attempt",
+            "attempt_id": "attempt-redo-variant"
+          },
+          "summary": "Solved a fresh interval variant cleanly.",
+          "outcome": "completed",
+          "evidence_contract": {
+            "mode": "redo_variant",
+            "outcome": "completed",
+            "validation": "mode_specific"
+          },
+          "recorded_at": "2026-03-24T10:00:00.000Z"
+        }
+      }
+    },
+    {
+      "review_task_id": "review-timed-check",
+      "mode": "timed_check",
+      "request": {
+        "intent": "complete",
+        "completion_outcome": "completed",
+        "completion_evidence": {
+          "timed_check": {
+            "duration_seconds": 420,
+            "completed_at": "2026-03-24T09:58:00.000Z"
+          }
+        }
+      },
+      "completed_review_task": {
+        "review_task_id": "review-timed-check",
+        "mode": "timed_check",
+        "status": "completed",
+        "completion_evidence": {
+          "timed_check": {
+            "duration_seconds": 420,
+            "completed_at": "2026-03-24T09:58:00.000Z"
+          },
+          "outcome": "completed",
+          "evidence_contract": {
+            "mode": "timed_check",
+            "outcome": "completed",
+            "validation": "mode_specific"
+          },
+          "recorded_at": "2026-03-24T10:00:00.000Z"
+        }
+      }
+    },
+    {
+      "review_task_id": "review-trap-fix",
+      "mode": "trap_fix",
+      "request": {
+        "intent": "complete",
+        "completion_outcome": "completed",
+        "completion_evidence": {
+          "fixed_misconception_tags": [
+            "domain:interval"
+          ],
+          "corrected_steps": [
+            "Checked the reference interval before listing solutions in the requested domain."
+          ]
+        }
+      },
+      "completed_review_task": {
+        "review_task_id": "review-trap-fix",
+        "mode": "trap_fix",
+        "status": "completed",
+        "completion_evidence": {
+          "fixed_misconception_tags": [
+            "domain:interval"
+          ],
+          "corrected_steps": [
+            "Checked the reference interval before listing solutions in the requested domain."
+          ],
+          "outcome": "completed",
+          "evidence_contract": {
+            "mode": "trap_fix",
+            "outcome": "completed",
+            "validation": "mode_specific"
+          },
+          "recorded_at": "2026-03-24T10:00:00.000Z"
+        }
+      }
+    }
+  ]
+}

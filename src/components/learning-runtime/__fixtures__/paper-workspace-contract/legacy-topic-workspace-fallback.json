@@ -1,0 +1,216 @@
+{
+  "workspace": {
+    "workspace_id": "workspace-1",
+    "user_id": "student-1",
+    "topic_id": "topic-1",
+    "topic_path": "9709/trigonometry/equations",
+    "slot_state": {
+      "common_traps": "active",
+      "review_queue": "active"
+    },
+    "linked_reference_summary": {
+      "total_linked_references": 1
+    },
+    "artifact_inbox": {
+      "items": []
+    },
+    "updated_at": "2026-06-05T08:10:00.000Z",
+    "slots": {
+      "overview_map": {
+        "workspace_slot_id": null,
+        "primary_artifact_ref": null,
+        "primary_artifact": null,
+        "linked_references": [],
+        "updated_at": null
+      },
+      "core_method_derivation": {
+        "workspace_slot_id": null,
+        "primary_artifact_ref": null,
+        "primary_artifact": null,
+        "linked_references": [],
+        "updated_at": null
+      },
+      "canonical_worked_example": {
+        "workspace_slot_id": null,
+        "primary_artifact_ref": null,
+        "primary_artifact": null,
+        "linked_references": [],
+        "updated_at": null
+      },
+      "common_traps": {
+        "workspace_slot_id": "slot-topic-1-common-traps",
+        "primary_artifact_ref": {
+          "kind": "artifact",
+          "artifact_id": "artifact-primary"
+        },
+        "primary_artifact": {
+          "artifact_id": "artifact-primary",
+          "artifact_kind": "misconception_card",
+          "title": "Interval restriction trap",
+          "summary": "Check the requested interval before accepting or rejecting roots.",
+          "content_format": "markdown",
+          "placement_status": "pinned",
+          "trust_status": "grounded",
+          "lifecycle_status": "active",
+          "artifact_state": "verified",
+          "slot_key": "common_traps",
+          "target_question_type_id": "9709.trigonometry.equations",
+          "updated_at": "2026-06-05T08:10:00.000Z"
+        },
+        "linked_references": [
+          {
+            "kind": "artifact",
+            "artifact_id": "artifact-linked-1"
+          }
+        ],
+        "updated_at": "2026-06-05T08:10:00.000Z"
+      },
+      "my_notes": {
+        "workspace_slot_id": null,
+        "primary_artifact_ref": null,
+        "primary_artifact": null,
+        "linked_references": [],
+        "updated_at": null
+      },
+      "review_queue": {
+        "workspace_slot_id": "slot-topic-1-review",
+        "primary_artifact_ref": null,
+        "primary_artifact": null,
+        "linked_references": [
+          {
+            "kind": "review_task",
+            "review_task_id": "review-queued-1"
+          }
+        ],
+        "updated_at": "2026-06-05T08:11:00.000Z"
+      }
+    }
+  },
+  "runtime_posture": {
+    "subject_code": "9709",
+    "display_name": "Mathematics",
+    "selection_state": "current_runtime",
+    "runtime_enabled": true,
+    "read_only": false,
+    "release_scope_status": null,
+    "authoritative_scoring_allowed": null,
+    "fallback_mode": null,
+    "fallback_reason_code": null,
+    "classification_confidence": null,
+    "learning_signal_posture": null,
+    "supported_capabilities": [
+      "classification",
+      "marking",
+      "mastery",
+      "review"
+    ],
+    "fallback_capabilities": []
+  },
+  "review_queue": {
+    "scope": "global_queue_projection",
+    "topic_id": "topic-1",
+    "question_type_id": null,
+    "status": null,
+    "due_before": null,
+    "policy": {
+      "daily_recommendation_cap": 3,
+      "max_high_priority_open_per_type": 1
+    },
+    "items": [
+      {
+        "review_task_id": "review-queued-1",
+        "target_kind": "question_type",
+        "target_topic_id": "topic-1",
+        "target_topic_path": "9709/trigonometry/equations",
+        "target_family_id": "9709.trigonometry_manipulation_equations",
+        "target_family_title": "Trigonometric manipulation / equations",
+        "target_question_type_id": "9709.trigonometry.equations",
+        "target_question_type_title": "Trigonometric equations",
+        "target_misconception_tags": [
+          "domain:interval"
+        ],
+        "related_artifact_refs": [
+          {
+            "kind": "artifact",
+            "artifact_id": "artifact-primary"
+          }
+        ],
+        "source_question_id": "question-1",
+        "source_attempt_ref": {
+          "kind": "attempt",
+          "attempt_id": "attempt-1"
+        },
+        "trigger_type": "immediate_repair",
+        "mode": "trap_fix",
+        "due_at": "2026-03-23T00:00:00.000Z",
+        "priority": "high",
+        "estimated_minutes": 15,
+        "success_criteria": {
+          "scheduler_policy": {
+            "route": "immediate_repair",
+            "freshness_bucket": "fresh"
+          }
+        },
+        "completion_evidence": {},
+        "status": "open",
+        "created_at": "2026-03-22T08:10:00.000Z",
+        "updated_at": "2026-03-22T08:10:00.000Z"
+      }
+    ],
+    "summary": {
+      "total": 1,
+      "open": 1,
+      "partial": 0,
+      "completed": 0,
+      "skipped": 0,
+      "expired": 0
+    }
+  },
+  "revisit": {
+    "last_visit_at": "2026-03-22T07:55:00.000Z",
+    "last_session": {
+      "session_id": "session-topic-1-current",
+      "mode": "post_mortem_review",
+      "state": "active",
+      "updated_at": "2026-03-22T07:55:00.000Z",
+      "resume_guidance": {
+        "title": "Continue interval repair",
+        "summary": "Carry the misconception recap into the next pass.",
+        "anchor_kind": "artifact",
+        "anchor_ref": {
+          "kind": "artifact",
+          "artifact_id": "artifact-primary"
+        }
+      }
+    },
+    "changes_since_last_visit": {
+      "slot_updates": [
+        {
+          "slot_key": "common_traps",
+          "updated_at": "2026-06-05T08:10:00.000Z"
+        }
+      ],
+      "review_updates": [
+        {
+          "review_task_id": "review-queued-1",
+          "status": "open",
+          "due_at": "2026-03-23T00:00:00.000Z",
+          "updated_at": "2026-03-22T08:10:00.000Z",
+          "completion_evidence": {}
+        }
+      ]
+    }
+  },
+  "compatibility": {
+    "surface": "legacy_topic_workspace",
+    "canonical_owner_kind": "topic",
+    "paper_workspace_route": "/api/learning/workspaces/papers/:paperScope",
+    "legacy_topic_fallback": true,
+    "paper_scope": null,
+    "topic_section_focus": {
+      "topic_id": "topic-1",
+      "topic_path": "9709/trigonometry/equations",
+      "workspace_id": "workspace-1"
+    }
+  }
+}

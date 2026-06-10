@@ -1,0 +1,61 @@
+{
+  "schema_version": "9702_visual_review_gate_v1",
+  "generated_on": "2026-06-09",
+  "subject_code": "9702",
+  "gate_status": "passed",
+  "production_ready_claimed": false,
+  "external_vlm_or_api_used": true,
+  "review_method": "external_vlm",
+  "vlm": {
+    "model": "qwen3-vl-plus",
+    "transport": "qwen_openai_client_v1",
+    "reviewed_by": "qwen_vlm_external_authorized",
+    "usage": {
+      "completion_tokens": 5963221,
+      "prompt_tokens": 60610529,
+      "total_tokens": 66573750
+    }
+  },
+  "artifacts": {
+    "phase4_row_surface_manifest": "data/manifests/9702_full_row_surface_2026_06_09_manifest_v1.json",
+    "visual_review_json": "docs/reports/2026-06-09-9702-visual-review-vlm.json",
+    "visual_review_sidecar_manifest": "data/manifests/9702_visual_review_2026_06_09_manifest_v1.json"
+  },
+  "counts": {
+    "selected_rows": 4137,
+    "reviewed_rows": 4137,
+    "accepted_rows": 4137,
+    "rejected_rows": 0,
+    "ambiguous_rows": 0,
+    "missing_review_rows": 0,
+    "rows_with_visual_evidence": 4137,
+    "rows_missing_visual_evidence": 0,
+    "missing_evidence_files": 0,
+    "blank_evidence_files": 0,
+    "unreadable_evidence_files": 0,
+    "duplicate_visual_review_storage_keys": 0,
+    "duplicate_selected_storage_keys": 0,
+    "extra_review_storage_keys": 0,
+    "source_identity_mismatch_rows": 0,
+    "q_identity_mismatch_rows": 0,
+    "rows_missing_reason_or_warning": 0,
+    "vlm_model_missing_rows": 0,
+    "vlm_transport_missing_rows": 0,
+    "production_ready_claimed_rows": 0,
+    "blocker_count": 0
+  },
+  "blockers": {
+    "rows": [],
+    "duplicate_visual_review_storage_keys": [],
+    "duplicate_selected_storage_keys": [],
+    "extra_review_storage_keys": []
+  },
+  "claim_boundary": {
+    "visual_acceptance_only": true,
+    "canonical_question_text_claimed": false,
+    "normalized_plain_text_claimed": false,
+    "authority_alignment_claimed": false,
+    "db_search_read_model_rag_consumption_claimed": false,
+    "production_ready_claimed": false
+  }
+}

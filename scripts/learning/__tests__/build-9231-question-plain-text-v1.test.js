@@ -262,7 +262,7 @@ describe('9231 question plain text v1 builder', () => {
       source_version: '9231_wm_final_surface_v1',
       source_surface_manifest: 'data/manifests/9231_p1_w19_standard_001_page_chain_surface_v1.json',
       source_surface_manifest_index: 0,
-      plain_text: '1Solve x + 2 = 5.',
+      plain_text: '1 Solve x + 2 = 5.',
     });
   });
 

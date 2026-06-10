@@ -1,0 +1,156 @@
+{
+  "schema_version": "9702_p3_m_historical_001_production_ready_gate_v1",
+  "generated_on": "2026-06-10",
+  "status": "pass",
+  "verdict": "production-ready",
+  "production_ready_claimed": true,
+  "scope": {
+    "subject_code": "9702",
+    "wave": "p3_m_historical_001",
+    "shards": 1,
+    "rows": 18,
+    "source_pdfs": 9,
+    "ready_manifest": "data/manifests/9702_p3_m_historical_001_production_surface_2026_06_10_manifest_v1.json"
+  },
+  "summary": {
+    "selected_rows": 18,
+    "text_only_ready_rows": 7,
+    "image_context_required_rows": 11,
+    "gate_counts": {
+      "db_coverage": 1,
+      "production_search": 1,
+      "production_read_model": 1,
+      "production_rag": 1
+    },
+    "blockers": 0
+  },
+  "gates": {
+    "db_coverage": {
+      "schema_version": "9702_p3_m_historical_001_db_coverage_gate_v1",
+      "status": "pass",
+      "database_surface": "docker:supabase_db_ciecopilot-home",
+      "metrics": {
+        "present": 18,
+        "manifest_count": 18,
+        "joined_snapshots": 18,
+        "missing_registry": 0,
+        "prompt_missing": 0,
+        "provenance_missing": 0,
+        "normalized_plain_text_missing": 0,
+        "search_text_missing": 0,
+        "search_text_source_not_normalized": 0,
+        "snapshot_ref_missing": 0,
+        "snapshot_missing": 0,
+        "materialized_classifier_missing": 0,
+        "duplicate_storage_key_q_number_rows": 0,
+        "rag_chunk_missing": 0
+      },
+      "generated_on": "2026-06-10",
+      "artifact": "docs/reports/2026-06-10-9702-p3-m-historical-001-db-coverage-gate.json"
+    },
+    "production_search": {
+      "schema_version": "9702_p3_m_historical_001_production_search_gate_v1",
+      "status": "pass",
+      "metrics": {
+        "rows": 18,
+        "search_rows_using_normalized_plain_text": 18,
+        "search_text_matches_normalized_plain_text": 18,
+        "projection_normalized_plain_text_matches": 18
+      },
+      "generated_on": "2026-06-10",
+      "artifact": "docs/reports/2026-06-10-9702-p3-m-historical-001-production-search-gate.json",
+      "database_surface": "docker:supabase_db_ciecopilot-home"
+    },
+    "production_read_model": {
+      "schema_version": "9702_p3_m_historical_001_production_read_model_gate_v1",
+      "status": "pass",
+      "metrics": {
+        "rows": 18,
+        "read_model_rows_using_normalized_plain_text": 18,
+        "read_model_normalized_text_matches": 18,
+        "registry_normalized_plain_text_matches": 18,
+        "prompt_representation_matches_normalized_plain_text": 18,
+        "provenance_normalized_plain_text_matches": 18
+      },
+      "generated_on": "2026-06-10",
+      "artifact": "docs/reports/2026-06-10-9702-p3-m-historical-001-production-read-model-gate.json",
+      "database_surface": "docker:supabase_db_ciecopilot-home"
+    },
+    "production_rag": {
+      "schema_version": "9702_p3_m_historical_001_production_rag_consumption_gate_v1",
+      "status": "pass",
+      "metrics": {
+        "rows": 18,
+        "rag_rows_using_normalized_plain_text": 18,
+        "rag_content_matches_normalized_plain_text": 18,
+        "rag_chunks_present": 18,
+        "rag_chunks_with_fts": 18,
+        "corpus_version": "rag_step3_9702_question_plain_text_v2_phase7_v1"
+      },
+      "generated_on": "2026-06-10",
+      "artifact": "docs/reports/2026-06-10-9702-p3-m-historical-001-production-rag-consumption-gate.json",
+      "database_surface": "docker:supabase_db_ciecopilot-home"
+    }
+  },
+  "blockers": [],
+  "shards": [
+    {
+      "shard_id": "9702_p3_m_historical_001",
+      "paper": 3,
+      "session": "m",
+      "source_type": "historical",
+      "rows": 18,
+      "text_only_ready_rows": 7,
+      "image_context_required_rows": 11,
+      "production_ready_claimed": true
+    }
+  ],
+  "required_gate_contract": {
+    "ready_surface_rows": 18,
+    "db_coverage": {
+      "present_equals_manifest_count_equals_joined_snapshots_equals_rows": true,
+      "required_zero_fields": [
+        "missing_registry",
+        "prompt_missing",
+        "provenance_missing",
+        "normalized_plain_text_missing",
+        "search_text_missing",
+        "search_text_source_not_normalized",
+        "snapshot_ref_missing",
+        "snapshot_missing",
+        "materialized_classifier_missing",
+        "duplicate_storage_key_q_number_rows",
+        "rag_chunk_missing"
+      ]
+    },
+    "production_search": "learning_question_search_projection.search_text_source is question_plain_text_v2.normalized_plain_text and search_text equals normalized_plain_text for every row",
+    "production_read_model": "learning_question_registry_projection exposes normalized_plain_text and question_bank.prompt_representation.value equals normalized_plain_text for every row",
+    "production_rag": "public.chunks contains one question_plain_text_v2 row per question with content equal to normalized_plain_text and source_ref.content_source normalized"
+  },
+  "artifacts": {
+    "v2": [
+      "docs/reports/2026-06-10-9702-question-plain-text-v2.json"
+    ],
+    "authority": [
+      "docs/reports/2026-06-10-9702-authority-alignment.json"
+    ],
+    "consumption": [
+      "docs/reports/2026-06-10-9702-question-plain-text-v2-consumption.json"
+    ],
+    "evidence_gate": [
+      "docs/reports/2026-06-10-9702-evidence-layers-gate.json"
+    ],
+    "ready_manifest": "data/manifests/9702_p3_m_historical_001_production_surface_2026_06_10_manifest_v1.json",
+    "db_coverage_gate": "docs/reports/2026-06-10-9702-p3-m-historical-001-db-coverage-gate.json",
+    "production_search_gate": "docs/reports/2026-06-10-9702-p3-m-historical-001-production-search-gate.json",
+    "production_read_model_gate": "docs/reports/2026-06-10-9702-p3-m-historical-001-production-read-model-gate.json",
+    "production_rag_consumption_gate": "docs/reports/2026-06-10-9702-p3-m-historical-001-production-rag-consumption-gate.json"
+  },
+  "boundaries": [
+    "Scope is only the 9702_p3_m_historical_001 9702_p3_m_historical_001 / 18 rows requested by the operator.",
+    "This batch closeout does not claim full all-9702 production readiness.",
+    "Full all-9702 readiness remains blocked until #410 aggregate closeout passes on main.",
+    "The classifier surface is a question-text-foundation row-surface classifier and remains non_released_fallback; no detailed 9702 syllabus scoring taxonomy is claimed.",
+    "RAG production proof covers deterministic question_plain_text_v2 corpus rows in public.chunks; it does not claim external embedding generation or semantic retrieval-quality evaluation."
+  ]
+}

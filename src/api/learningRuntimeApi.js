@@ -229,6 +229,11 @@ export function normalizeWorkspaceResponse(payload = {}) {
     ...camelized,
     workspace: camelized.workspace || null,
     runtimePosture: camelized.runtimePosture || null,
+    paperWorkspace: camelized.paperWorkspace || null,
+    topicSections: Array.isArray(camelized.topicSections) ? camelized.topicSections : [],
+    topicSection: camelized.topicSection || null,
+    stableSlots: isPlainObject(camelized.stableSlots) ? camelized.stableSlots : {},
+    compatibility: camelized.compatibility || null,
     reviewQueue: normalizeReviewTaskListResponse(camelized.reviewQueue || {}),
   };
 }
@@ -300,6 +305,26 @@ export async function searchQuestions(params = {}) {
 
 export async function getWorkspace(topicId) {
   return normalizeWorkspaceResponse(await learningRequest(`/workspaces/${encodeURIComponent(topicId)}`));
+}
+
+export async function getPaperWorkspace(paperScope) {
+  return normalizeWorkspaceResponse(
+    await learningRequest(`/workspaces/papers/${encodeURIComponent(paperScope)}`),
+  );
+}
+
+export async function getPaperTopicSectionWorkspace(paperScope, params = {}) {
+  const query = buildQuery({
+    topicId: params.topicId ?? params.topic_id,
+    topicPath: params.topicPath ?? params.topic_path,
+  }, {
+    topicId: 'topic_id',
+    topicPath: 'topic_path',
+  });
+
+  return normalizeWorkspaceResponse(
+    await learningRequest(`/workspaces/papers/${encodeURIComponent(paperScope)}${query}`),
+  );
 }
 
 export async function listReviewTasks(params = {}) {
@@ -381,6 +406,8 @@ export const learningRuntimeApi = {
   importQuestion,
   searchQuestions,
   getWorkspace,
+  getPaperWorkspace,
+  getPaperTopicSectionWorkspace,
   listReviewTasks,
   updateReviewTask,
   pinArtifact,

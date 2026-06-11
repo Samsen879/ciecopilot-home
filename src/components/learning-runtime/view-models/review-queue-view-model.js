@@ -8,6 +8,21 @@ const FROZEN_STUDENT_EXPLANATION_LABELS = new Set([
   '同题型回补',
   '回归风险',
 ]);
+const REVIEW_QUEUE_SCOPE_METADATA = Object.freeze({
+  global_queue_projection: {
+    label: 'Global review queue projection',
+    surface: 'global',
+  },
+  paper_workspace_review_projection: {
+    label: 'Paper workspace review projection',
+    surface: 'paper_workspace',
+  },
+  paper_topic_section_review_projection: {
+    label: 'Paper topic-section review projection',
+    surface: 'paper_topic_section',
+  },
+});
+const GLOBAL_REVIEW_QUEUE_IDENTITY = 'global_review_queue';
 
 function normalizeString(value, fallback = null) {
   if (typeof value !== 'string') {
@@ -28,6 +43,18 @@ function titleCaseToken(token, fallback = 'Unknown') {
     .filter(Boolean)
     .map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`)
     .join(' ');
+}
+
+function normalizeReviewQueueScope(scope) {
+  const value = normalizeString(scope);
+  const metadata = REVIEW_QUEUE_SCOPE_METADATA[value] || null;
+
+  return {
+    value,
+    label: metadata?.label || titleCaseToken(value, 'Review queue projection'),
+    surface: metadata?.surface || 'unknown',
+    queueIdentity: GLOBAL_REVIEW_QUEUE_IDENTITY,
+  };
 }
 
 function parseTimestamp(value) {
@@ -358,6 +385,7 @@ export function buildReviewQueueActionDrafts(items = [], currentDrafts = {}, opt
 export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
   const now = normalizeString(options.now) || new Date().toISOString();
   const items = Array.isArray(reviewQueue?.items) ? reviewQueue.items : [];
+  const scope = normalizeReviewQueueScope(reviewQueue?.scope);
   const featureFlags = normalizeReviewQueueFeatureFlags(
     reviewQueue?.featureFlags ?? reviewQueue?.feature_flags ?? {},
     options.env,
@@ -437,8 +465,18 @@ export function buildReviewQueueViewModel(reviewQueue = {}, options = {}) {
   });
 
   return {
-    scope: normalizeString(reviewQueue?.scope),
+    scope: scope.value,
+    scopeLabel: scope.label,
+    scopeSurface: scope.surface,
+    queueIdentity: scope.queueIdentity,
+    paperScope: normalizeString(reviewQueue?.paperScope ?? reviewQueue?.paper_scope),
     topicId: normalizeString(reviewQueue?.topicId ?? reviewQueue?.topic_id),
+    topicPath: normalizeString(reviewQueue?.topicPath ?? reviewQueue?.topic_path, ''),
+    questionTypeId: normalizeString(
+      reviewQueue?.questionTypeId ?? reviewQueue?.question_type_id,
+    ),
+    status: normalizeString(reviewQueue?.status),
+    dueBefore: normalizeString(reviewQueue?.dueBefore ?? reviewQueue?.due_before),
     policy: normalizeSchedulerPolicy(reviewQueue?.policy),
     featureFlags,
     items: normalizedItems,

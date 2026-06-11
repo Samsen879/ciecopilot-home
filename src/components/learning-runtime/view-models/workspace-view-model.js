@@ -80,12 +80,267 @@ function normalizeRef(ref) {
   };
 }
 
-function buildWorkspaceSummary(workspace = {}) {
+function buildWorkspaceSummary(workspace = {}, fallback = {}) {
   return {
-    workspaceId: normalizeString(workspace.workspaceId ?? workspace.workspace_id),
+    workspaceId: normalizeString(
+      workspace.workspaceId ?? workspace.workspace_id ?? fallback.workspaceId ?? fallback.workspace_id,
+    ),
     topicId: normalizeString(workspace.topicId ?? workspace.topic_id),
     topicPath: normalizeString(workspace.topicPath ?? workspace.topic_path, ''),
-    updatedAt: workspace.updatedAt ?? workspace.updated_at ?? null,
+    paperScope: normalizeString(
+      workspace.paperScope ?? workspace.paper_scope ?? fallback.paperScope ?? fallback.paper_scope,
+    ),
+    workspaceKind: normalizeString(
+      workspace.workspaceKind ?? workspace.workspace_kind ?? fallback.workspaceKind ?? fallback.workspace_kind,
+    ),
+    updatedAt: workspace.updatedAt ?? workspace.updated_at ?? fallback.updatedAt ?? fallback.updated_at ?? null,
+  };
+}
+
+function readCompatibility(payload = {}) {
+  return payload.compatibility || {};
+}
+
+function readReviewQueuePayload(payload = {}) {
+  return payload.reviewQueue || payload.review_queue || {};
+}
+
+function normalizeObject(value) {
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
+
+function readTopicSectionFocus(payload = {}) {
+  const compatibility = readCompatibility(payload);
+  return payload.topicSection
+    || payload.topic_section
+    || compatibility.topicSectionFocus
+    || compatibility.topic_section_focus
+    || null;
+}
+
+function buildTopicSectionViewModel(section = null) {
+  if (!section || typeof section !== 'object' || Array.isArray(section)) {
+    return null;
+  }
+
+  const canonicalOwnership = normalizeObject(
+    section.canonicalOwnership ?? section.canonical_ownership,
+  );
+  const topicWorkspaceId = normalizeString(
+    section.topicWorkspaceId
+      ?? section.topic_workspace_id
+      ?? section.workspaceId
+      ?? section.workspace_id,
+  );
+  const topicId = normalizeString(section.topicId ?? section.topic_id);
+  const topicPath = normalizeString(section.topicPath ?? section.topic_path, '');
+
+  return {
+    paperWorkspaceTopicSectionId: normalizeString(
+      section.paperWorkspaceTopicSectionId ?? section.paper_workspace_topic_section_id,
+    ),
+    paperWorkspaceId: normalizeString(section.paperWorkspaceId ?? section.paper_workspace_id),
+    topicId,
+    topicWorkspaceId,
+    workspaceId: topicWorkspaceId,
+    topicPath,
+    ownerKind: normalizeString(
+      canonicalOwnership.ownerKind ?? canonicalOwnership.owner_kind,
+    ),
+    canonicalOwnership: {
+      ownerKind: normalizeString(canonicalOwnership.ownerKind ?? canonicalOwnership.owner_kind),
+      topicId: normalizeString(canonicalOwnership.topicId ?? canonicalOwnership.topic_id, topicId),
+      topicPath: normalizeString(
+        canonicalOwnership.topicPath ?? canonicalOwnership.topic_path,
+        topicPath,
+      ),
+    },
+    sectionState: section.sectionState ?? section.section_state ?? {},
+    createdAt: section.createdAt ?? section.created_at ?? null,
+    updatedAt: section.updatedAt ?? section.updated_at ?? null,
+  };
+}
+
+function normalizePaperSlotTopicSection(section = null) {
+  if (!section || typeof section !== 'object' || Array.isArray(section)) {
+    return null;
+  }
+
+  return {
+    paperWorkspaceTopicSectionId: normalizeString(
+      section.paperWorkspaceTopicSectionId ?? section.paper_workspace_topic_section_id,
+    ),
+    topicId: normalizeString(section.topicId ?? section.topic_id),
+    topicPath: normalizeString(section.topicPath ?? section.topic_path, ''),
+    workspaceSlotId: normalizeString(section.workspaceSlotId ?? section.workspace_slot_id),
+    primaryArtifact: normalizeRef(section.primaryArtifactRef ?? section.primary_artifact_ref),
+    slotState: normalizeString(section.slotState ?? section.slot_state),
+    updatedAt: section.updatedAt ?? section.updated_at ?? null,
+  };
+}
+
+function normalizePaperArtifactSummary(artifact = null) {
+  const record = normalizeArtifactRecord(artifact || {}, {
+    source: 'paper_slot_summary',
+  });
+
+  if (!record) {
+    return null;
+  }
+
+  return {
+    ...record,
+    topicSectionId: normalizeString(
+      artifact.topicSectionId ?? artifact.topic_section_id,
+    ),
+    topicId: normalizeString(artifact.topicId ?? artifact.topic_id),
+    topicPath: normalizeString(artifact.topicPath ?? artifact.topic_path, ''),
+  };
+}
+
+function readStableSlotRecord(stableSlots = {}, definition) {
+  if (!stableSlots || typeof stableSlots !== 'object' || Array.isArray(stableSlots)) {
+    return {};
+  }
+
+  return stableSlots[definition.camelKey] || stableSlots[definition.key] || {};
+}
+
+function buildPaperStableSlotViewModel(definition, stableSlots = {}) {
+  const slot = readStableSlotRecord(stableSlots, definition);
+
+  return {
+    slotKey: normalizeString(slot.slotKey ?? slot.slot_key, definition.key),
+    title: definition.title,
+    topicSections: (Array.isArray(slot.topicSections ?? slot.topic_sections)
+      ? (slot.topicSections ?? slot.topic_sections)
+      : [])
+      .map((section) => normalizePaperSlotTopicSection(section))
+      .filter(Boolean),
+    artifactSummaries: (Array.isArray(slot.artifactSummaries ?? slot.artifact_summaries)
+      ? (slot.artifactSummaries ?? slot.artifact_summaries)
+      : [])
+      .map((artifact) => normalizePaperArtifactSummary(artifact))
+      .filter(Boolean),
+    linkedReferences: normalizeRefList(slot.linkedReferences ?? slot.linked_references),
+    updatedAt: slot.updatedAt ?? slot.updated_at ?? null,
+  };
+}
+
+function buildPaperStableSlotsViewModel(stableSlots = {}) {
+  return Object.fromEntries(
+    SLOT_DEFINITIONS.map((definition) => [
+      definition.key,
+      buildPaperStableSlotViewModel(definition, stableSlots),
+    ]),
+  );
+}
+
+function buildPaperWorkspaceViewModel(payload = {}) {
+  const paperWorkspace = payload.paperWorkspace || payload.paper_workspace || null;
+  const paperScope = normalizeString(
+    payload.paperScope
+      ?? payload.paper_scope
+      ?? paperWorkspace?.paperScope
+      ?? paperWorkspace?.paper_scope,
+  );
+  const topicSectionsSource = payload.topicSections
+    ?? payload.topic_sections
+    ?? paperWorkspace?.topicSections
+    ?? paperWorkspace?.topic_sections;
+  const topicSections = topicSectionsSource ?? [];
+  const stableSlots = payload.stableSlots
+    ?? payload.stable_slots
+    ?? paperWorkspace?.stableSlots
+    ?? paperWorkspace?.stable_slots
+    ?? {};
+
+  if (!paperWorkspace && !paperScope && !Array.isArray(topicSectionsSource)) {
+    return null;
+  }
+
+  const visibleOrganizationSummary = normalizeObject(
+    paperWorkspace?.visibleOrganizationSummary ?? paperWorkspace?.visible_organization_summary,
+  );
+
+  return {
+    paperWorkspaceId: normalizeString(
+      paperWorkspace?.paperWorkspaceId
+        ?? paperWorkspace?.paper_workspace_id
+        ?? payload.workspaceId
+        ?? payload.workspace_id,
+    ),
+    userId: normalizeString(paperWorkspace?.userId ?? paperWorkspace?.user_id),
+    subjectCode: normalizeString(paperWorkspace?.subjectCode ?? paperWorkspace?.subject_code),
+    paperScope,
+    workspaceKind: normalizeString(paperWorkspace?.workspaceKind ?? paperWorkspace?.workspace_kind),
+    label: normalizeString(visibleOrganizationSummary.label),
+    visibleOrganizationSummary,
+    linkedTopicSummary: paperWorkspace?.linkedTopicSummary
+      ?? paperWorkspace?.linked_topic_summary
+      ?? {},
+    topicSections: (Array.isArray(topicSections) ? topicSections : [])
+      .map((section) => buildTopicSectionViewModel(section))
+      .filter(Boolean),
+    stableSlots: buildPaperStableSlotsViewModel(stableSlots),
+    pinnedArtifacts: (Array.isArray(paperWorkspace?.pinnedArtifacts ?? paperWorkspace?.pinned_artifacts)
+      ? (paperWorkspace.pinnedArtifacts ?? paperWorkspace.pinned_artifacts)
+      : [])
+      .map((artifact) => normalizePaperArtifactSummary(artifact))
+      .filter(Boolean),
+    linkedReferences: normalizeRefList(
+      paperWorkspace?.linkedReferences ?? paperWorkspace?.linked_references,
+    ),
+    reviewQueueProjectionShape: paperWorkspace?.reviewQueueProjectionShape
+      ?? paperWorkspace?.review_queue_projection_shape
+      ?? null,
+    createdAt: paperWorkspace?.createdAt ?? paperWorkspace?.created_at ?? null,
+    updatedAt: paperWorkspace?.updatedAt ?? paperWorkspace?.updated_at ?? null,
+  };
+}
+
+function buildSurfaceViewModel(payload, workspace, paperWorkspace, topicSection, reviewQueue) {
+  const compatibility = readCompatibility(payload);
+  const kind = normalizeString(
+    compatibility.surface,
+    paperWorkspace
+      ? topicSection
+        ? 'paper_topic_section_workspace'
+        : 'paper_workspace'
+      : 'legacy_topic_workspace',
+  );
+  const paperScope = normalizeString(
+    payload.paperScope
+      ?? payload.paper_scope
+      ?? paperWorkspace?.paperScope
+      ?? compatibility.paperScope
+      ?? compatibility.paper_scope,
+  );
+  const topicSectionsAreProjections =
+    typeof compatibility.topicSectionsAreProjections === 'boolean'
+      ? compatibility.topicSectionsAreProjections
+      : typeof compatibility.topic_sections_are_projections === 'boolean'
+        ? compatibility.topic_sections_are_projections
+        : kind === 'paper_workspace' || kind === 'paper_topic_section_workspace';
+
+  return {
+    kind,
+    workspaceId: normalizeString(
+      payload.workspaceId ?? payload.workspace_id ?? workspace.workspaceId,
+    ),
+    topicId: workspace.topicId || topicSection?.topicId || null,
+    topicPath: workspace.topicPath || topicSection?.topicPath || '',
+    paperScope,
+    reviewQueueScope: reviewQueue.scope,
+    reviewQueueScopeLabel: reviewQueue.scopeLabel,
+    queueIdentity: reviewQueue.queueIdentity,
+    topicSectionsAreProjections,
+    legacyTopicFallback: compatibility.legacyTopicFallback
+      ?? compatibility.legacy_topic_fallback
+      ?? null,
+    isPaperWorkspace: kind === 'paper_workspace',
+    isPaperTopicSection: kind === 'paper_topic_section_workspace',
+    isLegacyTopicWorkspace: kind === 'legacy_topic_workspace',
   };
 }
 
@@ -941,8 +1196,15 @@ function buildRevisitViewModel(revisit = {}, workspace, slotList, reviewQueue) {
 
 export function buildWorkspaceViewModel(payload = {}, options = {}) {
   const workspace = payload.workspace || {};
+  const paperWorkspace = buildPaperWorkspaceViewModel(payload);
+  const topicSection = buildTopicSectionViewModel(readTopicSectionFocus(payload));
   const slotState = workspace.slotState || workspace.slot_state || {};
-  const workspaceSummary = buildWorkspaceSummary(workspace);
+  const workspaceSummary = buildWorkspaceSummary(workspace, {
+    workspaceId: payload.workspaceId ?? payload.workspace_id ?? paperWorkspace?.paperWorkspaceId,
+    paperScope: paperWorkspace?.paperScope,
+    workspaceKind: paperWorkspace?.workspaceKind,
+    updatedAt: paperWorkspace?.updatedAt,
+  });
   const runtimePosture = buildRuntimePostureViewModel(
     payload.runtimePosture || payload.runtime_posture || null,
   );
@@ -955,12 +1217,22 @@ export function buildWorkspaceViewModel(payload = {}, options = {}) {
   const slotList = SLOT_DEFINITIONS
     .filter((definition) => definition.key !== 'review_queue')
     .map((definition) => stableSlots[definition.key]);
-  const reviewQueue = buildReviewQueueViewModel(payload.reviewQueue || payload.review_queue || {}, {
+  const reviewQueue = buildReviewQueueViewModel(readReviewQueuePayload(payload), {
     now: options.now,
   });
+  const surface = buildSurfaceViewModel(
+    payload,
+    workspaceSummary,
+    paperWorkspace,
+    topicSection,
+    reviewQueue,
+  );
 
   return {
+    surface,
     workspace: workspaceSummary,
+    paperWorkspace,
+    topicSection,
     runtimePosture,
     slots: stableSlots,
     slotList,

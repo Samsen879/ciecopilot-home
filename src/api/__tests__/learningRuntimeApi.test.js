@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { jest } from '@jest/globals';
 
 const mockRequireSessionAccessToken = jest.fn();
@@ -16,6 +17,8 @@ jest.unstable_mockModule('../../utils/supabase.js', () => ({
 }));
 
 const {
+  getPaperTopicSectionWorkspace,
+  getPaperWorkspace,
   learningRuntimeApi,
   markArtifactContested,
   normalizeAskResponse,
@@ -29,6 +32,15 @@ const {
   supersedeArtifact,
   unpinArtifact,
 } = await import('../learningRuntimeApi.js');
+
+const paperWorkspaceFixturesDir = new URL(
+  '../../components/learning-runtime/__fixtures__/paper-workspace-contract/',
+  import.meta.url,
+);
+
+function readPaperWorkspaceFixture(name) {
+  return JSON.parse(fs.readFileSync(new URL(name, paperWorkspaceFixturesDir), 'utf8'));
+}
 
 function createSessionEnvelope() {
   return {
@@ -321,6 +333,8 @@ describe('learning runtime api', () => {
     expect(Object.keys(learningRuntimeApi).sort()).toEqual([
       'askInSession',
       'createSession',
+      'getPaperTopicSectionWorkspace',
+      'getPaperWorkspace',
       'getSession',
       'getWorkspace',
       'importQuestion',
@@ -673,6 +687,111 @@ describe('learning runtime api', () => {
     expect(response.items[0].productCard.title).toBe('S19 P1 Q6');
     expect(response.items[1].productPosture.label).toBe('Imported / provisional');
     expect(response.featureFlags.questionSearchProductEnabled).toBe(true);
+  });
+
+  test('getPaperWorkspace encodes paperScope as one route segment and normalizes the paper envelope', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => readPaperWorkspaceFixture('paper-workspace-envelope.json'),
+    });
+
+    const payload = await getPaperWorkspace('9709:paper:p1');
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/learning/workspaces/papers/9709%3Apaper%3Ap1',
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer token-123',
+        }),
+      }),
+    );
+    expect(payload).toEqual(expect.objectContaining({
+      paperScope: '9709:paper:p1',
+      workspaceId: 'paper-workspace-1',
+      topicSections: expect.any(Array),
+      paperWorkspace: expect.objectContaining({
+        paperScope: '9709:paper:p1',
+      }),
+      reviewQueue: expect.objectContaining({
+        scope: 'paper_workspace_review_projection',
+        paperScope: '9709:paper:p1',
+      }),
+      compatibility: expect.objectContaining({
+        surface: 'paper_workspace',
+      }),
+    }));
+  });
+
+  test('getPaperTopicSectionWorkspace keeps the paper route and adds topic focus query params', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => readPaperWorkspaceFixture('paper-topic-section-subview.json'),
+    });
+
+    const payload = await getPaperTopicSectionWorkspace('9709:paper:p1', {
+      topicId: 'topic-1',
+      topicPath: '9709/trigonometry/equations',
+    });
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/learning/workspaces/papers/9709%3Apaper%3Ap1?topic_id=topic-1&topic_path=9709%2Ftrigonometry%2Fequations',
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer token-123',
+        }),
+      }),
+    );
+    expect(payload).toEqual(expect.objectContaining({
+      paperScope: '9709:paper:p1',
+      workspaceId: 'workspace-1',
+      topicSection: expect.objectContaining({
+        topicId: 'topic-1',
+        topicWorkspaceId: 'workspace-1',
+      }),
+      workspace: expect.objectContaining({
+        workspaceId: 'workspace-1',
+        topicId: 'topic-1',
+      }),
+      reviewQueue: expect.objectContaining({
+        scope: 'paper_topic_section_review_projection',
+        topicId: 'topic-1',
+      }),
+    }));
+  });
+
+  test('getWorkspace preserves the legacy topic workspace route while normalizing fallback envelopes', async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: async () => readPaperWorkspaceFixture('legacy-topic-workspace-fallback.json'),
+    });
+
+    const payload = await learningRuntimeApi.getWorkspace('topic-1');
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/api/learning/workspaces/topic-1',
+      expect.objectContaining({
+        method: 'GET',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer token-123',
+        }),
+      }),
+    );
+    expect(payload).toEqual(expect.objectContaining({
+      workspace: expect.objectContaining({
+        workspaceId: 'workspace-1',
+        topicId: 'topic-1',
+      }),
+      reviewQueue: expect.objectContaining({
+        scope: 'global_queue_projection',
+        topicId: 'topic-1',
+      }),
+      compatibility: expect.objectContaining({
+        surface: 'legacy_topic_workspace',
+        legacyTopicFallback: true,
+      }),
+    }));
   });
 
   test('createSession throws structured learning runtime errors for actionable UI states', async () => {

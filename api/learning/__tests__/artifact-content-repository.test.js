@@ -219,6 +219,227 @@ describe('artifact-content-repository', () => {
     });
   });
 
+  test('normalizes verified MVP visual reasoning objects before persistence', async () => {
+    const db = createArtifactContentDb();
+    const repository = createArtifactContentRepository(db);
+
+    const stored = await repository.createArtifactContentVersion({
+      artifact_id: 'artifact-visual-1',
+      title: 'Core derivation: trig equation',
+      body_markdown: 'Step 1. Expand the identity.\nStep 2. Solve the bounded equation.',
+      render_payload: {
+        schema_version: 'learning_artifact_render.v1',
+        visual_reasoning: {
+          schema_version: 'visual_reasoning_mvp.v1',
+          visual_objects: [
+            {
+              kind: 'derivation_tree',
+              source_posture: 'verified',
+              confidence: 'high',
+              source_refs: [{ kind: 'mark_run', mark_run_id: 'mark-run-visual-1' }],
+              nodes: [
+                { id: 'start', label: '2cos(2x)-3sin(x)=0' },
+                { id: 'expanded', label: 'Use cos(2x)=1-2sin^2(x)' },
+              ],
+              edges: [
+                { from: 'start', to: 'expanded', relation: 'uses_identity' },
+              ],
+              decorative_theme: 'aurora',
+              geometry: { x: 120, y: 80 },
+            },
+            {
+              kind: 'step_reveal_timeline',
+              source_posture: 'structure_bounded',
+              confidence: 'medium',
+              source_refs: [{ kind: 'attempt', attempt_id: 'attempt-visual-1' }],
+              steps: [
+                {
+                  step_id: 'expand',
+                  title: 'Expand',
+                  body: 'Substitute the double-angle identity.',
+                  reveal_index: 1,
+                },
+                {
+                  step_id: 'factor',
+                  title: 'Factor',
+                  body: 'Collect terms as a quadratic in sin(x).',
+                  reveal_index: 2,
+                  depends_on_step_ids: ['expand'],
+                },
+              ],
+            },
+            {
+              kind: 'dependency_graph',
+              source_posture: 'verified',
+              confidence: 'high',
+              source_refs: [{ kind: 'artifact', artifact_id: 'artifact-source-1' }],
+              nodes: [
+                { id: 'identity', label: 'Double-angle identity' },
+                { id: 'quadratic', label: 'Quadratic solving' },
+              ],
+              edges: [
+                { from: 'identity', to: 'quadratic', relation: 'precedes' },
+              ],
+            },
+          ],
+        },
+      },
+    });
+
+    expect(stored.render_payload.visual_reasoning.visual_objects).toEqual([
+      {
+        kind: 'derivation_tree',
+        source_posture: 'verified',
+        confidence: 'high',
+        source_refs: [{ kind: 'mark_run', mark_run_id: 'mark-run-visual-1' }],
+        nodes: [
+          { id: 'start', label: '2cos(2x)-3sin(x)=0', source_refs: [] },
+          { id: 'expanded', label: 'Use cos(2x)=1-2sin^2(x)', source_refs: [] },
+        ],
+        edges: [
+          { from: 'start', to: 'expanded', relation: 'uses_identity', source_refs: [] },
+        ],
+      },
+      {
+        kind: 'step_reveal_timeline',
+        source_posture: 'structure_bounded',
+        confidence: 'medium',
+        source_refs: [{ kind: 'attempt', attempt_id: 'attempt-visual-1' }],
+        steps: [
+          {
+            step_id: 'expand',
+            title: 'Expand',
+            body: 'Substitute the double-angle identity.',
+            reveal_index: 1,
+            depends_on_step_ids: [],
+            source_refs: [],
+          },
+          {
+            step_id: 'factor',
+            title: 'Factor',
+            body: 'Collect terms as a quadratic in sin(x).',
+            reveal_index: 2,
+            depends_on_step_ids: ['expand'],
+            source_refs: [],
+          },
+        ],
+      },
+      {
+        kind: 'dependency_graph',
+        source_posture: 'verified',
+        confidence: 'high',
+        source_refs: [{ kind: 'artifact', artifact_id: 'artifact-source-1' }],
+        nodes: [
+          { id: 'identity', label: 'Double-angle identity', source_refs: [] },
+          { id: 'quadratic', label: 'Quadratic solving', source_refs: [] },
+        ],
+        edges: [
+          { from: 'identity', to: 'quadratic', relation: 'precedes', source_refs: [] },
+        ],
+      },
+    ]);
+    expect(JSON.stringify(stored.render_payload)).not.toContain('decorative_theme');
+    expect(JSON.stringify(stored.render_payload)).not.toContain('geometry');
+  });
+
+  test('downgrades low-confidence visual reasoning to a step list fallback', async () => {
+    const db = createArtifactContentDb();
+    const repository = createArtifactContentRepository(db);
+
+    const stored = await repository.createArtifactContentVersion({
+      artifact_id: 'artifact-visual-low-confidence',
+      title: 'Core derivation: low confidence',
+      render_payload: {
+        schema_version: 'learning_artifact_render.v1',
+        visual_reasoning: {
+          schema_version: 'visual_reasoning_mvp.v1',
+          visual_objects: [
+            {
+              kind: 'step_reveal_timeline',
+              source_posture: 'verified',
+              confidence: 'low',
+              source_refs: [{ kind: 'attempt', attempt_id: 'attempt-low-confidence' }],
+              steps: [
+                {
+                  step_id: 'first',
+                  title: 'First safe step',
+                  body: 'Start from the verified equation.',
+                  reveal_index: 1,
+                },
+              ],
+            },
+          ],
+        },
+      },
+    });
+
+    expect(stored.render_payload.visual_reasoning).toMatchObject({
+      schema_version: 'visual_reasoning_mvp.v1',
+      visual_objects: [],
+      step_list: {
+        kind: 'step_list',
+        fallback_from: 'step_reveal_timeline',
+        fallback_reason_code: 'low_confidence',
+        source_posture: 'verified',
+        confidence: 'low',
+        steps: [
+          {
+            step_id: 'first',
+            title: 'First safe step',
+            body: 'Start from the verified equation.',
+            source_refs: [],
+          },
+        ],
+      },
+    });
+  });
+
+  test('downgrades unbounded or unsupported visual reasoning to a step list fallback', async () => {
+    const db = createArtifactContentDb();
+    const repository = createArtifactContentRepository(db);
+
+    const stored = await repository.createArtifactContentVersion({
+      artifact_id: 'artifact-visual-unbounded',
+      title: 'Generated sketch should not persist as learning truth',
+      render_payload: {
+        schema_version: 'learning_artifact_render.v1',
+        visual_reasoning: {
+          visual_objects: [
+            {
+              kind: 'vector_schematic',
+              source_posture: 'generated',
+              confidence: 'high',
+              source_refs: [],
+              steps: [
+                { step_id: 'fallback', body: 'Use the text derivation instead.' },
+              ],
+              svg_path: 'M0 0 L10 10',
+            },
+          ],
+        },
+      },
+    });
+
+    expect(stored.render_payload.visual_reasoning.visual_objects).toEqual([]);
+    expect(stored.render_payload.visual_reasoning.step_list).toEqual({
+      kind: 'step_list',
+      fallback_from: 'vector_schematic',
+      fallback_reason_code: 'unsupported_visual_kind',
+      source_posture: 'generated',
+      confidence: 'high',
+      source_refs: [],
+      steps: [
+        {
+          step_id: 'fallback',
+          title: null,
+          body: 'Use the text derivation instead.',
+          source_refs: [],
+        },
+      ],
+    });
+    expect(JSON.stringify(stored.render_payload)).not.toContain('svg_path');
+  });
+
   test('promotes a new current version while preserving historical lineage for prior versions', async () => {
     const db = createArtifactContentDb();
     const repository = createArtifactContentRepository(db);

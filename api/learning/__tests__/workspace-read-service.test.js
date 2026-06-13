@@ -1470,6 +1470,132 @@ describe('workspace read service', () => {
     ]);
   });
 
+  test('paper workspace excludes contested, superseded, and non-authoritative pinned rows from authoritative summaries', async () => {
+    const workspaceProjection = {
+      workspace_id: 'workspace-1',
+      user_id: 'student-1',
+      topic_id: 'topic-1',
+      topic_path: '9709/trigonometry/equations',
+      slot_state: {
+        common_traps: 'active',
+      },
+      linked_reference_summary: {
+        total_linked_references: 4,
+      },
+      updated_at: '2026-06-05T08:10:00.000Z',
+      slots: [
+        {
+          workspace_slot_id: 'slot-topic-1-common-traps',
+          slot_key: 'common_traps',
+          primary_artifact_ref: {
+            kind: 'artifact',
+            artifact_id: 'artifact-grounded',
+          },
+          linked_reference_refs: [],
+          updated_at: '2026-06-05T08:10:00.000Z',
+        },
+      ],
+    };
+    const db = createLearningDb({
+      workspaceProjections: [workspaceProjection],
+      artifactRows: [
+        {
+          artifact_id: 'artifact-grounded',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          verified_by: 'operator-1',
+          verified_at: '2026-06-05T08:10:00.000Z',
+          verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-1' },
+          updated_at: '2026-06-05T08:10:00.000Z',
+        },
+        {
+          artifact_id: 'artifact-contested-stale-pin',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'contested',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          verified_by: 'operator-2',
+          verified_at: '2026-06-05T08:11:00.000Z',
+          verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-2' },
+          updated_at: '2026-06-05T08:11:00.000Z',
+        },
+        {
+          artifact_id: 'artifact-superseded-marker-pin',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'superseded',
+          superseded_by_artifact_id: 'artifact-grounded',
+          updated_at: '2026-06-05T08:12:00.000Z',
+        },
+        {
+          artifact_id: 'artifact-imported-non-authoritative-pin',
+          artifact_kind: 'misconception_card',
+          canonical_home_topic_id: 'topic-1',
+          slot_key: 'common_traps',
+          trust_status: 'grounded',
+          placement_status: 'pinned',
+          lifecycle_status: 'active',
+          artifact_state: 'verified',
+          verified_by: 'operator-3',
+          verified_at: '2026-06-05T08:13:00.000Z',
+          verification_evidence_ref: { kind: 'review_run', review_run_id: 'review-3' },
+          grounding_refs: [
+            {
+              kind: 'attempt',
+              attempt_id: 'attempt-imported-1',
+              runtime_authority_posture: 'non_authoritative',
+              runtime_authority_reason_code: 'imported_question_attempt',
+            },
+          ],
+          updated_at: '2026-06-05T08:13:00.000Z',
+        },
+      ],
+      artifactContentVersionRows: [
+        {
+          artifact_content_version_id: 'artifact-content-grounded',
+          artifact_id: 'artifact-grounded',
+          version_number: 1,
+          is_current: true,
+          title: 'Grounded interval trap',
+          summary: 'Use only the valid grounded resident as paper truth.',
+          body_markdown: 'Grounded content.',
+          content_format: 'markdown',
+        },
+      ],
+      reviewTaskRows: [],
+      sessionRows: [],
+    });
+
+    const payload = await getPaperWorkspaceView(db, {
+      userId: 'student-1',
+      paperScope: '9709:paper:p1',
+      residencyFlagEnabled: true,
+    });
+
+    expect(payload.topic_sections[0].pinned_artifacts.map((artifact) => artifact.artifact_id))
+      .toEqual(['artifact-grounded']);
+    expect(payload.topic_sections[0].artifact_summaries_by_slot.common_traps
+      .map((artifact) => artifact.artifact_id))
+      .toEqual(['artifact-grounded']);
+    expect(payload.paper_workspace.pinned_artifacts.map((artifact) => artifact.artifact_id))
+      .toEqual(['artifact-grounded']);
+    expect(payload.paper_workspace.stable_slots.common_traps.artifact_summaries
+      .map((artifact) => artifact.artifact_id))
+      .toEqual(['artifact-grounded']);
+  });
+
   test('paper workspace keeps secondary references linked without duplicating authoritative artifacts or review tasks', async () => {
     const db = createLearningDb({
       workspaceProjections: [

@@ -256,16 +256,7 @@ function hasValidPerformanceEvidence({
 
 function isReleasedScopeCheckSatisfied(releaseScopePosture = {}) {
   const releasedScopeCheck = releaseScopePosture.released_scope_check;
-  if (isPlainObject(releasedScopeCheck)) {
-    return releasedScopeCheck.released_scoring === true;
-  }
-
-  return Boolean(
-    releaseScopePosture.release_scope_status === 'released_scoring'
-    && releaseScopePosture.authoritative_scoring_allowed === true
-    && releaseScopePosture.fallback_mode === null
-    && releaseScopePosture.fallback_reason_code === null,
-  );
+  return isPlainObject(releasedScopeCheck) && releasedScopeCheck.released_scoring === true;
 }
 
 function buildMasteryGuardrailDecision({
@@ -282,6 +273,10 @@ function buildMasteryGuardrailDecision({
     questionContext,
     releaseScopePosture,
   });
+  const classificationConfidence = normalizeClassificationConfidence(
+    releaseScopePosture.classification_confidence
+    ?? questionContext.classification_confidence,
+  );
   const freshnessBucket = resolveFreshnessBucket(input);
   const releasedScopeCheckSatisfied = isReleasedScopeCheckSatisfied(releaseScopePosture);
   const validPerformanceEvidence = !passiveEvidence && hasValidPerformanceEvidence({
@@ -295,6 +290,8 @@ function buildMasteryGuardrailDecision({
     blockedMasteryReasonCode = 'passive_or_non_performance_evidence';
   } else if (freshnessBucket === 'stale') {
     blockedMasteryReasonCode = 'stale_performance_evidence';
+  } else if (confidenceBand === 'low' || classificationConfidence === null) {
+    blockedMasteryReasonCode = 'low_confidence_performance_evidence';
   } else if (!validPerformanceEvidence) {
     blockedMasteryReasonCode = 'missing_valid_performance_evidence';
   } else if (!releasedScopeCheckSatisfied) {
@@ -307,6 +304,8 @@ function buildMasteryGuardrailDecision({
       !passiveEvidence
       && validPerformanceEvidence
       && releasedScopeCheckSatisfied
+      && confidenceBand !== 'low'
+      && classificationConfidence !== null
       && freshnessBucket !== 'stale',
     valid_performance_evidence: validPerformanceEvidence,
     performance_evidence_kind: validPerformanceEvidence
@@ -315,11 +314,7 @@ function buildMasteryGuardrailDecision({
     blocked_mastery_reason_code: blockedMasteryReasonCode,
     evidence_kind: evidenceKind,
     confidence_band: confidenceBand,
-    classification_confidence:
-      normalizeClassificationConfidence(
-        releaseScopePosture.classification_confidence
-        ?? questionContext.classification_confidence,
-      ),
+    classification_confidence: classificationConfidence,
     freshness_bucket: freshnessBucket,
     released_scope_check: clone(releaseScopePosture.released_scope_check ?? null),
   };
@@ -361,13 +356,9 @@ function hasStrongMasteryBand(effect = {}) {
   ].some((value) => STRONG_MASTERY_BANDS.has(normalizeMasteryBand(value)));
 }
 
-function isStrongPositiveTypeMasteryEffect(effect = {}) {
+function isPositiveMasteryMovement(effect = {}) {
   if (hasStrongMasteryBand(effect)) {
     return true;
-  }
-
-  if (normalizeSignalToken(effect.level) !== 'question_type') {
-    return false;
   }
 
   return Boolean(
@@ -381,7 +372,7 @@ function isMasteryUpdateAllowed(masteryUpdate = {}, masteryGuardrailDecision = {
     return false;
   }
 
-  if (!isStrongPositiveTypeMasteryEffect(masteryUpdate)) {
+  if (!isPositiveMasteryMovement(masteryUpdate)) {
     return true;
   }
 
@@ -402,7 +393,7 @@ function buildMasteryNoop(effect = {}, guardrailDecision = {}) {
 }
 
 function validateProposedMasteryEffectForMaterialization(effect = {}) {
-  if (!isStrongPositiveTypeMasteryEffect(effect)) {
+  if (!isPositiveMasteryMovement(effect)) {
     return {
       ok: true,
       mastery_write_allowed: true,
@@ -412,22 +403,90 @@ function validateProposedMasteryEffectForMaterialization(effect = {}) {
 
   const releasedScopeCheck = effect.signal_summary?.released_scope_check;
   const masteryEvidence = effect.signal_summary?.mastery_evidence;
-  const releasedScopeSatisfied = isPlainObject(releasedScopeCheck)
-    && releasedScopeCheck.released_scoring === true;
-  const validPerformanceEvidence = masteryEvidence?.valid_performance_evidence === true;
+  const masteryGuardrailDecision = effect.signal_summary?.mastery_guardrail_decision;
+  const evidenceKind = normalizeSignalToken(masteryEvidence?.evidence_kind);
+  const freshnessBucket = normalizeSignalToken(masteryEvidence?.freshness_bucket);
+  const classificationConfidence = normalizeClassificationConfidence(
+    masteryEvidence?.classification_confidence,
+  );
+  const confidenceBand = normalizeSignalToken(masteryEvidence?.confidence_band)
+    || deriveConfidenceBand(classificationConfidence);
 
-  if (releasedScopeSatisfied && validPerformanceEvidence) {
+  if (!isPlainObject(releasedScopeCheck)) {
     return {
-      ok: true,
-      mastery_write_allowed: true,
-      blocked_mastery_reason_code: null,
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code: 'released_scope_check_not_satisfied',
+    };
+  }
+
+  if (releasedScopeCheck.released_scoring !== true) {
+    return {
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code: 'missing_released_performance_evidence',
+    };
+  }
+
+  if (masteryEvidence?.valid_performance_evidence !== true) {
+    return {
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code: 'missing_released_performance_evidence',
+    };
+  }
+
+  if (isPassiveMasteryEvidenceKind(evidenceKind)) {
+    return {
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code: 'passive_or_non_performance_evidence',
+    };
+  }
+
+  if (freshnessBucket === 'stale') {
+    return {
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code: 'stale_performance_evidence',
+    };
+  }
+
+  if (confidenceBand === 'low' || classificationConfidence === null) {
+    return {
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code: 'low_confidence_performance_evidence',
+    };
+  }
+
+  if (!isPlainObject(masteryGuardrailDecision)) {
+    return {
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code: 'missing_mastery_guardrail_decision',
+    };
+  }
+
+  if (
+    masteryGuardrailDecision.mastery_write_allowed !== true
+    || masteryGuardrailDecision.positive_mastery_allowed !== true
+    || masteryGuardrailDecision.valid_performance_evidence !== true
+    || masteryGuardrailDecision.blocked_mastery_reason_code
+  ) {
+    return {
+      ok: false,
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code:
+        normalizeString(masteryGuardrailDecision.blocked_mastery_reason_code)
+        || 'mastery_guardrail_decision_not_satisfied',
     };
   }
 
   return {
-    ok: false,
-    mastery_write_allowed: false,
-    blocked_mastery_reason_code: 'missing_released_performance_evidence',
+    ok: true,
+    mastery_write_allowed: true,
+    blocked_mastery_reason_code: null,
   };
 }
 

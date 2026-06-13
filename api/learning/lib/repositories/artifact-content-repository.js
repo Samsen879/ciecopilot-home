@@ -1,3 +1,5 @@
+import { normalizeArtifactRenderPayload } from '../artifacts/visual-reasoning-render-schema.js';
+
 function normalizeString(value, fallback = null) {
   if (typeof value !== 'string') {
     return fallback;
@@ -76,7 +78,7 @@ export function mergeArtifactWithCurrentContent(artifact, currentContent) {
     summary: normalizeString(currentContent.summary),
     body_markdown: normalizeString(currentContent.body_markdown),
     content_format: normalizeString(currentContent.content_format, 'markdown'),
-    render_payload: normalizeObject(currentContent.render_payload),
+    render_payload: normalizeArtifactRenderPayload(currentContent.render_payload),
     content_source_refs: normalizeArray(currentContent.source_refs),
     current_content_version_id: currentContent.artifact_content_version_id,
     current_content_version_number: currentContent.version_number ?? null,
@@ -99,7 +101,7 @@ function buildInsertRow(input = {}, currentContent = null) {
     summary: normalizeString(input.summary),
     body_markdown: normalizeString(input.body_markdown, ''),
     content_format: normalizeString(input.content_format, 'markdown'),
-    render_payload: normalizeObject(input.render_payload),
+    render_payload: normalizeArtifactRenderPayload(input.render_payload),
     materialization_kind: normalizeString(input.materialization_kind, 'runtime_candidate'),
     source_refs: normalizeArray(input.source_refs),
     ...(input.created_at ? { created_at: input.created_at } : {}),

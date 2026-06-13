@@ -389,6 +389,7 @@ function buildResidentArtifactProjection(artifact = {}) {
     summary: normalizeString(artifact.summary),
     body_markdown: normalizeString(artifact.body_markdown),
     content_format: normalizeString(artifact.content_format, 'markdown'),
+    render_payload: artifact.render_payload ?? {},
     current_content_version_id: artifact.current_content_version_id ?? null,
     current_content_version_number: artifact.current_content_version_number ?? null,
     capabilities: artifact.capabilities ?? null,

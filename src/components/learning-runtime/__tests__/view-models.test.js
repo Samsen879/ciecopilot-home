@@ -1079,6 +1079,69 @@ describe('learning runtime session view model', () => {
     });
   });
 
+  test('workspace view-model exposes visual reasoning schema metadata without decorative render fields', () => {
+    const payload = createWorkspacePayload();
+    payload.workspace.slots.coreMethodDerivation.primaryArtifact = {
+      artifactId: 'artifact-derivation',
+      artifactKind: 'derivation_card',
+      canonicalHomeTopicId: 'topic-trig-equations',
+      slotKey: 'core_method_derivation',
+      placementStatus: 'pinned',
+      artifactState: 'verified',
+      trustStatus: 'grounded',
+      lifecycleStatus: 'active',
+      renderPayload: {
+        schemaVersion: 'learning_artifact_render.v1',
+        visualReasoning: {
+          schemaVersion: 'visual_reasoning_mvp.v1',
+          visualObjects: [
+            {
+              kind: 'derivation_tree',
+              sourcePosture: 'verified',
+              confidence: 'high',
+              sourceRefs: [{ kind: 'mark_run', markRunId: 'mark-run-visual-1' }],
+              nodes: [
+                { id: 'start', label: 'Original equation', sourceRefs: [] },
+                { id: 'expanded', label: 'Expanded identity', sourceRefs: [] },
+              ],
+              edges: [
+                { from: 'start', to: 'expanded', relation: 'uses_identity', sourceRefs: [] },
+              ],
+              decorativeTheme: 'aurora',
+            },
+          ],
+          stepList: null,
+        },
+      },
+    };
+
+    const vm = buildWorkspaceViewModel(payload, {
+      now: '2026-03-22T12:00:00.000Z',
+    });
+
+    expect(vm.slots.core_method_derivation.primaryArtifactCard.visualReasoning).toEqual({
+      schemaVersion: 'visual_reasoning_mvp.v1',
+      visualObjects: [
+        {
+          kind: 'derivation_tree',
+          sourcePosture: 'verified',
+          confidence: 'high',
+          sourceRefs: [{ kind: 'mark_run', markRunId: 'mark-run-visual-1' }],
+          nodes: [
+            { id: 'start', label: 'Original equation', sourceRefs: [] },
+            { id: 'expanded', label: 'Expanded identity', sourceRefs: [] },
+          ],
+          edges: [
+            { from: 'start', to: 'expanded', relation: 'uses_identity', sourceRefs: [] },
+          ],
+        },
+      ],
+      stepList: null,
+    });
+    expect(JSON.stringify(vm.slots.core_method_derivation.primaryArtifactCard.visualReasoning))
+      .not.toContain('decorativeTheme');
+  });
+
   test('workspace view-model keeps compact student explanations behind the scheduler explanation flag', () => {
     const payload = createWorkspacePayload();
     payload.reviewQueue.featureFlags = {

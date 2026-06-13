@@ -2404,6 +2404,67 @@ describe('workspace read service', () => {
     }
   });
 
+  test('workspace resident projection preserves bounded visual reasoning render payloads', async () => {
+    const db = createLearningDb({
+      artifactContentVersionRows: [
+        {
+          artifact_content_version_id: 'artifact-content-visual',
+          artifact_id: 'artifact-primary',
+          version_number: 1,
+          is_current: true,
+          title: 'Core derivation: trig equation',
+          summary: 'Verified derivation structure.',
+          body_markdown: 'Use the verified step list when confidence is too low for a diagram.',
+          content_format: 'markdown',
+          render_payload: {
+            schema_version: 'learning_artifact_render.v1',
+            visual_reasoning: {
+              schema_version: 'visual_reasoning_mvp.v1',
+              visual_objects: [
+                {
+                  kind: 'dependency_graph',
+                  source_posture: 'verified',
+                  confidence: 'high',
+                  source_refs: [{ kind: 'artifact', artifact_id: 'artifact-source-1' }],
+                  nodes: [
+                    { id: 'identity', label: 'Double-angle identity', source_refs: [] },
+                    { id: 'quadratic', label: 'Quadratic solving', source_refs: [] },
+                  ],
+                  edges: [
+                    { from: 'identity', to: 'quadratic', relation: 'precedes', source_refs: [] },
+                  ],
+                },
+              ],
+              step_list: null,
+            },
+          },
+        },
+      ],
+    });
+
+    const payload = await getWorkspaceView(db, {
+      userId: 'student-1',
+      topicId: 'topic-1',
+      residencyFlagEnabled: true,
+    });
+
+    expect(payload.workspace.slots.common_traps.primary_artifact).toMatchObject({
+      artifact_id: 'artifact-primary',
+      render_payload: {
+        visual_reasoning: {
+          schema_version: 'visual_reasoning_mvp.v1',
+          visual_objects: [
+            expect.objectContaining({
+              kind: 'dependency_graph',
+              source_posture: 'verified',
+            }),
+          ],
+          step_list: null,
+        },
+      },
+    });
+  });
+
   test('workspace revisit payload keeps last-session continuity separate from slot and queue changes', async () => {
     const db = createLearningDb();
 

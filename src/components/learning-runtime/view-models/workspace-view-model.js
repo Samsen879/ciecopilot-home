@@ -369,6 +369,179 @@ function normalizeCapabilities(capabilities = null) {
   };
 }
 
+function readVisualKey(record = {}, camelKey, snakeKey) {
+  if (!record || typeof record !== 'object' || Array.isArray(record)) {
+    return undefined;
+  }
+
+  return record[camelKey] ?? record[snakeKey];
+}
+
+function normalizeVisualRef(ref = null) {
+  if (!ref || typeof ref !== 'object' || Array.isArray(ref) || !normalizeString(ref.kind)) {
+    return null;
+  }
+
+  return Object.fromEntries(
+    Object.entries(ref)
+      .map(([key, value]) => [
+        key.replace(/_([a-z])/g, (_match, letter) => letter.toUpperCase()),
+        value,
+      ]),
+  );
+}
+
+function normalizeVisualRefs(refs = []) {
+  return (Array.isArray(refs) ? refs : [])
+    .map((ref) => normalizeVisualRef(ref))
+    .filter(Boolean);
+}
+
+function normalizeVisualNode(node = null) {
+  if (!node || typeof node !== 'object' || Array.isArray(node)) {
+    return null;
+  }
+
+  const id = normalizeString(node.id);
+  const label = normalizeString(node.label);
+  if (!id || !label) {
+    return null;
+  }
+
+  return {
+    id,
+    label,
+    sourceRefs: normalizeVisualRefs(readVisualKey(node, 'sourceRefs', 'source_refs')),
+  };
+}
+
+function normalizeVisualEdge(edge = null) {
+  if (!edge || typeof edge !== 'object' || Array.isArray(edge)) {
+    return null;
+  }
+
+  const from = normalizeString(edge.from);
+  const to = normalizeString(edge.to);
+  if (!from || !to) {
+    return null;
+  }
+
+  return {
+    from,
+    to,
+    relation: normalizeString(edge.relation, 'depends_on'),
+    sourceRefs: normalizeVisualRefs(readVisualKey(edge, 'sourceRefs', 'source_refs')),
+  };
+}
+
+function normalizeVisualStep(step = null) {
+  if (!step || typeof step !== 'object' || Array.isArray(step)) {
+    return null;
+  }
+
+  const stepId = normalizeString(readVisualKey(step, 'stepId', 'step_id'));
+  const body = normalizeString(step.body);
+  if (!stepId || !body) {
+    return null;
+  }
+
+  const revealIndex = Number(readVisualKey(step, 'revealIndex', 'reveal_index'));
+
+  return {
+    stepId,
+    title: normalizeString(step.title),
+    body,
+    ...(Number.isFinite(revealIndex) && revealIndex > 0 ? { revealIndex } : {}),
+    dependsOnStepIds: (Array.isArray(readVisualKey(step, 'dependsOnStepIds', 'depends_on_step_ids'))
+      ? readVisualKey(step, 'dependsOnStepIds', 'depends_on_step_ids')
+      : [])
+      .map((stepIdValue) => normalizeString(stepIdValue))
+      .filter(Boolean),
+    sourceRefs: normalizeVisualRefs(readVisualKey(step, 'sourceRefs', 'source_refs')),
+  };
+}
+
+function normalizeVisualObject(visualObject = null) {
+  if (!visualObject || typeof visualObject !== 'object' || Array.isArray(visualObject)) {
+    return null;
+  }
+
+  const kind = normalizeString(visualObject.kind);
+  const base = {
+    kind,
+    sourcePosture: normalizeString(readVisualKey(visualObject, 'sourcePosture', 'source_posture')),
+    confidence: normalizeString(visualObject.confidence),
+    sourceRefs: normalizeVisualRefs(readVisualKey(visualObject, 'sourceRefs', 'source_refs')),
+  };
+
+  if (kind === 'step_reveal_timeline') {
+    return {
+      ...base,
+      steps: (Array.isArray(visualObject.steps) ? visualObject.steps : [])
+        .map((step) => normalizeVisualStep(step))
+        .filter(Boolean),
+    };
+  }
+
+  if (kind === 'derivation_tree' || kind === 'dependency_graph') {
+    return {
+      ...base,
+      nodes: (Array.isArray(visualObject.nodes) ? visualObject.nodes : [])
+        .map((node) => normalizeVisualNode(node))
+        .filter(Boolean),
+      edges: (Array.isArray(visualObject.edges) ? visualObject.edges : [])
+        .map((edge) => normalizeVisualEdge(edge))
+        .filter(Boolean),
+    };
+  }
+
+  return null;
+}
+
+function normalizeVisualStepList(stepList = null) {
+  if (!stepList || typeof stepList !== 'object' || Array.isArray(stepList)) {
+    return null;
+  }
+
+  return {
+    kind: 'step_list',
+    fallbackFrom: normalizeString(readVisualKey(stepList, 'fallbackFrom', 'fallback_from')),
+    fallbackReasonCode: normalizeString(
+      readVisualKey(stepList, 'fallbackReasonCode', 'fallback_reason_code'),
+    ),
+    sourcePosture: normalizeString(readVisualKey(stepList, 'sourcePosture', 'source_posture')),
+    confidence: normalizeString(stepList.confidence),
+    sourceRefs: normalizeVisualRefs(readVisualKey(stepList, 'sourceRefs', 'source_refs')),
+    steps: (Array.isArray(stepList.steps) ? stepList.steps : [])
+      .map((step) => normalizeVisualStep(step))
+      .filter(Boolean),
+  };
+}
+
+function normalizeVisualReasoning(renderPayload = null) {
+  const payload = normalizeObject(renderPayload);
+  const visualReasoning = normalizeObject(
+    payload.visualReasoning ?? payload.visual_reasoning,
+  );
+
+  if (!visualReasoning || Object.keys(visualReasoning).length === 0) {
+    return null;
+  }
+
+  return {
+    schemaVersion: normalizeString(
+      visualReasoning.schemaVersion ?? visualReasoning.schema_version,
+      'visual_reasoning_mvp.v1',
+    ),
+    visualObjects: (Array.isArray(visualReasoning.visualObjects ?? visualReasoning.visual_objects)
+      ? (visualReasoning.visualObjects ?? visualReasoning.visual_objects)
+      : [])
+      .map((visualObject) => normalizeVisualObject(visualObject))
+      .filter(Boolean),
+    stepList: normalizeVisualStepList(visualReasoning.stepList ?? visualReasoning.step_list),
+  };
+}
+
 function isResidentEligibleRecord(record = {}) {
   if (typeof record?.capabilities?.residentEligible === 'boolean') {
     return record.capabilities.residentEligible;
@@ -647,6 +820,8 @@ function normalizeArtifactRecord(artifact = {}, { source = 'artifact_inbox' } = 
       artifact.targetQuestionTypeId ?? artifact.target_question_type_id,
       null,
     ),
+    renderPayload: normalizeObject(artifact.renderPayload ?? artifact.render_payload),
+    visualReasoning: normalizeVisualReasoning(artifact.renderPayload ?? artifact.render_payload),
     updatedAt: artifact.updatedAt ?? artifact.updated_at ?? null,
     source,
   };
@@ -761,6 +936,7 @@ function buildArtifactCard(record, {
     kindLabel: kindLabelForArtifactKind(record.artifactKind),
     placementLabel,
     description,
+    visualReasoning: record.visualReasoning,
     updatedAtLabel: buildUpdatedAtLabel(record.updatedAt),
     state: buildArtifactStatusState(record, fallbackState),
     launch: buildArtifactLaunch(record, workspace),

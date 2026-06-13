@@ -23,6 +23,8 @@ export const LEARNING_SIGNAL_POSTURES = Object.freeze({
   CONSERVATIVE_FALLBACK: 'conservative_fallback',
 });
 
+export const RELEASED_SCOPE_CHECK_CONTRACT_VERSION = 'phase_1a_released_scope_check.v1';
+
 export const CONFIDENCE_BANDS = Object.freeze(['low', 'medium', 'high']);
 export const LOW_CLASSIFICATION_CONFIDENCE_THRESHOLD = 0.8;
 
@@ -120,6 +122,40 @@ function summarizeFallbackReason(fallbackReasonCode) {
   }
 }
 
+function isReleasedScoringCheckSatisfied(posture = {}) {
+  return Boolean(
+    posture.release_scope_status === RELEASE_SCOPE_STATUSES.RELEASED_SCORING
+    && posture.authoritative_scoring_allowed === true
+    && posture.fallback_mode === null
+    && posture.fallback_reason_code === null,
+  );
+}
+
+export function buildReleasedScopeCheck(posture = {}) {
+  const releasedScoring = isReleasedScoringCheckSatisfied(posture);
+
+  return {
+    contract_version: RELEASED_SCOPE_CHECK_CONTRACT_VERSION,
+    released_scoring: releasedScoring,
+    non_released_fallback: !releasedScoring,
+    release_scope_status: releasedScoring
+      ? RELEASE_SCOPE_STATUSES.RELEASED_SCORING
+      : RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
+    fallback_mode: releasedScoring
+      ? null
+      : (posture.fallback_mode || LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK),
+    fallback_reason_code: releasedScoring ? null : (posture.fallback_reason_code ?? null),
+    learning_signal_posture: releasedScoring
+      ? LEARNING_SIGNAL_POSTURES.AUTHORITATIVE_SCORING
+      : LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+    allowed_outputs: {
+      authoritative_score: releasedScoring,
+      formal_point_judgement: releasedScoring,
+      strong_positive_type_level_mastery: releasedScoring,
+    },
+  };
+}
+
 function buildReleasedScopeExplanation({
   posture = {},
   questionTypeId = null,
@@ -199,17 +235,22 @@ function buildReleasedScopeExplanation({
 }
 
 export function withReleasedScopeExplanation(posture, context = {}) {
-  return {
+  const withExplanation = {
     ...posture,
     explanation: buildReleasedScopeExplanation({
       posture,
       ...context,
     }),
   };
+
+  return {
+    ...withExplanation,
+    released_scope_check: buildReleasedScopeCheck(withExplanation),
+  };
 }
 
 export function buildFallbackPosture(fallbackReasonCode, classificationConfidence) {
-  return {
+  const posture = {
     release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
     authoritative_scoring_allowed: false,
     fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
@@ -221,6 +262,11 @@ export function buildFallbackPosture(fallbackReasonCode, classificationConfidenc
       summary: `Fallback remains active because ${summarizeFallbackReason(fallbackReasonCode)}.`,
       factors: [],
     },
+  };
+
+  return {
+    ...posture,
+    released_scope_check: buildReleasedScopeCheck(posture),
   };
 }
 

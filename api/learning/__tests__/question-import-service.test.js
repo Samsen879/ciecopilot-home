@@ -759,7 +759,7 @@ describe('question import service', () => {
       release_scope_status: 'released_scoring',
       fallback_mode: null,
       fallback_reason_code: null,
-      classification_confidence: 0.89,
+      classification_confidence: 0.95,
     });
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
@@ -788,7 +788,7 @@ describe('question import service', () => {
       release_scope_status: 'released_scoring',
       fallback_mode: null,
       fallback_reason_code: null,
-      classification_confidence: 0.89,
+      classification_confidence: 0.95,
     });
     expect(result.question).toMatchObject({
       family_id: '9709.integration_techniques',
@@ -846,6 +846,38 @@ describe('question import service', () => {
       ],
       confidence_band: 'high',
       analysis_provenance_kind: 'real',
+    });
+  });
+
+  test('imported questions expose fallback released_scope_check when registry evidence is missing', async () => {
+    clientState.registryTypes.delete('9709.trigonometry.identities');
+
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildTrigIdentityInput(),
+    });
+
+    expect(result.question).toMatchObject({
+      family_id: '9709.trigonometry_manipulation_equations',
+      primary_question_type_id: '9709.trigonometry.identities',
+      release_scope_status: 'non_released_fallback',
+    });
+    expect(result.scoring_scope_posture).toMatchObject({
+      release_scope_status: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      fallback_mode: 'non_released_fallback',
+      released_scope_check: {
+        contract_version: 'phase_1a_released_scope_check.v1',
+        released_scoring: false,
+        non_released_fallback: true,
+        release_scope_status: 'non_released_fallback',
+        fallback_mode: 'non_released_fallback',
+        allowed_outputs: {
+          authoritative_score: false,
+          formal_point_judgement: false,
+          strong_positive_type_level_mastery: false,
+        },
+      },
     });
   });
 

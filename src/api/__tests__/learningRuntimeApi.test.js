@@ -479,6 +479,20 @@ describe('learning runtime api', () => {
         fallback_reason_code: 'non_pilot_question_type',
         classification_confidence: null,
         learning_signal_posture: 'conservative_fallback',
+        released_scope_check: {
+          contract_version: 'phase_1a_released_scope_check.v1',
+          released_scoring: false,
+          non_released_fallback: true,
+          release_scope_status: 'non_released_fallback',
+          fallback_mode: 'non_released_fallback',
+          fallback_reason_code: 'non_pilot_question_type',
+          learning_signal_posture: 'conservative_fallback',
+          allowed_outputs: {
+            authoritative_score: false,
+            formal_point_judgement: false,
+            strong_positive_type_level_mastery: false,
+          },
+        },
       },
       session_delta: {
         client_turn_id: 'local-turn-001',
@@ -517,6 +531,20 @@ describe('learning runtime api', () => {
       fallbackReasonCode: 'non_pilot_question_type',
       classificationConfidence: null,
       learningSignalPosture: 'conservative_fallback',
+      releasedScopeCheck: {
+        contractVersion: 'phase_1a_released_scope_check.v1',
+        releasedScoring: false,
+        nonReleasedFallback: true,
+        releaseScopeStatus: 'non_released_fallback',
+        fallbackMode: 'non_released_fallback',
+        fallbackReasonCode: 'non_pilot_question_type',
+        learningSignalPosture: 'conservative_fallback',
+        allowedOutputs: {
+          authoritativeScore: false,
+          formalPointJudgement: false,
+          strongPositiveTypeLevelMastery: false,
+        },
+      },
     });
     expect(payload.sessionDelta.currentQuestion).toBeNull();
     expect(payload.sessionDelta.currentQuestionType).toEqual({

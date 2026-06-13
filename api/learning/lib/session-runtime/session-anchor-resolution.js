@@ -27,6 +27,28 @@ function isUuidString(value) {
   );
 }
 
+function normalizeString(value) {
+  return String(value ?? '').trim();
+}
+
+function normalizeNullableString(value) {
+  const normalized = normalizeString(value);
+  return normalized || null;
+}
+
+function normalizeTopicPathForLookup(value) {
+  const normalized = normalizeNullableString(value);
+  if (!normalized) {
+    return null;
+  }
+
+  return normalized
+    .split('/')
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .join('.');
+}
+
 async function maybeSingle(query, fallbackMessage) {
   const { data, error } = await query;
   if (error) {
@@ -50,6 +72,27 @@ async function loadTopic(client, topicId) {
   );
 }
 
+async function loadTopicByPath(client, topicPath) {
+  const normalizedTopicPath = normalizeTopicPathForLookup(topicPath);
+  if (!normalizedTopicPath) return null;
+  return maybeSingle(
+    client
+      .from('curriculum_nodes')
+      .select('node_id, topic_path')
+      .eq('topic_path', normalizedTopicPath)
+      .maybeSingle(),
+    'Failed to load curriculum node by topic_path.',
+  );
+}
+
+function buildCanonicalConceptAnchorRef(topic) {
+  return {
+    kind: 'concept',
+    topic_id: topic.node_id,
+    topic_path: topic.topic_path,
+  };
+}
+
 async function resolveConceptAnchor(client, {
   subjectCode,
   anchorRef,
@@ -63,14 +106,7 @@ async function resolveConceptAnchor(client, {
   }
 
   if (!topic && !topicIdIsUuid && anchorRef.topic_path) {
-    topic = await maybeSingle(
-      client
-        .from('curriculum_nodes')
-        .select('node_id, topic_path')
-        .eq('topic_path', anchorRef.topic_path)
-        .maybeSingle(),
-      'Failed to load curriculum node by topic_path.',
-    );
+    topic = await loadTopicByPath(client, anchorRef.topic_path);
   }
 
   if (!topic) {
@@ -80,7 +116,8 @@ async function resolveConceptAnchor(client, {
     });
   }
 
-  if (anchorRef.topic_path && anchorRef.topic_path !== topic.topic_path) {
+  const requestedTopicPath = normalizeTopicPathForLookup(anchorRef.topic_path);
+  if (requestedTopicPath && requestedTopicPath !== topic.topic_path) {
     throw createLearningError('invalid_anchor_ref', {
       status: 400,
       message: 'Anchor ref does not match the canonical topic path.',
@@ -97,6 +134,7 @@ async function resolveConceptAnchor(client, {
   }
 
   return {
+    anchorRef: buildCanonicalConceptAnchorRef(topic),
     currentQuestionId: null,
     currentQuestionTypeId: currentQuestionTypeId || null,
     canonicalHome: {

@@ -163,6 +163,11 @@ test('resolveCreateSessionAnchor loads concept topic by uuid when topic_id is ca
     },
     currentQuestionTypeId: '9709.trigonometry.equations',
   })).resolves.toEqual({
+    anchorRef: {
+      kind: 'concept',
+      topic_id: TOPIC_UUID,
+      topic_path: TOPIC_PATH,
+    },
     currentQuestionId: null,
     currentQuestionTypeId: '9709.trigonometry.equations',
     canonicalHome: {
@@ -195,6 +200,11 @@ test('resolveCreateSessionAnchor falls back to topic_path when concept topic_id 
     },
     currentQuestionTypeId: '9709.trigonometry.equations',
   })).resolves.toEqual({
+    anchorRef: {
+      kind: 'concept',
+      topic_id: TOPIC_UUID,
+      topic_path: TOPIC_PATH,
+    },
     currentQuestionId: null,
     currentQuestionTypeId: '9709.trigonometry.equations',
     canonicalHome: {

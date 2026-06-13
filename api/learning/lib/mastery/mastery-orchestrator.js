@@ -33,8 +33,402 @@ function clone(value) {
   return value === undefined ? undefined : JSON.parse(JSON.stringify(value));
 }
 
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
 function getQuestionContext(input = {}) {
   return input.question_context || {};
+}
+
+function normalizeSignalToken(value) {
+  const withWordBoundaries = typeof value === 'string'
+    ? value.replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    : '';
+
+  return withWordBoundaries
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+}
+
+const PASSIVE_MASTERY_EVIDENCE_KINDS = new Set([
+  'reading',
+  'passive_reading',
+  'browsing',
+  'artifact_view',
+  'artifact_viewing',
+  'content_view',
+  'raw_chat',
+  'chat',
+  'explanation_exposure',
+  'explanation_view',
+  'classification_only',
+  'question_classified',
+  'non_released_fallback_diagnostic',
+  'diagnostic_only',
+  'ui_only',
+]);
+
+const STRONG_MASTERY_BANDS = new Set([
+  'secure',
+  'exam_ready',
+  'examready',
+]);
+
+const MINIMUM_POSITIVE_DECISION_CONFIDENCE = 0.8;
+
+function normalizeMasteryBand(value) {
+  return normalizeSignalToken(value).replace(/-/g, '_');
+}
+
+function isTypedRef(value) {
+  if (!isPlainObject(value) || !normalizeString(value.kind)) {
+    return false;
+  }
+
+  return Object.entries(value).some(([key, refValue]) =>
+    key !== 'kind' && normalizeString(refValue));
+}
+
+function normalizeClassificationConfidence(value) {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+
+  const parsed = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function deriveConfidenceBand(classificationConfidence) {
+  const normalized = normalizeClassificationConfidence(classificationConfidence);
+  if (normalized === null) {
+    return null;
+  }
+
+  if (normalized < 0.8) {
+    return 'low';
+  }
+
+  if (normalized < 0.85) {
+    return 'medium';
+  }
+
+  return 'high';
+}
+
+function resolveConfidenceBand({
+  input = {},
+  questionContext = {},
+  releaseScopePosture = {},
+} = {}) {
+  return normalizeSignalToken(
+    releaseScopePosture.confidence_band
+    ?? releaseScopePosture.confidenceBand
+    ?? questionContext.confidence_band
+    ?? questionContext.confidenceBand,
+  )
+    || deriveConfidenceBand(
+      releaseScopePosture.classification_confidence
+      ?? questionContext.classification_confidence,
+    );
+}
+
+function resolveFreshnessBucket(input = {}) {
+  return normalizeSignalToken(
+    input.evidence_freshness_bucket
+    ?? input.evidenceFreshnessBucket
+    ?? input.freshness_bucket
+    ?? input.freshnessBucket
+    ?? input.marking_result?.marking_summary?.freshness_bucket
+    ?? input.marking_result?.marking_summary?.freshnessBucket,
+  ) || null;
+}
+
+function resolveEvidenceKind(input = {}) {
+  const candidates = [
+    input.evidence_kind,
+    input.evidenceKind,
+    input.learning_event_kind,
+    input.learningEventKind,
+    input.interaction_mode,
+    input.interactionMode,
+    input.activity_kind,
+    input.activityKind,
+    input.source_event_type,
+    input.sourceEventType,
+    input.trigger_type,
+    input.triggerType,
+  ];
+
+  return candidates
+    .map((candidate) => normalizeSignalToken(candidate))
+    .find(Boolean) || null;
+}
+
+function isPassiveMasteryEvidenceKind(evidenceKind) {
+  return PASSIVE_MASTERY_EVIDENCE_KINDS.has(normalizeSignalToken(evidenceKind));
+}
+
+function hasValidMarkedDecisionEvidence(decision = {}) {
+  const confidence = normalizeClassificationConfidence(decision.alignment_confidence);
+  return Boolean(
+    (
+      typeof decision?.awarded === 'boolean'
+      || Number.isFinite(Number(decision?.awarded_marks))
+    )
+    && confidence !== null
+    && confidence >= MINIMUM_POSITIVE_DECISION_CONFIDENCE,
+  );
+}
+
+function hasConservativeMarkingPosture(markingResult = {}) {
+  const markingSummary = isPlainObject(markingResult?.marking_summary)
+    ? markingResult.marking_summary
+    : {};
+
+  return Boolean(
+    markingSummary.local_signal_only === true
+    || markingSummary.conservative_part_mapping === true
+    || Number(markingSummary.ambiguous_rubric_point_result_count ?? 0) > 0,
+  );
+}
+
+function hasExplicitPerformanceEvidence(input = {}) {
+  return Boolean(
+    input.mastery_evidence?.valid_performance_evidence === true
+    || input.masteryEvidence?.validPerformanceEvidence === true
+    || input.performance_evidence?.valid === true
+    || input.performanceEvidence?.valid === true,
+  );
+}
+
+function hasReviewTaskPerformanceEvidence(input = {}) {
+  const evidence =
+    input.review_task_completion_evidence
+    || input.reviewTaskCompletionEvidence
+    || input.completion_evidence
+    || input.completionEvidence;
+  const contract = evidence?.evidence_contract ?? evidence?.evidenceContract ?? {};
+
+  return Boolean(
+    contract.outcome === 'completed'
+    && contract.validation === 'mode_specific'
+    && (
+      isTypedRef(evidence.attempt_ref)
+      || isTypedRef(evidence.variant_attempt_ref)
+      || isTypedRef(evidence.timed_attempt_ref)
+      || isTypedRef(evidence.corrected_attempt_ref)
+      || isTypedRef(evidence.fix_evidence_ref)
+    )
+  );
+}
+
+function hasMarkingPerformanceEvidence({
+  input = {},
+  sourceAttemptRef = null,
+  sourceMarkRunRef = null,
+} = {}) {
+  return Boolean(
+    isTypedRef(sourceAttemptRef)
+    && isTypedRef(sourceMarkRunRef)
+    && normalizeArray(input.decisions).some(hasValidMarkedDecisionEvidence)
+    && !hasConservativeMarkingPosture(input.marking_result),
+  );
+}
+
+function hasValidPerformanceEvidence({
+  input = {},
+  sourceAttemptRef = null,
+  sourceMarkRunRef = null,
+} = {}) {
+  return Boolean(
+    hasExplicitPerformanceEvidence(input)
+    || hasReviewTaskPerformanceEvidence(input)
+    || hasMarkingPerformanceEvidence({
+      input,
+      sourceAttemptRef,
+      sourceMarkRunRef,
+    })
+  );
+}
+
+function isReleasedScopeCheckSatisfied(releaseScopePosture = {}) {
+  const releasedScopeCheck = releaseScopePosture.released_scope_check;
+  if (isPlainObject(releasedScopeCheck)) {
+    return releasedScopeCheck.released_scoring === true;
+  }
+
+  return Boolean(
+    releaseScopePosture.release_scope_status === 'released_scoring'
+    && releaseScopePosture.authoritative_scoring_allowed === true
+    && releaseScopePosture.fallback_mode === null
+    && releaseScopePosture.fallback_reason_code === null,
+  );
+}
+
+function buildMasteryGuardrailDecision({
+  input = {},
+  questionContext = {},
+  releaseScopePosture = {},
+  sourceAttemptRef = null,
+  sourceMarkRunRef = null,
+} = {}) {
+  const evidenceKind = resolveEvidenceKind(input);
+  const passiveEvidence = isPassiveMasteryEvidenceKind(evidenceKind);
+  const confidenceBand = resolveConfidenceBand({
+    input,
+    questionContext,
+    releaseScopePosture,
+  });
+  const freshnessBucket = resolveFreshnessBucket(input);
+  const releasedScopeCheckSatisfied = isReleasedScopeCheckSatisfied(releaseScopePosture);
+  const validPerformanceEvidence = !passiveEvidence && hasValidPerformanceEvidence({
+    input,
+    sourceAttemptRef,
+    sourceMarkRunRef,
+  });
+  let blockedMasteryReasonCode = null;
+
+  if (passiveEvidence) {
+    blockedMasteryReasonCode = 'passive_or_non_performance_evidence';
+  } else if (freshnessBucket === 'stale') {
+    blockedMasteryReasonCode = 'stale_performance_evidence';
+  } else if (!validPerformanceEvidence) {
+    blockedMasteryReasonCode = 'missing_valid_performance_evidence';
+  } else if (!releasedScopeCheckSatisfied) {
+    blockedMasteryReasonCode = 'released_scope_check_not_satisfied';
+  }
+
+  return {
+    mastery_write_allowed: !passiveEvidence,
+    positive_mastery_allowed:
+      !passiveEvidence
+      && validPerformanceEvidence
+      && releasedScopeCheckSatisfied
+      && freshnessBucket !== 'stale',
+    valid_performance_evidence: validPerformanceEvidence,
+    performance_evidence_kind: validPerformanceEvidence
+      ? (hasReviewTaskPerformanceEvidence(input) ? 'review_task_completion' : 'marking_performance')
+      : null,
+    blocked_mastery_reason_code: blockedMasteryReasonCode,
+    evidence_kind: evidenceKind,
+    confidence_band: confidenceBand,
+    classification_confidence:
+      normalizeClassificationConfidence(
+        releaseScopePosture.classification_confidence
+        ?? questionContext.classification_confidence,
+      ),
+    freshness_bucket: freshnessBucket,
+    released_scope_check: clone(releaseScopePosture.released_scope_check ?? null),
+  };
+}
+
+function getEffectSignalDirection(effect = {}) {
+  return normalizeSignalToken(
+    effect.signal_direction
+    ?? effect.mastery_state?.signal_direction
+    ?? effect.signalSummary?.signal_direction
+    ?? effect.signal_summary?.signal_direction,
+  );
+}
+
+function getEffectSignalWeight(effect = {}) {
+  return normalizeSignalToken(
+    effect.signal_weight
+    ?? effect.mastery_state?.signal_weight
+    ?? effect.signalSummary?.signal_weight
+    ?? effect.signal_summary?.signal_weight,
+  );
+}
+
+function hasStrongMasteryBand(effect = {}) {
+  return [
+    effect.mastery_band,
+    effect.masteryBand,
+    effect.target_band,
+    effect.targetBand,
+    effect.next_band,
+    effect.nextBand,
+    effect.mastery_state?.mastery_band,
+    effect.mastery_state?.masteryBand,
+    effect.mastery_state?.band,
+    effect.mastery_state?.target_band,
+    effect.mastery_state?.targetBand,
+    effect.mastery_state?.next_band,
+    effect.mastery_state?.nextBand,
+  ].some((value) => STRONG_MASTERY_BANDS.has(normalizeMasteryBand(value)));
+}
+
+function isStrongPositiveTypeMasteryEffect(effect = {}) {
+  if (hasStrongMasteryBand(effect)) {
+    return true;
+  }
+
+  if (normalizeSignalToken(effect.level) !== 'question_type') {
+    return false;
+  }
+
+  return Boolean(
+    getEffectSignalDirection(effect) === 'positive'
+    || getEffectSignalWeight(effect) === 'authoritative'
+  );
+}
+
+function isMasteryUpdateAllowed(masteryUpdate = {}, masteryGuardrailDecision = {}) {
+  if (masteryGuardrailDecision.mastery_write_allowed === false) {
+    return false;
+  }
+
+  if (!isStrongPositiveTypeMasteryEffect(masteryUpdate)) {
+    return true;
+  }
+
+  return masteryGuardrailDecision.positive_mastery_allowed === true;
+}
+
+function buildMasteryNoop(effect = {}, guardrailDecision = {}) {
+  return {
+    effect_status: 'noop',
+    effect_key: effect.effect_key ?? null,
+    guardrail_decision: {
+      mastery_write_allowed: false,
+      blocked_mastery_reason_code:
+        guardrailDecision.blocked_mastery_reason_code
+        || 'missing_released_performance_evidence',
+    },
+  };
+}
+
+function validateProposedMasteryEffectForMaterialization(effect = {}) {
+  if (!isStrongPositiveTypeMasteryEffect(effect)) {
+    return {
+      ok: true,
+      mastery_write_allowed: true,
+      blocked_mastery_reason_code: null,
+    };
+  }
+
+  const releasedScopeCheck = effect.signal_summary?.released_scope_check;
+  const masteryEvidence = effect.signal_summary?.mastery_evidence;
+  const releasedScopeSatisfied = isPlainObject(releasedScopeCheck)
+    && releasedScopeCheck.released_scoring === true;
+  const validPerformanceEvidence = masteryEvidence?.valid_performance_evidence === true;
+
+  if (releasedScopeSatisfied && validPerformanceEvidence) {
+    return {
+      ok: true,
+      mastery_write_allowed: true,
+      blocked_mastery_reason_code: null,
+    };
+  }
+
+  return {
+    ok: false,
+    mastery_write_allowed: false,
+    blocked_mastery_reason_code: 'missing_released_performance_evidence',
+  };
 }
 
 function renderEffectKeyFragment(value, fallback = 'none') {
@@ -107,7 +501,7 @@ function buildArtifactSuggestionEffectKey(
   return `artifact:${proposalRevisionKey}:${normalizedUserId}:${topicId}:${artifactKind}:${tags}`;
 }
 
-function buildGuardrailDecisions(releaseScopePosture = {}) {
+function buildGuardrailDecisions(releaseScopePosture = {}, masteryGuardrailDecision = {}) {
   const fallbackReason = normalizeString(releaseScopePosture.fallback_reason_code) || null;
 
   return {
@@ -116,7 +510,22 @@ function buildGuardrailDecisions(releaseScopePosture = {}) {
     learning_signal_posture: normalizeString(releaseScopePosture.learning_signal_posture) || null,
     fallback_mode: normalizeString(releaseScopePosture.fallback_mode) || null,
     fallback_reason_code: fallbackReason,
-    reasons: fallbackReason ? [fallbackReason] : ['released_scoring'],
+    mastery_write_allowed: masteryGuardrailDecision.mastery_write_allowed ?? null,
+    positive_mastery_allowed: masteryGuardrailDecision.positive_mastery_allowed ?? null,
+    valid_performance_evidence: masteryGuardrailDecision.valid_performance_evidence ?? null,
+    performance_evidence_kind: masteryGuardrailDecision.performance_evidence_kind ?? null,
+    blocked_mastery_reason_code: masteryGuardrailDecision.blocked_mastery_reason_code ?? null,
+    evidence_kind: masteryGuardrailDecision.evidence_kind ?? null,
+    confidence_band: masteryGuardrailDecision.confidence_band ?? null,
+    classification_confidence: masteryGuardrailDecision.classification_confidence ?? null,
+    freshness_bucket: masteryGuardrailDecision.freshness_bucket ?? null,
+    released_scope_check: clone(masteryGuardrailDecision.released_scope_check ?? null),
+    reasons: [
+      ...(fallbackReason ? [fallbackReason] : ['released_scoring']),
+      ...(masteryGuardrailDecision.blocked_mastery_reason_code
+        ? [masteryGuardrailDecision.blocked_mastery_reason_code]
+        : []),
+    ],
   };
 }
 
@@ -194,6 +603,7 @@ function buildNormalizedMasteryEffect({
   masteryUpdate,
   input,
   releaseScopePosture,
+  masteryGuardrailDecision,
   sourceAttemptRef,
   sourceMarkRunRef,
   proposalRevisionKey,
@@ -217,6 +627,17 @@ function buildNormalizedMasteryEffect({
       source_mark_run_ref: clone(sourceMarkRunRef ?? null),
       fallback_reason_code: releaseScopePosture.fallback_reason_code ?? null,
       learning_signal_posture: releaseScopePosture.learning_signal_posture ?? null,
+      released_scope_check: clone(releaseScopePosture.released_scope_check ?? null),
+      mastery_evidence: {
+        valid_performance_evidence:
+          masteryGuardrailDecision?.valid_performance_evidence === true,
+        performance_evidence_kind: masteryGuardrailDecision?.performance_evidence_kind ?? null,
+        evidence_kind: masteryGuardrailDecision?.evidence_kind ?? null,
+        confidence_band: masteryGuardrailDecision?.confidence_band ?? null,
+        classification_confidence: masteryGuardrailDecision?.classification_confidence ?? null,
+        freshness_bucket: masteryGuardrailDecision?.freshness_bucket ?? null,
+      },
+      mastery_guardrail_decision: clone(masteryGuardrailDecision ?? {}),
     },
   };
 
@@ -262,6 +683,13 @@ export function buildLearningUpdateProposal(input = {}, { now = new Date() } = {
     || (input.attempt_id ? buildAttemptRef(input.attempt_id) : null);
   const sourceMarkRunRef = input.source_mark_run_ref
     || (input.mark_run_id ? buildMarkRunRef(input.mark_run_id) : null);
+  const masteryGuardrailDecision = buildMasteryGuardrailDecision({
+    input,
+    questionContext,
+    releaseScopePosture,
+    sourceAttemptRef,
+    sourceMarkRunRef,
+  });
   const repairTopicId =
     input.repair_target_topic_id
     || questionContext.primary_topic_id
@@ -312,7 +740,11 @@ export function buildLearningUpdateProposal(input = {}, { now = new Date() } = {
     releaseScopePosture,
   });
   const localSignals = masteryProjection.localSignals;
-  const masteryUpdates = nonAuthoritativeRuntimeInput ? [] : masteryProjection.masteryUpdates;
+  const masteryUpdates = nonAuthoritativeRuntimeInput
+    ? []
+    : normalizeArray(masteryProjection.masteryUpdates)
+      .filter((masteryUpdate) =>
+        isMasteryUpdateAllowed(masteryUpdate, masteryGuardrailDecision));
   const reviewCapabilityPosture = adapter.meta.capability_posture?.review
     ?? SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED;
   const reviewTaskPayload = reviewCapabilityPosture !== SUBJECT_ADAPTER_CAPABILITY_POSTURES.SUPPORTED
@@ -334,8 +766,12 @@ export function buildLearningUpdateProposal(input = {}, { now = new Date() } = {
 
   return {
     proposal_key: proposalKey,
-    guardrail_decisions: buildGuardrailDecisions(releaseScopePosture),
+    guardrail_decisions: buildGuardrailDecisions(
+      releaseScopePosture,
+      masteryGuardrailDecision,
+    ),
     releaseScopePosture,
+    masteryGuardrailDecision,
     sourceAttemptRef,
     sourceMarkRunRef,
     repairTopicId,
@@ -347,6 +783,7 @@ export function buildLearningUpdateProposal(input = {}, { now = new Date() } = {
         masteryUpdate,
         input,
         releaseScopePosture,
+        masteryGuardrailDecision,
         sourceAttemptRef,
         sourceMarkRunRef,
         proposalRevisionKey,
@@ -414,6 +851,11 @@ export function createMasteryOrchestrator({
     },
 
     async materializeProposedMasteryEffect(effect = {}) {
+      const guardrailDecision = validateProposedMasteryEffectForMaterialization(effect);
+      if (!guardrailDecision.ok) {
+        return buildMasteryNoop(effect, guardrailDecision);
+      }
+
       return upsertMasteryEffect(supabase, effect);
     },
 

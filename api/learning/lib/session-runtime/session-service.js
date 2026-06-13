@@ -20,6 +20,7 @@ import {
   sendLearningError as sendCanonicalLearningError,
 } from '../http/learning-http.js';
 import { validateCreateSessionInput } from '../validators/session-validator.js';
+import { resolvePaperWorkspaceEntryAnchor } from '../workspaces/paper-workspace-entry-resolver.js';
 
 // Enum validation and error definitions are now delegated to canonical modules:
 // - session-validator.js (anchor legality matrix)
@@ -132,6 +133,39 @@ function normalizeSessionBundle({
     current_question_ref: makeQuestionRef(currentQuestionId),
     current_question_type_ref: makeQuestionTypeRef(currentQuestionTypeId),
   };
+}
+
+function normalizeCreatePaperContext(body = {}) {
+  if (
+    typeof body.paper_context !== 'undefined'
+    && body.paper_context !== null
+    && !isPlainObject(body.paper_context)
+  ) {
+    throw createLearningError('invalid_payload', {
+      message: 'paper_context must be an object when provided.',
+      details: { field: 'paper_context' },
+    });
+  }
+
+  const topLevelPaperScope = normalizeNullableString(body.paper_scope ?? body.paperScope);
+  const hasExplicitPaperContext =
+    isPlainObject(body.paper_context)
+    || topLevelPaperScope !== null;
+
+  if (!hasExplicitPaperContext) {
+    return null;
+  }
+
+  const paperContext = isPlainObject(body.paper_context) ? cloneJson(body.paper_context) : {};
+  const nestedPaperScope = normalizeNullableString(
+    paperContext.paper_scope ?? paperContext.paperScope,
+  );
+
+  if (topLevelPaperScope || nestedPaperScope) {
+    paperContext.paper_scope = topLevelPaperScope ?? nestedPaperScope;
+  }
+
+  return paperContext;
 }
 
 function featureFlags(env = process.env) {
@@ -551,6 +585,8 @@ function validateCreateSessionPayload(body = {}) {
     handoffKind = 'explicit_new_session';
   }
 
+  const paperContext = normalizeCreatePaperContext(body);
+
   return {
     subjectCode,
     mode: normalized.mode,
@@ -561,6 +597,7 @@ function validateCreateSessionPayload(body = {}) {
     currentQuestionTypeId: normalized.current_question_type_id,
     parentSessionId,
     handoffKind,
+    ...(paperContext ? { paperContext } : {}),
   };
 }
 
@@ -594,6 +631,166 @@ function buildLearningSessionResponse(session, {
       resolvedCanonicalHome,
     ),
     feature_flags: featureFlags(),
+  };
+}
+
+function readPaperResolverReason(result = {}) {
+  return normalizeNullableString(result?.error?.details?.reason_code)
+    ?? normalizeNullableString(result?.active_scope_compatibility?.reason_code)
+    ?? normalizeNullableString(result?.linked_reference_posture?.reason_code)
+    ?? normalizeNullableString(result?.error?.code)
+    ?? 'paper_context_unresolved';
+}
+
+function mapPaperResolverErrorCode(resolverErrorCode) {
+  if (resolverErrorCode === 'invalid_paper_scope') {
+    return {
+      code: 'invalid_payload',
+      status: 400,
+    };
+  }
+
+  if (resolverErrorCode === 'anchor_target_not_found') {
+    return {
+      code: 'anchor_target_not_found',
+      status: 404,
+    };
+  }
+
+  if (resolverErrorCode === 'auth_forbidden') {
+    return {
+      code: 'auth_forbidden',
+      status: 403,
+    };
+  }
+
+  return {
+    code: 'session_state_conflict',
+    status: 409,
+  };
+}
+
+function throwPaperContextResolutionError(result = {}) {
+  const resolverErrorCode = normalizeNullableString(result?.error?.code);
+  const mapped = mapPaperResolverErrorCode(resolverErrorCode);
+
+  throw createLearningError(mapped.code, {
+    status: mapped.status,
+    message: result?.error?.message || 'Paper workspace context could not be resolved.',
+    details: {
+      field: 'paper_context',
+      resolver_error_code: resolverErrorCode,
+      reason_code: readPaperResolverReason(result),
+      resolution_status: result?.resolution_status ?? null,
+      active_scope_compatibility: result?.active_scope_compatibility ?? null,
+    },
+  });
+}
+
+function assertPaperContextMatchesCanonicalHome(paperBundle = {}, canonicalHome = {}) {
+  const bundleTopicId = normalizeNullableString(paperBundle.primary_topic_id);
+  const bundleTopicPath = normalizeNullableString(paperBundle.primary_topic_path);
+  const canonicalTopicId = normalizeNullableString(canonicalHome?.topic_id);
+  const canonicalTopicPath = normalizeNullableString(canonicalHome?.topic_path);
+
+  if (bundleTopicId && canonicalTopicId && bundleTopicId !== canonicalTopicId) {
+    throw createLearningError('session_state_conflict', {
+      status: 409,
+      message: 'Paper workspace context resolved a different canonical topic.',
+      details: {
+        field: 'paper_context',
+        reason_code: 'paper_context_topic_mismatch',
+        primary_topic_id: bundleTopicId,
+        canonical_topic_id: canonicalTopicId,
+      },
+    });
+  }
+
+  if (bundleTopicPath && canonicalTopicPath && bundleTopicPath !== canonicalTopicPath) {
+    throw createLearningError('session_state_conflict', {
+      status: 409,
+      message: 'Paper workspace context resolved a different canonical topic path.',
+      details: {
+        field: 'paper_context',
+        reason_code: 'paper_context_topic_path_mismatch',
+        primary_topic_path: bundleTopicPath,
+        canonical_topic_path: canonicalTopicPath,
+      },
+    });
+  }
+}
+
+async function resolveSessionPaperContext(client, {
+  userId,
+  normalized,
+  resolvedAnchor,
+} = {}) {
+  if (!isPlainObject(normalized?.paperContext)) {
+    return null;
+  }
+
+  const result = await resolvePaperWorkspaceEntryAnchor(client, {
+    userId,
+    subjectCode: normalized.subjectCode,
+    subject_code: normalized.subjectCode,
+    mode: normalized.mode,
+    sessionGoal: normalized.sessionGoal,
+    session_goal: normalized.sessionGoal,
+    anchorKind: normalized.anchorKind,
+    anchorRef: normalized.anchorRef,
+    paper_context: normalized.paperContext,
+    paper_scope: normalized.paperContext.paper_scope ?? null,
+  });
+
+  if (
+    !result?.ok
+    || result?.active_scope_compatibility?.status !== 'compatible'
+    || !isPlainObject(result?.active_scope_bundle)
+  ) {
+    throwPaperContextResolutionError(result);
+  }
+
+  assertPaperContextMatchesCanonicalHome(
+    result.active_scope_bundle,
+    resolvedAnchor?.canonicalHome,
+  );
+
+  return result;
+}
+
+function mergePaperContextIntoActiveScopeBundle({
+  baseBundle,
+  paperResolution,
+  normalized,
+  resolvedAnchor,
+} = {}) {
+  const paperBundle = isPlainObject(paperResolution?.active_scope_bundle)
+    ? paperResolution.active_scope_bundle
+    : null;
+
+  if (!paperBundle) {
+    return baseBundle;
+  }
+
+  return {
+    ...baseBundle,
+    primary_topic_id: paperBundle.primary_topic_id ?? baseBundle.primary_topic_id,
+    primary_topic_path: paperBundle.primary_topic_path ?? baseBundle.primary_topic_path,
+    secondary_topics_in_scope: Array.isArray(paperBundle.secondary_topics_in_scope)
+      ? paperBundle.secondary_topics_in_scope
+      : baseBundle.secondary_topics_in_scope,
+    allowed_prerequisites: Array.isArray(paperBundle.allowed_prerequisites)
+      ? paperBundle.allowed_prerequisites
+      : baseBundle.allowed_prerequisites,
+    paper_context: isPlainObject(paperBundle.paper_context)
+      ? paperBundle.paper_context
+      : baseBundle.paper_context,
+    mode: normalized.mode,
+    session_goal: normalized.sessionGoal ?? null,
+    current_anchor_kind: normalized.anchorKind,
+    current_anchor_ref: normalized.anchorRef,
+    current_question_ref: makeQuestionRef(resolvedAnchor.currentQuestionId),
+    current_question_type_ref: makeQuestionTypeRef(resolvedAnchor.currentQuestionTypeId),
   };
 }
 
@@ -749,6 +946,17 @@ async function performCreateLearningSession(client, {
     currentQuestionTypeId: resolvedAnchor.currentQuestionTypeId,
     canonicalHome: resolvedAnchor.canonicalHome,
   });
+  const paperResolution = await resolveSessionPaperContext(client, {
+    userId,
+    normalized,
+    resolvedAnchor,
+  });
+  const resolvedActiveScopeBundle = mergePaperContextIntoActiveScopeBundle({
+    baseBundle: activeScopeBundle,
+    paperResolution,
+    normalized,
+    resolvedAnchor,
+  });
   const lineage = buildChildSessionLineage({
     parentSession,
     parentSessionId: normalized.parentSessionId,
@@ -761,7 +969,7 @@ async function performCreateLearningSession(client, {
     subject_code: normalized.subjectCode,
     session_goal: normalized.sessionGoal,
     mode: normalized.mode,
-    active_scope_bundle: activeScopeBundle,
+    active_scope_bundle: resolvedActiveScopeBundle,
     current_anchor_kind: normalized.anchorKind,
     current_anchor_ref: normalized.anchorRef,
     current_question_id: resolvedAnchor.currentQuestionId,

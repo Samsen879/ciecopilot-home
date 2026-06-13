@@ -148,6 +148,21 @@ function buildBoundaryDescription({
     parts.push(`workspace=${workspace.workspace_id}`);
   }
 
+  if (isPlainObject(bundle.paper_context)) {
+    const paperScope = normalizeString(bundle.paper_context.paper_scope);
+    const topicSectionId = normalizeString(
+      bundle.paper_context.topic_section_ref?.paper_workspace_topic_section_id,
+    );
+
+    if (paperScope) {
+      parts.push(`paper_scope=${paperScope}`);
+    }
+
+    if (topicSectionId) {
+      parts.push(`topic_section=${topicSectionId}`);
+    }
+  }
+
   if (evidenceContext.mastery && typeof evidenceContext.mastery.score === 'number') {
     parts.push(`mastery_score=${evidenceContext.mastery.score}`);
   }

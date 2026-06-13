@@ -13,6 +13,8 @@ const clientState = {
   sessions: new Map(),
 };
 
+const SESSION_ID = '33333333-3333-4333-8333-333333333333';
+
 class QueryBuilder {
   constructor(table) {
     this.table = table;
@@ -73,7 +75,7 @@ const { default: apiHandler } = await import('../../index.js');
 
 function buildStoredSession(overrides = {}) {
   return {
-    session_id: 'sess-1',
+    session_id: SESSION_ID,
     user_id: 'student-1',
     subject_code: '9709',
     session_goal: 'Repair integration setup',
@@ -133,7 +135,7 @@ describe('learning session ask api', () => {
 
   beforeEach(() => {
     clientState.sessions = new Map([
-      ['sess-1', buildStoredSession()],
+      [SESSION_ID, buildStoredSession()],
     ]);
     mockAskWithinLearningSession.mockReset();
     mockGetServiceClient.mockClear();
@@ -170,7 +172,7 @@ describe('learning session ask api', () => {
     });
 
     const res = await harness.request
-      .post('/api/learning/sessions/sess-1/ask')
+      .post(`/api/learning/sessions/${SESSION_ID}/ask`)
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .send({
@@ -192,8 +194,8 @@ describe('learning session ask api', () => {
       expect.objectContaining({
         message: 'Can you give me the next hint only?',
         clientTurnId: 'local-turn-001',
-        session: expect.objectContaining({
-          session_id: 'sess-1',
+          session: expect.objectContaining({
+            session_id: SESSION_ID,
           active_scope_bundle: expect.objectContaining({
             current_question_ref: null,
             current_question_type_ref: {
@@ -210,7 +212,7 @@ describe('learning session ask api', () => {
     mockAskWithinLearningSession.mockRejectedValue(new Error('workspace projection crashed'));
 
     const res = await harness.request
-      .post('/api/learning/sessions/sess-1/ask')
+      .post(`/api/learning/sessions/${SESSION_ID}/ask`)
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .send({
@@ -237,7 +239,7 @@ describe('learning session ask api', () => {
     mockAskWithinLearningSession.mockRejectedValue(error);
 
     const res = await harness.request
-      .post('/api/learning/sessions/sess-1/ask')
+      .post(`/api/learning/sessions/${SESSION_ID}/ask`)
       .set('Origin', 'http://localhost:3000')
       .set('Authorization', 'Bearer test-user:student-1:student')
       .send({

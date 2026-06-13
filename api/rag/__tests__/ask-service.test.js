@@ -2117,7 +2117,18 @@ describe('askWithinLearningSession', () => {
             primary_topic_path: '9709.trigonometry.identities',
             secondary_topics_in_scope: [],
             allowed_prerequisites: [],
-            paper_context: null,
+            paper_context: {
+              paper_scope: '9709:paper:p1',
+              paper_workspace_ref: {
+                kind: 'paper_workspace',
+                paper_workspace_id: 'paper-workspace-p1',
+              },
+              topic_section_ref: {
+                kind: 'paper_workspace_topic_section',
+                paper_workspace_topic_section_id: 'section-topic-1',
+                topic_id: 'topic-1',
+              },
+            },
             current_anchor_kind: 'review_task',
             current_anchor_ref: {
               kind: 'review_task',
@@ -2148,6 +2159,12 @@ describe('askWithinLearningSession', () => {
       expect.objectContaining({
         supabase,
       }),
+    );
+    expect(executeAskAIStub.mock.calls[0][0].boundary_description).toContain(
+      'paper_scope=9709:paper:p1',
+    );
+    expect(executeAskAIStub.mock.calls[0][0].boundary_description).toContain(
+      'topic_section=section-topic-1',
     );
     expect(result.session_delta).toMatchObject({
       client_turn_id: 'local-turn-001',

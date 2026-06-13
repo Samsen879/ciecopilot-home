@@ -31,6 +31,7 @@ const RECOVERED_SESSION_ID = '44444444-4444-4444-8444-444444444444';
 const SUGGESTED_SESSION_ID = '55555555-5555-4555-8555-555555555555';
 const POST_MORTEM_SESSION_ID = '66666666-6666-4666-8666-666666666666';
 const MISSING_SESSION_ID = '77777777-7777-4777-8777-777777777777';
+const TRIG_IDENTITIES_TOPIC_ID = '88888888-8888-4888-8888-888888888888';
 
 function isUuidString(value) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -570,8 +571,67 @@ describe('learning session api', () => {
         node_id: 'topic-trig-equations',
         topic_path: '9709.trigonometry.equations',
       }],
+      [TRIG_IDENTITIES_TOPIC_ID, {
+        node_id: TRIG_IDENTITIES_TOPIC_ID,
+        topic_path: '9709.trigonometry.identities',
+      }],
     ]);
     jest.clearAllMocks();
+  });
+
+  test('POST /api/learning/sessions accepts frontend-shaped questionless learn_concept launches without fake question ids', async () => {
+    const res = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        subject_code: '9709',
+        mode: 'learn_concept',
+        session_goal: 'Build trig identity intuition',
+        anchor_kind: 'concept',
+        anchor_ref: {
+          kind: 'concept',
+          topic_id: 'topic-trig-identities',
+          topic_path: '9709/trigonometry/identities',
+        },
+        current_question_id: null,
+        current_question_type_id: '9709.trigonometry.identities',
+      });
+
+    expect(res.status).toBe(200);
+    expect(res.body.session).toMatchObject({
+      mode: 'learn_concept',
+      current_anchor_kind: 'concept',
+      current_question_id: null,
+      current_question_type_id: '9709.trigonometry.identities',
+      active_scope_bundle: {
+        primary_topic_id: TRIG_IDENTITIES_TOPIC_ID,
+        primary_topic_path: '9709.trigonometry.identities',
+        mode: 'learn_concept',
+        current_anchor_kind: 'concept',
+        current_anchor_ref: {
+          kind: 'concept',
+          topic_id: TRIG_IDENTITIES_TOPIC_ID,
+          topic_path: '9709.trigonometry.identities',
+        },
+        current_question_ref: null,
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.trigonometry.identities',
+        },
+      },
+      resume_guidance: {
+        questionless: true,
+        current_question_id: null,
+        current_question_type_id: '9709.trigonometry.identities',
+      },
+    });
+    expect(res.body.anchor_validity.canonical_home_topic_ref).toEqual({
+      kind: 'topic',
+      topic_id: TRIG_IDENTITIES_TOPIC_ID,
+      topic_path: '9709.trigonometry.identities',
+    });
+    expect(clientState.sessions.get(res.body.session.session_id).current_question_id).toBeNull();
   });
 
   test('POST /api/learning/sessions returns persisted active_scope_bundle and typed anchor', async () => {

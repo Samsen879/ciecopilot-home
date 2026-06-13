@@ -2243,6 +2243,20 @@ describe('askWithinLearningSession', () => {
       fallback_reason_code: 'non_pilot_question_type',
       classification_confidence: null,
       learning_signal_posture: 'conservative_fallback',
+      released_scope_check: {
+        contract_version: 'phase_1a_released_scope_check.v1',
+        released_scoring: false,
+        non_released_fallback: true,
+        release_scope_status: 'non_released_fallback',
+        fallback_mode: 'non_released_fallback',
+        fallback_reason_code: 'non_pilot_question_type',
+        learning_signal_posture: 'conservative_fallback',
+        allowed_outputs: {
+          authoritative_score: false,
+          formal_point_judgement: false,
+          strong_positive_type_level_mastery: false,
+        },
+      },
     });
     expect(result.session_delta.current_question_ref).toBeNull();
     expect(result.session_delta.current_question_type_ref).toEqual({

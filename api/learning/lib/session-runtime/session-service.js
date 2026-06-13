@@ -939,25 +939,30 @@ async function performCreateLearningSession(client, {
     currentQuestionId: normalized.currentQuestionId,
     currentQuestionTypeId: normalized.currentQuestionTypeId,
   });
+  const resolvedAnchorRef = resolvedAnchor.anchorRef ?? normalized.anchorRef;
 
   const activeScopeBundle = normalizeSessionBundle({
     sessionGoal: normalized.sessionGoal,
     mode: normalized.mode,
     anchorKind: normalized.anchorKind,
-    anchorRef: normalized.anchorRef,
+    anchorRef: resolvedAnchorRef,
     currentQuestionId: resolvedAnchor.currentQuestionId,
     currentQuestionTypeId: resolvedAnchor.currentQuestionTypeId,
     canonicalHome: resolvedAnchor.canonicalHome,
   });
+  const resolvedNormalized = {
+    ...normalized,
+    anchorRef: resolvedAnchorRef,
+  };
   const paperResolution = await resolveSessionPaperContext(client, {
     userId,
-    normalized,
+    normalized: resolvedNormalized,
     resolvedAnchor,
   });
   const resolvedActiveScopeBundle = mergePaperContextIntoActiveScopeBundle({
     baseBundle: activeScopeBundle,
     paperResolution,
-    normalized,
+    normalized: resolvedNormalized,
     resolvedAnchor,
   });
   const lineage = buildChildSessionLineage({
@@ -974,7 +979,7 @@ async function performCreateLearningSession(client, {
     mode: normalized.mode,
     active_scope_bundle: resolvedActiveScopeBundle,
     current_anchor_kind: normalized.anchorKind,
-    current_anchor_ref: normalized.anchorRef,
+    current_anchor_ref: resolvedAnchorRef,
     current_question_id: resolvedAnchor.currentQuestionId,
     current_question_type_id: resolvedAnchor.currentQuestionTypeId,
     summary_state: {},
@@ -991,7 +996,7 @@ async function performCreateLearningSession(client, {
     session,
   }), {
     anchorKind: normalized.anchorKind,
-    anchorRef: normalized.anchorRef,
+    anchorRef: resolvedAnchorRef,
     canonicalHome: resolvedAnchor.canonicalHome,
   });
 }

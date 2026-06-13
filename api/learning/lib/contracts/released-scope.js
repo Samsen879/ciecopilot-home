@@ -6,7 +6,9 @@ import {
   FALLBACK_REASON_CODES,
   LEARNING_FALLBACK_MODES,
   LEARNING_SIGNAL_POSTURES,
+  RELEASED_SCOPE_CHECK_CONTRACT_VERSION,
   RELEASE_SCOPE_STATUSES,
+  buildReleasedScopeCheck,
   buildFallbackPosture,
   normalizeClassificationConfidence,
   normalizeQuestionTypeId,
@@ -66,7 +68,9 @@ export {
   FALLBACK_REASON_CODES,
   LEARNING_FALLBACK_MODES,
   LEARNING_SIGNAL_POSTURES,
+  RELEASED_SCOPE_CHECK_CONTRACT_VERSION,
   RELEASE_SCOPE_STATUSES,
+  buildReleasedScopeCheck,
 };
 
 export function isReleasedScoringQuestionType(questionTypeId) {

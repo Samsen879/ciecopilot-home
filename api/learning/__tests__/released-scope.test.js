@@ -3,6 +3,7 @@ import {
   LEARNING_FALLBACK_MODES,
   LEARNING_SIGNAL_POSTURES,
   RELEASE_SCOPE_STATUSES,
+  RELEASED_SCOPE_CHECK_CONTRACT_VERSION,
   isReleasedScoringQuestionType,
   isSeededPilotQuestionType,
   resolveReleasedScoringPosture,
@@ -40,6 +41,35 @@ test('pilot type membership alone does not unlock authoritative scoring', () => 
   });
 });
 
+test('released_scope_check defaults to fallback and blocks scoring-adjacent authority', () => {
+  expect(
+    resolveReleasedScoringPosture({
+      questionTypeId: null,
+      candidateRubricRefs: [],
+      uncertaintyValidated: false,
+      classificationConfidence: null,
+    }),
+  ).toMatchObject({
+    release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
+    authoritative_scoring_allowed: false,
+    fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
+    fallback_reason_code: FALLBACK_REASON_CODES.MISSING_QUESTION_TYPE,
+    released_scope_check: {
+      contract_version: RELEASED_SCOPE_CHECK_CONTRACT_VERSION,
+      released_scoring: false,
+      non_released_fallback: true,
+      release_scope_status: RELEASE_SCOPE_STATUSES.NON_RELEASED_FALLBACK,
+      fallback_mode: LEARNING_FALLBACK_MODES.NON_RELEASED_FALLBACK,
+      fallback_reason_code: FALLBACK_REASON_CODES.MISSING_QUESTION_TYPE,
+      allowed_outputs: {
+        authoritative_score: false,
+        formal_point_judgement: false,
+        strong_positive_type_level_mastery: false,
+      },
+    },
+  });
+});
+
 test('low confidence pilot classifications stay in explicit fallback posture', () => {
   expect(
     resolveReleasedScoringPosture({
@@ -65,6 +95,15 @@ test('low confidence pilot classifications stay in explicit fallback posture', (
     fallback_reason_code: FALLBACK_REASON_CODES.LOW_CLASSIFICATION_CONFIDENCE,
     classification_confidence: 0.77,
     learning_signal_posture: LEARNING_SIGNAL_POSTURES.CONSERVATIVE_FALLBACK,
+    released_scope_check: {
+      released_scoring: false,
+      non_released_fallback: true,
+      allowed_outputs: {
+        authoritative_score: false,
+        formal_point_judgement: false,
+        strong_positive_type_level_mastery: false,
+      },
+    },
   });
 });
 
@@ -93,6 +132,19 @@ test('explicit calibrated confidence bands are honored by the exported released-
     fallback_reason_code: null,
     classification_confidence: 0.79,
     learning_signal_posture: LEARNING_SIGNAL_POSTURES.AUTHORITATIVE_SCORING,
+    released_scope_check: {
+      contract_version: RELEASED_SCOPE_CHECK_CONTRACT_VERSION,
+      released_scoring: true,
+      non_released_fallback: false,
+      release_scope_status: RELEASE_SCOPE_STATUSES.RELEASED_SCORING,
+      fallback_mode: null,
+      fallback_reason_code: null,
+      allowed_outputs: {
+        authoritative_score: true,
+        formal_point_judgement: true,
+        strong_positive_type_level_mastery: true,
+      },
+    },
   });
 });
 

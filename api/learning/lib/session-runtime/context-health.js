@@ -303,6 +303,29 @@ function buildConflictDetails(reasonCode, topicDrift) {
   };
 }
 
+function buildContinuationEvaluationFromHealth(health) {
+  const unsafeContinuation =
+    health?.resume_validation?.safe_continuation === false
+    || health?.context_health?.authoritative_active_scope === false;
+
+  if (!unsafeContinuation) {
+    return {
+      ...health,
+      ok: true,
+    };
+  }
+
+  return {
+    ...buildConflictDetails(
+      health?.resume_validation?.reason_code
+      ?? health?.context_health?.reason_code
+      ?? 'unsafe_continuation',
+      health?.topic_drift ?? buildNoDrift(),
+    ),
+    ok: false,
+  };
+}
+
 export function normalizeContinuationClientContext(body = {}) {
   if (!isPlainObject(body)) {
     return {};
@@ -376,7 +399,7 @@ export function buildSessionContextHealth(session = {}) {
 export function evaluateSessionContinuationContext(session = {}, clientContext = {}) {
   const requested = normalizeRequestedScope(clientContext);
   if (!hasComparableContinuationContext(requested)) {
-    return buildSessionContextHealth(session);
+    return buildContinuationEvaluationFromHealth(buildSessionContextHealth(session));
   }
 
   const stored = normalizeStoredScope(session);
@@ -391,8 +414,7 @@ export function evaluateSessionContinuationContext(session = {}, clientContext =
   }
 
   return {
-    ...buildSessionContextHealth(session),
-    ok: true,
+    ...buildContinuationEvaluationFromHealth(buildSessionContextHealth(session)),
   };
 }
 

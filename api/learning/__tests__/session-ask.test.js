@@ -294,6 +294,63 @@ describe('learning session ask api', () => {
     expect(mockAskWithinLearningSession).not.toHaveBeenCalled();
   });
 
+  test('POST /api/learning/sessions/:id/ask rejects incomplete active scope before AskAI runs', async () => {
+    clientState.sessions.set(SESSION_ID, buildStoredSession({
+      active_scope_bundle: {
+        primary_topic_id: 'topic-integration-1',
+        primary_topic_path: '9709.integration.application',
+        secondary_topics_in_scope: [],
+        allowed_prerequisites: [],
+        paper_context: null,
+        mode: 'spaced_review',
+        session_goal: 'Repair integration setup',
+        current_question_ref: null,
+        current_question_type_ref: {
+          kind: 'question_type',
+          question_type_id: '9709.integration.application',
+        },
+      },
+      current_anchor_kind: null,
+      current_anchor_ref: null,
+    }));
+
+    const res = await harness.request
+      .post(`/api/learning/sessions/${SESSION_ID}/ask`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        message: 'Can we continue?',
+        client_turn_id: 'local-turn-incomplete-001',
+      });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toMatchObject({
+      code: 'session_state_conflict',
+      details: {
+        reason_code: 'active_scope_bundle_incomplete',
+        context_health: {
+          status: 'handoff_required',
+          authoritative_active_scope: false,
+          reason_code: 'active_scope_bundle_incomplete',
+        },
+        topic_drift: {
+          detected: false,
+        },
+        suggested_handoff: {
+          should_handoff: true,
+          handoff_kind: 'explicit_new_session',
+          reason_code: 'active_scope_bundle_incomplete',
+        },
+        resume_validation: {
+          valid: false,
+          safe_continuation: false,
+          reason_code: 'active_scope_bundle_incomplete',
+        },
+      },
+    });
+    expect(mockAskWithinLearningSession).not.toHaveBeenCalled();
+  });
+
   test('POST /api/learning/sessions/:id/ask maps unknown ask failures to internal_error with 500', async () => {
     mockAskWithinLearningSession.mockRejectedValue(new Error('workspace projection crashed'));
 

@@ -2314,4 +2314,59 @@ describe('askWithinLearningSession', () => {
     });
     expect(executeAskAIStub).not.toHaveBeenCalled();
   });
+
+  test('session ask fails closed when active scope is incomplete even without client drift hints', async () => {
+    const supabase = createLearningSessionSupabaseStub({
+      workspaceRow: null,
+      evidenceContext: null,
+    });
+    const executeAskAIStub = jest.fn().mockResolvedValue(createLearningAskResult());
+
+    await expect(askWithinLearningSession(
+      {
+        supabase,
+        executeAskAI: executeAskAIStub,
+      },
+      {
+        session: {
+          session_id: 'session-4',
+          user_id: 'student-1',
+          subject_code: '9709',
+          mode: 'spaced_review',
+          active_scope_bundle: {
+            primary_topic_id: 'topic-2',
+            primary_topic_path: '9709.integration.application',
+            secondary_topics_in_scope: [],
+            allowed_prerequisites: [],
+            paper_context: null,
+            current_question_ref: null,
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9709.integration.application',
+            },
+          },
+        },
+        message: 'continue',
+      },
+    )).rejects.toMatchObject({
+      code: 'session_state_conflict',
+      status: 409,
+      details: {
+        reason_code: 'active_scope_bundle_incomplete',
+        context_health: {
+          status: 'handoff_required',
+          authoritative_active_scope: false,
+        },
+        resume_validation: {
+          valid: false,
+          safe_continuation: false,
+        },
+        suggested_handoff: {
+          should_handoff: true,
+          handoff_kind: 'explicit_new_session',
+        },
+      },
+    });
+    expect(executeAskAIStub).not.toHaveBeenCalled();
+  });
 });

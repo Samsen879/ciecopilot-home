@@ -17,6 +17,7 @@ test('import validator normalizes imported question source payload before writes
         type: 'text',
         value: 'Solve 2sinx = 1',
       },
+      analysis_hints: null,
     },
   });
 });

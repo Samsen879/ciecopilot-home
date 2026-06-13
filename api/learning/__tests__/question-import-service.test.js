@@ -589,6 +589,9 @@ function buildPromptOnlyInput({
   promptValue,
   analysisHints = null,
   classification = undefined,
+  provenanceSummary = {
+    import_source: 'manual_paste',
+  },
 } = {}) {
   const body = {
     subject_code: '9709',
@@ -596,9 +599,7 @@ function buildPromptOnlyInput({
       type: 'text',
       value: promptValue,
     },
-    provenance_summary: {
-      import_source: 'manual_paste',
-    },
+    provenance_summary: provenanceSummary,
   };
 
   if (analysisHints) {
@@ -878,6 +879,82 @@ describe('question import service', () => {
           strong_positive_type_level_mastery: false,
         },
       },
+    });
+  });
+
+  test('unknown-source pasted imports persist non-corpus raw-text retention policy on the durable chain', async () => {
+    const result = await importQuestion(createClient(), {
+      userId: 'student-1',
+      body: buildPromptOnlyInput({
+        promptValue: 'A pasted third-party worksheet asks for the inverse of f(x)=2x+3.',
+        analysisHints: buildAnalysisHints({
+          runtime_context_id: '9709.functions.core',
+          question_type_hint_id: '9709.functions.core',
+        }),
+        provenanceSummary: {
+          import_source: 'manual_paste',
+          source_origin: 'unknown',
+          provenance_summary: 'Pasted from an unknown third-party worksheet.',
+          canonical_corpus_status: 'canonical_corpus',
+        },
+      }),
+    });
+
+    expect(result.question).toMatchObject({
+      source_kind: 'imported_question',
+      release_scope_status: 'non_released_fallback',
+      prompt_representation: expect.objectContaining({
+        type: 'text',
+        value: 'A pasted third-party worksheet asks for the inverse of f(x)=2x+3.',
+        policy: expect.objectContaining({
+          policy_id: 'imported_question_prompt_representation_v1',
+          canonical_corpus_allowed: false,
+          raw_full_text_retention_policy_id: 'imported_question_raw_prompt_runtime_v1',
+        }),
+      }),
+      provenance_summary: expect.objectContaining({
+        import_source: 'manual_paste',
+        source_origin: 'unknown',
+        source_trust_posture: 'third_party_or_unknown',
+        canonical_corpus_status: 'not_canonical_corpus',
+        derived_learning_object_policy: expect.objectContaining({
+          allowed: true,
+          raw_corpus_promotion_allowed: false,
+        }),
+        raw_full_text_retention_policy: expect.objectContaining({
+          policy_id: 'imported_question_raw_prompt_runtime_v1',
+          raw_full_text_field: 'prompt_representation.value',
+          indefinite_retention_allowed: false,
+          canonical_corpus_allowed: false,
+        }),
+      }),
+    });
+
+    expect(result.scoring_scope_posture).toMatchObject({
+      release_scope_status: 'non_released_fallback',
+      authoritative_scoring_allowed: false,
+      released_scope_check: {
+        released_scoring: false,
+        non_released_fallback: true,
+        allowed_outputs: {
+          authoritative_score: false,
+          formal_point_judgement: false,
+          strong_positive_type_level_mastery: false,
+        },
+      },
+    });
+    expect(clientState.snapshots.get('snapshot-1')).toMatchObject({
+      primary_question_type_id: '9709.functions.core',
+      analysis_audit_metadata: expect.objectContaining({
+        imported_question_policy: expect.objectContaining({
+          canonical_corpus_status: 'not_canonical_corpus',
+          raw_full_text_retention_policy_id: 'imported_question_raw_prompt_runtime_v1',
+        }),
+        released_scope_check: expect.objectContaining({
+          released_scoring: false,
+          non_released_fallback: true,
+        }),
+      }),
     });
   });
 

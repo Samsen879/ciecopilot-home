@@ -6,6 +6,9 @@ import {
   buildQuestionAnalysisResult,
 } from '../question-analysis/analysis-result-contract.js';
 import {
+  applyImportedQuestionDurablePolicy,
+} from './imported-question-policy.js';
+import {
   evaluateHitlRoutingDecision,
 } from '../question-analysis/hitl-routing-contract.js';
 import {
@@ -150,15 +153,21 @@ function normalizeAnalysisHints(body = {}, validatedAnalysisHints = null) {
 
 function normalizeQuestionImportBody(body = {}) {
   const validated = validateQuestionImportInput(body);
+  const durablePolicy = applyImportedQuestionDurablePolicy({
+    promptRepresentation: validated.normalized.prompt_representation,
+    provenanceSummary: normalizeObjectOrEmpty(body.provenance_summary),
+  });
   const questionEnvelope = normalizeQuestionEnvelope({
     ...validated.normalized,
+    prompt_representation: durablePolicy.prompt_representation,
     paper_scope: normalizeObjectOrNull(body.paper_scope),
-    provenance_summary: normalizeObjectOrEmpty(body.provenance_summary),
+    provenance_summary: durablePolicy.provenance_summary,
   });
 
   return {
     ...questionEnvelope,
     analysis_hints: normalizeAnalysisHints(body, validated.normalized.analysis_hints),
+    imported_question_policy: durablePolicy.analysis_policy,
     question_envelope: questionEnvelope,
   };
 }
@@ -444,6 +453,20 @@ async function performQuestionImport(client, {
       hitl_routing_decision: hitlRoutingDecision,
     };
   }
+
+  classification.analysis_audit_metadata = {
+    ...classification.analysis_audit_metadata,
+    imported_question_policy: cloneJson(normalizedInput.imported_question_policy),
+    release_scope_posture: {
+      release_scope_status: scoringScopePosture.release_scope_status ?? null,
+      authoritative_scoring_allowed:
+        scoringScopePosture.authoritative_scoring_allowed === true,
+      fallback_mode: scoringScopePosture.fallback_mode ?? null,
+      fallback_reason_code: scoringScopePosture.fallback_reason_code ?? null,
+      learning_signal_posture: scoringScopePosture.learning_signal_posture ?? null,
+    },
+    released_scope_check: cloneJson(scoringScopePosture.released_scope_check),
+  };
 
   const question = await insertImportedQuestion(client, {
     question_id: questionId,

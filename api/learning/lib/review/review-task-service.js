@@ -46,6 +46,132 @@ function clone(value) {
   return value ? JSON.parse(JSON.stringify(value)) : value;
 }
 
+function uniqueStrings(values = []) {
+  const seen = new Set();
+  return normalizeArray(values).flatMap((value) => {
+    const normalized = normalizeString(value);
+    if (!normalized || seen.has(normalized)) {
+      return [];
+    }
+
+    seen.add(normalized);
+    return [normalized];
+  });
+}
+
+function normalizeTypedRef(value) {
+  const normalized = isPlainObject(value) ? value : {};
+  if (!normalizeString(normalized.kind)) {
+    return null;
+  }
+
+  const hasRefValue = Object.entries(normalized).some(([key, refValue]) =>
+    key !== 'kind' && normalizeString(refValue));
+
+  return hasRefValue ? clone(normalized) : null;
+}
+
+function uniqueTypedRefs(refs = []) {
+  const seen = new Set();
+  return normalizeArray(refs).flatMap((ref) => {
+    const normalized = normalizeTypedRef(ref);
+    if (!normalized) {
+      return [];
+    }
+
+    const refKey = JSON.stringify(normalized);
+    if (seen.has(refKey)) {
+      return [];
+    }
+
+    seen.add(refKey);
+    return [normalized];
+  });
+}
+
+function normalizeErrorBookEntryRefs(input = {}) {
+  const explicitRefs = [
+    input.error_book_entry_ref,
+    ...normalizeArray(input.error_book_entry_refs),
+  ];
+
+  if (normalizeString(input.error_book_entry_id)) {
+    explicitRefs.push({
+      kind: 'error_book_entry',
+      error_book_entry_id: normalizeString(input.error_book_entry_id),
+    });
+  }
+
+  return uniqueTypedRefs(explicitRefs);
+}
+
+function normalizeEvidenceItems(input = {}) {
+  const rawItems = [
+    ...normalizeArray(input.misconception_evidence),
+    ...normalizeArray(input.error_evidence),
+  ];
+
+  return rawItems.flatMap((item) => {
+    const source = isPlainObject(item) ? item : {};
+    const normalized = {};
+    const tag = normalizeString(source.tag ?? source.misconception_tag);
+    const severity = normalizeString(source.severity);
+    const partId = normalizeString(source.part_id);
+    const subpartId = normalizeString(source.subpart_id);
+    const evidenceSource = normalizeString(source.source ?? source.source_kind);
+    const sourceRef = normalizeTypedRef(source.source_ref);
+    const attemptRef = normalizeTypedRef(source.attempt_ref ?? source.source_attempt_ref);
+    const markRunRef = normalizeTypedRef(source.mark_run_ref ?? source.source_mark_run_ref);
+
+    if (tag) normalized.tag = tag;
+    if (severity) normalized.severity = severity;
+    if (partId) normalized.part_id = partId;
+    if (subpartId) normalized.subpart_id = subpartId;
+    if (evidenceSource) normalized.source = evidenceSource;
+    if (sourceRef) normalized.source_ref = sourceRef;
+    if (attemptRef) normalized.attempt_ref = attemptRef;
+    if (markRunRef) normalized.mark_run_ref = markRunRef;
+
+    return Object.keys(normalized).length > 0 ? [normalized] : [];
+  });
+}
+
+function buildRepairTopicRef(input = {}) {
+  const topicId = normalizeString(input.repair_target_topic_id);
+  const topicPath = normalizeString(input.repair_target_topic_path);
+  if (!topicId) {
+    return null;
+  }
+
+  return {
+    kind: 'topic',
+    topic_id: topicId,
+    ...(topicPath ? { topic_path: topicPath } : {}),
+  };
+}
+
+function buildErrorEvidenceIndex(input = {}) {
+  return {
+    version: 'review_task_error_evidence_index_v1',
+    repair_topic_ref: buildRepairTopicRef(input),
+    source_question_ids: uniqueStrings([
+      input.question_id,
+      ...normalizeArray(input.source_question_ids),
+    ]),
+    source_attempt_refs: uniqueTypedRefs([
+      input.source_attempt_ref,
+      ...normalizeArray(input.source_attempt_refs),
+    ]),
+    source_mark_run_refs: uniqueTypedRefs([
+      input.source_mark_run_ref,
+      ...normalizeArray(input.source_mark_run_refs),
+    ]),
+    error_book_entry_refs: normalizeErrorBookEntryRefs(input),
+    misconception_tags: uniqueStrings(input.misconception_tags),
+    evidence_items: normalizeEvidenceItems(input),
+  };
+}
+
 function buildInvalidPayload(message, details) {
   return new LearningHttpError(LEARNING_ERROR_CODES.INVALID_PAYLOAD, message, {
     status: 400,
@@ -320,10 +446,12 @@ export function buildReviewTaskPayload(input = {}, now = new Date()) {
 
   const subjectCode = resolveSubjectCodeFromRuntimeInput(input, input.question_context);
   const adapter = getSubjectAdapter(subjectCode);
+  const errorEvidenceIndex = buildErrorEvidenceIndex(input);
   const scheduler = adapter.review.buildSchedulerSeed({
     now,
     misconceptionTags: input.misconception_tags,
     triggerType: input.trigger_type,
+    mode: input.review_task_mode ?? input.mode ?? null,
     regressionRecovery: input.regression_recovery === true,
     learnerGoal: input.learner_goal ?? null,
     fallbackReasonCode: input.fallback_reason_code ?? null,
@@ -362,6 +490,7 @@ export function buildReviewTaskPayload(input = {}, now = new Date()) {
     localSignalOnly: input.marking_result?.marking_summary?.local_signal_only === true,
     partResults,
     ambiguousPartMappingCount,
+    errorEvidenceIndex,
   });
 
   return {
@@ -387,6 +516,7 @@ export function buildReviewTaskPayload(input = {}, now = new Date()) {
       ambiguous_part_mapping_count: ambiguousPartMappingCount,
       part_results: partResults,
       fallback_reason_code: input.fallback_reason_code ?? null,
+      error_evidence_index: errorEvidenceIndex,
       scheduler_policy: schedulerPolicy,
       explainability,
     },

@@ -16,6 +16,13 @@ const VALID_TRIGGER_TYPES = new Set([
   'regression_recovery',
   'exam_polish',
 ]);
+const VALID_REVIEW_TASK_MODES = new Set([
+  'redo_variant',
+  'quick_recall',
+  'reconstruct_derivation',
+  'timed_check',
+  'trap_fix',
+]);
 
 const PRIORITY_WEIGHT = Object.freeze({
   low: 1,
@@ -362,6 +369,82 @@ function uniqueTypedRefs(refs = []) {
   });
 }
 
+function uniqueObjectsByJson(items = []) {
+  const seen = new Set();
+  return normalizeArray(items).flatMap((item) => {
+    const normalized = normalizeObject(item);
+    if (Object.keys(normalized).length === 0) {
+      return [];
+    }
+
+    const refKey = JSON.stringify(normalized);
+    if (seen.has(refKey)) {
+      return [];
+    }
+
+    seen.add(refKey);
+    return [clone(normalized)];
+  });
+}
+
+function normalizeErrorEvidenceIndex(value = null) {
+  const normalized = normalizeObject(value);
+  if (Object.keys(normalized).length === 0) {
+    return null;
+  }
+
+  const repairTopicRef = normalizeObject(normalized.repair_topic_ref);
+
+  return {
+    version: normalizeString(normalized.version, 'review_task_error_evidence_index_v1'),
+    repair_topic_ref: Object.keys(repairTopicRef).length > 0 ? clone(repairTopicRef) : null,
+    source_question_ids: uniqueStrings(normalized.source_question_ids),
+    source_attempt_refs: uniqueTypedRefs(normalized.source_attempt_refs),
+    source_mark_run_refs: uniqueTypedRefs(normalized.source_mark_run_refs),
+    error_book_entry_refs: uniqueTypedRefs(normalized.error_book_entry_refs),
+    misconception_tags: uniqueStrings(normalized.misconception_tags),
+    evidence_items: uniqueObjectsByJson(normalized.evidence_items),
+  };
+}
+
+function mergeErrorEvidenceIndexes(existingIndex = null, candidateIndex = null) {
+  const existing = normalizeErrorEvidenceIndex(existingIndex);
+  const candidate = normalizeErrorEvidenceIndex(candidateIndex);
+
+  if (!existing && !candidate) {
+    return null;
+  }
+
+  return {
+    version: 'review_task_error_evidence_index_v1',
+    repair_topic_ref: candidate?.repair_topic_ref ?? existing?.repair_topic_ref ?? null,
+    source_question_ids: uniqueStrings([
+      ...(existing?.source_question_ids ?? []),
+      ...(candidate?.source_question_ids ?? []),
+    ]),
+    source_attempt_refs: uniqueTypedRefs([
+      ...(existing?.source_attempt_refs ?? []),
+      ...(candidate?.source_attempt_refs ?? []),
+    ]),
+    source_mark_run_refs: uniqueTypedRefs([
+      ...(existing?.source_mark_run_refs ?? []),
+      ...(candidate?.source_mark_run_refs ?? []),
+    ]),
+    error_book_entry_refs: uniqueTypedRefs([
+      ...(existing?.error_book_entry_refs ?? []),
+      ...(candidate?.error_book_entry_refs ?? []),
+    ]),
+    misconception_tags: uniqueStrings([
+      ...(existing?.misconception_tags ?? []),
+      ...(candidate?.misconception_tags ?? []),
+    ]),
+    evidence_items: uniqueObjectsByJson([
+      ...(existing?.evidence_items ?? []),
+      ...(candidate?.evidence_items ?? []),
+    ]),
+  };
+}
+
 function labelFromMisconceptionTag(tag) {
   const normalized = normalizeString(tag);
   if (!normalized) {
@@ -402,9 +485,11 @@ export function buildReviewTaskExplainabilitySeed({
   localSignalOnly = false,
   partResults = [],
   ambiguousPartMappingCount = 0,
+  errorEvidenceIndex = null,
 } = {}) {
   const sourceAttemptRefs = uniqueTypedRefs(sourceAttemptRef ? [sourceAttemptRef] : []);
   const sourceQuestionIds = uniqueStrings(sourceQuestionId ? [sourceQuestionId] : []);
+  const normalizedErrorEvidenceIndex = normalizeErrorEvidenceIndex(errorEvidenceIndex);
 
   return {
     posture,
@@ -429,6 +514,9 @@ export function buildReviewTaskExplainabilitySeed({
       local_signal_only: localSignalOnly === true,
       ambiguous_part_mapping_count: Number(ambiguousPartMappingCount ?? 0),
       part_results: normalizeArray(partResults),
+      ...(normalizedErrorEvidenceIndex
+        ? { error_evidence_index: normalizedErrorEvidenceIndex }
+        : {}),
     },
     freshness: {
       route: normalizeString(schedulerPolicy?.route),
@@ -450,6 +538,14 @@ function mergeReviewTaskExplainability(existingTask = {}, candidateTask = {}) {
   const candidateEvidence = normalizeObject(candidateExplainability.evidence);
   const existingFreshness = normalizeObject(existingExplainability.freshness);
   const candidateFreshness = normalizeObject(candidateExplainability.freshness);
+  const mergedErrorEvidenceIndex = mergeErrorEvidenceIndexes(
+    existingEvidence.error_evidence_index
+      ?? normalizeObject(existingTask?.success_criteria)?.error_evidence_index
+      ?? null,
+    candidateEvidence.error_evidence_index
+      ?? normalizeObject(candidateTask?.success_criteria)?.error_evidence_index
+      ?? null,
+  );
   const sourceAttemptRefs = uniqueTypedRefs([
     ...normalizeArray(existingAttemptHistory.source_attempt_refs),
     existingAttemptHistory.latest_source_attempt_ref,
@@ -516,6 +612,9 @@ function mergeReviewTaskExplainability(existingTask = {}, candidateTask = {}) {
         candidateEvidence.local_signal_only
         ?? existingEvidence.local_signal_only
         ?? false,
+      ...(mergedErrorEvidenceIndex
+        ? { error_evidence_index: mergedErrorEvidenceIndex }
+        : {}),
     },
     freshness: {
       ...existingFreshness,
@@ -534,6 +633,9 @@ export function buildReviewTaskExplainability(task = {}) {
   const freshness = normalizeObject(storedExplainability.freshness);
   const schedulerState = normalizeObject(task?.scheduler_state);
   const schedulerReasons = normalizeArray(task?.scheduler_reasons);
+  const errorEvidenceIndex = normalizeErrorEvidenceIndex(
+    evidence.error_evidence_index ?? successCriteria.error_evidence_index ?? null,
+  );
   const explanation = {
     posture: normalizeString(storedExplainability.posture, 'conservative_fallback'),
     posture_reason_code:
@@ -596,6 +698,7 @@ export function buildReviewTaskExplainability(task = {}) {
       part_results: normalizeArray(
         evidence.part_results ?? successCriteria.part_results,
       ),
+      ...(errorEvidenceIndex ? { error_evidence_index: errorEvidenceIndex } : {}),
     },
     freshness: {
       route: normalizeString(
@@ -626,6 +729,7 @@ export function buildReviewTaskSchedulerSeed({
   now = new Date(),
   misconceptionTags = [],
   triggerType = null,
+  mode = null,
   regressionRecovery = false,
   learnerGoal = null,
   fallbackReasonCode = null,
@@ -653,13 +757,16 @@ export function buildReviewTaskSchedulerSeed({
         ? addHours(nowDate, REVIEW_SCHEDULER_POLICY.SPACED_REVIEW_HOURS)
         : addHours(nowDate, REVIEW_SCHEDULER_POLICY.SHORT_DELAY_HOURS);
 
-  const mode = route === 'spaced_review'
+  const explicitMode = VALID_REVIEW_TASK_MODES.has(normalizeString(mode))
+    ? normalizeString(mode)
+    : null;
+  const resolvedMode = explicitMode ?? (route === 'spaced_review'
     ? 'quick_recall'
     : route === 'exam_polish'
       ? 'timed_check'
       : normalizeArray(misconceptionTags).length > 0
         ? 'trap_fix'
-        : 'redo_variant';
+        : 'redo_variant');
 
   const priority = route === 'regression_recovery'
     ? 'urgent'
@@ -688,7 +795,7 @@ export function buildReviewTaskSchedulerSeed({
 
   return {
     triggerType: route,
-    mode,
+    mode: resolvedMode,
     priority,
     dueAt: dueDate.toISOString(),
     policy: buildStoredPolicy({
@@ -895,6 +1002,10 @@ export function mergeReviewTaskPayload(existingTask = {}, candidateTask = {}, ti
   const mergedSchedulerPolicy = buildMergedSchedulerPolicy(existingTask, candidateTask);
   const existingSuccessCriteria = clone(normalizeObject(existingTask?.success_criteria));
   const candidateSuccessCriteria = clone(normalizeObject(candidateTask?.success_criteria));
+  const mergedErrorEvidenceIndex = mergeErrorEvidenceIndexes(
+    existingSuccessCriteria.error_evidence_index,
+    candidateSuccessCriteria.error_evidence_index,
+  );
   const dueAtDate = [existingTask?.due_at, candidateTask?.due_at]
     .map((value) => parseTimestamp(value))
     .filter(Boolean)
@@ -926,6 +1037,9 @@ export function mergeReviewTaskPayload(existingTask = {}, candidateTask = {}, ti
     success_criteria: {
       ...existingSuccessCriteria,
       ...candidateSuccessCriteria,
+      ...(mergedErrorEvidenceIndex
+        ? { error_evidence_index: mergedErrorEvidenceIndex }
+        : {}),
       scheduler_policy: mergedSchedulerPolicy,
       explainability: mergeReviewTaskExplainability(existingTask, candidateTask),
     },

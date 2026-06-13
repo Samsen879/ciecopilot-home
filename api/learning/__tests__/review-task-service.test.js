@@ -739,6 +739,125 @@ describe('review task service generation', () => {
     }));
   });
 
+  test.each([
+    {
+      label: 'redo_variant default repair practice',
+      input: {
+        trigger_type: 'short_delay',
+      },
+      expectedMode: 'redo_variant',
+    },
+    {
+      label: 'quick_recall spaced review',
+      input: {
+        trigger_type: 'spaced_review',
+      },
+      expectedMode: 'quick_recall',
+    },
+    {
+      label: 'reconstruct_derivation explicit derivation repair',
+      input: {
+        review_task_mode: 'reconstruct_derivation',
+      },
+      expectedMode: 'reconstruct_derivation',
+    },
+    {
+      label: 'timed_check exam polish',
+      input: {
+        trigger_type: 'exam_polish',
+      },
+      expectedMode: 'timed_check',
+    },
+    {
+      label: 'trap_fix misconception repair',
+      input: {
+        trigger_type: 'immediate_repair',
+        misconception_tags: ['domain:interval'],
+      },
+      expectedMode: 'trap_fix',
+    },
+  ])('candidate creation supports $label mode', async ({ input, expectedMode }) => {
+    const service = createReviewTaskService({
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const [task] = await service.generateTasksFromOutcome({
+      user_id: 'student-1',
+      question_id: 'question-1',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_released_fallback',
+      repair_target_topic_id: 'topic-1',
+      repair_target_topic_path: '9709/trigonometry/equations',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+      question_context: {
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.equations',
+      },
+      ...input,
+    });
+
+    expect(task.mode).toBe(expectedMode);
+  });
+
+  test('review task candidates index error-book and misconception evidence for projections', async () => {
+    const service = createReviewTaskService({
+      now: () => new Date('2026-03-24T10:00:00.000Z'),
+    });
+
+    const [task] = await service.generateTasksFromOutcome({
+      user_id: 'student-1',
+      question_id: 'question-1',
+      authoritative_scoring_allowed: false,
+      fallback_reason_code: 'non_released_fallback',
+      repair_target_topic_id: 'topic-1',
+      repair_target_topic_path: '9709/trigonometry/equations',
+      source_attempt_ref: { kind: 'attempt', attempt_id: 'attempt-1' },
+      source_mark_run_ref: { kind: 'mark_run', mark_run_id: 'mark-run-1' },
+      error_book_entry_ref: { kind: 'error_book_entry', error_book_entry_id: 'error-book-1' },
+      misconception_tags: ['domain:interval', 'identity:rewrite'],
+      misconception_evidence: [
+        {
+          tag: 'domain:interval',
+          severity: 'major',
+          part_id: 'a',
+          subpart_id: 'a_i',
+          source: 'marking_decision',
+        },
+      ],
+      question_context: {
+        family_id: '9709.trigonometry_manipulation_equations',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    });
+
+    expect(task.success_criteria.error_evidence_index).toEqual({
+      version: 'review_task_error_evidence_index_v1',
+      repair_topic_ref: {
+        kind: 'topic',
+        topic_id: 'topic-1',
+        topic_path: '9709/trigonometry/equations',
+      },
+      source_question_ids: ['question-1'],
+      source_attempt_refs: [{ kind: 'attempt', attempt_id: 'attempt-1' }],
+      source_mark_run_refs: [{ kind: 'mark_run', mark_run_id: 'mark-run-1' }],
+      error_book_entry_refs: [
+        { kind: 'error_book_entry', error_book_entry_id: 'error-book-1' },
+      ],
+      misconception_tags: ['domain:interval', 'identity:rewrite'],
+      evidence_items: [
+        {
+          tag: 'domain:interval',
+          severity: 'major',
+          part_id: 'a',
+          subpart_id: 'a_i',
+          source: 'marking_decision',
+        },
+      ],
+    });
+    expect(task.explanation.evidence.error_evidence_index)
+      .toEqual(task.success_criteria.error_evidence_index);
+  });
+
   test('fallback review tasks fold into an existing active repair task instead of growing the queue', async () => {
     let storedTask = buildStoredReviewTask({
       review_task_id: 'review-task-existing',

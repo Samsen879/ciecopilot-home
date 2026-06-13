@@ -16,10 +16,12 @@ const clientState = {
   idempotencyRows: new Map(),
   nextIdempotencyId: 1,
   nextSessionId: 1,
+  paperWorkspaceProjections: [],
   reviewTasks: new Map(),
   sessions: new Map(),
   lineage: new Map(),
   sessionInsertGate: null,
+  topics: new Map(),
 };
 
 const PARENT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
@@ -194,6 +196,34 @@ function buildResumeProjection(sessionId) {
 }
 
 function resolveQuery(query) {
+  if (query.table === 'curriculum_nodes' && query.operation === 'select') {
+    const nodeId = findFilter(query, 'node_id');
+    const topicPath = findFilter(query, 'topic_path');
+    let row = null;
+
+    if (nodeId) {
+      row = clientState.topics.get(nodeId) || null;
+    } else if (topicPath) {
+      row = [...clientState.topics.values()].find((topic) => topic.topic_path === topicPath) || null;
+    }
+
+    return { data: row, error: null };
+  }
+
+  if (query.table === 'learning_paper_workspace_projection' && query.operation === 'select') {
+    const paperScope = findFilter(query, 'paper_scope');
+    const userId = findFilter(query, 'user_id');
+    const rows = clientState.paperWorkspaceProjections.filter((row) =>
+      (!paperScope || row.paper_scope === paperScope)
+      && (!userId || row.user_id === userId));
+
+    if (query.options?.single || query.options?.maybeSingle) {
+      return { data: rows[0] || null, error: null };
+    }
+
+    return { data: rows, error: null };
+  }
+
   if (query.table === 'learning_artifacts' && query.operation === 'select') {
     const artifactId = findFilter(query, 'artifact_id');
     return {
@@ -367,6 +397,32 @@ function buildReviewTask(overrides = {}) {
   };
 }
 
+function buildPaperWorkspaceProjection(overrides = {}) {
+  return {
+    paper_workspace_id: 'paper-workspace-p1',
+    user_id: 'student-1',
+    subject_code: '9709',
+    paper_scope: '9709:paper:p1',
+    workspace_kind: 'paper_main',
+    visible_organization_summary: {},
+    linked_topic_summary: {},
+    created_at: '2026-06-05T08:00:00.000Z',
+    updated_at: '2026-06-05T08:05:00.000Z',
+    topic_sections: [
+      {
+        paper_workspace_topic_section_id: 'section-topic-trig-equations',
+        topic_id: 'topic-trig-equations',
+        topic_workspace_id: 'workspace-topic-trig-equations',
+        topic_path: '9709.trigonometry.equations',
+        section_state: { order: 1 },
+        created_at: '2026-06-05T08:01:00.000Z',
+        updated_at: '2026-06-05T08:03:00.000Z',
+      },
+    ],
+    ...overrides,
+  };
+}
+
 function buildSessionPayload(overrides = {}) {
   return {
     subject_code: '9709',
@@ -496,6 +552,9 @@ describe('learning session api', () => {
     clientState.idempotencyRows = new Map();
     clientState.nextIdempotencyId = 1;
     clientState.nextSessionId = 1;
+    clientState.paperWorkspaceProjections = [
+      buildPaperWorkspaceProjection(),
+    ];
     clientState.reviewTasks = new Map([
       ['review-task-1', buildReviewTask()],
       ['review-task-foreign', buildReviewTask({
@@ -506,6 +565,12 @@ describe('learning session api', () => {
     clientState.sessions = new Map();
     clientState.lineage = new Map();
     clientState.sessionInsertGate = null;
+    clientState.topics = new Map([
+      ['topic-trig-equations', {
+        node_id: 'topic-trig-equations',
+        topic_path: '9709.trigonometry.equations',
+      }],
+    ]);
     jest.clearAllMocks();
   });
 
@@ -547,6 +612,87 @@ describe('learning session api', () => {
       current_question_id: null,
       current_question_type_id: '9709.trigonometry.equations',
     });
+  });
+
+  test('POST /api/learning/sessions persists explicit paper workspace context inside active_scope_bundle', async () => {
+    const res = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildSessionPayload({
+        paper_context: {
+          paper_scope: '9709:paper:p1',
+        },
+      }));
+
+    expect(res.status).toBe(200);
+    expect(res.body.session.active_scope_bundle).toMatchObject({
+      primary_topic_id: 'topic-trig-equations',
+      primary_topic_path: '9709.trigonometry.equations',
+      paper_context: {
+        paper_scope: '9709:paper:p1',
+        paper_workspace_ref: {
+          kind: 'paper_workspace',
+          paper_workspace_id: 'paper-workspace-p1',
+        },
+        topic_section_ref: {
+          kind: 'paper_workspace_topic_section',
+          paper_workspace_topic_section_id: 'section-topic-trig-equations',
+          topic_id: 'topic-trig-equations',
+        },
+      },
+      current_anchor_kind: 'review_task',
+      current_anchor_ref: {
+        kind: 'review_task',
+        review_task_id: 'review-task-1',
+      },
+      current_question_ref: null,
+      current_question_type_ref: {
+        kind: 'question_type',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    });
+    expect(clientState.sessions.get(res.body.session.session_id).active_scope_bundle.paper_context).toEqual(
+      res.body.session.active_scope_bundle.paper_context,
+    );
+  });
+
+  test('POST /api/learning/sessions fails closed when requested paper workspace context is ambiguous', async () => {
+    clientState.paperWorkspaceProjections = [
+      buildPaperWorkspaceProjection(),
+      buildPaperWorkspaceProjection({
+        paper_workspace_id: 'paper-workspace-p3',
+        paper_scope: '9709:paper:p3',
+        topic_sections: [
+          {
+            paper_workspace_topic_section_id: 'section-p3-topic-trig-equations',
+            topic_id: 'topic-trig-equations',
+            topic_workspace_id: 'workspace-topic-trig-equations',
+            topic_path: '9709.trigonometry.equations',
+            section_state: { order: 1 },
+          },
+        ],
+      }),
+    ];
+
+    const res = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildSessionPayload({
+        paper_context: {},
+      }));
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toMatchObject({
+      code: 'session_state_conflict',
+      details: {
+        field: 'paper_context',
+        resolver_error_code: 'ambiguous_paper_scope',
+        reason_code: 'multiple_paper_workspaces_match_topic',
+      },
+    });
+    expect(clientState.sessions.size).toBe(0);
   });
 
   test('POST/GET second-subject sessions keep an explicit read-only runtime posture', async () => {

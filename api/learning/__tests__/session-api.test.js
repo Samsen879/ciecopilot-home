@@ -1040,6 +1040,67 @@ describe('learning session api', () => {
     expect(res.body.error.code).toBe('auth_forbidden');
   });
 
+  test.each([
+    [
+      'contested trust status',
+      {
+        trust_status: 'contested',
+        placement_status: 'pinned',
+        lifecycle_status: 'active',
+        artifact_state: 'verified',
+      },
+      'artifact_trust_contested',
+    ],
+    [
+      'stale superseded marker',
+      {
+        trust_status: 'grounded',
+        placement_status: 'pinned',
+        lifecycle_status: 'active',
+        artifact_state: 'superseded',
+        superseded_by_artifact_id: 'artifact-successor-1',
+      },
+      'artifact_lifecycle_superseded',
+    ],
+    [
+      'archived placement',
+      {
+        trust_status: 'grounded',
+        placement_status: 'archived',
+        lifecycle_status: 'active',
+        artifact_state: 'verified',
+      },
+      'artifact_placement_archived',
+    ],
+  ])('POST /api/learning/sessions rejects %s artifact anchors', async (_label, artifactPatch, reasonCode) => {
+    clientState.artifacts.set('artifact-misconception-1', buildArtifact({
+      ...artifactPatch,
+      source_session_id: null,
+    }));
+
+    const res = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(buildSessionPayload({
+        anchor_kind: 'artifact',
+        anchor_ref: {
+          kind: 'artifact',
+          artifact_id: 'artifact-misconception-1',
+        },
+        mode: 'post_mortem_review',
+      }));
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toMatchObject({
+      code: 'session_state_conflict',
+      details: {
+        reason_code: reasonCode,
+        artifact_id: 'artifact-misconception-1',
+      },
+    });
+  });
+
   test('POST /api/learning/sessions returns 400 invalid_anchor_ref for malformed anchor refs', async () => {
     const res = await harness.request
       .post('/api/learning/sessions')

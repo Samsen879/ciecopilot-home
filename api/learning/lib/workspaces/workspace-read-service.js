@@ -5,6 +5,9 @@ import {
   isArtifactLifecycleEnabled,
   normalizeArtifactLifecycleArtifact,
 } from '../artifacts/artifact-service.js';
+import {
+  hasNonAuthoritativeAttemptGrounding,
+} from '../contracts/runtime-authority-posture.js';
 import { listArtifactsByTopic } from '../repositories/artifact-repository.js';
 import {
   ensurePaperWorkspaceExists,
@@ -344,13 +347,24 @@ function groupArtifactsBySlot(artifacts = []) {
 
 function isActiveArtifact(artifact = {}) {
   return artifact.lifecycle_status !== 'superseded'
+    && artifact.artifact_state !== 'superseded'
     && artifact.placement_status !== 'archived';
 }
 
-function isResidentArtifact(artifact = {}) {
+function hasGroundedArtifactTrust(artifact = {}) {
+  return artifact.trust_status === 'grounded' || artifact.trust_status === 'user_confirmed';
+}
+
+function isPinnedLearningTruthArtifact(artifact = {}) {
   return isActiveArtifact(artifact)
     && artifact.placement_status === 'pinned'
-    && artifact.capabilities?.resident_eligible;
+    && artifact.capabilities?.resident_eligible
+    && hasGroundedArtifactTrust(artifact)
+    && !hasNonAuthoritativeAttemptGrounding(artifact.grounding_refs);
+}
+
+function isResidentArtifact(artifact = {}) {
+  return isPinnedLearningTruthArtifact(artifact);
 }
 
 function isPendingVerificationArtifact(artifact = {}) {
@@ -823,7 +837,7 @@ function buildFallbackTopicWorkspaceProjection(section = {}, userId = null) {
 }
 
 function isPinnedArtifactSummaryCandidate(artifact = {}) {
-  return isActiveArtifact(artifact) && artifact.placement_status === 'pinned';
+  return isPinnedLearningTruthArtifact(artifact);
 }
 
 function buildArtifactSummary(artifact = {}, section = {}) {

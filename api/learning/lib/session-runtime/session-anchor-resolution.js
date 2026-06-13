@@ -1,3 +1,7 @@
+import {
+  normalizeArtifactLifecycleArtifact,
+} from '../artifacts/artifact-service.js';
+
 const TERMINAL_REVIEW_TASK_STATUSES = new Set(['completed', 'skipped', 'expired']);
 const VALID_WORKSPACE_SLOT_KEYS = new Set([
   'overview_map',
@@ -287,28 +291,77 @@ async function resolveArtifactAnchor(client, {
   currentQuestionId,
   currentQuestionTypeId,
 } = {}) {
-  const artifact = await maybeSingle(
+  const rawArtifact = await maybeSingle(
     client
       .from('learning_artifacts')
       .select(
-        'artifact_id, canonical_home_topic_id, source_session_id, target_question_type_id, lifecycle_status',
+        [
+          'artifact_id',
+          'canonical_home_topic_id',
+          'source_session_id',
+          'target_question_type_id',
+          'trust_status',
+          'placement_status',
+          'lifecycle_status',
+          'artifact_state',
+          'verified_by',
+          'verified_at',
+          'verification_evidence_ref',
+          'released_by',
+          'released_at',
+          'release_evidence_ref',
+          'contested_by',
+          'contested_at',
+          'contested_reason',
+          'superseded_by_artifact_id',
+          'superseded_at',
+          'grounding_refs',
+        ].join(', '),
       )
       .eq('artifact_id', anchorRef.artifact_id)
       .maybeSingle(),
     'Failed to load artifact anchor.',
   );
 
-  if (!artifact) {
+  if (!rawArtifact) {
     throw createLearningError('anchor_target_not_found', {
       status: 404,
       message: 'Anchor target not found.',
     });
   }
 
-  if (artifact.lifecycle_status === 'superseded') {
+  const artifact = normalizeArtifactLifecycleArtifact(rawArtifact);
+
+  if (artifact.lifecycle_status === 'superseded' || artifact.artifact_state === 'superseded') {
     throw createLearningError('session_state_conflict', {
       status: 409,
       message: 'Artifact cannot be opened from a superseded state.',
+      details: {
+        reason_code: 'artifact_lifecycle_superseded',
+        artifact_id: artifact.artifact_id,
+      },
+    });
+  }
+
+  if (artifact.trust_status === 'contested' || artifact.artifact_state === 'contested') {
+    throw createLearningError('session_state_conflict', {
+      status: 409,
+      message: 'Contested artifacts cannot become the active session anchor.',
+      details: {
+        reason_code: 'artifact_trust_contested',
+        artifact_id: artifact.artifact_id,
+      },
+    });
+  }
+
+  if (artifact.placement_status === 'archived') {
+    throw createLearningError('session_state_conflict', {
+      status: 409,
+      message: 'Archived artifacts cannot become the active session anchor.',
+      details: {
+        reason_code: 'artifact_placement_archived',
+        artifact_id: artifact.artifact_id,
+      },
     });
   }
 

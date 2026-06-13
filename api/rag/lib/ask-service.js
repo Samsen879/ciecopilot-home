@@ -734,6 +734,7 @@ export async function askWithinLearningSession(
     session,
     message,
     clientTurnId = null,
+    clientContext = {},
   } = {},
 ) {
   const client = supabase || getServiceClient();
@@ -741,6 +742,7 @@ export async function askWithinLearningSession(
     session,
     message,
     clientTurnId,
+    clientContext,
   });
 
   const askResponse = await executeAskAIImpl(askContext.askInput, {

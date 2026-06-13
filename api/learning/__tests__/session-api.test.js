@@ -612,6 +612,21 @@ describe('learning session api', () => {
       current_question_id: null,
       current_question_type_id: '9709.trigonometry.equations',
     });
+    expect(res.body.session.context_health).toMatchObject({
+      status: 'healthy',
+      authoritative_active_scope: true,
+      handoff_required: false,
+      active_scope_source: 'persisted_active_scope_bundle',
+    });
+    expect(res.body.session.topic_drift).toMatchObject({
+      detected: false,
+      reason_code: null,
+    });
+    expect(res.body.session.resume_validation).toMatchObject({
+      valid: true,
+      safe_continuation: true,
+      validated_against: 'persisted_active_scope_bundle',
+    });
   });
 
   test('POST /api/learning/sessions persists explicit paper workspace context inside active_scope_bundle', async () => {
@@ -1314,6 +1329,12 @@ describe('learning session api', () => {
       current_question_id: null,
       current_question_type_id: '9709.trigonometry.identities',
       anchor_kind: 'concept',
+    });
+    expect(res.body.session.context_health).toMatchObject({
+      status: 'handoff_suggested',
+      authoritative_active_scope: true,
+      handoff_required: true,
+      reason_code: 'session_handoff_suggested',
     });
     expect(res.body.session.active_scope_bundle.current_question_ref).toBeNull();
   });

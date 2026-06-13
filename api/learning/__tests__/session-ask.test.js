@@ -194,8 +194,9 @@ describe('learning session ask api', () => {
       expect.objectContaining({
         message: 'Can you give me the next hint only?',
         clientTurnId: 'local-turn-001',
-          session: expect.objectContaining({
-            session_id: SESSION_ID,
+        clientContext: {},
+        session: expect.objectContaining({
+          session_id: SESSION_ID,
           active_scope_bundle: expect.objectContaining({
             current_question_ref: null,
             current_question_type_ref: {
@@ -206,6 +207,91 @@ describe('learning session ask api', () => {
         }),
       }),
     );
+  });
+
+  test('POST /api/learning/sessions/:id/ask rejects topic drift before AskAI becomes authoritative', async () => {
+    const res = await harness.request
+      .post(`/api/learning/sessions/${SESSION_ID}/ask`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        message: 'Can we continue from the paper section?',
+        client_turn_id: 'local-turn-drift-001',
+        client_context: {
+          active_scope_bundle: {
+            primary_topic_path: '9709.trigonometry.equations',
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9709.trigonometry.equations',
+            },
+          },
+        },
+      });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toMatchObject({
+      code: 'session_state_conflict',
+      details: {
+        reason_code: 'topic_drift_detected',
+        context_health: {
+          status: 'handoff_required',
+          authoritative_active_scope: false,
+          reason_code: 'topic_drift_detected',
+        },
+        topic_drift: {
+          detected: true,
+          reason_code: 'primary_topic_path_mismatch',
+          stored_primary_topic_path: '9709.integration.application',
+          requested_primary_topic_path: '9709.trigonometry.equations',
+        },
+        suggested_handoff: {
+          should_handoff: true,
+          handoff_kind: 'explicit_new_session',
+          reason_code: 'topic_drift_detected',
+        },
+        resume_validation: {
+          valid: false,
+          safe_continuation: false,
+          reason_code: 'topic_drift_detected',
+        },
+      },
+    });
+    expect(mockAskWithinLearningSession).not.toHaveBeenCalled();
+  });
+
+  test('POST /api/learning/sessions/:id/ask rejects client placeholder question ids for questionless sessions', async () => {
+    const res = await harness.request
+      .post(`/api/learning/sessions/${SESSION_ID}/ask`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        message: 'Continue on this question.',
+        client_turn_id: 'local-turn-placeholder-001',
+        client_context: {
+          active_scope_bundle: {
+            primary_topic_path: '9709.integration.application',
+            current_question_ref: {
+              kind: 'question',
+              question_id: 'client-placeholder-question',
+            },
+          },
+        },
+      });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toMatchObject({
+      code: 'session_state_conflict',
+      details: {
+        reason_code: 'topic_drift_detected',
+        topic_drift: {
+          detected: true,
+          reason_code: 'current_question_mismatch',
+          stored_current_question_id: null,
+          requested_current_question_id: 'client-placeholder-question',
+        },
+      },
+    });
+    expect(mockAskWithinLearningSession).not.toHaveBeenCalled();
   });
 
   test('POST /api/learning/sessions/:id/ask maps unknown ask failures to internal_error with 500', async () => {

@@ -8,6 +8,10 @@ import {
   sendLearningHttpError,
   sendLearningJson,
 } from '../../lib/http/learning-http.js';
+import {
+  normalizeContinuationClientContext,
+  validateSessionContinuationContext,
+} from '../../lib/session-runtime/context-health.js';
 import { readLearningSession } from '../../lib/session-runtime/session-service.js';
 
 const KNOWN_LEARNING_ASK_ERROR_CODES = new Set([
@@ -84,6 +88,9 @@ export default async function handler(req, res) {
       userId: auth.userId,
       sessionId: req?.query?.id || null,
     });
+    const clientContext = normalizeContinuationClientContext(req?.body || {});
+
+    validateSessionContinuationContext(sessionPayload.session, clientContext);
 
     const response = await askWithinLearningSession(
       {
@@ -94,6 +101,7 @@ export default async function handler(req, res) {
         session: sessionPayload.session,
         message: req?.body?.message ?? null,
         clientTurnId: req?.body?.client_turn_id ?? null,
+        clientContext,
       },
     );
 

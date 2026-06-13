@@ -1,6 +1,7 @@
 import { LEARNING_ERROR_CODES, getLearningErrorStatus } from '../contracts/error-contract.js';
 import { resolveReleasedScoringPosture } from '../contracts/released-scope.js';
 import { fetchWorkspaceProjection } from '../repositories/workspace-repository.js';
+import { validateSessionContinuationContext } from './context-health.js';
 
 function normalizeString(value) {
   if (value === null || value === undefined) return '';
@@ -243,6 +244,7 @@ export async function buildLearningSessionAskContext(
     session,
     message,
     clientTurnId = null,
+    clientContext = {},
   } = {},
 ) {
   const normalizedMessage = normalizeString(message);
@@ -269,6 +271,7 @@ export async function buildLearningSessionAskContext(
     );
   }
 
+  const continuationHealth = validateSessionContinuationContext(session, clientContext);
   const bundle = normalizeActiveScopeBundle(session);
   if (!normalizeString(bundle.primary_topic_path)) {
     throw createLearningError(
@@ -353,6 +356,9 @@ export async function buildLearningSessionAskContext(
           askResponse,
           fallbackPosture,
         }),
+        context_health: continuationHealth.context_health,
+        topic_drift: continuationHealth.topic_drift,
+        resume_validation: continuationHealth.resume_validation,
         suggested_actions: buildSuggestedActions({
           bundle,
           workspace,

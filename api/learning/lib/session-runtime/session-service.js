@@ -9,6 +9,7 @@ import {
 import { insertSession, getSession } from '../repositories/session-repository.js';
 import { buildSubjectRuntimePostureOrNull } from '../subjects/subject-adapter-registry.js';
 import { resolveCreateSessionAnchor } from './session-anchor-resolution.js';
+import { buildSessionContextHealth } from './context-health.js';
 import {
   buildChildSessionLineage,
   buildSessionResumeGuidance,
@@ -235,9 +236,11 @@ function normalizeSessionResponse(session) {
     ...session,
     active_scope_bundle: normalizeStoredBundle(session),
   };
+  const contextHealth = buildSessionContextHealth(normalized);
 
   return {
     ...normalized,
+    ...contextHealth,
     handoff: createSessionHandoff(normalized),
     resume_guidance: buildSessionResumeGuidance(normalized),
   };

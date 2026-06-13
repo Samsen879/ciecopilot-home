@@ -2173,6 +2173,20 @@ describe('askWithinLearningSession', () => {
         question_id: 'question-1',
       },
     });
+    expect(result.context_health).toMatchObject({
+      status: 'healthy',
+      authoritative_active_scope: true,
+      handoff_required: false,
+    });
+    expect(result.topic_drift).toMatchObject({
+      detected: false,
+      reason_code: null,
+    });
+    expect(result.resume_validation).toMatchObject({
+      valid: true,
+      safe_continuation: true,
+      validated_against: 'persisted_active_scope_bundle',
+    });
     expect(result.evidence_summary).toMatchObject({
       source_topic_path: '9709.trigonometry.identities',
       retrieved_evidence_count: 1,
@@ -2235,5 +2249,124 @@ describe('askWithinLearningSession', () => {
       kind: 'question_type',
       question_type_id: '9709.integration.application',
     });
+  });
+
+  test('session ask fails closed when client continuation context drifts from the persisted active scope', async () => {
+    const supabase = createLearningSessionSupabaseStub({
+      workspaceRow: null,
+      evidenceContext: null,
+    });
+    const executeAskAIStub = jest.fn().mockResolvedValue(createLearningAskResult());
+
+    await expect(askWithinLearningSession(
+      {
+        supabase,
+        executeAskAI: executeAskAIStub,
+      },
+      {
+        session: {
+          session_id: 'session-3',
+          user_id: 'student-1',
+          subject_code: '9709',
+          mode: 'spaced_review',
+          active_scope_bundle: {
+            primary_topic_id: 'topic-2',
+            primary_topic_path: '9709.integration.application',
+            secondary_topics_in_scope: [],
+            allowed_prerequisites: [],
+            paper_context: null,
+            current_anchor_kind: 'workspace_slot',
+            current_anchor_ref: {
+              kind: 'workspace_slot',
+              workspace_id: 'workspace-1',
+              slot_key: 'review_queue',
+            },
+            current_question_ref: null,
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9709.integration.application',
+            },
+          },
+        },
+        message: 'continue',
+        clientContext: {
+          active_scope_bundle: {
+            primary_topic_path: '9709.trigonometry.equations',
+          },
+        },
+      },
+    )).rejects.toMatchObject({
+      code: 'session_state_conflict',
+      status: 409,
+      details: {
+        reason_code: 'topic_drift_detected',
+        topic_drift: {
+          detected: true,
+          reason_code: 'primary_topic_path_mismatch',
+          stored_primary_topic_path: '9709.integration.application',
+          requested_primary_topic_path: '9709.trigonometry.equations',
+        },
+        suggested_handoff: {
+          should_handoff: true,
+          handoff_kind: 'explicit_new_session',
+        },
+      },
+    });
+    expect(executeAskAIStub).not.toHaveBeenCalled();
+  });
+
+  test('session ask fails closed when active scope is incomplete even without client drift hints', async () => {
+    const supabase = createLearningSessionSupabaseStub({
+      workspaceRow: null,
+      evidenceContext: null,
+    });
+    const executeAskAIStub = jest.fn().mockResolvedValue(createLearningAskResult());
+
+    await expect(askWithinLearningSession(
+      {
+        supabase,
+        executeAskAI: executeAskAIStub,
+      },
+      {
+        session: {
+          session_id: 'session-4',
+          user_id: 'student-1',
+          subject_code: '9709',
+          mode: 'spaced_review',
+          active_scope_bundle: {
+            primary_topic_id: 'topic-2',
+            primary_topic_path: '9709.integration.application',
+            secondary_topics_in_scope: [],
+            allowed_prerequisites: [],
+            paper_context: null,
+            current_question_ref: null,
+            current_question_type_ref: {
+              kind: 'question_type',
+              question_type_id: '9709.integration.application',
+            },
+          },
+        },
+        message: 'continue',
+      },
+    )).rejects.toMatchObject({
+      code: 'session_state_conflict',
+      status: 409,
+      details: {
+        reason_code: 'active_scope_bundle_incomplete',
+        context_health: {
+          status: 'handoff_required',
+          authoritative_active_scope: false,
+        },
+        resume_validation: {
+          valid: false,
+          safe_continuation: false,
+        },
+        suggested_handoff: {
+          should_handoff: true,
+          handoff_kind: 'explicit_new_session',
+        },
+      },
+    });
+    expect(executeAskAIStub).not.toHaveBeenCalled();
   });
 });

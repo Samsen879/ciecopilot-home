@@ -104,6 +104,23 @@ function createSessionEnvelope() {
           questionless: true,
         },
       },
+      context_health: {
+        status: 'healthy',
+        authoritative_active_scope: true,
+        reason_code: null,
+        active_scope_source: 'persisted_active_scope_bundle',
+        handoff_required: false,
+      },
+      topic_drift: {
+        detected: false,
+        reason_code: null,
+      },
+      resume_validation: {
+        valid: true,
+        safe_continuation: true,
+        reason_code: null,
+        validated_against: 'persisted_active_scope_bundle',
+      },
       summary_state: {
         post_mortem_review: {
           scoring_posture: {
@@ -212,6 +229,20 @@ function createAskEnvelope() {
         workspace_id: 'workspace-1',
       },
     ],
+    context_health: {
+      status: 'healthy',
+      authoritative_active_scope: true,
+      handoff_required: false,
+    },
+    topic_drift: {
+      detected: false,
+      reason_code: null,
+    },
+    resume_validation: {
+      valid: true,
+      safe_continuation: true,
+      validated_against: 'persisted_active_scope_bundle',
+    },
     request_id: 'req-ask-2',
   };
 }
@@ -380,6 +411,23 @@ describe('learning runtime api', () => {
       parentSessionId: 'sess-parent-1',
       handoffKind: 'explicit_new_session',
     }));
+    expect(payload.session.contextHealth).toEqual({
+      status: 'healthy',
+      authoritativeActiveScope: true,
+      reasonCode: null,
+      activeScopeSource: 'persisted_active_scope_bundle',
+      handoffRequired: false,
+    });
+    expect(payload.session.topicDrift).toEqual({
+      detected: false,
+      reasonCode: null,
+    });
+    expect(payload.session.resumeValidation).toEqual({
+      valid: true,
+      safeContinuation: true,
+      reasonCode: null,
+      validatedAgainst: 'persisted_active_scope_bundle',
+    });
     expect(payload.featureFlags).toEqual({
       learningRuntimeEnabled: true,
       learningRuntime9709Enabled: true,
@@ -446,6 +494,20 @@ describe('learning runtime api', () => {
           workspace_id: 'workspace-1',
         },
       ],
+      context_health: {
+        status: 'healthy',
+        authoritative_active_scope: true,
+        handoff_required: false,
+      },
+      topic_drift: {
+        detected: false,
+        reason_code: null,
+      },
+      resume_validation: {
+        valid: true,
+        safe_continuation: true,
+        validated_against: 'persisted_active_scope_bundle',
+      },
       request_id: 'req-ask-1',
     });
 
@@ -464,6 +526,20 @@ describe('learning runtime api', () => {
     expect(payload.suggestedActions[0]).toEqual({
       kind: 'review_workspace',
       workspaceId: 'workspace-1',
+    });
+    expect(payload.contextHealth).toEqual({
+      status: 'healthy',
+      authoritativeActiveScope: true,
+      handoffRequired: false,
+    });
+    expect(payload.topicDrift).toEqual({
+      detected: false,
+      reasonCode: null,
+    });
+    expect(payload.resumeValidation).toEqual({
+      valid: true,
+      safeContinuation: true,
+      validatedAgainst: 'persisted_active_scope_bundle',
     });
   });
 

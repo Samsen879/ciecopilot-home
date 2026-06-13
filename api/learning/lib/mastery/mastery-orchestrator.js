@@ -769,6 +769,7 @@ export function buildLearningUpdateProposal(input = {}, { now = new Date() } = {
     repair_target_question_type_id:
       input.repair_target_question_type_id || questionContext.question_type_id || null,
     source_attempt_ref: sourceAttemptRef,
+    source_mark_run_ref: sourceMarkRunRef,
     runtime_authority_posture: releaseScopePosture.runtime_authority_posture,
     runtime_authority_reason_code: releaseScopePosture.runtime_authority_reason_code,
     question_source_kind: releaseScopePosture.question_source_kind,
@@ -934,6 +935,7 @@ export function createMasteryOrchestrator({
         repair_target_question_type_id:
           input.repair_target_question_type_id || questionContext.question_type_id || null,
         source_attempt_ref: proposal.sourceAttemptRef,
+        source_mark_run_ref: proposal.sourceMarkRunRef,
         runtime_authority_posture: proposal.releaseScopePosture.runtime_authority_posture,
         runtime_authority_reason_code: proposal.releaseScopePosture.runtime_authority_reason_code,
         question_source_kind: proposal.releaseScopePosture.question_source_kind,

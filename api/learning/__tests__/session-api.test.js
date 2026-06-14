@@ -17,11 +17,13 @@ const clientState = {
   nextIdempotencyId: 1,
   nextSessionId: 1,
   paperWorkspaceProjections: [],
+  questions: new Map(),
   reviewTasks: new Map(),
   sessions: new Map(),
   lineage: new Map(),
   sessionInsertGate: null,
   topics: new Map(),
+  workspaces: new Map(),
 };
 
 const PARENT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
@@ -32,6 +34,9 @@ const SUGGESTED_SESSION_ID = '55555555-5555-4555-8555-555555555555';
 const POST_MORTEM_SESSION_ID = '66666666-6666-4666-8666-666666666666';
 const MISSING_SESSION_ID = '77777777-7777-4777-8777-777777777777';
 const TRIG_IDENTITIES_TOPIC_ID = '88888888-8888-4888-8888-888888888888';
+const TRIG_IDENTITIES_SECONDARY_TOPIC_ID = 'topic-trig-identities';
+const QUESTION_WITH_SECONDARY_TOPIC_ID = '99999999-9999-4999-8999-999999999999';
+const WORKSPACE_TRIG_EQUATIONS_ID = 'workspace-topic-trig-equations';
 
 function isUuidString(value) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
@@ -209,6 +214,22 @@ function resolveQuery(query) {
     }
 
     return { data: row, error: null };
+  }
+
+  if (query.table === 'question_bank' && query.operation === 'select') {
+    const questionId = findFilter(query, 'question_id');
+    return {
+      data: questionId ? clientState.questions.get(questionId) || null : null,
+      error: null,
+    };
+  }
+
+  if (query.table === 'learning_workspaces' && query.operation === 'select') {
+    const workspaceId = findFilter(query, 'workspace_id');
+    return {
+      data: workspaceId ? clientState.workspaces.get(workspaceId) || null : null,
+      error: null,
+    };
   }
 
   if (query.table === 'learning_paper_workspace_projection' && query.operation === 'select') {
@@ -413,13 +434,30 @@ function buildPaperWorkspaceProjection(overrides = {}) {
       {
         paper_workspace_topic_section_id: 'section-topic-trig-equations',
         topic_id: 'topic-trig-equations',
-        topic_workspace_id: 'workspace-topic-trig-equations',
+        topic_workspace_id: WORKSPACE_TRIG_EQUATIONS_ID,
         topic_path: '9709.trigonometry.equations',
         section_state: { order: 1 },
         created_at: '2026-06-05T08:01:00.000Z',
         updated_at: '2026-06-05T08:03:00.000Z',
       },
     ],
+    ...overrides,
+  };
+}
+
+function buildQuestionWithSecondaryTopic(overrides = {}) {
+  return {
+    question_id: QUESTION_WITH_SECONDARY_TOPIC_ID,
+    source_kind: 'paper_question',
+    subject_code: '9709',
+    paper_scope: {
+      paper_scope: '9709:paper:p1',
+    },
+    primary_topic_id: 'topic-trig-equations',
+    secondary_topic_ids: [TRIG_IDENTITIES_SECONDARY_TOPIC_ID],
+    family_id: '9709.trigonometry_manipulation_equations',
+    primary_question_type_id: '9709.trigonometry.equations',
+    secondary_question_type_ids: ['9709.trigonometry.identities'],
     ...overrides,
   };
 }
@@ -556,6 +594,9 @@ describe('learning session api', () => {
     clientState.paperWorkspaceProjections = [
       buildPaperWorkspaceProjection(),
     ];
+    clientState.questions = new Map([
+      [QUESTION_WITH_SECONDARY_TOPIC_ID, buildQuestionWithSecondaryTopic()],
+    ]);
     clientState.reviewTasks = new Map([
       ['review-task-1', buildReviewTask()],
       ['review-task-foreign', buildReviewTask({
@@ -574,6 +615,18 @@ describe('learning session api', () => {
       [TRIG_IDENTITIES_TOPIC_ID, {
         node_id: TRIG_IDENTITIES_TOPIC_ID,
         topic_path: '9709.trigonometry.identities',
+      }],
+      [TRIG_IDENTITIES_SECONDARY_TOPIC_ID, {
+        node_id: TRIG_IDENTITIES_SECONDARY_TOPIC_ID,
+        topic_path: '9709.trigonometry.identities',
+      }],
+    ]);
+    clientState.workspaces = new Map([
+      [WORKSPACE_TRIG_EQUATIONS_ID, {
+        workspace_id: WORKSPACE_TRIG_EQUATIONS_ID,
+        user_id: 'student-1',
+        topic_id: 'topic-trig-equations',
+        topic_path: '9709.trigonometry.equations',
       }],
     ]);
     jest.clearAllMocks();
@@ -730,6 +783,224 @@ describe('learning session api', () => {
     expect(clientState.sessions.get(res.body.session.session_id).active_scope_bundle.paper_context).toEqual(
       res.body.session.active_scope_bundle.paper_context,
     );
+  });
+
+  test('POST/GET /api/learning/sessions preserves active_scope_bundle through handoff and compatibility refs', async () => {
+    clientState.sessions.set(PARENT_SESSION_ID, buildStoredSession({
+      session_id: PARENT_SESSION_ID,
+      summary_state: {
+        recap: 'Continue the mixed-topic paper question in a fresh guided session.',
+      },
+    }));
+    clientState.lineage.set(PARENT_SESSION_ID, {
+      lineage_id: `lineage-${PARENT_SESSION_ID}`,
+      parent_session_id: null,
+      child_session_id: PARENT_SESSION_ID,
+      handoff_kind: null,
+      summary_snapshot: {
+        recap: 'Continue the mixed-topic paper question in a fresh guided session.',
+      },
+      created_at: '2026-03-21T13:30:00.000Z',
+    });
+
+    const created = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        subject_code: '9709',
+        mode: 'guided_solve',
+        session_goal: 'Solve a mixed trigonometry paper question',
+        anchor_kind: 'question',
+        anchor_ref: {
+          kind: 'question',
+          question_id: QUESTION_WITH_SECONDARY_TOPIC_ID,
+        },
+        current_question_id: QUESTION_WITH_SECONDARY_TOPIC_ID,
+        current_question_type_id: null,
+        paper_context: {
+          paper_scope: '9709:paper:p1',
+        },
+        parent_session_id: PARENT_SESSION_ID,
+        handoff_kind: 'explicit_new_session',
+      });
+
+    expect(created.status).toBe(200);
+
+    const expectedSecondaryTopicRefs = [
+      {
+        kind: 'topic',
+        topic_id: TRIG_IDENTITIES_SECONDARY_TOPIC_ID,
+        topic_path: '9709.trigonometry.identities',
+      },
+    ];
+    const expectedBundle = {
+      primary_topic_id: 'topic-trig-equations',
+      primary_topic_path: '9709.trigonometry.equations',
+      secondary_topics_in_scope: expectedSecondaryTopicRefs,
+      allowed_prerequisites: [],
+      paper_context: {
+        paper_scope: '9709:paper:p1',
+        paper_workspace_ref: {
+          kind: 'paper_workspace',
+          paper_workspace_id: 'paper-workspace-p1',
+        },
+        topic_section_ref: {
+          kind: 'paper_workspace_topic_section',
+          paper_workspace_topic_section_id: 'section-topic-trig-equations',
+          topic_id: 'topic-trig-equations',
+        },
+      },
+      mode: 'guided_solve',
+      session_goal: 'Solve a mixed trigonometry paper question',
+      current_anchor_kind: 'question',
+      current_anchor_ref: {
+        kind: 'question',
+        question_id: QUESTION_WITH_SECONDARY_TOPIC_ID,
+      },
+      current_question_ref: {
+        kind: 'question',
+        question_id: QUESTION_WITH_SECONDARY_TOPIC_ID,
+      },
+      current_question_type_ref: {
+        kind: 'question_type',
+        question_type_id: '9709.trigonometry.equations',
+      },
+    };
+
+    expect(created.body.session).toMatchObject({
+      current_question_id: QUESTION_WITH_SECONDARY_TOPIC_ID,
+      current_question_type_id: '9709.trigonometry.equations',
+      lineage_ref: {
+        parent_session_id: PARENT_SESSION_ID,
+        handoff_kind: 'explicit_new_session',
+      },
+      active_scope_bundle: expectedBundle,
+    });
+    expect(created.body.session.active_scope_bundle).not.toHaveProperty('current_question_id');
+    expect(created.body.session.active_scope_bundle).not.toHaveProperty('current_question_type_id');
+    expect(created.body.session.active_scope_bundle.secondary_topics_in_scope).toHaveLength(1);
+    expect(clientState.sessions.get(created.body.session.session_id).active_scope_bundle).toEqual(
+      created.body.session.active_scope_bundle,
+    );
+
+    const resumed = await harness.request
+      .get(`/api/learning/sessions/${created.body.session.session_id}`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student');
+
+    expect(resumed.status).toBe(200);
+    expect(resumed.body.session.active_scope_bundle).toEqual(expectedBundle);
+    expect(resumed.body.session.lineage_ref).toEqual({
+      parent_session_id: PARENT_SESSION_ID,
+      handoff_kind: 'explicit_new_session',
+    });
+    expect(resumed.body.session.resume_validation).toMatchObject({
+      valid: true,
+      safe_continuation: true,
+      validated_against: 'persisted_active_scope_bundle',
+    });
+  });
+
+  test.each([
+    [
+      'concept',
+      {
+        subject_code: '9709',
+        mode: 'learn_concept',
+        session_goal: 'Build trig identity intuition without a concrete question',
+        anchor_kind: 'concept',
+        anchor_ref: {
+          kind: 'concept',
+          topic_id: TRIG_IDENTITIES_TOPIC_ID,
+          topic_path: '9709.trigonometry.identities',
+        },
+        current_question_id: null,
+        current_question_type_id: null,
+      },
+      {
+        currentQuestionTypeId: null,
+        currentQuestionTypeRef: null,
+      },
+    ],
+    [
+      'review_task',
+      buildSessionPayload({
+        current_question_id: null,
+        current_question_type_id: null,
+      }),
+      {
+        currentQuestionTypeId: '9709.trigonometry.equations',
+        currentQuestionTypeRef: {
+          kind: 'question_type',
+          question_type_id: '9709.trigonometry.equations',
+        },
+      },
+    ],
+    [
+      'artifact',
+      buildSessionPayload({
+        mode: 'learn_concept',
+        anchor_kind: 'artifact',
+        anchor_ref: {
+          kind: 'artifact',
+          artifact_id: 'artifact-misconception-1',
+        },
+        current_question_id: null,
+        current_question_type_id: null,
+      }),
+      {
+        currentQuestionTypeId: '9709.trigonometry.equations',
+        currentQuestionTypeRef: {
+          kind: 'question_type',
+          question_type_id: '9709.trigonometry.equations',
+        },
+      },
+    ],
+    [
+      'workspace_slot',
+      buildSessionPayload({
+        mode: 'learn_concept',
+        anchor_kind: 'workspace_slot',
+        anchor_ref: {
+          kind: 'workspace_slot',
+          workspace_id: WORKSPACE_TRIG_EQUATIONS_ID,
+          slot_key: 'overview_map',
+        },
+        current_question_id: null,
+        current_question_type_id: null,
+      }),
+      {
+        currentQuestionTypeId: null,
+        currentQuestionTypeRef: null,
+      },
+    ],
+  ])('POST /api/learning/sessions keeps %s questionless anchors legal', async (
+    anchorKind,
+    payload,
+    expected,
+  ) => {
+    const res = await harness.request
+      .post('/api/learning/sessions')
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send(payload);
+
+    expect(res.status).toBe(200);
+    expect(res.body.session.current_anchor_kind).toBe(anchorKind);
+    expect(res.body.session.current_question_id).toBeNull();
+    expect(res.body.session.current_question_type_id).toBe(expected.currentQuestionTypeId);
+    expect(res.body.session.active_scope_bundle).toMatchObject({
+      current_anchor_kind: anchorKind,
+      current_anchor_ref: payload.anchor_ref,
+      current_question_ref: null,
+      current_question_type_ref: expected.currentQuestionTypeRef,
+    });
+    expect(res.body.session.resume_guidance).toMatchObject({
+      questionless: true,
+      current_question_id: null,
+      current_question_type_id: expected.currentQuestionTypeId,
+    });
   });
 
   test('POST /api/learning/sessions fails closed when requested paper workspace context is ambiguous', async () => {

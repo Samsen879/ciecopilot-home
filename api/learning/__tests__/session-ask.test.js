@@ -209,6 +209,107 @@ describe('learning session ask api', () => {
     );
   });
 
+  test('POST /api/learning/sessions/:id/ask forwards the persisted active_scope_bundle without collapsing compatibility refs', async () => {
+    const persistedBundle = {
+      primary_topic_id: 'topic-trig-equations',
+      primary_topic_path: '9709.trigonometry.equations',
+      secondary_topics_in_scope: [
+        {
+          kind: 'topic',
+          topic_id: 'topic-trig-identities',
+          topic_path: '9709.trigonometry.identities',
+        },
+      ],
+      allowed_prerequisites: [
+        {
+          kind: 'topic',
+          topic_id: 'topic-basic-angles',
+          topic_path: '9709.trigonometry.basic_angles',
+        },
+      ],
+      paper_context: {
+        paper_scope: '9709:paper:p1',
+        paper_workspace_ref: {
+          kind: 'paper_workspace',
+          paper_workspace_id: 'paper-workspace-p1',
+        },
+        topic_section_ref: {
+          kind: 'paper_workspace_topic_section',
+          paper_workspace_topic_section_id: 'section-topic-trig-equations',
+          topic_id: 'topic-trig-equations',
+        },
+      },
+      mode: 'learn_concept',
+      session_goal: 'Continue from a paper workspace overview slot',
+      current_anchor_kind: 'workspace_slot',
+      current_anchor_ref: {
+        kind: 'workspace_slot',
+        workspace_id: 'workspace-topic-trig-equations',
+        slot_key: 'overview_map',
+      },
+      current_question_ref: null,
+      current_question_type_ref: null,
+    };
+    clientState.sessions.set(SESSION_ID, buildStoredSession({
+      session_goal: 'Continue from a paper workspace overview slot',
+      mode: 'learn_concept',
+      active_scope_bundle: persistedBundle,
+      current_anchor_kind: 'workspace_slot',
+      current_anchor_ref: persistedBundle.current_anchor_ref,
+      current_question_id: null,
+      current_question_type_id: null,
+    }));
+    mockAskWithinLearningSession.mockResolvedValue({
+      assistant_message: 'Use the overview slot to choose the next worked example.',
+      evidence_summary: {
+        source_topic_path: '9709.trigonometry.equations',
+        retrieved_evidence_count: 0,
+      },
+      fallback_posture: {
+        fallback_mode: 'non_released_fallback',
+        authoritative_scoring_allowed: false,
+        fallback_reason_code: 'non_pilot_question_type',
+        classification_confidence: null,
+        learning_signal_posture: 'conservative_fallback',
+      },
+      session_delta: {
+        client_turn_id: 'local-turn-bundle-001',
+        current_question_ref: null,
+        current_question_type_ref: null,
+      },
+      suggested_actions: [
+        {
+          kind: 'continue_session',
+          anchor_kind: 'workspace_slot',
+        },
+      ],
+    });
+
+    const res = await harness.request
+      .post(`/api/learning/sessions/${SESSION_ID}/ask`)
+      .set('Origin', 'http://localhost:3000')
+      .set('Authorization', 'Bearer test-user:student-1:student')
+      .send({
+        message: 'What should I focus on next?',
+        client_turn_id: 'local-turn-bundle-001',
+      });
+
+    expect(res.status).toBe(200);
+    expect(mockAskWithinLearningSession).toHaveBeenCalledTimes(1);
+    expect(mockAskWithinLearningSession.mock.calls[0][1].session).toMatchObject({
+      session_id: SESSION_ID,
+      current_question_id: null,
+      current_question_type_id: null,
+      active_scope_bundle: persistedBundle,
+    });
+    expect(
+      mockAskWithinLearningSession.mock.calls[0][1].session.active_scope_bundle.secondary_topics_in_scope,
+    ).toHaveLength(1);
+    expect(
+      mockAskWithinLearningSession.mock.calls[0][1].session.active_scope_bundle.allowed_prerequisites,
+    ).toHaveLength(1);
+  });
+
   test('POST /api/learning/sessions/:id/ask rejects topic drift before AskAI becomes authoritative', async () => {
     const res = await harness.request
       .post(`/api/learning/sessions/${SESSION_ID}/ask`)
